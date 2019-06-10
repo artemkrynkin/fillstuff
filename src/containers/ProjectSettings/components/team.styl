@@ -1,0 +1,94 @@
+@import '~src/styles/helpers/_colors.styl';
+@import '~src/styles/helpers/_fonts.styl';
+@import '~src/styles/helpers/_media_queries.styl';
+
+.ps-team,
+.ps-team-dialog
+	&__member-photo
+		align-items flex-end
+		border-radius 50%
+		display flex
+		flex none
+		justify-content center
+		margin-right 5px
+		overflow hidden
+
+		&_null
+			background-color $c-br-5
+			border 2px solid $c-bg-100
+
+			& svg
+				color alpha(white, 0.9)
+
+		& img
+			height 100%
+			width 100%
+
+	&__member-details
+		padding 0 10px
+
+	&__member-title
+		align-items center
+		color $c-bg-600
+		display inline-flex
+		font-size 14px
+		font-weight 600
+		line-height 1.2
+
+	&__member-role
+		background-color $c-bg-300
+		border-radius 10px
+		color white
+		font-size 10px
+		font-weight 600
+		line-height 1.1
+		letter-spacing 1px
+		margin-left 5px
+		padding 2px 5px
+
+	&__member-subtitle
+		color $c-bg-400
+		font-size 13px
+		line-height 1.1
+		margin-top 5px
+
+.ps-team
+	&__list
+		margin -20px 0
+
+	&__member-item
+		align-items center
+		border-bottom 1px solid $c-br-5
+		display flex
+		padding 10px 0
+
+		&:last-child
+			border-bottom none
+
+	&__member-photo
+		height 40px
+		width 40px
+
+		&_null
+			& svg
+				font-size 28px
+
+	&__member-actions
+		color $c-bg-200
+		margin-left auto
+		padding 8px
+
+		&:hover
+			background-color alpha($c-bg-100, 0.2)
+
+		& svg
+			font-size 24px
+
+.ps-team-dialog
+	&__member-photo
+		height 46px
+		width 46px
+
+		&_null
+			& svg
+				font-size 32px

@@ -1,0 +1,84 @@
+@import '~src/styles/helpers/_colors.styl';
+@import '~src/styles/helpers/_fonts.styl';
+@import '~src/styles/helpers/_media_queries.styl';
+
+.ps-content-topics
+	&__list
+		margin -20px 0
+
+	&__item
+		align-items center
+		border-bottom 1px solid $c-br-5
+		display flex
+		min-height 51px
+		padding 5px 0
+
+		&:last-child
+			border-bottom none
+			min-height 50px
+
+	&__color
+		border-radius 50%
+		flex none
+		height 18px
+		width 18px
+
+	&__name
+		color $c-bg-600
+		font-size 14px
+		max-width 100%
+		overflow hidden
+		padding 0 10px
+		text-overflow ellipsis
+		white-space nowrap
+
+	&__actions
+		color $c-bg-200
+		margin-left auto
+		padding 8px
+
+		&:hover
+			background-color alpha($c-bg-100, 0.2)
+
+		& svg
+			font-size 24px
+
+.ps-content-topics-dialog
+	&__colors-list
+		margin 10px 0 -10px
+
+		@media (min-width: 496px)
+			justify-content space-between
+
+	&__color-label
+		cursor pointer
+		height 24px
+		margin 0 10px 10px 0
+		width 24px
+
+		@media (min-width: 496px)
+			margin-right 16px
+
+			&:nth-child(9),
+			&:nth-child(18)
+				margin-right 0
+
+		& input
+			display none
+
+	&__color
+		align-items center
+		border-radius 50%
+		color white
+		display flex
+		height 100%
+		justify-content center
+		width 100%
+
+		& svg
+			display none
+			font-size 16px
+
+	&__color-label input:checked + &__color
+		& svg
+			display block

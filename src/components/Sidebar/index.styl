@@ -1,0 +1,95 @@
+@import '~src/styles/helpers/_colors.styl';
+@import '~src/styles/helpers/_fonts.styl';
+@import '~src/styles/helpers/_media_queries.styl';
+
+.sidebar
+	background-color $c-sg-4
+	width 224px
+
+	&__wrap
+		height 100vh
+		position sticky
+		width 224px
+		top 0
+		z-index 10
+
+	&__logo
+		align-items center
+		background url('/images/logo_sg.svg') no-repeat center center
+		color $c-sg-2
+		display flex
+		font-family $comforta
+		font-size 26px
+		font-weight 700
+		height 50px
+		margin 0 55px 0 22px
+		opacity 0.45
+		position relative
+		text-decoration none
+		transition opacity 250ms ease-out
+
+		&:after
+			background url('/images/logo_original.svg') no-repeat center center
+			content ''
+			height 100%
+			position absolute
+			opacity 0
+			transition opacity 250ms ease-out
+			width 100%
+
+		&:hover
+			opacity 1
+
+			&:after
+				opacity 1
+
+	&__menu
+		display flex
+		flex-direction column
+		overflow-y auto
+		padding 10px 0 5px
+		height calc(100% - 50px)
+
+	&__menu-item
+		padding 0 10px
+
+		&_down
+			margin-top auto
+
+	&__menu-link
+		align-items center
+		border-radius 8px
+		color $c-sg-2
+		display flex
+		font-size 14px
+		opacity 0.9
+		padding 12px 14px
+		text-decoration none
+		transition background-color 150ms ease-out, color 150ms ease-out
+
+		&:hover
+			background-color alpha($c-sg-2, 0.1)
+			opacity 1
+
+		&_active,
+		&_active:hover
+			background-color $c-sg-5
+			color $c-t-A100
+			opacity 1
+
+	&__menu-icon
+		margin-right 14px
+		opacity 0.5
+		text-align center
+		transition opacity 150ms ease-out
+		width 18px
+
+		& svg
+			font-size 18px
+
+	&__menu-link:hover &__menu-icon
+		opacity 0.7
+
+	&__menu-link_active &__menu-icon,
+	&__menu-link_active:hover &__menu-icon
+		opacity 1

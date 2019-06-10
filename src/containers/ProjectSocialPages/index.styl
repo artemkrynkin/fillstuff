@@ -1,0 +1,82 @@
+@import '~src/styles/helpers/_colors.styl';
+@import '~src/styles/helpers/_fonts.styl';
+@import '~src/styles/helpers/_media_queries.styl';
+
+.project-social-pages
+	display flex
+	flex 1 1 auto
+	padding 30px 0
+
+	& .page__inner-content
+		background-color white
+		border-radius 8px
+		margin auto
+		max-width 480px
+		padding 20px 40px
+		width 100%
+
+	&__page-list
+		margin 20px 0 10px
+
+	&__page
+		align-items center
+		border-top 1px solid $c-br-5
+		cursor pointer
+		display flex
+		padding 10px 0
+		user-select none
+
+		&:hover
+			background-color $c-br-2
+			border-bottom 1px solid $c-br-5
+			margin 0 -40px -1px
+			padding 10px 40px
+
+		&:last-child
+			border-bottom none
+
+			&:hover
+				margin-bottom 0
+
+	&__page-photo
+		border-radius 50%
+		flex none
+		height 40px
+		margin-right 10px
+		overflow hidden
+		width 40px
+
+		& img
+			height auto
+			max-width 100%
+
+	&__page-name
+		font-size 14px
+		font-weight 600
+
+	&__page-checkbox
+		align-items center
+		border 2px solid alpha($c-bg-300, 0.5)
+		border-radius 50%
+		display flex
+		flex none
+		justify-content center
+		height 24px
+		margin-left auto
+		width 24px
+
+		& svg
+			display none
+			font-size 16px
+
+	&__page_selected &__page-checkbox
+		background-color $c-t-300
+		border-color $c-t-300
+
+		& svg
+			display block
+			color white
+
+	& .pd-rowGridFormSubmit
+		margin 10px -40px -20px
+		padding 10px 40px

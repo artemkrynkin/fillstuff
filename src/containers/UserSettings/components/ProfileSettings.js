@@ -1,0 +1,430 @@
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import ClassNames from 'classnames';
+import moment from 'moment';
+import momentTz from 'moment-timezone';
+
+import { Formik, Form, Field } from 'formik';
+import { TextField, Select } from 'formik-material-ui';
+import * as Yup from 'yup';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Button from '@material-ui/core/Button';
+import ButtonBase from '@material-ui/core/ButtonBase';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Divider from '@material-ui/core/Divider';
+import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormLabel from '@material-ui/core/FormLabel';
+import Grid from '@material-ui/core/Grid';
+import MenuItem from '@material-ui/core/MenuItem';
+import TextFieldMui from '@material-ui/core/TextField';
+import Fade from '@material-ui/core/Fade';
+
+import CardPaper from 'src/components/CardPaper';
+
+import { editUser } from 'src/actions/user';
+
+import './ProfileSettings.styl';
+
+const timezones = require('shared/timezones')
+	.map(timezone => {
+		return {
+			name: timezone,
+			offset: `GTM${momentTz.tz(timezone).format('Z')}`,
+			offsetNumber: momentTz.tz.zone(timezone).parse(),
+		};
+	})
+	.sort((timezoneA, timezoneB) => {
+		return timezoneA.offsetNumber - timezoneB.offsetNumber;
+	});
+
+const PersonalDataSchema = Yup.object().shape({
+	name: Yup.string()
+		// eslint-disable-next-line
+		.min(2, 'Имя не может быть короче ${min} символов')
+		.required('Обязательное поле'),
+	timezone: Yup.string().required('Обязательное поле'),
+});
+
+const EmailSchema = Yup.object().shape({
+	newEmail: Yup.string()
+		.email('Некорректный Email')
+		.required('Обязательное поле'),
+});
+
+const SetPasswordSchema = Yup.object().shape({
+	newPassword: Yup.string()
+		// eslint-disable-next-line
+		.min(6, 'Пароль должен состоять минимум из ${min} символов')
+		.required('Обязательное поле'),
+});
+
+const ChangePasswordSchema = Yup.object().shape({
+	oldPassword: Yup.string().required('Обязательное поле'),
+	newPassword: Yup.string()
+		// eslint-disable-next-line
+		.min(6, 'Новый пароль должен состоять минимум из ${min} символов')
+		.required('Обязательное поле'),
+	confirmPassword: Yup.string()
+		.oneOf([Yup.ref('newPassword')], 'Новый пароль повторён неправильно')
+		.required('Обязательное поле'),
+});
+
+class ProfileSettings extends Component {
+	state = {
+		visibleEmailFields: false,
+		visiblePasswordFields: false,
+		newProfilePhoto: {
+			file: null,
+			base64: null,
+		},
+	};
+
+	onToggleEmailFields = () => {
+		this.setState({
+			visibleEmailFields: !this.state.visibleEmailFields,
+		});
+
+		if (this.state.visiblePasswordFields) this.onTogglePasswordFields();
+	};
+
+	onTogglePasswordFields = () => {
+		this.setState({
+			visiblePasswordFields: !this.state.visiblePasswordFields,
+		});
+
+		if (this.state.visibleEmailFields) this.onToggleEmailFields();
+	};
+
+	onChangeProfilePhoto = event => {
+		const file = event.target.files[0];
+		const Reader = new FileReader();
+
+		Reader.onload = item => {
+			this.setState({
+				newProfilePhoto: {
+					file: file,
+					base64: item.target.result,
+				},
+			});
+		};
+
+		if (file) Reader.readAsDataURL(file);
+	};
+
+	onResetNewProfilePhoto = () => {
+		this.setState({
+			newProfilePhoto: {
+				file: null,
+				base64: null,
+			},
+		});
+	};
+
+	render() {
+		const { user } = this.props;
+		const { newProfilePhoto } = this.state;
+
+		let photoImgClasses = ClassNames({
+			'us-profile-settings__photo-img': true,
+			'us-profile-settings__photo-img_null': !user.profilePhoto,
+		});
+
+		let labelStyles = { minWidth: 94 };
+
+		return (
+			<CardPaper elevation={1} leftContent="Профиль" title style={{ marginBottom: 16 }}>
+				<Grid direction="row" alignItems="flex-start" spacing={24} container>
+					<Grid className="us-profile-settings__photo" item>
+						<div className={photoImgClasses}>
+							{newProfilePhoto.base64 || user.profilePhoto ? (
+								<img src={newProfilePhoto.base64 || user.profilePhoto} alt="" />
+							) : (
+								<FontAwesomeIcon icon={['fas', 'user-alt']} />
+							)}
+						</div>
+						<input
+							id="profile-photo"
+							type="file"
+							accept="image/*"
+							onChange={this.onChangeProfilePhoto}
+							style={{ display: 'none' }}
+						/>
+						<label htmlFor="profile-photo">
+							<ButtonBase className="button-link-500" component="span" disableRipple>
+								{user.profilePhoto ? 'Изменить' : 'Загрузить'} фотографию
+							</ButtonBase>
+						</label>
+					</Grid>
+					<Grid className="us-profile-settings__personal-data" item xs={true}>
+						<Formik
+							initialValues={{
+								name: user.name,
+								timezone: user.timezone,
+							}}
+							validationSchema={PersonalDataSchema}
+							validateOnBlur={false}
+							onSubmit={(values, actions) => {
+								let valuesFormData;
+
+								if (newProfilePhoto.file && newProfilePhoto.base64) {
+									valuesFormData = new FormData();
+
+									valuesFormData.append('profilePhoto', newProfilePhoto.file);
+
+									Object.keys(values).forEach(key => {
+										valuesFormData.append(key, values[key]);
+									});
+								}
+
+								this.props.editUser(valuesFormData ? valuesFormData : values).then(response => {
+									if (response.status === 'success') {
+										actions.resetForm();
+										this.onResetNewProfilePhoto();
+									} else {
+										if (response.data.formErrors) {
+											response.data.formErrors.forEach(error => {
+												actions.setFieldError(error.field, error.message);
+											});
+										}
+
+										actions.setSubmitting(false);
+									}
+								});
+							}}
+							render={({ errors, touched, isSubmitting }) => (
+								<Form>
+									<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" container>
+										<FormLabel style={labelStyles}>Имя:</FormLabel>
+										<Field name="name" component={TextField} />
+									</Grid>
+									<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" container>
+										<FormLabel style={labelStyles}>Часовой пояс:</FormLabel>
+										<FormControl fullWidth>
+											<Field
+												name="timezone"
+												component={Select}
+												IconComponent={() => <FontAwesomeIcon icon={['far', 'angle-down']} className="pd-selectIcon" />}
+												error={Boolean(errors.timezone)}
+												MenuProps={{
+													elevation: 2,
+													transitionDuration: 150,
+													TransitionComponent: Fade,
+												}}
+												displayEmpty
+											>
+												<MenuItem value="">Не выбран</MenuItem>
+												{timezones.map((timezone, index) => {
+													return (
+														<MenuItem key={index} value={timezone.name}>
+															({timezone.offset}) {timezone.name}
+														</MenuItem>
+													);
+												})}
+											</Field>
+											{Boolean(errors.timezone) ? <FormHelperText error={true}>{errors.timezone}</FormHelperText> : null}
+										</FormControl>
+									</Grid>
+									<Grid justify="flex-end" container>
+										<Button type="submit" disabled={isSubmitting} variant="contained" color="primary">
+											{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
+											<span style={{ opacity: Number(!isSubmitting) }}>Сохранить</span>
+										</Button>
+									</Grid>
+								</Form>
+							)}
+						/>
+
+						<Divider style={{ margin: '20px 0' }} />
+						<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" alignItems="flex-start" container>
+							<FormLabel style={labelStyles}>Email:</FormLabel>
+							<Grid item>
+								{this.state.visibleEmailFields ? (
+									<Formik
+										initialValues={{ newEmail: '' }}
+										validationSchema={EmailSchema}
+										validateOnBlur={false}
+										onSubmit={(values, actions) => {
+											this.props.editUser(values).then(response => {
+												if (response.status === 'success') {
+													actions.resetForm();
+													this.onToggleEmailFields();
+												} else {
+													response.data.formErrors.forEach(error => {
+														actions.setFieldError(error.field, error.message);
+													});
+
+													actions.setSubmitting(false);
+												}
+											});
+										}}
+										render={({ errors, touched, isSubmitting, values }) => (
+											<Form>
+												<FormControl margin="dense" fullWidth>
+													<Field name="newEmail" component={TextField} placeholder="Новый Email" autoFocus />
+													{!errors.newEmail && Boolean(values.newEmail) && Boolean(values.newEmail !== (user.email || '')) ? (
+														<FormHelperText component="div">
+															На {user.email ? <b>новый</b> : null} Email придёт письмо с подтверждением.
+															{user.email ? (
+																<p style={{ marginTop: 10 }}>
+																	На <b>старый</b> Email придёт уведомление об изменении.
+																</p>
+															) : null}
+														</FormHelperText>
+													) : null}
+												</FormControl>
+												<FormControl>
+													<Button type="submit" disabled={isSubmitting} variant="contained" color="primary">
+														{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
+														<span style={{ opacity: Number(!isSubmitting) }}>{user.email ? 'Сохранить' : 'Установить'}</span>
+													</Button>
+												</FormControl>
+											</Form>
+										)}
+									/>
+								) : (
+									<TextFieldMui
+										name="emailReadonly"
+										InputProps={{
+											readOnly: true,
+											value: user.email ? user.email : 'ещё не установлен',
+										}}
+										fullWidth
+									/>
+								)}
+							</Grid>
+							<ButtonBase
+								className="button-link-500"
+								component="span"
+								disableRipple
+								onClick={this.onToggleEmailFields}
+								style={{ marginLeft: 10, marginTop: 10 }}
+							>
+								{!this.state.visibleEmailFields ? (user.email ? 'Изменить' : 'Установить') : 'Отмена'}
+							</ButtonBase>
+						</Grid>
+
+						{user.email ? <Divider style={{ margin: '20px 0' }} /> : null}
+						{user.email ? (
+							<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" alignItems="flex-start" style={{ margin: 0 }} container>
+								<FormLabel style={labelStyles}>Пароль:</FormLabel>
+								<Grid item>
+									{this.state.visiblePasswordFields ? (
+										<Formik
+											initialValues={{
+												oldPassword: '',
+												newPassword: '',
+												confirmPassword: '',
+											}}
+											validationSchema={user.hasPassword ? ChangePasswordSchema : SetPasswordSchema}
+											validateOnBlur={false}
+											onSubmit={(values, actions) => {
+												let newValues = JSON.parse(JSON.stringify(values));
+
+												if (!user.hasPassword) {
+													delete newValues.oldPassword;
+													delete newValues.confirmPassword;
+												}
+
+												this.props.editUser(newValues).then(response => {
+													if (response.status === 'success') {
+														actions.resetForm();
+														this.onTogglePasswordFields();
+													} else {
+														response.data.formErrors.forEach(error => {
+															actions.setFieldError(error.field, error.message);
+														});
+
+														actions.setSubmitting(false);
+													}
+												});
+											}}
+											render={({ errors, touched, isSubmitting }) => (
+												<Form>
+													{user.hasPassword ? (
+														<FormControl margin="dense" fullWidth>
+															<Field
+																name="oldPassword"
+																type="password"
+																component={TextField}
+																placeholder="Старый пароль"
+																autoFocus={user.hasPassword}
+															/>
+														</FormControl>
+													) : null}
+													<FormControl margin="dense" fullWidth>
+														<Field
+															name="newPassword"
+															type="password"
+															component={TextField}
+															placeholder={user.hasPassword ? 'Новый пароль' : ''}
+															autoFocus={!user.hasPassword}
+														/>
+													</FormControl>
+													{user.hasPassword ? (
+														<FormControl margin="dense" fullWidth>
+															<Field
+																name="confirmPassword"
+																type="password"
+																component={TextField}
+																placeholder="Повторите пароль"
+															/>
+														</FormControl>
+													) : null}
+													<FormControl>
+														<Button type="submit" disabled={isSubmitting} variant="contained" color="primary">
+															{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
+															<span style={{ opacity: Number(!isSubmitting) }}>
+																{user.hasPassword ? 'Изменить пароль' : 'Установить'}
+															</span>
+														</Button>
+													</FormControl>
+												</Form>
+											)}
+										/>
+									) : (
+										<TextFieldMui
+											name="passwordReadonly"
+											InputProps={{
+												readOnly: true,
+												value: user.hasPassword ? `обновлён ${moment(user.passwordUpdate).fromNow()}` : 'ещё не установлен',
+											}}
+											fullWidth
+										/>
+									)}
+								</Grid>
+								<ButtonBase
+									className="button-link-500"
+									component="span"
+									disableRipple
+									onClick={this.onTogglePasswordFields}
+									style={{ marginLeft: 10, marginTop: 10 }}
+								>
+									{!this.state.visiblePasswordFields ? (user.hasPassword ? 'Изменить' : 'Установить') : 'Отмена'}
+								</ButtonBase>
+							</Grid>
+						) : null}
+					</Grid>
+				</Grid>
+			</CardPaper>
+		);
+	}
+}
+
+const mapStateToProps = state => {
+	return {
+		user: state.user.data,
+	};
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		editUser: values => dispatch(editUser(values)),
+	};
+};
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(ProfileSettings);

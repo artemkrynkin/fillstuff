@@ -1,0 +1,23 @@
+@import '~src/styles/helpers/_colors.styl';
+@import '~src/styles/helpers/_fonts.styl';
+@import '~src/styles/helpers/_media_queries.styl';
+
+.slider-scroller
+	position relative
+
+	&__wrap-overflow
+		overflow hidden
+
+	&__wrap-scroll
+		display flex
+		overflow-x auto
+		overflow-y hidden
+		position relative
+		-ms-overflow-style none
+		z-index 1
+
+		&::-webkit-scrollbar
+			display none
+
+	&__wrap-scroll
+		overflow -moz-scrollbars-none !important

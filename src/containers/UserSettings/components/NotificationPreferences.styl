@@ -1,0 +1,22 @@
+@import '~src/styles/helpers/_colors.styl';
+@import '~src/styles/helpers/_fonts.styl';
+@import '~src/styles/helpers/_media_queries.styl';
+
+.us-notification-preferences
+	&__row-button
+		cursor pointer
+		margin 0 -15px
+		padding 15px
+		position relative
+		width auto
+
+		&:after
+			background-color $c-br-5
+			bottom 0
+			content ''
+			height 1px
+			position absolute
+			width calc(100% - 30px)
+
+		&:last-child&:after
+			display none

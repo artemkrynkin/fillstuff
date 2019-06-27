@@ -6,7 +6,7 @@ const TitlePageOrLogo = props => {
 
 	return (
 		<div className="header__column-group_left">
-			{theme !== 'bg' ? <div className="header__title-page">{pageTitle}</div> : <Link className="header__logo" to="/projects" />}
+			{theme !== 'bg' ? <div className="header__title-page">{pageTitle}</div> : <Link className="header__logo" to="/stocks" />}
 		</div>
 	);
 };

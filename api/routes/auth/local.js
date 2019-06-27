@@ -14,7 +14,7 @@ localAuthRouter.post(
 		const { email, password } = req.body;
 
 		if (!email || !password) {
-			return next({
+			next({
 				code: 5,
 				customErr: [
 					{

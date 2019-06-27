@@ -3,22 +3,11 @@ import findOrCreate from 'mongoose-findorcreate';
 import validator from 'validator';
 import { pbkdf2Sync, randomBytes } from 'crypto';
 import i18n from 'i18n';
-import momentTz from 'moment-timezone';
 
 let User = new mongoose.Schema({
-	activeProjectId: {
+	activeStockId: {
 		type: mongoose.Schema.Types.ObjectId,
-		ref: 'Project',
-	},
-	vkProvider: {
-		userId: {
-			type: Number,
-			default: null,
-		},
-		accessToken: {
-			type: String,
-			default: null,
-		},
+		ref: 'Stock',
 	},
 	profilePhoto: {
 		type: String,
@@ -55,56 +44,6 @@ let User = new mongoose.Schema({
 		type: Date,
 		default: Date.now,
 	},
-	timezone: {
-		type: String,
-		default: !!~require('shared/timezones').indexOf(momentTz.tz.guess()) ? momentTz.tz.guess() : '',
-	},
-	notifications: {
-		emailNotifications: {
-			type: Boolean,
-			default: true,
-		},
-		browserNotifications: {
-			type: Boolean,
-			default: false,
-		},
-		email: {
-			personalOffers: {
-				type: Boolean,
-				default: true,
-			},
-			updateApp: {
-				type: Boolean,
-				default: true,
-			},
-			publishingErrors: {
-				type: Boolean,
-				default: true,
-			},
-			invitationProject: {
-				type: Boolean,
-				default: true,
-			},
-		},
-		webapp: {
-			publishingErrors: {
-				type: Boolean,
-				default: true,
-			},
-			updateCommentsInDrafts: {
-				type: Boolean,
-				default: true,
-			},
-			changesInScheduledPublications: {
-				type: Boolean,
-				default: true,
-			},
-			changesInContentPlan: {
-				type: Boolean,
-				default: true,
-			},
-		},
-	},
 });
 
 if (!User.options.toObject) User.options.toObject = {};
@@ -112,7 +51,6 @@ User.options.toObject.transform = function(user, ret, options) {
 	if (options.deleteConfidentialData) {
 		delete ret.salt;
 		delete ret.hashedPassword;
-		delete ret.vkProvider.accessToken;
 	}
 
 	return ret;

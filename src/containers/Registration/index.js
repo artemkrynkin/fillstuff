@@ -17,17 +17,10 @@ import Head from 'src/components/head';
 import { registration } from 'src/actions/registration';
 
 const RegistrationSchema = Yup.object().shape({
-	name: Yup.string()
-		// eslint-disable-next-line
-		.min(2, 'Имя не может быть короче ${min} символов')
-		.required('Обязательное поле'),
 	email: Yup.string()
 		.email('Некорректный Email')
 		.required('Обязательное поле'),
-	password: Yup.string()
-		// eslint-disable-next-line
-		.min(6, 'Пароль не может быть короче ${min} символов')
-		.required('Обязательное поле'),
+	password: Yup.string().required('Обязательное поле'),
 });
 
 class Registration extends Component {
@@ -51,7 +44,7 @@ class Registration extends Component {
 					<h2>Регистрация</h2>
 					<div className="auth-layout__form-fields">
 						<Formik
-							initialValues={{ name: '', email: '', password: '' }}
+							initialValues={{ email: '', password: '' }}
 							validationSchema={RegistrationSchema}
 							validateOnBlur={false}
 							onSubmit={(values, actions) => {
@@ -61,13 +54,10 @@ class Registration extends Component {
 							render={({ errors, touched, isSubmitting }) => (
 								<Form>
 									<FormControl margin="normal" fullWidth>
-										<Field name="name" placeholder="Имя" component={TextField} autoFocus />
+										<Field name="email" placeholder="Email" component={TextField} autoFocus />
 									</FormControl>
 									<FormControl margin="normal" fullWidth>
-										<Field name="email" placeholder="Email" component={TextField} />
-									</FormControl>
-									<FormControl margin="normal" fullWidth>
-										<Field name="password" type="password" placeholder="Пароль" component={TextField} />
+										<Field type="password" name="password" placeholder="Пароль" component={TextField} />
 									</FormControl>
 									<Button
 										type="submit"

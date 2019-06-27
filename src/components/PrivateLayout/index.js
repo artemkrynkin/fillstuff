@@ -5,11 +5,11 @@ import Sidebar from 'src/components/Sidebar';
 
 class PrivateLayout extends Component {
 	render() {
-		const { children, currentProject } = this.props;
+		const { children, currentStock } = this.props;
 
 		return (
 			<div className="page__layout">
-				<Sidebar currentProjectId={currentProject ? currentProject._id : null} />
+				<Sidebar currentStockId={currentStock ? currentStock._id : null} />
 				{children}
 			</div>
 		);

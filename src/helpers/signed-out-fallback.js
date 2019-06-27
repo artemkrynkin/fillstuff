@@ -7,8 +7,10 @@ import { withCurrentUser } from 'src/components/withCurrentUser';
 const Switch = props => {
 	const { Component, FallbackComponent, ...rest } = props;
 
+	// console.log(rest);
+
 	return (
-		<AuthViewHandler user={props.currentUser} loading={props.isLoadingCurrentUser || props.isLoadingProjects}>
+		<AuthViewHandler user={props.currentUser} stocks={props.stocks} loading={props.isLoadingCurrentUser || props.isLoadingStocks}>
 			{authed => {
 				if (!authed) {
 					return <FallbackComponent {...rest} />;

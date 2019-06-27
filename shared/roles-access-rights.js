@@ -1,6 +1,6 @@
 /**
- * (project.control) (256) добавление и удаление аккаунтов соцсетей; приглашение участников в команду; изменение ролей и удаление участников команды
- * (project.full_control) (512) полный контроль доступа к проекту (имеет только создатель проекта)
+ * (stock.control) (256) добавление и удаление аккаунтов соцсетей; приглашение участников в команду; изменение ролей и удаление участников команды
+ * (stock.full_control) (512) полный контроль доступа к проекту (имеет только владелец)
  *
  * (publications.view) (4) просмотр публикаций
  * (publications.control) (128) создание, редактирование и удаление публикаций
@@ -19,29 +19,15 @@ export const accessRightInBitmask = accessRightList => {
 	return accessRightList
 		.map(accessRight => {
 			switch (accessRight) {
-				case 'project.control':
+				case 'stock.control':
 					return 256;
-				case 'project.full_control':
+				case 'stock.full_control':
 					return 512;
 
-				case 'publications.view':
+				case 'products.control':
 					return 4;
-				case 'publications.control':
-					return 128;
-
-				case 'events.view':
-					return 2;
-				case 'events.control':
-					return 64;
-
-				case 'drafts.view':
-					return 1;
-				case 'drafts.commenting':
+				case 'products.scanning':
 					return 8;
-				case 'drafts.own_control':
-					return 16;
-				case 'drafts.control':
-					return 32;
 
 				default:
 					return console.error(`Право доступа ${accessRight} указано с ошибкой или не существует`);
@@ -54,54 +40,12 @@ export const memberRoleTransform = (role, bitmask = false) => {
 	switch (role) {
 		case 'owner':
 			return !bitmask
-				? 'Создатель проекта'
-				: accessRightInBitmask([
-						'project.control',
-						'project.full_control',
-						'publications.view',
-						'publications.control',
-						'events.view',
-						'events.control',
-						'drafts.view',
-						'drafts.commenting',
-						'drafts.own_control',
-						'drafts.control',
-				  ]);
+				? 'Владелец'
+				: accessRightInBitmask(['stock.control', 'stock.full_control', 'products.control', 'products.scanning']);
 		case 'admin':
-			return !bitmask
-				? 'Администратор'
-				: accessRightInBitmask([
-						'project.control',
-						'publications.view',
-						'publications.control',
-						'events.view',
-						'events.control',
-						'drafts.view',
-						'drafts.commenting',
-						'drafts.own_control',
-						'drafts.control',
-				  ]);
-		case 'editor':
-			return !bitmask
-				? 'Редактор'
-				: accessRightInBitmask([
-						'publications.view',
-						'publications.control',
-						'events.view',
-						'events.control',
-						'drafts.view',
-						'drafts.commenting',
-						'drafts.own_control',
-						'drafts.control',
-				  ]);
-		case 'author':
-			return !bitmask
-				? 'Автор'
-				: accessRightInBitmask(['publications.view', 'events.view', 'drafts.view', 'drafts.commenting', 'drafts.own_control']);
-		case 'viewer':
-			return !bitmask
-				? 'Наблюдатель'
-				: accessRightInBitmask(['publications.view', 'events.view', 'drafts.view', 'drafts.commenting']);
+			return !bitmask ? 'Администратор' : accessRightInBitmask(['stock.control', 'products.control', 'products.scanning']);
+		case 'user':
+			return !bitmask ? 'Сотрудник' : accessRightInBitmask(['products.scanning']);
 		default:
 			return console.error(`Роль ${role} указана с ошибкой или не существует`);
 	}
@@ -110,8 +54,8 @@ export const memberRoleTransform = (role, bitmask = false) => {
 export const checkPermissions = (role, accessRightList) =>
 	memberRoleTransform(role, true) & accessRightInBitmask(accessRightList);
 
-export const findMemberInProject = (userId, project) => {
+export const findMemberInStock = (userId, stock) => {
 	userId = String(userId);
 
-	return project.members[project.members.findIndex(member => member.user && String(member.user._id) === userId)];
+	return stock.members[stock.members.findIndex(member => member.user && String(member.user._id) === userId)];
 };

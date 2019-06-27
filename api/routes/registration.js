@@ -1,14 +1,17 @@
 import express from 'express';
-import validator from 'validator';
 import i18n from 'i18n';
 
+// import customPassword from 'shared/passwordGenerate';
+
 import User from 'api/models/user';
-import Project from 'api/models/project';
+import Stock from 'api/models/stock';
 
 const router = express.Router();
 
 router.post('/registration', function(req, res, next) {
 	const { email, name, password } = req.body;
+
+	// customPassword()
 
 	User.findOne({ email })
 		.then(async existingUser => {
@@ -21,15 +24,6 @@ router.post('/registration', function(req, res, next) {
 				});
 			}
 
-			if (!validator.isLength(password.trim(), { min: 6 }) || !password) {
-				customErr.push({
-					field: 'password',
-					message: !validator.isLength(password.trim(), { min: 6 })
-						? i18n.__('Пароль не может быть короче 6 символов')
-						: i18n.__('Обязательное поле'),
-				});
-			}
-
 			if (customErr.length)
 				return next({
 					code: 5,
@@ -37,8 +31,8 @@ router.post('/registration', function(req, res, next) {
 				});
 
 			let user = new User({ name, email, password });
-			let project = new Project({
-				name: 'Проект #1',
+			let stock = new Stock({
+				name: 'Склад #1',
 				members: [
 					{
 						user: user._id,
@@ -47,7 +41,7 @@ router.post('/registration', function(req, res, next) {
 				],
 			});
 
-			user.activeProjectId = project;
+			user.activeStockId = stock;
 
 			await user.save().catch(err =>
 				next({
@@ -56,14 +50,18 @@ router.post('/registration', function(req, res, next) {
 				})
 			);
 
-			await project.save().catch(err =>
+			await stock.save().catch(err =>
 				next({
 					code: err.errors ? 5 : 2,
 					err,
 				})
 			);
 
-			res.json('success');
+			User.findOne({ _id: user._id }, { salt: false, hashedPassword: false })
+				.then(user => {
+					req.login(user, () => res.json('success'));
+				})
+				.catch(err => next(err));
 		})
 		.catch(err => next(err));
 });

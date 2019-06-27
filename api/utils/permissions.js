@@ -1,6 +1,6 @@
-import { checkPermissions, findMemberInProject } from 'shared/roles-access-rights';
+import { checkPermissions, findMemberInStock } from 'shared/roles-access-rights';
 
-import Project from 'api/models/project';
+import Stock from 'api/models/stock';
 
 export const isAuthedResolver = (req, res, next) => {
 	if (!req.user) {
@@ -10,11 +10,19 @@ export const isAuthedResolver = (req, res, next) => {
 	next();
 };
 
-export const hasPermissionsInProject = async (req, res, next, accessRightList, skipCheck) => {
+export const hasPermissionsInStock = async (req, res, next, accessRightList, skipCheck) => {
 	if (!skipCheck) {
-		await Project.findOne({ _id: req.params.projectId, 'members.user': req.user._id })
-			.then(project => {
-				const currentUserRole = findMemberInProject(req.user._id, project).role;
+		const stockId = req.query.stockId || req.params.stockId || req.body.stockId;
+
+		if (!stockId)
+			return next({
+				code: 6,
+				message: 'missing "stockId" parameter',
+			});
+
+		await Stock.findOne({ _id: stockId, 'members.user': req.user._id })
+			.then(stock => {
+				const currentUserRole = findMemberInStock(req.user._id, stock).role;
 
 				if (!checkPermissions(currentUserRole, accessRightList)) next({ code: 4 });
 			})

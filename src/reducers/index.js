@@ -1,12 +1,14 @@
 import { combineReducers } from 'redux';
 
 import user from './user';
-import projects from './projects';
+import stocks from './stocks';
+import products from './products';
 
 const getReducers = () => {
 	return combineReducers({
 		user,
-		projects,
+		stocks,
+		products,
 	});
 };
 

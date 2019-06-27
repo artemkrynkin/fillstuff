@@ -1,16 +1,16 @@
 const { truncate } = require('./truncate');
 const striptags = require('striptags');
-const draft = require('./draft-utils');
+// const draft = require('./draft-utils');
 
 const DEFAULT_META = {
 	title: 'PosterDate',
 	description: 'Автоматическая публикация в социальные сети',
 };
 
-const HIDE_FROM_CRAWLERS = '<meta name="robots" content="noindex, nofollow">';
+// const HIDE_FROM_CRAWLERS = '<meta name="robots" content="noindex, nofollow">';
 
 function setDefault(input) {
-	let title = input.title + ' | PosterDate' || DEFAULT_META.title;
+	let title = input.title || DEFAULT_META.title;
 	let description = input.description || DEFAULT_META.description;
 
 	if (input.title && !input.description) {
@@ -57,14 +57,12 @@ function generateMetaInfo(input) {
 		case 'login':
 		case 'registration':
 		case 'password-recovery':
-		case 'project-publications':
-		case 'project-content-plan':
-		case 'project-statistics':
-		case 'project-settings':
-		case 'project-social-pages':
-		case 'project-notfound':
+		case 'stock-dashboard':
+		case 'stock':
+		case 'stock-statistics':
+		case 'stock-settings':
+		case 'stock-notfound':
 		case 'user-settings':
-		case 'support':
 			return setDefault({
 				title: data && data.title,
 				description: data && data.description,

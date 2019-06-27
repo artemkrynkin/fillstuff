@@ -2,15 +2,13 @@ import axios from 'axios';
 
 import { CLIENT_URL } from 'src/api/constants';
 
-import { login } from './authentication';
-
 export const registration = (values, actions) => {
 	axios
 		.post('/api/registration', values)
-		.then(response => {
+		.then(() => {
 			if (actions) actions.setSubmitting(false);
 
-			login(values, null, `${CLIENT_URL}/projects`);
+			window.location.href = `${CLIENT_URL}/stocks`;
 		})
 		.catch(error => {
 			if (error.response && actions) {

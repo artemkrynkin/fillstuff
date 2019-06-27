@@ -6,17 +6,15 @@ import queryString from 'query-string';
 import { Formik, Form, Field } from 'formik';
 import { TextField } from 'formik-material-ui';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button/Button';
-import ButtonBase from '@material-ui/core/ButtonBase/ButtonBase';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Divider from '@material-ui/core/Divider';
+// import Divider from '@material-ui/core/Divider';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 
 import generateMetaInfo from 'shared/generate-meta-info';
 
-import { SERVER_URL, CLIENT_URL } from 'src/api/constants';
+import { CLIENT_URL } from 'src/api/constants';
 
 import Head from 'src/components/head';
 
@@ -37,28 +35,17 @@ const Login = props => {
 		r = searchObj.r;
 	}
 
-	const postAuthRedirectPath = redirectPath !== undefined || r !== undefined ? `${redirectPath || r}` : `${CLIENT_URL}/projects`;
+	const postAuthRedirectPath = redirectPath !== undefined || r !== undefined ? `${redirectPath || r}` : `${CLIENT_URL}/stocks`;
 
 	return (
 		<div className="page__inner-content">
 			<Head title={pageTitle} description={pageDescription} />
 			<div className="auth-layout__form">
 				<h2>Войдите, чтобы начать</h2>
-				<div className="auth-layout__social-network-login">
-					<div className="auth-layout__social-networks">
-						<ButtonBase
-							href={`${SERVER_URL}/auth/vk?r=${postAuthRedirectPath}`}
-							className="auth-layout__social-networks-item auth-layout__social-networks-item_vk"
-						>
-							<FontAwesomeIcon icon={['fab', 'vk']} />
-							Войти с помощью ВКонтакте
-						</ButtonBase>
-					</div>
-				</div>
-				<div className="auth-layout__or">
-					<Divider />
-					<div className="auth-layout__or-text">или</div>
-				</div>
+				{/*<div className="auth-layout__or">*/}
+				{/*	<Divider />*/}
+				{/*	<div className="auth-layout__or-text">или</div>*/}
+				{/*</div>*/}
 				<div className="auth-layout__form-fields">
 					<Formik
 						initialValues={{ email: '', password: '' }}

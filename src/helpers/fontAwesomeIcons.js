@@ -13,16 +13,20 @@ import {
 	faAngleDown as farAngleDown,
 	faTimes as farTimes,
 	faCalendar as farCalendar,
+	faTachometer as farTachometer,
+	faInventory as farInventory,
 	faClipboard as farClipboard,
 	faChartBar as farChartBar,
 	faTrashAlt as farTrashAlt,
 	faEye as farEye,
 	faClone as farClone,
 	faEllipsisH as farEllipsisH,
+	faEllipsisV as farEllipsisV,
 	faCheck as farCheck,
 	faCircle as farCircle,
 	faDotCircle as farDotCircle,
 	faSyncAlt as farSyncAlt,
+	faPlus as farPlus,
 } from '@fortawesome/pro-regular-svg-icons';
 
 import {
@@ -35,6 +39,7 @@ import {
 	faQuestionCircle as falQuestionCircle,
 	faVideo as falVideo,
 	faPlus as falPlus,
+	faQrcode as falQrcode,
 } from '@fortawesome/pro-light-svg-icons';
 
 library.add(
@@ -54,15 +59,19 @@ library.add(
 	farTimes,
 	farCalendar,
 	farClipboard,
+	farTachometer,
+	farInventory,
 	farChartBar,
 	farTrashAlt,
 	farEye,
 	farClone,
 	farEllipsisH,
+	farEllipsisV,
 	farCheck,
 	farCircle,
 	farDotCircle,
 	farSyncAlt,
+	farPlus,
 
 	// Light
 	falAngleLeft,
@@ -73,5 +82,6 @@ library.add(
 	falCog,
 	falQuestionCircle,
 	falVideo,
-	falPlus
+	falPlus,
+	falQrcode
 );

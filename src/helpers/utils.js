@@ -1,5 +1,3 @@
-import chroma from 'chroma-js';
-
 import colorPalette from 'shared/colorPalette';
 
 import { history } from './history';
@@ -49,9 +47,9 @@ export const declensionNumber = (number, titles) => {
 	return titles[number % 100 > 4 && number % 100 < 20 ? 2 : cases[number % 10 < 5 ? number % 10 : 5]];
 };
 
-export const isDark = color => {
-	return chroma(color).get('lab.l') < 75;
-};
+// export const isDark = color => {
+// 	return chroma(color).get('lab.l') < 75;
+// };
 
 export const hexToRgb = hex =>
 	hex
@@ -68,23 +66,21 @@ export const calculateColor = text => {
 	return colorPalette.calculateColors[sum % colorPalette.calculateColors.length];
 };
 
-export const changeProjectCurrentUrl = projectId => {
+export const changeStockCurrentUrl = stockId => {
 	let location = history.location,
 		pathnameArray = location.pathname.split('/');
 
-	if (pathnameArray[1] === 'projects') {
-		if (projectId) {
-			pathnameArray[2] = projectId;
+	if (pathnameArray[1] === 'stocks') {
+		if (stockId) {
+			pathnameArray[2] = stockId;
 
 			switch (pathnameArray[3]) {
-				case 'feed':
-				case 'content-plan':
+				case 'dashboard':
 				case 'statistics':
 				case 'settings':
-				case 'social-pages':
 					break;
 				default:
-					pathnameArray[3] = 'feed';
+					pathnameArray[3] = 'dashboard';
 					break;
 			}
 		} else pathnameArray = pathnameArray.splice(0, 2);

@@ -3,13 +3,14 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router';
 import { HelmetProvider } from 'react-helmet-async';
-import { create } from 'jss';
-import JssProvider from 'react-jss/lib/JssProvider';
+// import { create } from 'jss';
+// import JssProvider from 'react-jss/lib/JssProvider';
 import Loadable from 'react-loadable';
 import moment from 'moment';
 import 'moment/locale/ru';
 
-import { createGenerateClassName, jssPreset } from '@material-ui/core/styles';
+// import { createGenerateClassName, StylesProvider, jssPreset } from '@material-ui/styles';
+import { StylesProvider } from '@material-ui/styles';
 
 import { history } from 'src/helpers/history';
 import { initStore } from 'src/store';
@@ -31,16 +32,16 @@ if (process.env.NODE_ENV === 'development') {
 	axios.withCredentials = true;
 }
 
-const generateClassName = createGenerateClassName();
-const jss = create({
-	...jssPreset(),
-	// We define a custom insertion point that JSS will look for injecting the styles in the DOM.
-	insertionPoint: document.getElementById('jss-insertion-point'),
-});
+// const generateClassName = createGenerateClassName();
+// const jss = create({
+// 	...jssPreset(),
+// 	// We define a custom insertion point that JSS will look for injecting the styles in the DOM.
+// 	insertionPoint: document.getElementById('jss-insertion-point'),
+// });
 
 const App = () => {
 	return (
-		<JssProvider jss={jss} generateClassName={generateClassName}>
+		<StylesProvider injectFirst>
 			<Provider store={store}>
 				<HelmetProvider>
 					<Router history={history}>
@@ -48,7 +49,7 @@ const App = () => {
 					</Router>
 				</HelmetProvider>
 			</Provider>
-		</JssProvider>
+		</StylesProvider>
 	);
 };
 

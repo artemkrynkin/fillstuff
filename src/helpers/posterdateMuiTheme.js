@@ -134,6 +134,7 @@ export const PosterDateTheme = createMuiTheme({
 			root: {
 				color: colorPalette.blueGrey.cBg700,
 				fontSize: 14,
+				minHeight: 40,
 				lineHeight: 1.2,
 				padding: '6px 16px',
 			},
@@ -156,6 +157,7 @@ export const PosterDateTheme = createMuiTheme({
 		},
 		MuiFormHelperText: {
 			root: {
+				fontSize: 13,
 				lineHeight: 1.2,
 				marginLeft: 2,
 			},

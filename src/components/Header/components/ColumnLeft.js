@@ -1,21 +1,18 @@
 import React from 'react';
 
-import CLProjectPublications from './CLProjectPublications';
-import CLProjectContentPlan from './CLProjectContentPlan';
+import CLStockProducts from './CLStockProducts';
 import TitlePageOrLogo from './TitlePageOrLogo';
 
 const ColumnLeft = props => {
-	const { pageName, pageTitle, theme, calendar } = props;
+	const { pageName } = props;
 
 	switch (pageName) {
-		case 'project-publications':
-			return <CLProjectPublications pageTitle={pageTitle} theme={theme} />;
-		case 'project-content-plan':
-			return <CLProjectContentPlan calendar={calendar} theme={theme} />;
+		case 'stock':
+			return <CLStockProducts {...props} />;
 		default:
 			return (
 				<div className="header__column_left">
-					<TitlePageOrLogo pageTitle={pageTitle} theme={theme} />
+					<TitlePageOrLogo {...props} />
 				</div>
 			);
 	}

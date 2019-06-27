@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ClassNames from 'classnames';
 import moment from 'moment';
-import momentTz from 'moment-timezone';
 
 import { Formik, Form, Field } from 'formik';
-import { TextField, Select } from 'formik-material-ui';
+import { TextField } from 'formik-material-ui';
 import * as Yup from 'yup';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,9 +16,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormLabel from '@material-ui/core/FormLabel';
 import Grid from '@material-ui/core/Grid';
-import MenuItem from '@material-ui/core/MenuItem';
 import TextFieldMui from '@material-ui/core/TextField';
-import Fade from '@material-ui/core/Fade';
 
 import CardPaper from 'src/components/CardPaper';
 
@@ -27,24 +24,11 @@ import { editUser } from 'src/actions/user';
 
 import './ProfileSettings.styl';
 
-const timezones = require('shared/timezones')
-	.map(timezone => {
-		return {
-			name: timezone,
-			offset: `GTM${momentTz.tz(timezone).format('Z')}`,
-			offsetNumber: momentTz.tz.zone(timezone).parse(),
-		};
-	})
-	.sort((timezoneA, timezoneB) => {
-		return timezoneA.offsetNumber - timezoneB.offsetNumber;
-	});
-
 const PersonalDataSchema = Yup.object().shape({
 	name: Yup.string()
 		// eslint-disable-next-line
 		.min(2, 'Имя не может быть короче ${min} символов')
 		.required('Обязательное поле'),
-	timezone: Yup.string().required('Обязательное поле'),
 });
 
 const EmailSchema = Yup.object().shape({
@@ -124,7 +108,7 @@ class ProfileSettings extends Component {
 
 	render() {
 		const { user } = this.props;
-		const { newProfilePhoto } = this.state;
+		const { visibleEmailFields, visiblePasswordFields, newProfilePhoto } = this.state;
 
 		let photoImgClasses = ClassNames({
 			'us-profile-settings__photo-img': true,
@@ -135,7 +119,7 @@ class ProfileSettings extends Component {
 
 		return (
 			<CardPaper elevation={1} leftContent="Профиль" title style={{ marginBottom: 16 }}>
-				<Grid direction="row" alignItems="flex-start" spacing={24} container>
+				<Grid direction="row" alignItems="flex-start" spacing={3} container>
 					<Grid className="us-profile-settings__photo" item>
 						<div className={photoImgClasses}>
 							{newProfilePhoto.base64 || user.profilePhoto ? (
@@ -161,7 +145,6 @@ class ProfileSettings extends Component {
 						<Formik
 							initialValues={{
 								name: user.name,
-								timezone: user.timezone,
 							}}
 							validationSchema={PersonalDataSchema}
 							validateOnBlur={false}
@@ -199,33 +182,6 @@ class ProfileSettings extends Component {
 										<FormLabel style={labelStyles}>Имя:</FormLabel>
 										<Field name="name" component={TextField} />
 									</Grid>
-									<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" container>
-										<FormLabel style={labelStyles}>Часовой пояс:</FormLabel>
-										<FormControl fullWidth>
-											<Field
-												name="timezone"
-												component={Select}
-												IconComponent={() => <FontAwesomeIcon icon={['far', 'angle-down']} className="pd-selectIcon" />}
-												error={Boolean(errors.timezone)}
-												MenuProps={{
-													elevation: 2,
-													transitionDuration: 150,
-													TransitionComponent: Fade,
-												}}
-												displayEmpty
-											>
-												<MenuItem value="">Не выбран</MenuItem>
-												{timezones.map((timezone, index) => {
-													return (
-														<MenuItem key={index} value={timezone.name}>
-															({timezone.offset}) {timezone.name}
-														</MenuItem>
-													);
-												})}
-											</Field>
-											{Boolean(errors.timezone) ? <FormHelperText error={true}>{errors.timezone}</FormHelperText> : null}
-										</FormControl>
-									</Grid>
 									<Grid justify="flex-end" container>
 										<Button type="submit" disabled={isSubmitting} variant="contained" color="primary">
 											{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
@@ -240,7 +196,7 @@ class ProfileSettings extends Component {
 						<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" alignItems="flex-start" container>
 							<FormLabel style={labelStyles}>Email:</FormLabel>
 							<Grid item>
-								{this.state.visibleEmailFields ? (
+								{visibleEmailFields ? (
 									<Formik
 										initialValues={{ newEmail: '' }}
 										validationSchema={EmailSchema}
@@ -301,7 +257,7 @@ class ProfileSettings extends Component {
 								onClick={this.onToggleEmailFields}
 								style={{ marginLeft: 10, marginTop: 10 }}
 							>
-								{!this.state.visibleEmailFields ? (user.email ? 'Изменить' : 'Установить') : 'Отмена'}
+								{!visibleEmailFields ? (user.email ? 'Изменить' : 'Установить') : 'Отмена'}
 							</ButtonBase>
 						</Grid>
 
@@ -310,7 +266,7 @@ class ProfileSettings extends Component {
 							<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" alignItems="flex-start" style={{ margin: 0 }} container>
 								<FormLabel style={labelStyles}>Пароль:</FormLabel>
 								<Grid item>
-									{this.state.visiblePasswordFields ? (
+									{visiblePasswordFields ? (
 										<Formik
 											initialValues={{
 												oldPassword: '',
@@ -401,7 +357,7 @@ class ProfileSettings extends Component {
 									onClick={this.onTogglePasswordFields}
 									style={{ marginLeft: 10, marginTop: 10 }}
 								>
-									{!this.state.visiblePasswordFields ? (user.hasPassword ? 'Изменить' : 'Установить') : 'Отмена'}
+									{!visiblePasswordFields ? (user.hasPassword ? 'Изменить' : 'Установить') : 'Отмена'}
 								</ButtonBase>
 							</Grid>
 						) : null}

@@ -3,15 +3,13 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 
-import { getProjects } from 'src/actions/projects';
+import { getStocks } from 'src/actions/stocks';
 import { getUser } from 'src/actions/user';
 
 const CurrentUserComponent = props => {
 	const {
 		user: { data: currentUser, isFetching: isLoadingCurrentUser, error: errorCurrentUser },
-		projects: { data: projects, isFetching: isLoadingProjects, error: errorProjects },
-		getUser,
-		getProjects,
+		stocks: { data: stocks, isFetching: isLoadingStocks, error: errorStocks },
 		children,
 		render,
 	} = props;
@@ -19,28 +17,28 @@ const CurrentUserComponent = props => {
 	if (!children && !render) return null;
 
 	if (!window.__DATA__) {
-		if (!currentUser && !projects && !isLoadingCurrentUser && !isLoadingProjects && !errorCurrentUser && !errorProjects) {
-			getUser();
-			getProjects();
+		if (!currentUser && !stocks && !isLoadingCurrentUser && !isLoadingStocks && !errorCurrentUser && !errorStocks) {
+			props.getUser();
+			props.getStocks();
 		}
 	}
 
 	return children
-		? children({ currentUser, isLoadingCurrentUser, projects, isLoadingProjects })
-		: render({ currentUser, isLoadingCurrentUser, projects, isLoadingProjects });
+		? children({ currentUser, isLoadingCurrentUser, stocks, isLoadingStocks })
+		: render({ currentUser, isLoadingCurrentUser, stocks, isLoadingStocks });
 };
 
 const mapStateToProps = state => {
 	return {
 		user: state.user,
-		projects: state.projects,
+		stocks: state.stocks,
 	};
 };
 
 const mapDispatchToProps = dispatch => {
 	return {
 		getUser: () => dispatch(getUser()),
-		getProjects: () => dispatch(getProjects()),
+		getStocks: () => dispatch(getStocks()),
 	};
 };
 
@@ -56,15 +54,15 @@ export const withCurrentUser = Component => {
 		const { wrappedComponentRef, ...remainingProps } = props;
 		return (
 			<CurrentUser>
-				{({ currentUser, isLoadingCurrentUser, projects, isLoadingProjects }) => {
-					if (!currentUser || !projects) {
+				{({ currentUser, isLoadingCurrentUser, stocks, isLoadingStocks }) => {
+					if (!currentUser || !stocks) {
 						return (
 							<Component
 								{...remainingProps}
 								currentUser={null}
 								isLoadingCurrentUser={isLoadingCurrentUser}
-								projects={null}
-								isLoadingProjects={isLoadingProjects}
+								stocks={null}
+								isLoadingStocks={isLoadingStocks}
 								ref={wrappedComponentRef}
 							/>
 						);
@@ -75,8 +73,8 @@ export const withCurrentUser = Component => {
 							{...remainingProps}
 							currentUser={currentUser}
 							isLoadingCurrentUser={isLoadingCurrentUser}
-							projects={projects}
-							isLoadingProjects={isLoadingProjects}
+							stocks={stocks}
+							isLoadingStocks={isLoadingStocks}
 							ref={wrappedComponentRef}
 						/>
 					);

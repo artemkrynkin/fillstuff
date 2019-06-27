@@ -53,37 +53,19 @@ export const editUser = values => {
 	};
 };
 
-export const changeChannelOption = values => {
-	return dispatch => {
-		dispatch({ type: 'REQUEST_USER_NOTIFICATIONS' });
-
-		return axios
-			.post('/api/users/me/notifications', values)
-			.then(response => {
-				dispatch({
-					type: 'RECEIVE_USER_NOTIFICATIONS',
-					payload: response.data,
-				});
-			})
-			.catch(error => {
-				console.error(error);
-			});
-	};
-};
-
-export const changeActiveProject = projectId => {
+export const changeActiveStock = stockId => {
 	return async dispatch => {
-		dispatch({ type: 'REQUEST_USER_ACTIVE_PROJECT' });
+		dispatch({ type: 'REQUEST_USER_ACTIVE_STOCK' });
 
 		return await axios
-			.put('/api/users/me/active-project', {
-				activeProjectId: projectId,
+			.put('/api/users/me/active-stock', {
+				activeStockId: stockId,
 			})
 			.then(() => {
 				dispatch({
-					type: 'RECEIVE_USER_ACTIVE_PROJECT',
+					type: 'RECEIVE_USER_ACTIVE_STOCK',
 					payload: {
-						projectId,
+						stockId,
 					},
 				});
 

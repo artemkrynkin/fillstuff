@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { compose } from 'redux';
 import { Route, Switch, Redirect } from 'react-router';
 
-import { MuiThemeProvider } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
 
 import generateMetaInfo from 'shared/generate-meta-info';
 
@@ -14,79 +14,73 @@ import signedOutFallback from 'src/helpers/signed-out-fallback';
 import AuthLayout from 'src/components/AuthLayout';
 import AuthViewHandler from 'src/components/authViewHandler';
 import Head from 'src/components/head';
-import { LoadingPage } from 'src/components/Loading';
 import PrivateLayout from 'src/components/PrivateLayout';
-import PrivateLayoutBG from 'src/components/PrivateLayoutBG';
+// import PrivateLayoutBG from 'src/components/PrivateLayoutBG';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 
 import Login from 'src/containers/Login';
 import PageNotFound from 'src/containers/PageNotFound';
 import PasswordRecovery from 'src/containers/PasswordRecovery';
-import ProjectContentPlan from 'src/containers/ProjectContentPlan';
-import ProjectNotFound from 'src/containers/ProjectNotFound';
-import ProjectPublications from 'src/containers/ProjectPublications';
-import ProjectSettings from 'src/containers/ProjectSettings';
-import ProjectSocialPages from 'src/containers/ProjectSocialPages';
-import ProjectStatistics from 'src/containers/ProjectStatistics';
+import StockNotFound from 'src/containers/StockNotFound';
+import StockDashboard from 'src/containers/StockDashboard';
+import Stock from 'src/containers/Stock';
+import StockStatistics from 'src/containers/StockStatistics';
+import StockSettings from 'src/containers/StockSettings';
 import Registration from 'src/containers/Registration';
-import Support from 'src/containers/Support';
 import UserSettings from 'src/containers/UserSettings';
 
-const LoginFallback = signedOutFallback(() => <Redirect to="/projects" />, () => <AuthLayout children={<Login />} />);
+const LoginFallback = signedOutFallback(() => <Redirect to="/stocks" />, () => <AuthLayout children={<Login />} />);
 
-const RegistrationFallback = signedOutFallback(
-	() => <Redirect to="/projects" />,
-	() => <AuthLayout children={<Registration />} />
-);
+const RegistrationFallback = signedOutFallback(() => <Redirect to="/stocks" />, () => <AuthLayout children={<Registration />} />);
 
 const PasswordRecoveryFallback = signedOutFallback(
-	() => <Redirect to="/projects" />,
+	() => <Redirect to="/stocks" />,
 	() => <AuthLayout children={<PasswordRecovery />} />
 );
 
-const ProjectPublicationsFallback = signedOutFallback(
-	({ currentProject }) => (
-		<PrivateLayout children={<ProjectPublications currentProject={currentProject} />} currentProject={currentProject} />
+const StockNotFoundFallback = signedOutFallback(
+	props => (
+		<StockPageFallback {...props}>
+			<StockNotFound stocks={props.stocks} currentStock={props.currentStock} />
+		</StockPageFallback>
 	),
-	({ match }) => <AuthLayout children={<Login redirectPath={`${CLIENT_URL}/projects/${match.params.projectId}/feed`} />} />
+	() => <AuthLayout children={<Login redirectPath={`${CLIENT_URL}/stocks`} />} />
 );
 
-const ProjectContentPlanFallback = signedOutFallback(
-	({ currentProject }) => (
-		<PrivateLayout children={<ProjectContentPlan currentProject={currentProject} />} currentProject={currentProject} />
+const StockDashboardFallback = signedOutFallback(
+	props => (
+		<StockPageFallback {...props}>
+			<StockDashboard currentStock={props.currentStock} />
+		</StockPageFallback>
 	),
-	({ match }) => (
-		<AuthLayout children={<Login redirectPath={`${CLIENT_URL}/projects/${match.params.projectId}/content-plan`} />} />
-	)
+	({ match }) => <AuthLayout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/dashboard`} />} />
 );
 
-const ProjectStatisticsFallback = signedOutFallback(
-	({ currentProject }) => (
-		<PrivateLayout children={<ProjectStatistics currentProject={currentProject} />} currentProject={currentProject} />
+const StockFallback = signedOutFallback(
+	props => (
+		<StockPageFallback {...props}>
+			<Stock currentStock={props.currentStock} currentCategory={props.match.params.categoryId} />
+		</StockPageFallback>
 	),
-	({ match }) => <AuthLayout children={<Login redirectPath={`${CLIENT_URL}/projects/${match.params.projectId}/statistics`} />} />
+	({ match }) => <AuthLayout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/categories`} />} />
 );
 
-const ProjectSettingsFallback = signedOutFallback(
-	({ currentProject }) => (
-		<PrivateLayout children={<ProjectSettings currentProject={currentProject} />} currentProject={currentProject} />
+const StockStatisticsFallback = signedOutFallback(
+	props => (
+		<StockPageFallback {...props}>
+			<StockStatistics currentStock={props.currentStock} />
+		</StockPageFallback>
 	),
-	({ match }) => <AuthLayout children={<Login redirectPath={`${CLIENT_URL}/projects/${match.params.projectId}/settings`} />} />
+	({ match }) => <AuthLayout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/statistics`} />} />
 );
 
-const ProjectSocialPagesFallback = signedOutFallback(
-	({ currentProject }) => <PrivateLayoutBG children={<ProjectSocialPages currentProject={currentProject} />} />,
-	({ match }) => <AuthLayout children={<Login redirectPath={`${CLIENT_URL}/projects/${match.params.projectId}/settings`} />} />
-);
-
-const ProjectNotFoundFallback = signedOutFallback(
-	({ projects, currentProject }) => (
-		<PrivateLayout
-			children={<ProjectNotFound projects={projects} currentProject={currentProject} />}
-			currentProject={currentProject}
-		/>
+const StockSettingsFallback = signedOutFallback(
+	props => (
+		<StockPageFallback {...props}>
+			<StockSettings currentStock={props.currentStock} />
+		</StockPageFallback>
 	),
-	() => <AuthLayout children={<Login redirectPath={`${CLIENT_URL}/projects`} />} />
+	({ match }) => <AuthLayout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/settings`} />} />
 );
 
 const UserSettingsFallback = signedOutFallback(
@@ -94,18 +88,43 @@ const UserSettingsFallback = signedOutFallback(
 	() => <AuthLayout children={<Login redirectPath={`${CLIENT_URL}/settings`} />} />
 );
 
-const SupportFallback = signedOutFallback(
-	() => <PrivateLayout children={<Support />} />,
-	() => <AuthLayout children={<Login redirectPath={`${CLIENT_URL}/support`} />} />
-);
+const StockPageFallback = props => {
+	const { match, currentUser, stocks, currentStock } = props;
+
+	if (Array.isArray(stocks) && !stocks.some(stock => stock._id === match.params.stockId)) {
+		if (!match.params.stockId && currentUser.activeStockId)
+			return <Redirect to={`/stocks/${match.params.stockId || currentUser.activeStockId}/dashboard`} />;
+
+		if (!currentStock && match.params.stockId) return <Redirect to="/stocks" />;
+
+		if (match.params.stockId || currentUser.activeStockId)
+			return <PrivateLayout children={<StockNotFound currentStock={null} />} currentStock={null} />;
+	}
+
+	return <PrivateLayout children={props.children} currentStock={currentStock} />;
+};
 
 class Routes extends Component {
 	render() {
-		const { currentUser, projects, isLoadingCurrentUser, isLoadingProjects } = this.props;
+		const { currentUser, stocks } = this.props;
 		const { title, description } = generateMetaInfo();
 
+		const findCurrentStock = match => {
+			let currentStock = null;
+
+			if (Array.isArray(stocks) && stocks.length) {
+				currentStock = stocks[stocks.findIndex(stock => match.params.stockId === stock._id)];
+
+				currentStock = currentStock //!~stocks.findIndex(stock => match.params.stockId === stock._id)
+					? stocks[stocks.findIndex(stock => match.params.stockId === stock._id)]
+					: stocks[stocks.findIndex(stock => currentUser.activeStockId === stock._id)];
+			}
+
+			return currentStock;
+		};
+
 		return (
-			<MuiThemeProvider theme={PosterDateTheme}>
+			<ThemeProvider theme={PosterDateTheme}>
 				{/* Метатеги по умолчанию, переопределяемые чем-нибудь вниз по дереву */}
 				<Head title={title} description={description} />
 
@@ -128,58 +147,46 @@ class Routes extends Component {
 					<Route path="/password-recovery" component={PasswordRecoveryFallback} exact strict sensitive />
 
 					<Route
-						path={['/projects', '/projects/:projectId', '/projects/:projectId/:projectPage']}
+						path={['/stocks', '/stocks/:stockId']}
 						render={props => {
 							const { match } = props;
 
-							const ProjectPageFallback = ProjectPageFallback => {
-								if (Array.isArray(projects) && !projects.some(project => project._id === match.params.projectId)) {
-									if (!currentProject && (match.params.projectId || match.params.projectPage)) return <Redirect to="/projects" />;
-
-									return <ProjectNotFoundFallback projects={projects} currentProject={currentProject} {...props} />;
-								}
-
-								return <ProjectPageFallback currentProject={currentProject} {...props} />;
-							};
-
-							let currentProject = null;
-
-							if (!currentUser || !projects) {
-								if (isLoadingCurrentUser || isLoadingProjects) return <LoadingPage />;
-
-								return <LoadingPage />;
-							}
-
-							if (Array.isArray(projects) && projects.length) {
-								currentProject = projects[projects.findIndex(project => match.params.projectId === project._id)];
-
-								currentProject = currentProject
-									? currentProject
-									: projects[projects.findIndex(project => currentUser.activeProjectId === project._id)];
-							}
-
-							switch (match.params.projectPage) {
-								case 'feed':
-									return ProjectPageFallback(ProjectPublicationsFallback);
-								case 'content-plan':
-									return ProjectPageFallback(ProjectContentPlanFallback);
-								case 'statistics':
-									return ProjectPageFallback(ProjectStatisticsFallback);
-								case 'settings':
-									return ProjectPageFallback(ProjectSettingsFallback);
-								case 'social-pages':
-									return ProjectPageFallback(ProjectSocialPagesFallback);
-								default: {
-									if (match.params.projectPage) {
-										return <PageNotFound />;
-									} else if (match.params.projectId || currentUser.activeProjectId) {
-										return <Redirect to={`/projects/${match.params.projectId || currentUser.activeProjectId}/feed`} />;
-									} else {
-										return ProjectPageFallback(ProjectNotFoundFallback);
-									}
+							if (Array.isArray(stocks) && stocks.some(stock => stock._id === match.params.stockId)) {
+								if (match.params.stockId || currentUser.activeStockId) {
+									return <Redirect to={`/stocks/${match.params.stockId || currentUser.activeStockId}/dashboard`} />;
 								}
 							}
+
+							return <StockNotFoundFallback {...props} currentStock={findCurrentStock(props.match)} />;
 						}}
+						exact
+						strict
+						sensitive
+					/>
+					<Route
+						path="/stocks/:stockId/dashboard"
+						render={props => <StockDashboardFallback {...props} currentStock={findCurrentStock(props.match)} />}
+						exact
+						strict
+						sensitive
+					/>
+					<Route
+						path={['/stocks/:stockId/categories', '/stocks/:stockId/categories/:categoryId']}
+						render={props => <StockFallback {...props} currentStock={findCurrentStock(props.match)} />}
+						exact
+						strict
+						sensitive
+					/>
+					<Route
+						path="/stocks/:stockId/statistics"
+						render={props => <StockStatisticsFallback {...props} currentStock={findCurrentStock(props.match)} />}
+						exact
+						strict
+						sensitive
+					/>
+					<Route
+						path="/stocks/:stockId/settings"
+						render={props => <StockSettingsFallback {...props} currentStock={findCurrentStock(props.match)} />}
 						exact
 						strict
 						sensitive
@@ -187,10 +194,9 @@ class Routes extends Component {
 
 					<Route path="/settings" component={UserSettingsFallback} exact strict sensitive />
 
-					<Route path="/support" component={SupportFallback} exact strict sensitive />
 					<Route path="*" component={PageNotFound} />
 				</Switch>
-			</MuiThemeProvider>
+			</ThemeProvider>
 		);
 	}
 }

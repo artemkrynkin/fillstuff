@@ -62,7 +62,7 @@ const colorPalette = {
 		'#9e9e9e',
 		'#607d8b',
 	],
-	topicColors: [
+	colorsCategories: [
 		'#f44336',
 		'#e91e63',
 		'#9c27b0',

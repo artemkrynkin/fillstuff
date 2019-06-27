@@ -113,14 +113,14 @@ export const PDDialogTitle = props => {
 };
 
 export const PDDialogActions = props => {
-	const { disableActionSpacing = true, leftHandleProps, rightHandleProps } = props;
+	const { disableSpacing = true, leftHandleProps, rightHandleProps } = props;
 
 	let dialogActionsClasses = ClassNames({
 		'pd-dialog__actions': true,
 	});
 
 	return (
-		<DialogActions className={dialogActionsClasses} disableActionSpacing={disableActionSpacing}>
+		<DialogActions className={dialogActionsClasses} disableSpacing={disableSpacing}>
 			<div className="pd-dialog__actions-wrap">
 				{leftHandleProps && leftHandleProps.handleProps && leftHandleProps.text ? (
 					<Button className="pd-dialog__actions-left-handle" {...leftHandleProps.handleProps}>

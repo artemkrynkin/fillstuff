@@ -15,7 +15,7 @@ const meRouter = Router();
 const upload = uploadProfilePhoto.single('profilePhoto');
 
 meRouter.get('/me', isAuthedResolver, (req, res) => {
-	res.json(req.user);
+	setTimeout(() => res.json(req.user), 500);
 });
 
 meRouter.put(
@@ -56,7 +56,7 @@ meRouter.put(
 					return User.findByIdAndUpdate(
 						req.user._id,
 						{ email: newEmail, modifiedAt: Date.now() },
-						{ new: true, runValidators: true, fields: { salt: false, hashedPassword: false, 'vkProvider.accessToken': false } }
+						{ new: true, runValidators: true, fields: { salt: false, hashedPassword: false } }
 					)
 						.then(async user => {
 							await updateCookieUserData(req, user);
@@ -174,7 +174,7 @@ meRouter.put(
 			return User.findByIdAndUpdate(req.user._id, updateData, {
 				new: true,
 				runValidators: true,
-				fields: { salt: false, hashedPassword: false, 'vkProvider.accessToken': false },
+				fields: { salt: false, hashedPassword: false },
 			})
 				.then(async user => {
 					await updateCookieUserData(req, user);
@@ -191,50 +191,25 @@ meRouter.put(
 	}
 );
 
-meRouter.post('/me/notifications', isAuthedResolver, (req, res, next) => {
-	const updateData = req.body;
-
-	return User.findByIdAndUpdate(
-		req.user._id,
-		{
-			modifiedAt: Date.now(),
-			['notifications.' +
-			(updateData.parameter ? updateData.parameter : updateData.channel + '.' + updateData.option)]: updateData.enabled,
-		},
-		{ new: true, fields: { salt: false, hashedPassword: false, 'vkProvider.accessToken': false } }
-	)
-		.then(async user => {
-			await updateCookieUserData(req, user);
-
-			return res.json(user.notifications);
-		})
-		.catch(err =>
-			next({
-				code: 2,
-				err,
-			})
-		);
-});
-
-meRouter.put('/me/active-project', isAuthedResolver, (req, res, next) => {
-	const { activeProjectId } = req.body;
-
-	return User.findByIdAndUpdate(
-		req.user._id,
-		{ activeProjectId: activeProjectId },
-		{ new: true, fields: { salt: false, hashedPassword: false, 'vkProvider.accessToken': false } }
-	)
-		.then(async user => {
-			await updateCookieUserData(req, user);
-
-			return res.json('success');
-		})
-		.catch(err =>
-			next({
-				code: 2,
-				err,
-			})
-		);
-});
+// meRouter.put('/me/active-stock', isAuthedResolver, (req, res, next) => {
+// 	const { activeStockId } = req.body;
+//
+// 	return User.findByIdAndUpdate(
+// 		req.user._id,
+// 		{ activeStockId: activeStockId },
+// 		{ new: true, fields: { salt: false, hashedPassword: false } }
+// 	)
+// 		.then(async user => {
+// 			await updateCookieUserData(req, user);
+//
+// 			return res.json('success');
+// 		})
+// 		.catch(err =>
+// 			next({
+// 				code: 2,
+// 				err,
+// 			})
+// 		);
+// });
 
 export default meRouter;

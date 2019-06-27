@@ -8,42 +8,21 @@
 import passport from 'passport';
 
 import { URL } from 'url';
-import isPosterdateUrl from '../../utils/is-posterdate-url';
+import isPosterdateUrl from 'api/utils/is-posterdate-url';
+import { timeout } from 'shared/utils';
 
 const debug = require('debug')('shared:middlewares:logging');
 
 const IS_PROD = process.env.NODE_ENV === 'production';
-const FALLBACK_URL = IS_PROD ? 'https://dev.posterdate.com/projects' : 'http://localhost:3000/projects';
+const FALLBACK_URL = IS_PROD ? 'https://dev.posterdate.com/stocks' : 'http://localhost:3000/stocks';
 
 // Strategy: 'local' | 'vk'
 export const createSigninRoutes = (strategy, strategyOptions) => {
-	function response(err, req, res) {
+	async function response(err, req, res, next) {
 		let redirectUrl = req.session.redirectUrl ? new URL(req.session.redirectUrl) : new URL(FALLBACK_URL);
 
-		if (req.session.connectSocialPages) {
-			if (!err) {
-				redirectUrl = new URL(`${FALLBACK_URL}/${req.session.connectSocialPages.projectId}/social-pages`);
-
-				redirectUrl.searchParams.append('from', req.session.connectSocialPages.provider);
-			} else {
-				redirectUrl = new URL(`${FALLBACK_URL}/${req.session.connectSocialPages.projectId}/settings`);
-			}
-
-			req.session.connectSocialPages = undefined;
-		}
-
-		/**
-		 * display - toast | popup | page
-		 * type - success | error
-		 */
-		if (err || (req.authInfo && req.authInfo.msgDisplay && req.authInfo.msgText)) {
-			let display = req.authInfo && req.authInfo.msgDisplay ? req.authInfo.msgDisplay : 'toast';
-			let message = req.authInfo && req.authInfo.msgText ? req.authInfo.msgText : err.message;
-
-			redirectUrl.searchParams.append('msgType', 'error');
-			redirectUrl.searchParams.append('msgDisplay', display);
-			redirectUrl.searchParams.append('msgText', message);
-		}
+		if (err) return next(err);
+		if (err) await timeout(300);
 		// redirectUrl.searchParams.append('authed', 'true');
 
 		// Delete the redirectURL from the session again so we don't redirect
@@ -83,8 +62,8 @@ export const createSigninRoutes = (strategy, strategyOptions) => {
 			passport.authenticate(strategy, {
 				failureRedirect: IS_PROD ? '/' : 'http://localhost:3000/',
 			}),
-			(req, res) => response(null, req, res),
-			(err, req, res, next) => response(err, req, res),
+			(req, res, next) => response(null, req, res, next),
+			(err, req, res, next) => response(err, req, res, next),
 		],
 	};
 };

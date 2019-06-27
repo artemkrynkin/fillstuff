@@ -8,56 +8,56 @@ import './index.styl';
 
 class Sidebar extends Component {
 	render() {
-		const { currentUser, currentProjectId, activeProjectId = currentProjectId || currentUser.activeProjectId } = this.props;
+		const { currentUser, currentStockId, activeStockId = currentStockId || currentUser.activeStockId } = this.props;
 
 		return (
 			<aside className="sidebar">
 				<div className="sidebar__wrap">
-					<Link className="sidebar__logo" to={`/projects/${activeProjectId}/feed`} />
+					<Link className="sidebar__logo" to={`/stocks/${activeStockId}/dashboard`} />
 					<div className="sidebar__menu">
-						{activeProjectId ? (
+						{activeStockId ? (
 							<div>
 								<div className="sidebar__menu-item">
 									<NavLink
 										className="sidebar__menu-link"
 										activeClassName="sidebar__menu-link_active"
-										to={`/projects/${activeProjectId}/feed`}
+										to={`/stocks/${activeStockId}/dashboard`}
 									>
 										<div className="sidebar__menu-icon">
-											<FontAwesomeIcon icon={['far', 'calendar']} />
+											<FontAwesomeIcon icon={['far', 'tachometer']} />
 										</div>
-										Публикации
+										Монитор
 									</NavLink>
 								</div>
 								<div className="sidebar__menu-item">
 									<NavLink
 										className="sidebar__menu-link"
 										activeClassName="sidebar__menu-link_active"
-										to={`/projects/${activeProjectId}/content-plan`}
+										to={`/stocks/${activeStockId}/categories`}
 									>
 										<div className="sidebar__menu-icon">
-											<FontAwesomeIcon icon={['far', 'clipboard']} />
+											<FontAwesomeIcon icon={['far', 'inventory']} />
 										</div>
-										Контент-план
+										Склад
 									</NavLink>
 								</div>
+								{/*<div className="sidebar__menu-item">*/}
+								{/*	<NavLink*/}
+								{/*		className="sidebar__menu-link"*/}
+								{/*		activeClassName="sidebar__menu-link_active"*/}
+								{/*		to={`/stocks/${activeStockId}/statistics`}*/}
+								{/*	>*/}
+								{/*		<div className="sidebar__menu-icon">*/}
+								{/*			<FontAwesomeIcon icon={['far', 'chart-bar']} />*/}
+								{/*		</div>*/}
+								{/*		Статистика*/}
+								{/*	</NavLink>*/}
+								{/*</div>*/}
 								<div className="sidebar__menu-item">
 									<NavLink
 										className="sidebar__menu-link"
 										activeClassName="sidebar__menu-link_active"
-										to={`/projects/${activeProjectId}/statistics`}
-									>
-										<div className="sidebar__menu-icon">
-											<FontAwesomeIcon icon={['far', 'chart-bar']} />
-										</div>
-										Статистика
-									</NavLink>
-								</div>
-								<div className="sidebar__menu-item">
-									<NavLink
-										className="sidebar__menu-link"
-										activeClassName="sidebar__menu-link_active"
-										to={`/projects/${activeProjectId}/settings`}
+										to={`/stocks/${activeStockId}/settings`}
 									>
 										<div className="sidebar__menu-icon">
 											<FontAwesomeIcon icon={['fal', 'cog']} />
@@ -67,14 +67,14 @@ class Sidebar extends Component {
 								</div>
 							</div>
 						) : null}
-						<div className="sidebar__menu-item sidebar__menu-item_down">
-							<NavLink className="sidebar__menu-link" activeClassName="sidebar__menu-link_active" to="/support">
-								<div className="sidebar__menu-icon">
-									<FontAwesomeIcon icon={['fal', 'question-circle']} />
-								</div>
-								Помощь
-							</NavLink>
-						</div>
+						{/*<div className="sidebar__menu-item sidebar__menu-item_down">*/}
+						{/*	<NavLink className="sidebar__menu-link" activeClassName="sidebar__menu-link_active" to="/support">*/}
+						{/*		<div className="sidebar__menu-icon">*/}
+						{/*			<FontAwesomeIcon icon={['fal', 'question-circle']} />*/}
+						{/*		</div>*/}
+						{/*		Помощь*/}
+						{/*	</NavLink>*/}
+						{/*</div>*/}
 					</div>
 				</div>
 			</aside>

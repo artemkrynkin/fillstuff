@@ -54,10 +54,18 @@ class Sidebar extends Component {
 		activePage: history.location.pathname.split('/')[3],
 	};
 
-	onChangeExpanded = (pageName, push) => (event, newExpanded) => {
-		if (push) history.push({ pathname: `/stocks/${this.props.currentUser.activeStockId}/${pageName}` });
+	onChangeUrl = pageName => (event, newExpanded) => {
+		history.push({
+			pathname: `/stocks/${this.props.currentUser.activeStockId}/${pageName}`,
+		});
+	};
 
-		this.setState({ activePage: pageName });
+	componentDidMount = () => {
+		history.listen((location, action) => {
+			const pathnameArray = location.pathname.split('/');
+
+			this.setState({ activePage: pathnameArray[3] });
+		});
 	};
 
 	render() {
@@ -76,7 +84,6 @@ class Sidebar extends Component {
 										className="sidebar__menu-link"
 										activeClassName="sidebar__menu-link_active"
 										to={`/stocks/${activeStockId}/dashboard`}
-										onClick={this.onChangeExpanded('dashboard', false)}
 									>
 										<div className="sidebar__menu-icon">
 											<FontAwesomeIcon icon={['far', 'tachometer']} />
@@ -88,7 +95,7 @@ class Sidebar extends Component {
 								<ExpansionPanel
 									className="sidebar__menu-expansion"
 									expanded={activePage === 'categories' || activePage === 'costs'}
-									onChange={this.onChangeExpanded('categories', true)}
+									onChange={this.onChangeUrl('categories')}
 								>
 									<ExpansionPanelSummary className="sidebar__menu-expansion-summary">
 										<div className="sidebar__menu-expansion-title">
@@ -132,7 +139,6 @@ class Sidebar extends Component {
 										className="sidebar__menu-link"
 										activeClassName="sidebar__menu-link_active"
 										to={`/stocks/${activeStockId}/statistics`}
-										onClick={this.onChangeExpanded('statistics', false)}
 									>
 										<div className="sidebar__menu-icon">
 											<FontAwesomeIcon icon={['far', 'chart-bar']} />
@@ -146,7 +152,6 @@ class Sidebar extends Component {
 										className="sidebar__menu-link"
 										activeClassName="sidebar__menu-link_active"
 										to={`/stocks/${activeStockId}/settings`}
-										onClick={this.onChangeExpanded('settings', false)}
 									>
 										<div className="sidebar__menu-icon">
 											<FontAwesomeIcon icon={['fal', 'cog']} />

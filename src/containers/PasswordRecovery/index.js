@@ -26,9 +26,9 @@ const PasswordRecovery = () => {
 		<div className="page__inner-content">
 			<Head title={pageTitle} description={pageDescription} />
 
-			<div className="auth-layout__form">
+			<div className="layout-auth__form">
 				<h2>Восстановление пароля</h2>
-				<div className="auth-layout__form-fields">
+				<div className="layout-auth__form-fields">
 					<Formik
 						initialValues={{ email: '', password: '' }}
 						validateOnBlur={false}
@@ -41,7 +41,7 @@ const PasswordRecovery = () => {
 								<Button
 									type="submit"
 									disabled={isSubmitting}
-									className="auth-layout__login-btn"
+									className="layout-auth__login-btn"
 									variant="contained"
 									color="primary"
 								>
@@ -52,7 +52,7 @@ const PasswordRecovery = () => {
 					/>
 				</div>
 			</div>
-			<div className="auth-layout__bottom-info">
+			<div className="layout-auth__bottom-info">
 				<Link to="/login">Я помню пароль!</Link>
 			</div>
 		</div>

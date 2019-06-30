@@ -7,7 +7,6 @@ import Grid from '@material-ui/core/Grid';
 
 import Head from 'src/components/head';
 import Header from 'src/components/Header';
-import HeaderAppBar from 'src/components/HeaderAppBar';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 
 import Products from './components/Products';
@@ -15,10 +14,10 @@ import Categories from './components/Categories';
 
 import './index.styl';
 
-class Stock extends Component {
+class StockAvailability extends Component {
 	render() {
 		const metaInfo = {
-			pageName: 'stock',
+			pageName: 'stock-availability',
 			pageTitle: 'Склад',
 		};
 		const { title, description } = generateMetaInfo({
@@ -28,37 +27,20 @@ class Stock extends Component {
 			},
 		});
 
-		const {
-			currentUser,
-			currentStock,
-			currentCategory,
-			headerAppBarTabs = [
-				{
-					value: 'categories',
-					label: 'Товары',
-				},
-				{
-					value: 'stock-losses',
-					label: 'Списания',
-				},
-			],
-		} = this.props;
-
-		console.log(this.props);
+		const { currentUser, currentStock, currentCategory } = this.props;
 
 		return (
 			<div className="page__wrap">
 				<Head title={title} description={description} />
 
 				<Header pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
-				<HeaderAppBar initialTab="categories" tabs={headerAppBarTabs} />
-				<div className="page__content stock">
+				<div className="page__content stock-availability">
 					<div className="page__inner-content">
 						<Grid container direction="row" justify="center" alignItems="flex-start" spacing={2}>
-							<Grid className="stock__container" item xs={12} lg={9}>
+							<Grid className="stock-availability__container" item xs={12} lg={9}>
 								<Products currentUser={currentUser} currentStock={currentStock} currentCategory={currentCategory} />
 							</Grid>
-							<Grid className="stock__container" item xs={12} lg={3}>
+							<Grid className="stock-availability__container" item xs={12} lg={3}>
 								<Categories currentUser={currentUser} currentStock={currentStock} />
 							</Grid>
 						</Grid>
@@ -69,4 +51,4 @@ class Stock extends Component {
 	}
 }
 
-export default compose(withCurrentUser)(Stock);
+export default compose(withCurrentUser)(StockAvailability);

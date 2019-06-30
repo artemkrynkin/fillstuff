@@ -7,8 +7,6 @@ import { withCurrentUser } from 'src/components/withCurrentUser';
 const Switch = props => {
 	const { Component, FallbackComponent, ...rest } = props;
 
-	// console.log(rest);
-
 	return (
 		<AuthViewHandler user={props.currentUser} stocks={props.stocks} loading={props.isLoadingCurrentUser || props.isLoadingStocks}>
 			{authed => {

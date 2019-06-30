@@ -330,7 +330,7 @@ class Categories extends Component {
 								onClick: () => {
 									this.props.deleteCategory(selectedCategory._id).then(() => {
 										this.onCloseDialogDeleteCategory();
-										history.push({ pathname: changeStockCurrentUrl(currentStock._id) });
+										// history.push({ pathname: changeStockCurrentUrl(currentStock._id) });
 									});
 								},
 							},

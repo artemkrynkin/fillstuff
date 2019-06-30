@@ -23,8 +23,6 @@ const StockNotFound = props => {
 		},
 	});
 
-	console.log(12312312321213, currentStock);
-
 	return (
 		<div className="page__wrap">
 			<Head title={title} description={description} />
@@ -43,7 +41,7 @@ const StockNotFound = props => {
 						</div>
 					) : (
 						<div className="stock-notfound__create-stock-or-select">
-							{stocks.length ? (
+							{stocks && stocks.length ? (
 								<Typography variant="h5" gutterBottom>
 									Создайте новый склад, чтобы начать или выберите из&nbsp;списка
 								</Typography>

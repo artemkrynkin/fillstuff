@@ -7,7 +7,7 @@ const ColumnLeft = props => {
 	const { pageName } = props;
 
 	switch (pageName) {
-		case 'stock':
+		case 'stock-availability':
 			return <CLStockProducts {...props} />;
 		default:
 			return (

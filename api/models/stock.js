@@ -52,17 +52,43 @@ let Stock = new mongoose.Schema({
 			color: {
 				type: String,
 				enum: colorPalette.colorsCategories,
-				required: true,
+				required: [true, i18n.__('Обязательное поле')],
 			},
 			name: {
 				type: String,
-				minlength: 1,
-				maxlength: 50,
-				required: true,
+				minlength: [1, i18n.__('Название категории не может быть короче 1 символа')],
+				maxlength: [50, i18n.__('Название категории не может превышать 50 символов')],
+				required: [true, i18n.__('Обязательное поле')],
 				trim: true,
 			},
 		},
 	],
+	productSpecifications: {
+		names: [
+			{
+				name: {
+					type: String,
+					required: [true, i18n.__('Обязательное поле')],
+				},
+				label: {
+					type: String,
+					required: [true, i18n.__('Обязательное поле')],
+				},
+			},
+		],
+		values: [
+			{
+				specificationName: {
+					type: String,
+					required: [true, i18n.__('Обязательное поле')],
+				},
+				value: {
+					type: String,
+					required: [true, i18n.__('Обязательное поле')],
+				},
+			},
+		],
+	},
 });
 
 export default mongoose.model('Stock', Stock);

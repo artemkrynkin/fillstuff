@@ -40,9 +40,9 @@ class Registration extends Component {
 			<div className="page__inner-content">
 				<Head title={pageTitle} description={pageDescription} />
 
-				<div className="auth-layout__form">
+				<div className="layout-auth__form">
 					<h2>Регистрация</h2>
-					<div className="auth-layout__form-fields">
+					<div className="layout-auth__form-fields">
 						<Formik
 							initialValues={{ email: '', password: '' }}
 							validationSchema={RegistrationSchema}
@@ -62,7 +62,7 @@ class Registration extends Component {
 									<Button
 										type="submit"
 										disabled={isSubmitting}
-										className="auth-layout__login-btn"
+										className="layout-auth__login-btn"
 										variant="contained"
 										color="primary"
 									>
@@ -73,7 +73,7 @@ class Registration extends Component {
 						/>
 					</div>
 				</div>
-				<div className="auth-layout__bottom-info">
+				<div className="layout-auth__bottom-info">
 					Уже есть аккаунт? <Link to="/login">Войти</Link>
 				</div>
 			</div>

@@ -27,6 +27,7 @@ import {
 	faDotCircle as farDotCircle,
 	faSyncAlt as farSyncAlt,
 	faPlus as farPlus,
+	faTruck as farTruck,
 } from '@fortawesome/pro-regular-svg-icons';
 
 import {
@@ -40,6 +41,9 @@ import {
 	faVideo as falVideo,
 	faPlus as falPlus,
 	faQrcode as falQrcode,
+	faClipboardCheck as falClipboardCheck,
+	faClipboardListCheck as falClipboardListCheck,
+	faWarehouse as falWarehouse,
 } from '@fortawesome/pro-light-svg-icons';
 
 library.add(
@@ -72,6 +76,7 @@ library.add(
 	farDotCircle,
 	farSyncAlt,
 	farPlus,
+	farTruck,
 
 	// Light
 	falAngleLeft,
@@ -83,5 +88,8 @@ library.add(
 	falQuestionCircle,
 	falVideo,
 	falPlus,
-	falQrcode
+	falQrcode,
+	falClipboardCheck,
+	falClipboardListCheck,
+	falWarehouse
 );

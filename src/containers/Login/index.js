@@ -40,13 +40,13 @@ const Login = props => {
 	return (
 		<div className="page__inner-content">
 			<Head title={pageTitle} description={pageDescription} />
-			<div className="auth-layout__form">
+			<div className="layout-auth__form">
 				<h2>Войдите, чтобы начать</h2>
-				{/*<div className="auth-layout__or">*/}
+				{/*<div className="layout-auth__or">*/}
 				{/*	<Divider />*/}
-				{/*	<div className="auth-layout__or-text">или</div>*/}
+				{/*	<div className="layout-auth__or-text">или</div>*/}
 				{/*</div>*/}
-				<div className="auth-layout__form-fields">
+				<div className="layout-auth__form-fields">
 					<Formik
 						initialValues={{ email: '', password: '' }}
 						validateOnBlur={false}
@@ -98,7 +98,7 @@ const Login = props => {
 								<Button
 									type="submit"
 									disabled={isSubmitting}
-									className="auth-layout__login-btn"
+									className="layout-auth__login-btn"
 									variant="contained"
 									color="primary"
 								>
@@ -107,12 +107,12 @@ const Login = props => {
 							</Form>
 						)}
 					/>
-					<div className="auth-layout__bottom-form-info">
+					<div className="layout-auth__bottom-form-info">
 						<Link to="/password-recovery">Забыли пароль?</Link>
 					</div>
 				</div>
 			</div>
-			<div className="auth-layout__bottom-info">
+			<div className="layout-auth__bottom-info">
 				Нет аккаунта? <Link to="/registration">Создайте его за пару секунд</Link>
 			</div>
 		</div>

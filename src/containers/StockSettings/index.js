@@ -32,7 +32,7 @@ const StockSettings = props => {
 	const { currentUser, currentStock } = props;
 
 	return (
-		<div className="page__wrap">
+		<div className="page__layout-inner">
 			<Head title={title} description={description} />
 
 			<Header pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />

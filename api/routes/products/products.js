@@ -20,7 +20,7 @@ productsRouter.get(
 		if (categoryId) conditions.categoryId = categoryId;
 
 		Product.find(conditions)
-			.then(products => res.json(products))
+			.then(products => setTimeout(() => res.json(products), 300))
 			.catch(err => next(err));
 	}
 );

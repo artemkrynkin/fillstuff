@@ -134,9 +134,13 @@ export const PosterDateTheme = createMuiTheme({
 			root: {
 				color: colorPalette.blueGrey.cBg700,
 				fontSize: 14,
-				minHeight: 40,
+				minHeight: 36,
 				lineHeight: 1.2,
-				padding: '6px 16px',
+				padding: '6px 10px',
+			},
+			gutters: {
+				paddingLeft: 10,
+				paddingRight: 10,
 			},
 		},
 		MuiFormControl: {
@@ -285,7 +289,7 @@ export const PosterDateTheme = createMuiTheme({
 			select: {
 				borderRadius: 5,
 				minHeight: 36,
-				padding: 10,
+				padding: '10px 25px 10px 10px',
 				'&:focus': {
 					background: colorPalette.brightness.cBr5,
 					borderRadius: null,

@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { Formik, Form, Field } from 'formik';
-import { Select, TextField } from 'formik-material-ui';
 import * as Yup from 'yup';
 import QRCode from 'qrcode.react';
 import ReactToPrint from 'react-to-print';
@@ -21,46 +19,18 @@ import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
 import Popover from '@material-ui/core/Popover';
 import DialogContent from '@material-ui/core/DialogContent';
-import Grid from '@material-ui/core/Grid';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Fade from '@material-ui/core/Fade';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContentText from '@material-ui/core/DialogContentText';
 
 import { PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
+import DialogEditProduct from 'src/containers/Dialogs/CreateEditProduct';
 
 // import { checkPermissions, findMemberInStock } from 'shared/roles-access-rights';
 
 import './Products.styl';
 
-import { getProducts, deleteProduct, editProduct } from 'src/actions/products';
+import { getProducts, deleteProduct } from 'src/actions/products';
 import Button from '@material-ui/core/Button';
-
-const editProductSchema = Yup.object().shape({
-	name: Yup.string()
-		// eslint-disable-next-line
-		.min(2, 'Наименование товара не может быть короче ${min} символов')
-		// eslint-disable-next-line
-		.max(100, 'Наименование товара не может превышать ${max} символов')
-		.required('Обязательное поле'),
-	amount: Yup.number()
-		// eslint-disable-next-line
-		.min(0, 'Количество не может быть меньше ${min}')
-		// eslint-disable-next-line
-		.required('Обязательное поле'),
-	purchasePrice: Yup.number()
-		// eslint-disable-next-line
-		.min(0, 'Цена закупки не может быть меньше ${min}')
-		// eslint-disable-next-line
-		.required('Обязательное поле'),
-	sellingPrice: Yup.number()
-		// eslint-disable-next-line
-		.min(0, 'Цена продажи не может быть меньше ${min}')
-		// eslint-disable-next-line
-		.required('Обязательное поле'),
-});
 
 class Products extends Component {
 	state = {
@@ -88,23 +58,20 @@ class Products extends Component {
 		}
 	};
 
-	onOpenDialogEditProduct = () => {
+	onOpenDialogEditProduct = () =>
 		this.setState({
 			dialogEditProduct: true,
 		});
-	};
 
-	onCloseDialogEditProduct = () => {
+	onCloseDialogEditProduct = () =>
 		this.setState({
 			dialogEditProduct: false,
 		});
-	};
 
-	onOpenDialogDeleteProduct = () => {
+	onOpenDialogDeleteProduct = () =>
 		this.setState({
 			dialogDeleteProduct: true,
 		});
-	};
 
 	onCloseDialogDeleteProduct = () =>
 		this.setState({
@@ -116,11 +83,10 @@ class Products extends Component {
 			selectedProduct: null,
 		});
 
-	onOpenDialogQRCodeProduct = () => {
+	onOpenDialogQRCodeProduct = () =>
 		this.setState({
 			dialogQRCodeProduct: true,
 		});
-	};
 
 	onCloseDialogQRCodeProduct = () =>
 		this.setState({
@@ -163,9 +129,15 @@ class Products extends Component {
 					<TableHead>
 						<TableRow>
 							<TableCell>Наименование</TableCell>
-							<TableCell align="right">Количество</TableCell>
-							<TableCell align="right">Цена закупки</TableCell>
-							<TableCell align="right">Цена продажи</TableCell>
+							<TableCell align="right" width="130px">
+								Количество
+							</TableCell>
+							<TableCell align="right" width="140px">
+								Цена закупки
+							</TableCell>
+							<TableCell align="right" width="145px">
+								Цена продажи
+							</TableCell>
 							<TableCell align="right" size="small" width="72px" />
 						</TableRow>
 					</TableHead>
@@ -251,126 +223,13 @@ class Products extends Component {
 					</MenuList>
 				</Popover>
 
-				<Dialog open={dialogEditProduct} onClose={this.onCloseDialogEditProduct} maxWidth="lg" fullWidth>
-					<PDDialogTitle theme="primary" onClose={this.onCloseDialogEditProduct}>
-						Редактирование товара
-					</PDDialogTitle>
-					<Formik
-						initialValues={selectedProduct}
-						validationSchema={editProductSchema}
-						validateOnBlur={false}
-						validateOnChange={false}
-						onSubmit={(values, actions) => {
-							this.props.editProduct(selectedProduct._id, values).then(response => {
-								if (response.status === 'success') this.onCloseDialogEditProduct();
-								else actions.setSubmitting(false);
-							});
-						}}
-						render={({ errors, touched, isSubmitting, values }) => (
-							<Form>
-								<DialogContent>
-									<Grid className="pd-rowGridFormLabelControl" container={false}>
-										<Field
-											name="name"
-											label="Наименование"
-											component={TextField}
-											InputLabelProps={{
-												shrink: true,
-											}}
-											autoComplete="off"
-											autoFocus
-											fullWidth
-										/>
-									</Grid>
-									<Grid className="pd-rowGridFormLabelControl" container spacing={2}>
-										<Grid xs={4} item>
-											<Field
-												name="amount"
-												type="number"
-												label="Количество"
-												component={TextField}
-												InputLabelProps={{
-													shrink: true,
-												}}
-												autoComplete="off"
-												fullWidth
-											/>
-										</Grid>
-										<Grid xs={4} item>
-											<Field
-												name="purchasePrice"
-												type="number"
-												label="Цена закупки"
-												component={TextField}
-												InputLabelProps={{
-													shrink: true,
-												}}
-												autoComplete="off"
-												fullWidth
-											/>
-										</Grid>
-										<Grid xs={4} item>
-											<Field
-												name="sellingPrice"
-												type="number"
-												label="Цена продажи"
-												component={TextField}
-												InputLabelProps={{
-													shrink: true,
-												}}
-												autoComplete="off"
-												fullWidth
-											/>
-										</Grid>
-									</Grid>
-									<Grid className="pd-rowGridFormLabelControl" style={{ marginBottom: 0 }} container>
-										<FormControl fullWidth>
-											<InputLabel shrink>Категория:</InputLabel>
-											<Field
-												name="categoryId"
-												component={Select}
-												IconComponent={() => <FontAwesomeIcon icon={['far', 'angle-down']} className="pd-selectIcon" />}
-												error={Boolean(errors.categoryId)}
-												MenuProps={{
-													elevation: 2,
-													transitionDuration: 150,
-													TransitionComponent: Fade,
-												}}
-												displayEmpty
-												disabled={!currentStock.categories.length}
-											>
-												<MenuItem value="">Без категории</MenuItem>
-												{currentStock.categories.map((category, index) => {
-													return (
-														<MenuItem key={category._id} value={category._id}>
-															{category.name}
-														</MenuItem>
-													);
-												})}
-											</Field>
-											{Boolean(errors.categoryId) ? <FormHelperText error={true}>{errors.categoryId}</FormHelperText> : null}
-										</FormControl>
-									</Grid>
-								</DialogContent>
-								<PDDialogActions
-									leftHandleProps={{
-										handleProps: {
-											onClick: this.onCloseDialogEditProduct,
-										},
-										text: 'Закрыть',
-									}}
-									rightHandleProps={{
-										handleProps: {
-											type: 'submit',
-											disabled: isSubmitting,
-										},
-										text: isSubmitting ? <CircularProgress size={20} /> : 'Сохранить',
-									}}
-								/>
-							</Form>
-						)}
-					/>
-				</Dialog>
+				<DialogEditProduct
+					actionType="edit"
+					dialogOpen={dialogEditProduct}
+					selectedProduct={selectedProduct}
+					onCloseDialog={this.onCloseDialogEditProduct}
+					currentStock={currentStock}
+				/>
 
 				<Dialog
 					open={dialogDeleteProduct}
@@ -451,7 +310,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 	return {
 		getProducts: currentCategory => dispatch(getProducts(currentStock._id, currentCategory)),
-		editProduct: (productId, newValues) => dispatch(editProduct(productId, newValues)),
 		deleteProduct: productId => dispatch(deleteProduct(currentStock._id, productId)),
 	};
 };

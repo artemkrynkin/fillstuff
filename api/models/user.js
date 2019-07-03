@@ -4,9 +4,11 @@ import validator from 'validator';
 import { pbkdf2Sync, randomBytes } from 'crypto';
 import i18n from 'i18n';
 
-let User = new mongoose.Schema({
+const Schema = mongoose.Schema;
+
+let User = new Schema({
 	activeStockId: {
-		type: mongoose.Schema.Types.ObjectId,
+		type: Schema.Types.ObjectId,
 		ref: 'Stock',
 	},
 	profilePhoto: {
@@ -35,7 +37,6 @@ let User = new mongoose.Schema({
 	},
 	hashedPassword: String,
 	salt: String,
-	invitationCode: String,
 	createdAt: {
 		type: Date,
 		default: Date.now,

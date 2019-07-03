@@ -30,6 +30,27 @@ export const getStocks = () => {
 	};
 };
 
+export const getStockStatus = stockId => {
+	return dispatch => {
+		dispatch({ type: 'REQUEST_STOCKS' });
+
+		axios
+			.get(`/api/stocks/${stockId}/status`)
+			.then(response => {
+				dispatch({
+					type: 'GET_STOCK_STATUS',
+					payload: {
+						stockId,
+						status: response.data,
+					},
+				});
+			})
+			.catch(error => {
+				console.error(error);
+			});
+	};
+};
+
 // export const createStock = values => {
 // 	return dispatch => {
 // 		dispatch({ type: 'REQUEST_STOCKS' });
@@ -115,29 +136,17 @@ export const editStock = (stockId, newValues) => {
 // 	};
 // };
 
-export const memberInvitation = (stockId, values) => {
+export const memberInvitation = stockId => {
 	return dispatch => {
 		dispatch({ type: 'REQUEST_MEMBERS' });
 
 		return axios
-			.post(`/api/stocks/${stockId}/members`, values)
+			.get(`/api/stocks/${stockId}/member-invitation`)
 			.then(response => {
-				dispatch({
-					type: 'MEMBER_INVITATION',
-					payload: {
-						stockId,
-						members: response.data,
-					},
-				});
-
-				return Promise.resolve({ status: 'success' });
+				return Promise.resolve({ status: 'success', data: response.data });
 			})
 			.catch(error => {
-				if (error.response) {
-					return Promise.resolve({ status: 'error' });
-				} else {
-					console.error(error);
-				}
+				console.error(error);
 			});
 	};
 };
@@ -290,6 +299,34 @@ export const deleteCategory = (stockId, categoryId) => {
 			})
 			.catch(error => {
 				console.error(error);
+			});
+	};
+};
+
+export const createProductSpecification = (stockId, schemaName, values) => {
+	return dispatch => {
+		dispatch({ type: 'REQUEST_PRODUCT_SPECIFICATION' });
+
+		return axios
+			.post(`/api/stocks/${stockId}/product-specifications/${schemaName}`, values)
+			.then(response => {
+				dispatch({
+					type: 'CREATE_PRODUCT_SPECIFICATION',
+					payload: {
+						stockId,
+						schemaName,
+						specification: response.data,
+					},
+				});
+
+				return Promise.resolve({ status: 'success' });
+			})
+			.catch(error => {
+				if (error.response) {
+					return Promise.resolve({ status: 'error' });
+				} else {
+					console.error(error);
+				}
 			});
 	};
 };

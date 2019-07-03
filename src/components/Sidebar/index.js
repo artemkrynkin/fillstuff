@@ -94,7 +94,7 @@ class Sidebar extends Component {
 
 								<ExpansionPanel
 									className="sidebar__menu-expansion"
-									expanded={activePage === 'categories' || activePage === 'costs'}
+									expanded={activePage === 'categories' || activePage === 'write-offs'}
 									onChange={this.onChangeUrl('categories')}
 								>
 									<ExpansionPanelSummary className="sidebar__menu-expansion-summary">
@@ -123,7 +123,7 @@ class Sidebar extends Component {
 											<NavLink
 												className="sidebar__menu-link"
 												activeClassName="sidebar__menu-link_active-expansion"
-												to={`/stocks/${activeStockId}/costs`}
+												to={`/stocks/${activeStockId}/write-offs`}
 											>
 												<div className="sidebar__menu-icon">
 													<FontAwesomeIcon icon={['fal', 'clipboard-check']} />
@@ -134,18 +134,18 @@ class Sidebar extends Component {
 									</div>
 								</ExpansionPanel>
 
-								<div className="sidebar__menu-item">
-									<NavLink
-										className="sidebar__menu-link"
-										activeClassName="sidebar__menu-link_active"
-										to={`/stocks/${activeStockId}/statistics`}
-									>
-										<div className="sidebar__menu-icon">
-											<FontAwesomeIcon icon={['far', 'chart-bar']} />
-										</div>
-										Статистика
-									</NavLink>
-								</div>
+								{/*<div className="sidebar__menu-item">*/}
+								{/*	<NavLink*/}
+								{/*		className="sidebar__menu-link"*/}
+								{/*		activeClassName="sidebar__menu-link_active"*/}
+								{/*		to={`/stocks/${activeStockId}/statistics`}*/}
+								{/*	>*/}
+								{/*		<div className="sidebar__menu-icon">*/}
+								{/*			<FontAwesomeIcon icon={['far', 'chart-bar']} />*/}
+								{/*		</div>*/}
+								{/*		Статистика*/}
+								{/*	</NavLink>*/}
+								{/*</div>*/}
 
 								<div className="sidebar__menu-item">
 									<NavLink

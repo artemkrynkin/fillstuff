@@ -10,7 +10,8 @@ const stocks = (
 	switch (action.type) {
 		case 'REQUEST_STOCKS':
 		case 'REQUEST_MEMBERS':
-		case 'REQUEST_CATEGORIES': {
+		case 'REQUEST_CATEGORIES':
+		case 'REQUEST_PRODUCT_SPECIFICATION': {
 			return {
 				...state,
 				isFetching: true,
@@ -20,6 +21,19 @@ const stocks = (
 			return {
 				...state,
 				data: action.payload,
+				isFetching: false,
+			};
+		}
+		case 'GET_STOCK_STATUS': {
+			const stockIndex = state.data.findIndex(stock => stock._id === action.payload.stockId);
+
+			state.data[stockIndex] = {
+				...state.data[stockIndex],
+				status: action.payload.status,
+			};
+
+			return {
+				...state,
 				isFetching: false,
 			};
 		}
@@ -118,6 +132,17 @@ const stocks = (
 
 			state.data[stockIndex].categories.splice(categoryIndex, 1);
 			state.data[stockIndex] = cloneDeep(state.data[stockIndex]);
+
+			return {
+				...state,
+				isFetching: false,
+			};
+		}
+		case 'CREATE_PRODUCT_SPECIFICATION': {
+			const stockIndex = state.data.findIndex(stock => stock._id === action.payload.stockId);
+
+			state.data[stockIndex].productSpecifications[action.payload.schemaName] = action.payload.specification;
+			state.data[stockIndex].productSpecifications = cloneDeep(state.data[stockIndex].productSpecifications);
 
 			return {
 				...state,

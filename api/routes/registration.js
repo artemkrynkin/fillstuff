@@ -9,7 +9,7 @@ import Stock from 'api/models/stock';
 const router = express.Router();
 
 router.post('/registration', function(req, res, next) {
-	const { email, name, password } = req.body;
+	const { email, password } = req.body;
 
 	// customPassword()
 
@@ -30,7 +30,7 @@ router.post('/registration', function(req, res, next) {
 					customErr,
 				});
 
-			let user = new User({ name, email, password });
+			let user = new User({ email, password });
 			let stock = new Stock({
 				name: 'Склад #1',
 				members: [
@@ -40,7 +40,7 @@ router.post('/registration', function(req, res, next) {
 					},
 				],
 				productSpecifications: {
-					specifications: [
+					names: [
 						{
 							name: 'manufacturer',
 							label: 'Производитель',

@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import { isAuthedResolver, hasPermissionsInStock } from 'api/utils/permissions';
 
+import Stock from 'api/models/stock';
 import Product from 'api/models/product';
 
 const productsRouter = Router();
@@ -20,6 +21,8 @@ productsRouter.get(
 		if (categoryId) conditions.categoryId = categoryId;
 
 		Product.find(conditions)
+			.collation({ locale: 'ru', strength: 3 })
+			.sort({ name: 1 })
 			.then(products => setTimeout(() => res.json(products), 300))
 			.catch(err => next(err));
 	}
@@ -30,20 +33,33 @@ productsRouter.post(
 	isAuthedResolver,
 	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
 	(req, res, next) => {
-		const { name, amount, purchasePrice, sellingPrice, categoryId, stockId } = req.body;
+		const { stockId } = req.query;
 
 		let product = new Product({
-			name,
-			amount,
-			purchasePrice,
-			sellingPrice,
-			categoryId,
+			...req.body,
 			stock: stockId,
 		});
 
 		return product
 			.save()
-			.then(product => res.json(product))
+			.then(async product => {
+				const { amount, purchasePrice } = product;
+
+				await Stock.findByIdAndUpdate(stockId, {
+					$inc: {
+						'status.numberProducts': 1,
+						'status.unitsProduct': amount,
+						'status.stockCost': amount * purchasePrice,
+					},
+				}).catch(err =>
+					next({
+						code: err.errors ? 5 : 2,
+						err,
+					})
+				);
+
+				res.json(product);
+			})
 			.catch(err =>
 				next({
 					code: err.errors ? 5 : 2,
@@ -58,8 +74,24 @@ productsRouter.put(
 	isAuthedResolver,
 	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
 	(req, res, next) => {
+		const { amount, purchasePrice } = req.body;
+
 		Product.findByIdAndUpdate(req.params.productId, { $set: req.body }, { runValidators: true })
-			.then(() => res.json('success'))
+			.then(async product => {
+				await Stock.findByIdAndUpdate(product.stock, {
+					$inc: {
+						'status.unitsProduct': amount - product.amount,
+						'status.stockCost': (amount - product.amount) * purchasePrice,
+					},
+				}).catch(err =>
+					next({
+						code: err.errors ? 5 : 2,
+						err,
+					})
+				);
+
+				res.json('success');
+			})
 			.catch(err =>
 				next({
 					code: err.errors ? 5 : 2,
@@ -75,18 +107,22 @@ productsRouter.delete(
 	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
 	(req, res, next) => {
 		Product.findByIdAndDelete(req.params.productId)
-			.then(() => res.json('success'))
-			.catch(err => next(err));
-	}
-);
+			.then(async product => {
+				await Stock.findByIdAndUpdate(product.stock, {
+					$inc: {
+						'status.numberProducts': -1,
+						'status.unitsProduct': -product.amount,
+						'status.stockCost': -(product.amount * product.purchasePrice),
+					},
+				}).catch(err =>
+					next({
+						code: err.errors ? 5 : 2,
+						err,
+					})
+				);
 
-productsRouter.get(
-	'/scanning/write-off/:productId',
-	// isAuthedResolver,
-	// (req, res, next) => hasPermissionsInStock(req, res, next, ['products.scanning']),
-	(req, res, next) => {
-		Product.findByIdAndUpdate(req.params.productId, { $inc: { amount: -1 } })
-			.then(() => res.json('success'))
+				res.json('success');
+			})
 			.catch(err => next(err));
 	}
 );

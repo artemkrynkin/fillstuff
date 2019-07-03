@@ -23,9 +23,6 @@ import Typography from '@material-ui/core/Typography';
 import colorPalette from 'shared/colorPalette';
 import { checkPermissions, findMemberInStock } from 'shared/roles-access-rights';
 
-import { history } from 'src/helpers/history';
-import { changeStockCurrentUrl } from 'src/helpers/utils';
-
 import CardPaper from 'src/components/CardPaper';
 import { PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
 
@@ -131,7 +128,7 @@ class Categories extends Component {
 				rightContent={
 					checkPermissions(currentUserRole, ['products.control']) ? (
 						<IconButton
-							className="sp-categories__add-category"
+							className="sa-categories__add-category"
 							variant="outlined"
 							color="primary"
 							onClick={() => this.onOpenDialogCreateEditCategory('create')}
@@ -144,21 +141,20 @@ class Categories extends Component {
 				title
 			>
 				{categories.length ? (
-					<div className="sp-categories__list">
+					<div className="sa-categories__list">
 						{categories.map((category, index) => (
-							<div className="sp-categories__item" key={category._id}>
+							<div className="sa-categories__item" key={category._id}>
 								<NavLink
-									className="sp-categories__link"
-									activeClassName="sp-categories__link_active"
+									className="sa-categories__link"
+									activeClassName="sa-categories__link_active"
 									to={`/stocks/${currentUser.activeStockId}/categories/${category._id}`}
-									onClick={this.props.updateProducts}
 								>
-									<div className="sp-categories__color" style={{ backgroundColor: category.color }} />
-									<div className="sp-categories__name">{category.name}</div>
+									<div className="sa-categories__color" style={{ backgroundColor: category.color }} />
+									<div className="sa-categories__name">{category.name}</div>
 								</NavLink>
 								{checkPermissions(currentUserRole, ['products.control']) ? (
 									<IconButton
-										className="sp-categories__actions"
+										className="sa-categories__actions"
 										aria-haspopup="true"
 										onClick={event => this.onOpenCategoryActionsMenu(event, category)}
 										size="small"
@@ -247,7 +243,7 @@ class Categories extends Component {
 						render={({ errors, touched, isSubmitting, values }) => (
 							<Form>
 								<DialogContent>
-									<Grid className="pd-rowGridFormLabelControl" container={false}>
+									<Grid className="pd-rowGridFormLabelControl">
 										<Field
 											name="name"
 											label="Название категории"
@@ -260,13 +256,13 @@ class Categories extends Component {
 											fullWidth
 										/>
 									</Grid>
-									<Grid container={false}>
+									<Grid>
 										<FormLabel>Цвет категории:</FormLabel>
-										<Grid className="sp-categories-dialog__colors-list" wrap="wrap" container>
+										<Grid className="sa-categories-dialog__colors-list" wrap="wrap" container>
 											{colorPalette.colorsCategories.map((color, index) => (
-												<label key={index} className="sp-categories-dialog__color-label">
+												<label key={index} className="sa-categories-dialog__color-label">
 													<Field type="radio" name="color" value={color} checked={color === values.color} />
-													<div className="sp-categories-dialog__color" style={{ backgroundColor: color }}>
+													<div className="sa-categories-dialog__color" style={{ backgroundColor: color }}>
 														<FontAwesomeIcon icon={['far', 'check']} />
 													</div>
 												</label>

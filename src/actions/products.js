@@ -34,10 +34,7 @@ export const getProducts = (stockId, categoryId) => {
 export const createProduct = (stockId, values) => {
 	return dispatch => {
 		return axios
-			.post('/api/products', {
-				...values,
-				stockId,
-			})
+			.post(`/api/products?stockId=${stockId}`, values)
 			.then(async response => {
 				const { data: product } = response;
 

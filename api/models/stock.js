@@ -5,7 +5,9 @@ import momentTz from 'moment-timezone';
 
 import colorPalette from 'shared/colorPalette';
 
-let Stock = new mongoose.Schema({
+const Schema = mongoose.Schema;
+
+let Stock = new Schema({
 	name: {
 		type: String,
 		minlength: [2, i18n.__('Название склада не может быть короче 2 символов')],
@@ -21,10 +23,24 @@ let Stock = new mongoose.Schema({
 		type: Date,
 		default: Date.now,
 	},
+	status: {
+		numberProducts: {
+			type: Number,
+			default: 0,
+		},
+		unitsProduct: {
+			type: Number,
+			default: 0,
+		},
+		stockCost: {
+			type: Number,
+			default: 0,
+		},
+	},
 	members: [
 		{
 			user: {
-				type: mongoose.Schema.Types.ObjectId,
+				type: Schema.Types.ObjectId,
 				ref: 'User',
 			},
 			role: {
@@ -32,19 +48,11 @@ let Stock = new mongoose.Schema({
 				enum: ['owner', 'admin', 'user'],
 				default: 'user',
 			},
-			invitationCode: String,
-			invitationEmail: {
-				type: String,
-				validate: {
-					validator: value => (value ? validator.isEmail(value) : true),
-				},
-				trim: true,
-			},
-			invitationName: {
-				type: String,
-				trim: true,
-			},
 			isWaiting: Boolean,
+			createdAt: {
+				type: Date,
+				default: Date.now,
+			},
 		},
 	],
 	categories: [
@@ -65,7 +73,7 @@ let Stock = new mongoose.Schema({
 	],
 	productSpecifications: {
 		names: [
-			{
+			new Schema({
 				name: {
 					type: String,
 					required: [true, i18n.__('Обязательное поле')],
@@ -74,19 +82,19 @@ let Stock = new mongoose.Schema({
 					type: String,
 					required: [true, i18n.__('Обязательное поле')],
 				},
-			},
+			}),
 		],
 		values: [
-			{
-				specificationName: {
+			new Schema({
+				nameId: {
+					type: Schema.Types.ObjectId,
+					required: [true, i18n.__('Обязательное поле')],
+				},
+				label: {
 					type: String,
 					required: [true, i18n.__('Обязательное поле')],
 				},
-				value: {
-					type: String,
-					required: [true, i18n.__('Обязательное поле')],
-				},
-			},
+			}),
 		],
 	},
 });

@@ -2,14 +2,7 @@
 @import '~src/styles/helpers/_fonts.styl';
 @import '~src/styles/helpers/_media_queries.styl';
 
-.sa-categories
-	&__add-category
-		padding 6px
-
-		& svg
-			font-size 20px
-			width 20px !important
-
+.swo-users
 	&__list
 		margin -19px 0 -20px
 
@@ -41,11 +34,28 @@
 				position absolute
 				width 3px
 
-	&__color
+	&__member-photo
+		align-items flex-end
 		border-radius 50%
+		display flex
 		flex none
-		height 18px
-		width 18px
+		height 32px
+		justify-content center
+		margin-right 5px
+		overflow hidden
+		width 32px
+
+		&_null
+			background-color $c-br-5
+			border 2px solid $c-bg-100
+
+			& svg
+				color alpha(white, 0.9)
+				font-size 24px
+
+		& img
+			height 100%
+			width 100%
 
 	&__name
 		color $c-bg-600
@@ -58,55 +68,3 @@
 
 	&__link_active &__name
 		font-weight 600
-
-	&__actions
-		color $c-bg-200
-		position absolute
-		padding 6px
-		right 0
-
-		&:hover
-			background-color alpha($c-bg-100, 0.2)
-
-		& svg
-			font-size 20px
-
-.sa-categories-dialog
-	&__colors-list
-		margin 10px 0 -10px
-
-		@media (min-width: 496px)
-			justify-content space-between
-
-	&__color-label
-		cursor pointer
-		height 24px
-		margin 0 10px 10px 0
-		width 24px
-
-		@media (min-width: 496px)
-			margin-right 16px
-
-			&:nth-child(9),
-			&:nth-child(18)
-				margin-right 0
-
-		& input
-			display none
-
-	&__color
-		align-items center
-		border-radius 50%
-		color white
-		display flex
-		height 100%
-		justify-content center
-		width 100%
-
-		& svg
-			display none
-			font-size 16px
-
-	&__color-label input:checked + &__color
-		& svg
-			display block

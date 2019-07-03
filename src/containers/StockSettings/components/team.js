@@ -28,6 +28,7 @@ import { memberRoleTransform, checkPermissions, findMemberInStock } from 'shared
 
 import CardPaper from 'src/components/CardPaper';
 import { PDDialog, PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
+import { LoadingComponent } from 'src/components/Loading';
 
 import { memberInvitation, editMember, deleteMember } from 'src/actions/stocks';
 
@@ -46,6 +47,7 @@ class Team extends Component {
 	state = {
 		memberActionsMenuOpen: null,
 		selectedMember: null,
+		memberInvitationData: null,
 		dialogMemberInvitationOrEditActionType: null,
 		dialogMemberInvitationOrEdit: false,
 		dialogDeleteMember: false,
@@ -102,10 +104,18 @@ class Team extends Component {
 			selectedMember: null,
 		});
 
-	onOpenDialogQRCodeMember = () => {
+	onOpenDialogQRCodeMember = actionType => {
 		this.setState({
 			dialogQRCodeMember: true,
 		});
+
+		if (actionType === 'invitation') {
+			this.props.memberInvitation().then(response => {
+				this.setState({
+					memberInvitationData: response.data,
+				});
+			});
+		}
 	};
 
 	onCloseDialogQRCodeMember = () =>
@@ -116,6 +126,7 @@ class Team extends Component {
 	onExitedDialogQRCodeMember = () =>
 		this.setState({
 			selectedMember: null,
+			memberInvitationData: null,
 		});
 
 	render() {
@@ -136,6 +147,7 @@ class Team extends Component {
 		const {
 			memberActionsMenuOpen,
 			selectedMember,
+			memberInvitationData,
 			dialogMemberInvitationOrEditActionType,
 			dialogMemberInvitationOrEdit,
 			dialogDeleteMember,
@@ -158,7 +170,7 @@ class Team extends Component {
 				title
 				rightContent={
 					checkPermissions(currentUserRole, ['stock.control']) ? (
-						<Button variant="outlined" color="primary" onClick={() => this.onOpenDialogMemberInvitationOrEdit('invitation')}>
+						<Button variant="outlined" color="primary" onClick={() => this.onOpenDialogQRCodeMember('invitation')}>
 							Пригласить участника
 						</Button>
 					) : null
@@ -166,37 +178,39 @@ class Team extends Component {
 				style={{ marginBottom: 16 }}
 			>
 				<div className="ps-team__list">
-					{members.map((member, index) => (
-						<div className="ps-team__member-item" key={index}>
-							<div className={photoImgClasses(member)}>
-								{!member.isWaiting && member.user.profilePhoto ? (
-									<img src={member.user.profilePhoto} alt="" />
-								) : (
-									<FontAwesomeIcon icon={['fas', 'user-alt']} />
-								)}
-							</div>
-							<div className="ps-team__member-details">
-								<div className="ps-team__member-title">
-									{!member.isWaiting ? (member.user.name ? member.user.name : member.user.email) : member.invitationEmail}
-									<div className="ps-team__member-role">{memberRoleTransform(member.role)}</div>
+					{members.map((member, index) =>
+						!member.isWaiting ? (
+							<div className="ps-team__member-item" key={index}>
+								<div className={photoImgClasses(member)}>
+									{member.user.profilePhoto ? (
+										<img src={member.user.profilePhoto} alt="" />
+									) : (
+										<FontAwesomeIcon icon={['fas', 'user-alt']} />
+									)}
 								</div>
-								{member.isWaiting || (member.user.email && member.user.name) ? (
-									<div className="ps-team__member-subtitle">
-										{!member.isWaiting ? member.user.email : 'Приглашение отправлено'}
+								<div className="ps-team__member-details">
+									<div className="ps-team__member-title">
+										{member.user.name ? member.user.name : member.user.email}
+										<div className="ps-team__member-role">{memberRoleTransform(member.role)}</div>
 									</div>
+									{member.isWaiting || (member.user.email && member.user.name) ? (
+										<div className="ps-team__member-subtitle">
+											{!member.isWaiting ? member.user.email : 'Приглашение отправлено'}
+										</div>
+									) : null}
+								</div>
+								{(member.user && member.user._id === currentUser._id) || checkPermissions(currentUserRole, ['stock.control']) ? (
+									<IconButton
+										className="ps-team__member-actions"
+										aria-haspopup="true"
+										onClick={event => this.onOpenMemberActionsMenu(event, member)}
+									>
+										<FontAwesomeIcon icon={['far', 'ellipsis-h']} />
+									</IconButton>
 								) : null}
 							</div>
-							{(member.user && member.user._id === currentUser._id) || checkPermissions(currentUserRole, ['stock.control']) ? (
-								<IconButton
-									className="ps-team__member-actions"
-									aria-haspopup="true"
-									onClick={event => this.onOpenMemberActionsMenu(event, member)}
-								>
-									<FontAwesomeIcon icon={['far', 'ellipsis-h']} />
-								</IconButton>
-							) : null}
-						</div>
-					))}
+						) : null
+					)}
 				</div>
 
 				<Popover
@@ -299,7 +313,7 @@ class Team extends Component {
 							<Form>
 								<DialogContent>
 									{dialogMemberInvitationOrEditActionType === 'invitation' ? (
-										<Grid className="pd-rowGridFormLabelControl" container={false}>
+										<Grid className="pd-rowGridFormLabelControl">
 											<Field
 												name="invitationEmail"
 												label="Email"
@@ -347,7 +361,7 @@ class Team extends Component {
 											</div>
 										</Grid>
 									)}
-									<Grid className="pd-rowGridFormLabelControl" container={false}>
+									<Grid className="pd-rowGridFormLabelControl">
 										<Field
 											name="invitationName"
 											label="Имя"
@@ -359,7 +373,7 @@ class Team extends Component {
 											fullWidth
 										/>
 									</Grid>
-									<Grid style={{ marginTop: 20 }} container={false}>
+									<Grid style={{ marginTop: 20 }}>
 										<FormLabel>Роли</FormLabel>
 										<Field name="role" component={RadioGroup}>
 											<FormControlLabel
@@ -532,7 +546,7 @@ class Team extends Component {
 					fullWidth
 				>
 					<PDDialogTitle theme="primary" onClose={this.onCloseDialogQRCodeMember}>
-						QR-код для входа в мобильное приложение
+						QR-код для входа
 					</PDDialogTitle>
 					<DialogContent>
 						{selectedMember ? (
@@ -557,7 +571,25 @@ class Team extends Component {
 									/>
 								)}
 							</div>
-						) : null}
+						) : !selectedMember && memberInvitationData ? (
+							<div style={{ textAlign: 'center' }}>
+								<QRCode
+									size={400}
+									value={JSON.stringify({
+										type: 'member-invitation',
+										memberId: memberInvitationData._id,
+										role: memberInvitationData.role,
+									})}
+								/>
+							</div>
+						) : (
+							<Grid
+								children={<LoadingComponent />}
+								style={{ height: 402, margin: 'auto', width: 400 }}
+								alignItems="center"
+								container
+							/>
+						)}
 					</DialogContent>
 				</Dialog>
 			</CardPaper>
@@ -569,7 +601,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	const { currentUser, currentStock } = ownProps;
 
 	return {
-		memberInvitation: values => dispatch(memberInvitation(currentStock._id, values)),
+		memberInvitation: () => dispatch(memberInvitation(currentStock._id)),
 		editMember: (memberId, values) => dispatch(editMember(currentStock._id, memberId, values)),
 		deleteMember: member =>
 			dispatch(deleteMember(currentStock._id, member._id, member.user ? member.user._id : null, currentUser._id)),

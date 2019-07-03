@@ -18,6 +18,12 @@ stocksRouter.get('/', isAuthedResolver, (req, res, next) => {
 		.catch(err => next(err));
 });
 
+stocksRouter.get('/:stockId/status', isAuthedResolver, (req, res, next) => {
+	Stock.findById(req.params.stockId)
+		.then(stock => res.json(stock.status))
+		.catch(err => next(err));
+});
+
 stocksRouter.post('/', isAuthedResolver, (req, res, next) => {
 	const { name } = req.body;
 

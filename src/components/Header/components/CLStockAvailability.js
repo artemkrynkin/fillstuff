@@ -7,7 +7,7 @@ import DialogCreateProduct from 'src/containers/Dialogs/CreateEditProduct';
 
 import TitlePageOrLogo from './TitlePageOrLogo';
 
-class CLProjectPublications extends Component {
+class CLStockAvailability extends Component {
 	state = {
 		dialogCreateProduct: false,
 	};
@@ -23,12 +23,7 @@ class CLProjectPublications extends Component {
 		});
 
 	render() {
-		const {
-			pageTitle,
-			theme,
-			// currentUser,
-			currentStock,
-		} = this.props;
+		const { pageTitle, theme, currentStock } = this.props;
 		const { dialogCreateProduct } = this.state;
 
 		return (
@@ -43,7 +38,7 @@ class CLProjectPublications extends Component {
 						onClick={this.onOpenDialogCreateProduct}
 					>
 						<FontAwesomeIcon icon={['far', 'plus']} />
-						&nbsp;&nbsp;Товар
+						&nbsp;&nbsp;Позиция
 					</Button>
 					<Button className="mui-btn-ct400" variant="contained" color="primary">
 						<FontAwesomeIcon icon={['fal', 'qrcode']} />
@@ -62,4 +57,4 @@ class CLProjectPublications extends Component {
 	}
 }
 
-export default CLProjectPublications;
+export default CLStockAvailability;

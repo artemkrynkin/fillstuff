@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import ClassNames from 'classnames';
 
-import * as Yup from 'yup';
 import QRCode from 'qrcode.react';
 import ReactToPrint from 'react-to-print';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -29,8 +30,8 @@ import DialogEditProduct from 'src/containers/Dialogs/CreateEditProduct';
 
 import './Products.styl';
 
+import { getStockStatus } from 'src/actions/stocks';
 import { getProducts, deleteProduct } from 'src/actions/products';
-import Button from '@material-ui/core/Button';
 
 class Products extends Component {
 	state = {
@@ -123,12 +124,20 @@ class Products extends Component {
 
 		const { productActionsMenuOpen, selectedProduct, dialogEditProduct, dialogDeleteProduct, dialogQRCodeProduct } = this.state;
 
+		const amountIndicator = (amount, minimumBalance) =>
+			ClassNames({
+				'sa-products__amount-indicator': true,
+				'sa-products__amount-indicator_red': (amount / minimumBalance) * 100 <= 100,
+				'sa-products__amount-indicator_yellow': (amount / minimumBalance) * 100 > 100 && (amount / minimumBalance) * 100 <= 200,
+				'sa-products__amount-indicator_green': (amount / minimumBalance) * 100 > 200,
+			});
+
 		return (
 			<Paper>
 				<Table>
 					<TableHead>
 						<TableRow>
-							<TableCell>Наименование</TableCell>
+							<TableCell style={{ paddingLeft: 36 }}>Наименование</TableCell>
 							<TableCell align="right" width="130px">
 								Количество
 							</TableCell>
@@ -138,7 +147,7 @@ class Products extends Component {
 							<TableCell align="right" width="145px">
 								Цена продажи
 							</TableCell>
-							<TableCell align="right" size="small" width="72px" />
+							<TableCell align="right" size="small" width="55px" />
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -146,15 +155,19 @@ class Products extends Component {
 							products && products.length ? (
 								products.map(product => (
 									<TableRow key={product._id}>
-										<TableCell>{product.name}</TableCell>
+										<TableCell>
+											<div className={amountIndicator(product.amount, product.minimumBalance)}></div>
+											{product.name}
+										</TableCell>
 										<TableCell align="right">{product.amount}</TableCell>
-										<TableCell align="right">{product.purchasePrice}₽</TableCell>
-										<TableCell align="right">{product.sellingPrice}₽</TableCell>
-										<TableCell align="right" size="small">
+										<TableCell align="right">{product.purchasePrice} ₽</TableCell>
+										<TableCell align="right">{product.sellingPrice} ₽</TableCell>
+										<TableCell align="right" size="small" style={{ paddingLeft: 0 }}>
 											<IconButton
-												className="sp-products__actions"
+												className="sa-products__actions"
 												aria-haspopup="true"
 												onClick={event => this.onOpenProductActionsMenu(event, product)}
+												size="small"
 											>
 												<FontAwesomeIcon icon={['far', 'ellipsis-h']} />
 											</IconButton>
@@ -164,7 +177,7 @@ class Products extends Component {
 							) : (
 								<TableRow>
 									<TableCell colSpan={5}>
-										<Typography variant="caption" align="center" component="div">
+										<Typography variant="caption" align="center" component="div" style={{ padding: '1px 0' }}>
 											Еще не создано ни одного товара.
 										</Typography>
 									</TableCell>
@@ -172,7 +185,7 @@ class Products extends Component {
 							)
 						) : (
 							<TableRow>
-								<TableCell colSpan={5}>
+								<TableCell colSpan={5} style={{ padding: 12 }}>
 									<div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />
 								</TableCell>
 							</TableRow>
@@ -256,7 +269,11 @@ class Products extends Component {
 						}}
 						rightHandleProps={{
 							handleProps: {
-								onClick: () => this.props.deleteProduct(selectedProduct._id).then(() => this.onCloseDialogDeleteProduct()),
+								onClick: () =>
+									this.props.deleteProduct(selectedProduct._id).then(() => {
+										this.props.getStockStatus();
+										this.onCloseDialogDeleteProduct();
+									}),
 							},
 							text: 'Удалить',
 						}}
@@ -309,6 +326,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	const { currentStock } = ownProps;
 
 	return {
+		getStockStatus: () => dispatch(getStockStatus(currentStock._id)),
 		getProducts: currentCategory => dispatch(getProducts(currentStock._id, currentCategory)),
 		deleteProduct: productId => dispatch(deleteProduct(currentStock._id, productId)),
 	};

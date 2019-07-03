@@ -2,7 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { Formik, Form, Field } from 'formik';
+import {
+	Formik,
+	Form,
+	Field,
+	// FieldArray
+} from 'formik';
 import { Select, TextField } from 'formik-material-ui';
 import * as Yup from 'yup';
 
@@ -17,8 +22,10 @@ import Fade from '@material-ui/core/Fade';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Dialog from '@material-ui/core/Dialog';
 
+// import { SelectAutocompleteCreate } from 'src/components/selectAutocomplete';
 import { PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
 
+import { getStockStatus, createProductSpecification } from 'src/actions/stocks';
 import { createProduct, editProduct } from 'src/actions/products';
 
 const productSchema = Yup.object().shape({
@@ -51,6 +58,12 @@ const productSchema = Yup.object().shape({
 		.min(1, 'Неснижаемый остаток не может быть меньше ${min}')
 		// eslint-disable-next-line
 		.required('Обязательное поле'),
+	specifications: Yup.array().of(
+		Yup.object().shape({
+			nameId: Yup.string().required('Обязательное поле'),
+			valueId: Yup.string().required('Обязательное поле'),
+		})
+	),
 });
 
 class CreateEditProduct extends Component {
@@ -66,8 +79,45 @@ class CreateEditProduct extends Component {
 		actionType: null,
 	};
 
+	state = {
+		isLoadingSpecifications: false,
+		value: undefined,
+	};
+
+	// handleChange = (newValue, actionMeta) => {
+	// 	console.group('Value Changed');
+	// 	console.log(newValue);
+	// 	console.log(`action: ${actionMeta.action}`);
+	// 	console.groupEnd();
+	// 	this.setState({ value: newValue });
+	// };
+	//
+	// handleCreate = inputValue => {
+	// 	this.setState({ isLoadingSpecifications: true }, () => {
+	// 		console.group('Option created');
+	// 		console.log('Wait a moment...');
+	//
+	// 		this.props.createProductSpecification('names', {
+	// 				name: inputValue,
+	// 				label: inputValue,
+	// 			})
+	// 			.then(response => {
+	// 				// const newOption = createOption(inputValue);
+	//
+	// 				// console.log(newOption);
+	// 				// console.groupEnd();
+	//
+	// 				this.setState({
+	// 					isLoadingSpecifications: false,
+	// 					// value: newOption,
+	// 				});
+	// 			});
+	// 	});
+	// };
+
 	render() {
 		const { actionType, dialogOpen, selectedProduct, onCloseDialog, currentStock } = this.props;
+		// const { isLoadingSpecifications, value } = this.state;
 
 		const initialValues = {
 			name: '',
@@ -78,6 +128,7 @@ class CreateEditProduct extends Component {
 			unit: '',
 			minimumBalance: 0,
 			shop: '',
+			specifications: [],
 		};
 
 		return (
@@ -93,22 +144,26 @@ class CreateEditProduct extends Component {
 					onSubmit={(values, actions) => {
 						if (actionType === 'create') {
 							this.props.createProduct(values).then(response => {
-								if (response.status === 'success') onCloseDialog();
-								else actions.setSubmitting(false);
+								if (response.status === 'success') {
+									this.props.getStockStatus();
+									onCloseDialog();
+								} else actions.setSubmitting(false);
 							});
 						}
 
 						if (actionType === 'edit') {
 							this.props.editProduct(selectedProduct._id, values).then(response => {
-								if (response.status === 'success') onCloseDialog();
-								else actions.setSubmitting(false);
+								if (response.status === 'success') {
+									this.props.getStockStatus();
+									onCloseDialog();
+								} else actions.setSubmitting(false);
 							});
 						}
 					}}
 					render={({ errors, touched, isSubmitting, values }) => (
 						<Form>
 							<DialogContent>
-								<Grid className="pd-rowGridFormLabelControl" container={false}>
+								<Grid className="pd-rowGridFormLabelControl">
 									<Field
 										name="name"
 										label="Наименование"
@@ -148,7 +203,9 @@ class CreateEditProduct extends Component {
 												);
 											})}
 										</Field>
-										{Boolean(errors.categoryId) ? <FormHelperText error={true}>{errors.categoryId}</FormHelperText> : null}
+										{typeof errors.categoryId === 'string' ? (
+											<FormHelperText error={true}>{errors.categoryId}</FormHelperText>
+										) : null}
 									</FormControl>
 								</Grid>
 								<Grid className="pd-rowGridFormLabelControl" style={{ marginBottom: 12 }} container spacing={2}>
@@ -177,7 +234,7 @@ class CreateEditProduct extends Component {
 												<MenuItem value="npl">Рулон</MenuItem>
 												<MenuItem value="bot">Бутыль</MenuItem>
 											</Field>
-											{Boolean(errors.unit) ? <FormHelperText error={true}>{errors.unit}</FormHelperText> : null}
+											{typeof errors.unit === 'string' ? <FormHelperText error={true}>{errors.unit}</FormHelperText> : null}
 										</FormControl>
 									</Grid>
 									<Grid xs={4} item>
@@ -207,7 +264,7 @@ class CreateEditProduct extends Component {
 										/>
 									</Grid>
 								</Grid>
-								<Grid className="pd-rowGridFormLabelControl" style={{ marginBottom: -8 }} container spacing={2}>
+								<Grid className="pd-rowGridFormLabelControl" style={{ marginBottom: 12 }} container spacing={2}>
 									<Grid xs={6} item>
 										<Field
 											name="purchasePrice"
@@ -218,6 +275,7 @@ class CreateEditProduct extends Component {
 												shrink: true,
 											}}
 											autoComplete="off"
+											disabled={actionType === 'edit'}
 											fullWidth
 										/>
 									</Grid>
@@ -235,6 +293,52 @@ class CreateEditProduct extends Component {
 										/>
 									</Grid>
 								</Grid>
+								<Grid className="pd-rowGridFormLabelControl" style={{ marginBottom: -8 }}>
+									<Field
+										name="shop"
+										label="Магазин"
+										component={TextField}
+										InputLabelProps={{
+											shrink: true,
+										}}
+										autoComplete="off"
+										fullWidth
+									/>
+								</Grid>
+								{/*<Grid className="pd-rowGridFormLabelControl" style={{ marginBottom: -8 }}>*/}
+								{/*	<FieldArray*/}
+								{/*		name="specifications"*/}
+								{/*		render={arrayHelpers => (*/}
+								{/*			<Grid>*/}
+								{/*				{values.specifications.map((specification, index) => (*/}
+								{/*					<Grid key={index} style={{ marginBottom: 0 }} container spacing={2}>*/}
+								{/*						<Grid xs={6} item>*/}
+								{/*							<SelectAutocompleteCreate*/}
+								{/*								name={`specifications[${index}].nameId`}*/}
+								{/*								inputId={`specification-${index}`}*/}
+								{/*								instanceId={`specification-${index}`}*/}
+								{/*								isClearable*/}
+								{/*								isDisabled={isLoadingSpecifications}*/}
+								{/*								isLoading={isLoadingSpecifications}*/}
+								{/*								onChange={this.handleChange}*/}
+								{/*								onCreateOption={this.handleCreate}*/}
+								{/*								menuPlacement="top"*/}
+								{/*								menuPosition="fixed"*/}
+								{/*								options={currentStock.productSpecifications.names}*/}
+								{/*								value={value}*/}
+								{/*							/>*/}
+								{/*						</Grid>*/}
+								{/*					</Grid>*/}
+								{/*				))}*/}
+								{/*				<div*/}
+								{/*					onClick={() => arrayHelpers.push({ nameId: '', valueId: '' })}*/}
+								{/*				>*/}
+								{/*					+*/}
+								{/*				</div>*/}
+								{/*			</Grid>*/}
+								{/*		)}*/}
+								{/*	/>*/}
+								{/*</Grid>*/}
 							</DialogContent>
 							<PDDialogActions
 								leftHandleProps={{
@@ -263,6 +367,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	const { currentStock } = ownProps;
 
 	return {
+		getStockStatus: () => dispatch(getStockStatus(currentStock._id)),
+		createProductSpecification: (schemaName, values) =>
+			dispatch(createProductSpecification(currentStock._id, schemaName, values)),
 		createProduct: values => dispatch(createProduct(currentStock._id, values)),
 		editProduct: (productId, newValues) => dispatch(editProduct(productId, newValues)),
 	};

@@ -2,7 +2,9 @@ import mongoose from 'mongoose';
 // import validator from 'validator';
 import i18n from 'i18n';
 
-let Product = new mongoose.Schema({
+const Schema = mongoose.Schema;
+
+let Product = new Schema({
 	name: {
 		type: String,
 		minlength: [2, i18n.__('Наименование товара не может быть короче 2 символов')],
@@ -51,22 +53,22 @@ let Product = new mongoose.Schema({
 	},
 	shop: {
 		type: String,
-		required: [true, i18n.__('Обязательное поле')],
+		required: [false, i18n.__('Обязательное поле')],
 	},
 	specifications: [
 		{
-			name: {
-				type: String,
+			nameId: {
+				type: Schema.Types.ObjectId,
 				required: [true, i18n.__('Обязательное поле')],
 			},
 			valueId: {
-				type: String,
+				type: Schema.Types.ObjectId,
 				required: [true, i18n.__('Обязательное поле')],
 			},
 		},
 	],
 	stock: {
-		type: mongoose.Schema.Types.ObjectId,
+		type: Schema.Types.ObjectId,
 		ref: 'Stock',
 	},
 });

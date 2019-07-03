@@ -174,6 +174,9 @@ export const PosterDateTheme = createMuiTheme({
 				'&$focused': {
 					color: null,
 				},
+				'&$disabled': {
+					color: colorPalette.blueGrey.cBg400,
+				},
 			},
 		},
 		MuiInputLabel: {
@@ -257,6 +260,9 @@ export const PosterDateTheme = createMuiTheme({
 			root: {
 				color: colorPalette.blueGrey.cBg700,
 				fontSize: 13,
+				'&$disabled': {
+					color: colorPalette.blueGrey.cBg400,
+				},
 				'&$focused:not($error)': {
 					'& $input:not([readonly])': {
 						boxShadow: `0 0 0 2px ${colorPalette.teal.cT300} inset`,
@@ -282,6 +288,11 @@ export const PosterDateTheme = createMuiTheme({
 					backgroundColor: 'transparent',
 					boxShadow: 'none',
 					padding: '5px 10px',
+				},
+				'&$disabled': {
+					'&:hover': {
+						boxShadow: 'none',
+					},
 				},
 			},
 		},

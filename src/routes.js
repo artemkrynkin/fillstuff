@@ -23,7 +23,7 @@ import PasswordRecovery from 'src/containers/PasswordRecovery';
 import StockNotFound from 'src/containers/StockNotFound';
 import StockDashboard from 'src/containers/StockDashboard';
 import StockAvailability from 'src/containers/StockAvailability';
-import StockCosts from 'src/containers/StockCosts';
+import StockWriteOffs from 'src/containers/StockWriteOffs';
 import StockStatistics from 'src/containers/StockStatistics';
 import StockSettings from 'src/containers/StockSettings';
 import Registration from 'src/containers/Registration';
@@ -65,10 +65,10 @@ const StockAvailabilityFallback = signedOutFallback(
 	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/categories`} />} />
 );
 
-const StockCostsFallback = signedOutFallback(
+const StockWriteOffsFallback = signedOutFallback(
 	props => (
 		<StockPageFallback {...props}>
-			<StockCosts currentStock={props.currentStock} currentCategory={props.match.params.categoryId} />
+			<StockWriteOffs currentStock={props.currentStock} currentUserWriteOffs={props.match.params.userId} />
 		</StockPageFallback>
 	),
 	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/categories`} />} />
@@ -189,8 +189,8 @@ class Routes extends Component {
 						sensitive
 					/>
 					<Route
-						path="/stocks/:stockId/costs"
-						render={props => <StockCostsFallback {...props} currentStock={findCurrentStock(props.match)} />}
+						path={['/stocks/:stockId/write-offs', '/stocks/:stockId/write-offs/:userId']}
+						render={props => <StockWriteOffsFallback {...props} currentStock={findCurrentStock(props.match)} />}
 						exact
 						strict
 						sensitive

@@ -39,47 +39,6 @@ router.post('/registration', function(req, res, next) {
 						role: 'owner',
 					},
 				],
-				productSpecifications: {
-					names: [
-						{
-							name: 'manufacturer',
-							label: 'Производитель',
-						},
-						{
-							name: 'marking',
-							label: 'Маркировка',
-						},
-						{
-							name: 'color',
-							label: 'Цвет',
-						},
-						{
-							name: 'size',
-							label: 'Размер',
-						},
-						{
-							name: 'thickness',
-							label: 'Толщина',
-						},
-						{
-							name: 'volume',
-							label: 'Объем',
-						},
-						{
-							name: 'material',
-							label: 'Материал',
-						},
-						{
-							name: 'number_pieces_in_package',
-							label: 'Количество штук в упаковке',
-						},
-						{
-							name: 'diameter',
-							label: 'Диаметр',
-						},
-					],
-					values: [],
-				},
 			});
 
 			user.activeStockId = stock;

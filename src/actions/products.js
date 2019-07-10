@@ -31,17 +31,19 @@ export const getProducts = (stockId, categoryId) => {
 	};
 };
 
-export const createProduct = (stockId, values) => {
+export const createProduct = (stockId, selectedCategoryId, values) => {
 	return dispatch => {
 		return axios
 			.post(`/api/products?stockId=${stockId}`, values)
 			.then(async response => {
-				const { data: product } = response;
+				if (selectedCategoryId === undefined || values.categoryId === selectedCategoryId) {
+					const { data: product } = response;
 
-				await dispatch({
-					type: 'CREATE_PRODUCT',
-					payload: product,
-				});
+					await dispatch({
+						type: 'CREATE_PRODUCT',
+						payload: product,
+					});
+				}
 
 				return Promise.resolve({ status: 'success' });
 			})

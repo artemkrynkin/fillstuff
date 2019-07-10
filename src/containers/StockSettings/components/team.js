@@ -551,25 +551,15 @@ class Team extends Component {
 					<DialogContent>
 						{selectedMember ? (
 							<div style={{ textAlign: 'center' }}>
-								{selectedMember.isWaiting ? (
-									<QRCode
-										size={400}
-										value={JSON.stringify({
-											type: 'member-invitation',
-											invitationCode: selectedMember.invitationCode,
-											stockId: currentStock._id,
-										})}
-									/>
-								) : (
-									<QRCode
-										size={400}
-										value={JSON.stringify({
-											type: 'login',
-											memberId: selectedMember.user._id,
-											stockId: currentStock._id,
-										})}
-									/>
-								)}
+								<QRCode
+									size={400}
+									value={JSON.stringify({
+										type: 'login',
+										userId: selectedMember.user._id,
+										stockId: currentStock._id,
+										role: selectedMember.role,
+									})}
+								/>
 							</div>
 						) : !selectedMember && memberInvitationData ? (
 							<div style={{ textAlign: 'center' }}>
@@ -578,7 +568,6 @@ class Team extends Component {
 									value={JSON.stringify({
 										type: 'member-invitation',
 										memberId: memberInvitationData._id,
-										role: memberInvitationData.role,
 									})}
 								/>
 							</div>

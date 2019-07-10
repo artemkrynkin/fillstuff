@@ -3,8 +3,8 @@ const striptags = require('striptags');
 // const draft = require('./draft-utils');
 
 const DEFAULT_META = {
-	title: 'PosterDate',
-	description: 'Автоматическая публикация в социальные сети',
+	title: 'Blikside',
+	description: 'Складской учет для тату-студий',
 };
 
 // const HIDE_FROM_CRAWLERS = '<meta name="robots" content="noindex, nofollow">';

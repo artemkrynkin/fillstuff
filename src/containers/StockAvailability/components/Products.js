@@ -26,8 +26,6 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import { PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
 import DialogEditProduct from 'src/containers/Dialogs/CreateEditProduct';
 
-// import { checkPermissions, findMemberInStock } from 'shared/roles-access-rights';
-
 import './Products.styl';
 
 import { getStockStatus } from 'src/actions/stocks';
@@ -100,12 +98,12 @@ class Products extends Component {
 		});
 
 	UNSAFE_componentWillMount() {
-		this.props.getProducts(this.props.currentCategory);
+		this.props.getProducts(this.props.selectedCategoryId);
 	}
 
 	UNSAFE_componentWillUpdate(nextProps, nextState, nextContext) {
-		if (this.props.currentCategory !== nextProps.currentCategory) {
-			this.props.getProducts(nextProps.currentCategory);
+		if (this.props.selectedCategoryId !== nextProps.selectedCategoryId) {
+			this.props.getProducts(nextProps.selectedCategoryId);
 		}
 	}
 
@@ -124,12 +122,13 @@ class Products extends Component {
 
 		const { productActionsMenuOpen, selectedProduct, dialogEditProduct, dialogDeleteProduct, dialogQRCodeProduct } = this.state;
 
-		const amountIndicator = (amount, minimumBalance) =>
+		const quantityIndicator = (quantity, minimumBalance) =>
 			ClassNames({
-				'sa-products__amount-indicator': true,
-				'sa-products__amount-indicator_red': (amount / minimumBalance) * 100 <= 100,
-				'sa-products__amount-indicator_yellow': (amount / minimumBalance) * 100 > 100 && (amount / minimumBalance) * 100 <= 200,
-				'sa-products__amount-indicator_green': (amount / minimumBalance) * 100 > 200,
+				'sa-products__quantity-indicator': true,
+				'sa-products__quantity-indicator_red': (quantity / minimumBalance) * 100 <= 100,
+				'sa-products__quantity-indicator_yellow':
+					(quantity / minimumBalance) * 100 > 100 && (quantity / minimumBalance) * 100 <= 200,
+				'sa-products__quantity-indicator_green': (quantity / minimumBalance) * 100 > 200,
 			});
 
 		return (
@@ -156,12 +155,16 @@ class Products extends Component {
 								products.map(product => (
 									<TableRow key={product._id}>
 										<TableCell>
-											<div className={amountIndicator(product.amount, product.minimumBalance)}></div>
+											<div className={quantityIndicator(product.quantity, product.minimumBalance)} />
 											{product.name}
 										</TableCell>
-										<TableCell align="right">{product.amount}</TableCell>
-										<TableCell align="right">{product.purchasePrice} ₽</TableCell>
-										<TableCell align="right">{product.sellingPrice} ₽</TableCell>
+										<TableCell align="right">{product.unitIssue === 'pce' ? product.quantityInUnit : product.quantity}</TableCell>
+										<TableCell align="right">
+											{product.unitIssue === 'pce' ? product.unitPurchasePrice : product.purchasePrice} ₽
+										</TableCell>
+										<TableCell align="right">
+											{product.unitIssue === 'pce' ? product.unitSellingPrice : product.sellingPrice} ₽
+										</TableCell>
 										<TableCell align="right" size="small" style={{ paddingLeft: 0 }}>
 											<IconButton
 												className="sa-products__actions"
@@ -178,7 +181,7 @@ class Products extends Component {
 								<TableRow>
 									<TableCell colSpan={5}>
 										<Typography variant="caption" align="center" component="div" style={{ padding: '1px 0' }}>
-											Еще не создано ни одного товара.
+											Еще не создано ни одной позиции.
 										</Typography>
 									</TableCell>
 								</TableRow>
@@ -231,7 +234,7 @@ class Products extends Component {
 								this.onCloseProductActionsMenu(true);
 							}}
 						>
-							Удалить
+							Архивировать
 						</MenuItem>
 					</MenuList>
 				</Popover>
@@ -251,7 +254,7 @@ class Products extends Component {
 					fullWidth
 				>
 					<PDDialogTitle theme="primary" onClose={this.onCloseDialogDeleteProduct}>
-						Удаление товара
+						Удаление позиции
 					</PDDialogTitle>
 					<DialogContent>
 						{selectedProduct ? (
@@ -284,6 +287,7 @@ class Products extends Component {
 					open={dialogQRCodeProduct}
 					onClose={this.onCloseDialogQRCodeProduct}
 					onExited={this.onExitedDialogQRCodeProduct}
+					maxWidth="xl"
 					fullWidth
 				>
 					<PDDialogTitle onClose={this.onCloseDialogQRCodeProduct} />
@@ -327,7 +331,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 	return {
 		getStockStatus: () => dispatch(getStockStatus(currentStock._id)),
-		getProducts: currentCategory => dispatch(getProducts(currentStock._id, currentCategory)),
+		getProducts: selectedCategoryId => dispatch(getProducts(currentStock._id, selectedCategoryId)),
 		deleteProduct: productId => dispatch(deleteProduct(currentStock._id, productId)),
 	};
 };

@@ -4,7 +4,7 @@ import colorPalette from 'shared/colorPalette';
 
 import { hexToRgb } from './utils';
 
-export const PosterDateTheme = createMuiTheme({
+export const BliksideTheme = createMuiTheme({
 	palette: {
 		primary: {
 			main: colorPalette.teal.cT300,

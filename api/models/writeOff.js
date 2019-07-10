@@ -16,7 +16,7 @@ let WriteOff = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'User',
 	},
-	amount: {
+	quantity: {
 		type: Number,
 		required: true,
 	},

@@ -32,7 +32,7 @@ export const getWriteOffs = (stockId, productId, userId) => {
 	};
 };
 
-export const createWriteOff = (stockId, userId, values) => {
+export const createWriteOff = (stockId, userId, selectedUserId, values) => {
 	return dispatch => {
 		return axios
 			.post('/api/write-offs/product', {
@@ -41,12 +41,14 @@ export const createWriteOff = (stockId, userId, values) => {
 				...values,
 			})
 			.then(async response => {
-				const { data: writeOff } = response;
+				if (selectedUserId === undefined || userId === selectedUserId) {
+					const { data: writeOff } = response;
 
-				await dispatch({
-					type: 'CREATE_WRITE_OFF',
-					payload: writeOff,
-				});
+					await dispatch({
+						type: 'CREATE_WRITE_OFF',
+						payload: writeOff,
+					});
+				}
 
 				return Promise.resolve({ status: 'success' });
 			})

@@ -21,7 +21,7 @@ class Layout extends Component {
 						<Link className="layout-auth__logo" to="/" />
 						{children}
 						<div className="layout-auth__code-of-conduct">
-							Используя PosterDate, вы соглашаетесь с{' '}
+							Используя Blikside, вы соглашаетесь с{' '}
 							<a href="/manifest.json" target="_blank" rel="noreferrer noopener">
 								Политикой конфиденциальности
 							</a>

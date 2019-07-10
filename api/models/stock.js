@@ -72,31 +72,90 @@ let Stock = new Schema({
 		},
 	],
 	productSpecifications: {
-		names: [
-			new Schema({
-				name: {
-					type: String,
-					required: [true, i18n.__('Обязательное поле')],
+		names: {
+			type: [
+				{
+					value: {
+						type: String,
+						required: [true, i18n.__('Обязательное поле')],
+						lowercase: true,
+						trim: true,
+					},
+					label: {
+						type: String,
+						required: [true, i18n.__('Обязательное поле')],
+					},
 				},
-				label: {
-					type: String,
-					required: [true, i18n.__('Обязательное поле')],
+			],
+			default: [
+				{
+					value: 'manufacturer',
+					label: 'Производитель',
 				},
-			}),
-		],
+				{
+					value: 'marking',
+					label: 'Маркировка',
+				},
+				{
+					value: 'color',
+					label: 'Цвет',
+				},
+				{
+					value: 'volume',
+					label: 'Объем',
+				},
+				{
+					value: 'size',
+					label: 'Размер',
+				},
+				{
+					value: 'thickness',
+					label: 'Толщина',
+				},
+				{
+					value: 'diameter',
+					label: 'Диаметр',
+				},
+				{
+					value: 'material',
+					label: 'Материал',
+				},
+			],
+		},
 		values: [
-			new Schema({
-				nameId: {
+			{
+				parentId: {
 					type: Schema.Types.ObjectId,
 					required: [true, i18n.__('Обязательное поле')],
 				},
+				value: {
+					type: String,
+					required: [true, i18n.__('Обязательное поле')],
+					lowercase: true,
+					trim: true,
+				},
 				label: {
 					type: String,
 					required: [true, i18n.__('Обязательное поле')],
 				},
-			}),
+			},
 		],
 	},
+	productShops: [
+		{
+			value: {
+				type: String,
+				required: [true, i18n.__('Обязательное поле')],
+				lowercase: true,
+				trim: true,
+			},
+			label: {
+				type: String,
+				required: [true, i18n.__('Обязательное поле')],
+			},
+			url: String,
+		},
+	],
 });
 
 export default mongoose.model('Stock', Stock);

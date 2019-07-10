@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
@@ -7,15 +8,20 @@ import CreateWriteOff from 'src/containers/Dialogs/CreateWriteOff';
 
 import TitlePageOrLogo from './TitlePageOrLogo';
 
+import { getProducts } from 'src/actions/products';
+
 class CLStockWriteOffs extends Component {
 	state = {
 		dialogCreateWriteOff: false,
 	};
 
-	onOpenDialogCreateWriteOff = () =>
+	onOpenDialogCreateWriteOff = () => {
+		this.props.getProducts();
+
 		this.setState({
 			dialogCreateWriteOff: true,
 		});
+	};
 
 	onCloseDialogCreateWriteOff = () =>
 		this.setState({
@@ -23,7 +29,7 @@ class CLStockWriteOffs extends Component {
 		});
 
 	render() {
-		const { pageTitle, theme, currentStock } = this.props;
+		const { pageTitle, theme, currentStock, pageParams } = this.props;
 		const { dialogCreateWriteOff } = this.state;
 
 		return (
@@ -46,10 +52,22 @@ class CLStockWriteOffs extends Component {
 					dialogOpen={dialogCreateWriteOff}
 					onCloseDialog={this.onCloseDialogCreateWriteOff}
 					currentStock={currentStock}
+					selectedUserId={pageParams.selectedUserId}
 				/>
 			</div>
 		);
 	}
 }
 
-export default CLStockWriteOffs;
+const mapDispatchToProps = (dispatch, ownProps) => {
+	const { currentStock } = ownProps;
+
+	return {
+		getProducts: () => dispatch(getProducts(currentStock._id)),
+	};
+};
+
+export default connect(
+	null,
+	mapDispatchToProps
+)(CLStockWriteOffs);

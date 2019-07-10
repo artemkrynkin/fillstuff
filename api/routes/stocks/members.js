@@ -220,9 +220,13 @@ membersRouter.delete(
 membersRouter.get('/mobile/member-invitation', (req, res, next) => {
 	const { memberId } = req.query;
 
+	console.log(req.query);
+
 	Stock.findOne({ 'members._id': memberId })
 		.then(async stock => {
 			let member = stock.member.id(memberId);
+
+			if (!member.isWaiting) return next({ code: 1 });
 
 			let user = new User({
 				activeStockId: stock._id,

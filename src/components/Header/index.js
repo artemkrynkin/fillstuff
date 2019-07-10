@@ -35,7 +35,7 @@ class Header extends Component {
 
 	render() {
 		const { profileMenuOpen } = this.state;
-		const { pageName, pageTitle, theme, position = 'sticky', currentUser, currentStock } = this.props;
+		const { pageName, pageTitle, theme, position = 'sticky', currentUser, currentStock, pageParams } = this.props;
 
 		let headerClasses = ClassNames({
 			header: true,
@@ -50,6 +50,7 @@ class Header extends Component {
 					theme={theme}
 					currentUser={currentUser}
 					currentStock={currentStock}
+					pageParams={pageParams}
 				/>
 				<div className="header__column_right">
 					<div className="header__column-group_right">

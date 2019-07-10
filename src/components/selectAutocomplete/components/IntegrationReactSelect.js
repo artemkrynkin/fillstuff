@@ -2,11 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import ClassNames from 'classnames';
+import { components as reactSelectComponents } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { emphasize, makeStyles, useTheme } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
-import MuiTextField from '@material-ui/core/TextField';
+import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 // import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -18,8 +20,6 @@ const useStyles = makeStyles(theme => ({
 	},
 	input: {
 		display: 'flex',
-		padding: 0,
-		height: 'auto',
 	},
 	valueContainer: {
 		display: 'flex',
@@ -38,13 +38,10 @@ const useStyles = makeStyles(theme => ({
 		padding: theme.spacing(1, 2),
 	},
 	singleValue: {
-		fontSize: 16,
+		fontSize: 13,
 	},
 	placeholder: {
-		position: 'absolute',
-		left: 2,
-		bottom: 6,
-		fontSize: 16,
+		fontSize: 13,
 	},
 	paper: {
 		position: 'absolute',
@@ -85,11 +82,11 @@ const Control = props => {
 		children,
 		innerProps,
 		innerRef,
-		selectProps: { classes, MuiTextFieldProps },
+		selectProps: { classes, TextFieldProps },
 	} = props;
 
 	return (
-		<MuiTextField
+		<TextField
 			fullWidth
 			InputProps={{
 				inputComponent,
@@ -100,7 +97,7 @@ const Control = props => {
 					...innerProps,
 				},
 			}}
-			{...MuiTextFieldProps}
+			{...TextFieldProps}
 		/>
 	);
 };
@@ -208,8 +205,26 @@ MultiValue.propTypes = {
 // 	selectProps: PropTypes.object,
 // };
 
+const ClearIndicator = props => {
+	return (
+		<reactSelectComponents.ClearIndicator {...props}>
+			<FontAwesomeIcon icon={['fal', 'times']} className="pd-selectIcon" style={{ position: 'static' }} />
+		</reactSelectComponents.ClearIndicator>
+	);
+};
+
+const DropdownIndicator = props => {
+	return (
+		<reactSelectComponents.DropdownIndicator {...props}>
+			<FontAwesomeIcon icon={['far', 'angle-down']} className="pd-selectIcon" style={{ position: 'static' }} />
+		</reactSelectComponents.DropdownIndicator>
+	);
+};
+
 const components = {
+	ClearIndicator,
 	Control,
+	DropdownIndicator,
 	// Menu,
 	MultiValue,
 	NoOptionsMessage,
@@ -233,7 +248,16 @@ const IntegrationReactSelect = props => {
 		}),
 	};
 
-	return <CreatableSelect classes={classes} styles={selectStyles} components={components} {...props} />;
+	return (
+		<CreatableSelect
+			classes={classes}
+			styles={selectStyles}
+			components={components}
+			onChange={option => (option !== null ? props.form.setFieldValue(props.field.name, option.value) : null)}
+			onBlur={props.field.onBlur}
+			{...props}
+		/>
+	);
 };
 
 export default IntegrationReactSelect;

@@ -7,8 +7,8 @@ const Schema = mongoose.Schema;
 let Product = new Schema({
 	name: {
 		type: String,
-		minlength: [2, i18n.__('Наименование товара не может быть короче 2 символов')],
-		maxlength: [100, i18n.__('Наименование товара не может превышать 100 символов')],
+		minlength: [2, i18n.__('Не может быть короче 2 символов')],
+		maxlength: [100, i18n.__('Не может превышать 100 символов')],
 		required: [true, i18n.__('Обязательное поле')],
 		trim: true,
 	},
@@ -16,24 +16,17 @@ let Product = new Schema({
 		type: Date,
 		default: Date.now,
 	},
+	archived: {
+		type: Boolean,
+		default: false,
+	},
+	stock: {
+		type: Schema.Types.ObjectId,
+		ref: 'Stock',
+	},
 	categoryId: {
 		type: String,
 		default: '',
-	},
-	amount: {
-		type: Number,
-		min: [0, 'Количество товара не может быть меньше 0'],
-		default: 0,
-	},
-	purchasePrice: {
-		type: Number,
-		min: [0, 'Цена закупки товара не может быть меньше 0'],
-		default: 0,
-	},
-	sellingPrice: {
-		type: Number,
-		min: [0, 'Цена продажи товара не может быть меньше 0'],
-		default: 0,
 	},
 	/**
 	 * штука - pce
@@ -41,19 +34,55 @@ let Product = new Schema({
 	 * рулон - npl
 	 * бутыль - bot
 	 */
-	unit: {
+	receiptUnits: {
 		type: String,
 		enum: ['pce', 'nmp', 'npl', 'bot'],
 		required: [true, i18n.__('Обязательное поле')],
 	},
+	unitIssue: {
+		type: String,
+		enum: ['pce', 'nmp'],
+	},
+	quantity: {
+		type: Number,
+		min: [0, 'Не может быть меньше 0'],
+		default: 0,
+	},
+	quantityInUnit: {
+		type: Number,
+		min: [0, 'Не может быть меньше 0'],
+	},
 	minimumBalance: {
 		type: Number,
-		min: [1, 'Неснижаемый остаток не может быть меньше 1'],
+		min: [1, 'Не может быть меньше 1'],
 		required: [true, i18n.__('Обязательное поле')],
 	},
-	shop: {
+	purchasePrice: {
+		type: Number,
+		min: [0, 'Не может быть меньше 0'],
+		default: 0,
+	},
+	sellingPrice: {
+		type: Number,
+		min: [0, 'Не может быть меньше 0'],
+		default: 0,
+	},
+	margin: {
+		type: Number,
+		min: [0, 'Не может быть меньше 0'],
+		default: 0,
+	},
+	unitPurchasePrice: {
+		type: Number,
+		min: [0, 'Не может быть меньше 0'],
+	},
+	unitSellingPrice: {
+		type: Number,
+		min: [0, 'Не может быть меньше 0'],
+	},
+	shopId: {
 		type: String,
-		required: [false, i18n.__('Обязательное поле')],
+		default: '',
 	},
 	specifications: [
 		{
@@ -67,10 +96,6 @@ let Product = new Schema({
 			},
 		},
 	],
-	stock: {
-		type: Schema.Types.ObjectId,
-		ref: 'Stock',
-	},
 });
 
 export default mongoose.model('Product', Product);

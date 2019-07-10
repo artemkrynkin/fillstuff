@@ -18,14 +18,13 @@ import Table from '@material-ui/core/Table';
 import { PDDialog, PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
 
 import { getStockStatus } from 'src/actions/stocks';
-import { getProducts } from 'src/actions/products';
 import { createWriteOff } from 'src/actions/writeOffs';
 
 import './index.styl';
 
 const writeOffSchema = Yup.object().shape({
 	productId: Yup.string().required('Обязательное поле'),
-	amount: Yup.number()
+	quantity: Yup.number()
 		// eslint-disable-next-line
 		.min(1, 'Введите расход')
 		// eslint-disable-next-line
@@ -37,19 +36,6 @@ class CreateWriteOff extends Component {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
 		currentStock: PropTypes.object.isRequired,
-	};
-
-	static defaultProps = {
-		actionType: null,
-	};
-
-	state = {
-		isLoadingSpecifications: false,
-		value: undefined,
-	};
-
-	componentDidMount = () => {
-		this.props.getProducts();
 	};
 
 	render() {
@@ -76,7 +62,7 @@ class CreateWriteOff extends Component {
 					Выбор позиции для расхода
 				</PDDialogTitle>
 				<Formik
-					initialValues={{ productId: '', amount: 0 }}
+					initialValues={{ productId: '', quantity: 0 }}
 					validationSchema={writeOffSchema}
 					validateOnBlur={false}
 					validateOnChange={false}
@@ -90,7 +76,7 @@ class CreateWriteOff extends Component {
 					}}
 					render={({ errors, touched, isSubmitting, values, setFieldValue, setFieldError }) => (
 						<Form>
-							<Table className="dialog-create-write-off__products">
+							<Table>
 								<TableHead>
 									<TableRow>
 										<TableCell>Наименование</TableCell>
@@ -107,21 +93,22 @@ class CreateWriteOff extends Component {
 													className={rowClasses(product._id, values.productId)}
 													onClick={() => {
 														if (product._id !== values.productId) {
-															setFieldError('amount');
+															setFieldError('quantity');
 															setFieldValue('productId', product._id);
-															setFieldValue('amount', 0);
+															setFieldValue('quantity', 0);
 														}
 													}}
 												>
 													<TableCell className="dialog-create-write-off__cell dialog-create-write-off__cell_name">
 														{product.name}
 													</TableCell>
-													<TableCell className="dialog-create-write-off__cell">{product.amount}</TableCell>
-													<TableCell className="dialog-create-write-off__cell dialog-create-write-off__cell_amount" align="right">
+													<TableCell className="dialog-create-write-off__cell">
+														{product.unitIssue === 'pce' ? product.quantityInUnit : product.quantity}
+													</TableCell>
+													<TableCell className="dialog-create-write-off__cell" align="right">
 														{product._id === values.productId ? (
 															<Field
-																className="dialog-create-write-off__amount-input"
-																name="amount"
+																name="quantity"
 																type="number"
 																component={TextField}
 																InputLabelProps={{
@@ -129,8 +116,8 @@ class CreateWriteOff extends Component {
 																}}
 																autoComplete="off"
 																validate={value => {
-																	if (value > product.amount) {
-																		return `Максимум для расхода: ${product.amount}`;
+																	if (value > product.quantity) {
+																		return `Максимум для расхода: ${product.quantity}`;
 																	}
 																}}
 																fullWidth
@@ -144,7 +131,7 @@ class CreateWriteOff extends Component {
 											<TableRow>
 												<TableCell colSpan={5}>
 													<Typography variant="caption" align="center" component="div" style={{ padding: '1px 0' }}>
-														Еще не создано ни одного товара.
+														Еще не создано ни одной позиции.
 													</Typography>
 												</TableCell>
 											</TableRow>
@@ -189,12 +176,11 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentStock } = ownProps;
+	const { currentStock, selectedUserId } = ownProps;
 
 	return {
 		getStockStatus: () => dispatch(getStockStatus(currentStock._id)),
-		getProducts: () => dispatch(getProducts(currentStock._id)),
-		createWriteOff: (userId, values) => dispatch(createWriteOff(currentStock._id, userId, values)),
+		createWriteOff: (userId, values) => dispatch(createWriteOff(currentStock._id, userId, selectedUserId, values)),
 	};
 };
 

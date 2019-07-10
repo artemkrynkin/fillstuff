@@ -124,7 +124,7 @@ class Categories extends Component {
 		return (
 			<CardPaper
 				elevation={1}
-				leftContent="Категории товаров"
+				leftContent="Категории"
 				rightContent={
 					checkPermissions(currentUserRole, ['products.control']) ? (
 						<IconButton

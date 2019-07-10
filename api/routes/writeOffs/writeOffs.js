@@ -33,17 +33,29 @@ writeOffsRouter.get(
 
 writeOffsRouter.post(
 	'/product',
-	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.scanning']),
+	// isAuthedResolver,
+	// (req, res, next) => hasPermissionsInStock(req, res, next, ['products.scanning']),
 	async (req, res, next) => {
-		const { stockId, productId, userId, amount } = req.body;
+		const { stockId, productId, userId, quantity = req.body.quantity || 1 } = req.body;
 
-		return Product.findByIdAndUpdate(productId, { $inc: { amount: amount ? -amount : -1 } }, { runValidators: true })
+		return Product.findById(productId)
 			.then(async product => {
+				await Product.findByIdAndUpdate(
+					productId,
+					{
+						$inc: {
+							[product.unitIssue === 'pce' ? 'quantityInUnit' : 'quantity']: -quantity,
+						},
+					},
+					{
+						runValidators: true,
+					}
+				).catch(err => next(err));
+
 				await Stock.findByIdAndUpdate(stockId, {
 					$inc: {
-						'status.unitsProduct': amount ? -amount : -1,
-						'status.stockCost': -(amount * product.purchasePrice),
+						'status.unitsProduct': -quantity,
+						'status.stockCost': -(quantity * (product.unitIssue === 'pce' ? product.unitPurchasePrice : product.purchasePrice)),
 					},
 				}).catch(err =>
 					next({
@@ -56,7 +68,7 @@ writeOffsRouter.post(
 					stock: stockId,
 					product: productId,
 					user: userId,
-					amount: amount,
+					quantity: quantity,
 				});
 
 				writeOff

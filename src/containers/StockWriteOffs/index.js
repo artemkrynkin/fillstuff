@@ -27,18 +27,28 @@ class StockWriteOffs extends Component {
 			},
 		});
 
-		const { currentUser, currentStock, currentUserWriteOffs } = this.props;
+		const {
+			currentUser,
+			currentStock,
+			match: {
+				params: { selectedUserId },
+			},
+		} = this.props;
+
+		const pageParams = {
+			selectedUserId,
+		};
 
 		return (
 			<div className="page__wrap">
 				<Head title={title} description={description} />
 
-				<Header pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
+				<Header pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} pageParams={pageParams} />
 				<div className="page__content stock-write-offs">
 					<div className="page__inner-content">
 						<Grid container direction="row" justify="center" alignItems="flex-start" spacing={2}>
 							<Grid item xs={12} lg={9}>
-								<WriteOffs currentUser={currentUser} currentStock={currentStock} currentUserWriteOffs={currentUserWriteOffs} />
+								<WriteOffs currentUser={currentUser} currentStock={currentStock} selectedUserId={selectedUserId} />
 							</Grid>
 							<Grid item xs={12} lg={3}>
 								<Users currentUser={currentUser} currentStock={currentStock} />

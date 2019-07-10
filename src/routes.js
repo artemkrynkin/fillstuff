@@ -8,7 +8,7 @@ import generateMetaInfo from 'shared/generate-meta-info';
 
 import { CLIENT_URL } from './api/constants';
 
-import { PosterDateTheme } from 'src/helpers/posterdateMuiTheme';
+import { BliksideTheme } from 'src/helpers/MuiTheme';
 import signedOutFallback from 'src/helpers/signed-out-fallback';
 
 import AuthViewHandler from 'src/components/authViewHandler';
@@ -59,7 +59,7 @@ const StockDashboardFallback = signedOutFallback(
 const StockAvailabilityFallback = signedOutFallback(
 	props => (
 		<StockPageFallback {...props}>
-			<StockAvailability currentStock={props.currentStock} currentCategory={props.match.params.categoryId} />
+			<StockAvailability currentStock={props.currentStock} match={props.match} />
 		</StockPageFallback>
 	),
 	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/categories`} />} />
@@ -68,7 +68,7 @@ const StockAvailabilityFallback = signedOutFallback(
 const StockWriteOffsFallback = signedOutFallback(
 	props => (
 		<StockPageFallback {...props}>
-			<StockWriteOffs currentStock={props.currentStock} currentUserWriteOffs={props.match.params.userId} />
+			<StockWriteOffs currentStock={props.currentStock} match={props.match} />
 		</StockPageFallback>
 	),
 	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/categories`} />} />
@@ -133,7 +133,7 @@ class Routes extends Component {
 		};
 
 		return (
-			<ThemeProvider theme={PosterDateTheme}>
+			<ThemeProvider theme={BliksideTheme}>
 				{/* Метатеги по умолчанию, переопределяемые чем-нибудь вниз по дереву */}
 				<Head title={title} description={description} />
 
@@ -182,14 +182,14 @@ class Routes extends Component {
 						sensitive
 					/>
 					<Route
-						path={['/stocks/:stockId/categories', '/stocks/:stockId/categories/:categoryId']}
+						path={['/stocks/:stockId/categories', '/stocks/:stockId/categories/:selectedCategoryId']}
 						render={props => <StockAvailabilityFallback {...props} currentStock={findCurrentStock(props.match)} />}
 						exact
 						strict
 						sensitive
 					/>
 					<Route
-						path={['/stocks/:stockId/write-offs', '/stocks/:stockId/write-offs/:userId']}
+						path={['/stocks/:stockId/write-offs', '/stocks/:stockId/write-offs/:selectedUserId']}
 						render={props => <StockWriteOffsFallback {...props} currentStock={findCurrentStock(props.match)} />}
 						exact
 						strict

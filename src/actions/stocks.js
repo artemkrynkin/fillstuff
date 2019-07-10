@@ -303,9 +303,36 @@ export const deleteCategory = (stockId, categoryId) => {
 	};
 };
 
+export const createProductShop = (stockId, values) => {
+	return dispatch => {
+		dispatch({ type: 'REQUEST_PRODUCT_SHOPS' });
+
+		return axios
+			.post(`/api/stocks/${stockId}/product-shops`, values)
+			.then(response => {
+				dispatch({
+					type: 'CREATE_PRODUCT_SHOP',
+					payload: {
+						stockId,
+						shop: response.data,
+					},
+				});
+
+				return Promise.resolve({ status: 'success', data: response.data });
+			})
+			.catch(error => {
+				if (error.response) {
+					return Promise.resolve({ status: 'error' });
+				} else {
+					console.error(error);
+				}
+			});
+	};
+};
+
 export const createProductSpecification = (stockId, schemaName, values) => {
 	return dispatch => {
-		dispatch({ type: 'REQUEST_PRODUCT_SPECIFICATION' });
+		dispatch({ type: 'REQUEST_PRODUCT_SPECIFICATIONS' });
 
 		return axios
 			.post(`/api/stocks/${stockId}/product-specifications/${schemaName}`, values)
@@ -319,7 +346,7 @@ export const createProductSpecification = (stockId, schemaName, values) => {
 					},
 				});
 
-				return Promise.resolve({ status: 'success' });
+				return Promise.resolve({ status: 'success', data: response.data });
 			})
 			.catch(error => {
 				if (error.response) {

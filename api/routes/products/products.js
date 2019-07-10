@@ -16,7 +16,10 @@ productsRouter.get(
 	(req, res, next) => {
 		const { stockId, categoryId } = req.query;
 
-		const conditions = { stock: stockId };
+		const conditions = {
+			stock: stockId,
+			archived: false,
+		};
 
 		if (categoryId) conditions.categoryId = categoryId;
 
@@ -43,13 +46,13 @@ productsRouter.post(
 		return product
 			.save()
 			.then(async product => {
-				const { amount, purchasePrice } = product;
+				const { unitIssue, quantity, quantityInUnit, purchasePrice } = product;
 
 				await Stock.findByIdAndUpdate(stockId, {
 					$inc: {
 						'status.numberProducts': 1,
-						'status.unitsProduct': amount,
-						'status.stockCost': amount * purchasePrice,
+						'status.unitsProduct': unitIssue === 'pce' ? quantityInUnit : quantity,
+						'status.stockCost': quantity * purchasePrice,
 					},
 				}).catch(err =>
 					next({
@@ -74,14 +77,14 @@ productsRouter.put(
 	isAuthedResolver,
 	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
 	(req, res, next) => {
-		const { amount, purchasePrice } = req.body;
+		const { unitIssue, quantity, quantityInUnit, purchasePrice } = req.body;
 
 		Product.findByIdAndUpdate(req.params.productId, { $set: req.body }, { runValidators: true })
 			.then(async product => {
 				await Stock.findByIdAndUpdate(product.stock, {
 					$inc: {
-						'status.unitsProduct': amount - product.amount,
-						'status.stockCost': (amount - product.amount) * purchasePrice,
+						'status.unitsProduct': unitIssue === 'pce' ? quantityInUnit - product.quantityInUnit : quantity - product.quantity,
+						'status.stockCost': quantity * purchasePrice - product.quantity * product.purchasePrice,
 					},
 				}).catch(err =>
 					next({
@@ -106,13 +109,13 @@ productsRouter.delete(
 	isAuthedResolver,
 	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
 	(req, res, next) => {
-		Product.findByIdAndDelete(req.params.productId)
+		Product.findByIdAndUpdate(req.params.productId, { archived: true })
 			.then(async product => {
 				await Stock.findByIdAndUpdate(product.stock, {
 					$inc: {
 						'status.numberProducts': -1,
-						'status.unitsProduct': -product.amount,
-						'status.stockCost': -(product.amount * product.purchasePrice),
+						'status.unitsProduct': product.unitIssue === 'pce' ? -product.quantityInUnit : -product.quantity,
+						'status.stockCost': -(product.quantity * product.purchasePrice),
 					},
 				}).catch(err =>
 					next({

@@ -17,12 +17,12 @@ import { getWriteOffs } from 'src/actions/writeOffs';
 
 class WriteOffs extends Component {
 	UNSAFE_componentWillMount() {
-		this.props.getWriteOffs(this.props.currentUserWriteOffs);
+		this.props.getWriteOffs(this.props.selectedUserId);
 	}
 
 	UNSAFE_componentWillUpdate(nextProps, nextState, nextContext) {
-		if (this.props.currentUserWriteOffs !== nextProps.currentUserWriteOffs) {
-			this.props.getWriteOffs(nextProps.currentUserWriteOffs);
+		if (this.props.selectedUserId !== nextProps.selectedUserId) {
+			this.props.getWriteOffs(nextProps.selectedUserId);
 		}
 	}
 
@@ -57,7 +57,7 @@ class WriteOffs extends Component {
 									<TableRow key={writeOff._id}>
 										<TableCell>{writeOff.product.name}</TableCell>
 										<TableCell align="right">{writeOff.user.name || writeOff.user.email}</TableCell>
-										<TableCell align="right">{writeOff.amount}</TableCell>
+										<TableCell align="right">{writeOff.quantity}</TableCell>
 										<TableCell align="right">{moment(writeOff.createdAt).format('DD MMMM YYYY в HH:mm')}</TableCell>
 									</TableRow>
 								))

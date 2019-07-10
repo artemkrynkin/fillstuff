@@ -18,7 +18,7 @@ function securityMiddleware(server, { enableNonce, enableCSP }) {
 	// 			// 5 mins in seconds
 	// 			// we will scale this up incrementally to ensure we dont break the
 	// 			// app for end users
-	// 			// see deployment recommendations here https://hstspreload.org/?domain=posterdate.com
+	// 			// see deployment recommendations here https://hstspreload.org/?domain=blikside.com
 	// 			maxAge: 63072000,
 	// 			includeSubDomains: true,
 	// 			preload: true,

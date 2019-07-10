@@ -28,19 +28,29 @@ class StockAvailability extends Component {
 			},
 		});
 
-		const { currentUser, currentStock, currentCategory } = this.props;
+		const {
+			currentUser,
+			currentStock,
+			match: {
+				params: { selectedCategoryId },
+			},
+		} = this.props;
+
+		const pageParams = {
+			selectedCategoryId,
+		};
 
 		return (
 			<div className="page__wrap">
 				<Head title={title} description={description} />
 
-				<Header pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
+				<Header pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} pageParams={pageParams} />
 				<div className="page__content stock-availability">
 					<div className="page__inner-content">
 						<Grid container direction="row" justify="center" alignItems="flex-start" spacing={2}>
 							<Grid item xs={12} lg={9}>
 								<StockStatus currentUser={currentUser} currentStock={currentStock} />
-								<Products currentUser={currentUser} currentStock={currentStock} currentCategory={currentCategory} />
+								<Products currentUser={currentUser} currentStock={currentStock} selectedCategoryId={selectedCategoryId} />
 							</Grid>
 							<Grid item xs={12} lg={3}>
 								<Categories currentUser={currentUser} currentStock={currentStock} />

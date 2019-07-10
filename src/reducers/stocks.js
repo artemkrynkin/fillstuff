@@ -11,7 +11,8 @@ const stocks = (
 		case 'REQUEST_STOCKS':
 		case 'REQUEST_MEMBERS':
 		case 'REQUEST_CATEGORIES':
-		case 'REQUEST_PRODUCT_SPECIFICATION': {
+		case 'REQUEST_PRODUCT_SHOPS':
+		case 'REQUEST_PRODUCT_SPECIFICATIONS': {
 			return {
 				...state,
 				isFetching: true,
@@ -138,10 +139,21 @@ const stocks = (
 				isFetching: false,
 			};
 		}
+		case 'CREATE_PRODUCT_SHOP': {
+			const stockIndex = state.data.findIndex(stock => stock._id === action.payload.stockId);
+
+			state.data[stockIndex].productShops.push(action.payload.shop);
+			state.data[stockIndex].productShops = cloneDeep(state.data[stockIndex].productShops);
+
+			return {
+				...state,
+				isFetching: false,
+			};
+		}
 		case 'CREATE_PRODUCT_SPECIFICATION': {
 			const stockIndex = state.data.findIndex(stock => stock._id === action.payload.stockId);
 
-			state.data[stockIndex].productSpecifications[action.payload.schemaName] = action.payload.specification;
+			state.data[stockIndex].productSpecifications[action.payload.schemaName].push(action.payload.specification);
 			state.data[stockIndex].productSpecifications = cloneDeep(state.data[stockIndex].productSpecifications);
 
 			return {

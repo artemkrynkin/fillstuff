@@ -30,14 +30,13 @@ categoriesRouter.put(
 	isAuthedResolver,
 	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
 	(req, res, next) => {
-		const { name, color } = req.body;
+		const { name } = req.body;
 
 		Stock.findById(req.params.stockId)
 			.then(stock => {
 				const categoryIndex = stock.categories.findIndex(category => String(category._id) === req.params.categoryId);
 
 				stock.categories[categoryIndex].name = name;
-				stock.categories[categoryIndex].color = color;
 
 				return Stock.findByIdAndUpdate(req.params.stockId, { $set: { categories: stock.categories } }, { runValidators: true })
 					.then(() => res.json('success'))

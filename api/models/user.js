@@ -17,7 +17,6 @@ let User = new Schema({
 	},
 	name: {
 		type: String,
-		minlength: [2, i18n.__('Имя не может быть короче 2 символов')],
 		maxlength: [60, i18n.__('Имя не может быть длинее 60 символов')],
 		trim: true,
 		default: '',

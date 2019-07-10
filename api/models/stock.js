@@ -57,11 +57,6 @@ let Stock = new Schema({
 	],
 	categories: [
 		{
-			color: {
-				type: String,
-				enum: colorPalette.colorsCategories,
-				required: [true, i18n.__('Обязательное поле')],
-			},
 			name: {
 				type: String,
 				minlength: [1, i18n.__('Название категории не может быть короче 1 символа')],

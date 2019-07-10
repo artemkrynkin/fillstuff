@@ -11,8 +11,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormLabel from '@material-ui/core/FormLabel';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -20,7 +18,6 @@ import MenuList from '@material-ui/core/MenuList';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
 
-import colorPalette from 'shared/colorPalette';
 import { checkPermissions, findMemberInStock } from 'shared/roles-access-rights';
 
 import CardPaper from 'src/components/CardPaper';
@@ -31,9 +28,6 @@ import { createCategory, editCategory, deleteCategory } from 'src/actions/stocks
 import './Categories.styl';
 
 const createEditCategorySchema = Yup.object().shape({
-	color: Yup.string()
-		.oneOf(colorPalette.colorsCategories, 'Значение отсутствует в списке доступных цветов')
-		.required('Обязательное поле'),
 	name: Yup.string()
 		// eslint-disable-next-line
 		.min(2, 'Название категории не может быть короче ${min} символов')
@@ -117,10 +111,6 @@ class Categories extends Component {
 			dialogDeleteCategory,
 		} = this.state;
 
-		const initialColors = colorPalette.colorsCategories.filter(
-			color => !~categories.findIndex(category => category.color === color)
-		);
-
 		return (
 			<CardPaper
 				elevation={1}
@@ -149,7 +139,6 @@ class Categories extends Component {
 									activeClassName="sa-categories__link_active"
 									to={`/stocks/${currentUser.activeStockId}/categories/${category._id}`}
 								>
-									<div className="sa-categories__color" style={{ backgroundColor: category.color }} />
 									<div className="sa-categories__name">{category.name}</div>
 								</NavLink>
 								{checkPermissions(currentUserRole, ['products.control']) ? (
@@ -216,11 +205,7 @@ class Categories extends Component {
 						{dialogCreateEditActionType === 'create' ? 'Добавление категории' : 'Редактирование категории'}
 					</PDDialogTitle>
 					<Formik
-						initialValues={
-							dialogCreateEditActionType === 'create'
-								? { name: '', color: initialColors.length ? initialColors[0] : colorPalette.colorsCategories[0] }
-								: selectedCategory
-						}
+						initialValues={dialogCreateEditActionType === 'create' ? { name: '' } : selectedCategory}
 						validationSchema={createEditCategorySchema}
 						validateOnBlur={false}
 						validateOnChange={false}
@@ -243,7 +228,7 @@ class Categories extends Component {
 						render={({ errors, touched, isSubmitting, values }) => (
 							<Form>
 								<DialogContent>
-									<Grid className="pd-rowGridFormLabelControl">
+									<Grid>
 										<Field
 											name="name"
 											label="Название категории"
@@ -255,20 +240,6 @@ class Categories extends Component {
 											autoFocus
 											fullWidth
 										/>
-									</Grid>
-									<Grid>
-										<FormLabel>Цвет категории:</FormLabel>
-										<Grid className="sa-categories-dialog__colors-list" wrap="wrap" container>
-											{colorPalette.colorsCategories.map((color, index) => (
-												<label key={index} className="sa-categories-dialog__color-label">
-													<Field type="radio" name="color" value={color} checked={color === values.color} />
-													<div className="sa-categories-dialog__color" style={{ backgroundColor: color }}>
-														<FontAwesomeIcon icon={['far', 'check']} />
-													</div>
-												</label>
-											))}
-										</Grid>
-										{Boolean(errors.color) ? <FormHelperText error={true}>{errors.color}</FormHelperText> : null}
 									</Grid>
 								</DialogContent>
 								<PDDialogActions
@@ -309,8 +280,7 @@ class Categories extends Component {
 					<DialogContent>
 						{selectedCategory ? (
 							<DialogContentText>
-								Вы уверены, что хотите удалить категорию <b style={{ color: selectedCategory.color }}>{selectedCategory.name}</b>{' '}
-								из списка?
+								Вы уверены, что хотите удалить категорию <b>{selectedCategory.name}</b> из списка?
 							</DialogContentText>
 						) : null}
 					</DialogContent>

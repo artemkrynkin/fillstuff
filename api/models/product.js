@@ -24,19 +24,13 @@ let Product = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'Stock',
 	},
-	categoryId: {
-		type: String,
-		default: '',
-	},
 	/**
 	 * штука - pce
 	 * упаковка - nmp
-	 * рулон - npl
-	 * бутыль - bot
 	 */
 	receiptUnits: {
 		type: String,
-		enum: ['pce', 'nmp', 'npl', 'bot'],
+		enum: ['pce', 'nmp'],
 		required: [true, i18n.__('Обязательное поле')],
 	},
 	unitIssue: {
@@ -47,6 +41,10 @@ let Product = new Schema({
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,
+	},
+	quantityPackages: {
+		type: Number,
+		min: [0, 'Не может быть меньше 0'],
 	},
 	quantityInUnit: {
 		type: Number,

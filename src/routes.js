@@ -62,7 +62,7 @@ const StockAvailabilityFallback = signedOutFallback(
 			<StockAvailability currentStock={props.currentStock} match={props.match} />
 		</StockPageFallback>
 	),
-	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/categories`} />} />
+	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/availability`} />} />
 );
 
 const StockWriteOffsFallback = signedOutFallback(
@@ -71,7 +71,7 @@ const StockWriteOffsFallback = signedOutFallback(
 			<StockWriteOffs currentStock={props.currentStock} match={props.match} />
 		</StockPageFallback>
 	),
-	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/categories`} />} />
+	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/write-offs`} />} />
 );
 
 const StockStatisticsFallback = signedOutFallback(
@@ -182,7 +182,7 @@ class Routes extends Component {
 						sensitive
 					/>
 					<Route
-						path={['/stocks/:stockId/categories', '/stocks/:stockId/categories/:selectedCategoryId']}
+						path="/stocks/:stockId/availability"
 						render={props => <StockAvailabilityFallback {...props} currentStock={findCurrentStock(props.match)} />}
 						exact
 						strict

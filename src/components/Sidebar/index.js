@@ -94,8 +94,8 @@ class Sidebar extends Component {
 
 								<ExpansionPanel
 									className="sidebar__menu-expansion"
-									expanded={activePage === 'categories' || activePage === 'write-offs'}
-									onChange={this.onChangeUrl('categories')}
+									expanded={activePage === 'availability' || activePage === 'write-offs'}
+									onChange={this.onChangeUrl('availability')}
 								>
 									<ExpansionPanelSummary className="sidebar__menu-expansion-summary">
 										<div className="sidebar__menu-expansion-title">
@@ -110,7 +110,7 @@ class Sidebar extends Component {
 											<NavLink
 												className="sidebar__menu-link"
 												activeClassName="sidebar__menu-link_active-expansion"
-												to={`/stocks/${activeStockId}/categories`}
+												to={`/stocks/${activeStockId}/availability`}
 											>
 												<div className="sidebar__menu-icon">
 													<FontAwesomeIcon icon={['far', 'inventory']} />

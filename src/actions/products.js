@@ -1,16 +1,14 @@
 import axios from 'axios';
 
-export const getProducts = (stockId, categoryId) => {
+export const getProducts = stockId => {
 	return dispatch => {
 		dispatch({ type: 'REQUEST_PRODUCTS' });
 
-		const requestParams = { stockId };
-
-		if (categoryId) requestParams.categoryId = categoryId;
-
 		return axios
 			.get('/api/products', {
-				params: requestParams,
+				params: {
+					stockId,
+				},
 			})
 			.then(response => {
 				dispatch({
@@ -31,19 +29,17 @@ export const getProducts = (stockId, categoryId) => {
 	};
 };
 
-export const createProduct = (stockId, selectedCategoryId, values) => {
+export const createProduct = (stockId, values) => {
 	return dispatch => {
 		return axios
 			.post(`/api/products?stockId=${stockId}`, values)
 			.then(async response => {
-				if (selectedCategoryId === undefined || values.categoryId === selectedCategoryId) {
-					const { data: product } = response;
+				const { data: product } = response;
 
-					await dispatch({
-						type: 'CREATE_PRODUCT',
-						payload: product,
-					});
-				}
+				await dispatch({
+					type: 'CREATE_PRODUCT',
+					payload: product,
+				});
 
 				return Promise.resolve({ status: 'success' });
 			})

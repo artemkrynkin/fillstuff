@@ -63,7 +63,6 @@ class CLStockAvailability extends Component {
 					dialogOpen={dialogCreateProduct}
 					onCloseDialog={this.onCloseDialogCreateProduct}
 					currentStock={currentStock}
-					selectedCategoryId={pageParams.selectedCategoryId}
 				/>
 
 				<PrintQRCodesProduct

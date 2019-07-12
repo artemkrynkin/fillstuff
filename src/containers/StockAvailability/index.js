@@ -11,7 +11,6 @@ import { withCurrentUser } from 'src/components/withCurrentUser';
 
 import StockStatus from './components/StockStatus';
 import Products from './components/Products';
-import Categories from './components/Categories';
 
 import './index.styl';
 
@@ -28,32 +27,19 @@ class StockAvailability extends Component {
 			},
 		});
 
-		const {
-			currentUser,
-			currentStock,
-			match: {
-				params: { selectedCategoryId },
-			},
-		} = this.props;
-
-		const pageParams = {
-			selectedCategoryId,
-		};
+		const { currentUser, currentStock } = this.props;
 
 		return (
 			<div className="page__wrap">
 				<Head title={title} description={description} />
 
-				<Header pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} pageParams={pageParams} />
+				<Header pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
 				<div className="page__content stock-availability">
 					<div className="page__inner-content">
 						<Grid container direction="row" justify="center" alignItems="flex-start" spacing={2}>
-							<Grid item xs={12} lg={9}>
+							<Grid item xs={12}>
 								<StockStatus currentUser={currentUser} currentStock={currentStock} />
-								<Products currentUser={currentUser} currentStock={currentStock} selectedCategoryId={selectedCategoryId} />
-							</Grid>
-							<Grid item xs={12} lg={3}>
-								<Categories currentUser={currentUser} currentStock={currentStock} />
+								<Products currentUser={currentUser} currentStock={currentStock} />
 							</Grid>
 						</Grid>
 					</div>

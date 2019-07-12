@@ -45,7 +45,7 @@ const productSchema = Yup.object().shape({
 		.max(100, 'Не может превышать ${max} символов')
 		.required('Обязательное поле'),
 	receiptUnits: Yup.string()
-		.oneOf(['pce', 'nmp', 'npl', 'bot'], 'Значение отсутствует в списке доступных единиц')
+		.oneOf(['pce', 'nmp'], 'Значение отсутствует в списке доступных единиц')
 		.required('Обязательное поле'),
 	unitIssue: Yup.string()
 		.when('receiptUnits', (value, schema) => {
@@ -58,6 +58,14 @@ const productSchema = Yup.object().shape({
 		// eslint-disable-next-line
 		.min(0, 'Не может быть меньше ${min}')
 		.required('Обязательное поле'),
+	quantityPackages: Yup.number().when('receiptUnits', (value, schema) => {
+		return value === 'nmp'
+			? schema
+					// eslint-disable-next-line
+					.min(0, 'Не может быть меньше ${min}')
+					.required('Обязательное поле')
+			: schema;
+	}),
 	quantityInUnit: Yup.number().when('receiptUnits', (value, schema) => {
 		return value === 'nmp'
 			? schema
@@ -138,7 +146,6 @@ class CreateEditProduct extends Component {
 
 		const initialValues = {
 			name: '',
-			categoryId: '',
 			receiptUnits: '',
 			quantity: 0,
 			minimumBalance: 0,
@@ -190,51 +197,17 @@ class CreateEditProduct extends Component {
 						<Form>
 							<DialogContent>
 								<Grid className="pd-rowGridFormLabelControl" style={{ marginBottom: 12 }} container spacing={2}>
-									<Grid xs={6} item>
-										<Field
-											name="name"
-											label="Наименование"
-											component={TextField}
-											InputLabelProps={{
-												shrink: true,
-											}}
-											autoComplete="off"
-											autoFocus
-											fullWidth
-										/>
-									</Grid>
-									<Grid xs={6} item>
-										<FormControl fullWidth>
-											<InputLabel error={Boolean(errors.categoryId)} shrink>
-												Категория
-											</InputLabel>
-											<Field
-												name="categoryId"
-												component={Select}
-												IconComponent={() => <FontAwesomeIcon icon={['far', 'angle-down']} className="pd-selectIcon" />}
-												error={Boolean(errors.categoryId)}
-												MenuProps={{
-													elevation: 2,
-													transitionDuration: 150,
-													TransitionComponent: Fade,
-												}}
-												displayEmpty
-												disabled={!currentStock.categories.length}
-											>
-												<MenuItem value="">Без категории</MenuItem>
-												{currentStock.categories.map((category, index) => {
-													return (
-														<MenuItem key={category._id} value={category._id}>
-															{category.name}
-														</MenuItem>
-													);
-												})}
-											</Field>
-											{typeof errors.categoryId === 'string' ? (
-												<FormHelperText error={true}>{errors.categoryId}</FormHelperText>
-											) : null}
-										</FormControl>
-									</Grid>
+									<Field
+										name="name"
+										label="Наименование"
+										component={TextField}
+										InputLabelProps={{
+											shrink: true,
+										}}
+										autoComplete="off"
+										autoFocus
+										fullWidth
+									/>
 								</Grid>
 								<Grid className="pd-rowGridFormLabelControl" style={{ marginBottom: 12 }} container spacing={2}>
 									<Grid xs={values.receiptUnits !== 'nmp' ? 4 : 3} item>
@@ -259,8 +232,6 @@ class CreateEditProduct extends Component {
 												</MenuItem>
 												<MenuItem value="pce">Штука</MenuItem>
 												<MenuItem value="nmp">Упаковка</MenuItem>
-												<MenuItem value="npl">Рулон</MenuItem>
-												<MenuItem value="bot">Бутыль</MenuItem>
 											</Field>
 											{typeof errors.receiptUnits === 'string' ? (
 												<FormHelperText error={true}>{errors.receiptUnits}</FormHelperText>
@@ -300,25 +271,41 @@ class CreateEditProduct extends Component {
 											</FormControl>
 										</Grid>
 									) : null}
-									<Grid xs={values.receiptUnits !== 'nmp' ? 4 : 2} item>
-										<Field
-											name="quantity"
-											type="number"
-											label="Количество"
-											component={TextField}
-											InputLabelProps={{
-												shrink: true,
-											}}
-											autoComplete="off"
-											fullWidth
-										/>
-									</Grid>
 									{values.receiptUnits === 'nmp' ? (
+										<Grid xs={values.unitIssue === 'pce' ? 2 : 4} item>
+											<Field
+												name="quantityPackages"
+												type="number"
+												label="Количество упаковок"
+												component={TextField}
+												InputLabelProps={{
+													shrink: true,
+												}}
+												autoComplete="off"
+												fullWidth
+											/>
+										</Grid>
+									) : (
+										<Grid xs={4} item>
+											<Field
+												name="quantity"
+												type="number"
+												label="Количество"
+												component={TextField}
+												InputLabelProps={{
+													shrink: true,
+												}}
+												autoComplete="off"
+												fullWidth
+											/>
+										</Grid>
+									)}
+									{values.receiptUnits === 'nmp' && values.unitIssue === 'pce' ? (
 										<Grid xs={2} item>
 											<Field
 												name="quantityInUnit"
 												type="number"
-												label="Штук в единице"
+												label="Штук в упаковке"
 												inputProps={{
 													value: values.quantityInUnit || 0,
 												}}
@@ -335,7 +322,7 @@ class CreateEditProduct extends Component {
 										<Field
 											name="minimumBalance"
 											type="number"
-											label="Мин. остаток"
+											label={`Мин. остаток в ${values.unitIssue === 'nmp' ? 'упаковках' : 'штуках'}`}
 											component={TextField}
 											InputLabelProps={{
 												shrink: true,
@@ -598,14 +585,14 @@ class CreateEditProduct extends Component {
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentStock, selectedCategoryId } = ownProps;
+	const { currentStock } = ownProps;
 
 	return {
 		getStockStatus: () => dispatch(getStockStatus(currentStock._id)),
 		createProductShop: values => dispatch(createProductShop(currentStock._id, values)),
 		createProductSpecification: (schemaName, values) =>
 			dispatch(createProductSpecification(currentStock._id, schemaName, values)),
-		createProduct: values => dispatch(createProduct(currentStock._id, selectedCategoryId, values)),
+		createProduct: values => dispatch(createProduct(currentStock._id, values)),
 		editProduct: (productId, newValues) => dispatch(editProduct(productId, newValues)),
 	};
 };

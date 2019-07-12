@@ -14,16 +14,12 @@ productsRouter.get(
 	isAuthedResolver,
 	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
 	(req, res, next) => {
-		const { stockId, categoryId } = req.query;
+		const { stockId } = req.query;
 
-		const conditions = {
+		Product.find({
 			stock: stockId,
 			archived: false,
-		};
-
-		if (categoryId) conditions.categoryId = categoryId;
-
-		Product.find(conditions)
+		})
 			.collation({ locale: 'ru', strength: 3 })
 			.sort({ name: 1 })
 			.then(products => setTimeout(() => res.json(products), 300))

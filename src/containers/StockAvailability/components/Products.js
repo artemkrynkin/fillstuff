@@ -98,14 +98,14 @@ class Products extends Component {
 		});
 
 	UNSAFE_componentWillMount() {
-		this.props.getProducts(this.props.selectedCategoryId);
+		this.props.getProducts();
 	}
 
-	UNSAFE_componentWillUpdate(nextProps, nextState, nextContext) {
-		if (this.props.selectedCategoryId !== nextProps.selectedCategoryId) {
-			this.props.getProducts(nextProps.selectedCategoryId);
-		}
-	}
+	// UNSAFE_componentWillUpdate(nextProps, nextState, nextContext) {
+	// 	if (this.props.selectedCategoryId !== nextProps.selectedCategoryId) {
+	// 		this.props.getProducts(nextProps.selectedCategoryId);
+	// 	}
+	// }
 
 	render() {
 		const {
@@ -117,7 +117,6 @@ class Products extends Component {
 				isFetching: isLoadingProducts,
 				// error: errorProducts
 			},
-			// categories = currentStock.categories,
 		} = this.props;
 
 		const { productActionsMenuOpen, selectedProduct, dialogEditProduct, dialogDeleteProduct, dialogQRCodeProduct } = this.state;
@@ -331,7 +330,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 	return {
 		getStockStatus: () => dispatch(getStockStatus(currentStock._id)),
-		getProducts: selectedCategoryId => dispatch(getProducts(currentStock._id, selectedCategoryId)),
+		getProducts: () => dispatch(getProducts(currentStock._id)),
 		deleteProduct: productId => dispatch(deleteProduct(currentStock._id, productId)),
 	};
 };

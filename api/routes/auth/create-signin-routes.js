@@ -8,13 +8,13 @@
 import passport from 'passport';
 
 import { URL } from 'url';
-import isPosterdateUrl from 'api/utils/is-posterdate-url';
+import isBliksideUrl from 'api/utils/is-blikside-url';
 import { timeout } from 'shared/utils';
 
 const debug = require('debug')('shared:middlewares:logging');
 
 const IS_PROD = process.env.NODE_ENV === 'production';
-const FALLBACK_URL = IS_PROD ? 'https://dev.posterdate.com/stocks' : 'http://localhost:3000/stocks';
+const FALLBACK_URL = IS_PROD ? 'https://blikside.com/stocks' : 'http://localhost:3000/stocks';
 
 // Strategy: 'local' | 'vk'
 export const createSigninRoutes = (strategy, strategyOptions) => {
@@ -47,7 +47,7 @@ export const createSigninRoutes = (strategy, strategyOptions) => {
 		// and passing the right options
 		main: (req, ...rest) => {
 			let url = FALLBACK_URL;
-			if (typeof req.query.r === 'string' && isPosterdateUrl(req.query.r)) {
+			if (typeof req.query.r === 'string' && isBliksideUrl(req.query.r)) {
 				url = req.query.r;
 			}
 

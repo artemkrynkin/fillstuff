@@ -1,5 +1,5 @@
 {
-  "name": "posterdate",
+  "name": "blikside",
   "version": "0.1.2",
   "private": true,
   "devDependencies": {
@@ -36,8 +36,8 @@
     "dragula": "^3.7.2",
     "express": "^4.17.1",
     "express-enforces-ssl": "^1.1.0",
-    "formik": "1.5.7",
-    "formik-material-ui": "0.0.18",
+    "formik": "1.5.8",
+    "formik-material-ui": "0.0.19",
     "helmet": "^3.18.0",
     "history": "^4.9.0",
     "hoist-non-react-statics": "^3.3.0",
@@ -53,7 +53,7 @@
     "method-override": "^3.0.0",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.25",
-    "mongoose": "5.6.1",
+    "mongoose": "5.6.4",
     "mongoose-findorcreate": "^3.0.0",
     "multer": "^1.4.1",
     "passport": "^0.4.0",

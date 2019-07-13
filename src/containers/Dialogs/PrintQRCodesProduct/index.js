@@ -51,7 +51,7 @@ class PrintQRCodesProduct extends Component {
 				}),
 				{
 					margin: 10,
-					width: 500,
+					width: 1000,
 				}
 			)
 				.then(url => {
@@ -66,6 +66,8 @@ class PrintQRCodesProduct extends Component {
 	onGenerateAndSavePDF = (actions, products) => {
 		const doc = new jsPDF();
 
+		let currentPage = 0;
+
 		if (products.length > 1) {
 			for (let p = 0; p < products.length; p++) {
 				if (p > 0) doc.addPage();
@@ -73,20 +75,51 @@ class PrintQRCodesProduct extends Component {
 		}
 
 		for (let p = 0; p < products.length; p++) {
-			doc.setPage(p + 1);
+			let y = 6;
+			let x = 0;
+			let QRCodeSize = 25;
+			let columns = Math.floor(210 / QRCodeSize);
+			let rowsPerPage = Math.floor((297 - y) / QRCodeSize);
+			let pagesPerProduct = 0;
+
+			for (let i = 0; i < products[p].quantity; i++) {
+				pagesPerProduct = Math.ceil(y / QRCodeSize / rowsPerPage);
+
+				if (i % columns === 0 && i !== 0) y += QRCodeSize;
+
+				if (i % columns === 0) x = 0;
+				else x += QRCodeSize;
+			}
+
+			y = 6;
+			x = 0;
+
+			for (let p = 0; p < pagesPerProduct; p++) {
+				if (p > 0) doc.addPage();
+			}
+
+			currentPage += 1;
+
+			doc.setPage(currentPage);
 			doc.setFontSize(10);
 			doc.text(3, 6, products[p]._id, { align: 'left' });
 
-			let y = 6;
-			let x = 0;
-
 			for (let i = 0; i < products[p].quantity; i++) {
-				if (i % 14 === 0 && i !== 0) y += 15;
+				if (i % columns === 0 && i !== 0) y += QRCodeSize;
 
-				if (i % 14 === 0) x = 0;
-				else x += 15;
+				if (i % columns === 0) x = 0;
+				else x += QRCodeSize;
 
-				doc.addImage(products[p].dataUrl, 'JPEG', x, y, 15, 15);
+				doc.addImage(products[p].dataUrl, 'JPEG', x, y, QRCodeSize, QRCodeSize);
+
+				console.log(Math.ceil(y / QRCodeSize / rowsPerPage), Math.ceil(y / QRCodeSize));
+
+				doc.setPage(Math.ceil(y / QRCodeSize / rowsPerPage));
+
+				if (Math.ceil(y / QRCodeSize) > rowsPerPage) {
+					y = 6;
+					x = 0;
+				}
 			}
 		}
 
@@ -99,7 +132,6 @@ class PrintQRCodesProduct extends Component {
 		const {
 			dialogOpen,
 			onCloseDialog,
-			currentUser,
 			products: {
 				data: products,
 				isFetching: isLoadingProducts,
@@ -153,7 +185,7 @@ class PrintQRCodesProduct extends Component {
 																className="dialog-print-qr-codes-product__cell"
 																onClick={() => this.onSelectProduct(arrayHelpers, values.products, product)}
 															>
-																{product.unitIssue === 'pce' ? product.quantityInUnit : product.quantity}
+																{product.quantity}
 															</TableCell>
 															<TableCell
 																className="dialog-print-qr-codes-product__cell"
@@ -175,9 +207,6 @@ class PrintQRCodesProduct extends Component {
 																		autoComplete="off"
 																		validate={value => {
 																			if (value === 0 || value === '') return 'Обязательное поле';
-																			if (value > product.quantity) {
-																				return `Максимум для печати: ${product.quantity}`;
-																			}
 																		}}
 																		fullWidth
 																		autoFocus

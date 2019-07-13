@@ -8,17 +8,17 @@ import hostValidation from 'host-validation';
 // Hosts, without http(s):// and paths
 const trustedHosts = [
 	process.env.NOW_URL && new RegExp(`^${process.env.NOW_URL.replace('https://', '')}$`),
-	/^posterdate\.com$/,
+	/^blikside\.com$/,
 	// All subdomains
-	/^.*\.posterdate\.com$/,
+	/^.*\.blikside\.com$/,
 ].filter(Boolean);
 
 // Referers, with http(s):// and paths
 const trustedReferers = [
 	process.env.NOW_URL && new RegExp(`^${process.env.NOW_URL}($|\/.*)`),
-	/^https:\/\/posterdate\.com($|\/.*)/,
+	/^https:\/\/blikside\.com($|\/.*)/,
 	// All subdomains
-	/^https:\/\/.*\.posterdate\.com($|\/.*)/,
+	/^https:\/\/.*\.blikside\.com($|\/.*)/,
 ].filter(Boolean);
 
 export default hostValidation({

@@ -35,27 +35,36 @@ writeOffsRouter.post(
 	'/product',
 	// isAuthedResolver,
 	// (req, res, next) => hasPermissionsInStock(req, res, next, ['products.scanning']),
-	async (req, res, next) => {
+	(req, res, next) => {
 		const { stockId, productId, userId, quantity = req.body.quantity || 1 } = req.body;
 
 		return Product.findById(productId)
 			.then(async product => {
+				if (product.quantity === 0 || product.quantity - quantity < 0)
+					return res.json({
+						status: 'error',
+						message:
+							product.quantity === 0
+								? 'Позиция отсутствует на складе'
+								: product.quantity - quantity < 0
+								? 'Вы пытаетесь списать количество большее, чем есть на складе'
+								: 'Unknown error',
+					});
+
 				await Product.findByIdAndUpdate(
 					productId,
 					{
 						$inc: {
-							[product.unitIssue === 'pce' ? 'quantityInUnit' : 'quantity']: -quantity,
+							quantity: -quantity,
 						},
 					},
-					{
-						runValidators: true,
-					}
+					{ runValidators: true }
 				).catch(err => next(err));
 
 				await Stock.findByIdAndUpdate(stockId, {
 					$inc: {
 						'status.unitsProduct': -quantity,
-						'status.stockCost': -(quantity * (product.unitIssue === 'pce' ? product.unitPurchasePrice : product.purchasePrice)),
+						'status.stockCost': -(quantity * product.unitPurchasePrice),
 					},
 				}).catch(err =>
 					next({

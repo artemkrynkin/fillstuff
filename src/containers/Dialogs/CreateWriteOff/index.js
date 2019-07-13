@@ -102,9 +102,7 @@ class CreateWriteOff extends Component {
 													<TableCell className="dialog-create-write-off__cell dialog-create-write-off__cell_name">
 														{product.name}
 													</TableCell>
-													<TableCell className="dialog-create-write-off__cell">
-														{product.unitIssue === 'pce' ? product.quantityInUnit : product.quantity}
-													</TableCell>
+													<TableCell className="dialog-create-write-off__cell">{product.quantity}</TableCell>
 													<TableCell className="dialog-create-write-off__cell" align="right">
 														{product._id === values.productId ? (
 															<Field

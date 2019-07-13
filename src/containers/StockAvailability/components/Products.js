@@ -157,13 +157,9 @@ class Products extends Component {
 											<div className={quantityIndicator(product.quantity, product.minimumBalance)} />
 											{product.name}
 										</TableCell>
-										<TableCell align="right">{product.unitIssue === 'pce' ? product.quantityInUnit : product.quantity}</TableCell>
-										<TableCell align="right">
-											{product.unitIssue === 'pce' ? product.unitPurchasePrice : product.purchasePrice} ₽
-										</TableCell>
-										<TableCell align="right">
-											{product.unitIssue === 'pce' ? product.unitSellingPrice : product.sellingPrice} ₽
-										</TableCell>
+										<TableCell align="right">{product.quantity}</TableCell>
+										<TableCell align="right">{product.unitPurchasePrice} ₽</TableCell>
+										<TableCell align="right">{product.unitSellingPrice ? `${product.unitSellingPrice} ₽` : '-'}</TableCell>
 										<TableCell align="right" size="small" style={{ paddingLeft: 0 }}>
 											<IconButton
 												className="sa-products__actions"

@@ -44,7 +44,7 @@ router(app);
 
 // Redirect a request to the root path to the main app
 app.use('/', (req, res) => {
-	res.redirect(process.env.NODE_ENV === 'production' ? 'https://dev.posterdate.com' : 'http://localhost:3000');
+	res.redirect(process.env.NODE_ENV === 'production' ? 'https://blikside.com' : 'http://localhost:3000');
 });
 
 app.use(errorHandler);

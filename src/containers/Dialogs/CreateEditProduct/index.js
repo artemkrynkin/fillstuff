@@ -3,22 +3,21 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { Formik, Form, Field, FieldArray } from 'formik';
-import { Select, TextField } from 'formik-material-ui';
+import { TextField, Select, CheckboxWithLabel } from 'formik-material-ui';
 import * as Yup from 'yup';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import MenuItem from '@material-ui/core/MenuItem';
 import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
 import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
 import Fade from '@material-ui/core/Fade';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import MuiDialog from '@material-ui/core/Dialog';
+import Dialog from '@material-ui/core/Dialog';
 import FormLabel from '@material-ui/core/FormLabel';
 import IconButton from '@material-ui/core/IconButton';
+import Divider from '@material-ui/core/Divider';
 
 import translitRu from 'shared/translit/ru';
 
@@ -31,12 +30,6 @@ import { createProduct, editProduct } from 'src/actions/products';
 import './index.styl';
 import ButtonBase from '@material-ui/core/ButtonBase';
 
-const Dialog = withStyles({
-	paperWidthLg: {
-		maxWidth: 800,
-	},
-})(MuiDialog);
-
 const productSchema = Yup.object().shape({
 	name: Yup.string()
 		// eslint-disable-next-line
@@ -47,27 +40,29 @@ const productSchema = Yup.object().shape({
 	receiptUnits: Yup.string()
 		.oneOf(['pce', 'nmp'], 'Значение отсутствует в списке доступных единиц')
 		.required('Обязательное поле'),
-	unitIssue: Yup.string()
-		.when('receiptUnits', (value, schema) => {
-			return value === 'nmp'
-				? schema.oneOf(['pce', 'nmp'], 'Значение отсутствует в списке доступных единиц').required('Обязательное поле')
-				: schema;
-		})
-		.nullable(),
-	quantity: Yup.number()
-		// eslint-disable-next-line
-		.min(0, 'Не может быть меньше ${min}')
-		.required('Обязательное поле'),
-	quantityPackages: Yup.number().when('receiptUnits', (value, schema) => {
+	unitIssue: Yup.string().when('receiptUnits', (value, schema) => {
 		return value === 'nmp'
+			? schema.oneOf(['pce', 'nmp'], 'Значение отсутствует в списке доступных единиц').required('Обязательное поле')
+			: schema;
+	}),
+	quantity: Yup.number().when('unitIssue', (value, schema) => {
+		return value !== 'pce'
 			? schema
 					// eslint-disable-next-line
 					.min(0, 'Не может быть меньше ${min}')
 					.required('Обязательное поле')
 			: schema;
 	}),
-	quantityInUnit: Yup.number().when('receiptUnits', (value, schema) => {
-		return value === 'nmp'
+	quantityPackages: Yup.number().when('unitIssue', (value, schema) => {
+		return value === 'pce'
+			? schema
+					// eslint-disable-next-line
+					.min(0, 'Не может быть меньше ${min}')
+					.required('Обязательное поле')
+			: schema;
+	}),
+	quantityInUnit: Yup.number().when('unitIssue', (value, schema) => {
+		return value === 'pce'
 			? schema
 					// eslint-disable-next-line
 					.min(0, 'Не может быть меньше ${min}')
@@ -82,14 +77,15 @@ const productSchema = Yup.object().shape({
 		// eslint-disable-next-line
 		.min(0, 'Не может быть меньше ${min}')
 		.required('Обязательное поле'),
-	margin: Yup.number()
-		// eslint-disable-next-line
-		.min(0, 'Не может быть меньше ${min}')
-		.required('Обязательное поле'),
-	sellingPrice: Yup.number()
-		// eslint-disable-next-line
-		.min(0, 'Не может быть меньше ${min}')
-		.required('Обязательное поле'),
+	sellingPrice: Yup.number().when('freeProduct', (value, schema) => {
+		return !value
+			? schema
+					// eslint-disable-next-line
+					.min(0, 'Не может быть меньше ${min}')
+					.required('Обязательное поле')
+			: schema;
+	}),
+	shopId: Yup.string().required('Обязательное поле'),
 	specifications: Yup.array().of(
 		Yup.object().shape({
 			nameId: Yup.string().required('Обязательное поле'),
@@ -135,9 +131,34 @@ class CreateEditProduct extends Component {
 
 				this.setState({ isLoadingSpecifications: false });
 
-				setFieldValue(`specifications[${index}].${schemaName === 'names' ? 'nameId' : 'valueId'}`, specification._id);
+				setFieldValue(`specifications.${index}.${schemaName === 'names' ? 'nameId' : 'valueId'}`, specification._id);
 			});
 		});
+	};
+
+	calculateProduct = values => {
+		if (values.receiptUnits === 'nmp' && values.unitIssue === 'pce') {
+			values.quantity = +(values.quantityPackages * values.quantityInUnit).toFixed();
+		} else {
+			if (values.receiptUnits !== 'nmp') values.unitIssue = undefined;
+			values.quantityPackages = undefined;
+			values.quantityInUnit = undefined;
+		}
+
+		values.unitPurchasePrice =
+			values.receiptUnits === 'nmp' && values.unitIssue === 'pce'
+				? values.purchasePrice / values.quantityInUnit
+				: values.purchasePrice;
+
+		if (!values.freeProduct) {
+			values.unitSellingPrice =
+				values.receiptUnits === 'nmp' && values.unitIssue === 'pce'
+					? values.sellingPrice / values.quantityInUnit
+					: values.sellingPrice;
+		} else {
+			values.sellingPrice = undefined;
+			values.unitSellingPrice = undefined;
+		}
 	};
 
 	render() {
@@ -147,11 +168,11 @@ class CreateEditProduct extends Component {
 		const initialValues = {
 			name: '',
 			receiptUnits: '',
-			quantity: 0,
-			minimumBalance: 0,
-			purchasePrice: 0,
-			sellingPrice: 0,
-			margin: 0,
+			quantity: '',
+			minimumBalance: '',
+			purchasePrice: '',
+			sellingPrice: '',
+			freeProduct: false,
 			shopId: '',
 			specifications: [],
 		};
@@ -167,15 +188,9 @@ class CreateEditProduct extends Component {
 					validateOnBlur={false}
 					validateOnChange={false}
 					onSubmit={(values, actions) => {
-						values.sellingPrice = Math.ceil(values.purchasePrice + (values.purchasePrice / 100) * values.margin);
-
-						if (values.unitIssue === 'pce') {
-							console.log(values.quantityInUnit, values.purchasePrice);
-							values.unitPurchasePrice = values.purchasePrice / values.quantityInUnit;
-							values.unitSellingPrice = values.sellingPrice / values.quantityInUnit;
-						}
-
 						if (actionType === 'create') {
+							this.calculateProduct(values);
+
 							this.props.createProduct(values).then(response => {
 								if (response.status === 'success') {
 									this.props.getStockStatus();
@@ -185,6 +200,10 @@ class CreateEditProduct extends Component {
 						}
 
 						if (actionType === 'edit') {
+							this.calculateProduct(values);
+
+							console.log(values);
+
 							this.props.editProduct(selectedProduct._id, values).then(response => {
 								if (response.status === 'success') {
 									this.props.getStockStatus();
@@ -196,10 +215,12 @@ class CreateEditProduct extends Component {
 					render={({ errors, isSubmitting, values, setFieldValue }) => (
 						<Form>
 							<DialogContent>
-								<Grid className="pd-rowGridFormLabelControl" style={{ marginBottom: 12 }} container spacing={2}>
+								<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" container>
+									<FormLabel error={Boolean(errors.name)} style={{ minWidth: 146 }}>
+										Наименование:
+									</FormLabel>
 									<Field
 										name="name"
-										label="Наименование"
 										component={TextField}
 										InputLabelProps={{
 											shrink: true,
@@ -209,17 +230,65 @@ class CreateEditProduct extends Component {
 										fullWidth
 									/>
 								</Grid>
-								<Grid className="pd-rowGridFormLabelControl" style={{ marginBottom: 12 }} container spacing={2}>
-									<Grid xs={values.receiptUnits !== 'nmp' ? 4 : 3} item>
+
+								<Divider style={{ marginBottom: 20 }} />
+
+								<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" container>
+									<FormLabel error={Boolean(errors.receiptUnits)} style={{ minWidth: 146 }}>
+										Единица поступления:
+									</FormLabel>
+									<FormControl fullWidth>
+										<Field
+											name="receiptUnits"
+											component={Select}
+											IconComponent={() => <FontAwesomeIcon icon={['far', 'angle-down']} className="pd-selectIcon" />}
+											error={Boolean(errors.receiptUnits)}
+											inputProps={{
+												onChange: event => {
+													const { value } = event.target;
+
+													setFieldValue('receiptUnits', value);
+													setFieldValue('unitIssue', value === 'nmp' ? values.unitIssue || '' : undefined);
+												},
+											}}
+											MenuProps={{
+												elevation: 2,
+												transitionDuration: 150,
+												TransitionComponent: Fade,
+											}}
+											displayEmpty
+										>
+											<MenuItem value="" disabled>
+												Выберите
+											</MenuItem>
+											<MenuItem value="pce">Штука</MenuItem>
+											<MenuItem value="nmp">Упаковка</MenuItem>
+										</Field>
+										{Boolean(errors.receiptUnits) ? <FormHelperText error={true}>{errors.receiptUnits}</FormHelperText> : null}
+									</FormControl>
+								</Grid>
+
+								{values.receiptUnits === 'nmp' ? (
+									<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" container>
+										<FormLabel error={Boolean(errors.unitIssue)} style={{ minWidth: 146 }}>
+											Единица отпуска:
+										</FormLabel>
 										<FormControl fullWidth>
-											<InputLabel error={Boolean(errors.receiptUnits)} shrink>
-												Единица поступления
-											</InputLabel>
 											<Field
-												name="receiptUnits"
+												name="unitIssue"
 												component={Select}
 												IconComponent={() => <FontAwesomeIcon icon={['far', 'angle-down']} className="pd-selectIcon" />}
-												error={Boolean(errors.receiptUnits)}
+												error={Boolean(errors.unitIssue)}
+												inputProps={{
+													onChange: event => {
+														const { value } = event.target;
+
+														setFieldValue('unitIssue', value);
+														setFieldValue('quantity', value === 'pce' ? undefined : '');
+														setFieldValue('quantityPackages', value === 'pce' ? values.quantityPackages || '' : undefined);
+														setFieldValue('quantityInUnit', value === 'pce' ? values.quantityInUnit || '' : undefined);
+													},
+												}}
 												MenuProps={{
 													elevation: 2,
 													transitionDuration: 150,
@@ -233,50 +302,19 @@ class CreateEditProduct extends Component {
 												<MenuItem value="pce">Штука</MenuItem>
 												<MenuItem value="nmp">Упаковка</MenuItem>
 											</Field>
-											{typeof errors.receiptUnits === 'string' ? (
-												<FormHelperText error={true}>{errors.receiptUnits}</FormHelperText>
-											) : null}
+											{Boolean(errors.unitIssue) ? <FormHelperText error={true}>{errors.unitIssue}</FormHelperText> : null}
 										</FormControl>
 									</Grid>
-									{values.receiptUnits === 'nmp' ? (
-										<Grid xs={3} item>
-											<FormControl fullWidth>
-												<InputLabel error={Boolean(errors.unitIssue)} shrink>
-													Единица отпуска
-												</InputLabel>
-												<Field
-													name="unitIssue"
-													inputProps={{
-														value: values.unitIssue || '',
-													}}
-													component={Select}
-													IconComponent={() => <FontAwesomeIcon icon={['far', 'angle-down']} className="pd-selectIcon" />}
-													error={Boolean(errors.unitIssue)}
-													MenuProps={{
-														elevation: 2,
-														transitionDuration: 150,
-														TransitionComponent: Fade,
-													}}
-													displayEmpty
-												>
-													<MenuItem value="" disabled>
-														Выберите
-													</MenuItem>
-													<MenuItem value="pce">Штука</MenuItem>
-													<MenuItem value="nmp">Упаковка</MenuItem>
-												</Field>
-												{typeof errors.unitIssue === 'string' ? (
-													<FormHelperText error={true}>{errors.unitIssue}</FormHelperText>
-												) : null}
-											</FormControl>
-										</Grid>
-									) : null}
-									{values.receiptUnits === 'nmp' ? (
-										<Grid xs={values.unitIssue === 'pce' ? 2 : 4} item>
+								) : null}
+
+								<Grid className="pd-rowGridFormLabelControl" style={{ marginBottom: 12 }} container spacing={2}>
+									{values.receiptUnits === 'nmp' && values.unitIssue === 'pce' ? (
+										<Grid xs={values.receiptUnits === 'nmp' && values.unitIssue === 'pce' ? 4 : 6} item>
 											<Field
 												name="quantityPackages"
 												type="number"
-												label="Количество упаковок"
+												label="Количество упаковок:"
+												placeholder="0"
 												component={TextField}
 												InputLabelProps={{
 													shrink: true,
@@ -286,11 +324,12 @@ class CreateEditProduct extends Component {
 											/>
 										</Grid>
 									) : (
-										<Grid xs={4} item>
+										<Grid xs={6} item>
 											<Field
 												name="quantity"
 												type="number"
-												label="Количество"
+												label={`Количество ${values.receiptUnits === 'nmp' && values.unitIssue !== 'pce' ? 'упаковок' : 'штук'}:`}
+												placeholder="0"
 												component={TextField}
 												InputLabelProps={{
 													shrink: true,
@@ -300,15 +339,14 @@ class CreateEditProduct extends Component {
 											/>
 										</Grid>
 									)}
+
 									{values.receiptUnits === 'nmp' && values.unitIssue === 'pce' ? (
-										<Grid xs={2} item>
+										<Grid xs={4} item>
 											<Field
 												name="quantityInUnit"
 												type="number"
-												label="Штук в упаковке"
-												inputProps={{
-													value: values.quantityInUnit || 0,
-												}}
+												label="Штук в упаковке:"
+												placeholder="0"
 												component={TextField}
 												InputLabelProps={{
 													shrink: true,
@@ -318,11 +356,15 @@ class CreateEditProduct extends Component {
 											/>
 										</Grid>
 									) : null}
-									<Grid xs={values.receiptUnits !== 'nmp' ? 4 : 2} item>
+
+									<Grid xs={values.receiptUnits === 'nmp' && values.unitIssue === 'pce' ? 4 : 6} item>
 										<Field
 											name="minimumBalance"
 											type="number"
-											label={`Мин. остаток в ${values.unitIssue === 'nmp' ? 'упаковках' : 'штуках'}`}
+											label={`Мин. остаток в ${
+												values.receiptUnits === 'nmp' && values.unitIssue !== 'pce' ? 'упаковках' : 'штуках'
+											}:`}
+											placeholder="0"
 											component={TextField}
 											InputLabelProps={{
 												shrink: true,
@@ -332,12 +374,16 @@ class CreateEditProduct extends Component {
 										/>
 									</Grid>
 								</Grid>
-								<Grid className="pd-rowGridFormLabelControl" style={{ marginBottom: 12 }} container spacing={2}>
-									<Grid xs={4} item>
+
+								<Divider style={{ marginBottom: 20 }} />
+
+								<Grid className="pd-rowGridFormLabelControl" style={{ marginBottom: -20 }} container spacing={2}>
+									<Grid xs={6} item>
 										<Field
 											name="purchasePrice"
 											type="number"
-											label="Цена закупки"
+											label={`Цена закупки${values.receiptUnits === 'nmp' && values.unitIssue === 'pce' ? ' упаковки' : ''}:`}
+											placeholder="0"
 											component={TextField}
 											InputLabelProps={{
 												shrink: true,
@@ -346,46 +392,57 @@ class CreateEditProduct extends Component {
 											fullWidth
 										/>
 									</Grid>
-									<Grid xs={4} item>
-										<Field
-											name="margin"
-											type="number"
-											label="Маржа в %"
-											component={TextField}
-											InputLabelProps={{
-												shrink: true,
-											}}
-											autoComplete="off"
-											fullWidth
-										/>
-									</Grid>
-									<Grid xs={4} item>
-										<Field
-											className="D-create-edit-product__selling-price"
-											name="sellingPrice"
-											type="number"
-											label="Цена продажи"
-											component={TextField}
-											InputLabelProps={{
-												shrink: true,
-											}}
-											InputProps={{
-												value: Math.ceil(values.purchasePrice + (values.purchasePrice / 100) * values.margin),
-												readOnly: true,
-											}}
-											autoComplete="off"
-											fullWidth
-										/>
-									</Grid>
+
+									{!values.freeProduct ? (
+										<Grid xs={6} item>
+											<Field
+												name="sellingPrice"
+												type="number"
+												label={`Цена продажи${values.receiptUnits === 'nmp' && values.unitIssue === 'pce' ? ' упаковки' : ''}`}
+												placeholder={String(values.purchasePrice || 0)}
+												component={TextField}
+												InputLabelProps={{
+													shrink: true,
+												}}
+												autoComplete="off"
+												fullWidth
+											/>
+										</Grid>
+									) : null}
 								</Grid>
-								<Grid className="pd-rowGridFormLabelControl" style={{ marginBottom: 12 }} container spacing={2}>
-									<Grid xs={2} item>
-										<FormLabel style={{ display: 'block', marginTop: 12 }}>Магазин</FormLabel>
-									</Grid>
-									<Grid xs={10} item>
+
+								<Grid className="pd-rowGridFormLabelControl" style={{ marginBottom: 12 }}>
+									<Field
+										name="freeProduct"
+										Label={{ label: 'Предоставляется бесплатно' }}
+										component={CheckboxWithLabel}
+										color="primary"
+										icon={<FontAwesomeIcon icon={['far', 'square']} />}
+										checkedIcon={<FontAwesomeIcon icon={['fas', 'check-square']} />}
+										inputProps={{
+											onChange: event => {
+												const { checked } = event.target;
+
+												setFieldValue('freeProduct', checked);
+												setFieldValue('sellingPrice', !checked ? '' : undefined);
+											},
+										}}
+									/>
+								</Grid>
+
+								<Divider style={{ marginBottom: 20 }} />
+
+								<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" container>
+									<FormLabel error={Boolean(errors.shopId)} style={{ minWidth: 146 }}>
+										Магазин:
+									</FormLabel>
+									<FormControl fullWidth>
 										<Field
 											name="shopId"
 											component={SelectAutocompleteCreate}
+											TextFieldProps={{
+												error: Boolean(errors.shopId),
+											}}
 											isClearable
 											isDisabled={isSubmitting || isLoadingShop}
 											isLoading={isLoadingShop}
@@ -403,12 +460,14 @@ class CreateEditProduct extends Component {
 											menuPlacement="top"
 											menuPosition="fixed"
 											placeholder="Выберите магазин"
-											noOptionsMessage={() => 'Не создано ни одного магазина'}
+											noOptionsMessage={() => 'Не создано ни одного магазина, введите название, чтобы создать'}
 											formatCreateLabel={value => `Создать «${value}»`}
 											options={currentStock.productShops}
 										/>
-									</Grid>
+										{Boolean(errors.shopId) ? <FormHelperText error={true}>{errors.shopId}</FormHelperText> : null}
+									</FormControl>
 								</Grid>
+
 								<FieldArray
 									name="specifications"
 									validateOnChange={false}
@@ -436,9 +495,10 @@ class CreateEditProduct extends Component {
 																</FormLabel>
 															) : null}
 														</Grid>
+
 														<Grid xs={4} item>
 															<Field
-																name={`specifications[${index}].nameId`}
+																name={`specifications.${index}.nameId`}
 																component={SelectAutocompleteCreate}
 																TextFieldProps={{
 																	error: checkErrorSpecificationField('nameId', index),
@@ -452,10 +512,10 @@ class CreateEditProduct extends Component {
 																	) || ''
 																}
 																onChange={(option, { action }) => {
-																	setFieldValue(`specifications[${index}].nameId`, option ? option._id : '');
+																	setFieldValue(`specifications.${index}.nameId`, option ? option._id : '');
 
 																	if (action === 'select-option' || action === 'clear')
-																		setFieldValue(`specifications[${index}].valueId`, '');
+																		setFieldValue(`specifications.${index}.valueId`, '');
 																}}
 																onCreateOption={value =>
 																	this.onCreateProductSpecification(
@@ -479,11 +539,12 @@ class CreateEditProduct extends Component {
 																<FormHelperText error={true}>{errors.specifications[index].nameId}</FormHelperText>
 															) : null}
 														</Grid>
+
 														<Grid xs={6} item>
 															<Grid container spacing={2} alignItems="flex-start">
 																<Grid xs={10} item style={{ flexBasis: 'calc(100% - 48px)', maxWidth: 'calc(100% - 48px)' }}>
 																	<Field
-																		name={`specifications[${index}].valueId`}
+																		name={`specifications.${index}.valueId`}
 																		component={SelectAutocompleteCreate}
 																		TextFieldProps={{
 																			error: checkErrorSpecificationField('valueId', index),
@@ -497,7 +558,7 @@ class CreateEditProduct extends Component {
 																			) || ''
 																		}
 																		onChange={option =>
-																			setFieldValue(`specifications[${index}].valueId`, option ? option._id : '')
+																			setFieldValue(`specifications.${index}.valueId`, option ? option._id : '')
 																		}
 																		onCreateOption={value =>
 																			this.onCreateProductSpecification(
@@ -524,6 +585,7 @@ class CreateEditProduct extends Component {
 																		<FormHelperText error={true}>{errors.specifications[index].valueId}</FormHelperText>
 																	) : null}
 																</Grid>
+
 																<Grid xs={2} item style={{ flexBasis: 48, maxWidth: 48 }}>
 																	<IconButton
 																		className="D-create-edit-product__specification-remove"

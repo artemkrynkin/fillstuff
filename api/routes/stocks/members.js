@@ -217,14 +217,12 @@ membersRouter.delete(
 // 	...callbacks
 // );
 
-membersRouter.get('/mobile/member-invitation', (req, res, next) => {
+membersRouter.get('/member-invitation-qr', (req, res, next) => {
 	const { memberId } = req.query;
-
-	console.log(req.query);
 
 	Stock.findOne({ 'members._id': memberId })
 		.then(async stock => {
-			let member = stock.member.id(memberId);
+			let member = stock.members.id(memberId);
 
 			if (!member.isWaiting) return next({ code: 1 });
 
@@ -235,9 +233,9 @@ membersRouter.get('/mobile/member-invitation', (req, res, next) => {
 			await user.save().catch(err => next(err));
 
 			member.user = user._id;
-			delete member.isWaiting;
+			member.isWaiting = undefined;
 
-			await Stock.save().catch(err => next(err));
+			await stock.save().catch(err => next(err));
 
 			return User.findByIdAndUpdate(
 				user._id,

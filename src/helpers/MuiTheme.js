@@ -158,6 +158,12 @@ export const BliksideTheme = createMuiTheme({
 				marginLeft: -10,
 				marginRight: 0,
 			},
+			label: {
+				userSelect: 'none',
+				'&$disabled': {
+					color: colorPalette.blueGrey.cBg400,
+				},
+			},
 		},
 		MuiFormHelperText: {
 			root: {
@@ -347,6 +353,24 @@ export const BliksideTheme = createMuiTheme({
 				'& svg': {
 					height: 20,
 					width: '20px !important',
+				},
+			},
+		},
+		PrivateSwitchBase: {
+			root: {
+				padding: '9px 10px',
+			},
+		},
+		MuiCheckbox: {
+			root: {
+				color: colorPalette.blueGrey.cBg200,
+				'& svg': {
+					width: '18px !important',
+				},
+			},
+			colorPrimary: {
+				'&$disabled': {
+					color: colorPalette.blueGrey.cBg200,
 				},
 			},
 		},

@@ -17,11 +17,11 @@ export default url => {
 		const { hostname, protocol } = new URL(url);
 		// hostname might be blikside.com or subdomain.blikside.com, so we use .endsWith
 		// We don't just check .contains because otherwise folks could make blikside.com.mydomain.com
-		const IS_POSTERDATE_URL = hostname.endsWith('.posterdate.com');
+		const IS_BLIKSIDE_URL = hostname.endsWith('.blikside.com');
 		const IS_LOCALHOST = hostname === 'localhost';
 		const IS_HTTP = protocol === 'https:' || protocol === 'http:';
 		// Make sure the passed redirect URL is a blikside.com one or (in development) localhost
-		if (IS_HTTP && (IS_POSTERDATE_URL || (!IS_PROD && IS_LOCALHOST))) {
+		if (IS_HTTP && (IS_BLIKSIDE_URL || (!IS_PROD && IS_LOCALHOST))) {
 			return true;
 		}
 	} catch (err) {

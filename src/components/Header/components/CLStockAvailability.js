@@ -35,7 +35,7 @@ class CLStockAvailability extends Component {
 		});
 
 	render() {
-		const { pageTitle, theme, currentStock, pageParams } = this.props;
+		const { pageTitle, theme, currentStock } = this.props;
 		const { dialogCreateProduct, dialogPrintQRCodesProduct } = this.state;
 
 		return (

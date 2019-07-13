@@ -7,6 +7,7 @@ import {
 	faComment as fasComment,
 	faBullhorn as fasBullhorn,
 	faUserAlt as fasUserAlt,
+	faCheckSquare as fasCheckSquare,
 } from '@fortawesome/pro-solid-svg-icons';
 
 import {
@@ -28,6 +29,7 @@ import {
 	faSyncAlt as farSyncAlt,
 	faPlus as farPlus,
 	faTruck as farTruck,
+	faSquare as farSquare,
 } from '@fortawesome/pro-regular-svg-icons';
 
 import {
@@ -57,6 +59,7 @@ library.add(
 	fasComment,
 	fasBullhorn,
 	fasUserAlt,
+	fasCheckSquare,
 
 	// Regular
 	farAngleDown,
@@ -77,6 +80,7 @@ library.add(
 	farSyncAlt,
 	farPlus,
 	farTruck,
+	farSquare,
 
 	// Light
 	falAngleLeft,

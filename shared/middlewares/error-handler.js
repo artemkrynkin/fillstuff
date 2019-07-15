@@ -40,7 +40,7 @@ export default (err, req, res, next) => {
  *
  *
  * @error = {
- *   code: ERROR_CODE_NUMBERS, Код ошибки, если указан, будет вызват метод ниже, иначе сервер выдаст 500 ошибку
+ *   code: ERROR_CODE_NUMBER, Код ошибки, если указан, будет вызват метод ниже, иначе сервер выдаст 500 ошибку
  *   message: String, // Описание ошибки
  *   err: Object, // Если возможны ошибки валидации сервера, то передавать `err`, иначе null
  *   customErr: Array // Пользовательские ошибки вида [{ field: String, message: String }]

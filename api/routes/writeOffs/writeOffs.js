@@ -41,8 +41,8 @@ writeOffsRouter.post(
 		return Product.findById(productId)
 			.then(async product => {
 				if (product.quantity === 0 || product.quantity - quantity < 0)
-					return res.json({
-						status: 'error',
+					return next({
+						code: 7,
 						message:
 							product.quantity === 0
 								? 'Позиция отсутствует на складе'
@@ -51,27 +51,23 @@ writeOffsRouter.post(
 								: 'Unknown error',
 					});
 
-				await Product.findByIdAndUpdate(
-					productId,
-					{
-						$inc: {
-							quantity: -quantity,
-						},
+				await Product.findByIdAndUpdate(productId, {
+					$inc: {
+						quantity: -quantity,
 					},
-					{ runValidators: true }
-				).catch(err => next(err));
+					$set: product.quantityPackages
+						? {
+								quantityPackages: +((product.quantity - quantity) / product.quantityInUnit).toFixed(2),
+						  }
+						: {},
+				}).catch(err => next(err));
 
 				await Stock.findByIdAndUpdate(stockId, {
 					$inc: {
 						'status.unitsProduct': -quantity,
-						'status.stockCost': -(quantity * product.unitPurchasePrice),
+						'status.stockCost': -(quantity * product.unitPurchasePrice).toFixed(2),
 					},
-				}).catch(err =>
-					next({
-						code: err.errors ? 5 : 2,
-						err,
-					})
-				);
+				}).catch(err => next({ code: err.errors ? 5 : 2, err }));
 
 				const writeOff = new WriteOff({
 					stock: stockId,
@@ -90,12 +86,7 @@ writeOffsRouter.post(
 
 						return res.json(writeOff);
 					})
-					.catch(err =>
-						next({
-							code: err.errors ? 5 : 2,
-							err,
-						})
-					);
+					.catch(err => next({ code: err.errors ? 5 : 2, err }));
 			})
 			.catch(err => next(err));
 	}

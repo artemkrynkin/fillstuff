@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import validator from 'validator';
 import i18n from 'i18n';
 import momentTz from 'moment-timezone';
 

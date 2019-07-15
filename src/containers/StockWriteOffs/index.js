@@ -1,18 +1,21 @@
 import React, { Component } from 'react';
 import { compose } from 'redux';
+import Loadable from 'react-loadable';
 
 import generateMetaInfo from 'shared/generate-meta-info';
 
-import Grid from '@material-ui/core/Grid';
-
 import Head from 'src/components/head';
 import Header from 'src/components/Header';
+import { DisplayLoadingComponent } from 'src/components/Loading';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 
-import WriteOffs from './components/WriteOffs';
-import Users from './components/Users';
-
 import './index.styl';
+
+const Index = Loadable({
+	loader: () => import('./components/index' /* webpackChunkName: "StockWriteOffs_Index" */),
+	loading: DisplayLoadingComponent,
+	delay: 200,
+});
 
 class StockWriteOffs extends Component {
 	render() {
@@ -46,14 +49,7 @@ class StockWriteOffs extends Component {
 				<Header pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} pageParams={pageParams} />
 				<div className="page__content stock-write-offs">
 					<div className="page__inner-content">
-						<Grid container direction="row" justify="center" alignItems="flex-start" spacing={2}>
-							<Grid item xs={12} lg={9}>
-								<WriteOffs currentUser={currentUser} currentStock={currentStock} selectedUserId={selectedUserId} />
-							</Grid>
-							<Grid item xs={12} lg={3}>
-								<Users currentUser={currentUser} currentStock={currentStock} />
-							</Grid>
-						</Grid>
+						<Index currentUser={currentUser} currentStock={currentStock} selectedUserId={selectedUserId} />
 					</div>
 				</div>
 			</div>

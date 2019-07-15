@@ -65,7 +65,7 @@ class WriteOffs extends Component {
 								<TableRow>
 									<TableCell colSpan={4}>
 										<Typography variant="caption" align="center" component="div" style={{ padding: '1px 0' }}>
-											Еще не было расходи ни по одной позиции.
+											Еще не было расходов ни по одной позиции.
 										</Typography>
 									</TableCell>
 								</TableRow>

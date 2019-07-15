@@ -12,7 +12,6 @@
     "uuid": "^3.3.2"
   },
   "dependencies": {
-    "@atlaskit/tree": "6.0.4",
     "@fortawesome/fontawesome-svg-core": "1.2.19",
     "@fortawesome/free-brands-svg-icons": "^5.9.0",
     "@fortawesome/pro-light-svg-icons": "^5.3.1",
@@ -32,8 +31,6 @@
     "crypto-js": "^3.1.9-1",
     "css-element-queries": "^1.2.0",
     "debug": "^4.1.1",
-    "draft-js": "^0.10.5",
-    "dragula": "^3.7.2",
     "express": "^4.17.1",
     "express-enforces-ssl": "^1.1.0",
     "formik": "1.5.8",
@@ -61,7 +58,6 @@
     "password-generator": "^2.2.0",
     "prop-types": "^15.7.2",
     "qrcode": "^1.3.4",
-    "qrcode.react": "^0.9.3",
     "query-string": "^6.8.1",
     "react": "16.8.6",
     "react-beautiful-dnd": "^11.0.4",
@@ -73,7 +69,6 @@
     "react-router": "5.0.1",
     "react-router-dom": "5.0.1",
     "react-select": "^3.0.4",
-    "react-to-print": "^2.1.3",
     "redux": "^4.0.0",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",

@@ -7,6 +7,7 @@ import { TextField, Select, CheckboxWithLabel } from 'formik-material-ui';
 import * as Yup from 'yup';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import ButtonBase from '@material-ui/core/ButtonBase';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import MenuItem from '@material-ui/core/MenuItem';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -28,7 +29,6 @@ import { getStockStatus, createProductShop, createProductSpecification } from 's
 import { createProduct, editProduct } from 'src/actions/products';
 
 import './index.styl';
-import ButtonBase from '@material-ui/core/ButtonBase';
 
 const productSchema = Yup.object().shape({
 	name: Yup.string()
@@ -136,29 +136,37 @@ class CreateEditProduct extends Component {
 		});
 	};
 
-	calculateProduct = values => {
-		if (values.receiptUnits === 'nmp' && values.unitIssue === 'pce') {
-			values.quantity = +(values.quantityPackages * values.quantityInUnit).toFixed();
-		} else {
-			if (values.receiptUnits !== 'nmp') values.unitIssue = undefined;
-			values.quantityPackages = undefined;
-			values.quantityInUnit = undefined;
-		}
+	checkValuesProduct = values => {
+		return new Promise((resolve, reject) => {
+			if (values.receiptUnits === 'nmp' && values.unitIssue === 'pce') {
+				values.quantity = +(values.quantityPackages * values.quantityInUnit).toFixed();
+			} else {
+				if (values.receiptUnits !== 'nmp') values.unitIssue = undefined;
+				values.quantityPackages = undefined;
+				values.quantityInUnit = undefined;
+			}
 
-		values.unitPurchasePrice =
-			values.receiptUnits === 'nmp' && values.unitIssue === 'pce'
+			values.purchasePrice = +values.purchasePrice.toFixed(2);
+			values.unitPurchasePrice = +(values.receiptUnits === 'nmp' && values.unitIssue === 'pce'
 				? values.purchasePrice / values.quantityInUnit
-				: values.purchasePrice;
+				: values.purchasePrice
+			).toFixed(2);
 
-		if (!values.freeProduct) {
-			values.unitSellingPrice =
-				values.receiptUnits === 'nmp' && values.unitIssue === 'pce'
-					? values.sellingPrice / values.quantityInUnit
-					: values.sellingPrice;
-		} else {
-			values.sellingPrice = undefined;
-			values.unitSellingPrice = undefined;
-		}
+			if (!values.freeProduct) {
+				if (values.unitIssue !== 'pce') {
+					values.sellingPrice = +values.sellingPrice.toFixed(2);
+					values.unitSellingPrice = +values.sellingPrice.toFixed(2);
+				} else {
+					values.unitSellingPrice = +values.unitSellingPrice.toFixed(2);
+					values.sellingPrice = +(values.unitSellingPrice * values.quantityInUnit).toFixed(2);
+				}
+			} else {
+				values.sellingPrice = undefined;
+				values.unitSellingPrice = undefined;
+			}
+
+			resolve();
+		});
 	};
 
 	render() {
@@ -187,10 +195,10 @@ class CreateEditProduct extends Component {
 					validationSchema={productSchema}
 					validateOnBlur={false}
 					validateOnChange={false}
-					onSubmit={(values, actions) => {
-						if (actionType === 'create') {
-							this.calculateProduct(values);
+					onSubmit={async (values, actions) => {
+						await this.checkValuesProduct(values);
 
+						if (actionType === 'create') {
 							this.props.createProduct(values).then(response => {
 								if (response.status === 'success') {
 									this.props.getStockStatus();
@@ -200,10 +208,6 @@ class CreateEditProduct extends Component {
 						}
 
 						if (actionType === 'edit') {
-							this.calculateProduct(values);
-
-							console.log(values);
-
 							this.props.editProduct(selectedProduct._id, values).then(response => {
 								if (response.status === 'success') {
 									this.props.getStockStatus();
@@ -248,7 +252,7 @@ class CreateEditProduct extends Component {
 													const { value } = event.target;
 
 													setFieldValue('receiptUnits', value);
-													setFieldValue('unitIssue', value === 'nmp' ? values.unitIssue || '' : undefined);
+													setFieldValue('unitIssue', values.unitIssue || '');
 												},
 											}}
 											MenuProps={{
@@ -264,7 +268,7 @@ class CreateEditProduct extends Component {
 											<MenuItem value="pce">Штука</MenuItem>
 											<MenuItem value="nmp">Упаковка</MenuItem>
 										</Field>
-										{Boolean(errors.receiptUnits) ? <FormHelperText error={true}>{errors.receiptUnits}</FormHelperText> : null}
+										{Boolean(errors.receiptUnits) ? <FormHelperText error>{errors.receiptUnits}</FormHelperText> : null}
 									</FormControl>
 								</Grid>
 
@@ -284,9 +288,10 @@ class CreateEditProduct extends Component {
 														const { value } = event.target;
 
 														setFieldValue('unitIssue', value);
-														setFieldValue('quantity', value === 'pce' ? undefined : '');
-														setFieldValue('quantityPackages', value === 'pce' ? values.quantityPackages || '' : undefined);
-														setFieldValue('quantityInUnit', value === 'pce' ? values.quantityInUnit || '' : undefined);
+														setFieldValue('quantity', values.quantity || '');
+														setFieldValue('quantityPackages', values.quantityPackages || '');
+														setFieldValue('quantityInUnit', values.quantityInUnit || '');
+														setFieldValue('unitSellingPrice', values.unitSellingPrice || '');
 													},
 												}}
 												MenuProps={{
@@ -302,28 +307,13 @@ class CreateEditProduct extends Component {
 												<MenuItem value="pce">Штука</MenuItem>
 												<MenuItem value="nmp">Упаковка</MenuItem>
 											</Field>
-											{Boolean(errors.unitIssue) ? <FormHelperText error={true}>{errors.unitIssue}</FormHelperText> : null}
+											{Boolean(errors.unitIssue) ? <FormHelperText error>{errors.unitIssue}</FormHelperText> : null}
 										</FormControl>
 									</Grid>
 								) : null}
 
 								<Grid className="pd-rowGridFormLabelControl" style={{ marginBottom: 12 }} container spacing={2}>
-									{values.receiptUnits === 'nmp' && values.unitIssue === 'pce' ? (
-										<Grid xs={values.receiptUnits === 'nmp' && values.unitIssue === 'pce' ? 4 : 6} item>
-											<Field
-												name="quantityPackages"
-												type="number"
-												label="Количество упаковок:"
-												placeholder="0"
-												component={TextField}
-												InputLabelProps={{
-													shrink: true,
-												}}
-												autoComplete="off"
-												fullWidth
-											/>
-										</Grid>
-									) : (
+									{values.unitIssue !== 'pce' ? (
 										<Grid xs={6} item>
 											<Field
 												name="quantity"
@@ -335,6 +325,23 @@ class CreateEditProduct extends Component {
 													shrink: true,
 												}}
 												autoComplete="off"
+												disabled={actionType === 'edit'}
+												fullWidth
+											/>
+										</Grid>
+									) : (
+										<Grid xs={values.receiptUnits === 'nmp' && values.unitIssue === 'pce' ? 4 : 6} item>
+											<Field
+												name="quantityPackages"
+												type="number"
+												label="Количество упаковок:"
+												placeholder="0"
+												component={TextField}
+												InputLabelProps={{
+													shrink: true,
+												}}
+												autoComplete="off"
+												disabled={actionType === 'edit'}
 												fullWidth
 											/>
 										</Grid>
@@ -350,6 +357,14 @@ class CreateEditProduct extends Component {
 												component={TextField}
 												InputLabelProps={{
 													shrink: true,
+												}}
+												inputProps={{
+													onChange: event => {
+														const { value } = event.target;
+
+														setFieldValue('quantityInUnit', +value);
+														setFieldValue('unitSellingPrice', +((values.purchasePrice || 0) / value).toFixed(2));
+													},
 												}}
 												autoComplete="off"
 												fullWidth
@@ -388,6 +403,18 @@ class CreateEditProduct extends Component {
 											InputLabelProps={{
 												shrink: true,
 											}}
+											inputProps={
+												values.receiptUnits === 'nmp' && values.unitIssue === 'pce'
+													? {
+															onChange: event => {
+																const { value } = event.target;
+
+																setFieldValue('purchasePrice', +value);
+																setFieldValue('unitSellingPrice', +(value / (values.quantityInUnit || 0)).toFixed(2));
+															},
+													  }
+													: {}
+											}
 											autoComplete="off"
 											fullWidth
 										/>
@@ -395,18 +422,33 @@ class CreateEditProduct extends Component {
 
 									{!values.freeProduct ? (
 										<Grid xs={6} item>
-											<Field
-												name="sellingPrice"
-												type="number"
-												label={`Цена продажи${values.receiptUnits === 'nmp' && values.unitIssue === 'pce' ? ' упаковки' : ''}`}
-												placeholder={String(values.purchasePrice || 0)}
-												component={TextField}
-												InputLabelProps={{
-													shrink: true,
-												}}
-												autoComplete="off"
-												fullWidth
-											/>
+											{values.unitIssue !== 'pce' ? (
+												<Field
+													name="sellingPrice"
+													type="number"
+													label={`Цена продажи:`}
+													placeholder={String(values.purchasePrice || 0)}
+													component={TextField}
+													InputLabelProps={{
+														shrink: true,
+													}}
+													autoComplete="off"
+													fullWidth
+												/>
+											) : (
+												<Field
+													name="unitSellingPrice"
+													type="number"
+													label={`Цена продажи штуки:`}
+													placeholder="0"
+													component={TextField}
+													InputLabelProps={{
+														shrink: true,
+													}}
+													autoComplete="off"
+													fullWidth
+												/>
+											)}
 										</Grid>
 									) : null}
 								</Grid>
@@ -424,7 +466,7 @@ class CreateEditProduct extends Component {
 												const { checked } = event.target;
 
 												setFieldValue('freeProduct', checked);
-												setFieldValue('sellingPrice', !checked ? '' : undefined);
+												setFieldValue('sellingPrice', checked ? values.sellingPrice : '');
 											},
 										}}
 									/>
@@ -433,7 +475,7 @@ class CreateEditProduct extends Component {
 								<Divider style={{ marginBottom: 20 }} />
 
 								<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" container>
-									<FormLabel error={Boolean(errors.shopId)} style={{ minWidth: 146 }}>
+									<FormLabel error={Boolean(errors.shopId)} style={{ minWidth: 108 }}>
 										Магазин:
 									</FormLabel>
 									<FormControl fullWidth>
@@ -464,7 +506,7 @@ class CreateEditProduct extends Component {
 											formatCreateLabel={value => `Создать «${value}»`}
 											options={currentStock.productShops}
 										/>
-										{Boolean(errors.shopId) ? <FormHelperText error={true}>{errors.shopId}</FormHelperText> : null}
+										{Boolean(errors.shopId) ? <FormHelperText error>{errors.shopId}</FormHelperText> : null}
 									</FormControl>
 								</Grid>
 
@@ -536,7 +578,7 @@ class CreateEditProduct extends Component {
 																options={currentStock.productSpecifications.names}
 															/>
 															{checkErrorSpecificationField('nameId', index) ? (
-																<FormHelperText error={true}>{errors.specifications[index].nameId}</FormHelperText>
+																<FormHelperText error>{errors.specifications[index].nameId}</FormHelperText>
 															) : null}
 														</Grid>
 
@@ -582,7 +624,7 @@ class CreateEditProduct extends Component {
 																		)}
 																	/>
 																	{checkErrorSpecificationField('valueId', index) ? (
-																		<FormHelperText error={true}>{errors.specifications[index].valueId}</FormHelperText>
+																		<FormHelperText error>{errors.specifications[index].valueId}</FormHelperText>
 																	) : null}
 																</Grid>
 

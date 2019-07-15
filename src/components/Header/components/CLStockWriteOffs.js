@@ -1,14 +1,21 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Loadable from 'react-loadable';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
 
-import CreateWriteOff from 'src/containers/Dialogs/CreateWriteOff';
+import { DisplayLoadingComponent } from 'src/components/Loading';
 
 import TitlePageOrLogo from './TitlePageOrLogo';
 
 import { getProducts } from 'src/actions/products';
+
+const CreateWriteOff = Loadable({
+	loader: () => import('src/containers/Dialogs/CreateWriteOff' /* webpackChunkName: "Dialog_CreateWriteOff" */),
+	loading: DisplayLoadingComponent,
+	delay: 200,
+});
 
 class CLStockWriteOffs extends Component {
 	state = {
@@ -43,8 +50,8 @@ class CLStockWriteOffs extends Component {
 						style={{ marginRight: 8 }}
 						onClick={this.onOpenDialogCreateWriteOff}
 					>
-						<FontAwesomeIcon icon={['far', 'plus']} />
-						&nbsp;&nbsp;Расход позиции
+						<FontAwesomeIcon icon={['far', 'plus']} style={{ marginRight: 10 }} />
+						Расход позиции
 					</Button>
 				</div>
 

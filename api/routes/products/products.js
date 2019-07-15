@@ -46,23 +46,13 @@ productsRouter.post(
 					$inc: {
 						'status.numberProducts': 1,
 						'status.unitsProduct': product.quantity,
-						'status.stockCost': product.quantity * product.unitPurchasePrice,
+						'status.stockCost': +(product.quantity * product.unitPurchasePrice).toFixed(2),
 					},
-				}).catch(err =>
-					next({
-						code: err.errors ? 5 : 2,
-						err,
-					})
-				);
+				}).catch(err => next({ code: err.errors ? 5 : 2, err }));
 
 				res.json(product);
 			})
-			.catch(err =>
-				next({
-					code: err.errors ? 5 : 2,
-					err,
-				})
-			);
+			.catch(err => next({ code: err.errors ? 5 : 2, err }));
 	}
 );
 
@@ -70,9 +60,9 @@ productsRouter.put(
 	'/:productId',
 	isAuthedResolver,
 	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
-	async (req, res, next) => {
+	(req, res, next) => {
 		return Product.findById(req.params.productId)
-			.then(product => {
+			.then(async product => {
 				const productUpdate = { ...req.body };
 				const { quantity: quantityOld, unitPurchasePrice: unitPurchasePriceOld } = product;
 
@@ -92,36 +82,18 @@ productsRouter.put(
 				product.shopId = productUpdate.shopId;
 				product.specifications = productUpdate.specifications;
 
-				return product
-					.save()
-					.then(async product => {
-						await Stock.findByIdAndUpdate(product.stock, {
-							$inc: {
-								'status.unitsProduct': product.quantity - quantityOld,
-								'status.stockCost': product.quantity * product.unitPurchasePrice - quantityOld * unitPurchasePriceOld,
-							},
-						}).catch(err =>
-							next({
-								code: err.errors ? 5 : 2,
-								err,
-							})
-						);
+				await product.save().catch(err => next({ code: err.errors ? 5 : 2, err }));
 
-						res.json('success');
-					})
-					.catch(err =>
-						next({
-							code: err.errors ? 5 : 2,
-							err,
-						})
-					);
+				await Stock.findByIdAndUpdate(product.stock, {
+					$inc: {
+						'status.unitsProduct': +(product.quantity - quantityOld).toFixed(),
+						'status.stockCost': +(product.quantity * product.unitPurchasePrice - quantityOld * unitPurchasePriceOld).toFixed(2),
+					},
+				}).catch(err => next({ code: err.errors ? 5 : 2, err }));
+
+				res.json('success');
 			})
-			.catch(err =>
-				next({
-					code: err.errors ? 5 : 2,
-					err,
-				})
-			);
+			.catch(err => next({ code: err.errors ? 5 : 2, err }));
 	}
 );
 
@@ -136,14 +108,9 @@ productsRouter.delete(
 					$inc: {
 						'status.numberProducts': -1,
 						'status.unitsProduct': -product.quantity,
-						'status.stockCost': -(product.quantity * product.unitPurchasePrice),
+						'status.stockCost': -(product.quantity * product.unitPurchasePrice).toFixed(2),
 					},
-				}).catch(err =>
-					next({
-						code: err.errors ? 5 : 2,
-						err,
-					})
-				);
+				}).catch(err => next({ code: err.errors ? 5 : 2, err }));
 
 				res.json('success');
 			})

@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ClassNames from 'classnames';
 
+import QRCode from 'qrcode';
 import { Formik, Form, Field } from 'formik';
 import { TextField, RadioGroup } from 'formik-material-ui';
 import * as Yup from 'yup';
-import QRCode from 'qrcode.react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
@@ -47,7 +47,7 @@ class Team extends Component {
 	state = {
 		memberActionsMenuOpen: null,
 		selectedMember: null,
-		memberInvitationData: null,
+		memberQRCode: null,
 		dialogMemberInvitationOrEditActionType: null,
 		dialogMemberInvitationOrEdit: false,
 		dialogDeleteMember: false,
@@ -111,10 +111,45 @@ class Team extends Component {
 
 		if (actionType === 'invitation') {
 			this.props.memberInvitation().then(response => {
-				this.setState({
-					memberInvitationData: response.data,
-				});
+				QRCode.toDataURL(
+					JSON.stringify({
+						type: 'member-invitation',
+						memberId: response.data._id,
+					}),
+					{
+						margin: 0,
+						width: 400,
+					}
+				)
+					.then(url => {
+						this.setState({ memberQRCode: url });
+					})
+					.catch(err => {
+						console.error(err);
+					});
 			});
+		} else {
+			const { currentStock } = this.props;
+			const { selectedMember } = this.state;
+
+			QRCode.toDataURL(
+				JSON.stringify({
+					type: 'login',
+					userId: selectedMember.user._id,
+					stockId: currentStock._id,
+					role: selectedMember.role,
+				}),
+				{
+					margin: 0,
+					width: 400,
+				}
+			)
+				.then(url => {
+					this.setState({ memberQRCode: url });
+				})
+				.catch(err => {
+					console.error(err);
+				});
 		}
 	};
 
@@ -126,7 +161,7 @@ class Team extends Component {
 	onExitedDialogQRCodeMember = () =>
 		this.setState({
 			selectedMember: null,
-			memberInvitationData: null,
+			memberQRCode: null,
 		});
 
 	render() {
@@ -147,7 +182,7 @@ class Team extends Component {
 		const {
 			memberActionsMenuOpen,
 			selectedMember,
-			memberInvitationData,
+			memberQRCode,
 			dialogMemberInvitationOrEditActionType,
 			dialogMemberInvitationOrEdit,
 			dialogDeleteMember,
@@ -549,27 +584,9 @@ class Team extends Component {
 						QR-код для входа
 					</PDDialogTitle>
 					<DialogContent>
-						{selectedMember ? (
+						{memberQRCode ? (
 							<div style={{ textAlign: 'center' }}>
-								<QRCode
-									size={400}
-									value={JSON.stringify({
-										type: 'login',
-										userId: selectedMember.user._id,
-										stockId: currentStock._id,
-										role: selectedMember.role,
-									})}
-								/>
-							</div>
-						) : !selectedMember && memberInvitationData ? (
-							<div style={{ textAlign: 'center' }}>
-								<QRCode
-									size={400}
-									value={JSON.stringify({
-										type: 'member-invitation',
-										memberId: memberInvitationData._id,
-									})}
-								/>
+								<img src={memberQRCode} alt="" />
 							</div>
 						) : (
 							<Grid

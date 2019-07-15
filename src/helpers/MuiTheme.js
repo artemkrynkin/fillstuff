@@ -370,7 +370,7 @@ export const BliksideTheme = createMuiTheme({
 			},
 			colorPrimary: {
 				'&$disabled': {
-					color: colorPalette.blueGrey.cBg200,
+					color: colorPalette.blueGrey.cBg100,
 				},
 			},
 		},

@@ -40,12 +40,16 @@ const ExpansionPanelSummary = withStyles({
 		'&$expanded': {
 			minHeight: 42,
 		},
+		'&$focused': {
+			backgroundColor: 'transparent',
+		},
 	},
 	content: {
 		'&$expanded': {
 			margin: '12px 0',
 		},
 	},
+	focused: {},
 	expanded: {},
 })(MuiExpansionPanelSummary);
 

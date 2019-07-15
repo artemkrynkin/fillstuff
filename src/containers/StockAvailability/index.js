@@ -1,18 +1,21 @@
 import React, { Component } from 'react';
 import { compose } from 'redux';
+import Loadable from 'react-loadable';
 
 import generateMetaInfo from 'shared/generate-meta-info';
 
-import Grid from '@material-ui/core/Grid';
-
 import Head from 'src/components/head';
 import Header from 'src/components/Header';
+import { DisplayLoadingComponent } from 'src/components/Loading';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 
-import StockStatus from './components/StockStatus';
-import Products from './components/Products';
-
 import './index.styl';
+
+const Index = Loadable({
+	loader: () => import('./components/index' /* webpackChunkName: "StockAvailability_Index" */),
+	loading: DisplayLoadingComponent,
+	delay: 200,
+});
 
 class StockAvailability extends Component {
 	render() {
@@ -36,12 +39,7 @@ class StockAvailability extends Component {
 				<Header pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
 				<div className="page__content stock-availability">
 					<div className="page__inner-content">
-						<Grid container direction="row" justify="center" alignItems="flex-start" spacing={2}>
-							<Grid item xs={12}>
-								<StockStatus currentUser={currentUser} currentStock={currentStock} />
-								<Products currentUser={currentUser} currentStock={currentStock} />
-							</Grid>
-						</Grid>
+						<Index currentUser={currentUser} currentStock={currentStock} />
 					</div>
 				</div>
 			</div>

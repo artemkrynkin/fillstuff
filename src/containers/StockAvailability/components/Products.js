@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ClassNames from 'classnames';
 
-import QRCode from 'qrcode.react';
-import ReactToPrint from 'react-to-print';
+import QRCode from 'qrcode';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Grid from '@material-ui/core/Grid';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -25,16 +25,18 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 
 import { PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
 import DialogEditProduct from 'src/containers/Dialogs/CreateEditProduct';
-
-import './Products.styl';
+import { LoadingComponent } from 'src/components/Loading';
 
 import { getStockStatus } from 'src/actions/stocks';
 import { getProducts, deleteProduct } from 'src/actions/products';
+
+import './Products.styl';
 
 class Products extends Component {
 	state = {
 		productActionsMenuOpen: null,
 		selectedProduct: null,
+		selectedProductQRCode: null,
 		dialogEditProduct: false,
 		dialogDeleteProduct: false,
 		dialogQRCodeProduct: false,
@@ -82,10 +84,30 @@ class Products extends Component {
 			selectedProduct: null,
 		});
 
-	onOpenDialogQRCodeProduct = () =>
+	onOpenDialogQRCodeProduct = () => {
+		const { selectedProduct } = this.state;
+
 		this.setState({
 			dialogQRCodeProduct: true,
 		});
+
+		QRCode.toDataURL(
+			JSON.stringify({
+				type: 'product',
+				productId: selectedProduct._id,
+			}),
+			{
+				margin: 10,
+				width: 1000,
+			}
+		)
+			.then(url => {
+				this.setState({ selectedProductQRCode: url });
+			})
+			.catch(err => {
+				console.error(err);
+			});
+	};
 
 	onCloseDialogQRCodeProduct = () =>
 		this.setState({
@@ -95,23 +117,16 @@ class Products extends Component {
 	onExitedDialogQRCodeProduct = () =>
 		this.setState({
 			selectedProduct: null,
+			selectedProductQRCode: null,
 		});
 
 	UNSAFE_componentWillMount() {
 		this.props.getProducts();
 	}
 
-	// UNSAFE_componentWillUpdate(nextProps, nextState, nextContext) {
-	// 	if (this.props.selectedCategoryId !== nextProps.selectedCategoryId) {
-	// 		this.props.getProducts(nextProps.selectedCategoryId);
-	// 	}
-	// }
-
 	render() {
 		const {
-			// currentUser,
 			currentStock,
-			// currentUserRole = findMemberInStock(currentUser._id, currentStock).role,
 			products: {
 				data: products,
 				isFetching: isLoadingProducts,
@@ -119,7 +134,14 @@ class Products extends Component {
 			},
 		} = this.props;
 
-		const { productActionsMenuOpen, selectedProduct, dialogEditProduct, dialogDeleteProduct, dialogQRCodeProduct } = this.state;
+		const {
+			productActionsMenuOpen,
+			selectedProduct,
+			selectedProductQRCode,
+			dialogEditProduct,
+			dialogDeleteProduct,
+			dialogQRCodeProduct,
+		} = this.state;
 
 		const quantityIndicator = (quantity, minimumBalance) =>
 			ClassNames({
@@ -282,29 +304,28 @@ class Products extends Component {
 					open={dialogQRCodeProduct}
 					onClose={this.onCloseDialogQRCodeProduct}
 					onExited={this.onExitedDialogQRCodeProduct}
-					maxWidth="xl"
 					fullWidth
 				>
 					<PDDialogTitle onClose={this.onCloseDialogQRCodeProduct} />
 					<DialogContent>
 						{selectedProduct ? (
 							<div style={{ textAlign: 'center' }}>
-								<ReactToPrint
-									trigger={() => (
-										<Button variant="contained" color="primary" aria-haspopup="true" style={{ marginBottom: 30 }}>
-											Печать QR-кода
-										</Button>
+								<Button variant="contained" color="primary" aria-haspopup="true" style={{ marginBottom: 30 }}>
+									Печать QR-кода
+								</Button>
+								<div>
+									{selectedProductQRCode ? (
+										<img src={selectedProductQRCode} alt="" style={{ width: '100%' }} />
+									) : (
+										<Grid children={<LoadingComponent />} alignItems="center" container />
 									)}
-									content={() => this.printQRCodeProductRef}
-								/>
-								<div ref={element => (this.printQRCodeProductRef = element)}>
-									<QRCode
-										size={250}
-										value={JSON.stringify({
-											type: 'product',
-											productId: selectedProduct._id,
-										})}
-									/>
+									{/*<div*/}
+									{/*	size={250}*/}
+									{/*	value={JSON.stringify({*/}
+									{/*		type: 'product',*/}
+									{/*		productId: selectedProduct._id,*/}
+									{/*	})}*/}
+									{/*/>*/}
 								</div>
 							</div>
 						) : null}

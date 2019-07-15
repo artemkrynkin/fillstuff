@@ -1,12 +1,24 @@
 import React, { Component } from 'react';
+import Loadable from 'react-loadable';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
 
-import DialogCreateProduct from 'src/containers/Dialogs/CreateEditProduct';
-import PrintQRCodesProduct from 'src/containers/Dialogs/PrintQRCodesProduct';
+import { DisplayLoadingComponent } from 'src/components/Loading';
 
 import TitlePageOrLogo from './TitlePageOrLogo';
+
+const DialogCreateProduct = Loadable({
+	loader: () => import('src/containers/Dialogs/CreateEditProduct' /* webpackChunkName: "Dialog_CreateEditProduct" */),
+	loading: DisplayLoadingComponent,
+	delay: 200,
+});
+
+const PrintQRCodesProduct = Loadable({
+	loader: () => import('src/containers/Dialogs/PrintQRCodesProduct' /* webpackChunkName: "Dialog_PrintQRCodesProduct" */),
+	loading: DisplayLoadingComponent,
+	delay: 200,
+});
 
 class CLStockAvailability extends Component {
 	state = {
@@ -49,12 +61,12 @@ class CLStockAvailability extends Component {
 						style={{ marginRight: 8 }}
 						onClick={this.onOpenDialogCreateProduct}
 					>
-						<FontAwesomeIcon icon={['far', 'plus']} />
-						&nbsp;&nbsp;Позиция
+						<FontAwesomeIcon icon={['far', 'plus']} style={{ marginRight: 10 }} />
+						Позиция
 					</Button>
 					<Button className="mui-btn-ct400" variant="contained" color="primary" onClick={this.onOpenDialogPrintQRCodesProduct}>
-						<FontAwesomeIcon icon={['fal', 'qrcode']} />
-						&nbsp;&nbsp;Печать QR-кодов
+						<FontAwesomeIcon icon={['fal', 'qrcode']} style={{ marginRight: 10 }} />
+						Печать QR-кодов
 					</Button>
 				</div>
 

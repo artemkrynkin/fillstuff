@@ -24,22 +24,28 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContentText from '@material-ui/core/DialogContentText';
 
 import { PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
-import DialogEditProduct from 'src/containers/Dialogs/CreateEditProduct';
 import { LoadingComponent } from 'src/components/Loading';
 
 import { getStockStatus } from 'src/actions/stocks';
 import { getProducts, deleteProduct } from 'src/actions/products';
 
 import './Products.styl';
+import Loadable from 'react-loadable';
+
+const DialogProductCreate = Loadable({
+	loader: () => import('src/containers/Dialogs/ProductCreateEdit' /* webpackChunkName: "Dialog_ProductCreateEdit" */),
+	loading: () => null,
+	delay: 200,
+});
 
 class Products extends Component {
 	state = {
 		productActionsMenuOpen: null,
 		selectedProduct: null,
 		selectedProductQRCode: null,
-		dialogEditProduct: false,
-		dialogDeleteProduct: false,
-		dialogQRCodeProduct: false,
+		dialogProductEdit: false,
+		dialogProductDelete: false,
+		dialogProductQRCode: false,
 	};
 
 	onOpenProductActionsMenu = (event, product) =>
@@ -59,36 +65,36 @@ class Products extends Component {
 		}
 	};
 
-	onOpenDialogEditProduct = () =>
+	onOpenDialogProductEdit = () =>
 		this.setState({
-			dialogEditProduct: true,
+			dialogProductEdit: true,
 		});
 
-	onCloseDialogEditProduct = () =>
+	onCloseDialogProductEdit = () =>
 		this.setState({
-			dialogEditProduct: false,
+			dialogProductEdit: false,
 		});
 
-	onOpenDialogDeleteProduct = () =>
+	onOpenDialogProductDelete = () =>
 		this.setState({
-			dialogDeleteProduct: true,
+			dialogProductDelete: true,
 		});
 
-	onCloseDialogDeleteProduct = () =>
+	onCloseDialogProductDelete = () =>
 		this.setState({
-			dialogDeleteProduct: false,
+			dialogProductDelete: false,
 		});
 
-	onExitedDialogDeleteProduct = () =>
+	onExitedDialogProductDelete = () =>
 		this.setState({
 			selectedProduct: null,
 		});
 
-	onOpenDialogQRCodeProduct = () => {
+	onOpenDialogProductQRCode = () => {
 		const { selectedProduct } = this.state;
 
 		this.setState({
-			dialogQRCodeProduct: true,
+			dialogProductQRCode: true,
 		});
 
 		QRCode.toDataURL(
@@ -109,12 +115,12 @@ class Products extends Component {
 			});
 	};
 
-	onCloseDialogQRCodeProduct = () =>
+	onCloseDialogProductQRCode = () =>
 		this.setState({
-			dialogQRCodeProduct: false,
+			dialogProductQRCode: false,
 		});
 
-	onExitedDialogQRCodeProduct = () =>
+	onExitedDialogProductQRCode = () =>
 		this.setState({
 			selectedProduct: null,
 			selectedProductQRCode: null,
@@ -138,9 +144,9 @@ class Products extends Component {
 			productActionsMenuOpen,
 			selectedProduct,
 			selectedProductQRCode,
-			dialogEditProduct,
-			dialogDeleteProduct,
-			dialogQRCodeProduct,
+			dialogProductEdit,
+			dialogProductDelete,
+			dialogProductQRCode,
 		} = this.state;
 
 		const quantityIndicator = (quantity, minimumBalance) =>
@@ -231,7 +237,7 @@ class Products extends Component {
 					<MenuList>
 						<MenuItem
 							onClick={() => {
-								this.onOpenDialogQRCodeProduct();
+								this.onOpenDialogProductQRCode();
 								this.onCloseProductActionsMenu(true);
 							}}
 						>
@@ -239,7 +245,7 @@ class Products extends Component {
 						</MenuItem>
 						<MenuItem
 							onClick={() => {
-								this.onOpenDialogEditProduct();
+								this.onOpenDialogProductEdit();
 								this.onCloseProductActionsMenu(true);
 							}}
 						>
@@ -247,7 +253,7 @@ class Products extends Component {
 						</MenuItem>
 						<MenuItem
 							onClick={() => {
-								this.onOpenDialogDeleteProduct();
+								this.onOpenDialogProductDelete();
 								this.onCloseProductActionsMenu(true);
 							}}
 						>
@@ -256,21 +262,22 @@ class Products extends Component {
 					</MenuList>
 				</Popover>
 
-				<DialogEditProduct
+				<DialogProductCreate
 					actionType="edit"
-					dialogOpen={dialogEditProduct}
-					selectedProduct={selectedProduct}
-					onCloseDialog={this.onCloseDialogEditProduct}
+					dialogOpen={dialogProductEdit}
+					onCloseDialog={this.onCloseDialogProductEdit}
+					onExitedDialog={this.onExitedDialogProductEdit}
 					currentStock={currentStock}
+					selectedProduct={selectedProduct}
 				/>
 
 				<Dialog
-					open={dialogDeleteProduct}
-					onClose={this.onCloseDialogDeleteProduct}
-					onExited={this.onExitedDialogDeleteProduct}
+					open={dialogProductDelete}
+					onClose={this.onCloseDialogProductDelete}
+					onExited={this.onExitedDialogProductDelete}
 					fullWidth
 				>
-					<PDDialogTitle theme="primary" onClose={this.onCloseDialogDeleteProduct}>
+					<PDDialogTitle theme="primary" onClose={this.onCloseDialogProductDelete}>
 						Удаление позиции
 					</PDDialogTitle>
 					<DialogContent>
@@ -283,7 +290,7 @@ class Products extends Component {
 					<PDDialogActions
 						leftHandleProps={{
 							handleProps: {
-								onClick: this.onCloseDialogDeleteProduct,
+								onClick: this.onCloseDialogProductDelete,
 							},
 							text: 'Закрыть',
 						}}
@@ -292,7 +299,7 @@ class Products extends Component {
 								onClick: () =>
 									this.props.deleteProduct(selectedProduct._id).then(() => {
 										this.props.getStockStatus();
-										this.onCloseDialogDeleteProduct();
+										this.onCloseDialogProductDelete();
 									}),
 							},
 							text: 'Удалить',
@@ -301,12 +308,12 @@ class Products extends Component {
 				</Dialog>
 
 				<Dialog
-					open={dialogQRCodeProduct}
-					onClose={this.onCloseDialogQRCodeProduct}
-					onExited={this.onExitedDialogQRCodeProduct}
+					open={dialogProductQRCode}
+					onClose={this.onCloseDialogProductQRCode}
+					onExited={this.onExitedDialogProductQRCode}
 					fullWidth
 				>
-					<PDDialogTitle onClose={this.onCloseDialogQRCodeProduct} />
+					<PDDialogTitle onClose={this.onCloseDialogProductQRCode} />
 					<DialogContent>
 						{selectedProduct ? (
 							<div style={{ textAlign: 'center' }}>

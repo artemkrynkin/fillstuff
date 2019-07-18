@@ -141,7 +141,7 @@ class ProfileSettings extends Component {
 							</ButtonBase>
 						</label>
 					</Grid>
-					<Grid className="us-profile-settings__personal-data" item xs={true}>
+					<Grid className="us-profile-settings__personal-data" item xs>
 						<Formik
 							initialValues={{
 								name: user.name,

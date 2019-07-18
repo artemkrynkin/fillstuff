@@ -9,11 +9,11 @@ const Index = props => {
 	const { currentUser, currentStock } = props;
 
 	return (
-		<Grid container direction="row" justify="center" alignItems="flex-start" spacing={2}>
-			<Grid className="stock-settings__container" item xs={12} lg={7}>
+		<Grid direction="row" justify="center" alignItems="flex-start" spacing={2} container>
+			<Grid xs={7} item>
 				<GeneralSettings currentUser={currentUser} currentStock={currentStock} />
 			</Grid>
-			<Grid className="stock-settings__container" item xs={12} lg={5}>
+			<Grid xs={5} item>
 				<Team currentUser={currentUser} currentStock={currentStock} />
 			</Grid>
 		</Grid>

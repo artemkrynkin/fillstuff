@@ -94,7 +94,7 @@ const productSchema = Yup.object().shape({
 	),
 });
 
-class CreateEditProduct extends Component {
+class ProductCreateEdit extends Component {
 	static propTypes = {
 		actionType: PropTypes.oneOfType([PropTypes.string.isRequired, PropTypes.object.isRequired]),
 		dialogOpen: PropTypes.bool.isRequired,
@@ -170,7 +170,7 @@ class CreateEditProduct extends Component {
 	};
 
 	render() {
-		const { actionType, dialogOpen, selectedProduct, onCloseDialog, currentStock } = this.props;
+		const { actionType, dialogOpen, onCloseDialog, selectedProduct, currentStock } = this.props;
 		const { isLoadingShop, isLoadingSpecifications } = this.state;
 
 		const initialValues = {
@@ -704,4 +704,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 export default connect(
 	null,
 	mapDispatchToProps
-)(CreateEditProduct);
+)(ProductCreateEdit);

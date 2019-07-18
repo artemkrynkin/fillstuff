@@ -4,19 +4,17 @@ import Loadable from 'react-loadable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
 
-import { DisplayLoadingComponent } from 'src/components/Loading';
-
 import TitlePageOrLogo from './TitlePageOrLogo';
 
-const DialogCreateProduct = Loadable({
-	loader: () => import('src/containers/Dialogs/CreateEditProduct' /* webpackChunkName: "Dialog_CreateEditProduct" */),
-	loading: DisplayLoadingComponent,
+const DialogProductCreate = Loadable({
+	loader: () => import('src/containers/Dialogs/ProductCreateEdit' /* webpackChunkName: "Dialog_ProductCreateEdit" */),
+	loading: () => null,
 	delay: 200,
 });
 
-const PrintQRCodesProduct = Loadable({
+const DialogPrintQRCodesProduct = Loadable({
 	loader: () => import('src/containers/Dialogs/PrintQRCodesProduct' /* webpackChunkName: "Dialog_PrintQRCodesProduct" */),
-	loading: DisplayLoadingComponent,
+	loading: () => null,
 	delay: 200,
 });
 
@@ -70,14 +68,14 @@ class CLStockAvailability extends Component {
 					</Button>
 				</div>
 
-				<DialogCreateProduct
+				<DialogProductCreate
 					actionType="create"
 					dialogOpen={dialogCreateProduct}
 					onCloseDialog={this.onCloseDialogCreateProduct}
 					currentStock={currentStock}
 				/>
 
-				<PrintQRCodesProduct
+				<DialogPrintQRCodesProduct
 					dialogOpen={dialogPrintQRCodesProduct}
 					onCloseDialog={this.onCloseDialogPrintQRCodesProduct}
 					currentStock={currentStock}

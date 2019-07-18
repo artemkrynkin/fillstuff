@@ -51,36 +51,6 @@ export const getStockStatus = stockId => {
 	};
 };
 
-// export const createStock = values => {
-// 	return dispatch => {
-// 		dispatch({ type: 'REQUEST_STOCKS' });
-//
-// 		return axios
-// 			.post('/api/stocks', values)
-// 			.then(async response => {
-// 				const { data: stock } = response;
-//
-// 				await dispatch({
-// 					type: 'CREATE_STOCK',
-// 					payload: stock,
-// 				});
-//
-// 				dispatch(changeActiveStock(stock._id)).then(() => {
-// 					history.push({ pathname: `/stocks/${stock._id}/dashboard` });
-// 				});
-//
-// 				return Promise.resolve({ status: 'success' });
-// 			})
-// 			.catch(error => {
-// 				if (error.response) {
-// 					return Promise.resolve({ status: 'error', data: error.response.data });
-// 				} else {
-// 					console.error(error);
-// 				}
-// 			});
-// 	};
-// };
-
 export const editStock = (stockId, newValues) => {
 	return dispatch => {
 		dispatch({ type: 'REQUEST_STOCKS' });
@@ -107,34 +77,6 @@ export const editStock = (stockId, newValues) => {
 			});
 	};
 };
-
-// export const deleteStock = stockId => {
-// 	return dispatch => {
-// 		dispatch({ type: 'REQUEST_STOCKS' });
-//
-// 		return axios
-// 			.delete(`/api/stocks/${stockId}`)
-// 			.then(async response => {
-// 				const { data: nextStockId } = response;
-//
-// 				await dispatch(changeActiveStock(nextStockId)).then(() => {
-// 					history.push({ pathname: nextStockId ? changeStockCurrentUrl(nextStockId) : '/stocks' });
-// 				});
-//
-// 				dispatch({
-// 					type: 'DELETE_STOCK',
-// 					payload: {
-// 						stockId,
-// 					},
-// 				});
-//
-// 				return Promise.resolve({ status: 'success', data: nextStockId });
-// 			})
-// 			.catch(error => {
-// 				console.error(error);
-// 			});
-// 	};
-// };
 
 export const memberInvitation = stockId => {
 	return dispatch => {

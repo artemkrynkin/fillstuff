@@ -143,6 +143,13 @@ export const BliksideTheme = createMuiTheme({
 				paddingRight: 10,
 			},
 		},
+		MuiFormGroup: {
+			row: {
+				'& > label': {
+					marginRight: 16,
+				},
+			},
+		},
 		MuiFormControl: {
 			marginNormal: {
 				marginBottom: 20,

@@ -5,15 +5,13 @@ import Loadable from 'react-loadable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
 
-import { DisplayLoadingComponent } from 'src/components/Loading';
-
 import TitlePageOrLogo from './TitlePageOrLogo';
 
 import { getProducts } from 'src/actions/products';
 
-const CreateWriteOff = Loadable({
+const DialogCreateWriteOff = Loadable({
 	loader: () => import('src/containers/Dialogs/CreateWriteOff' /* webpackChunkName: "Dialog_CreateWriteOff" */),
-	loading: DisplayLoadingComponent,
+	loading: () => null,
 	delay: 200,
 });
 
@@ -55,7 +53,7 @@ class CLStockWriteOffs extends Component {
 					</Button>
 				</div>
 
-				<CreateWriteOff
+				<DialogCreateWriteOff
 					dialogOpen={dialogCreateWriteOff}
 					onCloseDialog={this.onCloseDialogCreateWriteOff}
 					currentStock={currentStock}

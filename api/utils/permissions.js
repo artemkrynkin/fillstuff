@@ -1,4 +1,4 @@
-import { checkPermissions, findMemberInStock } from 'shared/roles-access-rights';
+import { findMemberInStock, checkPermissions } from 'shared/roles-access-rights';
 
 import Stock from 'api/models/stock';
 
@@ -24,14 +24,9 @@ export const hasPermissionsInStock = async (req, res, next, accessRightList, ski
 			.then(stock => {
 				const currentUserRole = findMemberInStock(req.user._id, stock).role;
 
-				if (!checkPermissions(currentUserRole, accessRightList)) next({ code: 4 });
+				if (!checkPermissions(currentUserRole, accessRightList)) return next({ code: 4 });
 			})
-			.catch(err =>
-				next({
-					code: 2,
-					err,
-				})
-			);
+			.catch(err => next({ code: 2, err }));
 	}
 
 	next();

@@ -51,11 +51,11 @@ export const memberRoleTransform = (role, bitmask = false) => {
 	}
 };
 
-export const checkPermissions = (role, accessRightList) =>
-	memberRoleTransform(role, true) & accessRightInBitmask(accessRightList);
-
 export const findMemberInStock = (userId, stock) => {
 	userId = String(userId);
 
 	return stock.members[stock.members.findIndex(member => member.user && String(member.user._id) === userId)];
 };
+
+export const checkPermissions = (role, accessRightList) =>
+	memberRoleTransform(role, true) & accessRightInBitmask(accessRightList);

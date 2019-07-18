@@ -86,11 +86,11 @@ const Login = props => {
 								</FormControl>
 								{errors.unknown ? (
 									<FormHelperText
-										error={true}
 										style={{
 											textAlign: 'center',
 											margin: '-10px 0 10px',
 										}}
+										error
 									>
 										{errors.unknown}
 									</FormHelperText>

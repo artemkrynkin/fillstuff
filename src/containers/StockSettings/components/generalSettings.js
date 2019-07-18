@@ -138,7 +138,7 @@ const GeneralSettings = props => {
 										fullWidth
 									/>
 								)}
-								{Boolean(errors.timezone) ? <FormHelperText error={true}>{errors.timezone}</FormHelperText> : null}
+								{Boolean(errors.timezone) ? <FormHelperText error>{errors.timezone}</FormHelperText> : null}
 							</FormControl>
 						</Grid>
 						{checkPermissions(currentUserRole, ['stock.full_control']) ? (

@@ -23,12 +23,10 @@ import { createWriteOff } from 'src/actions/writeOffs';
 import './index.styl';
 
 const writeOffSchema = Yup.object().shape({
-	productId: Yup.string().required('Обязательное поле'),
+	productId: Yup.string().required(),
 	quantity: Yup.number()
-		// eslint-disable-next-line
 		.min(1, 'Введите расход')
-		// eslint-disable-next-line
-		.required('Обязательное поле'),
+		.required(),
 });
 
 class CreateWriteOff extends Component {

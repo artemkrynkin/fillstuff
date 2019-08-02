@@ -6,8 +6,8 @@ import Button from '@material-ui/core/Button';
 
 import TitlePageOrLogo from './TitlePageOrLogo';
 
-const DialogProductCreate = Loadable({
-	loader: () => import('src/containers/Dialogs/ProductCreateEdit' /* webpackChunkName: "Dialog_ProductCreateEdit" */),
+const DialogProductAndMarkersCreate = Loadable({
+	loader: () => import('src/containers/Dialogs/ProductAndMarkersCreate' /* webpackChunkName: "Dialog_ProductAndMarkersCreate" */),
 	loading: () => null,
 	delay: 200,
 });
@@ -20,18 +20,18 @@ const DialogPrintQRCodesProduct = Loadable({
 
 class CLStockAvailability extends Component {
 	state = {
-		dialogCreateProduct: false,
+		dialogProductAndMarkersCreate: false,
 		dialogPrintQRCodesProduct: false,
 	};
 
-	onOpenDialogCreateProduct = () =>
+	onOpenDialogProductAndMarkersCreate = () =>
 		this.setState({
-			dialogCreateProduct: true,
+			dialogProductAndMarkersCreate: true,
 		});
 
-	onCloseDialogCreateProduct = () =>
+	onCloseDialogProductAndMarkersCreate = () =>
 		this.setState({
-			dialogCreateProduct: false,
+			dialogProductAndMarkersCreate: false,
 		});
 
 	onOpenDialogPrintQRCodesProduct = () =>
@@ -46,7 +46,7 @@ class CLStockAvailability extends Component {
 
 	render() {
 		const { pageTitle, theme, currentStock } = this.props;
-		const { dialogCreateProduct, dialogPrintQRCodesProduct } = this.state;
+		const { dialogProductAndMarkersCreate, dialogPrintQRCodesProduct } = this.state;
 
 		return (
 			<div className="header__column_left">
@@ -57,7 +57,7 @@ class CLStockAvailability extends Component {
 						variant="contained"
 						color="primary"
 						style={{ marginRight: 8 }}
-						onClick={this.onOpenDialogCreateProduct}
+						onClick={this.onOpenDialogProductAndMarkersCreate}
 					>
 						<FontAwesomeIcon icon={['far', 'plus']} style={{ marginRight: 10 }} />
 						Позиция
@@ -68,10 +68,9 @@ class CLStockAvailability extends Component {
 					</Button>
 				</div>
 
-				<DialogProductCreate
-					actionType="create"
-					dialogOpen={dialogCreateProduct}
-					onCloseDialog={this.onCloseDialogCreateProduct}
+				<DialogProductAndMarkersCreate
+					dialogOpen={dialogProductAndMarkersCreate}
+					onCloseDialog={this.onCloseDialogProductAndMarkersCreate}
 					currentStock={currentStock}
 				/>
 

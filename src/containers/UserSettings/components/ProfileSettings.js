@@ -26,33 +26,32 @@ import './ProfileSettings.styl';
 
 const PersonalDataSchema = Yup.object().shape({
 	name: Yup.string()
-		// eslint-disable-next-line
-		.min(2, 'Имя не может быть короче ${min} символов')
-		.required('Обязательное поле'),
+		.min(2)
+		.required(),
 });
 
 const EmailSchema = Yup.object().shape({
 	newEmail: Yup.string()
-		.email('Некорректный Email')
-		.required('Обязательное поле'),
+		.email()
+		.required(),
 });
 
 const SetPasswordSchema = Yup.object().shape({
 	newPassword: Yup.string()
 		// eslint-disable-next-line
 		.min(6, 'Пароль должен состоять минимум из ${min} символов')
-		.required('Обязательное поле'),
+		.required(),
 });
 
 const ChangePasswordSchema = Yup.object().shape({
-	oldPassword: Yup.string().required('Обязательное поле'),
+	oldPassword: Yup.string().required(),
 	newPassword: Yup.string()
 		// eslint-disable-next-line
 		.min(6, 'Новый пароль должен состоять минимум из ${min} символов')
-		.required('Обязательное поле'),
+		.required(),
 	confirmPassword: Yup.string()
 		.oneOf([Yup.ref('newPassword')], 'Новый пароль повторён неправильно')
-		.required('Обязательное поле'),
+		.required(),
 });
 
 class ProfileSettings extends Component {

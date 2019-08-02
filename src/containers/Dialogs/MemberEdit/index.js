@@ -18,7 +18,7 @@ import Radio from '@material-ui/core/Radio';
 
 import { checkPermissions } from 'shared/roles-access-rights';
 
-import { PDDialog, PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
+import { PDDialog, PDDialogTitle, PDDialogActions } from 'src/components/Dialog';
 
 import { editMember } from 'src/actions/stocks';
 
@@ -27,16 +27,15 @@ import './index.styl';
 const memberInvitationOrEditSchema = Yup.object().shape({
 	user: Yup.object().shape({
 		name: Yup.string()
-			// eslint-disable-next-line
-			.min(2, 'Имя не может быть короче ${min} символов')
-			.required('Обязательное поле'),
+			.min(2)
+			.required(),
 		email: Yup.string()
-			.email('Некорректный Email')
-			.required('Обязательное поле'),
+			.email()
+			.required(),
 	}),
 	role: Yup.string()
-		.oneOf(['owner', 'admin', 'user'], 'Значение отсутствует в списке доступных ролей')
-		.required('Обязательное поле'),
+		.oneOf(['owner', 'admin', 'user'])
+		.required(),
 });
 
 class MemberEdit extends Component {

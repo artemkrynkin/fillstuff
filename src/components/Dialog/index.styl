@@ -3,82 +3,134 @@
 @import '~src/styles/helpers/_fonts.styl';
 
 .pd-dialog
-	&__title
-		font-size 16px
-		font-weight 500
-		line-height 1.2
+  &__title
+    position relative
 
-		&_primary
-			background-color $c-t-300
-			border-bottom 1px solid $c-t-100
-			color white
+    &_primary
+      background-color $c-t-300
+      border-bottom 1px solid $c-t-100
+      color white
 
-		&_grey
-			background-color $c-br-4
-			border-bottom 1px solid $c-bg-100
-			color $c-bg-700
+    &_grey
+      background-color $c-br-4
+      border-bottom 1px solid $c-bg-100
+      color $c-bg-700
 
-		&_no-theme
-			padding 0
+    &_no-theme
+      padding 0
 
-		&_position-center
-			text-align center
+  &_sticky-actions &__title
+    border-radius 8px 8px 0 0
 
-	&__close
-		background-color transparent !important
-		border-radius 0
-		padding 15px
-		position absolute
-		right 0
-		top 0
-		transition color 150ms ease-out
+  &__title-text
+    font-size 16px
+    font-weight 500
+    line-height 1.2
 
-		& svg
-			width 24px !important
+    &_center
+      text-align center
 
-	&__title_primary &__close
-		color alpha(white, 0.8)
+  &__title_primary &__title-text
+    color white
 
-		&:hover
-			color white
+  &__title_grey &__title-text
+    color $c-bg-700
 
-	&__title_grey &__close,
-	&__title_no-theme &__close
-		color alpha($c-bg-300, 0.8)
+  &__title-action-left-handle
+    display flex
+    height 100%
+    left 0
+    padding 0 20px
+    position absolute
+    top 0
 
-		&:hover
-			color $c-bg-300
+    & svg
+      font-size 30px
 
-	&__actions
-		justify-content initial
-		margin 0
-		padding 0
+    &_icon-left
+      & svg
+        order -1
 
-	&__actions-wrap
-		width 100%
+  &__title-action-left-handle-text
+    font-size 16px
+    font-weight 500
+    line-height 1.2
+    padding 0 10px
 
-	&_sticky-actions &__actions-wrap
-		will-change transform
+  &__close
+    background-color transparent !important
+    border-radius 0
+    padding 15px
+    position absolute
+    right 0
+    top 0
+    transition color 150ms ease-out
 
-	&_sticky-actions-stuck &__actions-wrap
-		bottom 0
-		position fixed
+    & svg
+      width 24px !important
 
-	&__actions-left-handle
-		background-color $c-br-4
-		border-radius 0
-		font-size 15px
-		min-height 46px
-		text-transform none
-		width 35%
+  &__title_primary &__close
+    color alpha(white, 0.8)
 
-		&:hover
-			background-color $c-br-5
+    &:hover
+      color white
 
-	&__actions-right-handle
-		border-radius 0
-		box-shadow none !important
-		font-size 15px
-		min-height 46px
-		text-transform none
-		width 65%
+  &__title_grey &__close,
+  &__title_no-theme &__close
+    color alpha($c-bg-300, 0.8)
+
+    &:hover
+      color $c-bg-300
+
+  &__actions
+    justify-content initial
+    margin 0
+    padding 0
+
+  &_sticky-actions &__actions
+    overflow hidden
+
+  &_sticky-actions:not(&_sticky-actions-stuck) &__actions
+    border-top 1px solid transparent
+    border-radius 0 0 8px 8px
+
+  &_sticky-actions-stuck &__actions
+    border-top 1px solid $c-bg-50
+
+  &__actions-wrap
+    width 100%
+
+  &_sticky-actions &__actions
+    position sticky
+    bottom 0
+
+  &__actions-handle-text-wrap
+    display flex
+    align-items center
+
+  &__actions-handle-text
+    align-items center
+    display flex
+    padding 0 10px
+
+  &__actions-left-handle
+    background-color $c-br-4
+    border-radius 0
+    font-size 15px
+    min-height 46px
+    text-transform none
+    width 35%
+
+    &:hover
+      background-color $c-br-5
+
+  &__actions-right-handle
+    border-radius 0
+    box-shadow none !important
+    font-size 15px
+    min-height 46px
+    text-transform none
+    width 100%
+
+  &__actions-left-handle + &__actions-right-handle
+    width 65%

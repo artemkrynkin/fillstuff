@@ -26,7 +26,7 @@ class StockWriteOffs extends Component {
 		const { title, description } = generateMetaInfo({
 			type: metaInfo.pageName,
 			data: {
-				title: `${metaInfo.pageTitle} - Расход`,
+				title: `${metaInfo.pageTitle} - Списания`,
 			},
 		});
 

@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ClassNames from 'classnames';
+import Loadable from 'react-loadable';
 
-import QRCode from 'qrcode';
+// import QRCode from 'qrcode';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Button from '@material-ui/core/Button';
+// import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Grid from '@material-ui/core/Grid';
+import MuiExpansionPanel from '@material-ui/core/ExpansionPanel';
+import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+// import Grid from '@material-ui/core/Grid';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -19,49 +23,149 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
 import Popover from '@material-ui/core/Popover';
-import DialogContent from '@material-ui/core/DialogContent';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContentText from '@material-ui/core/DialogContentText';
+// import DialogContent from '@material-ui/core/DialogContent';
+// import Dialog from '@material-ui/core/Dialog';
+// import DialogContentText from '@material-ui/core/DialogContentText';
+import { withStyles } from '@material-ui/core/styles';
 
-import { PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
-import { LoadingComponent } from 'src/components/Loading';
+import colorPalette from 'shared/colorPalette';
 
-import { getStockStatus } from 'src/actions/stocks';
-import { getProducts, deleteProduct } from 'src/actions/products';
+// import { PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
+// import { LoadingComponent } from 'src/components/Loading';
+
+import { getProducts } from 'src/actions/products';
 
 import './Products.styl';
-import Loadable from 'react-loadable';
 
-const DialogProductCreate = Loadable({
-	loader: () => import('src/containers/Dialogs/ProductCreateEdit' /* webpackChunkName: "Dialog_ProductCreateEdit" */),
+const DialogProductOrMarkerArchive = Loadable({
+	loader: () => import('./Dialogs/ProductOrMarkerArchive' /* webpackChunkName: "Dialog_ProductOrMarkerArchive" */),
 	loading: () => null,
 	delay: 200,
 });
 
+const DialogProductEdit = Loadable({
+	loader: () => import('src/containers/Dialogs/ProductEdit' /* webpackChunkName: "Dialog_ProductEdit" */),
+	loading: () => null,
+	delay: 200,
+});
+
+const DialogMarkerEdit = Loadable({
+	loader: () => import('src/containers/Dialogs/MarkerEdit' /* webpackChunkName: "Dialog_MarkerEdit" */),
+	loading: () => null,
+	delay: 200,
+});
+
+const ExpansionPanel = withStyles({
+	root: {
+		backgroundColor: 'transparent',
+		boxShadow: 'none',
+		'&$expanded': {
+			margin: 0,
+		},
+		'&$disabled': {
+			backgroundColor: 'transparent',
+		},
+	},
+	rounded: {
+		'&:first-child': {
+			borderRadius: 0,
+		},
+		'&:last-child': {
+			borderRadius: 0,
+		},
+	},
+	expanded: {},
+	disabled: {},
+})(MuiExpansionPanel);
+
+const ExpansionPanelSummary = withStyles({
+	root: {
+		backgroundColor: colorPalette.brightness.cBr1,
+		borderTop: `1px solid ${colorPalette.brightness.cBr5}`,
+		minHeight: 'initial',
+		padding: 0,
+		'&$expanded': {
+			minHeight: 'initial',
+		},
+		'&$focused': {
+			backgroundColor: 'transparent',
+		},
+		'&$disabled': {
+			backgroundColor: 'transparent',
+			opacity: 0.5,
+		},
+		'&$disabled $expandIcon': {
+			opacity: 0,
+		},
+		'&:hover': {
+			backgroundColor: colorPalette.brightness.cBr3,
+		},
+		'tr:first-child &': {
+			borderTop: 'none',
+		},
+	},
+	content: {
+		margin: '0 0 0 -41px',
+		'&$expanded': {
+			margin: '0 0 0 -41px',
+		},
+	},
+	expandIcon: {
+		color: colorPalette.blueGrey.cBg200,
+		order: -1,
+		marginLeft: 5,
+		marginRight: '0 !important',
+		padding: 8,
+		transform: 'rotate(-90deg)',
+		width: 36,
+		'&$expanded': {
+			transform: 'rotate(0deg)',
+		},
+		'& svg': {
+			fontSize: 20,
+		},
+	},
+	expanded: {},
+	focused: {},
+	disabled: {},
+})(MuiExpansionPanelSummary);
+
+const ExpansionPanelDetails = withStyles({
+	root: {
+		padding: 0,
+	},
+})(MuiExpansionPanelDetails);
+
 class Products extends Component {
 	state = {
-		productActionsMenuOpen: null,
-		selectedProduct: null,
-		selectedProductQRCode: null,
+		productOrMarkerActionsMenuOpen: null,
+		selectedActionType: null,
+		selectedProductOrMarker: null,
 		dialogProductEdit: false,
-		dialogProductDelete: false,
-		dialogProductQRCode: false,
+		dialogMarkerCreate: false,
+		dialogMarkerEdit: false,
+		dialogProductOrMarkerArchive: false,
 	};
 
-	onOpenProductActionsMenu = (event, product) =>
-		this.setState({
-			productActionsMenuOpen: event.currentTarget,
-			selectedProduct: product,
-		});
+	onOpenProductOrMarkersActionsMenu = (event, actionType, productOrMarker) => {
+		// if (actionType === 'marker') delete productOrMarker.product.markers;
 
-	onCloseProductActionsMenu = saveProduct => {
-		if (!saveProduct) {
+		this.setState({
+			productOrMarkerActionsMenuOpen: event.currentTarget,
+			selectedActionType: actionType,
+			selectedProductOrMarker: productOrMarker,
+		});
+	};
+
+	onCloseProductOrMarkersActionsMenu = save => {
+		if (!save) {
 			this.setState({
-				productActionsMenuOpen: null,
-				selectedProduct: null,
+				productOrMarkerActionsMenuOpen: null,
+				selectedActionType: null,
+				selectedProductOrMarker: null,
 			});
 		} else {
-			this.setState({ productActionsMenuOpen: null });
+			this.setState({ productOrMarkerActionsMenuOpen: null });
 		}
 	};
 
@@ -75,55 +179,29 @@ class Products extends Component {
 			dialogProductEdit: false,
 		});
 
-	onOpenDialogProductDelete = () =>
+	onOpenDialogMarkerEdit = () =>
 		this.setState({
-			dialogProductDelete: true,
+			dialogMarkerEdit: true,
 		});
 
-	onCloseDialogProductDelete = () =>
+	onCloseDialogMarkerEdit = () =>
 		this.setState({
-			dialogProductDelete: false,
+			dialogMarkerEdit: false,
 		});
 
-	onExitedDialogProductDelete = () =>
+	onOpenDialogProductOrMarkerArchive = () =>
 		this.setState({
-			selectedProduct: null,
+			dialogProductOrMarkerArchive: true,
 		});
 
-	onOpenDialogProductQRCode = () => {
-		const { selectedProduct } = this.state;
-
+	onCloseDialogProductOrMarkerArchive = () =>
 		this.setState({
-			dialogProductQRCode: true,
+			dialogProductOrMarkerArchive: false,
 		});
 
-		QRCode.toDataURL(
-			JSON.stringify({
-				type: 'product',
-				productId: selectedProduct._id,
-			}),
-			{
-				margin: 10,
-				width: 1000,
-			}
-		)
-			.then(url => {
-				this.setState({ selectedProductQRCode: url });
-			})
-			.catch(err => {
-				console.error(err);
-			});
-	};
-
-	onCloseDialogProductQRCode = () =>
+	onExitedDialogProductOrMarkerArchive = () =>
 		this.setState({
-			dialogProductQRCode: false,
-		});
-
-	onExitedDialogProductQRCode = () =>
-		this.setState({
-			selectedProduct: null,
-			selectedProductQRCode: null,
+			selectedProductOrMarker: null,
 		});
 
 	UNSAFE_componentWillMount() {
@@ -141,12 +219,13 @@ class Products extends Component {
 		} = this.props;
 
 		const {
-			productActionsMenuOpen,
-			selectedProduct,
-			selectedProductQRCode,
+			productOrMarkerActionsMenuOpen,
+			selectedActionType,
+			selectedProductOrMarker,
 			dialogProductEdit,
-			dialogProductDelete,
-			dialogProductQRCode,
+			// dialogMarkerCreate,
+			dialogMarkerEdit,
+			dialogProductOrMarkerArchive,
 		} = this.state;
 
 		const quantityIndicator = (quantity, minimumBalance) =>
@@ -159,45 +238,131 @@ class Products extends Component {
 			});
 
 		return (
-			<Paper>
+			<Paper className="sa-products">
 				<Table>
 					<TableHead>
 						<TableRow>
-							<TableCell style={{ paddingLeft: 36 }}>Наименование</TableCell>
-							<TableCell align="right" width="130px">
+							<TableCell style={{ paddingLeft: 46 }}>Наименование</TableCell>
+							<TableCell align="right" width={140}>
 								Количество
 							</TableCell>
-							<TableCell align="right" width="140px">
+							<TableCell align="right" width={150}>
+								Мин. остаток
+							</TableCell>
+							<TableCell align="right" width={160}>
 								Цена закупки
 							</TableCell>
-							<TableCell align="right" width="145px">
+							<TableCell align="right" width={160}>
 								Цена продажи
 							</TableCell>
-							<TableCell align="right" size="small" width="55px" />
+							<TableCell width={50} />
 						</TableRow>
 					</TableHead>
 					<TableBody>
 						{!isLoadingProducts ? (
 							products && products.length ? (
 								products.map(product => (
-									<TableRow key={product._id}>
-										<TableCell>
-											<div className={quantityIndicator(product.quantity, product.minimumBalance)} />
-											{product.name}
-										</TableCell>
-										<TableCell align="right">{product.quantity}</TableCell>
-										<TableCell align="right">{product.unitPurchasePrice} ₽</TableCell>
-										<TableCell align="right">{product.unitSellingPrice ? `${product.unitSellingPrice} ₽` : '-'}</TableCell>
-										<TableCell align="right" size="small" style={{ paddingLeft: 0 }}>
-											<IconButton
-												className="sa-products__actions"
-												aria-haspopup="true"
-												onClick={event => this.onOpenProductActionsMenu(event, product)}
-												size="small"
+									<TableRow key={product._id} className="sa-products__row-product">
+										<td colSpan={6} style={{ position: 'relative' }}>
+											<ExpansionPanel
+												TransitionProps={{
+													timeout: 300,
+												}}
+												defaultExpanded={product.markers.length !== 0}
+												disabled={!product.markers.length}
 											>
-												<FontAwesomeIcon icon={['far', 'ellipsis-h']} />
-											</IconButton>
-										</TableCell>
+												<ExpansionPanelSummary
+													expandIcon={<FontAwesomeIcon icon={['far', 'angle-down']} />}
+													IconButtonProps={{
+														disableRipple: true,
+														size: 'small',
+													}}
+												>
+													<Table>
+														<TableBody>
+															<TableRow>
+																<TableCell width={41} style={{ paddingLeft: 5, paddingRight: 0 }} />
+																<TableCell style={{ paddingLeft: 5 }}>
+																	<span style={{ color: colorPalette.blueGrey.cBg600, fontWeight: 600 }}>{product.name}</span>
+																</TableCell>
+																<TableCell align="right" width={140}>
+																	{!product.dividedMarkers ? (
+																		<div className={quantityIndicator(product.quantity, product.minimumBalance)} />
+																	) : null}
+																	{product.quantity}
+																</TableCell>
+																<TableCell align="right" width={150}>
+																	{product.minimumBalance}
+																</TableCell>
+																<TableCell width={320 + 50} />
+															</TableRow>
+														</TableBody>
+													</Table>
+												</ExpansionPanelSummary>
+												{product.markers.length ? (
+													<ExpansionPanelDetails>
+														<Table>
+															<TableBody>
+																{product.markers.map(marker => (
+																	<TableRow key={marker._id} className="sa-products__row-marker">
+																		<TableCell width={41} style={{ paddingLeft: 5, paddingRight: 0 }} />
+																		<TableCell style={{ paddingLeft: 5 }}>
+																			{marker.manufacturer.label}{' '}
+																			{marker.specifications.reduce(
+																				(fullSpecifications, specification) => `${fullSpecifications} ${specification.label}`,
+																				''
+																			)}
+																		</TableCell>
+																		<TableCell align="right" width={140}>
+																			{product.dividedMarkers ? (
+																				<div className={quantityIndicator(marker.quantity, marker.minimumBalance)} />
+																			) : null}
+																			{marker.quantity}
+																		</TableCell>
+																		<TableCell align="right" width={150}>
+																			{marker.minimumBalance}
+																		</TableCell>
+																		<TableCell align="right" width={160}>
+																			{marker.unitPurchasePrice ? `${marker.unitPurchasePrice} ₽` : '-'}
+																		</TableCell>
+																		<TableCell align="right" width={160}>
+																			{marker.unitSellingPrice ? `${marker.unitSellingPrice} ₽` : '-'}
+																		</TableCell>
+																		<TableCell align="right" width={50} style={{ padding: '0 7px' }}>
+																			<div className="sa-products__marker-actions">
+																				<IconButton
+																					className="sa-products__marker-actions-button"
+																					aria-haspopup="true"
+																					onClick={event =>
+																						this.onOpenProductOrMarkersActionsMenu(event, 'marker', { product, marker })
+																					}
+																					size="small"
+																				>
+																					<FontAwesomeIcon icon={['far', 'ellipsis-h']} />
+																				</IconButton>
+																			</div>
+																		</TableCell>
+																	</TableRow>
+																))}
+															</TableBody>
+														</Table>
+													</ExpansionPanelDetails>
+												) : null}
+											</ExpansionPanel>
+											<div className="sa-products__product-actions">
+												<IconButton className="sa-products__product-add-marker-button" aria-haspopup="true" size="small">
+													<FontAwesomeIcon icon={['fal', 'plus']} />
+												</IconButton>
+												<IconButton
+													className="sa-products__product-actions-button"
+													aria-haspopup="true"
+													onClick={event => this.onOpenProductOrMarkersActionsMenu(event, 'product', product)}
+													size="small"
+												>
+													<FontAwesomeIcon icon={['far', 'ellipsis-h']} />
+												</IconButton>
+											</div>
+										</td>
 									</TableRow>
 								))
 							) : (
@@ -220,9 +385,9 @@ class Products extends Component {
 				</Table>
 
 				<Popover
-					anchorEl={productActionsMenuOpen}
-					open={Boolean(productActionsMenuOpen)}
-					onClose={this.onCloseProductActionsMenu}
+					anchorEl={productOrMarkerActionsMenuOpen}
+					open={Boolean(productOrMarkerActionsMenuOpen)}
+					onClose={this.onCloseProductOrMarkersActionsMenu}
 					anchorOrigin={{
 						vertical: 'bottom',
 						horizontal: 'center',
@@ -237,24 +402,36 @@ class Products extends Component {
 					<MenuList>
 						<MenuItem
 							onClick={() => {
-								this.onOpenDialogProductQRCode();
-								this.onCloseProductActionsMenu(true);
+								// this.onOpenDialogProductQRCode();
+								this.onCloseProductOrMarkersActionsMenu(true);
 							}}
 						>
-							QR-код
+							Печать QR-кода
 						</MenuItem>
+						{selectedActionType === 'marker' ? (
+							<MenuItem
+								onClick={() => {
+									// this.onOpenDialogProductEdit();
+									this.onCloseProductOrMarkersActionsMenu(true);
+								}}
+							>
+								Добавить количество
+							</MenuItem>
+						) : null}
 						<MenuItem
 							onClick={() => {
-								this.onOpenDialogProductEdit();
-								this.onCloseProductActionsMenu(true);
+								if (selectedActionType === 'product') this.onOpenDialogProductEdit();
+								if (selectedActionType === 'marker') this.onOpenDialogMarkerEdit();
+
+								this.onCloseProductOrMarkersActionsMenu(true);
 							}}
 						>
 							Редактировать
 						</MenuItem>
 						<MenuItem
 							onClick={() => {
-								this.onOpenDialogProductDelete();
-								this.onCloseProductActionsMenu(true);
+								this.onOpenDialogProductOrMarkerArchive();
+								this.onCloseProductOrMarkersActionsMenu(true);
 							}}
 						>
 							Архивировать
@@ -262,82 +439,41 @@ class Products extends Component {
 					</MenuList>
 				</Popover>
 
-				<DialogProductCreate
-					actionType="edit"
-					dialogOpen={dialogProductEdit}
-					onCloseDialog={this.onCloseDialogProductEdit}
-					onExitedDialog={this.onExitedDialogProductEdit}
+				<DialogProductOrMarkerArchive
+					actionType={selectedActionType}
+					dialogOpen={dialogProductOrMarkerArchive}
+					onCloseDialog={this.onCloseDialogProductOrMarkerArchive}
+					onExitedDialog={this.onExitedDialogProductOrMarkerArchive}
 					currentStock={currentStock}
-					selectedProduct={selectedProduct}
+					selectedProductOrMarker={
+						selectedProductOrMarker
+							? selectedProductOrMarker.marker
+								? selectedProductOrMarker.marker
+								: selectedProductOrMarker
+							: null
+					}
 				/>
 
-				<Dialog
-					open={dialogProductDelete}
-					onClose={this.onCloseDialogProductDelete}
-					onExited={this.onExitedDialogProductDelete}
-					fullWidth
-				>
-					<PDDialogTitle theme="primary" onClose={this.onCloseDialogProductDelete}>
-						Удаление позиции
-					</PDDialogTitle>
-					<DialogContent>
-						{selectedProduct ? (
-							<DialogContentText>
-								Вы уверены, что хотите удалить <b>{selectedProduct.name}</b> со склада?
-							</DialogContentText>
-						) : null}
-					</DialogContent>
-					<PDDialogActions
-						leftHandleProps={{
-							handleProps: {
-								onClick: this.onCloseDialogProductDelete,
-							},
-							text: 'Закрыть',
-						}}
-						rightHandleProps={{
-							handleProps: {
-								onClick: () =>
-									this.props.deleteProduct(selectedProduct._id).then(() => {
-										this.props.getStockStatus();
-										this.onCloseDialogProductDelete();
-									}),
-							},
-							text: 'Удалить',
-						}}
-					/>
-				</Dialog>
+				<DialogProductEdit
+					dialogOpen={dialogProductEdit}
+					onCloseDialog={this.onCloseDialogProductEdit}
+					currentStock={currentStock}
+					selectedProduct={
+						selectedProductOrMarker
+							? selectedProductOrMarker.marker
+								? selectedProductOrMarker.marker
+								: selectedProductOrMarker
+							: null
+					}
+				/>
 
-				<Dialog
-					open={dialogProductQRCode}
-					onClose={this.onCloseDialogProductQRCode}
-					onExited={this.onExitedDialogProductQRCode}
-					fullWidth
-				>
-					<PDDialogTitle onClose={this.onCloseDialogProductQRCode} />
-					<DialogContent>
-						{selectedProduct ? (
-							<div style={{ textAlign: 'center' }}>
-								<Button variant="contained" color="primary" aria-haspopup="true" style={{ marginBottom: 30 }}>
-									Печать QR-кода
-								</Button>
-								<div>
-									{selectedProductQRCode ? (
-										<img src={selectedProductQRCode} alt="" style={{ width: '100%' }} />
-									) : (
-										<Grid children={<LoadingComponent />} alignItems="center" container />
-									)}
-									{/*<div*/}
-									{/*	size={250}*/}
-									{/*	value={JSON.stringify({*/}
-									{/*		type: 'product',*/}
-									{/*		productId: selectedProduct._id,*/}
-									{/*	})}*/}
-									{/*/>*/}
-								</div>
-							</div>
-						) : null}
-					</DialogContent>
-				</Dialog>
+				<DialogMarkerEdit
+					dialogOpen={dialogMarkerEdit}
+					onCloseDialog={this.onCloseDialogMarkerEdit}
+					currentStock={currentStock}
+					selectedProduct={selectedProductOrMarker ? selectedProductOrMarker.product : null}
+					selectedMarker={selectedProductOrMarker ? selectedProductOrMarker.marker : null}
+				/>
 			</Paper>
 		);
 	}
@@ -353,9 +489,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	const { currentStock } = ownProps;
 
 	return {
-		getStockStatus: () => dispatch(getStockStatus(currentStock._id)),
 		getProducts: () => dispatch(getProducts(currentStock._id)),
-		deleteProduct: productId => dispatch(deleteProduct(currentStock._id, productId)),
 	};
 };
 

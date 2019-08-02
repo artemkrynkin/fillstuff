@@ -12,12 +12,13 @@ export const isAuthedResolver = (req, res, next) => {
 
 export const hasPermissionsInStock = async (req, res, next, accessRightList, skipCheck) => {
 	if (!skipCheck) {
-		const stockId = req.query.stockId || req.params.stockId || req.body.stockId;
+		const stockId =
+			req.params.stock || req.body.stock || req.query.stock || (req.params.stockId || req.body.stockId || req.query.stockId);
 
 		if (!stockId)
 			return next({
 				code: 6,
-				message: 'missing "stockId" parameter',
+				message: 'missing "stock" parameter',
 			});
 
 		await Stock.findOne({ _id: stockId, 'members.user': req.user._id })

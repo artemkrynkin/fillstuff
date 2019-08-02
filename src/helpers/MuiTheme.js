@@ -40,7 +40,7 @@ export const BliksideTheme = createMuiTheme({
 			fontSize: 20,
 		},
 		h6: {
-			color: colorPalette.blueGrey.cBg700,
+			color: colorPalette.blueGrey.cBg600,
 			fontSize: 16,
 		},
 		subtitle1: {
@@ -313,7 +313,7 @@ export const BliksideTheme = createMuiTheme({
 			select: {
 				borderRadius: 5,
 				minHeight: 36,
-				padding: '10px 25px 10px 10px',
+				padding: '11px 25px 9px 10px',
 				'&:focus': {
 					background: colorPalette.brightness.cBr5,
 					borderRadius: null,
@@ -365,7 +365,7 @@ export const BliksideTheme = createMuiTheme({
 		},
 		PrivateSwitchBase: {
 			root: {
-				padding: '9px 10px',
+				padding: '7px 10px',
 			},
 		},
 		MuiCheckbox: {
@@ -392,13 +392,16 @@ export const BliksideTheme = createMuiTheme({
 				maxWidth: 480,
 			},
 			paperWidthLg: {
-				maxWidth: 600,
+				maxWidth: 620,
 			},
 			paperWidthXl: {
 				maxWidth: 990,
 			},
 			paper: {
 				margin: 20,
+				'.pd-dialog_sticky-actions &': {
+					overflowY: 'initial',
+				},
 			},
 			paperScrollPaper: {
 				maxHeight: 'calc(100% - 40px)',
@@ -420,6 +423,20 @@ export const BliksideTheme = createMuiTheme({
 		MuiDialogContentText: {
 			root: {
 				color: colorPalette.blueGrey.cBg500,
+			},
+		},
+		MuiTableCell: {
+			head: {
+				borderBottomColor: colorPalette.brightness.cBr5,
+				color: colorPalette.blueGrey.cBg300,
+				fontSize: 14,
+				lineHeight: 1.3,
+				paddingTop: 18,
+				paddingBottom: 18,
+			},
+			body: {
+				color: colorPalette.blueGrey.cBg700,
+				borderBottomColor: colorPalette.brightness.cBr4,
 			},
 		},
 	},

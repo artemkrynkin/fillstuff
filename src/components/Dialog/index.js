@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import ClassNames from 'classnames';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
+import ButtonBase from '@material-ui/core/ButtonBase';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -11,26 +13,25 @@ import IconButton from '@material-ui/core/IconButton';
 import './index.styl';
 
 export class PDDialog extends Component {
+	static propTypes = {
+		stickyActions: PropTypes.bool,
+	};
+
+	state = {
+		stuck: false,
+	};
+
 	onScroll = () => {
 		const dialog = this.dialog;
 		const dialogPaper = dialog.firstElementChild;
-		const dialogActions = dialog.querySelector('.pd-dialog__actions');
-		const dialogActionsWrap = dialog.querySelector('.pd-dialog__actions-wrap');
-
-		dialogActions.style.height = `${dialogActionsWrap.clientHeight}px`;
-		dialogActionsWrap.style.maxWidth = `${dialogActions.clientWidth}px`;
 
 		if (
 			window.innerHeight <= dialogPaper.offsetTop + dialogPaper.clientHeight &&
 			dialog.scrollTop + window.innerHeight <= dialogPaper.offsetTop + dialogPaper.clientHeight
 		) {
-			if (!dialog.classList.contains('pd-dialog_sticky-actions-stuck')) {
-				dialog.classList.add('pd-dialog_sticky-actions-stuck');
-			}
+			this.setState({ stuck: true });
 		} else {
-			if (dialog.classList.contains('pd-dialog_sticky-actions-stuck')) {
-				dialog.classList.remove('pd-dialog_sticky-actions-stuck');
-			}
+			this.setState({ stuck: false });
 		}
 	};
 
@@ -67,21 +68,22 @@ export class PDDialog extends Component {
 
 	render() {
 		const { stickyActions } = this.props;
+		const { stuck } = this.state;
 
 		let dialogProps = Object.assign({}, this.props);
 
 		delete dialogProps.stickyActions;
 
-		let dialogClasses = ClassNames({
-			'pd-dialog': true,
+		const dialogClasses = ClassNames({
 			'pd-dialog_sticky-actions': stickyActions,
+			'pd-dialog_sticky-actions-stuck': stuck,
 		});
 
 		return (
 			<Dialog
-				className={dialogClasses}
 				onEnter={this.onEnter}
 				onExiting={this.onExiting}
+				className={dialogClasses}
 				onScroll={event => (stickyActions ? this.onScroll(event) : null)}
 				{...dialogProps}
 			/>
@@ -90,19 +92,34 @@ export class PDDialog extends Component {
 }
 
 export const PDDialogTitle = props => {
-	const { theme, titlePosition, onClose, children } = props;
+	const { theme, titlePositionCenter, leftHandleProps, onClose, children } = props;
 
-	let dialogTitleClasses = ClassNames({
+	const dialogTitleClasses = ClassNames({
 		'pd-dialog__title': true,
 		'pd-dialog__title_primary': children && theme === 'primary',
 		'pd-dialog__title_grey': children && theme === 'grey',
 		'pd-dialog__title_no-theme': !children,
-		'pd-dialog__title_position-center': titlePosition === 'center',
+	});
+
+	const dialogTitleTextClasses = ClassNames({
+		'pd-dialog__title-text': true,
+		[`pd-dialog__title-text_center`]: titlePositionCenter,
+	});
+
+	const dialogTitleActionLeftHandleClasses = ClassNames({
+		'pd-dialog__title-action-left-handle': true,
+		[`pd-dialog__title-action-left-handle_icon-left`]: leftHandleProps && leftHandleProps.iconPositionLeft,
 	});
 
 	return (
 		<DialogTitle className={dialogTitleClasses} disableTypography>
-			{children}
+			{leftHandleProps && leftHandleProps.handleProps && leftHandleProps.text ? (
+				<ButtonBase className={dialogTitleActionLeftHandleClasses} disableRipple {...leftHandleProps.handleProps}>
+					<div className="pd-dialog__title-action-left-handle-text">{leftHandleProps.text}</div>
+					{leftHandleProps.icon}
+				</ButtonBase>
+			) : null}
+			<div className={dialogTitleTextClasses} children={children} />
 			{onClose ? (
 				<IconButton className="pd-dialog__close" onClick={onClose} disableRipple>
 					<FontAwesomeIcon icon={['fal', 'times']} />
@@ -112,8 +129,21 @@ export const PDDialogTitle = props => {
 	);
 };
 
+PDDialogTitle.propTypes = {
+	children: PropTypes.node,
+	theme: PropTypes.oneOf(['primary', 'grey']),
+	titlePositionCenter: PropTypes.bool,
+	leftHandleProps: PropTypes.shape({
+		handleProps: PropTypes.object,
+		text: PropTypes.oneOfType([PropTypes.node, PropTypes.element]),
+		icon: PropTypes.oneOfType([PropTypes.node, PropTypes.element]),
+		iconPositionLeft: PropTypes.bool,
+	}),
+	onClose: PropTypes.func,
+};
+
 export const PDDialogActions = props => {
-	const { disableSpacing = true, leftHandleProps, rightHandleProps } = props;
+	const { disableSpacing, leftHandleProps, rightHandleProps } = props;
 
 	let dialogActionsClasses = ClassNames({
 		'pd-dialog__actions': true,
@@ -124,7 +154,11 @@ export const PDDialogActions = props => {
 			<div className="pd-dialog__actions-wrap">
 				{leftHandleProps && leftHandleProps.handleProps && leftHandleProps.text ? (
 					<Button className="pd-dialog__actions-left-handle" {...leftHandleProps.handleProps}>
-						{leftHandleProps.text}
+						<div className="pd-dialog__actions-handle-text-wrap">
+							{leftHandleProps.iconLeft ? leftHandleProps.iconLeft : null}
+							<div className="pd-dialog__actions-handle-text">{leftHandleProps.text}</div>
+							{leftHandleProps.iconRight ? leftHandleProps.iconRight : null}
+						</div>
 					</Button>
 				) : null}
 				{rightHandleProps && rightHandleProps.handleProps && rightHandleProps.text ? (
@@ -134,10 +168,34 @@ export const PDDialogActions = props => {
 						color="primary"
 						{...rightHandleProps.handleProps}
 					>
-						{rightHandleProps.text}
+						<div className="pd-dialog__actions-handle-text-wrap">
+							{rightHandleProps.iconLeft ? rightHandleProps.iconLeft : null}
+							<div className="pd-dialog__actions-handle-text">{rightHandleProps.text}</div>
+							{rightHandleProps.iconRight ? rightHandleProps.iconRight : null}
+						</div>
 					</Button>
 				) : null}
 			</div>
 		</DialogActions>
 	);
+};
+
+PDDialogActions.defaultProps = {
+	disableSpacing: true,
+};
+
+PDDialogActions.propTypes = {
+	disableSpacing: PropTypes.bool,
+	leftHandleProps: PropTypes.shape({
+		handleProps: PropTypes.object,
+		text: PropTypes.node.isRequired,
+		iconLeft: PropTypes.oneOfType([PropTypes.node, PropTypes.element]),
+		iconRight: PropTypes.oneOfType([PropTypes.node, PropTypes.element]),
+	}),
+	rightHandleProps: PropTypes.shape({
+		handleProps: PropTypes.object,
+		text: PropTypes.node.isRequired,
+		iconLeft: PropTypes.oneOfType([PropTypes.node, PropTypes.element]),
+		iconRight: PropTypes.oneOfType([PropTypes.node, PropTypes.element]),
+	}),
 };

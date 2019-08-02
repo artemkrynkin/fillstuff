@@ -25,13 +25,15 @@ let Stock = new Schema({
 			type: Number,
 			default: 0,
 		},
-		unitsProduct: {
+		numberMarkers: {
 			type: Number,
 			default: 0,
 		},
 		stockCost: {
 			type: Number,
 			default: 0,
+			get: value => +value.toFixed(2),
+			set: value => +value.toFixed(2),
 		},
 	},
 	members: [
@@ -50,91 +52,6 @@ let Stock = new Schema({
 				type: Date,
 				default: Date.now,
 			},
-		},
-	],
-	productSpecifications: {
-		names: {
-			type: [
-				{
-					value: {
-						type: String,
-						required: [true, i18n.__('Обязательное поле')],
-						lowercase: true,
-						trim: true,
-					},
-					label: {
-						type: String,
-						required: [true, i18n.__('Обязательное поле')],
-					},
-				},
-			],
-			default: [
-				{
-					value: 'manufacturer',
-					label: 'Производитель',
-				},
-				{
-					value: 'marking',
-					label: 'Маркировка',
-				},
-				{
-					value: 'color',
-					label: 'Цвет',
-				},
-				{
-					value: 'volume',
-					label: 'Объем',
-				},
-				{
-					value: 'size',
-					label: 'Размер',
-				},
-				{
-					value: 'thickness',
-					label: 'Толщина',
-				},
-				{
-					value: 'diameter',
-					label: 'Диаметр',
-				},
-				{
-					value: 'material',
-					label: 'Материал',
-				},
-			],
-		},
-		values: [
-			{
-				parentId: {
-					type: Schema.Types.ObjectId,
-					required: [true, i18n.__('Обязательное поле')],
-				},
-				value: {
-					type: String,
-					required: [true, i18n.__('Обязательное поле')],
-					lowercase: true,
-					trim: true,
-				},
-				label: {
-					type: String,
-					required: [true, i18n.__('Обязательное поле')],
-				},
-			},
-		],
-	},
-	productShops: [
-		{
-			value: {
-				type: String,
-				required: [true, i18n.__('Обязательное поле')],
-				lowercase: true,
-				trim: true,
-			},
-			label: {
-				type: String,
-				required: [true, i18n.__('Обязательное поле')],
-			},
-			url: String,
 		},
 	],
 });

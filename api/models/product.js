@@ -17,7 +17,7 @@ let Product = new Schema({
 		default: Date.now,
 	},
 	// Архивированый
-	archived: {
+	isArchived: {
 		type: Boolean,
 		default: false,
 	},
@@ -26,6 +26,10 @@ let Product = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'Stock',
 		required: [true, i18n.__('Обязательное поле')],
+	},
+	dividedMarkers: {
+		type: Boolean,
+		default: true,
 	},
 	/**
 	 * штука - pce
@@ -46,67 +50,18 @@ let Product = new Schema({
 	quantity: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
-		default: 0,
-	},
-	// Количество упаковок
-	quantityPackages: {
-		type: Number,
-		min: [0, 'Не может быть меньше 0'],
-	},
-	// Количество штук в упаковке
-	quantityInUnit: {
-		type: Number,
-		min: [0, 'Не может быть меньше 0'],
 	},
 	// Минимальный остаток
 	minimumBalance: {
 		type: Number,
 		min: [1, 'Не может быть меньше 1'],
-		required: [true, i18n.__('Обязательное поле')],
 	},
-	// Цена покупки
-	purchasePrice: {
-		type: Number,
-		min: [0, 'Не может быть меньше 0'],
-		default: 0,
-	},
-	// Цена продажи
-	sellingPrice: {
-		type: Number,
-		min: [0, 'Не может быть меньше 0'],
-	},
-	// Цена покупки единицы
-	unitPurchasePrice: {
-		type: Number,
-		min: [0, 'Не может быть меньше 0'],
-	},
-	// Цена продажи единицы
-	unitSellingPrice: {
-		type: Number,
-		min: [0, 'Не может быть меньше 0'],
-	},
-	// Бесплатный товар
-	freeProduct: {
-		type: Boolean,
-		default: false,
-	},
-	// Id магазина
-	shopId: {
-		type: String,
-		default: '',
-		required: [true, i18n.__('Обязательное поле')],
-	},
-	// Характеристики
-	specifications: [
+	// Маркеры
+	markers: [
 		{
-			nameId: {
-				type: Schema.Types.ObjectId,
-				required: [true, i18n.__('Обязательное поле')],
-			},
-			valueId: {
-				type: Schema.Types.ObjectId,
-				required: [true, i18n.__('Обязательное поле')],
-			},
+			type: Schema.Types.ObjectId,
+			ref: 'Marker',
+			required: [true, i18n.__('Обязательное поле')],
 		},
 	],
 });

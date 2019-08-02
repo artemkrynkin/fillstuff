@@ -20,6 +20,7 @@ const options = {
 	useNewUrlParser: true,
 	useCreateIndex: true,
 	autoIndex: !IS_PROD,
+	useFindAndModify: false,
 	// ssl: true,
 	// sslCA: fs.readFileSync('/usr/local/share/ca-certificates/Yandex/YandexInternalRootCA.crt'),
 	// replicaSet: 'rs01'

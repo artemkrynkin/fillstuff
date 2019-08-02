@@ -29,10 +29,21 @@ export const getProducts = stockId => {
 	};
 };
 
-export const createProduct = (stockId, values) => {
+export const createProductAndMarkers = (stockId, product, markers) => {
 	return dispatch => {
 		return axios
-			.post(`/api/products?stockId=${stockId}`, values)
+			.post(
+				`/api/products/product-markers`,
+				{
+					product,
+					markers,
+				},
+				{
+					params: {
+						stockId,
+					},
+				}
+			)
 			.then(async response => {
 				const { data: product } = response;
 
@@ -56,17 +67,15 @@ export const createProduct = (stockId, values) => {
 export const editProduct = (productId, newValues) => {
 	return dispatch => {
 		return axios
-			.put(`/api/products/${productId}`, newValues, {
-				params: {
-					stockId: newValues.stock,
-				},
-			})
-			.then(() => {
+			.put(`/api/products/${productId}`, newValues)
+			.then(response => {
+				const product = response.data;
+
 				dispatch({
 					type: 'EDIT_PRODUCT',
 					payload: {
 						productId,
-						newValues,
+						product,
 					},
 				});
 
@@ -82,17 +91,17 @@ export const editProduct = (productId, newValues) => {
 	};
 };
 
-export const deleteProduct = (stockId, productId) => {
+export const archiveProduct = (stockId, productId) => {
 	return dispatch => {
 		return axios
-			.delete(`/api/products/${productId}`, {
+			.get(`/api/products/${productId}/archive`, {
 				params: {
-					stockId: stockId,
+					stockId,
 				},
 			})
 			.then(() => {
 				dispatch({
-					type: 'DELETE_PRODUCT',
+					type: 'ARCHIVE_PRODUCT',
 					payload: {
 						productId,
 					},

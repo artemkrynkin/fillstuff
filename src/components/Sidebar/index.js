@@ -132,7 +132,7 @@ class Sidebar extends Component {
 												<div className="sidebar__menu-icon">
 													<FontAwesomeIcon icon={['fal', 'clipboard-check']} />
 												</div>
-												Расход
+												Списания
 											</NavLink>
 										</div>
 									</div>

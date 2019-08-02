@@ -39,10 +39,9 @@ const timezones = require('shared/timezones')
 
 const PersonalDataSchema = Yup.object().shape({
 	name: Yup.string()
-		// eslint-disable-next-line
-		.min(2, 'Название склада не может быть короче ${min} символов')
-		.required('Обязательное поле'),
-	timezone: Yup.string().required('Обязательное поле'),
+		.min(2)
+		.required(),
+	timezone: Yup.string().required(),
 });
 
 const GeneralSettings = props => {
@@ -61,7 +60,7 @@ const GeneralSettings = props => {
 				validateOnBlur={false}
 				enableReinitialize
 				onSubmit={(values, actions) => {
-					this.props.editStock(values).then(response => {
+					props.editStock(values).then(response => {
 						if (response.status === 'success') {
 							actions.resetForm();
 						} else {

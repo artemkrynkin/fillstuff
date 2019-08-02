@@ -20,8 +20,8 @@ const StockStatus = props => {
 				</Grid>
 				<Grid item xs={4}>
 					<Grid container alignItems="flex-end">
-						<div className="sa-stock-status__title">Количество единиц:</div>
-						<div className="sa-stock-status__content">{currentStock.status.unitsProduct}</div>
+						<div className="sa-stock-status__title">Количество маркеров:</div>
+						<div className="sa-stock-status__content">{currentStock.status.numberMarkers}</div>
 					</Grid>
 				</Grid>
 				<Grid item xs={4}>

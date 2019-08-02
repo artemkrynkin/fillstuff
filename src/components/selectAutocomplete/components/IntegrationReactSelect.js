@@ -6,12 +6,16 @@ import { components as reactSelectComponents } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { emphasize, makeStyles, useTheme } from '@material-ui/core/styles';
+import { emphasize, makeStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 // import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+import { hexToRgb } from 'src/helpers/utils';
+import colorPalette from 'shared/colorPalette';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -20,6 +24,7 @@ const useStyles = makeStyles(theme => ({
 	},
 	input: {
 		display: 'flex',
+		padding: '5px 2px 5px 10px',
 	},
 	valueContainer: {
 		display: 'flex',
@@ -38,10 +43,17 @@ const useStyles = makeStyles(theme => ({
 		padding: theme.spacing(1, 2),
 	},
 	singleValue: {
+		color: colorPalette.blueGrey.cBg700,
+		fontSize: 13,
+	},
+	singleValueDisabled: {
+		color: colorPalette.blueGrey.cBg400,
 		fontSize: 13,
 	},
 	placeholder: {
+		color: `rgba(${hexToRgb(colorPalette.blueGrey.cBg700)}, 0.42)`,
 		fontSize: 13,
+		position: 'absolute',
 	},
 	paper: {
 		position: 'absolute',
@@ -54,6 +66,41 @@ const useStyles = makeStyles(theme => ({
 		height: theme.spacing(2),
 	},
 }));
+
+const selectStyles = {
+	clearIndicator: base => ({
+		...base,
+		color: colorPalette.blueGrey.cBg300,
+		cursor: 'pointer',
+		fontSize: 16,
+		'&:hover': {
+			color: colorPalette.teal.cT300,
+		},
+	}),
+	dropdownIndicator: base => ({
+		...base,
+		color: colorPalette.blueGrey.cBg300,
+		cursor: 'pointer',
+		fontSize: 16,
+		'&:hover': {
+			color: colorPalette.blueGrey.cBg300,
+		},
+	}),
+	indicatorSeparator: base => ({
+		...base,
+		backgroundColor: colorPalette.blueGrey.cBg100,
+		marginBottom: 4,
+		marginTop: 4,
+	}),
+	input: base => ({
+		...base,
+		margin: 0,
+		color: colorPalette.blueGrey.cBg700,
+		'& input': {
+			font: 'inherit',
+		},
+	}),
+};
 
 const NoOptionsMessage = props => {
 	return (
@@ -149,7 +196,10 @@ Placeholder.propTypes = {
 
 const SingleValue = props => {
 	return (
-		<Typography className={props.selectProps.classes.singleValue} {...props.innerProps}>
+		<Typography
+			className={!props.isDisabled ? props.selectProps.classes.singleValue : props.selectProps.classes.singleValueDisabled}
+			{...props.innerProps}
+		>
 			{props.children}
 		</Typography>
 	);
@@ -191,6 +241,26 @@ MultiValue.propTypes = {
 	selectProps: PropTypes.object.isRequired,
 };
 
+const ClearIndicator = props => {
+	return (
+		<reactSelectComponents.ClearIndicator {...props}>
+			<FontAwesomeIcon icon={['fal', 'times']} />
+		</reactSelectComponents.ClearIndicator>
+	);
+};
+
+const DropdownIndicator = props => {
+	return (
+		<reactSelectComponents.DropdownIndicator {...props}>
+			<FontAwesomeIcon icon={['far', 'angle-down']} />
+		</reactSelectComponents.DropdownIndicator>
+	);
+};
+
+const LoadingIndicator = props => {
+	return <div style={{ marginRight: 8 }} children={<CircularProgress size={16} />} />;
+};
+
 // const Menu = props => {
 // 	return (
 // 		<Paper className={props.selectProps.classes.paper} {...props.innerProps}>
@@ -205,27 +275,12 @@ MultiValue.propTypes = {
 // 	selectProps: PropTypes.object,
 // };
 
-const ClearIndicator = props => {
-	return (
-		<reactSelectComponents.ClearIndicator {...props}>
-			<FontAwesomeIcon icon={['fal', 'times']} className="pd-selectIcon" style={{ position: 'static' }} />
-		</reactSelectComponents.ClearIndicator>
-	);
-};
-
-const DropdownIndicator = props => {
-	return (
-		<reactSelectComponents.DropdownIndicator {...props}>
-			<FontAwesomeIcon icon={['far', 'angle-down']} className="pd-selectIcon" style={{ position: 'static' }} />
-		</reactSelectComponents.DropdownIndicator>
-	);
-};
-
 const components = {
 	ClearIndicator,
 	Control,
 	DropdownIndicator,
 	// Menu,
+	LoadingIndicator,
 	MultiValue,
 	NoOptionsMessage,
 	Option,
@@ -236,17 +291,6 @@ const components = {
 
 const IntegrationReactSelect = props => {
 	const classes = useStyles();
-	const theme = useTheme();
-
-	const selectStyles = {
-		input: base => ({
-			...base,
-			color: theme.palette.text.primary,
-			'& input': {
-				font: 'inherit',
-			},
-		}),
-	};
 
 	return (
 		<CreatableSelect

@@ -11,6 +11,9 @@ import {
 } from '@fortawesome/pro-solid-svg-icons';
 
 import {
+	faAngleLeft as farAngleLeft,
+	faAngleRight as farAngleRight,
+	faAngleUp as farAngleUp,
 	faAngleDown as farAngleDown,
 	faTimes as farTimes,
 	faCalendar as farCalendar,
@@ -46,6 +49,8 @@ import {
 	faClipboardCheck as falClipboardCheck,
 	faClipboardListCheck as falClipboardListCheck,
 	faWarehouse as falWarehouse,
+	faCheckCircle as falCheckCircle,
+	faPlusCircle as falPlusCircle,
 } from '@fortawesome/pro-light-svg-icons';
 
 library.add(
@@ -62,6 +67,9 @@ library.add(
 	fasCheckSquare,
 
 	// Regular
+	farAngleLeft,
+	farAngleRight,
+	farAngleUp,
 	farAngleDown,
 	farTimes,
 	farCalendar,
@@ -95,5 +103,7 @@ library.add(
 	falQrcode,
 	falClipboardCheck,
 	falClipboardListCheck,
-	falWarehouse
+	falWarehouse,
+	falCheckCircle,
+	falPlusCircle
 );

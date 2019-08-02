@@ -30,7 +30,7 @@ class DialogProductEdit extends Component {
 		selectedProduct: PropTypes.object,
 	};
 
-	onProductEdit = async (values, actions) => {
+	onProductEdit = (values, actions) => {
 		const { onCloseDialog, product = productSchema.cast(values) } = this.props;
 
 		this.props.editProduct(product._id, product).then(response => {

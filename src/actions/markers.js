@@ -1,5 +1,33 @@
 import axios from 'axios';
 
+export const editMarker = (productId, markerId, newValues) => {
+	return dispatch => {
+		return axios
+			.put(`/api/markers/${markerId}`, newValues)
+			.then(response => {
+				const marker = response.data;
+
+				dispatch({
+					type: 'EDIT_MARKER',
+					payload: {
+						productId,
+						markerId,
+						marker,
+					},
+				});
+
+				return Promise.resolve({ status: 'success' });
+			})
+			.catch(error => {
+				if (error.response) {
+					return Promise.resolve({ status: 'error', data: error.response.data });
+				} else {
+					console.error(error);
+				}
+			});
+	};
+};
+
 export const archiveMarker = (stockId, productId, markerId) => {
 	return dispatch => {
 		return axios

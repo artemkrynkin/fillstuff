@@ -49,6 +49,22 @@ const products = (
 				isFetching: false,
 			};
 		}
+		case 'EDIT_MARKER': {
+			const productIndex = state.data.findIndex(product => product._id === action.payload.productId);
+			const markerIndex = state.data[productIndex].markers.findIndex(marker => marker._id === action.payload.markerId);
+
+			state.data[productIndex].markers[markerIndex] = action.payload.marker;
+			state.data[productIndex].markers = cloneDeep(state.data[productIndex].markers);
+
+			if (!state.data[productIndex].dividedMarkers) {
+				state.data[productIndex].quantity = state.data[productIndex].markers.reduce((sum, marker) => sum + marker.quantity, 0);
+			}
+
+			return {
+				...state,
+				isFetching: false,
+			};
+		}
 		case 'ARCHIVE_MARKER': {
 			const productIndex = state.data.findIndex(product => product._id === action.payload.productId);
 			const markerIndex = state.data[productIndex].markers.findIndex(marker => marker._id === action.payload.markerId);

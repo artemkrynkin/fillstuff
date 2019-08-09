@@ -68,14 +68,7 @@ class MemberEdit extends Component {
 		const { QRCode } = this.state;
 
 		return (
-			<Dialog
-				open={dialogOpen}
-				onEnter={this.onEnterDialog}
-				onClose={onCloseDialog}
-				onExited={this.onExitedDialog}
-				maxWidth="md"
-				fullWidth
-			>
+			<Dialog open={dialogOpen} onEnter={this.onEnterDialog} onClose={onCloseDialog} onExited={this.onExitedDialog} maxWidth="md">
 				<PDDialogTitle theme="primary" onClose={this.onCloseDialog}>
 					QR-код для входа
 				</PDDialogTitle>

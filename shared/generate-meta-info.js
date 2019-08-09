@@ -60,6 +60,8 @@ function generateMetaInfo(input) {
 		case 'stock-dashboard':
 		case 'stock-availability':
 		case 'stock-write-offs':
+		case 'stock-orders':
+		case 'stock-purchases':
 		case 'stock-statistics':
 		case 'stock-settings':
 		case 'stock-notfound':

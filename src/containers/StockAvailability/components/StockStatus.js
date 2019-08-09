@@ -11,21 +11,21 @@ const StockStatus = props => {
 
 	return (
 		<CardPaper className="sa-stock-status" elevation={1} header={false} style={{ marginBottom: 16 }}>
-			<Grid container>
+			<Grid justify="space-between" container>
 				<Grid item xs={4}>
-					<Grid container alignItems="flex-end">
+					<Grid alignItems="flex-end" justify="flex-start" container>
 						<div className="sa-stock-status__title">Количество позиций:</div>
 						<div className="sa-stock-status__content">{currentStock.status.numberProducts}</div>
 					</Grid>
 				</Grid>
 				<Grid item xs={4}>
-					<Grid container alignItems="flex-end">
+					<Grid alignItems="flex-end" justify="center" container>
 						<div className="sa-stock-status__title">Количество маркеров:</div>
 						<div className="sa-stock-status__content">{currentStock.status.numberMarkers}</div>
 					</Grid>
 				</Grid>
 				<Grid item xs={4}>
-					<Grid container alignItems="flex-end">
+					<Grid alignItems="flex-end" justify="flex-end" container>
 						<div className="sa-stock-status__title">Стоимость склада:</div>
 						<div className="sa-stock-status__content">{currentStock.status.stockCost} ₽</div>
 					</Grid>

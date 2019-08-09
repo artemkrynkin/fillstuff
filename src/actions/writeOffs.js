@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const getWriteOffs = (stockId, productId, userId) => {
-	return dispatch => {
+	return async dispatch => {
 		dispatch({ type: 'REQUEST_WRITE_OFFS' });
 
 		const requestParams = { stockId };
@@ -9,7 +9,7 @@ export const getWriteOffs = (stockId, productId, userId) => {
 		if (productId) requestParams.productId = productId;
 		if (userId) requestParams.userId = userId;
 
-		return axios
+		return await axios
 			.get('/api/write-offs', {
 				params: requestParams,
 			})
@@ -32,23 +32,32 @@ export const getWriteOffs = (stockId, productId, userId) => {
 	};
 };
 
-export const createWriteOff = (stockId, userId, selectedUserId, values) => {
-	return dispatch => {
-		return axios
-			.post('/api/write-offs/product', {
+export const createWriteOff = (stockId, markerId, userId, values) => {
+	return async dispatch => {
+		return await axios
+			.post('/api/write-offs/marker', {
 				stockId,
+				markerId,
 				userId,
 				...values,
 			})
 			.then(async response => {
-				if (selectedUserId === undefined || userId === selectedUserId) {
-					const { data: writeOff } = response;
+				// const { data: writeOff } = response;
 
-					await dispatch({
-						type: 'CREATE_WRITE_OFF',
-						payload: writeOff,
-					});
-				}
+				// await dispatch({
+				//   type: 'CREATE_WRITE_OFF',
+				//   payload: writeOff,
+				// });
+				const marker = response.data;
+
+				dispatch({
+					type: 'EDIT_MARKER',
+					payload: {
+						productId: marker.product,
+						markerId,
+						marker,
+					},
+				});
 
 				return Promise.resolve({ status: 'success' });
 			})

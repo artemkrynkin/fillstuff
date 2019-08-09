@@ -24,6 +24,8 @@ import StockNotFound from 'src/containers/StockNotFound';
 import StockDashboard from 'src/containers/StockDashboard';
 import StockAvailability from 'src/containers/StockAvailability';
 import StockWriteOffs from 'src/containers/StockWriteOffs';
+import StockOrders from 'src/containers/StockOrders';
+import StockPurchases from 'src/containers/StockPurchases';
 import StockStatistics from 'src/containers/StockStatistics';
 import StockSettings from 'src/containers/StockSettings';
 import Registration from 'src/containers/Registration';
@@ -33,10 +35,7 @@ const LoginFallback = signedOutFallback(() => <Redirect to="/stocks" />, () => <
 
 const RegistrationFallback = signedOutFallback(() => <Redirect to="/stocks" />, () => <Layout children={<Registration />} />);
 
-const PasswordRecoveryFallback = signedOutFallback(
-	() => <Redirect to="/stocks" />,
-	() => <Layout children={<PasswordRecovery />} />
-);
+const PasswordRecoveryFallback = signedOutFallback(() => <Redirect to="/stocks" />, () => <Layout children={<PasswordRecovery />} />);
 
 const StockNotFoundFallback = signedOutFallback(
 	props => (
@@ -72,6 +71,24 @@ const StockWriteOffsFallback = signedOutFallback(
 		</StockPageFallback>
 	),
 	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/write-offs`} />} />
+);
+
+const StockOrdersFallback = signedOutFallback(
+	props => (
+		<StockPageFallback {...props}>
+			<StockOrders currentStock={props.currentStock} match={props.match} />
+		</StockPageFallback>
+	),
+	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/orders`} />} />
+);
+
+const StockPurchasesFallback = signedOutFallback(
+	props => (
+		<StockPageFallback {...props}>
+			<StockPurchases currentStock={props.currentStock} match={props.match} />
+		</StockPageFallback>
+	),
+	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/purchases`} />} />
 );
 
 const StockStatisticsFallback = signedOutFallback(
@@ -191,6 +208,20 @@ class Routes extends Component {
 					<Route
 						path={['/stocks/:stockId/write-offs', '/stocks/:stockId/write-offs/:selectedUserId']}
 						render={props => <StockWriteOffsFallback {...props} currentStock={findCurrentStock(props.match)} />}
+						exact
+						strict
+						sensitive
+					/>
+					<Route
+						path="/stocks/:stockId/orders"
+						render={props => <StockOrdersFallback {...props} currentStock={findCurrentStock(props.match)} />}
+						exact
+						strict
+						sensitive
+					/>
+					<Route
+						path={'/stocks/:stockId/purchases'}
+						render={props => <StockPurchasesFallback {...props} currentStock={findCurrentStock(props.match)} />}
 						exact
 						strict
 						sensitive

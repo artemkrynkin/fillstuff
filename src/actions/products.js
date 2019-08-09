@@ -1,10 +1,10 @@
 import axios from 'axios';
 
 export const getProducts = stockId => {
-	return dispatch => {
+	return async dispatch => {
 		dispatch({ type: 'REQUEST_PRODUCTS' });
 
-		return axios
+		return await axios
 			.get('/api/products', {
 				params: {
 					stockId,
@@ -30,8 +30,8 @@ export const getProducts = stockId => {
 };
 
 export const createProductAndMarkers = (stockId, product, markers) => {
-	return dispatch => {
-		return axios
+	return async dispatch => {
+		return await axios
 			.post(
 				`/api/products/product-markers`,
 				{
@@ -65,8 +65,8 @@ export const createProductAndMarkers = (stockId, product, markers) => {
 };
 
 export const editProduct = (productId, newValues) => {
-	return dispatch => {
-		return axios
+	return async dispatch => {
+		return await axios
 			.put(`/api/products/${productId}`, newValues)
 			.then(response => {
 				const product = response.data;
@@ -92,8 +92,8 @@ export const editProduct = (productId, newValues) => {
 };
 
 export const archiveProduct = (stockId, productId) => {
-	return dispatch => {
-		return axios
+	return async dispatch => {
+		return await axios
 			.get(`/api/products/${productId}/archive`, {
 				params: {
 					stockId,

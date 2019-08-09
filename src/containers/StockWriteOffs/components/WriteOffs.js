@@ -16,7 +16,7 @@ import './WriteOffs.styl';
 import { getWriteOffs } from 'src/actions/writeOffs';
 
 class WriteOffs extends Component {
-	UNSAFE_componentWillMount() {
+	componentDidMount() {
 		this.props.getWriteOffs(this.props.selectedUserId);
 	}
 
@@ -55,7 +55,7 @@ class WriteOffs extends Component {
 							writeOffs && writeOffs.length ? (
 								writeOffs.map(writeOff => (
 									<TableRow key={writeOff._id}>
-										<TableCell>{writeOff.product.name}</TableCell>
+										<TableCell>{writeOff.marker.product.name}</TableCell>
 										<TableCell align="right">{writeOff.user.name || writeOff.user.email}</TableCell>
 										<TableCell align="right">{writeOff.quantity}</TableCell>
 										<TableCell align="right">{moment(writeOff.createdAt).format('DD MMMM YYYY в HH:mm')}</TableCell>

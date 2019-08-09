@@ -12,81 +12,69 @@ import IconButton from '@material-ui/core/IconButton';
 
 import './index.styl';
 
+const observeActions = (container, position = null, stickySelector) => {
+	const observer = new IntersectionObserver(
+		(records, observer) => {
+			const targetInfo = records[0].boundingClientRect;
+			const stickyTarget = records[0].target.parentElement.querySelector(stickySelector);
+			const rootBoundsInfo = records[0].rootBounds;
+
+			if (position === 'top') {
+				// console.log(targetInfo.bottom, rootBoundsInfo.top);
+
+				if (targetInfo.bottom < rootBoundsInfo.top) {
+					stickyTarget.classList.toggle('stuck', true);
+				}
+
+				if (targetInfo.bottom >= rootBoundsInfo.top && targetInfo.bottom < rootBoundsInfo.bottom) {
+					stickyTarget.classList.toggle('stuck', false);
+				}
+			}
+
+			if (position === 'bottom') {
+				if (targetInfo.bottom > rootBoundsInfo.top) {
+					stickyTarget.classList.toggle('stuck', true);
+				}
+
+				if (targetInfo.bottom <= rootBoundsInfo.bottom && targetInfo.bottom > rootBoundsInfo.top) {
+					stickyTarget.classList.toggle('stuck', false);
+				}
+			}
+		},
+		{
+			threshold: [0],
+			root: container,
+		}
+	);
+
+	observer.observe(container.querySelector(`.pd-dialog__sentinel-${position}`));
+};
+
 export class PDDialog extends Component {
 	static propTypes = {
+		stickyTitle: PropTypes.bool,
 		stickyActions: PropTypes.bool,
 	};
 
-	state = {
-		stuck: false,
-	};
-
-	onScroll = () => {
-		const dialog = this.dialog;
-		const dialogPaper = dialog.firstElementChild;
-
-		if (
-			window.innerHeight <= dialogPaper.offsetTop + dialogPaper.clientHeight &&
-			dialog.scrollTop + window.innerHeight <= dialogPaper.offsetTop + dialogPaper.clientHeight
-		) {
-			this.setState({ stuck: true });
-		} else {
-			this.setState({ stuck: false });
-		}
-	};
-
 	onEnter = element => {
-		this.dialog = element;
-
-		function onElementHeightChanged(elm, callback) {
-			let lastHeight = elm.clientHeight,
-				newHeight;
-
-			(function run() {
-				newHeight = elm.clientHeight;
-				if (lastHeight !== newHeight) callback();
-				lastHeight = newHeight;
-
-				if (elm.onElementHeightChangeTimer) clearTimeout(elm.onElementHeightChangeTimer);
-
-				elm.onElementHeightChangeTimer = setTimeout(run, 0);
-			})();
-		}
-
-		if (this.props.stickyActions) {
-			this.onScroll();
-
-			onElementHeightChanged(element.firstElementChild, this.onScroll);
-
-			window.addEventListener('resize', this.onScroll);
-		}
-	};
-
-	onExiting = () => {
-		if (this.props.stickyActions) window.removeEventListener('resize', this.onScroll);
+		if (this.props.stickyTitle) observeActions(element, 'top', '.pd-dialog__title');
+		if (this.props.stickyActions) observeActions(element, 'bottom', '.pd-dialog__actions');
 	};
 
 	render() {
-		const { stickyActions } = this.props;
-		const { stuck } = this.state;
-
-		let dialogProps = Object.assign({}, this.props);
-
-		delete dialogProps.stickyActions;
+		const { stickyTitle, stickyActions, children, ...props } = this.props;
 
 		const dialogClasses = ClassNames({
+			'pd-dialog_sticky-title': stickyTitle,
 			'pd-dialog_sticky-actions': stickyActions,
-			'pd-dialog_sticky-actions-stuck': stuck,
 		});
 
 		return (
-			<Dialog
-				onEnter={this.onEnter}
-				onExiting={this.onExiting}
-				className={dialogClasses}
-				onScroll={event => (stickyActions ? this.onScroll(event) : null)}
-				{...dialogProps}
-			/>
+			<Dialog onEnter={this.onEnter} className={dialogClasses} {...props}>
+				{stickyTitle ? <div className="pd-dialog__sentinel-top" /> : null}
+				{children}
+				{stickyActions ? <div className="pd-dialog__sentinel-bottom" /> : null}
+			</Dialog>
 		);
 	}
 }
@@ -162,12 +150,7 @@ export const PDDialogActions = props => {
 					</Button>
 				) : null}
 				{rightHandleProps && rightHandleProps.handleProps && rightHandleProps.text ? (
-					<Button
-						className="pd-dialog__actions-right-handle"
-						variant="contained"
-						color="primary"
-						{...rightHandleProps.handleProps}
-					>
+					<Button className="pd-dialog__actions-right-handle" variant="contained" color="primary" {...rightHandleProps.handleProps}>
 						<div className="pd-dialog__actions-handle-text-wrap">
 							{rightHandleProps.iconLeft ? rightHandleProps.iconLeft : null}
 							<div className="pd-dialog__actions-handle-text">{rightHandleProps.text}</div>

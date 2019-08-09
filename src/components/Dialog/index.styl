@@ -4,6 +4,7 @@
 
 .pd-dialog
   &__title
+    border-radius 8px 8px 0 0
     position relative
 
     &_primary
@@ -19,8 +20,14 @@
     &_no-theme
       padding 0
 
-  &_sticky-actions &__title
-    border-radius 8px 8px 0 0
+  &_sticky-title &__title
+    position sticky
+    top 0
+    z-index 1100
+
+    &.stuck
+      border-bottom 1px solid $c-bg-50
+      border-radius 0
 
   &__title-text
     font-size 16px
@@ -40,9 +47,14 @@
     display flex
     height 100%
     left 0
+    opacity 0.8
     padding 0 20px
     position absolute
+    transition opacity 150ms cubic-bezier(0.4, 0, 0.2, 1)
     top 0
+
+    &:hover
+      opacity 1
 
     & svg
       font-size 30px
@@ -64,7 +76,7 @@
     position absolute
     right 0
     top 0
-    transition color 150ms ease-out
+    transition color 150ms cubic-bezier(0.4, 0, 0.2, 1)
 
     & svg
       width 24px !important
@@ -88,21 +100,18 @@
     padding 0
 
   &_sticky-actions &__actions
-    overflow hidden
-
-  &_sticky-actions:not(&_sticky-actions-stuck) &__actions
+    bottom 0
     border-top 1px solid transparent
     border-radius 0 0 8px 8px
+    overflow hidden
+    position sticky
 
-  &_sticky-actions-stuck &__actions
-    border-top 1px solid $c-bg-50
+    &.stuck
+      border-top 1px solid $c-bg-50
+      border-radius 0
 
   &__actions-wrap
     width 100%
-
-  &_sticky-actions &__actions
-    position sticky
-    bottom 0
 
   &__actions-handle-text-wrap
     display flex

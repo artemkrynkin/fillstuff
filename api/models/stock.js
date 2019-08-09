@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 import i18n from 'i18n';
 import momentTz from 'moment-timezone';
 
+import { numberToFixedDouble } from 'api/utils';
+
 const Schema = mongoose.Schema;
 
 let Stock = new Schema({
@@ -32,8 +34,8 @@ let Stock = new Schema({
 		stockCost: {
 			type: Number,
 			default: 0,
-			get: value => +value.toFixed(2),
-			set: value => +value.toFixed(2),
+			get: value => numberToFixedDouble(value),
+			set: value => numberToFixedDouble(value),
 		},
 	},
 	members: [

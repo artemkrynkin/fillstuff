@@ -7,11 +7,11 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
-import Popover from '@material-ui/core/Popover';
 
 import { memberRoleTransform, findMemberInStock, checkPermissions } from 'shared/roles-access-rights';
 
 import CardPaper from 'src/components/CardPaper';
+import CustomPopover from 'src/components/CustomPopover';
 
 import './team.styl';
 
@@ -92,13 +92,7 @@ class Team extends Component {
 				.sort((memberA, memberB) => (memberA.roleBitMask > memberB.roleBitMask ? -1 : 1)),
 		} = this.props;
 
-		const {
-			memberActionsMenuOpen,
-			selectedMember,
-			dialogMemberEdit,
-			dialogMemberDelete,
-			dialogMemberInvitationOrLogin,
-		} = this.state;
+		const { memberActionsMenuOpen, selectedMember, dialogMemberEdit, dialogMemberDelete, dialogMemberInvitationOrLogin } = this.state;
 
 		let photoImgClasses = (member, dialog) => {
 			return ClassNames({
@@ -139,12 +133,9 @@ class Team extends Component {
 											{member.user.name ? member.user.name : member.user.email}
 											<div className="ps-team__member-role">{memberRoleTransform(member.role)}</div>
 										</div>
-										{member.user.name && member.user.email ? (
-											<div className="ps-team__member-subtitle">{member.user.email}</div>
-										) : null}
+										{member.user.name && member.user.email ? <div className="ps-team__member-subtitle">{member.user.email}</div> : null}
 									</div>
-									{member.role !== 'owner' ||
-									(member.role === 'owner' && checkPermissions(currentUserRole, ['stock.full_control'])) ? (
+									{member.role !== 'owner' || (member.role === 'owner' && checkPermissions(currentUserRole, ['stock.full_control'])) ? (
 										<IconButton
 											className="ps-team__member-actions"
 											aria-haspopup="true"
@@ -159,21 +150,7 @@ class Team extends Component {
 					</div>
 
 					{selectedMember ? (
-						<Popover
-							anchorEl={memberActionsMenuOpen}
-							open={Boolean(memberActionsMenuOpen)}
-							onClose={this.onCloseMemberActionsMenu}
-							anchorOrigin={{
-								vertical: 'bottom',
-								horizontal: 'center',
-							}}
-							transformOrigin={{
-								vertical: 'top',
-								horizontal: 'center',
-							}}
-							transitionDuration={150}
-							elevation={2}
-						>
+						<CustomPopover anchorEl={memberActionsMenuOpen} open={Boolean(memberActionsMenuOpen)} onClose={this.onCloseMemberActionsMenu}>
 							<MenuList>
 								<MenuItem
 									onClick={() => {
@@ -202,7 +179,7 @@ class Team extends Component {
 									{selectedMember.user._id !== currentUser._id ? 'Удалить из команды' : 'Выйти из команды'}
 								</MenuItem>
 							</MenuList>
-						</Popover>
+						</CustomPopover>
 					) : null}
 
 					<MemberInvitationOrLogin

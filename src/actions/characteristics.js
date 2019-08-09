@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-export const getSpecifications = stockId => {
-	return dispatch => {
+export const getCharacteristics = stockId => {
+	return async dispatch => {
 		dispatch({ type: 'REQUEST_SPECIFICATIONS' });
 
-		axios
-			.get('/api/specifications', {
+		return await axios
+			.get('/api/characteristics', {
 				params: {
 					stockId,
 				},
@@ -22,21 +22,21 @@ export const getSpecifications = stockId => {
 	};
 };
 
-export const createSpecification = values => {
-	return dispatch => {
+export const createCharacteristic = values => {
+	return async dispatch => {
 		dispatch({ type: 'REQUEST_SPECIFICATIONS' });
 
-		return axios
-			.post(`/api/specifications`, values)
+		return await axios
+			.post(`/api/characteristics`, values)
 			.then(response => {
-				const specification = response.data;
+				const characteristic = response.data;
 
 				dispatch({
 					type: 'CREATE_SPECIFICATION',
-					payload: specification,
+					payload: characteristic,
 				});
 
-				return Promise.resolve({ status: 'success', data: specification });
+				return Promise.resolve({ status: 'success', data: characteristic });
 			})
 			.catch(error => {
 				if (error.response) {

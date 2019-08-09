@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ClassNames from 'classnames';
 import Loadable from 'react-loadable';
+import { cloneDeep } from 'lodash';
 
 // import QRCode from 'qrcode';
 
@@ -22,7 +23,6 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
-import Popover from '@material-ui/core/Popover';
 // import DialogContent from '@material-ui/core/DialogContent';
 // import Dialog from '@material-ui/core/Dialog';
 // import DialogContentText from '@material-ui/core/DialogContentText';
@@ -30,18 +30,14 @@ import { withStyles } from '@material-ui/core/styles';
 
 import colorPalette from 'shared/colorPalette';
 
+import CustomPopover from 'src/components/CustomPopover';
 // import { PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
 // import { LoadingComponent } from 'src/components/Loading';
 
+import { getCharacteristics } from 'src/actions/characteristics';
 import { getProducts } from 'src/actions/products';
 
 import './Products.styl';
-
-const DialogProductOrMarkerArchive = Loadable({
-	loader: () => import('./Dialogs/ProductOrMarkerArchive' /* webpackChunkName: "Dialog_ProductOrMarkerArchive" */),
-	loading: () => null,
-	delay: 200,
-});
 
 const DialogProductEdit = Loadable({
 	loader: () => import('src/containers/Dialogs/ProductEdit' /* webpackChunkName: "Dialog_ProductEdit" */),
@@ -51,6 +47,18 @@ const DialogProductEdit = Loadable({
 
 const DialogMarkerEdit = Loadable({
 	loader: () => import('src/containers/Dialogs/MarkerEdit' /* webpackChunkName: "Dialog_MarkerEdit" */),
+	loading: () => null,
+	delay: 200,
+});
+
+const DialogProductOrMarkerArchive = Loadable({
+	loader: () => import('src/containers/Dialogs/ProductOrMarkerArchive' /* webpackChunkName: "Dialog_ProductOrMarkerArchive" */),
+	loading: () => null,
+	delay: 200,
+});
+
+const DialogCreateWriteOff = Loadable({
+	loader: () => import('src/containers/Dialogs/CreateWriteOff' /* webpackChunkName: "Dialog_CreateWriteOff" */),
 	loading: () => null,
 	delay: 200,
 });
@@ -145,15 +153,18 @@ class Products extends Component {
 		dialogMarkerCreate: false,
 		dialogMarkerEdit: false,
 		dialogProductOrMarkerArchive: false,
+		dialogCreateWriteOff: false,
 	};
 
 	onOpenProductOrMarkersActionsMenu = (event, actionType, productOrMarker) => {
-		// if (actionType === 'marker') delete productOrMarker.product.markers;
+		const productOrMarkerClone = cloneDeep(productOrMarker);
+
+		if (actionType === 'product') delete productOrMarkerClone.markers;
 
 		this.setState({
 			productOrMarkerActionsMenuOpen: event.currentTarget,
 			selectedActionType: actionType,
-			selectedProductOrMarker: productOrMarker,
+			selectedProductOrMarker: productOrMarkerClone,
 		});
 	};
 
@@ -169,42 +180,38 @@ class Products extends Component {
 		}
 	};
 
-	onOpenDialogProductEdit = () =>
-		this.setState({
-			dialogProductEdit: true,
-		});
+	onOpenDialogProductEdit = () => this.setState({ dialogProductEdit: true });
 
-	onCloseDialogProductEdit = () =>
-		this.setState({
-			dialogProductEdit: false,
-		});
+	onCloseDialogProductEdit = () => this.setState({ dialogProductEdit: false });
 
-	onOpenDialogMarkerEdit = () =>
+	onExitedDialogProductEdit = () => {
 		this.setState({
-			dialogMarkerEdit: true,
-		});
-
-	onCloseDialogMarkerEdit = () =>
-		this.setState({
-			dialogMarkerEdit: false,
-		});
-
-	onOpenDialogProductOrMarkerArchive = () =>
-		this.setState({
-			dialogProductOrMarkerArchive: true,
-		});
-
-	onCloseDialogProductOrMarkerArchive = () =>
-		this.setState({
-			dialogProductOrMarkerArchive: false,
-		});
-
-	onExitedDialogProductOrMarkerArchive = () =>
-		this.setState({
+			// selectedActionType: null,
 			selectedProductOrMarker: null,
 		});
+	};
 
-	UNSAFE_componentWillMount() {
+	onOpenDialogMarkerEdit = async () => {
+		await this.props.getCharacteristics();
+
+		this.setState({ dialogMarkerEdit: true });
+	};
+
+	onCloseDialogMarkerEdit = () => this.setState({ dialogMarkerEdit: false });
+
+	onOpenDialogProductOrMarkerArchive = () => this.setState({ dialogProductOrMarkerArchive: true });
+
+	onCloseDialogProductOrMarkerArchive = () => this.setState({ dialogProductOrMarkerArchive: false });
+
+	onExitedDialogProductOrMarkerArchive = () => this.setState({ selectedProductOrMarker: null });
+
+	onOpenDialogCreateWriteOff = () => this.setState({ dialogCreateWriteOff: true });
+
+	onCloseDialogCreateWriteOff = () => this.setState({ dialogCreateWriteOff: false });
+
+	onExitedDialogCreateWriteOff = () => this.setState({ selectedProductOrMarker: null });
+
+	componentDidMount() {
 		this.props.getProducts();
 	}
 
@@ -226,14 +233,14 @@ class Products extends Component {
 			// dialogMarkerCreate,
 			dialogMarkerEdit,
 			dialogProductOrMarkerArchive,
+			dialogCreateWriteOff,
 		} = this.state;
 
 		const quantityIndicator = (quantity, minimumBalance) =>
 			ClassNames({
 				'sa-products__quantity-indicator': true,
 				'sa-products__quantity-indicator_red': (quantity / minimumBalance) * 100 <= 100,
-				'sa-products__quantity-indicator_yellow':
-					(quantity / minimumBalance) * 100 > 100 && (quantity / minimumBalance) * 100 <= 200,
+				'sa-products__quantity-indicator_yellow': (quantity / minimumBalance) * 100 > 100 && (quantity / minimumBalance) * 100 <= 200,
 				'sa-products__quantity-indicator_green': (quantity / minimumBalance) * 100 > 200,
 			});
 
@@ -243,10 +250,10 @@ class Products extends Component {
 					<TableHead>
 						<TableRow>
 							<TableCell style={{ paddingLeft: 46 }}>Наименование</TableCell>
-							<TableCell align="right" width={140}>
+							<TableCell align="left" width={140}>
 								Количество
 							</TableCell>
-							<TableCell align="right" width={150}>
+							<TableCell align="center" width={150}>
 								Мин. остаток
 							</TableCell>
 							<TableCell align="right" width={160}>
@@ -285,13 +292,11 @@ class Products extends Component {
 																<TableCell style={{ paddingLeft: 5 }}>
 																	<span style={{ color: colorPalette.blueGrey.cBg600, fontWeight: 600 }}>{product.name}</span>
 																</TableCell>
-																<TableCell align="right" width={140}>
-																	{!product.dividedMarkers ? (
-																		<div className={quantityIndicator(product.quantity, product.minimumBalance)} />
-																	) : null}
+																<TableCell align="left" width={140}>
+																	<div className={quantityIndicator(product.quantity, product.minimumBalance)} />
 																	{product.quantity}
 																</TableCell>
-																<TableCell align="right" width={150}>
+																<TableCell align="center" width={150}>
 																	{product.minimumBalance}
 																</TableCell>
 																<TableCell width={320 + 50} />
@@ -307,19 +312,17 @@ class Products extends Component {
 																	<TableRow key={marker._id} className="sa-products__row-marker">
 																		<TableCell width={41} style={{ paddingLeft: 5, paddingRight: 0 }} />
 																		<TableCell style={{ paddingLeft: 5 }}>
-																			{marker.manufacturer.label}{' '}
-																			{marker.specifications.reduce(
-																				(fullSpecifications, specification) => `${fullSpecifications} ${specification.label}`,
+																			{marker.mainCharacteristic.label}{' '}
+																			{marker.characteristics.reduce(
+																				(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
 																				''
 																			)}
 																		</TableCell>
-																		<TableCell align="right" width={140}>
-																			{product.dividedMarkers ? (
-																				<div className={quantityIndicator(marker.quantity, marker.minimumBalance)} />
-																			) : null}
+																		<TableCell align="left" width={140}>
+																			<div className={quantityIndicator(marker.quantity, marker.minimumBalance)} />
 																			{marker.quantity}
 																		</TableCell>
-																		<TableCell align="right" width={150}>
+																		<TableCell align="center" width={150}>
 																			{marker.minimumBalance}
 																		</TableCell>
 																		<TableCell align="right" width={160}>
@@ -333,9 +336,7 @@ class Products extends Component {
 																				<IconButton
 																					className="sa-products__marker-actions-button"
 																					aria-haspopup="true"
-																					onClick={event =>
-																						this.onOpenProductOrMarkersActionsMenu(event, 'marker', { product, marker })
-																					}
+																					onClick={event => this.onOpenProductOrMarkersActionsMenu(event, 'marker', { product, marker })}
 																					size="small"
 																				>
 																					<FontAwesomeIcon icon={['far', 'ellipsis-h']} />
@@ -356,7 +357,7 @@ class Products extends Component {
 												<IconButton
 													className="sa-products__product-actions-button"
 													aria-haspopup="true"
-													onClick={event => this.onOpenProductOrMarkersActionsMenu(event, 'product', product)}
+													onClick={event => this.onOpenProductOrMarkersActionsMenu(event, 'product', { product, marker: null })}
 													size="small"
 												>
 													<FontAwesomeIcon icon={['far', 'ellipsis-h']} />
@@ -384,20 +385,10 @@ class Products extends Component {
 					</TableBody>
 				</Table>
 
-				<Popover
+				<CustomPopover
 					anchorEl={productOrMarkerActionsMenuOpen}
 					open={Boolean(productOrMarkerActionsMenuOpen)}
 					onClose={this.onCloseProductOrMarkersActionsMenu}
-					anchorOrigin={{
-						vertical: 'bottom',
-						horizontal: 'center',
-					}}
-					transformOrigin={{
-						vertical: 'top',
-						horizontal: 'center',
-					}}
-					transitionDuration={150}
-					elevation={2}
 				>
 					<MenuList>
 						<MenuItem
@@ -415,7 +406,18 @@ class Products extends Component {
 									this.onCloseProductOrMarkersActionsMenu(true);
 								}}
 							>
-								Добавить количество
+								Внести количество
+							</MenuItem>
+						) : null}
+						{selectedActionType === 'marker' ? (
+							<MenuItem
+								disabled={selectedProductOrMarker.marker.quantity <= 0}
+								onClick={() => {
+									this.onOpenDialogCreateWriteOff();
+									this.onCloseProductOrMarkersActionsMenu(true);
+								}}
+							>
+								Списать количество
 							</MenuItem>
 						) : null}
 						<MenuItem
@@ -437,7 +439,23 @@ class Products extends Component {
 							Архивировать
 						</MenuItem>
 					</MenuList>
-				</Popover>
+				</CustomPopover>
+
+				<DialogProductEdit
+					dialogOpen={dialogProductEdit}
+					onCloseDialog={this.onCloseDialogProductEdit}
+					onExitedDialog={this.onExitedDialogProductEdit}
+					currentStock={currentStock}
+					selectedProduct={selectedProductOrMarker && selectedProductOrMarker.product}
+				/>
+
+				<DialogMarkerEdit
+					dialogOpen={dialogMarkerEdit}
+					onCloseDialog={this.onCloseDialogMarkerEdit}
+					currentStock={currentStock}
+					selectedProduct={selectedProductOrMarker && selectedProductOrMarker.product}
+					selectedMarker={selectedProductOrMarker && selectedProductOrMarker.marker}
+				/>
 
 				<DialogProductOrMarkerArchive
 					actionType={selectedActionType}
@@ -445,34 +463,16 @@ class Products extends Component {
 					onCloseDialog={this.onCloseDialogProductOrMarkerArchive}
 					onExitedDialog={this.onExitedDialogProductOrMarkerArchive}
 					currentStock={currentStock}
-					selectedProductOrMarker={
-						selectedProductOrMarker
-							? selectedProductOrMarker.marker
-								? selectedProductOrMarker.marker
-								: selectedProductOrMarker
-							: null
-					}
+					selectedProductOrMarker={selectedProductOrMarker}
 				/>
 
-				<DialogProductEdit
-					dialogOpen={dialogProductEdit}
-					onCloseDialog={this.onCloseDialogProductEdit}
+				<DialogCreateWriteOff
+					dialogOpen={dialogCreateWriteOff}
+					onCloseDialog={this.onCloseDialogCreateWriteOff}
+					onExitedDialog={this.onExitedDialogCreateWriteOff}
 					currentStock={currentStock}
-					selectedProduct={
-						selectedProductOrMarker
-							? selectedProductOrMarker.marker
-								? selectedProductOrMarker.marker
-								: selectedProductOrMarker
-							: null
-					}
-				/>
-
-				<DialogMarkerEdit
-					dialogOpen={dialogMarkerEdit}
-					onCloseDialog={this.onCloseDialogMarkerEdit}
-					currentStock={currentStock}
-					selectedProduct={selectedProductOrMarker ? selectedProductOrMarker.product : null}
-					selectedMarker={selectedProductOrMarker ? selectedProductOrMarker.marker : null}
+					selectedProduct={selectedProductOrMarker && selectedProductOrMarker.product}
+					selectedMarker={selectedProductOrMarker && selectedProductOrMarker.marker}
 				/>
 			</Paper>
 		);
@@ -489,6 +489,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	const { currentStock } = ownProps;
 
 	return {
+		getCharacteristics: () => dispatch(getCharacteristics(currentStock._id)),
 		getProducts: () => dispatch(getProducts(currentStock._id)),
 	};
 };

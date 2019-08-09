@@ -14,6 +14,7 @@ setLocale({
 		email: 'Некорректный Email',
 	},
 	number: {
+		required: 'Обязательное поле',
 		// eslint-disable-next-line
 		min: 'Не может быть меньше ${min}',
 		// eslint-disable-next-line

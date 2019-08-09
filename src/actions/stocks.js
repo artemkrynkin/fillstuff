@@ -6,10 +6,10 @@ import { changeStockCurrentUrl } from 'src/helpers/utils';
 import { changeActiveStock } from './user';
 
 export const getStocks = () => {
-	return dispatch => {
+	return async dispatch => {
 		dispatch({ type: 'REQUEST_STOCKS' });
 
-		axios
+		return await axios
 			.get('/api/stocks')
 			.then(response => {
 				dispatch({
@@ -31,10 +31,10 @@ export const getStocks = () => {
 };
 
 export const getStockStatus = stockId => {
-	return dispatch => {
+	return async dispatch => {
 		dispatch({ type: 'REQUEST_STOCKS' });
 
-		axios
+		return await axios
 			.get(`/api/stocks/${stockId}/status`)
 			.then(response => {
 				dispatch({
@@ -52,10 +52,10 @@ export const getStockStatus = stockId => {
 };
 
 export const editStock = (stockId, newValues) => {
-	return dispatch => {
+	return async dispatch => {
 		dispatch({ type: 'REQUEST_STOCKS' });
 
-		return axios
+		return await axios
 			.put(`/api/stocks/${stockId}`, newValues)
 			.then(() => {
 				dispatch({
@@ -79,10 +79,10 @@ export const editStock = (stockId, newValues) => {
 };
 
 export const memberInvitation = stockId => {
-	return dispatch => {
+	return async dispatch => {
 		dispatch({ type: 'REQUEST_MEMBERS' });
 
-		return axios
+		return await axios
 			.get(`/api/stocks/${stockId}/member-invitation`)
 			.then(response => {
 				return Promise.resolve({ status: 'success', data: response.data });
@@ -94,10 +94,10 @@ export const memberInvitation = stockId => {
 };
 
 export const editMember = (stockId, memberId, newValues) => {
-	return dispatch => {
+	return async dispatch => {
 		dispatch({ type: 'REQUEST_MEMBERS' });
 
-		return axios
+		return await axios
 			.put(`/api/stocks/${stockId}/members/${memberId}`, newValues)
 			.then(() => {
 				dispatch({
@@ -122,18 +122,16 @@ export const editMember = (stockId, memberId, newValues) => {
 };
 
 export const deleteMember = (stockId, memberId, memberUserId, currentUserId) => {
-	return (dispatch, getState) => {
+	return async (dispatch, getState) => {
 		dispatch({ type: 'REQUEST_MEMBERS' });
 
-		return axios
+		return await axios
 			.delete(`/api/stocks/${stockId}/members/${memberId}`)
 			.then(async () => {
 				if (memberUserId === currentUserId) {
 					let {
 						stocks: { data: stocks },
-						newStocks = stocks
-							.filter(stock => stock._id !== stockId)
-							.sort((stockA, stockB) => stockB.createdAt - stockA.createdAt),
+						newStocks = stocks.filter(stock => stock._id !== stockId).sort((stockA, stockB) => stockB.createdAt - stockA.createdAt),
 						nextStockId = newStocks.length ? newStocks[0]._id : null,
 					} = getState();
 

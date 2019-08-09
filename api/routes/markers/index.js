@@ -4,7 +4,7 @@ import { isAuthedResolver, hasPermissionsInStock } from 'api/utils/permissions';
 
 import Stock from 'api/models/stock';
 import Product from 'api/models/product';
-import Marker from 'api/models/Marker';
+import Marker from 'api/models/marker';
 
 import { checkMarker } from 'shared/checkProductAndMarkers';
 
@@ -23,11 +23,14 @@ markersRouter.put(
 				const markerUpdate = { ...req.body };
 				const { quantity: quantityOld, unitPurchasePrice: unitPurchasePriceOld } = marker;
 
-				await checkMarker(marker.product, markerUpdate);
+				await checkMarker(marker.stock, marker.product, markerUpdate);
 
-				marker.manufacturer = markerUpdate.manufacturer;
-				marker.quantity = markerUpdate.quantity;
-				marker.quantityPackages = markerUpdate.quantityPackages;
+				if (marker.product.receiptUnits === 'nmp' && marker.product.unitIssue === 'pce') {
+					marker.quantity = markerUpdate.quantity;
+				}
+
+				marker.mainCharacteristic = markerUpdate.mainCharacteristic;
+				// marker.quantityPackages = markerUpdate.quantityPackages;
 				marker.quantityInUnit = markerUpdate.quantityInUnit;
 				marker.minimumBalance = markerUpdate.minimumBalance;
 				marker.purchasePrice = markerUpdate.purchasePrice;
@@ -36,7 +39,7 @@ markersRouter.put(
 				marker.unitSellingPrice = markerUpdate.unitSellingPrice;
 				marker.isFree = markerUpdate.isFree;
 				marker.linkInShop = markerUpdate.linkInShop;
-				marker.specifications = markerUpdate.specifications;
+				marker.characteristics = markerUpdate.characteristics;
 
 				await marker.save().catch(err => next({ code: err.errors ? 5 : 2, err }));
 
@@ -62,7 +65,7 @@ markersRouter.put(
 					{ runValidators: true }
 				).catch(err => next({ code: 2, err }));
 
-				await marker.populate('manufacturer specifications').execPopulate();
+				await marker.populate('mainCharacteristic characteristics').execPopulate();
 
 				res.json(marker);
 			})

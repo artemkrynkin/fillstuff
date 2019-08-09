@@ -3,23 +3,22 @@ import { connect } from 'react-redux';
 import momentTz from 'moment-timezone';
 
 import { Formik, Form, Field } from 'formik';
-import { TextField, Select } from 'formik-material-ui';
+import { TextField } from 'formik-material-ui';
 import * as Yup from 'yup';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Fade from '@material-ui/core/Fade';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormLabel from '@material-ui/core/FormLabel';
 import Grid from '@material-ui/core/Grid';
 import MenuItem from '@material-ui/core/MenuItem';
-import TextFieldMui from '@material-ui/core/TextField';
+import MuiTextField from '@material-ui/core/TextField';
 
 import { checkPermissions, findMemberInStock } from 'shared/roles-access-rights';
 
 import CardPaper from 'src/components/CardPaper';
+import { CustomSelectField } from 'src/components/CustomSelectField';
 
 import { editStock } from 'src/actions/stocks';
 
@@ -92,7 +91,7 @@ const GeneralSettings = props => {
 									}}
 								/>
 							) : (
-								<TextFieldMui
+								<MuiTextField
 									name="name"
 									InputProps={{
 										readOnly: true,
@@ -106,18 +105,7 @@ const GeneralSettings = props => {
 							<FormLabel style={{ minWidth: 124 }}>Часовой пояс:</FormLabel>
 							<FormControl fullWidth>
 								{checkPermissions(currentUserRole, ['stock.full_control']) ? (
-									<Field
-										name="timezone"
-										component={Select}
-										IconComponent={() => <FontAwesomeIcon icon={['far', 'angle-down']} className="pd-selectIcon" />}
-										error={Boolean(errors.timezone)}
-										MenuProps={{
-											elevation: 2,
-											transitionDuration: 150,
-											TransitionComponent: Fade,
-										}}
-										displayEmpty
-									>
+									<CustomSelectField name="timezone" error={Boolean(errors.timezone)} displayEmpty>
 										<MenuItem value="">Не выбран</MenuItem>
 										{timezones.map((timezone, index) => {
 											return (
@@ -126,9 +114,9 @@ const GeneralSettings = props => {
 												</MenuItem>
 											);
 										})}
-									</Field>
+									</CustomSelectField>
 								) : (
-									<TextFieldMui
+									<MuiTextField
 										name="timezone"
 										InputProps={{
 											readOnly: true,

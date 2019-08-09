@@ -50,17 +50,14 @@ membersRouter.put(
 			user: { _id: userId, name, email },
 		} = req.body;
 
-		console.log(userId, name, email);
+		// console.log(userId, name, email);
 
 		await Stock.findById(req.params.stockId)
 			.then(async stock => {
 				const currentUserRole = findMemberInStock(req.user._id, stock).role;
 				const member = stock.members.id(req.params.memberId);
 
-				if (
-					(member.role === 'owner' || role === 'owner') &&
-					!Boolean(checkPermissions(currentUserRole, ['stock.full_control']))
-				) {
+				if ((member.role === 'owner' || role === 'owner') && !Boolean(checkPermissions(currentUserRole, ['stock.full_control']))) {
 					return next({ code: 4 });
 				}
 

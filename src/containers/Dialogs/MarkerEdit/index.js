@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { Formik, Form, Field, FieldArray } from 'formik';
-import { TextField, CheckboxWithLabel, Select } from 'formik-material-ui';
+import { TextField, CheckboxWithLabel } from 'formik-material-ui';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -13,96 +13,66 @@ import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
 import IconButton from '@material-ui/core/IconButton';
-import Fade from '@material-ui/core/Fade';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import translitRu from 'shared/translit/ru';
-import { specifications, specificationTransform } from 'shared/productSpecifications';
+import { characteristicTypeTransform, unitTypeTransform } from 'shared/checkProductAndMarkers';
+
+import {
+	compareByName,
+	onAddCharacteristicInMarker,
+	checkCharacteristicsOnAbsenceInMarker,
+	onUnitSellingPriceCalc,
+} from 'src/helpers/productAndMarkersUtils';
 
 import { PDDialog, PDDialogTitle, PDDialogActions } from 'src/components/Dialog';
 import { SelectAutocompleteCreate } from 'src/components/selectAutocomplete';
+import { CustomSelectField } from 'src/components/CustomSelectField';
 import Chips from 'src/components/Chips';
 
 import { markerSchema } from 'src/containers/Dialogs/ProductAndMarkersCreate/components/FormScheme';
 
 import { getStockStatus } from 'src/actions/stocks';
-import { createManufacturer } from 'src/actions/manufacturers';
-import { createSpecification } from 'src/actions/specifications';
+import { createCharacteristic } from 'src/actions/characteristics';
 import { editMarker } from 'src/actions/markers';
-
-const checkArrayErrors = (arrayFieldName, fieldName) => {
-	return typeof arrayFieldName === 'object' && typeof arrayFieldName[fieldName] === 'string';
-};
-
-const compareName = (a, b) => {
-	if (a.name > b.name) return 1;
-	else if (a.name < b.name) return -1;
-	else return 0;
-};
+import MuiTextField from '@material-ui/core/TextField/TextField';
 
 class DialogMarkerEdit extends Component {
 	static propTypes = {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
 		currentStock: PropTypes.object.isRequired,
+		selectedProduct: PropTypes.object,
 		selectedMarker: PropTypes.object,
 	};
 
 	state = {
-		isLoadingManufacturers: false,
-		isLoadingSpecifications: false,
+		isLoadingMainCharacteristic: false,
+		isLoadingCharacteristics: false,
 	};
 
-	onCreateManufacturer = (values, setFieldValue) => {
-		this.setState({ isLoadingManufacturers: true }, () => {
-			this.props.createManufacturer(values).then(response => {
-				const manufacturer = response.data;
+	onCreateMainCharacteristic = (values, setFieldValue) => {
+		this.setState({ isLoadingMainCharacteristic: true }, () => {
+			this.props.createCharacteristic(values).then(response => {
+				const mainCharacteristic = response.data;
 
-				this.setState({ isLoadingManufacturers: false });
+				this.setState({ isLoadingMainCharacteristic: false });
 
-				setFieldValue(`manufacturer`, manufacturer._id);
+				setFieldValue('mainCharacteristic', mainCharacteristic);
 			});
 		});
 	};
 
-	onCreateSpecification = (values, setFieldValue) => {
-		this.setState({ isLoadingSpecifications: true }, () => {
-			this.props.createSpecification(values).then(response => {
-				const specification = response.data;
+	onCreateCharacteristic = (values, setFieldValue) => {
+		this.setState({ isLoadingCharacteristics: true }, () => {
+			this.props.createCharacteristic(values).then(response => {
+				const characteristic = response.data;
 
-				this.setState({ isLoadingSpecifications: false });
+				this.setState({ isLoadingCharacteristics: false });
 
-				setFieldValue(`specificationTemp.value`, specification._id);
+				setFieldValue('characteristicTemp.value', characteristic);
 			});
 		});
-	};
-
-	onAddSpecificationInMarker = (values, setFieldValue, arrayHelpersSpecifications) => {
-		const { specifications: stockSpecifications } = this.props;
-
-		const specificationIndex = stockSpecifications.findIndex(
-			specification => specification._id === values.specificationTemp.value
-		);
-
-		arrayHelpersSpecifications.push(stockSpecifications[specificationIndex]);
-
-		setFieldValue('specificationTemp.name', '');
-		setFieldValue('specificationTemp.value', '');
-	};
-
-	onUnitSellingPriceCalc = ({ target: { value } }, fieldName, values, setFieldValue) => {
-		setFieldValue(`${fieldName}`, value);
-
-		const checkEmptinessField = values[`${fieldName === 'quantityInUnit' ? 'purchasePrice' : 'quantityInUnit'}`];
-		const setValue = fieldName === 'quantityInUnit' ? values.purchasePrice / value : value / values.quantityInUnit;
-
-		setFieldValue('unitSellingPrice', !!value && !!checkEmptinessField ? setValue.toFixed(2) : '');
-	};
-
-	onSellingPriceCalc = ({ target: { value } }, setFieldValue) => {
-		setFieldValue('purchasePrice', value);
-
-		setFieldValue('sellingPrice', value);
 	};
 
 	onMarkerEdit = (values, actions) => {
@@ -117,146 +87,186 @@ class DialogMarkerEdit extends Component {
 	};
 
 	render() {
-		const {
-			dialogOpen,
-			onCloseDialog,
-			currentStock,
-			manufacturers: stockManufacturers,
-			specifications: stockSpecifications,
-			selectedProduct,
-			selectedMarker,
-		} = this.props;
-		const { isLoadingManufacturers, isLoadingSpecifications } = this.state;
+		const { dialogOpen, onCloseDialog, currentStock, characteristics, selectedProduct, selectedMarker } = this.props;
+		const { isLoadingMainCharacteristic, isLoadingCharacteristics } = this.state;
 
 		if (!selectedProduct || !selectedMarker) return null;
 
-		const product = selectedProduct;
-
 		let initialValues = {
-			manufacturerTemp: '',
+			mainCharacteristicTemp: {
+				type: selectedMarker.mainCharacteristic.type,
+				value: '',
+			},
 			quantity: '',
 			quantityPackages: '',
 			quantityInUnit: '',
 			minimumBalance: '',
 			sellingPrice: '',
 			unitSellingPrice: '',
-			specificationTemp: {
-				name: '',
+			characteristicTemp: {
+				type: '',
 				valueTemp: '',
 				value: '',
 			},
 			...selectedMarker,
-			manufacturer: selectedMarker.manufacturer._id,
 		};
 
 		return (
-			<PDDialog
-				open={dialogOpen}
-				onClose={onCloseDialog}
-				onExited={this.onExitedDialog}
-				maxWidth="lg"
-				scroll="body"
-				fullWidth
-				stickyActions
-			>
+			<PDDialog open={dialogOpen} onClose={onCloseDialog} onExited={this.onExitedDialog} maxWidth="lg" scroll="body" stickyActions>
 				<PDDialogTitle theme="primary" onClose={onCloseDialog} children="Редактирование позиции" />
 				<Formik
 					initialValues={initialValues}
-					validationSchema={() => markerSchema(product)}
+					validationSchema={() => markerSchema(selectedProduct)}
 					validateOnBlur={false}
 					validateOnChange={false}
 					onSubmit={(values, actions) => this.onMarkerEdit(values, actions)}
 					render={({ errors, isSubmitting, values, setFieldValue }) => (
 						<Form>
 							<DialogContent>
-								<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" alignItems="flex-start" container>
-									<InputLabel error={checkArrayErrors(errors, 'manufacturer')} style={{ minWidth: 120 }}>
-										Производитель:
-									</InputLabel>
-									<FormControl fullWidth>
-										<Field
-											name="manufacturer"
-											component={SelectAutocompleteCreate}
-											TextFieldProps={{
-												error: checkArrayErrors(errors, 'manufacturer'),
-											}}
-											isDisabled={isSubmitting || isLoadingManufacturers}
-											isLoading={isLoadingManufacturers}
-											value={stockManufacturers.find(manufacturer => manufacturer._id === values.manufacturer) || ''}
-											inputValue={values.manufacturerTemp}
-											onChange={option => setFieldValue('manufacturer', option ? option._id : '')}
-											onInputChange={(value, { action }) => {
-												if (action !== 'input-blur' && action !== 'menu-close') {
-													setFieldValue('manufacturerTemp', value);
+								<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" alignItems="flex-start" spacing={2} container>
+									<Grid className="pd-rowGridFormLabelControl" xs={6} style={{ marginBottom: 0 }} item>
+										<InputLabel
+											error={(errors.mainCharacteristicTemp && errors.mainCharacteristicTemp.type) || errors.mainCharacteristic}
+											style={{ display: 'inline-flex', minWidth: 120 }}
+										>
+											Наименование:
+										</InputLabel>
+										<FormControl style={{ width: 'calc(100% - 130px)' }}>
+											<CustomSelectField
+												name="mainCharacteristicTemp.type"
+												inputProps={{
+													onChange: ({ target: { value } }) => {
+														if (values.mainCharacteristic && values.mainCharacteristicTemp.type !== value)
+															setFieldValue('mainCharacteristic', '');
 
-													if (values.manufacturer) {
-														setFieldValue('manufacturer', '');
-													}
-												}
-											}}
-											onCreateOption={value =>
-												this.onCreateManufacturer(
-													{
-														stock: currentStock._id,
-														value: translitRu(value),
-														label: value,
+														if (!values.mainCharacteristicTemp.type || values.mainCharacteristicTemp.type !== value) {
+															setFieldValue('mainCharacteristicTemp', {
+																type: value,
+																value: '',
+															});
+														}
+
+														if (values.characteristicTemp.type === value) {
+															setFieldValue('characteristicTemp', {
+																type: '',
+																value: '',
+																valueTemp: '',
+															});
+														}
 													},
-													setFieldValue
-												)
-											}
-											menuPlacement="top"
-											menuPosition="fixed"
-											placeholder="Выберите или создайте"
-											noOptionsMessage={() => 'Не создано ни одного производителя, введите текст, чтобы создать'}
-											formatCreateLabel={value => `Нажмите, чтобы создать «${value}»`}
-											options={stockManufacturers}
-										/>
-										{checkArrayErrors(errors, 'manufacturer') ? (
-											<FormHelperText error>{errors.manufacturer}</FormHelperText>
-										) : null}
-									</FormControl>
+												}}
+												error={errors.mainCharacteristicTemp && errors.mainCharacteristicTemp.type}
+												displayEmpty
+											>
+												<MenuItem value="" disabled>
+													Выберите
+												</MenuItem>
+												{checkCharacteristicsOnAbsenceInMarker(values, true).map((characteristicType, index) => (
+													<MenuItem key={index} value={characteristicType}>
+														{characteristicTypeTransform(characteristicType)}
+													</MenuItem>
+												))}
+											</CustomSelectField>
+											{errors.mainCharacteristicTemp && errors.mainCharacteristicTemp.type ? (
+												<FormHelperText error>{errors.mainCharacteristicTemp.type}</FormHelperText>
+											) : null}
+										</FormControl>
+									</Grid>
+
+									<Grid xs={6} item>
+										<FormControl fullWidth>
+											<Field
+												name="mainCharacteristic"
+												component={SelectAutocompleteCreate}
+												TextFieldProps={{
+													error: errors.mainCharacteristic,
+												}}
+												isClearable
+												isDisabled={isSubmitting || isLoadingMainCharacteristic || !values.mainCharacteristicTemp.type}
+												isLoading={isLoadingMainCharacteristic}
+												value={values.mainCharacteristic}
+												inputValue={values.mainCharacteristicTemp.value}
+												onChange={option => {
+													setFieldValue('mainCharacteristic', option ? option : '');
+
+													if (values.mainCharacteristicTemp.value) {
+														setFieldValue('mainCharacteristicTemp.value', '');
+													}
+												}}
+												onInputChange={(value, { action }) => {
+													if (action !== 'input-blur' && action !== 'menu-close') {
+														setFieldValue('mainCharacteristicTemp.value', value);
+
+														if (values.mainCharacteristic) {
+															setFieldValue('mainCharacteristic', '');
+														}
+													}
+												}}
+												onCreateOption={value =>
+													this.onCreateMainCharacteristic(
+														{
+															stock: currentStock._id,
+															type: values.mainCharacteristicTemp.type,
+															value: translitRu(value),
+															label: value,
+														},
+														setFieldValue
+													)
+												}
+												menuPlacement="auto"
+												menuPosition="fixed"
+												placeholder="Выберите или создайте"
+												noOptionsMessage={() => 'Не создано ни одного значения, введите текст, чтобы создать'}
+												formatCreateLabel={value => `Нажмите, чтобы создать «${value}»`}
+												options={characteristics.filter(value => value.type === values.mainCharacteristicTemp.type)}
+											/>
+											{errors.mainCharacteristic ? <FormHelperText error>{errors.mainCharacteristic}</FormHelperText> : null}
+										</FormControl>
+									</Grid>
 								</Grid>
 
 								<Grid className="pd-rowGridFormLabelControl" style={{ marginBottom: 12 }} container spacing={2}>
-									{product.receiptUnits === 'pce' || product.unitIssue !== 'pce' ? (
-										<Grid xs={product.dividedMarkers ? 6 : 12} item>
-											<Field
+									{selectedProduct.receiptUnits === 'pce' || selectedProduct.unitIssue !== 'pce' ? (
+										<Grid xs={selectedProduct.dividedMarkers ? 6 : 12} item>
+											<MuiTextField
+												className="none-padding"
 												name="quantity"
-												type="number"
 												label={`Количество ${
-													product.receiptUnits === 'nmp' && product.unitIssue !== 'pce' ? 'упаковок' : 'штук'
+													selectedProduct.receiptUnits === 'nmp' && selectedProduct.unitIssue !== 'pce' ? 'упаковок' : 'штук'
 												}:`}
-												placeholder="0"
-												component={TextField}
-												InputLabelProps={{
-													shrink: true,
+												InputProps={{
+													value: values.quantity,
+													readOnly: true,
 												}}
-												autoComplete="off"
 												fullWidth
 											/>
 										</Grid>
 									) : (
 										<Grid
-											xs={product.receiptUnits === 'nmp' && product.unitIssue === 'pce' ? (product.dividedMarkers ? 4 : 6) : 6}
+											xs={
+												selectedProduct.receiptUnits === 'nmp' && selectedProduct.unitIssue === 'pce'
+													? selectedProduct.dividedMarkers
+														? 4
+														: 6
+													: 6
+											}
 											item
 										>
-											<Field
+											<MuiTextField
+												className="none-padding"
 												name="quantityPackages"
-												type="number"
 												label="Количество упаковок:"
-												placeholder="0"
-												component={TextField}
-												InputLabelProps={{
-													shrink: true,
+												InputProps={{
+													value: values.quantityPackages,
+													readOnly: true,
 												}}
-												autoComplete="off"
 												fullWidth
 											/>
 										</Grid>
 									)}
 
-									{product.receiptUnits === 'nmp' && product.unitIssue === 'pce' ? (
-										<Grid xs={product.dividedMarkers ? 4 : 6} item>
+									{selectedProduct.receiptUnits === 'nmp' && selectedProduct.unitIssue === 'pce' ? (
+										<Grid xs={selectedProduct.dividedMarkers ? 4 : 6} item>
 											<Field
 												name="quantityInUnit"
 												type="number"
@@ -267,9 +277,10 @@ class DialogMarkerEdit extends Component {
 													shrink: true,
 												}}
 												inputProps={
-													product.receiptUnits === 'nmp' && product.unitIssue === 'pce'
+													selectedProduct.receiptUnits === 'nmp' && selectedProduct.unitIssue === 'pce'
 														? {
-																onChange: event => this.onUnitSellingPriceCalc(event, 'quantityInUnit', values, setFieldValue),
+																onChange: ({ target: { value } }) =>
+																	onUnitSellingPriceCalc(value, 'quantityInUnit', values, undefined, setFieldValue),
 														  }
 														: {}
 												}
@@ -279,13 +290,13 @@ class DialogMarkerEdit extends Component {
 										</Grid>
 									) : null}
 
-									{product.dividedMarkers ? (
-										<Grid xs={product.receiptUnits === 'nmp' && product.unitIssue === 'pce' ? 4 : 6} item>
+									{selectedProduct.dividedMarkers ? (
+										<Grid xs={selectedProduct.receiptUnits === 'nmp' && selectedProduct.unitIssue === 'pce' ? 4 : 6} item>
 											<Field
 												name="minimumBalance"
 												type="number"
 												label={`Мин. остаток в ${
-													product.receiptUnits === 'nmp' && product.unitIssue !== 'pce' ? 'упаковках' : 'штуках'
+													selectedProduct.receiptUnits === 'nmp' && selectedProduct.unitIssue !== 'pce' ? 'упаковках' : 'штуках'
 												}:`}
 												placeholder="0"
 												component={TextField}
@@ -301,13 +312,7 @@ class DialogMarkerEdit extends Component {
 
 								<Grid
 									className="pd-rowGridFormLabelControl"
-									alignItems={
-										values.isFree
-											? checkArrayErrors(errors, 'purchasePrice') && values.isFree
-												? 'center'
-												: 'flex-end'
-											: 'stretch'
-									}
+									alignItems={values.isFree ? (errors.purchasePrice && values.isFree ? 'center' : 'flex-end') : 'stretch'}
 									spacing={2}
 									style={{ marginBottom: 12 }}
 									container
@@ -316,19 +321,25 @@ class DialogMarkerEdit extends Component {
 										<Field
 											name="purchasePrice"
 											type="number"
-											label={`Цена закупки${product.receiptUnits === 'nmp' && product.unitIssue === 'pce' ? ' упаковки' : ''}:`}
+											label={`Цена закупки${
+												selectedProduct.receiptUnits === 'nmp' && selectedProduct.unitIssue === 'pce' ? ' упаковки' : ''
+											}:`}
 											placeholder="0"
 											component={TextField}
 											InputLabelProps={{
 												shrink: true,
 											}}
 											inputProps={
-												product.receiptUnits === 'nmp' && product.unitIssue === 'pce'
+												selectedProduct.receiptUnits === 'nmp' && selectedProduct.unitIssue === 'pce'
 													? {
-															onChange: event => this.onUnitSellingPriceCalc(event, 'purchasePrice', values, setFieldValue),
+															onChange: ({ target: { value } }) =>
+																onUnitSellingPriceCalc(value, 'purchasePrice', values, undefined, setFieldValue),
 													  }
 													: {
-															onChange: event => this.onSellingPriceCalc(event, setFieldValue),
+															onChange: ({ target: { value } }) => {
+																setFieldValue('purchasePrice', value);
+																setFieldValue('sellingPrice', value);
+															},
 													  }
 											}
 											autoComplete="off"
@@ -338,11 +349,11 @@ class DialogMarkerEdit extends Component {
 
 									<Grid xs={6} item>
 										{!values.isFree ? (
-											product.receiptUnits === 'nmp' && product.unitIssue === 'pce' ? (
+											selectedProduct.receiptUnits === 'nmp' && selectedProduct.unitIssue === 'pce' ? (
 												<Field
 													name="unitSellingPrice"
 													type="number"
-													label={`Цена продажи штуки:`}
+													label="Цена продажи штуки:"
 													placeholder="0"
 													component={TextField}
 													InputLabelProps={{
@@ -355,7 +366,7 @@ class DialogMarkerEdit extends Component {
 												<Field
 													name="sellingPrice"
 													type="number"
-													label={`Цена продажи:`}
+													label="Цена продажи:"
 													placeholder={String(values.purchasePrice || 0)}
 													component={TextField}
 													InputLabelProps={{
@@ -379,7 +390,7 @@ class DialogMarkerEdit extends Component {
 								</Grid>
 
 								<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" alignItems="flex-start" container>
-									<InputLabel error={checkArrayErrors(errors, 'linkInShop')} style={{ minWidth: 120 }}>
+									<InputLabel error={errors.linkInShop} style={{ minWidth: 120 }}>
 										Ссылка / Магазин:
 									</InputLabel>
 									<FormControl fullWidth>
@@ -397,11 +408,11 @@ class DialogMarkerEdit extends Component {
 								</Grid>
 
 								<FieldArray
-									name="specifications"
+									name="characteristics"
 									validateOnChange={false}
-									render={arrayHelpersSpecifications => (
+									render={arrayHelpersCharacteristics => (
 										<Grid>
-											{values.specifications.length ? (
+											{values.characteristics.length ? (
 												<Grid
 													className="pd-rowGridFormLabelControl"
 													style={{ marginBottom: 11 }}
@@ -409,94 +420,95 @@ class DialogMarkerEdit extends Component {
 													alignItems="flex-start"
 													container
 												>
-													<InputLabel style={{ display: 'inline-flex', minWidth: 120 }}>Характеристики:</InputLabel>
+													<InputLabel style={{ display: 'inline-flex', minWidth: 120 }}>
+														Дополнительные
+														<br />
+														характеристики:
+													</InputLabel>
 													<Grid style={{ marginTop: 7, width: 'calc(100% - 120px)' }} container>
 														<Chips
-															chips={values.specifications.sort(compareName)}
+															chips={values.characteristics.sort(compareByName)}
 															onRenderChipLabel={value => (
 																<span>
-																	<span style={{ fontWeight: 600 }}>{specificationTransform(value.name)}</span>: {value.label}
+																	<span style={{ fontWeight: 600 }}>{characteristicTypeTransform(value.type)}</span>: {value.label}
 																</span>
 															)}
-															onRemoveChip={(chips, index) => arrayHelpersSpecifications.remove(index)}
+															onRemoveChip={(chips, index) => arrayHelpersCharacteristics.remove(index)}
 														/>
 													</Grid>
 												</Grid>
 											) : null}
 
-											{specifications.filter(
-												specification =>
-													!values.specifications.some(markerSpecification => markerSpecification.name === specification)
-											).length ? (
+											{checkCharacteristicsOnAbsenceInMarker(values).length ? (
 												<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" alignItems="flex-start" spacing={2} container>
 													<Grid className="pd-rowGridFormLabelControl" xs={6} style={{ marginBottom: 0 }} item>
-														<InputLabel style={{ display: 'inline-flex', minWidth: 120 }}>
-															{!values.specifications.length ? 'Характеристики:' : null}
-														</InputLabel>
+														{!values.characteristics.length ? (
+															<InputLabel style={{ display: 'inline-flex', minWidth: 120 }}>
+																Дополнительные
+																<br />
+																характеристики:
+															</InputLabel>
+														) : (
+															<InputLabel style={{ display: 'inline-flex', minWidth: 120 }} />
+														)}
 														<FormControl style={{ width: 'calc(100% - 130px)' }}>
-															<Field
-																name={'specificationTemp.name'}
-																component={Select}
-																IconComponent={() => <FontAwesomeIcon icon={['far', 'angle-down']} className="pd-selectIcon" />}
+															<CustomSelectField
+																name="characteristicTemp.type"
 																inputProps={{
 																	onChange: ({ target: { value } }) => {
-																		setFieldValue('specificationTemp.name', value);
-																		setFieldValue('specificationTemp.value', '');
+																		if (!values.characteristicTemp.type || values.characteristicTemp.type !== value) {
+																			setFieldValue('characteristicTemp', {
+																				type: value,
+																				value: '',
+																				valueTemp: '',
+																			});
+																		}
 																	},
-																}}
-																error={checkArrayErrors(errors, 'specificationTemp.name')}
-																MenuProps={{
-																	elevation: 2,
-																	transitionDuration: 150,
-																	TransitionComponent: Fade,
 																}}
 																displayEmpty
 															>
 																<MenuItem value="" disabled>
 																	Выберите
 																</MenuItem>
-																{specifications
-																	.filter(
-																		specification =>
-																			!values.specifications.some(
-																				markerSpecification => markerSpecification.name === specification
-																			)
-																	)
-																	.map((specification, index) => (
-																		<MenuItem key={index} value={specification}>
-																			{specificationTransform(specification)}
-																		</MenuItem>
-																	))}
-															</Field>
-															{checkArrayErrors(errors, 'specificationTemp.name') ? (
-																<FormHelperText error>{errors.specificationTemp.name}</FormHelperText>
-															) : null}
+																{checkCharacteristicsOnAbsenceInMarker(values).map((characteristicType, index) => (
+																	<MenuItem key={index} value={characteristicType}>
+																		{characteristicTypeTransform(characteristicType)}
+																	</MenuItem>
+																))}
+															</CustomSelectField>
 														</FormControl>
 													</Grid>
 
 													<Grid xs={6} item>
 														<FormControl style={{ width: 'calc(100% - 42px)' }}>
 															<Field
-																name={'specificationTemp.value'}
+																name={'characteristicTemp.value'}
 																component={SelectAutocompleteCreate}
-																TextFieldProps={{
-																	error: checkArrayErrors(errors, 'specificationTemp.value'),
+																isDisabled={isSubmitting || isLoadingCharacteristics || !values.characteristicTemp.type}
+																isLoading={isLoadingCharacteristics}
+																value={values.characteristicTemp.value}
+																inputValue={values.characteristicTemp.valueTemp}
+																onChange={option => {
+																	setFieldValue('characteristicTemp.value', option ? option : '');
+
+																	if (values.characteristicTemp.valueTemp) {
+																		setFieldValue('characteristicTemp.valueTemp', '');
+																	}
 																}}
-																isDisabled={isSubmitting || isLoadingSpecifications || !values.specificationTemp.name}
-																isLoading={isLoadingSpecifications}
-																value={stockSpecifications.find(value => value._id === values.specificationTemp.value) || ''}
-																inputValue={values.specificationTemp.valueTemp}
-																onChange={option => setFieldValue('specificationTemp.value', option ? option._id : '')}
 																onInputChange={(value, { action }) => {
 																	if (action !== 'input-blur' && action !== 'menu-close') {
-																		setFieldValue('specificationTemp.valueTemp', value);
+																		setFieldValue('characteristicTemp.valueTemp', value);
+
+																		if (values.characteristicTemp.value) {
+																			setFieldValue('characteristicTemp.value', '');
+																		}
 																	}
 																}}
 																onCreateOption={value =>
-																	this.onCreateSpecification(
+																	this.onCreateCharacteristic(
 																		{
 																			stock: currentStock._id,
-																			name: values.specificationTemp.name,
+																			type: values.characteristicTemp.type,
 																			value: translitRu(value),
 																			label: value,
 																		},
@@ -508,18 +520,15 @@ class DialogMarkerEdit extends Component {
 																placeholder="Выберите или создайте"
 																noOptionsMessage={() => 'Не создано ни одного значения, введите текст, чтобы создать'}
 																formatCreateLabel={value => `Нажмите, чтобы создать «${value}»`}
-																options={stockSpecifications.filter(value => value.name === values.specificationTemp.name)}
+																options={characteristics.filter(value => value.type === values.characteristicTemp.type)}
 															/>
-															{checkArrayErrors(errors, 'specificationTemp.value') ? (
-																<FormHelperText error>{errors.specificationTemp.value}</FormHelperText>
-															) : null}
 														</FormControl>
 														<IconButton
-															className="D-pam-create__add-specification"
+															className="D-pam-create__add-characteristic"
 															aria-haspopup="true"
 															size="small"
-															onClick={() => this.onAddSpecificationInMarker(values, setFieldValue, arrayHelpersSpecifications)}
-															disabled={values.specificationTemp.name === '' || values.specificationTemp.value === ''}
+															onClick={() => onAddCharacteristicInMarker(values, undefined, setFieldValue, arrayHelpersCharacteristics)}
+															disabled={values.characteristicTemp.type === '' || values.characteristicTemp.value === ''}
 															disableRipple
 															disableFocusRipple
 														>
@@ -557,8 +566,7 @@ class DialogMarkerEdit extends Component {
 
 const mapStateToProps = state => {
 	return {
-		manufacturers: state.manufacturers.data,
-		specifications: state.specifications.data,
+		characteristics: state.characteristics.data,
 	};
 };
 
@@ -567,8 +575,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 	return {
 		getStockStatus: () => dispatch(getStockStatus(currentStock._id)),
-		createManufacturer: values => dispatch(createManufacturer(values)),
-		createSpecification: values => dispatch(createSpecification(values)),
+		createCharacteristic: values => dispatch(createCharacteristic(values)),
 		editMarker: (productId, markerId, newValues) => dispatch(editMarker(productId, markerId, newValues)),
 	};
 };

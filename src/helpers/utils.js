@@ -16,11 +16,7 @@ export const kiloFormat = num => {
 
 	if (num > 999) {
 		if (num > 999 && num <= 9999) {
-			kilo = isInteger(decimalNum)
-				? decimalNum
-				: isInteger(+decimalNum.toFixed(1))
-				? Math.round(decimalNum)
-				: decimalNum.toFixed(1);
+			kilo = isInteger(decimalNum) ? decimalNum : isInteger(+decimalNum.toFixed(1)) ? Math.round(decimalNum) : decimalNum.toFixed(1);
 		} else if (num > 9999) {
 			kilo = Math.round(decimalNum);
 		}
@@ -50,13 +46,6 @@ export const declensionNumber = (number, titles) => {
 // export const isDark = color => {
 // 	return chroma(color).get('lab.l') < 75;
 // };
-
-export const hexToRgb = hex =>
-	hex
-		.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => '#' + r + r + g + g + b + b)
-		.substring(1)
-		.match(/.{2}/g)
-		.map(x => parseInt(x, 16));
 
 export const calculateColor = text => {
 	let sum = 0;

@@ -1,4 +1,4 @@
-const manufacturers = (
+const characteristics = (
 	state = {
 		isFetching: false,
 		data: null,
@@ -6,20 +6,20 @@ const manufacturers = (
 	action
 ) => {
 	switch (action.type) {
-		case 'REQUEST_MANUFACTURERS': {
+		case 'REQUEST_SPECIFICATIONS': {
 			return {
 				...state,
 				isFetching: true,
 			};
 		}
-		case 'RECEIVE_MANUFACTURERS': {
+		case 'RECEIVE_SPECIFICATIONS': {
 			return {
 				...state,
 				data: action.payload,
 				isFetching: false,
 			};
 		}
-		case 'CREATE_MANUFACTURER': {
+		case 'CREATE_SPECIFICATION': {
 			state.data.push(action.payload);
 
 			return {
@@ -32,4 +32,4 @@ const manufacturers = (
 	}
 };
 
-export default manufacturers;
+export default characteristics;

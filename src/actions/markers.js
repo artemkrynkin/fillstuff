@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 export const editMarker = (productId, markerId, newValues) => {
-	return dispatch => {
-		return axios
+	return async dispatch => {
+		return await axios
 			.put(`/api/markers/${markerId}`, newValues)
 			.then(response => {
 				const marker = response.data;
@@ -29,8 +29,8 @@ export const editMarker = (productId, markerId, newValues) => {
 };
 
 export const archiveMarker = (stockId, productId, markerId) => {
-	return dispatch => {
-		return axios
+	return async dispatch => {
+		return await axios
 			.get(`/api/markers/${markerId}/archive`, {
 				params: {
 					stockId,

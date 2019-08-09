@@ -2,37 +2,37 @@ import { Router } from 'express';
 
 import { isAuthedResolver, hasPermissionsInStock } from 'api/utils/permissions';
 
-import Specification from 'api/models/specification';
+import Characteristic from 'api/models/characteristic';
 
-const specificationsRouter = Router();
+const characteristicsRouter = Router();
 
 // const debug = require('debug')('api:stocks');
 
-specificationsRouter.get(
-	'/specifications',
+characteristicsRouter.get(
+	'/characteristics',
 	isAuthedResolver,
 	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
 	(req, res, next) => {
 		const { stockId } = req.query;
 
-		Specification.find({ stock: stockId })
-			.then(specifications => res.json(specifications))
+		Characteristic.find({ stock: stockId })
+			.then(characteristics => res.json(characteristics))
 			.catch(err => next(err));
 	}
 );
 
-specificationsRouter.post(
-	'/specifications',
+characteristicsRouter.post(
+	'/characteristics',
 	isAuthedResolver,
 	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
 	(req, res, next) => {
-		const specification = new Specification(req.body);
+		const characteristic = new Characteristic(req.body);
 
-		return specification
+		return characteristic
 			.save()
-			.then(specification => res.json(specification))
+			.then(characteristic => res.json(characteristic))
 			.catch(err => next({ code: err.errors ? 5 : 2, err }));
 	}
 );
 
-export default specificationsRouter;
+export default characteristicsRouter;

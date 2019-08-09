@@ -4,8 +4,7 @@ import users from './users';
 import stocks from './stocks';
 import products from './products';
 import markers from './markers';
-import manufacturers from './manufacturers';
-import specifications from './specifications';
+import characteristics from './characteristics';
 import writeOffs from './writeOffs';
 
 const router = app => {
@@ -15,8 +14,7 @@ const router = app => {
 	app.use('/api', stocks);
 	app.use('/api', products);
 	app.use('/api', markers);
-	app.use('/api', manufacturers);
-	app.use('/api', specifications);
+	app.use('/api', characteristics);
 	app.use('/api', writeOffs);
 };
 

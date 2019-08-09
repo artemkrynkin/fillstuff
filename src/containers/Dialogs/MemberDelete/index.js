@@ -37,7 +37,7 @@ class MemberDelete extends Component {
 		if (!selectedMember) return null;
 		else
 			return (
-				<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} fullWidth>
+				<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog}>
 					<PDDialogTitle theme="primary" onClose={onCloseDialog}>
 						{selectedMember.user._id !== currentUser._id ? 'Удаление участника' : 'Выход из команды'}
 					</PDDialogTitle>

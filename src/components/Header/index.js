@@ -8,11 +8,12 @@ import AppBar from '@material-ui/core/AppBar';
 import Divider from '@material-ui/core/Divider';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
-import Popover from '@material-ui/core/Popover';
 
-import { logout } from 'src/actions/authentication';
+import CustomPopover from 'src/components/CustomPopover';
 
 import ColumnLeft from './components/ColumnLeft';
+
+import { logout } from 'src/actions/authentication';
 
 import './index.styl';
 
@@ -43,7 +44,7 @@ class Header extends Component {
 		});
 
 		return (
-			<AppBar className={headerClasses} position={position}>
+			<AppBar className={headerClasses} position={position} elevation={0}>
 				<ColumnLeft
 					pageName={pageName}
 					pageTitle={pageTitle}
@@ -57,32 +58,14 @@ class Header extends Component {
 						<div className="header__profile" aria-haspopup="true" onClick={this.onOpenProfileMenu}>
 							<div className="header__profile-name">{currentUser.name ? currentUser.name : currentUser.email}</div>
 							<div className="header__profile-photo">
-								{currentUser.profilePhoto ? (
-									<img src={currentUser.profilePhoto} alt="" />
-								) : (
-									<FontAwesomeIcon icon={['fas', 'user-alt']} />
-								)}
+								{currentUser.profilePhoto ? <img src={currentUser.profilePhoto} alt="" /> : <FontAwesomeIcon icon={['fas', 'user-alt']} />}
 							</div>
 							<FontAwesomeIcon icon={['fas', 'angle-down']} className={profileMenuOpen ? 'open' : ''} />
 						</div>
 					</div>
 				</div>
 
-				<Popover
-					anchorEl={profileMenuOpen}
-					open={Boolean(profileMenuOpen)}
-					onClose={this.onCloseProfileMenu}
-					anchorOrigin={{
-						vertical: 'bottom',
-						horizontal: 'right',
-					}}
-					transformOrigin={{
-						vertical: 'top',
-						horizontal: 'right',
-					}}
-					transitionDuration={150}
-					elevation={2}
-				>
+				<CustomPopover anchorEl={profileMenuOpen} open={Boolean(profileMenuOpen)} onClose={this.onCloseProfileMenu}>
 					<MenuList>
 						<MenuItem
 							to={'/settings'}
@@ -99,7 +82,7 @@ class Header extends Component {
 					<MenuList>
 						<MenuItem onClick={this.onLogout}>Выйти</MenuItem>
 					</MenuList>
-				</Popover>
+				</CustomPopover>
 			</AppBar>
 		);
 	}

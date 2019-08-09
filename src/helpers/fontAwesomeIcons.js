@@ -31,7 +31,6 @@ import {
 	faDotCircle as farDotCircle,
 	faSyncAlt as farSyncAlt,
 	faPlus as farPlus,
-	faTruck as farTruck,
 	faSquare as farSquare,
 } from '@fortawesome/pro-regular-svg-icons';
 
@@ -51,6 +50,9 @@ import {
 	faWarehouse as falWarehouse,
 	faCheckCircle as falCheckCircle,
 	faPlusCircle as falPlusCircle,
+	faShippingTimed as falShippingTimed,
+	faShoppingCart as falShoppingCart,
+	faBagsShopping as falBagsShopping,
 } from '@fortawesome/pro-light-svg-icons';
 
 library.add(
@@ -87,7 +89,6 @@ library.add(
 	farDotCircle,
 	farSyncAlt,
 	farPlus,
-	farTruck,
 	farSquare,
 
 	// Light
@@ -105,5 +106,8 @@ library.add(
 	falClipboardListCheck,
 	falWarehouse,
 	falCheckCircle,
-	falPlusCircle
+	falPlusCircle,
+	falShippingTimed,
+	falShoppingCart,
+	falBagsShopping
 );

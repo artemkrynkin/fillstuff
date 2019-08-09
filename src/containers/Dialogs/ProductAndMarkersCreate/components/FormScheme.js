@@ -16,77 +16,19 @@ export const productSchema = Yup.object().shape({
 	}),
 });
 
-export const markersSchema = product =>
-	Yup.object().shape({
-		markers: Yup.array().of(
-			Yup.object().shape({
-				manufacturer: Yup.string().required(),
-				manufacturerTemp: Yup.string().strip(),
-				quantity: Yup.number()
-					.nullable(true)
-					.transform(value => (isNaN(value) ? null : value))
-					.when('empty', (empty, schema) => {
-						return product.receiptUnits === 'pce' || product.unitIssue !== 'pce' ? schema.min(0).required() : schema.strip();
-					}),
-				quantityPackages: Yup.number()
-					.nullable(true)
-					.transform(value => (isNaN(value) ? null : value))
-					.when('empty', (empty, schema) => {
-						return product.receiptUnits === 'nmp' && product.unitIssue === 'pce' ? schema.min(0).required() : schema.strip();
-					}),
-				quantityInUnit: Yup.number()
-					.nullable(true)
-					.transform(value => (isNaN(value) ? null : value))
-					.when('empty', (empty, schema) => {
-						return product.receiptUnits === 'nmp' && product.unitIssue === 'pce' ? schema.min(0).required() : schema.strip();
-					}),
-				minimumBalance: Yup.number()
-					.nullable(true)
-					.transform(value => (isNaN(value) ? null : value))
-					.when('empty', (empty, schema) => {
-						return product.dividedMarkers ? schema.min(0).required() : schema.strip();
-					}),
-				purchasePrice: Yup.number()
-					.nullable(true)
-					.transform(value => (isNaN(value) ? null : value))
-					.min(0)
-					.required(),
-				sellingPrice: Yup.number()
-					.nullable(true)
-					.transform(value => (isNaN(value) ? null : value))
-					.when('isFree', (isFree, schema) => {
-						return !isFree && product.unitIssue !== 'pce' ? schema.min(0).required() : schema.strip();
-					}),
-				unitSellingPrice: Yup.number()
-					.nullable(true)
-					.transform(value => (isNaN(value) ? null : value))
-					.when('isFree', (isFree, schema) => {
-						return !isFree && product.receiptUnits === 'nmp' && product.unitIssue === 'pce'
-							? schema.min(0).required()
-							: schema.strip();
-					}),
-				linkInShop: Yup.string().required(),
-				specifications: Yup.array().of(
-					Yup.object().shape({
-						name: Yup.string().required(),
-						value: Yup.string().required(),
-						label: Yup.string().required(),
-					})
-				),
-				specificationTemp: Yup.object()
-					.shape({
-						name: Yup.string(),
-						value: Yup.string(),
-					})
-					.strip(),
-			})
-		),
-	});
-
-export const markerSchema = product =>
-	Yup.object().shape({
-		manufacturer: Yup.string().required(),
-		manufacturerTemp: Yup.string().strip(),
+const oneMarkerSchema = (product, depopulate = false) => {
+	return {
+		mainCharacteristic: Yup.mixed()
+			.nullable(true)
+			.required()
+			.transform((currentValue, originalValue) => {
+				if (depopulate) return currentValue._id;
+				else if (!currentValue) return null;
+				else return currentValue;
+			}),
+		mainCharacteristicTemp: Yup.object().shape({
+			type: Yup.string().required(),
+		}),
 		quantity: Yup.number()
 			.nullable(true)
 			.transform(value => (isNaN(value) ? null : value))
@@ -126,22 +68,23 @@ export const markerSchema = product =>
 			.nullable(true)
 			.transform(value => (isNaN(value) ? null : value))
 			.when('isFree', (isFree, schema) => {
-				return !isFree && product.receiptUnits === 'nmp' && product.unitIssue === 'pce'
-					? schema.min(0).required()
-					: schema.strip();
+				return !isFree && product.receiptUnits === 'nmp' && product.unitIssue === 'pce' ? schema.min(0).required() : schema.strip();
 			}),
 		linkInShop: Yup.string().required(),
-		specifications: Yup.array().of(
-			Yup.object().shape({
-				name: Yup.string().required(),
-				value: Yup.string().required(),
-				label: Yup.string().required(),
+		characteristics: Yup.array()
+			.when('empty', (empty, schema) => {
+				return depopulate ? schema.of(Yup.string()) : schema;
 			})
-		),
-		specificationTemp: Yup.object()
-			.shape({
-				name: Yup.string(),
-				value: Yup.string(),
-			})
-			.strip(),
+			.transform((currentValue, originalValue) => {
+				return depopulate ? currentValue.map(characteristic => characteristic._id) : currentValue;
+			}),
+		characteristicTemp: Yup.object().strip(),
+	};
+};
+
+export const markersSchema = (product, depopulate) =>
+	Yup.object().shape({
+		markers: Yup.array().of(Yup.object().shape(oneMarkerSchema(product, depopulate))),
 	});
+
+export const markerSchema = (product, depopulate) => Yup.object().shape(oneMarkerSchema(product, depopulate));

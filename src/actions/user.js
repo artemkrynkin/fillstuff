@@ -1,10 +1,10 @@
 import axios from 'axios';
 
 export const getUser = () => {
-	return dispatch => {
+	return async dispatch => {
 		dispatch({ type: 'REQUEST_USER' });
 
-		return axios
+		return await axios
 			.get('/api/users/me')
 			.then(response => {
 				dispatch({
@@ -30,10 +30,10 @@ export const getUser = () => {
 };
 
 export const editUser = values => {
-	return dispatch => {
+	return async dispatch => {
 		dispatch({ type: 'REQUEST_USER' });
 
-		return axios
+		return await axios
 			.put('/api/users/me', values)
 			.then(response => {
 				dispatch({

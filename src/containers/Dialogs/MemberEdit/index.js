@@ -60,15 +60,7 @@ class MemberEdit extends Component {
 		if (!selectedMember) return null;
 		else
 			return (
-				<PDDialog
-					open={dialogOpen}
-					onClose={onCloseDialog}
-					onExited={onExitedDialog}
-					maxWidth="md"
-					scroll="body"
-					fullWidth
-					stickyActions
-				>
+				<PDDialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth="md" scroll="body" stickyActions>
 					<PDDialogTitle theme="primary" onClose={onCloseDialog}>
 						Изменение роли участника
 					</PDDialogTitle>

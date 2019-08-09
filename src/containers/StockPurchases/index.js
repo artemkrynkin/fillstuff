@@ -5,15 +5,17 @@ import generateMetaInfo from 'shared/generate-meta-info';
 import Head from 'src/components/head';
 import Header from 'src/components/Header';
 
-const StockStatistics = () => {
+import './index.styl';
+
+const StockPurchases = props => {
 	const metaInfo = {
-		pageName: 'stock-statistics',
-		pageTitle: 'Статистика',
+		pageName: 'stock-purchases',
+		pageTitle: 'Поступления',
 	};
 	const { title, description } = generateMetaInfo({
 		type: metaInfo.pageName,
 		data: {
-			title: metaInfo.pageTitle,
+			title: `${metaInfo.pageTitle} - Покупки`,
 		},
 	});
 
@@ -22,11 +24,9 @@ const StockStatistics = () => {
 			<Head title={title} description={description} />
 
 			<Header pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
-			<div className="page__content">
-				<div className="page__inner-content stock-statistics"></div>
-			</div>
+			<div className="page__content stock-purchases"></div>
 		</div>
 	);
 };
 
-export default StockStatistics;
+export default StockPurchases;

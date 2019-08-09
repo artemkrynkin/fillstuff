@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { Formik, Form, Field } from 'formik';
-import { TextField, Select, CheckboxWithLabel } from 'formik-material-ui';
+import { TextField, CheckboxWithLabel } from 'formik-material-ui';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -10,20 +10,21 @@ import MenuItem from '@material-ui/core/MenuItem';
 import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
 import FormControl from '@material-ui/core/FormControl';
-import Fade from '@material-ui/core/Fade';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
 
-import { PDDialogActions } from 'src/components/Dialog';
+import { unitTypes, unitTypeTransform } from 'shared/checkProductAndMarkers';
+
+import { PDDialogTitle, PDDialogActions } from 'src/components/Dialog';
+import { CustomSelectField } from 'src/components/CustomSelectField';
 
 import { productSchema } from './FormScheme';
 
 const ProductForm = props => {
-	const { onCloseDialog, currentStock, initialValuesFrom, onSubmit } = props;
+	const { onCloseDialog, saveProduct, onSubmit } = props;
 
-	const initialValues = initialValuesFrom || {
+	const initialValues = saveProduct || {
 		name: '',
-		stock: currentStock._id,
 		dividedMarkers: true,
 		receiptUnits: '',
 		unitIssue: '',
@@ -37,16 +38,13 @@ const ProductForm = props => {
 			validateOnBlur={false}
 			validateOnChange={false}
 			onSubmit={(values, actions) => onSubmit(values, actions)}
-			render={({ errors, isSubmitting, values }) => (
+			render={({ errors, isSubmitting, values, handleSubmit }) => (
 				<Form>
+					<PDDialogTitle theme="primary" onClose={onCloseDialog}>
+						Создание новой позиции
+					</PDDialogTitle>
 					<DialogContent>
-						<Grid
-							className="pd-rowGridFormLabelControl"
-							style={{ marginBottom: 12 }}
-							wrap="nowrap"
-							alignItems="flex-start"
-							container
-						>
+						<Grid className="pd-rowGridFormLabelControl" style={{ marginBottom: 12 }} wrap="nowrap" alignItems="flex-start" container>
 							<InputLabel error={Boolean(errors.name)} style={{ minWidth: 146 }}>
 								Наименование:
 							</InputLabel>
@@ -80,24 +78,16 @@ const ProductForm = props => {
 								Единица поступления:
 							</InputLabel>
 							<FormControl fullWidth>
-								<Field
-									name="receiptUnits"
-									component={Select}
-									IconComponent={() => <FontAwesomeIcon icon={['far', 'angle-down']} className="pd-selectIcon" />}
-									error={Boolean(errors.receiptUnits)}
-									MenuProps={{
-										elevation: 2,
-										transitionDuration: 150,
-										TransitionComponent: Fade,
-									}}
-									displayEmpty
-								>
+								<CustomSelectField name="receiptUnits" error={Boolean(errors.receiptUnits)} displayEmpty>
 									<MenuItem value="" disabled>
 										Выберите
 									</MenuItem>
-									<MenuItem value="pce">Штука</MenuItem>
-									<MenuItem value="nmp">Упаковка</MenuItem>
-								</Field>
+									{unitTypes.map((unitType, index) => (
+										<MenuItem key={index} value={unitType}>
+											{unitTypeTransform(unitType)}
+										</MenuItem>
+									))}
+								</CustomSelectField>
 								{Boolean(errors.receiptUnits) ? <FormHelperText error>{errors.receiptUnits}</FormHelperText> : null}
 							</FormControl>
 						</Grid>
@@ -108,24 +98,16 @@ const ProductForm = props => {
 									Единица отпуска:
 								</InputLabel>
 								<FormControl fullWidth>
-									<Field
-										name="unitIssue"
-										component={Select}
-										IconComponent={() => <FontAwesomeIcon icon={['far', 'angle-down']} className="pd-selectIcon" />}
-										error={Boolean(errors.unitIssue)}
-										MenuProps={{
-											elevation: 2,
-											transitionDuration: 150,
-											TransitionComponent: Fade,
-										}}
-										displayEmpty
-									>
+									<CustomSelectField name="unitIssue" error={Boolean(errors.unitIssue)} displayEmpty>
 										<MenuItem value="" disabled>
 											Выберите
 										</MenuItem>
-										<MenuItem value="pce">Штука</MenuItem>
-										<MenuItem value="nmp">Упаковка</MenuItem>
-									</Field>
+										{unitTypes.map((unitType, index) => (
+											<MenuItem key={index} value={unitType}>
+												{unitTypeTransform(unitType)}
+											</MenuItem>
+										))}
+									</CustomSelectField>
 									{Boolean(errors.unitIssue) ? <FormHelperText error>{errors.unitIssue}</FormHelperText> : null}
 								</FormControl>
 							</Grid>
@@ -161,13 +143,11 @@ const ProductForm = props => {
 						}}
 						rightHandleProps={{
 							handleProps: {
-								type: 'submit',
+								onClick: handleSubmit,
 								disabled: isSubmitting,
 							},
 							text: isSubmitting ? <CircularProgress size={20} /> : 'Добавить маркер',
-							iconRight: !isSubmitting ? (
-								<FontAwesomeIcon icon={['far', 'angle-right']} style={{ fontSize: 22, marginTop: 2 }} />
-							) : null,
+							iconRight: !isSubmitting ? <FontAwesomeIcon icon={['far', 'angle-right']} style={{ fontSize: 22, marginTop: 2 }} /> : null,
 						}}
 					/>
 				</Form>
@@ -177,7 +157,7 @@ const ProductForm = props => {
 };
 
 ProductForm.propTypes = {
-	initialValuesFrom: PropTypes.object,
+	saveProduct: PropTypes.object,
 	onSubmit: PropTypes.func.isRequired,
 };
 

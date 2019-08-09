@@ -138,18 +138,60 @@ class Sidebar extends Component {
 									</div>
 								</ExpansionPanel>
 
-								{/*<div className="sidebar__menu-item">*/}
-								{/*	<NavLink*/}
-								{/*		className="sidebar__menu-link"*/}
-								{/*		activeClassName="sidebar__menu-link_active"*/}
-								{/*		to={`/stocks/${activeStockId}/statistics`}*/}
-								{/*	>*/}
-								{/*		<div className="sidebar__menu-icon">*/}
-								{/*			<FontAwesomeIcon icon={['far', 'chart-bar']} />*/}
-								{/*		</div>*/}
-								{/*		Статистика*/}
-								{/*	</NavLink>*/}
-								{/*</div>*/}
+								<ExpansionPanel
+									className="sidebar__menu-expansion"
+									expanded={activePage === 'orders' || activePage === 'purchases'}
+									onChange={this.onChangeUrl('orders')}
+								>
+									<ExpansionPanelSummary className="sidebar__menu-expansion-summary">
+										<div className="sidebar__menu-expansion-title">
+											<div className="sidebar__menu-expansion-title-icon">
+												<FontAwesomeIcon icon={['fal', 'shipping-timed']} />
+											</div>
+											Поступления
+										</div>
+									</ExpansionPanelSummary>
+									<div className="sidebar__menu-expansion-details">
+										<div className="sidebar__menu-item">
+											<NavLink
+												className="sidebar__menu-link"
+												activeClassName="sidebar__menu-link_active-expansion"
+												to={`/stocks/${activeStockId}/orders`}
+											>
+												<div className="sidebar__menu-icon">
+													<FontAwesomeIcon icon={['fal', 'shopping-cart']} />
+												</div>
+												Заказы
+											</NavLink>
+										</div>
+
+										<div className="sidebar__menu-item">
+											<NavLink
+												className="sidebar__menu-link"
+												activeClassName="sidebar__menu-link_active-expansion"
+												to={`/stocks/${activeStockId}/purchases`}
+											>
+												<div className="sidebar__menu-icon">
+													<FontAwesomeIcon icon={['fal', 'bags-shopping']} />
+												</div>
+												Покупки
+											</NavLink>
+										</div>
+									</div>
+								</ExpansionPanel>
+
+								<div className="sidebar__menu-item">
+									<NavLink
+										className="sidebar__menu-link"
+										activeClassName="sidebar__menu-link_active"
+										to={`/stocks/${activeStockId}/statistics`}
+									>
+										<div className="sidebar__menu-icon">
+											<FontAwesomeIcon icon={['far', 'chart-bar']} />
+										</div>
+										Статистика
+									</NavLink>
+								</div>
 
 								<div className="sidebar__menu-item">
 									<NavLink

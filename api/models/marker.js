@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 // import validator from 'validator';
 import i18n from 'i18n';
 
+import { numberToFixedDouble } from 'api/utils';
+
 const Schema = mongoose.Schema;
 
 let Marker = new Schema({
@@ -26,9 +28,10 @@ let Marker = new Schema({
 		ref: 'Product',
 		required: [true, i18n.__('Обязательное поле')],
 	},
-	manufacturer: {
+	// Основаная характеристика
+	mainCharacteristic: {
 		type: Schema.Types.ObjectId,
-		ref: 'Manufacturer',
+		ref: 'Characteristic',
 		required: [true, i18n.__('Обязательное поле')],
 	},
 	// Количество
@@ -57,29 +60,29 @@ let Marker = new Schema({
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,
-		get: value => +value.toFixed(2),
-		set: value => +value.toFixed(2),
+		get: value => numberToFixedDouble(value),
+		set: value => numberToFixedDouble(value),
 	},
 	// Цена продажи
 	sellingPrice: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
-		get: value => +value.toFixed(2),
-		set: value => +value.toFixed(2),
+		get: value => numberToFixedDouble(value),
+		set: value => numberToFixedDouble(value),
 	},
 	// Цена покупки единицы
 	unitPurchasePrice: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
-		get: value => +value.toFixed(2),
-		set: value => +value.toFixed(2),
+		get: value => numberToFixedDouble(value),
+		set: value => numberToFixedDouble(value),
 	},
 	// Цена продажи единицы
 	unitSellingPrice: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
-		get: value => +value.toFixed(2),
-		set: value => +value.toFixed(2),
+		get: value => numberToFixedDouble(value),
+		set: value => numberToFixedDouble(value),
 	},
 	// Бесплатный товар
 	isFree: {
@@ -92,10 +95,10 @@ let Marker = new Schema({
 		required: [true, i18n.__('Обязательное поле')],
 	},
 	// Характеристики
-	specifications: [
+	characteristics: [
 		{
 			type: Schema.Types.ObjectId,
-			ref: 'Specification',
+			ref: 'Characteristic',
 			required: [true, i18n.__('Обязательное поле')],
 		},
 	],

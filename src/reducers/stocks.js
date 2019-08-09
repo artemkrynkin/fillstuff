@@ -9,9 +9,7 @@ const stocks = (
 ) => {
 	switch (action.type) {
 		case 'REQUEST_STOCKS':
-		case 'REQUEST_MEMBERS':
-		case 'REQUEST_PRODUCT_MANUFACTURERS':
-		case 'REQUEST_PRODUCT_SPECIFICATIONS': {
+		case 'REQUEST_MEMBERS': {
 			return {
 				...state,
 				isFetching: true,

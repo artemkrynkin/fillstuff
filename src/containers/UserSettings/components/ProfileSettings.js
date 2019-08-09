@@ -16,7 +16,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormLabel from '@material-ui/core/FormLabel';
 import Grid from '@material-ui/core/Grid';
-import TextFieldMui from '@material-ui/core/TextField';
+import MuiTextField from '@material-ui/core/TextField';
 
 import CardPaper from 'src/components/CardPaper';
 
@@ -127,13 +127,7 @@ class ProfileSettings extends Component {
 								<FontAwesomeIcon icon={['fas', 'user-alt']} />
 							)}
 						</div>
-						<input
-							id="profile-photo"
-							type="file"
-							accept="image/*"
-							onChange={this.onChangeProfilePhoto}
-							style={{ display: 'none' }}
-						/>
+						<input id="profile-photo" type="file" accept="image/*" onChange={this.onChangeProfilePhoto} style={{ display: 'none' }} />
 						<label htmlFor="profile-photo">
 							<ButtonBase className="button-link-500" component="span" disableRipple>
 								{user.profilePhoto ? 'Изменить' : 'Загрузить'} фотографию
@@ -239,7 +233,7 @@ class ProfileSettings extends Component {
 										)}
 									/>
 								) : (
-									<TextFieldMui
+									<MuiTextField
 										name="emailReadonly"
 										InputProps={{
 											readOnly: true,
@@ -319,27 +313,20 @@ class ProfileSettings extends Component {
 													</FormControl>
 													{user.hasPassword ? (
 														<FormControl margin="dense" fullWidth>
-															<Field
-																name="confirmPassword"
-																type="password"
-																component={TextField}
-																placeholder="Повторите пароль"
-															/>
+															<Field name="confirmPassword" type="password" component={TextField} placeholder="Повторите пароль" />
 														</FormControl>
 													) : null}
 													<FormControl>
 														<Button type="submit" disabled={isSubmitting} variant="contained" color="primary">
 															{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
-															<span style={{ opacity: Number(!isSubmitting) }}>
-																{user.hasPassword ? 'Изменить пароль' : 'Установить'}
-															</span>
+															<span style={{ opacity: Number(!isSubmitting) }}>{user.hasPassword ? 'Изменить пароль' : 'Установить'}</span>
 														</Button>
 													</FormControl>
 												</Form>
 											)}
 										/>
 									) : (
-										<TextFieldMui
+										<MuiTextField
 											name="passwordReadonly"
 											InputProps={{
 												readOnly: true,

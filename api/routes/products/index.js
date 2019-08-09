@@ -7,7 +7,7 @@ import { isAuthedResolver, hasPermissionsInStock } from 'api/utils/permissions';
 
 import Stock from 'api/models/stock';
 import Product from 'api/models/product';
-import Marker from 'api/models/Marker';
+import Marker from 'api/models/marker';
 
 const productsRouter = Router();
 
@@ -29,7 +29,7 @@ productsRouter.get(
 			.populate({
 				path: 'markers',
 				match: { isArchived: false },
-				populate: { path: 'manufacturer specifications' },
+				populate: { path: 'mainCharacteristic characteristics' },
 			})
 			.then(products => res.json(products))
 			.catch(err => next(err));
@@ -42,22 +42,22 @@ productsRouter.post(
 	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const { stockId } = req.query;
-		const { product: productObject, markers: markersObjects } = req.body;
+		const { product: productValues, markers: markersValues } = req.body;
 
-		await checkProductAndMarkers(productObject, markersObjects);
+		await checkProductAndMarkers(stockId, productValues, markersValues);
 
-		let product = new Product(productObject);
+		const product = new Product(productValues);
 
-		markersObjects.forEach(marker => (marker.product = product._id));
+		markersValues.forEach(marker => (marker.product = product._id));
 
-		await Marker.insertMany(markersObjects)
+		await Marker.insertMany(markersValues)
 			.then(markers => markers.forEach(marker => product.markers.push(marker._id)))
 			.catch(err => next({ code: err.errors ? 5 : 2, err }));
 
 		return product
 			.save()
 			.then(async product => {
-				await product.populate({ path: 'markers', populate: { path: 'manufacturer specifications' } }).execPopulate();
+				await product.populate({ path: 'markers', populate: { path: 'mainCharacteristic characteristics' } }).execPopulate();
 
 				await Stock.findByIdAndUpdate(
 					stockId,
@@ -98,11 +98,9 @@ productsRouter.put(
 								{ runValidators: true }
 							).catch(err => next({ code: 2, err }));
 						} else {
-							await Marker.updateMany(
-								{ _id: { $in: markersIds } },
-								{ $unset: { minimumBalance: 1 } },
-								{ runValidators: true }
-							).catch(err => next({ code: 2, err }));
+							await Marker.updateMany({ _id: { $in: markersIds } }, { $unset: { minimumBalance: 1 } }, { runValidators: true }).catch(err =>
+								next({ code: 2, err })
+							);
 						}
 					}
 
@@ -119,7 +117,7 @@ productsRouter.put(
 
 				await product.save().catch(err => next({ code: err.errors ? 5 : 2, err }));
 
-				await product.populate({ path: 'markers', populate: { path: 'manufacturer specifications' } }).execPopulate();
+				await product.populate({ path: 'markers', populate: { path: 'mainCharacteristic characteristics' } }).execPopulate();
 
 				res.json(product);
 			})
@@ -138,9 +136,7 @@ productsRouter.get(
 				const markersIds = product.markers.filter(marker => !marker.isArchived).map(marker => marker._id);
 
 				if (markersIds.length) {
-					await Marker.updateMany({ _id: { $in: markersIds } }, { $set: { isArchived: true } }).catch(err =>
-						next({ code: 2, err })
-					);
+					await Marker.updateMany({ _id: { $in: markersIds } }, { $set: { isArchived: true } }).catch(err => next({ code: 2, err }));
 				}
 
 				await Stock.findByIdAndUpdate(

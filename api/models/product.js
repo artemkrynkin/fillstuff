@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 // import validator from 'validator';
 import i18n from 'i18n';
 
+import { unitTypes } from 'shared/checkProductAndMarkers';
+
 const Schema = mongoose.Schema;
 
 let Product = new Schema({
@@ -38,13 +40,13 @@ let Product = new Schema({
 	// Единица поступления
 	receiptUnits: {
 		type: String,
-		enum: ['pce', 'nmp'],
+		enum: unitTypes,
 		required: [true, i18n.__('Обязательное поле')],
 	},
 	// Единица отпуска
 	unitIssue: {
 		type: String,
-		enum: ['pce', 'nmp'],
+		enum: unitTypes,
 	},
 	// Количество
 	quantity: {

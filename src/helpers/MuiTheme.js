@@ -1,8 +1,8 @@
+import ColorConvert from 'color-convert';
+
 import { createMuiTheme } from '@material-ui/core/styles';
 
 import colorPalette from 'shared/colorPalette';
-
-import { hexToRgb } from './utils';
 
 export const BliksideTheme = createMuiTheme({
 	palette: {
@@ -110,9 +110,125 @@ export const BliksideTheme = createMuiTheme({
 			},
 		},
 		MuiPaper: {
+			elevation1: {
+				boxShadow: `0 1px 3px 0 rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.2),
+					0 1px 1px 0 rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.14),
+					0 2px 1px -1px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.12)`,
+			},
 			elevation2: {
-				boxShadow:
-					'0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -6px rgba(0, 0, 0, 0.12)',
+				boxShadow: `0 1px 5px 0 rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.2),
+					0 2px 2px 0 rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.14),
+					0 3px 1px -2px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.12)`,
+			},
+			elevation3: {
+				boxShadow: `0 1px 8px 0 rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.2),
+					0 3px 4px 0 rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.14),
+					0 3px 3px -2px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.12)`,
+			},
+			elevation4: {
+				boxShadow: `0 2px 4px -1px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.2),
+					0 4px 5px 0 rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.14),
+					0 1px 10px 0 rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.12)`,
+			},
+			elevation5: {
+				boxShadow: `0 3px 5px -1px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.2),
+					0 5px 8px 0 rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.14),
+					0 1px 14px 0 rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.12)`,
+			},
+			elevation6: {
+				boxShadow: `0 3px 5px -1px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.2),
+					0 6px 10px 0 rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.14),
+					0 1px 18px 0 rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.12)`,
+			},
+			elevation7: {
+				boxShadow: `0 4px 5px -2px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.2),
+					0 7px 10px 1px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.14),
+					0 2px 16px 1px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.12)`,
+			},
+			elevation8: {
+				boxShadow: `0 5px 5px -3px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.2),
+					0 8px 10px 1px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.14),
+					0 3px 14px 2px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.12)`,
+			},
+			elevation9: {
+				boxShadow: `0 5px 6px -3px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.2),
+					0 9px 12px 1px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.14),
+					0 3px 16px 2px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.12)`,
+			},
+			elevation10: {
+				boxShadow: `0 6px 6px -3px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.2),
+					0 10px 14px 1px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.14),
+					0 4px 18px 3px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.12)`,
+			},
+			elevation11: {
+				boxShadow: `0 6px 7px -4px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.2),
+					0 11px 15px 1px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.14),
+					0 4px 20px 3px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.12)`,
+			},
+			elevation12: {
+				boxShadow: `0 7px 8px -4px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.2),
+					0 12px 17px 2px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.14),
+					0 5px 22px 4px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.12)`,
+			},
+			elevation13: {
+				boxShadow: `0 7px 8px -4px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.2),
+					0 13px 19px 2px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.14),
+					0 5px 24px 4px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.12)`,
+			},
+			elevation14: {
+				boxShadow: `0 7px 9px -4px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.2),
+					0 14px 21px 2px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.14),
+					0 5px 26px 4px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.12)`,
+			},
+			elevation15: {
+				boxShadow: `0 8px 9px -5px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.2),
+					0 15px 22px 2px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.14),
+					0 6px 28px 5px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.12)`,
+			},
+			elevation16: {
+				boxShadow: `0 8px 10px -5px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.2),
+					0 16px 24px 2px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.14),
+					0 6px 30px 5px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.12)`,
+			},
+			elevation17: {
+				boxShadow: `0 8px 11px -5px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.2),
+					0 17px 26px 2px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.14),
+					0 6px 32px 5px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.12)`,
+			},
+			elevation18: {
+				boxShadow: `0 9px 11px -5px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.2),
+					0 18px 28px 2px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.14),
+					0 7px 34px 6px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.12)`,
+			},
+			elevation19: {
+				boxShadow: `0 9px 12px -6px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.2),
+					0 19px 29px 2px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.14),
+					0 7px 36px 6px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.12)`,
+			},
+			elevation20: {
+				boxShadow: `0 10px 13px -6px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.2),
+					0 20px 31px 3px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.14),
+					0 8px 38px 7px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.12)`,
+			},
+			elevation21: {
+				boxShadow: `0 10px 13px -6px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.2),
+					0 21px 33px 3px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.14),
+					0 8px 40px 7px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.12)`,
+			},
+			elevation22: {
+				boxShadow: `0 10px 14px -6px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.2),
+					0 22px 35px 3px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.14),
+					0 8px 42px 7px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.12)`,
+			},
+			elevation23: {
+				boxShadow: `0 11px 14px -7px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.2),
+					0 23px 36px 3px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.14),
+					0 9px 44px 8px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.12)`,
+			},
+			elevation24: {
+				boxShadow: `0 11px 15px -7px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.2),
+					0 24px 38px 3px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.14),
+					0 9px 46px 8px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.12)`,
 			},
 		},
 		MuiListItem: {
@@ -184,6 +300,7 @@ export const BliksideTheme = createMuiTheme({
 				color: colorPalette.blueGrey.cBg400,
 				fontSize: 13,
 				fontWeight: 500,
+				lineHeight: 1.3,
 				'&$focused': {
 					color: null,
 				},
@@ -232,26 +349,26 @@ export const BliksideTheme = createMuiTheme({
 			},
 			containedPrimary: {
 				boxShadow: [
-					`0 2px 5px 0 rgba(${hexToRgb(colorPalette.teal.cT600)}, 0.25)`,
-					`0 2px 2px 0 rgba(${hexToRgb(colorPalette.teal.cT600)}, 0.14)`,
-					`0 3px 1px -2px rgba(${hexToRgb(colorPalette.teal.cT600)}, 0.12)`,
+					`0 2px 5px 0 rgba(${ColorConvert.hex.rgb(colorPalette.teal.cT600)}, 0.25)`,
+					`0 2px 2px 0 rgba(${ColorConvert.hex.rgb(colorPalette.teal.cT600)}, 0.14)`,
+					`0 3px 1px -2px rgba(${ColorConvert.hex.rgb(colorPalette.teal.cT600)}, 0.12)`,
 				].join(),
 				'&:active': {
 					boxShadow: [
-						`0 5px 5px -3px rgba(${hexToRgb(colorPalette.teal.cT600)}, 0.25)`,
-						`0 8px 10px 1px rgba(${hexToRgb(colorPalette.teal.cT600)}, 0.14)`,
-						`0 3px 14px 2px rgba(${hexToRgb(colorPalette.teal.cT600)}, 0.12)`,
+						`0 5px 5px -3px rgba(${ColorConvert.hex.rgb(colorPalette.teal.cT600)}, 0.25)`,
+						`0 8px 10px 1px rgba(${ColorConvert.hex.rgb(colorPalette.teal.cT600)}, 0.14)`,
+						`0 3px 14px 2px rgba(${ColorConvert.hex.rgb(colorPalette.teal.cT600)}, 0.12)`,
 					].join(),
 				},
 			},
 			outlined: {
-				color: `rgba(${hexToRgb(colorPalette.blueGrey.cBg100)}, 0.8)`,
+				color: `rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg100)}, 0.8)`,
 				'&:hover': {
-					backgroundColor: `rgba(${hexToRgb(colorPalette.blueGrey.cBg300)}, 0.08)`,
+					backgroundColor: `rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg300)}, 0.08)`,
 				},
 			},
 			outlinedPrimary: {
-				color: `rgba(${hexToRgb(colorPalette.teal.cT100)}, 0.8)`,
+				color: `rgba(${ColorConvert.hex.rgb(colorPalette.teal.cT100)}, 0.8)`,
 			},
 		},
 		MuiInput: {
@@ -265,7 +382,7 @@ export const BliksideTheme = createMuiTheme({
 			},
 			formControl: {
 				'label + &': {
-					marginTop: 19,
+					marginTop: 21,
 				},
 			},
 		},
@@ -301,6 +418,9 @@ export const BliksideTheme = createMuiTheme({
 					backgroundColor: 'transparent',
 					boxShadow: 'none',
 					padding: '5px 10px',
+					'.none-padding &': {
+						padding: 0,
+					},
 				},
 				'&$disabled': {
 					'&:hover': {
@@ -347,15 +467,15 @@ export const BliksideTheme = createMuiTheme({
 			},
 			iconChecked: {
 				boxShadow: [
-					`0 2px 5px 0 rgba(${hexToRgb(colorPalette.teal.cT600)}, 0.25)`,
-					`0 2px 2px 0 rgba(${hexToRgb(colorPalette.teal.cT600)}, 0.14)`,
-					`0 3px 1px -2px rgba(${hexToRgb(colorPalette.teal.cT600)}, 0.12)`,
+					`0 2px 5px 0 rgba(${ColorConvert.hex.rgb(colorPalette.teal.cT600)}, 0.25)`,
+					`0 2px 2px 0 rgba(${ColorConvert.hex.rgb(colorPalette.teal.cT600)}, 0.14)`,
+					`0 3px 1px -2px rgba(${ColorConvert.hex.rgb(colorPalette.teal.cT600)}, 0.12)`,
 				].join(),
 			},
 		},
 		MuiRadio: {
 			root: {
-				color: `rgba(${hexToRgb(colorPalette.blueGrey.cBg300)}, 0.5)`,
+				color: `rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg300)}, 0.5)`,
 				padding: 10,
 				'& svg': {
 					height: 20,
@@ -382,20 +502,28 @@ export const BliksideTheme = createMuiTheme({
 			},
 		},
 		MuiDialog: {
+			scrollBody: {
+				overflowX: 'auto',
+			},
 			paperWidthXs: {
-				maxWidth: 320,
+				maxWidth: 'none !important',
+				width: 320,
 			},
 			paperWidthSm: {
-				maxWidth: 400,
+				maxWidth: 'none !important',
+				width: 420,
 			},
 			paperWidthMd: {
-				maxWidth: 480,
+				maxWidth: 'none !important',
+				width: 520,
 			},
 			paperWidthLg: {
-				maxWidth: 620,
+				maxWidth: 'none !important',
+				width: 660,
 			},
 			paperWidthXl: {
-				maxWidth: 990,
+				maxWidth: 'none !important',
+				width: 990,
 			},
 			paper: {
 				margin: 20,

@@ -1,13 +1,19 @@
 import mongoose from 'mongoose';
 import i18n from 'i18n';
 
+import { characteristicsTypes } from 'shared/checkProductAndMarkers';
+
 const Schema = mongoose.Schema;
 
-let Manufacturer = new Schema({
+let Characteristic = new Schema({
 	stock: {
 		type: Schema.Types.ObjectId,
 		ref: 'Stock',
 		required: [true, i18n.__('Обязательное поле')],
+	},
+	type: {
+		type: String,
+		enum: characteristicsTypes,
 	},
 	value: {
 		type: String,
@@ -22,4 +28,4 @@ let Manufacturer = new Schema({
 	},
 });
 
-export default mongoose.model('Manufacturer', Manufacturer);
+export default mongoose.model('Characteristic', Characteristic);

@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Loadable from 'react-loadable';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
 
 import TitlePageOrLogo from './TitlePageOrLogo';
+
+import { getCharacteristics } from 'src/actions/characteristics';
 
 const DialogProductAndMarkersCreate = Loadable({
 	loader: () => import('src/containers/Dialogs/ProductAndMarkersCreate' /* webpackChunkName: "Dialog_ProductAndMarkersCreate" */),
@@ -24,25 +27,17 @@ class CLStockAvailability extends Component {
 		dialogPrintQRCodesProduct: false,
 	};
 
-	onOpenDialogProductAndMarkersCreate = () =>
-		this.setState({
-			dialogProductAndMarkersCreate: true,
-		});
+	onOpenDialogProductAndMarkersCreate = async () => {
+		await this.props.getCharacteristics();
 
-	onCloseDialogProductAndMarkersCreate = () =>
-		this.setState({
-			dialogProductAndMarkersCreate: false,
-		});
+		this.setState({ dialogProductAndMarkersCreate: true });
+	};
 
-	onOpenDialogPrintQRCodesProduct = () =>
-		this.setState({
-			dialogPrintQRCodesProduct: true,
-		});
+	onCloseDialogProductAndMarkersCreate = () => this.setState({ dialogProductAndMarkersCreate: false });
 
-	onCloseDialogPrintQRCodesProduct = () =>
-		this.setState({
-			dialogPrintQRCodesProduct: false,
-		});
+	onOpenDialogPrintQRCodesProduct = () => this.setState({ dialogPrintQRCodesProduct: true });
+
+	onCloseDialogPrintQRCodesProduct = () => this.setState({ dialogPrintQRCodesProduct: false });
 
 	render() {
 		const { pageTitle, theme, currentStock } = this.props;
@@ -60,12 +55,12 @@ class CLStockAvailability extends Component {
 						onClick={this.onOpenDialogProductAndMarkersCreate}
 					>
 						<FontAwesomeIcon icon={['far', 'plus']} style={{ marginRight: 10 }} />
-						Позиция
+						Создать позицию
 					</Button>
-					<Button className="mui-btn-ct400" variant="contained" color="primary" onClick={this.onOpenDialogPrintQRCodesProduct}>
-						<FontAwesomeIcon icon={['fal', 'qrcode']} style={{ marginRight: 10 }} />
-						Печать QR-кодов
-					</Button>
+					{/*<Button className="mui-btn-ct400" variant="contained" color="primary" onClick={this.onOpenDialogPrintQRCodesProduct}>*/}
+					{/*	<FontAwesomeIcon icon={['fal', 'qrcode']} style={{ marginRight: 10 }} />*/}
+					{/*	Печать QR-кодов*/}
+					{/*</Button>*/}
 				</div>
 
 				<DialogProductAndMarkersCreate
@@ -84,4 +79,15 @@ class CLStockAvailability extends Component {
 	}
 }
 
-export default CLStockAvailability;
+const mapDispatchToProps = (dispatch, ownProps) => {
+	const { currentStock } = ownProps;
+
+	return {
+		getCharacteristics: () => dispatch(getCharacteristics(currentStock._id)),
+	};
+};
+
+export default connect(
+	null,
+	mapDispatchToProps
+)(CLStockAvailability);

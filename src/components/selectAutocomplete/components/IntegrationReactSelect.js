@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import ClassNames from 'classnames';
+import ColorConvert from 'color-convert';
 import { components as reactSelectComponents } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 
@@ -14,7 +15,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import { hexToRgb } from 'src/helpers/utils';
 import colorPalette from 'shared/colorPalette';
 
 const useStyles = makeStyles(theme => ({
@@ -51,7 +51,7 @@ const useStyles = makeStyles(theme => ({
 		fontSize: 13,
 	},
 	placeholder: {
-		color: `rgba(${hexToRgb(colorPalette.blueGrey.cBg700)}, 0.42)`,
+		color: `rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg700)}, 0.42)`,
 		fontSize: 13,
 		position: 'absolute',
 	},

@@ -20,18 +20,15 @@ class CLStockWriteOffs extends Component {
 		dialogCreateWriteOff: false,
 	};
 
-	onOpenDialogCreateWriteOff = () => {
-		this.props.getProducts();
+	onOpenDialogCreateWriteOff = async () => {
+		await this.props.getProducts();
 
 		this.setState({
 			dialogCreateWriteOff: true,
 		});
 	};
 
-	onCloseDialogCreateWriteOff = () =>
-		this.setState({
-			dialogCreateWriteOff: false,
-		});
+	onCloseDialogCreateWriteOff = () => this.setState({ dialogCreateWriteOff: false });
 
 	render() {
 		const { pageTitle, theme, currentStock, pageParams } = this.props;
@@ -41,16 +38,16 @@ class CLStockWriteOffs extends Component {
 			<div className="header__column_left">
 				<TitlePageOrLogo pageTitle={pageTitle} theme={theme} />
 				<div className="header__column-group_left">
-					<Button
-						className="mui-btn-ct400"
-						variant="contained"
-						color="primary"
-						style={{ marginRight: 8 }}
-						onClick={this.onOpenDialogCreateWriteOff}
-					>
-						<FontAwesomeIcon icon={['far', 'plus']} style={{ marginRight: 10 }} />
-						Расход позиции
-					</Button>
+					{/*<Button*/}
+					{/*	className="mui-btn-ct400"*/}
+					{/*	variant="contained"*/}
+					{/*	color="primary"*/}
+					{/*	style={{ marginRight: 8 }}*/}
+					{/*	onClick={this.onOpenDialogCreateWriteOff}*/}
+					{/*>*/}
+					{/*	<FontAwesomeIcon icon={['far', 'plus']} style={{ marginRight: 10 }} />*/}
+					{/*	Расход позиции*/}
+					{/*</Button>*/}
 				</div>
 
 				<DialogCreateWriteOff

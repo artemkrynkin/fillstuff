@@ -20,7 +20,6 @@ import { PDDialog, PDDialogActions, PDDialogTitle } from 'src/components/Dialog'
 
 import { getStockStatus } from 'src/actions/stocks';
 import { getProducts } from 'src/actions/products';
-import { createWriteOff } from 'src/actions/writeOffs';
 
 import './index.styl';
 
@@ -146,7 +145,7 @@ class PrintQRCodesProduct extends Component {
 			});
 
 		return (
-			<PDDialog open={dialogOpen} onClose={onCloseDialog} maxWidth="lg" fullWidth scroll="body" stickyActions>
+			<PDDialog open={dialogOpen} onClose={onCloseDialog} maxWidth="lg" scroll="body" stickyActions>
 				<PDDialogTitle theme="primary" onClose={onCloseDialog}>
 					Выбор позиций для печати QR-кодов
 				</PDDialogTitle>
@@ -266,12 +265,11 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentStock, selectedUserId } = ownProps;
+	const { currentStock } = ownProps;
 
 	return {
 		getStockStatus: () => dispatch(getStockStatus(currentStock._id)),
 		getProducts: () => dispatch(getProducts(currentStock._id)),
-		createWriteOff: (userId, values) => dispatch(createWriteOff(currentStock._id, userId, selectedUserId, values)),
 	};
 };
 

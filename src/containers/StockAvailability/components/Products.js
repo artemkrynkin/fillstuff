@@ -57,6 +57,12 @@ const DialogProductOrMarkerArchive = Loadable({
 	delay: 200,
 });
 
+const DialogProductOrMarkerQRCodePrint = Loadable({
+	loader: () => import('src/containers/Dialogs/ProductOrMarkerQRCodePrint' /* webpackChunkName: "Dialog_ProductOrMarkerQRCodePrint" */),
+	loading: () => null,
+	delay: 200,
+});
+
 const DialogCreateWriteOff = Loadable({
 	loader: () => import('src/containers/Dialogs/CreateWriteOff' /* webpackChunkName: "Dialog_CreateWriteOff" */),
 	loading: () => null,
@@ -153,6 +159,7 @@ class Products extends Component {
 		dialogMarkerCreate: false,
 		dialogMarkerEdit: false,
 		dialogProductOrMarkerArchive: false,
+		dialogProductOrMarkerQRCodePrint: false,
 		dialogCreateWriteOff: false,
 	};
 
@@ -205,6 +212,12 @@ class Products extends Component {
 
 	onExitedDialogProductOrMarkerArchive = () => this.setState({ selectedProductOrMarker: null });
 
+	onOpenDialogProductOrMarkerQRCodePrint = () => this.setState({ dialogProductOrMarkerQRCodePrint: true });
+
+	onCloseDialogProductOrMarkerQRCodePrint = () => this.setState({ dialogProductOrMarkerQRCodePrint: false });
+
+	onExitedDialogProductOrMarkerQRCodePrint = () => this.setState({ selectedProductOrMarker: null });
+
 	onOpenDialogCreateWriteOff = () => this.setState({ dialogCreateWriteOff: true });
 
 	onCloseDialogCreateWriteOff = () => this.setState({ dialogCreateWriteOff: false });
@@ -233,6 +246,7 @@ class Products extends Component {
 			// dialogMarkerCreate,
 			dialogMarkerEdit,
 			dialogProductOrMarkerArchive,
+			dialogProductOrMarkerQRCodePrint,
 			dialogCreateWriteOff,
 		} = this.state;
 
@@ -240,8 +254,8 @@ class Products extends Component {
 			ClassNames({
 				'sa-products__quantity-indicator': true,
 				'sa-products__quantity-indicator_red': (quantity / minimumBalance) * 100 <= 100,
-				'sa-products__quantity-indicator_yellow': (quantity / minimumBalance) * 100 > 100 && (quantity / minimumBalance) * 100 <= 200,
-				'sa-products__quantity-indicator_green': (quantity / minimumBalance) * 100 > 200,
+				'sa-products__quantity-indicator_yellow': (quantity / minimumBalance) * 100 > 100 && (quantity / minimumBalance) * 100 <= 150,
+				'sa-products__quantity-indicator_green': (quantity / minimumBalance) * 100 > 150,
 			});
 
 		return (
@@ -393,7 +407,7 @@ class Products extends Component {
 					<MenuList>
 						<MenuItem
 							onClick={() => {
-								// this.onOpenDialogProductQRCode();
+								this.onOpenDialogProductOrMarkerQRCodePrint();
 								this.onCloseProductOrMarkersActionsMenu(true);
 							}}
 						>
@@ -464,6 +478,16 @@ class Products extends Component {
 					onExitedDialog={this.onExitedDialogProductOrMarkerArchive}
 					currentStock={currentStock}
 					selectedProductOrMarker={selectedProductOrMarker}
+				/>
+
+				<DialogProductOrMarkerQRCodePrint
+					actionType={selectedActionType}
+					dialogOpen={dialogProductOrMarkerQRCodePrint}
+					onCloseDialog={this.onCloseDialogProductOrMarkerQRCodePrint}
+					onExitedDialog={this.onExitedDialogProductOrMarkerQRCodePrint}
+					currentStock={currentStock}
+					selectedProduct={selectedProductOrMarker && selectedProductOrMarker.product}
+					selectedMarker={selectedProductOrMarker && selectedProductOrMarker.marker}
 				/>
 
 				<DialogCreateWriteOff

@@ -16,7 +16,7 @@ const DialogProductAndMarkersCreate = Loadable({
 });
 
 const DialogPrintQRCodesProduct = Loadable({
-	loader: () => import('src/containers/Dialogs/PrintQRCodesProduct' /* webpackChunkName: "Dialog_PrintQRCodesProduct" */),
+	loader: () => import('src/containers/Dialogs/ProductOrMarkerQRCodePrint' /* webpackChunkName: "Dialog_PrintQRCodesProduct" */),
 	loading: () => null,
 	delay: 200,
 });

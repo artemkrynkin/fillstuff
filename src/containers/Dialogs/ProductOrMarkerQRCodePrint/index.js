@@ -57,6 +57,12 @@ const marks = [
 	},
 ];
 
+const initialState = {
+	QRCodeDataUrl: null,
+	QRCodeSize: 50,
+	pixelsPerMillimeter: 3.793627,
+};
+
 class ProductOrMarkerQRCodePrint extends Component {
 	static propTypes = {
 		dialogOpen: PropTypes.bool.isRequired,
@@ -67,25 +73,19 @@ class ProductOrMarkerQRCodePrint extends Component {
 		selectedMarker: PropTypes.object,
 	};
 
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			QRCodeDataUrl: null,
-			QRCodeSize: 50,
-			pixelsPerMillimeter: 3.793627,
-		};
-
-		this.generateQRCode();
-	}
+	state = initialState;
 
 	setQRCodeSize = (event, newValue) => {
+		this.generateQRCode();
+
 		this.setState({ QRCodeSize: newValue });
 	};
 
 	generateQRCode = () => {
 		const { actionType, selectedProduct, selectedMarker } = this.props;
 		const { QRCodeSize, pixelsPerMillimeter } = this.state;
+
+		console.log(actionType);
 
 		const generateData = {
 			type: actionType,
@@ -169,16 +169,36 @@ class ProductOrMarkerQRCodePrint extends Component {
 		actions.setSubmitting(false);
 	};
 
+	onExitedDialog = () => {
+		const { onExitedDialog } = this.props;
+
+		this.setState(initialState);
+
+		onExitedDialog();
+	};
+
 	render() {
 		const { dialogOpen, onCloseDialog, actionType, selectedProduct, selectedMarker } = this.props;
 		const { QRCodeDataUrl, QRCodeSize, pixelsPerMillimeter } = this.state;
 
-		if (!dialogOpen) return null;
+		if (!actionType) return null;
 		if (actionType === 'product' && !selectedProduct) return null;
 		if (actionType === 'marker' && !selectedProduct && !selectedMarker) return null;
 
+		if (!QRCodeDataUrl) {
+			this.generateQRCode();
+		}
+
 		return (
-			<PDDialog open={dialogOpen} onClose={onCloseDialog} maxWidth="md" scroll="body" stickyTitle stickyActions>
+			<PDDialog
+				open={dialogOpen}
+				onClose={onCloseDialog}
+				onExited={this.onExitedDialog}
+				maxWidth="md"
+				scroll="body"
+				stickyTitle
+				stickyActions
+			>
 				<PDDialogTitle theme="primary" onClose={onCloseDialog}>
 					Печать QR-кода
 				</PDDialogTitle>

@@ -14,11 +14,11 @@ import { archiveProduct } from 'src/actions/products';
 import { archiveMarker } from 'src/actions/markers';
 
 const ProductOrMarkerArchive = props => {
-	const { dialogOpen, onCloseDialog, onExitedDialog, actionType, selectedProductOrMarker } = props;
+	const { dialogOpen, onCloseDialog, onExitedDialog, actionType, selectedProduct, selectedMarker } = props;
 
-	if (!selectedProductOrMarker) return null;
-
-	const { product: selectedProduct, marker: selectedMarker } = selectedProductOrMarker;
+	if (!actionType) return null;
+	if (actionType === 'product' && !selectedProduct) return null;
+	if (actionType === 'marker' && !selectedProduct && !selectedMarker) return null;
 
 	return (
 		<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog}>
@@ -87,7 +87,8 @@ ProductOrMarkerArchive.propTypes = {
 	onExitedDialog: PropTypes.func,
 	currentStock: PropTypes.object.isRequired,
 	actionType: PropTypes.oneOfType([PropTypes.object.isRequired, PropTypes.string.isRequired]),
-	selectedProductOrMarker: PropTypes.object,
+	selectedProduct: PropTypes.object,
+	selectedMarker: PropTypes.object,
 };
 
 const mapStateToProps = state => {

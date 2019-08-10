@@ -55,7 +55,9 @@ class WriteOffs extends Component {
 							writeOffs && writeOffs.length ? (
 								writeOffs.map(writeOff => (
 									<TableRow key={writeOff._id}>
-										<TableCell>{writeOff.marker.product.name}</TableCell>
+										<TableCell>
+											{writeOff.marker.product.name} {writeOff.marker.mainCharacteristic.label}
+										</TableCell>
 										<TableCell align="right">{writeOff.user.name || writeOff.user.email}</TableCell>
 										<TableCell align="right">{writeOff.quantity}</TableCell>
 										<TableCell align="right">{moment(writeOff.createdAt).format('DD MMMM YYYY в HH:mm')}</TableCell>

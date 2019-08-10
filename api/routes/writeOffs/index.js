@@ -24,7 +24,7 @@ writeOffsRouter.get(
 		if (userId) conditions.user = userId;
 
 		WriteOff.find(conditions)
-			.populate({ path: 'marker', populate: { path: 'product', select: 'name' } })
+			.populate({ path: 'marker', populate: { path: 'product mainCharacteristic' } })
 			.populate('user', 'name email')
 			.sort({ createdAt: -1 })
 			.then(products => setTimeout(() => res.json(products), 300))

@@ -216,7 +216,12 @@ class Products extends Component {
 
 	onCloseDialogProductOrMarkerQRCodePrint = () => this.setState({ dialogProductOrMarkerQRCodePrint: false });
 
-	onExitedDialogProductOrMarkerQRCodePrint = () => this.setState({ selectedProductOrMarker: null });
+	onExitedDialogProductOrMarkerQRCodePrint = () => {
+		this.setState({
+			selectedActionType: null,
+			selectedProductOrMarker: null,
+		});
+	};
 
 	onOpenDialogCreateWriteOff = () => this.setState({ dialogCreateWriteOff: true });
 
@@ -425,7 +430,7 @@ class Products extends Component {
 						) : null}
 						{selectedActionType === 'marker' ? (
 							<MenuItem
-								disabled={selectedProductOrMarker.marker.quantity <= 0}
+								disabled={selectedProductOrMarker && selectedProductOrMarker.marker ? selectedProductOrMarker.marker.quantity <= 0 : false}
 								onClick={() => {
 									this.onOpenDialogCreateWriteOff();
 									this.onCloseProductOrMarkersActionsMenu(true);
@@ -477,7 +482,8 @@ class Products extends Component {
 					onCloseDialog={this.onCloseDialogProductOrMarkerArchive}
 					onExitedDialog={this.onExitedDialogProductOrMarkerArchive}
 					currentStock={currentStock}
-					selectedProductOrMarker={selectedProductOrMarker}
+					selectedProduct={selectedProductOrMarker && selectedProductOrMarker.product}
+					selectedMarker={selectedProductOrMarker && selectedProductOrMarker.marker}
 				/>
 
 				<DialogProductOrMarkerQRCodePrint

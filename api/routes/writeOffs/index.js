@@ -43,7 +43,7 @@ writeOffsRouter.post(
 			.populate('product')
 			.then(async marker => {
 				if (marker.quantity === 0 || marker.quantity - quantity < 0)
-					return next({
+					return res.json({
 						code: 7,
 						message:
 							marker.quantity === 0
@@ -73,11 +73,15 @@ writeOffsRouter.post(
 							: {},
 				}).catch(err => next(err));
 
-				await Stock.findByIdAndUpdate(stockId, {
-					$inc: {
-						'status.stockCost': -(quantity * marker.unitPurchasePrice),
+				await Stock.findByIdAndUpdate(
+					stockId,
+					{
+						$inc: {
+							'status.stockCost': -(quantity * marker.unitPurchasePrice),
+						},
 					},
-				}).catch(err => next({ code: err.errors ? 5 : 2, err }));
+					{ runValidators: true }
+				).catch(err => next({ code: err.errors ? 5 : 2, err }));
 
 				let writeOffObj = {
 					stock: stockId,

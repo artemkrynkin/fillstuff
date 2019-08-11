@@ -16,7 +16,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import translitRu from 'shared/translit/ru';
-import { characteristicTypeTransform, unitTypeTransform } from 'shared/checkProductAndMarkers';
+import { characteristicTypeTransform } from 'shared/checkProductAndMarkers';
 
 import {
 	compareByName,
@@ -41,6 +41,7 @@ class DialogMarkerEdit extends Component {
 	static propTypes = {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
+		onExitedDialog: PropTypes.func.isRequired,
 		currentStock: PropTypes.object.isRequired,
 		selectedProduct: PropTypes.object,
 		selectedMarker: PropTypes.object,
@@ -87,7 +88,7 @@ class DialogMarkerEdit extends Component {
 	};
 
 	render() {
-		const { dialogOpen, onCloseDialog, currentStock, characteristics, selectedProduct, selectedMarker } = this.props;
+		const { dialogOpen, onCloseDialog, onExitedDialog, currentStock, characteristics, selectedProduct, selectedMarker } = this.props;
 		const { isLoadingMainCharacteristic, isLoadingCharacteristics } = this.state;
 
 		if (!selectedProduct || !selectedMarker) return null;
@@ -112,7 +113,7 @@ class DialogMarkerEdit extends Component {
 		};
 
 		return (
-			<PDDialog open={dialogOpen} onClose={onCloseDialog} onExited={this.onExitedDialog} maxWidth="lg" scroll="body" stickyActions>
+			<PDDialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth="lg" scroll="body" stickyActions>
 				<PDDialogTitle theme="primary" onClose={onCloseDialog} children="Редактирование позиции" />
 				<Formik
 					initialValues={initialValues}

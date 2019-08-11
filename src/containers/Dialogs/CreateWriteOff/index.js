@@ -32,12 +32,12 @@ class CreateWriteOff extends Component {
 	};
 
 	render() {
-		const { dialogOpen, onCloseDialog, currentUser, selectedProduct, selectedMarker } = this.props;
+		const { dialogOpen, onCloseDialog, onExitedDialog, currentUser, selectedProduct, selectedMarker } = this.props;
 
 		if (!selectedProduct || !selectedMarker) return null;
 
 		return (
-			<PDDialog open={dialogOpen} onClose={onCloseDialog} maxWidth="md" scroll="body" stickyActions>
+			<PDDialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth="md" scroll="body" stickyActions>
 				<PDDialogTitle theme="primary" onClose={onCloseDialog}>
 					Списание количества
 				</PDDialogTitle>

@@ -241,6 +241,10 @@ class ProductOrMarkerQRCodePrint extends Component {
 									max={100}
 								/>
 
+								<div style={{ textAlign: 'center', marginBottom: 10 }}>
+									{selectedProduct ? <div>{selectedProduct.name}</div> : null}
+									{selectedMarker ? <div>{selectedMarker.mainCharacteristic.label}</div> : null}
+								</div>
 								<div style={{ alignItems: 'center', display: 'flex', height: 380, justifyContent: 'center' }}>
 									<img src={QRCodeDataUrl} width={QRCodeSize * pixelsPerMillimeter} alt="" />
 								</div>

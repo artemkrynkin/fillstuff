@@ -38,10 +38,10 @@ productsRouter.get(
 
 productsRouter.get(
 	'/products/:productId',
-	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
+	// isAuthedResolver,
+	// (req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
 	(req, res, next) => {
-		Product.find(req.params.productId)
+		Product.findById(req.params.productId)
 			.populate({
 				path: 'markers',
 				match: { isArchived: false },

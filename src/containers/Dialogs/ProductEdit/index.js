@@ -26,6 +26,7 @@ class DialogProductEdit extends Component {
 	static propTypes = {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
+		onExitedDialog: PropTypes.func.isRequired,
 		currentStock: PropTypes.object.isRequired,
 		selectedProduct: PropTypes.object,
 	};

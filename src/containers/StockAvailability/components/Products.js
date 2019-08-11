@@ -191,12 +191,11 @@ class Products extends Component {
 
 	onCloseDialogProductEdit = () => this.setState({ dialogProductEdit: false });
 
-	onExitedDialogProductEdit = () => {
+	onExitedDialogProductEdit = () =>
 		this.setState({
-			// selectedActionType: null,
+			selectedActionType: null,
 			selectedProductOrMarker: null,
 		});
-	};
 
 	onOpenDialogMarkerEdit = async () => {
 		await this.props.getCharacteristics();
@@ -206,11 +205,21 @@ class Products extends Component {
 
 	onCloseDialogMarkerEdit = () => this.setState({ dialogMarkerEdit: false });
 
+	onExitedDialogMarkerEdit = () =>
+		this.setState({
+			selectedActionType: null,
+			dialogMarkerEdit: false,
+		});
+
 	onOpenDialogProductOrMarkerArchive = () => this.setState({ dialogProductOrMarkerArchive: true });
 
 	onCloseDialogProductOrMarkerArchive = () => this.setState({ dialogProductOrMarkerArchive: false });
 
-	onExitedDialogProductOrMarkerArchive = () => this.setState({ selectedProductOrMarker: null });
+	onExitedDialogProductOrMarkerArchive = () =>
+		this.setState({
+			selectedActionType: null,
+			selectedProductOrMarker: null,
+		});
 
 	onOpenDialogProductOrMarkerQRCodePrint = () => this.setState({ dialogProductOrMarkerQRCodePrint: true });
 
@@ -227,7 +236,11 @@ class Products extends Component {
 
 	onCloseDialogCreateWriteOff = () => this.setState({ dialogCreateWriteOff: false });
 
-	onExitedDialogCreateWriteOff = () => this.setState({ selectedProductOrMarker: null });
+	onExitedDialogCreateWriteOff = () =>
+		this.setState({
+			selectedActionType: null,
+			selectedProductOrMarker: null,
+		});
 
 	componentDidMount() {
 		this.props.getProducts();
@@ -471,27 +484,28 @@ class Products extends Component {
 				<DialogMarkerEdit
 					dialogOpen={dialogMarkerEdit}
 					onCloseDialog={this.onCloseDialogMarkerEdit}
+					onExitedDialog={this.onExitedDialogMarkerEdit}
 					currentStock={currentStock}
 					selectedProduct={selectedProductOrMarker && selectedProductOrMarker.product}
 					selectedMarker={selectedProductOrMarker && selectedProductOrMarker.marker}
 				/>
 
 				<DialogProductOrMarkerArchive
-					actionType={selectedActionType}
 					dialogOpen={dialogProductOrMarkerArchive}
 					onCloseDialog={this.onCloseDialogProductOrMarkerArchive}
 					onExitedDialog={this.onExitedDialogProductOrMarkerArchive}
 					currentStock={currentStock}
+					actionType={selectedActionType}
 					selectedProduct={selectedProductOrMarker && selectedProductOrMarker.product}
 					selectedMarker={selectedProductOrMarker && selectedProductOrMarker.marker}
 				/>
 
 				<DialogProductOrMarkerQRCodePrint
-					actionType={selectedActionType}
 					dialogOpen={dialogProductOrMarkerQRCodePrint}
 					onCloseDialog={this.onCloseDialogProductOrMarkerQRCodePrint}
 					onExitedDialog={this.onExitedDialogProductOrMarkerQRCodePrint}
 					currentStock={currentStock}
+					actionType={selectedActionType}
 					selectedProduct={selectedProductOrMarker && selectedProductOrMarker.product}
 					selectedMarker={selectedProductOrMarker && selectedProductOrMarker.marker}
 				/>

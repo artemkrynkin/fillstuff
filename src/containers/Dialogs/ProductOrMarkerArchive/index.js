@@ -84,7 +84,7 @@ const ProductOrMarkerArchive = props => {
 ProductOrMarkerArchive.propTypes = {
 	dialogOpen: PropTypes.bool.isRequired,
 	onCloseDialog: PropTypes.func.isRequired,
-	onExitedDialog: PropTypes.func,
+	onExitedDialog: PropTypes.func.isRequired,
 	currentStock: PropTypes.object.isRequired,
 	actionType: PropTypes.oneOfType([PropTypes.object.isRequired, PropTypes.string.isRequired]),
 	selectedProduct: PropTypes.object,

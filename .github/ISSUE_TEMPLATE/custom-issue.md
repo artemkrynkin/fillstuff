@@ -2,7 +2,7 @@
 name: Custom issue
 about: Стандартная задача
 title: ''
-labels: Feature
+labels: ''
 assignees: artemkrynkin
 
 ---

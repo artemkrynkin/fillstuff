@@ -1,21 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import ClassNames from 'classnames';
 import Loadable from 'react-loadable';
 import { cloneDeep } from 'lodash';
 
-// import QRCode from 'qrcode';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import MuiExpansionPanel from '@material-ui/core/ExpansionPanel';
 import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-// import Grid from '@material-ui/core/Grid';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
+import MuiTableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
@@ -23,16 +18,14 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
-// import DialogContent from '@material-ui/core/DialogContent';
-// import Dialog from '@material-ui/core/Dialog';
-// import DialogContentText from '@material-ui/core/DialogContentText';
 import { withStyles } from '@material-ui/core/styles';
 
 import colorPalette from 'shared/colorPalette';
 
+import { declensionNumber } from 'src/helpers/utils';
+
 import CustomPopover from 'src/components/CustomPopover';
-// import { PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
-// import { LoadingComponent } from 'src/components/Loading';
+import QuantityIndicator from 'src/components/QuantityIndicator';
 
 import { getCharacteristics } from 'src/actions/characteristics';
 import { getProducts } from 'src/actions/products';
@@ -79,6 +72,10 @@ const ExpansionPanel = withStyles({
 		'&$disabled': {
 			backgroundColor: 'transparent',
 		},
+		'.sa-products__row-product:last-child &': {
+			borderRadius: '0 0 8px 8px',
+			overflow: 'hidden',
+		},
 	},
 	rounded: {
 		'&:first-child': {
@@ -94,7 +91,7 @@ const ExpansionPanel = withStyles({
 
 const ExpansionPanelSummary = withStyles({
 	root: {
-		backgroundColor: colorPalette.brightness.cBr1,
+		backgroundColor: colorPalette.brightness.cBr2,
 		borderTop: `1px solid ${colorPalette.brightness.cBr5}`,
 		minHeight: 'initial',
 		padding: 0,
@@ -105,14 +102,13 @@ const ExpansionPanelSummary = withStyles({
 			backgroundColor: 'transparent',
 		},
 		'&$disabled': {
-			backgroundColor: 'transparent',
-			opacity: 0.5,
+			opacity: 1,
 		},
 		'&$disabled $expandIcon': {
 			opacity: 0,
 		},
 		'&:hover': {
-			backgroundColor: colorPalette.brightness.cBr3,
+			backgroundColor: colorPalette.brightness.cBr4,
 		},
 		'tr:first-child &': {
 			borderTop: 'none',
@@ -149,6 +145,16 @@ const ExpansionPanelDetails = withStyles({
 		padding: 0,
 	},
 })(MuiExpansionPanelDetails);
+
+const TableCell = withStyles({
+	root: {
+		padding: '14px 16px',
+	},
+	head: {
+		paddingTop: 18,
+		paddingBottom: 18,
+	},
+})(MuiTableCell);
 
 class Products extends Component {
 	state = {
@@ -268,30 +274,22 @@ class Products extends Component {
 			dialogCreateWriteOff,
 		} = this.state;
 
-		const quantityIndicator = (quantity, minimumBalance) =>
-			ClassNames({
-				'sa-products__quantity-indicator': true,
-				'sa-products__quantity-indicator_red': (quantity / minimumBalance) * 100 <= 100,
-				'sa-products__quantity-indicator_yellow': (quantity / minimumBalance) * 100 > 100 && (quantity / minimumBalance) * 100 <= 150,
-				'sa-products__quantity-indicator_green': (quantity / minimumBalance) * 100 > 150,
-			});
-
 		return (
 			<Paper className="sa-products">
 				<Table>
-					<TableHead>
+					<TableHead className="sa-products__table-header-sticky">
 						<TableRow>
 							<TableCell style={{ paddingLeft: 46 }}>Наименование</TableCell>
-							<TableCell align="left" width={140}>
+							<TableCell align="right" width={160}>
 								Количество
 							</TableCell>
-							<TableCell align="center" width={150}>
+							<TableCell align="right" width={130}>
 								Мин. остаток
 							</TableCell>
-							<TableCell align="right" width={160}>
+							<TableCell align="right" width={140}>
 								Цена закупки
 							</TableCell>
-							<TableCell align="right" width={160}>
+							<TableCell align="right" width={140}>
 								Цена продажи
 							</TableCell>
 							<TableCell width={50} />
@@ -307,7 +305,7 @@ class Products extends Component {
 												TransitionProps={{
 													timeout: 300,
 												}}
-												defaultExpanded={product.markers.length !== 0}
+												defaultExpanded={product.markers.length !== 0 && product.dividedMarkers}
 												disabled={!product.markers.length}
 											>
 												<ExpansionPanelSummary
@@ -322,16 +320,39 @@ class Products extends Component {
 															<TableRow>
 																<TableCell width={41} style={{ paddingLeft: 5, paddingRight: 0 }} />
 																<TableCell style={{ paddingLeft: 5 }}>
-																	<span style={{ color: colorPalette.blueGrey.cBg600, fontWeight: 600 }}>{product.name}</span>
+																	<span className="sa-products__product-name">{product.name}</span>
+																	<span className="sa-products__markers-count">
+																		{product.markers.length +
+																			' ' +
+																			declensionNumber(product.markers.length, ['маркер', 'маркера', 'маркеров'])}
+																	</span>
 																</TableCell>
-																<TableCell align="left" width={140}>
-																	<div className={quantityIndicator(product.quantity, product.minimumBalance)} />
-																	{product.quantity}
+																<TableCell align="right" width={160}>
+																	{product.markers.length ? (
+																		<QuantityIndicator
+																			type="product"
+																			dividedMarkers={product.dividedMarkers}
+																			receiptUnits={product.receiptUnits}
+																			unitIssue={product.unitIssue}
+																			quantity={product.quantity}
+																			minimumBalance={product.minimumBalance}
+																			markers={product.markers.map(marker => {
+																				let markerObj = {
+																					quantity: marker.quantity,
+																				};
+
+																				if (product.dividedMarkers) markerObj.minimumBalance = marker.minimumBalance;
+																				if (product.receiptUnits === 'nmp') markerObj.quantityPackages = marker.quantityPackages;
+
+																				return markerObj;
+																			})}
+																		/>
+																	) : null}
 																</TableCell>
-																<TableCell align="center" width={150}>
-																	{product.minimumBalance}
+																<TableCell align="right" width={130}>
+																	{product.markers.length ? product.minimumBalance : null}
 																</TableCell>
-																<TableCell width={320 + 50} />
+																<TableCell width={280 + 50} />
 															</TableRow>
 														</TableBody>
 													</Table>
@@ -350,17 +371,23 @@ class Products extends Component {
 																				''
 																			)}
 																		</TableCell>
-																		<TableCell align="left" width={140}>
-																			<div className={quantityIndicator(marker.quantity, marker.minimumBalance)} />
-																			{marker.quantity}
+																		<TableCell align="right" width={160}>
+																			<QuantityIndicator
+																				type="marker"
+																				dividedMarkers={product.dividedMarkers}
+																				receiptUnits={product.receiptUnits}
+																				unitIssue={product.unitIssue}
+																				quantity={marker.quantity}
+																				minimumBalance={marker.minimumBalance}
+																			/>
 																		</TableCell>
-																		<TableCell align="center" width={150}>
+																		<TableCell align="right" width={130}>
 																			{marker.minimumBalance}
 																		</TableCell>
-																		<TableCell align="right" width={160}>
+																		<TableCell align="right" width={140}>
 																			{marker.unitPurchasePrice ? `${marker.unitPurchasePrice} ₽` : '-'}
 																		</TableCell>
-																		<TableCell align="right" width={160}>
+																		<TableCell align="right" width={140}>
 																			{marker.unitSellingPrice ? `${marker.unitSellingPrice} ₽` : '-'}
 																		</TableCell>
 																		<TableCell align="right" width={50} style={{ padding: '0 7px' }}>

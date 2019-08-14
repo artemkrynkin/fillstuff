@@ -43,10 +43,6 @@ export const declensionNumber = (number, titles) => {
 	return titles[number % 100 > 4 && number % 100 < 20 ? 2 : cases[number % 10 < 5 ? number % 10 : 5]];
 };
 
-// export const isDark = color => {
-// 	return chroma(color).get('lab.l') < 75;
-// };
-
 export const calculateColor = text => {
 	let sum = 0;
 	for (let index in text) {

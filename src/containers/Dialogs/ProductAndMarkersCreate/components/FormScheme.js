@@ -51,7 +51,7 @@ const oneMarkerSchema = (product, depopulate = false) => {
 			.nullable(true)
 			.transform(value => (isNaN(value) ? null : value))
 			.when('empty', (empty, schema) => {
-				return product.dividedMarkers ? schema.min(0).required() : schema.strip();
+				return product.dividedMarkers ? schema.min(1).required() : schema.strip();
 			}),
 		purchasePrice: Yup.number()
 			.nullable(true)

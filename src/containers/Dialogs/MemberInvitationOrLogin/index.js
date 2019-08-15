@@ -7,11 +7,9 @@ import QRCode from 'qrcode';
 import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
 
-import { PDDialogTitle } from 'src/components/Dialog';
-
+import { Dialog, PDDialogTitle } from 'src/components/Dialog';
 import { memberInvitation } from 'src/actions/stocks';
-import { LoadingComponent } from '../../../components/Loading';
-import Dialog from '@material-ui/core/Dialog';
+import { LoadingComponent } from 'src/components/Loading';
 
 class MemberEdit extends Component {
 	static propTypes = {

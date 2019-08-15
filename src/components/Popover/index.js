@@ -1,10 +1,11 @@
 import React from 'react';
 
-import Popover from '@material-ui/core/Popover';
+import MuiPopover from '@material-ui/core/Popover';
+import Fade from '@material-ui/core/Fade';
 
-const CustomPopover = props => {
+const Popover = props => {
 	return (
-		<Popover
+		<MuiPopover
 			anchorOrigin={{
 				vertical: 'bottom',
 				horizontal: 'center',
@@ -13,6 +14,7 @@ const CustomPopover = props => {
 				vertical: 'top',
 				horizontal: 'center',
 			}}
+			TransitionComponent={Fade}
 			transitionDuration={150}
 			elevation={3}
 			{...props}
@@ -20,4 +22,4 @@ const CustomPopover = props => {
 	);
 };
 
-export default CustomPopover;
+export default Popover;

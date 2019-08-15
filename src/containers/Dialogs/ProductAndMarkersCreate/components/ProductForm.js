@@ -16,7 +16,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import { unitTypes, unitTypeTransform } from 'shared/checkProductAndMarkers';
 
 import { PDDialogTitle, PDDialogActions } from 'src/components/Dialog';
-import { CustomSelectField } from 'src/components/CustomSelectField';
+import { SelectField } from 'src/components/SelectField';
 
 import { productSchema } from './FormScheme';
 
@@ -78,7 +78,7 @@ const ProductForm = props => {
 								Единица поступления:
 							</InputLabel>
 							<FormControl fullWidth>
-								<CustomSelectField name="receiptUnits" error={Boolean(errors.receiptUnits)} displayEmpty>
+								<SelectField name="receiptUnits" error={Boolean(errors.receiptUnits)} displayEmpty>
 									<MenuItem value="" disabled>
 										Выберите
 									</MenuItem>
@@ -87,7 +87,7 @@ const ProductForm = props => {
 											{unitTypeTransform(unitType)}
 										</MenuItem>
 									))}
-								</CustomSelectField>
+								</SelectField>
 								{Boolean(errors.receiptUnits) ? <FormHelperText error>{errors.receiptUnits}</FormHelperText> : null}
 							</FormControl>
 						</Grid>
@@ -98,7 +98,7 @@ const ProductForm = props => {
 									Единица отпуска:
 								</InputLabel>
 								<FormControl fullWidth>
-									<CustomSelectField name="unitIssue" error={Boolean(errors.unitIssue)} displayEmpty>
+									<SelectField name="unitIssue" error={Boolean(errors.unitIssue)} displayEmpty>
 										<MenuItem value="" disabled>
 											Выберите
 										</MenuItem>
@@ -107,7 +107,7 @@ const ProductForm = props => {
 												{unitTypeTransform(unitType)}
 											</MenuItem>
 										))}
-									</CustomSelectField>
+									</SelectField>
 									{Boolean(errors.unitIssue) ? <FormHelperText error>{errors.unitIssue}</FormHelperText> : null}
 								</FormControl>
 							</Grid>

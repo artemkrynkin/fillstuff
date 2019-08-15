@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 
 import { Formik, Form, Field } from 'formik';
 import { TextField } from 'formik-material-ui';
@@ -24,147 +23,133 @@ const ProductOrMarkerQRCodePrintSchema = Yup.object().shape({
 
 const marks = [
 	{
+		value: 1,
+		label: '1 см',
+	},
+	{
+		value: 2,
+	},
+	{
+		value: 3,
+	},
+	{
+		value: 4,
+	},
+	{
+		value: 5,
+	},
+	{
+		value: 6,
+	},
+	{
+		value: 7,
+	},
+	{
+		value: 8,
+	},
+	{
+		value: 9,
+	},
+	{
 		value: 10,
-		label: '10 мм',
-	},
-	{
-		value: 20,
-	},
-	{
-		value: 30,
-	},
-	{
-		value: 40,
-	},
-	{
-		value: 50,
-	},
-	{
-		value: 60,
-	},
-	{
-		value: 70,
-	},
-	{
-		value: 80,
-	},
-	{
-		value: 90,
-	},
-	{
-		value: 100,
-		label: '100 мм',
+		label: '10 см',
 	},
 ];
-
-const initialState = {
-	QRCodeDataUrl: null,
-	QRCodeSize: 50,
-	pixelsPerMillimeter: 3.793627,
-};
 
 class ProductOrMarkerQRCodePrint extends Component {
 	static propTypes = {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
-		currentStock: PropTypes.object.isRequired,
-		actionType: PropTypes.oneOfType([PropTypes.object.isRequired, PropTypes.string.isRequired]),
+		dataType: PropTypes.oneOf(['product', 'marker']),
+		QRCodeData: PropTypes.object.isRequired,
 		selectedProduct: PropTypes.object,
 		selectedMarker: PropTypes.object,
 	};
 
-	state = initialState;
+	state = {
+		isMounted: false,
+		QRCodeDataUrl: null,
+		QRCodeSize: 5,
+		pixelsPerCentimeter: 38 + 5,
+	};
 
 	setQRCodeSize = (event, newValue) => {
-		this.generateQRCode();
+		const { QRCodeSize } = this.state;
 
-		this.setState({ QRCodeSize: newValue });
+		if (newValue !== QRCodeSize) {
+			this.setState({ QRCodeSize: newValue }, this.generateQRCode);
+		}
 	};
 
-	generateQRCode = () => {
-		const { actionType, selectedProduct, selectedMarker } = this.props;
-		const { QRCodeSize, pixelsPerMillimeter } = this.state;
+	generateQRCode = async () => {
+		const { QRCodeData } = this.props;
+		const { QRCodeSize, pixelsPerCentimeter } = this.state;
 
-		console.log(actionType);
-
-		const generateData = {
-			type: actionType,
-			[`${actionType}Id`]: actionType === 'product' ? selectedProduct._id : actionType === 'marker' ? selectedMarker._id : null,
-		};
-
-		QRCode.toDataURL(JSON.stringify(generateData), {
+		const url = await QRCode.toDataURL(JSON.stringify(QRCodeData), {
 			margin: 0,
-			width: QRCodeSize * pixelsPerMillimeter * 2,
-		})
-			.then(url => {
-				this.setState({ QRCodeDataUrl: url });
-			})
-			.catch(err => {
-				console.error(err);
-			});
+			width: QRCodeSize * pixelsPerCentimeter * (QRCodeSize > 1 ? 2 : 4),
+		});
+
+		if (this.state.isMounted) this.setState({ QRCodeDataUrl: url });
 	};
 
-	onGenerateAndSavePDF = (actions, products) => {
+	onGenerateAndSavePDF = (actions, values) => {
+		const { QRCodeDataUrl, QRCodeSize } = this.state;
+		// const { quantity } = values;
 		const doc = new jsPDF();
 
-		let currentPage = 0;
+		// let currentPage = 0;
 
-		if (products.length > 1) {
-			for (let p = 0; p < products.length; p++) {
-				if (p > 0) doc.addPage();
-			}
-		}
+		// doc.addPage();
 
-		for (let p = 0; p < products.length; p++) {
-			let y = 6;
-			let x = 0;
-			let QRCodeSize = 25;
-			let columns = Math.floor(210 / QRCodeSize);
-			let rowsPerPage = Math.floor((297 - y) / QRCodeSize);
-			let pagesPerProduct = 0;
+		doc.addImage(QRCodeDataUrl, 'JPEG', 0, 0, QRCodeSize * 10, QRCodeSize * 10);
 
-			for (let i = 0; i < products[p].quantity; i++) {
-				pagesPerProduct = Math.ceil(y / QRCodeSize / rowsPerPage);
+		// for (let i = 0; i < quantity; i++) {
+		// 	let y = 6;
+		// 	let x = 0;
+		// 	let QRCodeSize = 25;
+		// 	let columns = Math.floor(210 / QRCodeSize);
+		// 	let rowsPerPage = Math.floor((297 - y) / QRCodeSize);
+		// 	let pagesPerProduct = Math.ceil(y / QRCodeSize / rowsPerPage);
+		//
+		//   if (i % columns === 0 && i !== 0) y += QRCodeSize;
+		//
+		//   if (i % columns === 0) x = 0;
+		//   else x += QRCodeSize;
+		//
+		// 	y = 6;
+		// 	x = 0;
+		//
+		// 	// for (let p = 0; p < pagesPerProduct; p++) {
+		// 	// 	if (p > 0) doc.addPage();
+		// 	// }
+		//
+		// 	currentPage += 1;
+		//
+		// 	doc.setPage(currentPage);
+		// 	doc.setFontSize(10);
+		// 	doc.text(3, 6, products[p]._id, { align: 'left' });
+		//
+		// 	for (let i = 0; i < products[p].quantity; i++) {
+		// 		if (i % columns === 0 && i !== 0) y += QRCodeSize;
+		//
+		// 		if (i % columns === 0) x = 0;
+		// 		else x += QRCodeSize;
+		//
+		// 		doc.addImage(products[p].dataUrl, 'JPEG', x, y, QRCodeSize, QRCodeSize);
+		//
+		// 		console.log(Math.ceil(y / QRCodeSize / rowsPerPage), Math.ceil(y / QRCodeSize));
+		//
+		// 		doc.setPage(Math.ceil(y / QRCodeSize / rowsPerPage));
+		//
+		// 		if (Math.ceil(y / QRCodeSize) > rowsPerPage) {
+		// 			y = 6;
+		// 			x = 0;
+		// 		}
+		// 	}
+		// }
 
-				if (i % columns === 0 && i !== 0) y += QRCodeSize;
-
-				if (i % columns === 0) x = 0;
-				else x += QRCodeSize;
-			}
-
-			y = 6;
-			x = 0;
-
-			for (let p = 0; p < pagesPerProduct; p++) {
-				if (p > 0) doc.addPage();
-			}
-
-			currentPage += 1;
-
-			doc.setPage(currentPage);
-			doc.setFontSize(10);
-			doc.text(3, 6, products[p]._id, { align: 'left' });
-
-			for (let i = 0; i < products[p].quantity; i++) {
-				if (i % columns === 0 && i !== 0) y += QRCodeSize;
-
-				if (i % columns === 0) x = 0;
-				else x += QRCodeSize;
-
-				doc.addImage(products[p].dataUrl, 'JPEG', x, y, QRCodeSize, QRCodeSize);
-
-				console.log(Math.ceil(y / QRCodeSize / rowsPerPage), Math.ceil(y / QRCodeSize));
-
-				doc.setPage(Math.ceil(y / QRCodeSize / rowsPerPage));
-
-				if (Math.ceil(y / QRCodeSize) > rowsPerPage) {
-					y = 6;
-					x = 0;
-				}
-			}
-		}
-
-		doc.save(`product_qr_codes_${+new Date()}.pdf`);
+		doc.save(`product_qr_${+new Date()}.pdf`);
 
 		actions.setSubmitting(false);
 	};
@@ -172,38 +157,28 @@ class ProductOrMarkerQRCodePrint extends Component {
 	onExitedDialog = () => {
 		const { onExitedDialog } = this.props;
 
-		this.setState(initialState);
+		this.setState({ QRCodeSize: 5 });
 
-		onExitedDialog();
+		if (onExitedDialog) onExitedDialog();
 	};
 
+	componentDidMount() {
+		this.setState({ isMounted: true });
+
+		this.generateQRCode();
+	}
+
 	render() {
-		const { dialogOpen, onCloseDialog, actionType, selectedProduct, selectedMarker } = this.props;
-		const { QRCodeDataUrl, QRCodeSize, pixelsPerMillimeter } = this.state;
-
-		if (!actionType) return null;
-		if (actionType === 'product' && !selectedProduct) return null;
-		if (actionType === 'marker' && !selectedProduct && !selectedMarker) return null;
-
-		if (!QRCodeDataUrl) {
-			this.generateQRCode();
-		}
+		const { dialogOpen, onCloseDialog, dataType, selectedProduct, selectedMarker } = this.props;
+		const { QRCodeDataUrl, QRCodeSize, pixelsPerCentimeter } = this.state;
 
 		return (
-			<PDDialog
-				open={dialogOpen}
-				onClose={onCloseDialog}
-				onExited={this.onExitedDialog}
-				maxWidth="md"
-				scroll="body"
-				stickyTitle
-				stickyActions
-			>
+			<PDDialog open={dialogOpen} onClose={onCloseDialog} onExited={this.onExitedDialog} maxWidth="md" scroll="body" stickyActions>
 				<PDDialogTitle theme="primary" onClose={onCloseDialog}>
 					Печать QR-кода
 				</PDDialogTitle>
 				<Formik
-					initialValues={{ quantity: 1 }}
+					initialValues={{ quantity: '' }}
 					validationSchema={ProductOrMarkerQRCodePrintSchema}
 					validateOnBlur={false}
 					validateOnChange={false}
@@ -220,7 +195,7 @@ class ProductOrMarkerQRCodePrint extends Component {
 									}}
 									autoComplete="off"
 									validate={value => {
-										if (value > selectedMarker.quantity) {
+										if (dataType === 'marker' && value > selectedMarker.quantity) {
 											return `Максимум для списания: ${selectedMarker.quantity}`;
 										}
 									}}
@@ -231,22 +206,22 @@ class ProductOrMarkerQRCodePrint extends Component {
 								<br />
 								<Slider
 									defaultValue={QRCodeSize}
-									getAriaValueText={value => `${value} мм`}
+									getAriaValueText={value => `${value} см`}
 									onChange={this.setQRCodeSize}
 									aria-labelledby="discrete-slider-custom"
-									step={10}
+									step={1}
 									valueLabelDisplay="auto"
 									marks={marks}
-									min={10}
-									max={100}
+									min={1}
+									max={10}
 								/>
 
 								<div style={{ textAlign: 'center', marginBottom: 10 }}>
 									{selectedProduct ? <div>{selectedProduct.name}</div> : null}
 									{selectedMarker ? <div>{selectedMarker.mainCharacteristic.label}</div> : null}
 								</div>
-								<div style={{ alignItems: 'center', display: 'flex', height: 380, justifyContent: 'center' }}>
-									<img src={QRCodeDataUrl} width={QRCodeSize * pixelsPerMillimeter} alt="" />
+								<div style={{ alignItems: 'center', display: 'flex', height: 428, justifyContent: 'center' }}>
+									<img src={QRCodeDataUrl} width={QRCodeSize * pixelsPerCentimeter} height={QRCodeSize * pixelsPerCentimeter} alt="" />
 								</div>
 							</DialogContent>
 							<PDDialogActions
@@ -272,13 +247,4 @@ class ProductOrMarkerQRCodePrint extends Component {
 	}
 }
 
-const mapStateToProps = state => {
-	return {
-		currentUser: state.user.data,
-	};
-};
-
-export default connect(
-	mapStateToProps,
-	null
-)(ProductOrMarkerQRCodePrint);
+export default ProductOrMarkerQRCodePrint;

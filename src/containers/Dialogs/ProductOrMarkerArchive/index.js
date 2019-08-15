@@ -3,111 +3,132 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import DialogContent from '@material-ui/core/DialogContent';
-
-import { PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
-
 import DialogContentText from '@material-ui/core/DialogContentText';
-import Dialog from '@material-ui/core/Dialog';
+
+import { Dialog, PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
 
 import { getStockStatus } from 'src/actions/stocks';
 import { archiveProduct } from 'src/actions/products';
 import { archiveMarker } from 'src/actions/markers';
 
-const ProductOrMarkerArchive = props => {
-	const { dialogOpen, onCloseDialog, onExitedDialog, actionType, selectedProduct, selectedMarker } = props;
-
-	if (!actionType) return null;
-	if (actionType === 'product' && !selectedProduct) return null;
-	if (actionType === 'marker' && !selectedProduct && !selectedMarker) return null;
+const ProductOrMarkerArchiveDialogActions = props => {
+	const { onCloseDialog, onSubmit } = props;
 
 	return (
-		<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog}>
-			<PDDialogTitle theme="primary" onClose={onCloseDialog}>
-				{actionType === 'product' ? 'Архивирование позиции' : actionType === 'marker' ? 'Архивирование маркера' : null}
-			</PDDialogTitle>
-			<DialogContent>
-				<DialogContentText gutterBottom={actionType === 'product'}>
-					Вы действительно хотите архивировать{' '}
-					{actionType === 'product' ? (
+		<PDDialogActions
+			leftHandleProps={{
+				handleProps: {
+					onClick: onCloseDialog,
+				},
+				text: 'Отмена',
+			}}
+			rightHandleProps={{
+				handleProps: {
+					onClick: onSubmit,
+				},
+				text: 'Архивировать',
+			}}
+		/>
+	);
+};
+
+const ProductOrMarkerArchive = props => {
+	const { dialogOpen, onCloseDialog, onExitedDialog, dataType, selectedProduct, selectedMarker } = props;
+
+	if (dataType === 'product' && selectedProduct)
+		return (
+			<Dialog open={dialogOpen} onClose={() => onCloseDialog()} onExited={onExitedDialog}>
+				<PDDialogTitle theme="primary" onClose={() => onCloseDialog()}>
+					Архивирование позиции
+				</PDDialogTitle>
+				<DialogContent>
+					<DialogContentText gutterBottom={dataType === 'product'}>
+						Вы действительно хотите архивировать{' '}
 						<span>
 							позицию <b>{selectedProduct.name}</b>?
 						</span>
-					) : actionType === 'marker' ? (
+					</DialogContentText>
+					<DialogContentText style={{ marginBottom: 0 }}>При архивировании позиции также архивируются все её маркеры.</DialogContentText>
+				</DialogContent>
+				<ProductOrMarkerArchiveDialogActions
+					onCloseDialog={() => onCloseDialog()}
+					onSubmit={() =>
+						onCloseDialog(() =>
+							setTimeout(
+								() =>
+									props.archiveProduct(selectedProduct._id).then(response => {
+										if (response.status === 'success') props.getStockStatus();
+									}),
+								150
+							)
+						)
+					}
+				/>
+			</Dialog>
+		);
+
+	if (dataType === 'marker' && selectedProduct && selectedMarker)
+		return (
+			<Dialog open={dialogOpen} onClose={() => onCloseDialog()} onExited={onExitedDialog}>
+				<PDDialogTitle theme="primary" onClose={() => onCloseDialog()}>
+					Архивирование маркера
+				</PDDialogTitle>
+				<DialogContent>
+					<DialogContentText gutterBottom={dataType === 'product'}>
+						Вы действительно хотите архивировать{' '}
 						<span>
 							маркер{' '}
 							<b>
 								{selectedMarker.mainCharacteristic.label}{' '}
-								{selectedMarker.characteristics.reduce(
-									(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
-									''
-								)}
+								{selectedMarker.characteristics.reduce((fullCharacteristics, characteristic) => {
+									return `${fullCharacteristics} ${characteristic.label}`;
+								}, '')}
 							</b>
 							из позиции <b>{selectedProduct.name}</b>?
 						</span>
-					) : null}
-				</DialogContentText>
-				{actionType === 'product' ? (
-					<DialogContentText style={{ marginBottom: 0 }}>При архивировании позиции также архивируются все её маркеры.</DialogContentText>
-				) : null}
-			</DialogContent>
-			<PDDialogActions
-				leftHandleProps={{
-					handleProps: {
-						onClick: onCloseDialog,
-					},
-					text: 'Отмена',
-				}}
-				rightHandleProps={{
-					handleProps: {
-						onClick: () => {
-							const archiveProductOrMarker =
-								actionType === 'product'
-									? props.archiveProduct(selectedProduct._id)
-									: props.archiveMarker(selectedMarker.product, selectedMarker._id);
+					</DialogContentText>
+				</DialogContent>
+				<ProductOrMarkerArchiveDialogActions
+					onCloseDialog={() => onCloseDialog()}
+					onSubmit={() =>
+						onCloseDialog(() =>
+							setTimeout(
+								() =>
+									props.archiveMarker(selectedMarker.product, selectedMarker._id).then(response => {
+										if (response.status === 'success') props.getStockStatus();
+									}),
+								150
+							)
+						)
+					}
+				/>
+			</Dialog>
+		);
 
-							archiveProductOrMarker.then(response => {
-								onCloseDialog();
-
-								if (response.status === 'success') {
-									props.getStockStatus();
-								}
-							});
-						},
-					},
-					text: 'Архивировать',
-				}}
-			/>
-		</Dialog>
-	);
+	if (!dataType || !selectedProduct || !selectedMarker) return null;
 };
 
 ProductOrMarkerArchive.propTypes = {
 	dialogOpen: PropTypes.bool.isRequired,
 	onCloseDialog: PropTypes.func.isRequired,
-	onExitedDialog: PropTypes.func.isRequired,
-	currentStock: PropTypes.object.isRequired,
-	actionType: PropTypes.oneOfType([PropTypes.object.isRequired, PropTypes.string.isRequired]),
+	onExitedDialog: PropTypes.func,
+	currentStockId: PropTypes.string.isRequired,
+	dataType: PropTypes.oneOf(['product', 'marker']).isRequired,
 	selectedProduct: PropTypes.object,
 	selectedMarker: PropTypes.object,
 };
 
-const mapStateToProps = state => {
-	return {
-		currentUser: state.user.data,
-	};
-};
-
 const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentStock } = ownProps;
+	const { currentStockId } = ownProps;
 
 	return {
-		getStockStatus: () => dispatch(getStockStatus(currentStock._id)),
-		archiveProduct: productId => dispatch(archiveProduct(currentStock._id, productId)),
-		archiveMarker: (productId, markerId) => dispatch(archiveMarker(currentStock._id, productId, markerId)),
+		getStockStatus: () => dispatch(getStockStatus(currentStockId)),
+		archiveProduct: productId => dispatch(archiveProduct(currentStockId, productId)),
+		archiveMarker: (productId, markerId) => dispatch(archiveMarker(currentStockId, productId, markerId)),
 	};
 };
 
 export default connect(
-	mapStateToProps,
+	null,
 	mapDispatchToProps
 )(ProductOrMarkerArchive);

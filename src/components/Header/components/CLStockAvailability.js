@@ -15,12 +15,6 @@ const DialogProductAndMarkersCreate = Loadable({
 	delay: 200,
 });
 
-const DialogPrintQRCodesProduct = Loadable({
-	loader: () => import('src/containers/Dialogs/ProductOrMarkerQRCodePrint' /* webpackChunkName: "Dialog_PrintQRCodesProduct" */),
-	loading: () => null,
-	delay: 200,
-});
-
 class CLStockAvailability extends Component {
 	state = {
 		dialogProductAndMarkersCreate: false,
@@ -35,13 +29,9 @@ class CLStockAvailability extends Component {
 
 	onCloseDialogProductAndMarkersCreate = () => this.setState({ dialogProductAndMarkersCreate: false });
 
-	onOpenDialogPrintQRCodesProduct = () => this.setState({ dialogPrintQRCodesProduct: true });
-
-	onCloseDialogPrintQRCodesProduct = () => this.setState({ dialogPrintQRCodesProduct: false });
-
 	render() {
 		const { pageTitle, theme, currentStock } = this.props;
-		const { dialogProductAndMarkersCreate, dialogPrintQRCodesProduct } = this.state;
+		const { dialogProductAndMarkersCreate } = this.state;
 
 		return (
 			<div className="header__column_left">
@@ -57,21 +47,11 @@ class CLStockAvailability extends Component {
 						<FontAwesomeIcon icon={['far', 'plus']} style={{ marginRight: 10 }} />
 						Создать позицию
 					</Button>
-					{/*<Button className="mui-btn-ct400" variant="contained" color="primary" onClick={this.onOpenDialogPrintQRCodesProduct}>*/}
-					{/*	<FontAwesomeIcon icon={['fal', 'qrcode']} style={{ marginRight: 10 }} />*/}
-					{/*	Печать QR-кодов*/}
-					{/*</Button>*/}
 				</div>
 
 				<DialogProductAndMarkersCreate
 					dialogOpen={dialogProductAndMarkersCreate}
 					onCloseDialog={this.onCloseDialogProductAndMarkersCreate}
-					currentStock={currentStock}
-				/>
-
-				<DialogPrintQRCodesProduct
-					dialogOpen={dialogPrintQRCodesProduct}
-					onCloseDialog={this.onCloseDialogPrintQRCodesProduct}
 					currentStock={currentStock}
 				/>
 			</div>

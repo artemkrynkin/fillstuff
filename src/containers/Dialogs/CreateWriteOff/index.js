@@ -9,7 +9,7 @@ import * as Yup from 'yup';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { DialogContent } from '@material-ui/core';
 
-import { PDDialog, PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
+import { Dialog, PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
 
 import { getStockStatus } from 'src/actions/stocks';
 import { createWriteOff } from 'src/actions/writeOffs';
@@ -26,7 +26,7 @@ class CreateWriteOff extends Component {
 	static propTypes = {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
-		currentStock: PropTypes.object.isRequired,
+		currentStockId: PropTypes.string.isRequired,
 		selectedProduct: PropTypes.object,
 		selectedMarker: PropTypes.object,
 	};
@@ -37,7 +37,7 @@ class CreateWriteOff extends Component {
 		if (!selectedProduct || !selectedMarker) return null;
 
 		return (
-			<PDDialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth="md" scroll="body" stickyActions>
+			<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth="md" scroll="body">
 				<PDDialogTitle theme="primary" onClose={onCloseDialog}>
 					Списание количества
 				</PDDialogTitle>
@@ -97,7 +97,7 @@ class CreateWriteOff extends Component {
 						</Form>
 					)}
 				/>
-			</PDDialog>
+			</Dialog>
 		);
 	}
 }
@@ -109,11 +109,11 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentStock } = ownProps;
+	const { currentStockId } = ownProps;
 
 	return {
-		getStockStatus: () => dispatch(getStockStatus(currentStock._id)),
-		createWriteOff: (markerId, userId, values) => dispatch(createWriteOff(currentStock._id, markerId, userId, values)),
+		getStockStatus: () => dispatch(getStockStatus(currentStockId)),
+		createWriteOff: (markerId, userId, values) => dispatch(createWriteOff(currentStockId, markerId, userId, values)),
 	};
 };
 

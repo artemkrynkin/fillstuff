@@ -4,14 +4,13 @@ import { connect } from 'react-redux';
 import ClassNames from 'classnames';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
 
-import { PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
+import { Dialog, PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
 
 import { deleteMember } from 'src/actions/stocks';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import Dialog from '@material-ui/core/Dialog';
 
 import './index.styl';
 

@@ -5,12 +5,20 @@ import ClassNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
 import ButtonBase from '@material-ui/core/ButtonBase';
-import Dialog from '@material-ui/core/Dialog';
+import MuiDialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from '@material-ui/core/IconButton';
 
 import './index.styl';
+
+export const Dialog = props => {
+	return <MuiDialog transitionDuration={150} children={props.children} {...props} />;
+};
+
+Dialog.propTypes = {
+	children: PropTypes.node,
+};
 
 const observeActions = (container, position = null, stickySelector) => {
 	const observer = new IntersectionObserver(
@@ -70,11 +78,11 @@ export class PDDialog extends Component {
 		});
 
 		return (
-			<Dialog onEnter={this.onEnter} className={dialogClasses} {...props}>
+			<MuiDialog onEnter={this.onEnter} className={dialogClasses} transitionDuration={150} {...props}>
 				{stickyTitle ? <div className="pd-dialog__sentinel-top" /> : null}
 				{children}
 				{stickyActions ? <div className="pd-dialog__sentinel-bottom" /> : null}
-			</Dialog>
+			</MuiDialog>
 		);
 	}
 }

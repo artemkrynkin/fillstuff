@@ -26,8 +26,8 @@ class DialogProductEdit extends Component {
 	static propTypes = {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
-		onExitedDialog: PropTypes.func.isRequired,
-		currentStock: PropTypes.object.isRequired,
+		onExitedDialog: PropTypes.func,
+		currentStockId: PropTypes.string.isRequired,
 		selectedProduct: PropTypes.object,
 	};
 
@@ -178,10 +178,10 @@ class DialogProductEdit extends Component {
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentStock } = ownProps;
+	const { currentStockId } = ownProps;
 
 	return {
-		getStockStatus: () => dispatch(getStockStatus(currentStock._id)),
+		getStockStatus: () => dispatch(getStockStatus(currentStockId)),
 		editProduct: (productId, newValues) => dispatch(editProduct(productId, newValues)),
 	};
 };

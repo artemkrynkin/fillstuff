@@ -18,7 +18,7 @@ import MuiTextField from '@material-ui/core/TextField';
 import { checkPermissions, findMemberInStock } from 'shared/roles-access-rights';
 
 import CardPaper from 'src/components/CardPaper';
-import { CustomSelectField } from 'src/components/CustomSelectField';
+import { SelectField } from 'src/components/SelectField';
 
 import { editStock } from 'src/actions/stocks';
 
@@ -105,7 +105,7 @@ const GeneralSettings = props => {
 							<FormLabel style={{ minWidth: 124 }}>Часовой пояс:</FormLabel>
 							<FormControl fullWidth>
 								{checkPermissions(currentUserRole, ['stock.full_control']) ? (
-									<CustomSelectField name="timezone" error={Boolean(errors.timezone)} displayEmpty>
+									<SelectField name="timezone" error={Boolean(errors.timezone)} displayEmpty>
 										<MenuItem value="">Не выбран</MenuItem>
 										{timezones.map((timezone, index) => {
 											return (
@@ -114,7 +114,7 @@ const GeneralSettings = props => {
 												</MenuItem>
 											);
 										})}
-									</CustomSelectField>
+									</SelectField>
 								) : (
 									<MuiTextField
 										name="timezone"

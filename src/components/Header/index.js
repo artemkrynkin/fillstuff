@@ -9,7 +9,7 @@ import Divider from '@material-ui/core/Divider';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 
-import CustomPopover from 'src/components/CustomPopover';
+import Popover from 'src/components/Popover';
 
 import ColumnLeft from './components/ColumnLeft';
 
@@ -65,7 +65,7 @@ class Header extends Component {
 					</div>
 				</div>
 
-				<CustomPopover anchorEl={profileMenuOpen} open={Boolean(profileMenuOpen)} onClose={this.onCloseProfileMenu}>
+				<Popover anchorEl={profileMenuOpen} open={Boolean(profileMenuOpen)} onClose={this.onCloseProfileMenu}>
 					<MenuList>
 						<MenuItem
 							to={'/settings'}
@@ -82,7 +82,7 @@ class Header extends Component {
 					<MenuList>
 						<MenuItem onClick={this.onLogout}>Выйти</MenuItem>
 					</MenuList>
-				</CustomPopover>
+				</Popover>
 			</AppBar>
 		);
 	}

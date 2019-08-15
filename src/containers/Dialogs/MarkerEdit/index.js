@@ -27,7 +27,7 @@ import {
 
 import { PDDialog, PDDialogTitle, PDDialogActions } from 'src/components/Dialog';
 import { SelectAutocompleteCreate } from 'src/components/selectAutocomplete';
-import { CustomSelectField } from 'src/components/CustomSelectField';
+import { SelectField } from 'src/components/SelectField';
 import Chips from 'src/components/Chips';
 
 import { markerSchema } from 'src/containers/Dialogs/ProductAndMarkersCreate/components/FormScheme';
@@ -41,8 +41,8 @@ class DialogMarkerEdit extends Component {
 	static propTypes = {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
-		onExitedDialog: PropTypes.func.isRequired,
-		currentStock: PropTypes.object.isRequired,
+		onExitedDialog: PropTypes.func,
+		currentStockId: PropTypes.string.isRequired,
 		selectedProduct: PropTypes.object,
 		selectedMarker: PropTypes.object,
 	};
@@ -88,7 +88,7 @@ class DialogMarkerEdit extends Component {
 	};
 
 	render() {
-		const { dialogOpen, onCloseDialog, onExitedDialog, currentStock, characteristics, selectedProduct, selectedMarker } = this.props;
+		const { dialogOpen, onCloseDialog, onExitedDialog, currentStockId, characteristics, selectedProduct, selectedMarker } = this.props;
 		const { isLoadingMainCharacteristic, isLoadingCharacteristics } = this.state;
 
 		if (!selectedProduct || !selectedMarker) return null;
@@ -133,7 +133,7 @@ class DialogMarkerEdit extends Component {
 											Наименование:
 										</InputLabel>
 										<FormControl style={{ width: 'calc(100% - 130px)' }}>
-											<CustomSelectField
+											<SelectField
 												name="mainCharacteristicTemp.type"
 												inputProps={{
 													onChange: ({ target: { value } }) => {
@@ -167,7 +167,7 @@ class DialogMarkerEdit extends Component {
 														{characteristicTypeTransform(characteristicType)}
 													</MenuItem>
 												))}
-											</CustomSelectField>
+											</SelectField>
 											{errors.mainCharacteristicTemp && errors.mainCharacteristicTemp.type ? (
 												<FormHelperText error>{errors.mainCharacteristicTemp.type}</FormHelperText>
 											) : null}
@@ -206,7 +206,7 @@ class DialogMarkerEdit extends Component {
 												onCreateOption={value =>
 													this.onCreateMainCharacteristic(
 														{
-															stock: currentStock._id,
+															stock: currentStockId,
 															type: values.mainCharacteristicTemp.type,
 															value: translitRu(value),
 															label: value,
@@ -453,7 +453,7 @@ class DialogMarkerEdit extends Component {
 															<InputLabel style={{ display: 'inline-flex', minWidth: 120 }} />
 														)}
 														<FormControl style={{ width: 'calc(100% - 130px)' }}>
-															<CustomSelectField
+															<SelectField
 																name="characteristicTemp.type"
 																inputProps={{
 																	onChange: ({ target: { value } }) => {
@@ -476,7 +476,7 @@ class DialogMarkerEdit extends Component {
 																		{characteristicTypeTransform(characteristicType)}
 																	</MenuItem>
 																))}
-															</CustomSelectField>
+															</SelectField>
 														</FormControl>
 													</Grid>
 
@@ -508,7 +508,7 @@ class DialogMarkerEdit extends Component {
 																onCreateOption={value =>
 																	this.onCreateCharacteristic(
 																		{
-																			stock: currentStock._id,
+																			stock: currentStockId,
 																			type: values.characteristicTemp.type,
 																			value: translitRu(value),
 																			label: value,
@@ -545,7 +545,7 @@ class DialogMarkerEdit extends Component {
 							<PDDialogActions
 								leftHandleProps={{
 									handleProps: {
-										onClick: () => onCloseDialog,
+										onClick: onCloseDialog,
 									},
 									text: 'Отмена',
 								}}
@@ -572,10 +572,10 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentStock } = ownProps;
+	const { currentStockId } = ownProps;
 
 	return {
-		getStockStatus: () => dispatch(getStockStatus(currentStock._id)),
+		getStockStatus: () => dispatch(getStockStatus(currentStockId)),
 		createCharacteristic: values => dispatch(createCharacteristic(values)),
 		editMarker: (productId, markerId, newValues) => dispatch(editMarker(productId, markerId, newValues)),
 	};

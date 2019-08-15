@@ -29,7 +29,7 @@ import {
 
 import { PDDialogTitle, PDDialogActions } from 'src/components/Dialog';
 import { SelectAutocompleteCreate } from 'src/components/selectAutocomplete';
-import { CustomSelectField } from 'src/components/CustomSelectField';
+import { SelectField } from 'src/components/SelectField';
 import Chips from 'src/components/Chips';
 
 import { createCharacteristic } from 'src/actions/characteristics';
@@ -168,7 +168,7 @@ class MarkersForm extends Component {
 														Наименование:
 													</InputLabel>
 													<FormControl style={{ width: 'calc(100% - 130px)' }}>
-														<CustomSelectField
+														<SelectField
 															name={`markers.${index}.mainCharacteristicTemp.type`}
 															inputProps={{
 																onChange: ({ target: { value } }) => {
@@ -202,7 +202,7 @@ class MarkersForm extends Component {
 																	{characteristicTypeTransform(characteristicType)}
 																</MenuItem>
 															))}
-														</CustomSelectField>
+														</SelectField>
 														{checkErrorsMarker(errors, index, 'mainCharacteristicTemp', 'type') ? (
 															<FormHelperText error>{errors.markers[index].mainCharacteristicTemp.type}</FormHelperText>
 														) : null}
@@ -501,7 +501,7 @@ class MarkersForm extends Component {
 																		<InputLabel style={{ display: 'inline-flex', minWidth: 120 }} />
 																	)}
 																	<FormControl style={{ width: 'calc(100% - 130px)' }}>
-																		<CustomSelectField
+																		<SelectField
 																			name={`markers.${index}.characteristicTemp.type`}
 																			inputProps={{
 																				onChange: ({ target: { value } }) => {
@@ -524,7 +524,7 @@ class MarkersForm extends Component {
 																					{characteristicTypeTransform(characteristicType)}
 																				</MenuItem>
 																			))}
-																		</CustomSelectField>
+																		</SelectField>
 																	</FormControl>
 																</Grid>
 

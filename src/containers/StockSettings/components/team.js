@@ -11,7 +11,7 @@ import MenuList from '@material-ui/core/MenuList';
 import { memberRoleTransform, findMemberInStock, checkPermissions } from 'shared/roles-access-rights';
 
 import CardPaper from 'src/components/CardPaper';
-import CustomPopover from 'src/components/CustomPopover';
+import Popover from 'src/components/Popover';
 
 import './team.styl';
 
@@ -150,7 +150,7 @@ class Team extends Component {
 					</div>
 
 					{selectedMember ? (
-						<CustomPopover anchorEl={memberActionsMenuOpen} open={Boolean(memberActionsMenuOpen)} onClose={this.onCloseMemberActionsMenu}>
+						<Popover anchorEl={memberActionsMenuOpen} open={Boolean(memberActionsMenuOpen)} onClose={this.onCloseMemberActionsMenu}>
 							<MenuList>
 								<MenuItem
 									onClick={() => {
@@ -179,7 +179,7 @@ class Team extends Component {
 									{selectedMember.user._id !== currentUser._id ? 'Удалить из команды' : 'Выйти из команды'}
 								</MenuItem>
 							</MenuList>
-						</CustomPopover>
+						</Popover>
 					) : null}
 
 					<MemberInvitationOrLogin

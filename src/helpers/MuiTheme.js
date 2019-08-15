@@ -554,6 +554,10 @@ export const BliksideTheme = createMuiTheme({
 			},
 		},
 		MuiTableCell: {
+			root: {
+				color: colorPalette.blueGrey.cBg700,
+				borderBottomColor: colorPalette.brightness.cBr4,
+			},
 			head: {
 				borderBottomColor: colorPalette.brightness.cBr5,
 				color: colorPalette.blueGrey.cBg300,
@@ -561,10 +565,6 @@ export const BliksideTheme = createMuiTheme({
 				lineHeight: 1.3,
 				paddingTop: 18,
 				paddingBottom: 18,
-			},
-			body: {
-				color: colorPalette.blueGrey.cBg700,
-				borderBottomColor: colorPalette.brightness.cBr4,
 			},
 		},
 	},

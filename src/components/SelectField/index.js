@@ -6,7 +6,7 @@ import { Select } from 'formik-material-ui';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Fade from '@material-ui/core/Fade';
 
-export const CustomSelectField = props => (
+export const SelectField = props => (
 	<Field
 		component={Select}
 		IconComponent={() => <FontAwesomeIcon icon={['far', 'angle-down']} className="pd-selectIcon" />}
@@ -19,7 +19,7 @@ export const CustomSelectField = props => (
 	/>
 );
 
-export const CustomSelectFastField = props => (
+export const SelectFastField = props => (
 	<FastField
 		component={Select}
 		IconComponent={() => <FontAwesomeIcon icon={['far', 'angle-down']} className="pd-selectIcon" />}

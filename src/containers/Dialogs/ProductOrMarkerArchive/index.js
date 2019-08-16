@@ -37,8 +37,8 @@ const ProductOrMarkerArchive = props => {
 
 	if (dataType === 'product' && selectedProduct)
 		return (
-			<Dialog open={dialogOpen} onClose={() => onCloseDialog()} onExited={onExitedDialog}>
-				<PDDialogTitle theme="primary" onClose={() => onCloseDialog()}>
+			<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog}>
+				<PDDialogTitle theme="primary" onClose={onCloseDialog}>
 					Архивирование позиции
 				</PDDialogTitle>
 				<DialogContent>
@@ -52,25 +52,21 @@ const ProductOrMarkerArchive = props => {
 				</DialogContent>
 				<ProductOrMarkerArchiveDialogActions
 					onCloseDialog={() => onCloseDialog()}
-					onSubmit={() =>
-						onCloseDialog(() =>
-							setTimeout(
-								() =>
-									props.archiveProduct(selectedProduct._id).then(response => {
-										if (response.status === 'success') props.getStockStatus();
-									}),
-								150
-							)
-						)
-					}
+					onSubmit={() => {
+						props.archiveProduct(selectedProduct._id).then(response => {
+							onCloseDialog();
+
+							if (response.status === 'success') props.getStockStatus();
+						});
+					}}
 				/>
 			</Dialog>
 		);
 
 	if (dataType === 'marker' && selectedProduct && selectedMarker)
 		return (
-			<Dialog open={dialogOpen} onClose={() => onCloseDialog()} onExited={onExitedDialog}>
-				<PDDialogTitle theme="primary" onClose={() => onCloseDialog()}>
+			<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog}>
+				<PDDialogTitle theme="primary" onClose={onCloseDialog}>
 					Архивирование маркера
 				</PDDialogTitle>
 				<DialogContent>
@@ -90,17 +86,13 @@ const ProductOrMarkerArchive = props => {
 				</DialogContent>
 				<ProductOrMarkerArchiveDialogActions
 					onCloseDialog={() => onCloseDialog()}
-					onSubmit={() =>
-						onCloseDialog(() =>
-							setTimeout(
-								() =>
-									props.archiveMarker(selectedMarker.product, selectedMarker._id).then(response => {
-										if (response.status === 'success') props.getStockStatus();
-									}),
-								150
-							)
-						)
-					}
+					onSubmit={() => {
+						props.archiveMarker(selectedMarker.product, selectedMarker._id).then(response => {
+							onCloseDialog();
+
+							if (response.status === 'success') props.getStockStatus();
+						});
+					}}
 				/>
 			</Dialog>
 		);

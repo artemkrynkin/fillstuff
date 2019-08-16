@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Loadable from 'react-loadable';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Table from '@material-ui/core/Table';
@@ -18,24 +17,6 @@ import Popover from 'src/components/Popover';
 import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, TableCell } from './styles';
 import MarkerRow from './MarkerRow';
 
-const DialogProductEdit = Loadable({
-	loader: () => import('src/containers/Dialogs/ProductEdit' /* webpackChunkName: "Dialog_ProductEdit" */),
-	loading: () => null,
-	delay: 200,
-});
-
-const DialogProductArchive = Loadable({
-	loader: () => import('src/containers/Dialogs/ProductOrMarkerArchive' /* webpackChunkName: "Dialog_ProductOrMarkerArchive" */),
-	loading: () => null,
-	delay: 200,
-});
-
-const DialogProductQRCodePrint = Loadable({
-	loader: () => import('src/containers/Dialogs/ProductOrMarkerQRCodePrint' /* webpackChunkName: "Dialog_ProductOrMarkerQRCodePrint" */),
-	loading: () => null,
-	delay: 200,
-});
-
 class ProductRow extends Component {
 	static propTypes = {
 		currentStockId: PropTypes.string.isRequired,
@@ -44,34 +25,15 @@ class ProductRow extends Component {
 
 	state = {
 		productMenu: null,
-		dialogProductEdit: false,
-		dialogProductArchive: false,
-		dialogProductQRCodePrint: false,
 	};
 
 	onOpenProductActionsMenu = event => this.setState({ productMenu: event.currentTarget });
 
 	onCloseProductActionsMenu = () => this.setState({ productMenu: null });
 
-	onOpenDialogProductEdit = () => this.setState({ dialogProductEdit: true });
-
-	onCloseDialogProductEdit = () => this.setState({ dialogProductEdit: false });
-
-	onOpenDialogProductArchive = () => this.setState({ dialogProductArchive: true });
-
-	onCloseDialogProductArchive = callback => {
-		this.setState({ dialogProductArchive: false }, () => {
-			if (callback) callback();
-		});
-	};
-
-	onOpenDialogProductQRCodePrint = () => this.setState({ dialogProductQRCodePrint: true });
-
-	onCloseDialogProductQRCodePrint = () => this.setState({ dialogProductQRCodePrint: false });
-
 	render() {
-		const { currentStockId, product } = this.props;
-		const { productMenu, dialogProductEdit, dialogProductArchive, dialogProductQRCodePrint } = this.state;
+		const { currentStockId, product, productActions, markerActions } = this.props;
+		const { productMenu } = this.state;
 
 		return (
 			<TableRow className="sa-products__row-product">
@@ -134,9 +96,21 @@ class ProductRow extends Component {
 							<ExpansionPanelDetails>
 								<Table>
 									<TableBody>
-										{product.markers.map(marker => (
-											<MarkerRow key={marker._id} currentStockId={currentStockId} product={product} marker={marker} />
-										))}
+										{product.markers.map(marker => {
+											const productClone = Object.assign({}, product);
+
+											delete productClone.markers;
+
+											return (
+												<MarkerRow
+													key={marker._id}
+													currentStockId={currentStockId}
+													product={productClone}
+													marker={marker}
+													markerActions={markerActions}
+												/>
+											);
+										})}
 									</TableBody>
 								</Table>
 							</ExpansionPanelDetails>
@@ -155,11 +129,17 @@ class ProductRow extends Component {
 							<FontAwesomeIcon icon={['far', 'ellipsis-h']} />
 						</IconButton>
 
-						<Popover anchorEl={productMenu} open={Boolean(productMenu)} onClose={this.onCloseProductActionsMenu} disablePortal>
+						<Popover
+							anchorEl={productMenu}
+							open={Boolean(productMenu)}
+							onClose={this.onCloseProductActionsMenu}
+							disablePortal
+							disableAutoFocus
+						>
 							<MenuList>
 								<MenuItem
 									onClick={() => {
-										this.onOpenDialogProductQRCodePrint();
+										productActions.onOpenDialogProductQRCodePrint(product);
 										this.onCloseProductActionsMenu();
 									}}
 								>
@@ -167,7 +147,7 @@ class ProductRow extends Component {
 								</MenuItem>
 								<MenuItem
 									onClick={() => {
-										this.onOpenDialogProductEdit();
+										productActions.onOpenDialogProductEdit(product);
 										this.onCloseProductActionsMenu();
 									}}
 								>
@@ -175,7 +155,7 @@ class ProductRow extends Component {
 								</MenuItem>
 								<MenuItem
 									onClick={() => {
-										this.onOpenDialogProductArchive();
+										productActions.onOpenDialogProductArchive(product);
 										this.onCloseProductActionsMenu();
 									}}
 								>
@@ -185,39 +165,6 @@ class ProductRow extends Component {
 						</Popover>
 					</div>
 				</td>
-
-				{dialogProductEdit ? (
-					<DialogProductEdit
-						dialogOpen={dialogProductEdit}
-						onCloseDialog={this.onCloseDialogProductEdit}
-						currentStockId={currentStockId}
-						selectedProduct={product}
-					/>
-				) : null}
-
-				{dialogProductArchive ? (
-					<DialogProductArchive
-						dialogOpen={dialogProductArchive}
-						onCloseDialog={this.onCloseDialogProductArchive}
-						currentStockId={currentStockId}
-						dataType={'product'}
-						selectedProduct={product}
-					/>
-				) : null}
-
-				{dialogProductQRCodePrint ? (
-					<DialogProductQRCodePrint
-						dialogOpen={dialogProductQRCodePrint}
-						onCloseDialog={this.onCloseDialogProductQRCodePrint}
-						currentStockId={currentStockId}
-						dataType={'product'}
-						QRCodeData={{
-							type: 'product',
-							productId: product._id,
-						}}
-						selectedProduct={product}
-					/>
-				) : null}
 			</TableRow>
 		);
 	}

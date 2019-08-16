@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { cloneDeep } from 'lodash';
 
 import { checkProductAndMarkers } from 'shared/checkProductAndMarkers';
 

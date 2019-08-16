@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Loadable from 'react-loadable';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TableRow from '@material-ui/core/TableRow';
@@ -16,30 +15,6 @@ import { getCharacteristics } from 'src/actions/characteristics';
 
 import { TableCell } from './styles';
 
-const DialogMarkerEdit = Loadable({
-	loader: () => import('src/containers/Dialogs/MarkerEdit' /* webpackChunkName: "Dialog_MarkerEdit" */),
-	loading: () => null,
-	delay: 200,
-});
-
-const DialogMarkerArchive = Loadable({
-	loader: () => import('src/containers/Dialogs/ProductOrMarkerArchive' /* webpackChunkName: "Dialog_ProductOrMarkerArchive" */),
-	loading: () => null,
-	delay: 200,
-});
-
-const DialogMarkerQRCodePrint = Loadable({
-	loader: () => import('src/containers/Dialogs/ProductOrMarkerQRCodePrint' /* webpackChunkName: "Dialog_ProductOrMarkerQRCodePrint" */),
-	loading: () => null,
-	delay: 200,
-});
-
-const DialogCreateWriteOff = Loadable({
-	loader: () => import('src/containers/Dialogs/CreateWriteOff' /* webpackChunkName: "Dialog_CreateWriteOff" */),
-	loading: () => null,
-	delay: 200,
-});
-
 class MarkerRow extends Component {
 	static propTypes = {
 		currentStockId: PropTypes.string.isRequired,
@@ -49,43 +24,15 @@ class MarkerRow extends Component {
 
 	state = {
 		markerMenu: null,
-		dialogMarkerEdit: false,
-		dialogMarkerArchive: false,
-		dialogMarkerQRCodePrint: false,
-		dialogCreateWriteOff: false,
 	};
 
 	onOpenMarkerActionsMenu = event => this.setState({ markerMenu: event.currentTarget });
 
 	onCloseMarkerActionsMenu = () => this.setState({ markerMenu: null });
 
-	onOpenDialogMarkerEdit = async () => {
-		await this.props.getCharacteristics();
-
-		this.setState({ dialogMarkerEdit: true });
-	};
-
-	onCloseDialogMarkerEdit = () => this.setState({ dialogMarkerEdit: false });
-
-	onOpenDialogMarkerArchive = () => this.setState({ dialogMarkerArchive: true });
-
-	onCloseDialogMarkerArchive = callback => {
-		this.setState({ dialogMarkerArchive: false }, () => {
-			if (callback) callback();
-		});
-	};
-
-	onOpenDialogMarkerQRCodePrint = () => this.setState({ dialogMarkerQRCodePrint: true });
-
-	onCloseDialogMarkerQRCodePrint = () => this.setState({ dialogMarkerQRCodePrint: false });
-
-	onOpenDialogCreateWriteOff = () => this.setState({ dialogCreateWriteOff: true });
-
-	onCloseDialogCreateWriteOff = () => this.setState({ dialogCreateWriteOff: false });
-
 	render() {
-		const { currentStockId, product, marker } = this.props;
-		const { markerMenu, dialogMarkerEdit, dialogMarkerArchive, dialogMarkerQRCodePrint, dialogCreateWriteOff } = this.state;
+		const { product, marker, markerActions } = this.props;
+		const { markerMenu } = this.state;
 
 		return (
 			<TableRow className="sa-products__row-marker">
@@ -128,7 +75,7 @@ class MarkerRow extends Component {
 							<MenuList>
 								<MenuItem
 									onClick={() => {
-										this.onOpenDialogMarkerQRCodePrint();
+										markerActions.onOpenDialogMarkerQRCodePrint(product, marker);
 										this.onCloseMarkerActionsMenu();
 									}}
 								>
@@ -143,7 +90,7 @@ class MarkerRow extends Component {
 								</MenuItem>
 								<MenuItem
 									onClick={() => {
-										this.onOpenDialogCreateWriteOff();
+										markerActions.onOpenDialogCreateWriteOff(product, marker);
 										this.onCloseMarkerActionsMenu();
 									}}
 								>
@@ -151,7 +98,7 @@ class MarkerRow extends Component {
 								</MenuItem>
 								<MenuItem
 									onClick={() => {
-										this.onOpenDialogMarkerEdit();
+										markerActions.onOpenDialogMarkerEdit(product, marker);
 										this.onCloseMarkerActionsMenu();
 									}}
 								>
@@ -159,7 +106,7 @@ class MarkerRow extends Component {
 								</MenuItem>
 								<MenuItem
 									onClick={() => {
-										this.onOpenDialogMarkerArchive();
+										markerActions.onOpenDialogMarkerArchive(product, marker);
 										this.onCloseMarkerActionsMenu();
 									}}
 								>
@@ -169,52 +116,6 @@ class MarkerRow extends Component {
 						</Popover>
 					</div>
 				</TableCell>
-
-				{dialogMarkerEdit ? (
-					<DialogMarkerEdit
-						dialogOpen={dialogMarkerEdit}
-						onCloseDialog={this.onCloseDialogMarkerEdit}
-						currentStockId={currentStockId}
-						selectedProduct={product}
-						selectedMarker={marker}
-					/>
-				) : null}
-
-				{dialogMarkerArchive ? (
-					<DialogMarkerArchive
-						dialogOpen={dialogMarkerArchive}
-						onCloseDialog={this.onCloseDialogMarkerArchive}
-						currentStockId={currentStockId}
-						dataType={'marker'}
-						selectedProduct={product}
-						selectedMarker={marker}
-					/>
-				) : null}
-
-				{dialogMarkerQRCodePrint ? (
-					<DialogMarkerQRCodePrint
-						dialogOpen={dialogMarkerQRCodePrint}
-						onCloseDialog={this.onCloseDialogMarkerQRCodePrint}
-						currentStockId={currentStockId}
-						dataType={'marker'}
-						QRCodeData={{
-							type: 'marker',
-							markerId: marker._id,
-						}}
-						selectedProduct={product}
-						selectedMarker={marker}
-					/>
-				) : null}
-
-				{dialogCreateWriteOff ? (
-					<DialogCreateWriteOff
-						dialogOpen={dialogCreateWriteOff}
-						onCloseDialog={this.onCloseDialogCreateWriteOff}
-						currentStockId={currentStockId}
-						selectedProduct={product}
-						selectedMarker={marker}
-					/>
-				) : null}
 			</TableRow>
 		);
 	}

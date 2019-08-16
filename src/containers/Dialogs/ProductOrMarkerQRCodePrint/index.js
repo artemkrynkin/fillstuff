@@ -66,12 +66,13 @@ class ProductOrMarkerQRCodePrint extends Component {
 		selectedMarker: PropTypes.object,
 	};
 
-	state = {
-		isMounted: false,
+	initialState = {
 		QRCodeDataUrl: null,
 		QRCodeSize: 5,
 		pixelsPerCentimeter: 38 + 5,
 	};
+
+	state = this.initialState;
 
 	setQRCodeSize = (event, newValue) => {
 		const { QRCodeSize } = this.state;
@@ -90,7 +91,7 @@ class ProductOrMarkerQRCodePrint extends Component {
 			width: QRCodeSize * pixelsPerCentimeter * (QRCodeSize > 1 ? 2 : 4),
 		});
 
-		if (this.state.isMounted) this.setState({ QRCodeDataUrl: url });
+		this.setState({ QRCodeDataUrl: url });
 	};
 
 	onGenerateAndSavePDF = (actions, values) => {
@@ -157,20 +158,23 @@ class ProductOrMarkerQRCodePrint extends Component {
 	onExitedDialog = () => {
 		const { onExitedDialog } = this.props;
 
-		this.setState({ QRCodeSize: 5 });
-
-		if (onExitedDialog) onExitedDialog();
+		this.setState(this.initialState, () => {
+			if (onExitedDialog) onExitedDialog();
+		});
 	};
 
-	componentDidMount() {
-		this.setState({ isMounted: true });
-
-		this.generateQRCode();
-	}
+	// componentDidMount() {
+	// 	this.setState({ isMounted: true });
+	// 	console.log(this.props);
+	//
+	// 	this.generateQRCode();
+	// }
 
 	render() {
 		const { dialogOpen, onCloseDialog, dataType, selectedProduct, selectedMarker } = this.props;
 		const { QRCodeDataUrl, QRCodeSize, pixelsPerCentimeter } = this.state;
+
+		if (!QRCodeDataUrl && (selectedProduct || selectedMarker)) this.generateQRCode();
 
 		return (
 			<PDDialog open={dialogOpen} onClose={onCloseDialog} onExited={this.onExitedDialog} maxWidth="md" scroll="body" stickyActions>

@@ -24,10 +24,17 @@ writeOffsRouter.get(
 		if (userId) conditions.user = userId;
 
 		WriteOff.find(conditions)
-			.populate({ path: 'marker', populate: { path: 'product mainCharacteristic' } })
+			.populate({
+				path: 'marker',
+				populate: {
+					path: 'product mainCharacteristic',
+					select: 'createdAt name label type value',
+				},
+				select: 'product mainCharacteristic',
+			})
 			.populate('user', 'name email')
 			.sort({ createdAt: -1 })
-			.then(products => setTimeout(() => res.json(products), 300))
+			.then(writeOffs => res.json(writeOffs))
 			.catch(err => next(err));
 	}
 );
@@ -40,7 +47,7 @@ writeOffsRouter.post(
 		const { stockId, markerId, userId, quantity = req.body.quantity || 1 } = req.body;
 
 		return Marker.findById(markerId)
-			.populate('product')
+			.populate('stock product')
 			.then(async marker => {
 				if (marker.quantity === 0 || marker.quantity - quantity < 0)
 					return res.json({
@@ -53,35 +60,39 @@ writeOffsRouter.post(
 								: 'Unknown error',
 					});
 
-				if (!marker.product.dividedMarkers) {
-					await Product.findByIdAndUpdate(marker.product, {
-						$inc: {
-							quantity: -quantity,
-						},
-					}).catch(err => next(err));
-				}
-
-				await Marker.findByIdAndUpdate(markerId, {
-					$inc: {
-						quantity: -quantity,
-					},
-					$set:
-						marker.product.receiptUnits === 'nmp' && marker.product.unitIssue === 'pce'
-							? {
-									quantityPackages: (marker.quantity - quantity) / marker.quantityInUnit,
-							  }
-							: {},
-				}).catch(err => next(err));
+				const {
+					stock: { status: statusOld },
+					product: { quantity: productQuantityOld },
+				} = marker;
 
 				await Stock.findByIdAndUpdate(
 					stockId,
 					{
-						$inc: {
-							'status.stockCost': -(quantity * marker.unitPurchasePrice),
+						$set: {
+							'status.stockCost': statusOld.stockCost - quantity * marker.unitPurchasePrice,
 						},
 					},
 					{ runValidators: true }
-				).catch(err => next({ code: err.errors ? 5 : 2, err }));
+				).catch(err => next({ code: 2, err }));
+
+				if (!marker.product.dividedMarkers) {
+					await Product.findByIdAndUpdate(
+						marker.product,
+						{
+							$set: {
+								quantity: productQuantityOld - quantity,
+							},
+						},
+						{ runValidators: true }
+					).catch(err => next({ code: 2, err }));
+				}
+
+				if (marker.product.receiptUnits === 'nmp' && marker.product.unitIssue === 'pce') {
+					marker.quantityPackages = (marker.quantity - quantity) / marker.quantityInUnit;
+				}
+				marker.quantity -= quantity;
+
+				await marker.save();
 
 				let writeOffObj = {
 					stock: stockId,
@@ -102,7 +113,7 @@ writeOffsRouter.post(
 
 						return res.json(writeOff.marker);
 					})
-					.catch(err => next({ code: err.errors ? 5 : 2, err }));
+					.catch(err => next({ code: 2, err }));
 			})
 			.catch(err => next(err));
 	}

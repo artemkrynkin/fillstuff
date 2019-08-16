@@ -170,43 +170,51 @@ class MarkerRow extends Component {
 					</div>
 				</TableCell>
 
-				<DialogMarkerEdit
-					dialogOpen={dialogMarkerEdit}
-					onCloseDialog={this.onCloseDialogMarkerEdit}
-					currentStockId={currentStockId}
-					selectedProduct={product}
-					selectedMarker={marker}
-				/>
+				{dialogMarkerEdit ? (
+					<DialogMarkerEdit
+						dialogOpen={dialogMarkerEdit}
+						onCloseDialog={this.onCloseDialogMarkerEdit}
+						currentStockId={currentStockId}
+						selectedProduct={product}
+						selectedMarker={marker}
+					/>
+				) : null}
 
-				<DialogMarkerArchive
-					dialogOpen={dialogMarkerArchive}
-					onCloseDialog={this.onCloseDialogMarkerArchive}
-					currentStockId={currentStockId}
-					dataType={'marker'}
-					selectedProduct={product}
-					selectedMarker={marker}
-				/>
+				{dialogMarkerArchive ? (
+					<DialogMarkerArchive
+						dialogOpen={dialogMarkerArchive}
+						onCloseDialog={this.onCloseDialogMarkerArchive}
+						currentStockId={currentStockId}
+						dataType={'marker'}
+						selectedProduct={product}
+						selectedMarker={marker}
+					/>
+				) : null}
 
-				<DialogMarkerQRCodePrint
-					dialogOpen={dialogMarkerQRCodePrint}
-					onCloseDialog={this.onCloseDialogMarkerQRCodePrint}
-					currentStockId={currentStockId}
-					dataType={'marker'}
-					QRCodeData={{
-						type: 'marker',
-						markerId: marker._id,
-					}}
-					selectedProduct={product}
-					selectedMarker={marker}
-				/>
+				{dialogMarkerQRCodePrint ? (
+					<DialogMarkerQRCodePrint
+						dialogOpen={dialogMarkerQRCodePrint}
+						onCloseDialog={this.onCloseDialogMarkerQRCodePrint}
+						currentStockId={currentStockId}
+						dataType={'marker'}
+						QRCodeData={{
+							type: 'marker',
+							markerId: marker._id,
+						}}
+						selectedProduct={product}
+						selectedMarker={marker}
+					/>
+				) : null}
 
-				<DialogCreateWriteOff
-					dialogOpen={dialogCreateWriteOff}
-					onCloseDialog={this.onCloseDialogCreateWriteOff}
-					currentStockId={currentStockId}
-					selectedProduct={product}
-					selectedMarker={marker}
-				/>
+				{dialogCreateWriteOff ? (
+					<DialogCreateWriteOff
+						dialogOpen={dialogCreateWriteOff}
+						onCloseDialog={this.onCloseDialogCreateWriteOff}
+						currentStockId={currentStockId}
+						selectedProduct={product}
+						selectedMarker={marker}
+					/>
+				) : null}
 			</TableRow>
 		);
 	}

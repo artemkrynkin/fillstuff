@@ -73,19 +73,26 @@ productsRouter.post(
 		return product
 			.save()
 			.then(async product => {
-				await product.populate({ path: 'markers', populate: { path: 'mainCharacteristic characteristics' } }).execPopulate();
+				await product.populate({ path: 'stock markers', populate: { path: 'mainCharacteristic characteristics' } }).execPopulate();
+
+				const {
+					stock: { status: statusOld },
+				} = product;
 
 				await Stock.findByIdAndUpdate(
 					stockId,
 					{
-						$inc: {
-							'status.numberProducts': 1,
-							'status.numberMarkers': product.markers.length,
-							'status.stockCost': product.markers.reduce((sum, marker) => sum + marker.quantity * marker.unitPurchasePrice, 0),
+						$set: {
+							'status.numberProducts': statusOld.numberProducts + 1,
+							'status.numberMarkers': statusOld.numberMarkers + product.markers.length,
+							'status.stockCost':
+								statusOld.stockCost + product.markers.reduce((sum, marker) => sum + marker.quantity * marker.unitPurchasePrice, 0),
 						},
 					},
 					{ runValidators: true }
 				).catch(err => next({ code: 2, err }));
+
+				await product.depopulate('stock').execPopulate();
 
 				res.json(product);
 			})
@@ -147,7 +154,7 @@ productsRouter.get(
 	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
 	(req, res, next) => {
 		Product.findByIdAndUpdate(req.params.productId, { isArchived: true })
-			.populate('markers')
+			.populate('stock markers')
 			.then(async product => {
 				const markersIds = product.markers.filter(marker => !marker.isArchived).map(marker => marker._id);
 
@@ -155,16 +162,21 @@ productsRouter.get(
 					await Marker.updateMany({ _id: { $in: markersIds } }, { $set: { isArchived: true } }).catch(err => next({ code: 2, err }));
 				}
 
+				const {
+					stock: { status: statusOld },
+				} = product;
+
 				await Stock.findByIdAndUpdate(
 					product.stock,
 					{
-						$inc: {
-							'status.numberProducts': -1,
-							'status.numberMarkers': -markersIds.length,
-							'status.stockCost': -product.markers.reduce(
-								(sum, marker) => (!marker.isArchived ? sum + marker.quantity * marker.unitPurchasePrice : sum),
-								0
-							),
+						$set: {
+							'status.numberProducts': statusOld.numberProducts - 1,
+							'status.numberMarkers': statusOld.numberMarkers - markersIds.length,
+							'status.stockCost':
+								statusOld.stockCost -
+								product.markers.reduce((sum, marker) => {
+									return !marker.isArchived ? sum + marker.quantity * marker.unitPurchasePrice : sum;
+								}, 0),
 						},
 					},
 					{ runValidators: true }

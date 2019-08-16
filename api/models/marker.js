@@ -39,6 +39,8 @@ let Marker = new Schema({
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,
+		get: value => numberToFixedDouble(value, 0),
+		set: value => numberToFixedDouble(value, 0),
 	},
 	// Количество упаковок
 	quantityPackages: {

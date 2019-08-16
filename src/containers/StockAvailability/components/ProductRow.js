@@ -186,32 +186,38 @@ class ProductRow extends Component {
 					</div>
 				</td>
 
-				<DialogProductEdit
-					dialogOpen={dialogProductEdit}
-					onCloseDialog={this.onCloseDialogProductEdit}
-					currentStockId={currentStockId}
-					selectedProduct={product}
-				/>
+				{dialogProductEdit ? (
+					<DialogProductEdit
+						dialogOpen={dialogProductEdit}
+						onCloseDialog={this.onCloseDialogProductEdit}
+						currentStockId={currentStockId}
+						selectedProduct={product}
+					/>
+				) : null}
 
-				<DialogProductArchive
-					dialogOpen={dialogProductArchive}
-					onCloseDialog={this.onCloseDialogProductArchive}
-					currentStockId={currentStockId}
-					dataType={'product'}
-					selectedProduct={product}
-				/>
+				{dialogProductArchive ? (
+					<DialogProductArchive
+						dialogOpen={dialogProductArchive}
+						onCloseDialog={this.onCloseDialogProductArchive}
+						currentStockId={currentStockId}
+						dataType={'product'}
+						selectedProduct={product}
+					/>
+				) : null}
 
-				<DialogProductQRCodePrint
-					dialogOpen={dialogProductQRCodePrint}
-					onCloseDialog={this.onCloseDialogProductQRCodePrint}
-					currentStockId={currentStockId}
-					dataType={'product'}
-					QRCodeData={{
-						type: 'product',
-						productId: product._id,
-					}}
-					selectedProduct={product}
-				/>
+				{dialogProductQRCodePrint ? (
+					<DialogProductQRCodePrint
+						dialogOpen={dialogProductQRCodePrint}
+						onCloseDialog={this.onCloseDialogProductQRCodePrint}
+						currentStockId={currentStockId}
+						dataType={'product'}
+						QRCodeData={{
+							type: 'product',
+							productId: product._id,
+						}}
+						selectedProduct={product}
+					/>
+				) : null}
 			</TableRow>
 		);
 	}

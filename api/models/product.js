@@ -4,6 +4,8 @@ import i18n from 'i18n';
 
 import { unitTypes } from 'shared/checkProductAndMarkers';
 
+import { numberToFixedDouble } from 'api/utils';
+
 const Schema = mongoose.Schema;
 
 let Product = new Schema({
@@ -52,6 +54,8 @@ let Product = new Schema({
 	quantity: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
+		get: value => numberToFixedDouble(value),
+		set: value => numberToFixedDouble(value),
 	},
 	// Минимальный остаток
 	minimumBalance: {

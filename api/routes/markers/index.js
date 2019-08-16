@@ -18,12 +18,17 @@ markersRouter.put(
 	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
 	(req, res, next) => {
 		return Marker.findById(req.params.markerId)
-			.populate('product')
+			.populate('stock product')
 			.then(async marker => {
 				const markerUpdate = { ...req.body };
-				const { quantity: quantityOld, unitPurchasePrice: unitPurchasePriceOld } = marker;
+				const {
+					stock: { status: statusOld },
+					product: { quantity: productQuantityOld },
+					quantity: quantityOld,
+					unitPurchasePrice: unitPurchasePriceOld,
+				} = marker;
 
-				await checkMarker(marker.stock, marker.product, markerUpdate);
+				await checkMarker(marker.stock._id, marker.product, markerUpdate);
 
 				if (marker.product.receiptUnits === 'nmp' && marker.product.unitIssue === 'pce') {
 					marker.quantity = markerUpdate.quantity;
@@ -43,27 +48,27 @@ markersRouter.put(
 
 				await marker.save().catch(err => next({ code: err.errors ? 5 : 2, err }));
 
+				await Stock.findByIdAndUpdate(
+					marker.stock,
+					{
+						$set: {
+							'status.stockCost': statusOld.stockCost + (marker.quantity * marker.unitPurchasePrice - quantityOld * unitPurchasePriceOld),
+						},
+					},
+					{ runValidators: true }
+				).catch(err => next({ code: 2, err }));
+
 				if (!marker.product.dividedMarkers) {
 					await Product.findByIdAndUpdate(
 						marker.product,
 						{
-							$inc: {
-								quantity: +(marker.quantity - quantityOld),
+							$set: {
+								quantity: productQuantityOld + (marker.quantity - quantityOld),
 							},
 						},
 						{ runValidators: true }
 					).catch(err => next({ code: 2, err }));
 				}
-
-				await Stock.findByIdAndUpdate(
-					marker.stock,
-					{
-						$inc: {
-							'status.stockCost': +(marker.quantity * marker.unitPurchasePrice - quantityOld * unitPurchasePriceOld),
-						},
-					},
-					{ runValidators: true }
-				).catch(err => next({ code: 2, err }));
 
 				await marker.populate('mainCharacteristic characteristics').execPopulate();
 
@@ -79,24 +84,35 @@ markersRouter.get(
 	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
 	(req, res, next) => {
 		Marker.findByIdAndUpdate(req.params.markerId, { isArchived: true })
-			.populate('product')
+			.populate('stock product')
 			.then(async marker => {
-				if (!marker.product.dividedMarkers) {
-					await Product.findByIdAndUpdate(marker.product._id, { $inc: { quantity: -marker.quantity } }).catch(err =>
-						next({ code: 2, err })
-					);
-				}
+				const {
+					stock: { status: statusOld },
+					product: { quantity: productQuantityOld },
+				} = marker;
 
 				await Stock.findByIdAndUpdate(
 					marker.stock,
 					{
-						$inc: {
-							'status.numberMarkers': -1,
-							'status.stockCost': -(marker.quantity * marker.unitPurchasePrice),
+						$set: {
+							'status.numberMarkers': statusOld.numberMarkers - 1,
+							'status.stockCost': statusOld.stockCost - marker.quantity * marker.unitPurchasePrice,
 						},
 					},
 					{ runValidators: true }
 				).catch(err => next({ code: 2, err }));
+
+				if (!marker.product.dividedMarkers) {
+					await Product.findByIdAndUpdate(
+						marker.product,
+						{
+							$set: {
+								'status.stockCost': productQuantityOld - marker.quantity,
+							},
+						},
+						{ runValidators: true }
+					).catch(err => next({ code: 2, err }));
+				}
 
 				res.json('success');
 			})

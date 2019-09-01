@@ -30,7 +30,7 @@ let Stock = new Schema({
 		stockPrice: {
 			type: Number,
 			default: 0,
-			get: value => numberToFixedDouble(value),
+			// get: value => numberToFixedDouble(value),
 			set: value => numberToFixedDouble(value),
 		},
 	},

@@ -70,12 +70,12 @@ class DialogPositionCreateEdit extends Component {
 			initial: {},
 		};
 
-		if (quantity) receipt.initial.quantity = quantity;
-		if (quantityPackages) receipt.initial.quantityPackages = quantityPackages;
-		if (quantityInUnit) receipt.quantityInUnit = quantityInUnit;
-		if (purchasePrice) receipt.purchasePrice = purchasePrice;
-		if (sellingPrice) receipt.sellingPrice = sellingPrice;
-		if (unitSellingPrice) receipt.unitSellingPrice = unitSellingPrice;
+		if (quantity !== undefined) receipt.initial.quantity = quantity;
+		if (quantityPackages !== undefined) receipt.initial.quantityPackages = quantityPackages;
+		if (quantityInUnit !== undefined) receipt.quantityInUnit = quantityInUnit;
+		if (purchasePrice !== undefined) receipt.purchasePrice = purchasePrice;
+		if (sellingPrice !== undefined) receipt.sellingPrice = sellingPrice;
+		if (unitSellingPrice !== undefined) receipt.unitSellingPrice = unitSellingPrice;
 
 		this.props.createPosition(position, receipt).then(response => {
 			if (response.status === 'success') {
@@ -104,10 +104,10 @@ class DialogPositionCreateEdit extends Component {
 
 		let receipt = {};
 
-		if (quantityInUnit && quantityInUnit !== quantityInUnitOld) receipt.quantityInUnit = quantityInUnit;
-		if (purchasePrice && purchasePrice !== purchasePriceOld) receipt.purchasePrice = purchasePrice;
-		if (sellingPrice && sellingPrice !== sellingPriceOld) receipt.sellingPrice = sellingPrice;
-		if (unitSellingPrice && unitSellingPrice !== unitSellingPriceOld) receipt.unitSellingPrice = unitSellingPrice;
+		if (quantityInUnit !== undefined && quantityInUnit !== quantityInUnitOld) receipt.quantityInUnit = quantityInUnit;
+		if (purchasePrice !== undefined && purchasePrice !== purchasePriceOld) receipt.purchasePrice = purchasePrice;
+		if (sellingPrice !== undefined && sellingPrice !== sellingPriceOld) receipt.sellingPrice = sellingPrice;
+		if (unitSellingPrice !== undefined && unitSellingPrice !== unitSellingPriceOld) receipt.unitSellingPrice = unitSellingPrice;
 
 		this.props.editPosition(position._id, position, receipt).then(response => {
 			if (response.status === 'success') {

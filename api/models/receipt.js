@@ -39,14 +39,14 @@ let Receipt = new Schema({
 			type: Number,
 			min: [0, 'Не может быть меньше 0'],
 			required: [true, i18n.__('Обязательное поле')],
-			get: value => numberToFixedDouble(value, 0),
+			// get: value => numberToFixedDouble(value, 0),
 			set: value => numberToFixedDouble(value, 0),
 		},
 		// Количество упаковок
 		quantityPackages: {
 			type: Number,
 			min: [0, 'Не может быть меньше 0'],
-			get: value => numberToFixedDouble(value, 0),
+			// get: value => numberToFixedDouble(value, 0),
 			set: value => numberToFixedDouble(value, 0),
 		},
 	},
@@ -56,14 +56,14 @@ let Receipt = new Schema({
 			type: Number,
 			min: [0, 'Не может быть меньше 0'],
 			required: [true, i18n.__('Обязательное поле')],
-			get: value => numberToFixedDouble(value, 0),
+			// get: value => numberToFixedDouble(value, 0),
 			set: value => numberToFixedDouble(value, 0),
 		},
 		// Количество упаковок
 		quantityPackages: {
 			type: Number,
 			min: [0, 'Не может быть меньше 0'],
-			get: value => numberToFixedDouble(value, 0),
+			// get: value => numberToFixedDouble(value, 0),
 			set: value => numberToFixedDouble(value, 0),
 		},
 	},
@@ -82,7 +82,7 @@ let Receipt = new Schema({
 				type: Number,
 				min: [0, 'Не может быть меньше 0'],
 				required: [true, i18n.__('Обязательное поле')],
-				get: value => numberToFixedDouble(value, 0),
+				// get: value => numberToFixedDouble(value, 0),
 				set: value => numberToFixedDouble(value, 0),
 			},
 			comment: {
@@ -95,35 +95,35 @@ let Receipt = new Schema({
 	quantityInUnit: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
-		get: value => numberToFixedDouble(value, 0),
+		// get: value => numberToFixedDouble(value, 0),
 		set: value => numberToFixedDouble(value, 0),
 	},
 	// Цена покупки
 	purchasePrice: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
-		get: value => numberToFixedDouble(value),
+		// get: value => numberToFixedDouble(value),
 		set: value => numberToFixedDouble(value),
 	},
 	// Цена продажи
 	sellingPrice: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
-		get: value => numberToFixedDouble(value),
+		// get: value => numberToFixedDouble(value),
 		set: value => numberToFixedDouble(value),
 	},
 	// Цена покупки единицы
 	unitPurchasePrice: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
-		get: value => numberToFixedDouble(value),
+		// get: value => numberToFixedDouble(value),
 		set: value => numberToFixedDouble(value),
 	},
 	// Цена продажи единицы
 	unitSellingPrice: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
-		get: value => numberToFixedDouble(value),
+		// get: value => numberToFixedDouble(value),
 		set: value => numberToFixedDouble(value),
 	},
 	comment: {

@@ -39,17 +39,22 @@ export const characteristicTypeTransform = characteristicType => {
 };
 
 export const recountReceipt = ({ unitReceipt, unitIssue }, isFree, receipt) => {
-	if (receipt.initial.quantityPackages) receipt.current.quantityPackages = receipt.initial.quantityPackages;
+	if (receipt.initial.quantityPackages !== undefined) receipt.current.quantityPackages = receipt.initial.quantityPackages;
 
 	/**
 	 * Считаем "количество"
 	 *
 	 * количество = количество упаковок * количество штук в упаковке
 	 */
-	if (receipt.initial.quantityPackages && receipt.quantityInUnit && unitReceipt === 'nmp' && unitIssue === 'pce') {
+	if (
+		receipt.initial.quantityPackages !== undefined &&
+		receipt.quantityInUnit !== undefined &&
+		unitReceipt === 'nmp' &&
+		unitIssue === 'pce'
+	) {
 		receipt.initial.quantity = receipt.initial.quantityPackages * receipt.quantityInUnit;
 	}
-	if (receipt.initial.quantity) {
+	if (receipt.initial.quantity !== undefined) {
 		receipt.current.quantity = receipt.initial.quantity;
 	}
 
@@ -63,10 +68,10 @@ export const recountReceipt = ({ unitReceipt, unitIssue }, isFree, receipt) => {
 	 * иначе:
 	 * цена покупки единицы = цена покупки
 	 */
-	if (receipt.purchasePrice && receipt.quantityInUnit && unitReceipt === 'nmp' && unitIssue === 'pce') {
+	if (receipt.purchasePrice !== undefined && receipt.quantityInUnit !== undefined && unitReceipt === 'nmp' && unitIssue === 'pce') {
 		receipt.unitPurchasePrice = receipt.purchasePrice / receipt.quantityInUnit;
 	} else {
-		if (receipt.purchasePrice) {
+		if (receipt.purchasePrice !== undefined) {
 			receipt.unitPurchasePrice = receipt.purchasePrice;
 		}
 	}
@@ -81,10 +86,10 @@ export const recountReceipt = ({ unitReceipt, unitIssue }, isFree, receipt) => {
 	 * иначе:
 	 * цена продажи единицы = цена продажи
 	 */
-	if (receipt.quantityInUnit && receipt.unitSellingPrice && unitReceipt === 'nmp' && unitIssue === 'pce') {
+	if (receipt.quantityInUnit !== undefined && receipt.unitSellingPrice !== undefined && unitReceipt === 'nmp' && unitIssue === 'pce') {
 		receipt.sellingPrice = receipt.quantityInUnit * receipt.unitSellingPrice;
 	} else {
-		if (receipt.sellingPrice) {
+		if (receipt.sellingPrice !== undefined) {
 			receipt.unitSellingPrice = receipt.sellingPrice;
 		}
 	}

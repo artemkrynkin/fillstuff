@@ -1,13 +1,10 @@
 import axios from 'axios';
 
-export const getWriteOffs = (stockId, productId, userId) => {
+export const getWriteOffs = (stockId, params) => {
 	return async dispatch => {
 		dispatch({ type: 'REQUEST_WRITE_OFFS' });
 
-		const requestParams = { stockId };
-
-		if (productId) requestParams.productId = productId;
-		if (userId) requestParams.userId = userId;
+		const requestParams = { stockId, ...params };
 
 		return await axios
 			.get('/api/write-offs', {
@@ -20,42 +17,30 @@ export const getWriteOffs = (stockId, productId, userId) => {
 				});
 			})
 			.catch(error => {
-				if (error.response && error.response.status === 401) {
-					dispatch({
-						type: 'UNAUTHORIZED_USER',
-						payload: error.response.data,
-					});
-				} else {
-					console.error(error.response);
-				}
+				console.error(error.response);
+
+				return Promise.resolve({ status: 'error' });
 			});
 	};
 };
 
-export const createWriteOff = (stockId, markerId, userId, values) => {
+export const createWriteOff = (stockId, userId, positionId, values) => {
 	return async dispatch => {
 		return await axios
-			.post('/api/write-offs/marker', {
+			.post('/api/write-offs', {
 				stockId,
-				markerId,
 				userId,
+				positionId,
 				...values,
 			})
 			.then(async response => {
-				// const { data: writeOff } = response;
-
-				// await dispatch({
-				//   type: 'CREATE_WRITE_OFF',
-				//   payload: writeOff,
-				// });
-				const marker = response.data;
+				const position = response.data;
 
 				dispatch({
-					type: 'EDIT_MARKER',
+					type: 'EDIT_POSITION',
 					payload: {
-						productId: marker.product,
-						markerId,
-						marker,
+						positionId,
+						position,
 					},
 				});
 
@@ -66,6 +51,8 @@ export const createWriteOff = (stockId, markerId, userId, values) => {
 					return Promise.resolve({ status: 'error', data: error.response.data });
 				} else {
 					console.error(error);
+
+					return Promise.resolve({ status: 'error' });
 				}
 			});
 	};

@@ -3,9 +3,9 @@ import { Router } from 'express';
 import { isAuthedResolver, hasPermissionsInStock } from 'api/utils/permissions';
 
 import Stock from 'api/models/stock';
-import Product from 'api/models/product';
-import Marker from 'api/models/marker';
+import Position from 'api/models/position';
 import WriteOff from 'api/models/writeOff';
+import Receipt from '../../models/receipt';
 
 const writeOffsRouter = Router();
 
@@ -16,21 +16,34 @@ writeOffsRouter.get(
 	isAuthedResolver,
 	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
 	(req, res, next) => {
-		const { stockId, markerId, userId } = req.query;
+		const currentDate = new Date();
 
-		const conditions = { stock: stockId };
+		const {
+			stockId,
+			userId,
+			endDateLt = req.query.endDate ? new Date(req.query.endDate) : currentDate,
+			startDateGte = req.query.startDate
+				? new Date(req.query.startDate)
+				: new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, currentDate.getDate()),
+		} = req.query;
 
-		if (markerId) conditions.marker = markerId;
+		const conditions = {
+			stock: stockId,
+			createdAt: {
+				$gte: startDateGte,
+				$lt: endDateLt,
+			},
+		};
+
 		if (userId) conditions.user = userId;
 
 		WriteOff.find(conditions)
 			.populate({
-				path: 'marker',
+				path: 'position',
 				populate: {
-					path: 'product mainCharacteristic',
-					select: 'createdAt name label type value',
+					path: 'characteristics',
 				},
-				select: 'product mainCharacteristic',
+				select: 'createdAt name characteristics',
 			})
 			.populate('user', 'name email')
 			.sort({ createdAt: -1 })
@@ -40,79 +53,82 @@ writeOffsRouter.get(
 );
 
 writeOffsRouter.post(
-	'/write-offs/marker',
+	'/write-offs',
 	// isAuthedResolver,
 	// (req, res, next) => hasPermissionsInStock(req, res, next, ['products.scanning']),
 	(req, res, next) => {
-		const { stockId, markerId, userId, quantity = req.body.quantity || 1 } = req.body;
+		const { stockId, userId, positionId, quantity = req.body.quantity || 1, comment } = req.body;
 
-		return Marker.findById(markerId)
-			.populate('stock product')
-			.then(async marker => {
-				if (marker.quantity === 0 || marker.quantity - quantity < 0)
+		return Position.findById(positionId)
+			.populate({ path: 'stock', select: 'status' })
+			.populate('activeReceipt')
+			.populate({
+				path: 'receipts',
+				match: { status: /received|active/ },
+			})
+			.then(async position => {
+				const {
+					stock: { status: statusOld },
+					activeReceipt,
+					receipts,
+				} = position;
+
+				const allQuantityReceipts = receipts.reduce((sum, receipt) => sum + receipt.current.quantity, 0);
+
+				if (allQuantityReceipts === 0 || allQuantityReceipts - quantity < 0) {
 					return res.json({
 						code: 7,
 						message:
-							marker.quantity === 0
+							allQuantityReceipts === 0
 								? 'Маркер отсутствует на складе'
-								: marker.quantity - quantity < 0
+								: allQuantityReceipts - quantity < 0
 								? 'Вы пытаетесь списать количество большее, чем есть на складе'
 								: 'Unknown error',
 					});
+				}
 
-				const {
-					stock: { status: statusOld },
-					product: { quantity: productQuantityOld },
-				} = marker;
+				const activeReceiptCurrentSet = {
+					quantity: activeReceipt.current.quantity - quantity,
+				};
 
-				await Stock.findByIdAndUpdate(
+				if (position.unitReceipt === 'nmp' && position.unitIssue === 'pce') {
+					activeReceiptCurrentSet.quantityPackages = (activeReceipt.current.quantity - quantity) / activeReceipt.quantityInUnit;
+				}
+
+				Receipt.findByIdAndUpdate(activeReceipt._id, { $set: { current: activeReceiptCurrentSet } }, { runValidators: true }).catch(err =>
+					next({ code: 2, err })
+				);
+
+				Stock.findByIdAndUpdate(
 					stockId,
 					{
 						$set: {
-							'status.stockCost': statusOld.stockCost - quantity * marker.unitPurchasePrice,
+							'status.stockPrice': statusOld.stockPrice - quantity * activeReceipt.unitPurchasePrice,
 						},
 					},
 					{ runValidators: true }
 				).catch(err => next({ code: 2, err }));
 
-				if (!marker.product.dividedMarkers) {
-					await Product.findByIdAndUpdate(
-						marker.product,
-						{
-							$set: {
-								quantity: productQuantityOld - quantity,
-							},
-						},
-						{ runValidators: true }
-					).catch(err => next({ code: 2, err }));
-				}
-
-				if (marker.product.receiptUnits === 'nmp' && marker.product.unitIssue === 'pce') {
-					marker.quantityPackages = (marker.quantity - quantity) / marker.quantityInUnit;
-				}
-				marker.quantity -= quantity;
-
-				await marker.save();
-
-				let writeOffObj = {
+				const newWriteOff = new WriteOff({
 					stock: stockId,
-					marker: markerId,
 					user: userId,
+					position: position._id,
+					receipt: position.activeReceipt._id,
 					quantity: quantity,
-					unitPurchasePrice: marker.unitPurchasePrice,
-				};
+					comment: comment,
+				});
 
-				if (!marker.isFree) writeOffObj.unitSellingPrice = marker.unitSellingPrice;
+				newWriteOff.save().catch(err => next({ code: 2, err }));
 
-				const writeOff = new WriteOff(writeOffObj);
-
-				writeOff
-					.save()
-					.then(async writeOff => {
-						await writeOff.populate({ path: 'marker', populate: { path: 'mainCharacteristic characteristics' } }).execPopulate();
-
-						return res.json(writeOff.marker);
+				Position.findById(position._id)
+					.populate({
+						path: 'activeReceipt characteristics',
 					})
+					.populate({
+						path: 'receipts',
+						match: { status: /received|active/ },
+					})
+					.then(position => res.json(position))
 					.catch(err => next({ code: 2, err }));
 			})
 			.catch(err => next(err));

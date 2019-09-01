@@ -32,6 +32,9 @@ import {
 	faSyncAlt as farSyncAlt,
 	faPlus as farPlus,
 	faSquare as farSquare,
+	faExclamationCircle as farExclamationCircle,
+	faChevronDown as farChevronDown,
+	faChevronUp as farChevronUp,
 } from '@fortawesome/pro-regular-svg-icons';
 
 import {
@@ -42,6 +45,7 @@ import {
 	faTimes as falTimes,
 	faCog as falCog,
 	faQuestionCircle as falQuestionCircle,
+	faExclamationCircle as falExclamationCircle,
 	faVideo as falVideo,
 	faPlus as falPlus,
 	faQrcode as falQrcode,
@@ -90,6 +94,9 @@ library.add(
 	farSyncAlt,
 	farPlus,
 	farSquare,
+	farExclamationCircle,
+	farChevronDown,
+	farChevronUp,
 
 	// Light
 	falAngleLeft,
@@ -99,6 +106,7 @@ library.add(
 	falTimes,
 	falCog,
 	falQuestionCircle,
+	falExclamationCircle,
 	falVideo,
 	falPlus,
 	falQrcode,

@@ -17,7 +17,9 @@ export const getCharacteristics = stockId => {
 				});
 			})
 			.catch(error => {
-				if (error) console.error(error.response);
+				console.error(error);
+
+				return Promise.resolve({ status: 'error' });
 			});
 	};
 };
@@ -39,11 +41,9 @@ export const createCharacteristic = values => {
 				return Promise.resolve({ status: 'success', data: characteristic });
 			})
 			.catch(error => {
-				if (error.response) {
-					return Promise.resolve({ status: 'error' });
-				} else {
-					console.error(error);
-				}
+				console.error(error);
+
+				return Promise.resolve({ status: 'error' });
 			});
 	};
 };

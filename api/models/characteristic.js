@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import i18n from 'i18n';
 
-import { characteristicsTypes } from 'shared/checkProductAndMarkers';
+import { characteristicsTypes } from 'shared/checkPositionAndReceipt';
 
 const Schema = mongoose.Schema;
 
@@ -10,6 +10,7 @@ let Characteristic = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'Stock',
 		required: [true, i18n.__('Обязательное поле')],
+		select: false,
 	},
 	type: {
 		type: String,
@@ -25,6 +26,10 @@ let Characteristic = new Schema({
 		type: String,
 		required: [true, i18n.__('Обязательное поле')],
 		trim: true,
+	},
+	__v: {
+		type: Number,
+		select: false,
 	},
 });
 

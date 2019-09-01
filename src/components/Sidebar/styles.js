@@ -28,6 +28,7 @@ export const ExpansionPanel = withStyles({
 export const ExpansionPanelSummary = withStyles({
 	root: {
 		minHeight: 42,
+		userSelect: 'auto',
 		'&$expanded': {
 			minHeight: 42,
 		},

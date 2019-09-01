@@ -1,0 +1,61 @@
+@import '~src/styles/helpers/_colors.styl';
+@import '~src/styles/helpers/_fonts.styl';
+@import '~src/styles/helpers/_media_queries.styl';
+
+.dialog-print-qr-codes-product
+  &__row
+    cursor pointer
+    transition background-color 150ms cubic-bezier(0.4, 0, 0.2, 1)
+
+    &:hover
+      background-color $c-br-1
+
+    &_selected,
+    &_selected:hover
+      background-color $c-br-1
+
+  &__cell
+    height 65px
+
+    &_name
+      position relative
+
+      &:before
+        background-color $c-t-300
+        content ''
+        height 100%
+        left -4px
+        position absolute
+        top 0
+        transition left 200ms cubic-bezier(0.4, 0, 0.2, 1)
+        width 4px
+
+  &__row_selected &__cell_name
+    &:before
+      left 0
+
+  &__qr-container
+    align-items center
+    display flex
+    flex-direction column
+    min-height 400px
+    margin 0 auto
+    justify-content center
+    transition width 200ms ease-out
+
+  &__qr-code
+    transition height 200ms ease-out, width 200ms ease-out
+
+  &__qr-name,
+  &__qr-characteristics
+    font-family $roboto
+    line-height 1.2
+    hyphens auto
+    text-align center
+    transition font-size 200ms ease-out, margin 200ms ease-out
+
+    &_hide
+      display none
+
+  &__qr-name
+    font-weight bold

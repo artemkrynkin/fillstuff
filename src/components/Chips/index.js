@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ClassNames from 'classnames';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -10,10 +11,27 @@ const renderChipLabel = chip => chip;
 const removeChip = (chips, index) => chips.splice(index, 1);
 
 const Chips = props => {
-	const { chips, onRenderChipLabel = renderChipLabel, onRemoveChip = removeChip } = props;
+	const { className, chips, onRenderChipLabel = renderChipLabel, onRemoveChip = removeChip } = props;
+
+	let chipsClassesObj = {
+		chips: true,
+	};
+
+	if (className)
+		chipsClassesObj = {
+			...Object.fromEntries(
+				className
+					.split(' ')
+					.filter(val => val)
+					.map(key => [key, true])
+			),
+			...chipsClassesObj,
+		};
+
+	const chipsClasses = ClassNames(chipsClassesObj);
 
 	return (
-		<div className="chips">
+		<div className={chipsClasses}>
 			{chips.map((chip, index) => (
 				<div className="chips__item" key={index}>
 					<div className="chips__label" children={onRenderChipLabel(chip)} />

@@ -28,7 +28,7 @@
 		padding 10px 0
 		position relative
 		text-decoration none
-		transition opacity 250ms cubic-bezier(0.4, 0, 0.2, 1)
+		transition opacity 250ms ease-in-out
 		width 166px
 
 		&:after
@@ -37,7 +37,7 @@
 			height 100%
 			position absolute
 			opacity 0
-			transition opacity 250ms cubic-bezier(0.4, 0, 0.2, 1)
+			transition opacity 250ms ease-in-out
 			width 100%
 
 		&:hover
@@ -58,7 +58,7 @@
 		border-radius 8px
 		box-shadow none
 		margin 0 10px
-		transition background-color 300ms cubic-bezier(0.4, 0, 0.2, 1), border-radius 300ms cubic-bezier(0.4, 0, 0.2, 1), margin 300ms cubic-bezier(0.4, 0, 0.2, 1), padding 300ms cubic-bezier(0.4, 0, 0.2, 1)
+		transition background-color 300ms ease-out, border-radius 300ms cubic-bezier(0.4, 0, 0.2, 1), margin 300ms cubic-bezier(0.4, 0, 0.2, 1), padding 300ms cubic-bezier(0.4, 0, 0.2, 1)
 		opacity 0.9
 
 		&:hover
@@ -67,7 +67,7 @@
 
 	&__menu-expansion-summary
 		padding 0 14px
-		transition padding 200ms cubic-bezier(0.4, 0, 0.2, 1)
+		transition padding 300ms cubic-bezier(0.4, 0, 0.2, 1)
 
 		&[aria-expanded="true"]
 			padding 0 24px
@@ -80,12 +80,11 @@
 		color $c-sg-2
 		display flex
 		font-size 14px
-		transition color 300ms cubic-bezier(0.4, 0, 0.2, 1), font-weight 300ms cubic-bezier(0.4, 0, 0.2, 1), letter-spacing 300ms cubic-bezier(0.4, 0, 0.2, 1), transform 300ms cubic-bezier(0.4, 0, 0.2, 1)
+		transition color 300ms cubic-bezier(0.4, 0, 0.2, 1), font-weight 300ms cubic-bezier(0.4, 0, 0.2, 1), transform 300ms cubic-bezier(0.4, 0, 0.2, 1)
 
 	&__menu-expansion-summary[aria-expanded="true"] &__menu-expansion-title
 		color $c-sg-1
 		font-weight 600
-		letter-spacing 1px
 		transform translateX(-34px)
 
 	&__menu-expansion-title-icon
@@ -117,7 +116,7 @@
 		opacity 0.9
 		padding 12px 14px
 		text-decoration none
-		transition background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), color 150ms cubic-bezier(0.4, 0, 0.2, 1)
+		transition background-color 150ms ease-out, color 150ms ease-out
 
 		&:hover
 			background-color alpha($c-sg-2, 0.1)
@@ -138,7 +137,7 @@
 		margin-right 14px
 		opacity 0.5
 		text-align center
-		transition opacity 150ms cubic-bezier(0.4, 0, 0.2, 1)
+		transition opacity 150ms ease-out
 		width 18px
 
 		& svg

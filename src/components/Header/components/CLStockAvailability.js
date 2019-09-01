@@ -9,29 +9,39 @@ import TitlePageOrLogo from './TitlePageOrLogo';
 
 import { getCharacteristics } from 'src/actions/characteristics';
 
-const DialogProductAndMarkersCreate = Loadable({
-	loader: () => import('src/containers/Dialogs/ProductAndMarkersCreate' /* webpackChunkName: "Dialog_ProductAndMarkersCreate" */),
+const DialogPositionCreate = Loadable({
+	loader: () => import('src/containers/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateEdit" */),
+	loading: () => null,
+	delay: 200,
+});
+
+const DialogPositionGroupCreate = Loadable({
+	loader: () => import('src/containers/Dialogs/PositionGroupCreateEditAdd' /* webpackChunkName: "Dialog_PositionGroupCreateEditAdd" */),
 	loading: () => null,
 	delay: 200,
 });
 
 class CLStockAvailability extends Component {
 	state = {
-		dialogProductAndMarkersCreate: false,
-		dialogPrintQRCodesProduct: false,
+		dialogPositionCreate: false,
+		dialogPositionGroupCreate: false,
 	};
 
-	onOpenDialogProductAndMarkersCreate = async () => {
+	onOpenDialogPositionCreate = async () => {
 		await this.props.getCharacteristics();
 
-		this.setState({ dialogProductAndMarkersCreate: true });
+		this.setState({ dialogPositionCreate: true });
 	};
 
-	onCloseDialogProductAndMarkersCreate = () => this.setState({ dialogProductAndMarkersCreate: false });
+	onCloseDialogPositionCreate = () => this.setState({ dialogPositionCreate: false });
+
+	onOpenDialogPositionGroupCreate = async () => this.setState({ dialogPositionGroupCreate: true });
+
+	onCloseDialogPositionGroupCreate = () => this.setState({ dialogPositionGroupCreate: false });
 
 	render() {
 		const { pageTitle, theme, currentStock } = this.props;
-		const { dialogProductAndMarkersCreate } = this.state;
+		const { dialogPositionCreate, dialogPositionGroupCreate } = this.state;
 
 		return (
 			<div className="header__column_left">
@@ -42,17 +52,35 @@ class CLStockAvailability extends Component {
 						variant="contained"
 						color="primary"
 						style={{ marginRight: 8 }}
-						onClick={this.onOpenDialogProductAndMarkersCreate}
+						onClick={this.onOpenDialogPositionCreate}
 					>
 						<FontAwesomeIcon icon={['far', 'plus']} style={{ marginRight: 10 }} />
 						Создать позицию
 					</Button>
+					<Button
+						className="mui-btn-ct400"
+						variant="contained"
+						color="primary"
+						style={{ marginRight: 8 }}
+						onClick={this.onOpenDialogPositionGroupCreate}
+					>
+						<FontAwesomeIcon icon={['far', 'plus']} style={{ marginRight: 10 }} />
+						Создать группу
+					</Button>
 				</div>
 
-				<DialogProductAndMarkersCreate
-					dialogOpen={dialogProductAndMarkersCreate}
-					onCloseDialog={this.onCloseDialogProductAndMarkersCreate}
-					currentStock={currentStock}
+				<DialogPositionCreate
+					type="create"
+					dialogOpen={dialogPositionCreate}
+					onCloseDialog={this.onCloseDialogPositionCreate}
+					currentStockId={currentStock._id}
+				/>
+
+				<DialogPositionGroupCreate
+					type="create"
+					dialogOpen={dialogPositionGroupCreate}
+					onCloseDialog={this.onCloseDialogPositionGroupCreate}
+					currentStockId={currentStock._id}
 				/>
 			</div>
 		);

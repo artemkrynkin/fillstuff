@@ -26,6 +26,8 @@ export const getStocks = () => {
 				} else {
 					console.error(error.response);
 				}
+
+				return Promise.resolve({ status: 'error' });
 			});
 	};
 };
@@ -73,6 +75,8 @@ export const editStock = (stockId, newValues) => {
 					return Promise.resolve({ status: 'error', data: error.response.data });
 				} else {
 					console.error(error);
+
+					return Promise.resolve({ status: 'error' });
 				}
 			});
 	};
@@ -89,6 +93,8 @@ export const memberInvitation = stockId => {
 			})
 			.catch(error => {
 				console.error(error);
+
+				return Promise.resolve({ status: 'error' });
 			});
 	};
 };
@@ -113,9 +119,11 @@ export const editMember = (stockId, memberId, newValues) => {
 			})
 			.catch(error => {
 				if (error.response) {
-					return Promise.resolve({ status: 'error' });
+					return Promise.resolve({ status: 'error', data: error.response.data });
 				} else {
 					console.error(error);
+
+					return Promise.resolve({ status: 'error' });
 				}
 			});
 	};
@@ -161,6 +169,8 @@ export const deleteMember = (stockId, memberId, memberUserId, currentUserId) => 
 			})
 			.catch(error => {
 				console.error(error);
+
+				return Promise.resolve({ status: 'error' });
 			});
 	};
 };

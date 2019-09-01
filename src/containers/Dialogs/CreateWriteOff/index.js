@@ -7,7 +7,9 @@ import { TextField } from 'formik-material-ui';
 import * as Yup from 'yup';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { DialogContent } from '@material-ui/core';
+import DialogContent from '@material-ui/core/DialogContent';
+import Grid from '@material-ui/core/Grid';
+import MuiTextField from '@material-ui/core/TextField/TextField';
 
 import { Dialog, PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
 
@@ -18,23 +20,35 @@ import './index.styl';
 
 const writeOffSchema = Yup.object().shape({
 	quantity: Yup.number()
-		.min(1, 'Введите количество')
+		.min(1)
 		.required(),
+	comment: Yup.string().required(),
 });
 
-class CreateWriteOff extends Component {
+class DialogCreateWriteOff extends Component {
 	static propTypes = {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
+		onExitedDialog: PropTypes.func,
 		currentStockId: PropTypes.string.isRequired,
-		selectedProduct: PropTypes.object,
-		selectedMarker: PropTypes.object,
+		selectedPosition: PropTypes.object,
+	};
+
+	onSubmit = (values, actions) => {
+		const { onCloseDialog, currentUser, selectedPosition } = this.props;
+
+		this.props.createWriteOff(currentUser._id, selectedPosition._id, values).then(response => {
+			if (response.status === 'success') {
+				this.props.getStockStatus();
+				onCloseDialog();
+			} else actions.setSubmitting(false);
+		});
 	};
 
 	render() {
-		const { dialogOpen, onCloseDialog, onExitedDialog, currentUser, selectedProduct, selectedMarker } = this.props;
+		const { dialogOpen, onCloseDialog, onExitedDialog, selectedPosition } = this.props;
 
-		if (!selectedProduct || !selectedMarker) return null;
+		if (!selectedPosition) return null;
 
 		return (
 			<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth="md" scroll="body">
@@ -42,49 +56,62 @@ class CreateWriteOff extends Component {
 					Списание количества
 				</PDDialogTitle>
 				<Formik
-					initialValues={{ quantity: '' }}
+					initialValues={{ quantity: '', comment: '' }}
 					validationSchema={writeOffSchema}
 					validateOnBlur={false}
 					validateOnChange={false}
-					onSubmit={(values, actions) => {
-						this.props.createWriteOff(selectedMarker._id, currentUser._id, values).then(response => {
-							if (response.status === 'success') {
-								this.props.getStockStatus();
-								onCloseDialog();
-							} else actions.setSubmitting(false);
-						});
-					}}
+					onSubmit={(values, actions) => this.onSubmit(values, actions)}
 					render={({ errors, touched, isSubmitting, values }) => (
 						<Form>
 							<DialogContent>
-								Позиция: {selectedProduct.name}
-								<br />
-								Маркер: {selectedMarker.mainCharacteristic.label}
-								<br />
-								<br />
-								<Field
-									name="quantity"
-									type="number"
-									component={TextField}
-									InputLabelProps={{
-										shrink: true,
-									}}
-									autoComplete="off"
-									validate={value => {
-										if (value > selectedMarker.quantity) {
-											return `Максимум для списания: ${selectedMarker.quantity}`;
-										}
-									}}
-									fullWidth
-									autoFocus
-								/>
+								<Grid className="pd-rowGridFormLabelControl">
+									<MuiTextField
+										label="Наименование"
+										InputProps={{
+											value: selectedPosition.name,
+											readOnly: true,
+										}}
+										InputLabelProps={{
+											shrink: true,
+										}}
+										fullWidth
+									/>
+								</Grid>
+								<Grid className="pd-rowGridFormLabelControl">
+									<Field
+										name="quantity"
+										type="number"
+										label="Количество"
+										component={TextField}
+										InputLabelProps={{
+											shrink: true,
+										}}
+										autoComplete="off"
+										fullWidth
+										autoFocus
+									/>
+								</Grid>
+								<Grid className="pd-rowGridFormLabelControl">
+									<Field
+										name="comment"
+										label="Комментарий"
+										component={TextField}
+										InputLabelProps={{
+											shrink: true,
+										}}
+										autoComplete="off"
+										rowsMax={4}
+										multiline
+										fullWidth
+									/>
+								</Grid>
 							</DialogContent>
 							<PDDialogActions
 								leftHandleProps={{
 									handleProps: {
 										onClick: onCloseDialog,
 									},
-									text: 'Закрыть',
+									text: 'Отмена',
 								}}
 								rightHandleProps={{
 									handleProps: {
@@ -113,11 +140,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 	return {
 		getStockStatus: () => dispatch(getStockStatus(currentStockId)),
-		createWriteOff: (markerId, userId, values) => dispatch(createWriteOff(currentStockId, markerId, userId, values)),
+		createWriteOff: (userId, positionId, values) => dispatch(createWriteOff(currentStockId, userId, positionId, values)),
 	};
 };
 
 export default connect(
 	mapStateToProps,
 	mapDispatchToProps
-)(CreateWriteOff);
+)(DialogCreateWriteOff);

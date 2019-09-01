@@ -4,13 +4,13 @@ import ClassNames from 'classnames';
 
 import './index.styl';
 
-const quantityIndicatorClasses = dividedMarkers =>
+const qiClasses = dividedPositions =>
 	ClassNames({
 		'quantity-indicator': true,
-		'quantity-indicator_disappearing': dividedMarkers,
+		'quantity-indicator_disappearing': dividedPositions,
 	});
 
-const quantityIndicatorCircleClasses = (quantity, minimumBalance) =>
+const qiCircleClasses = (quantity, minimumBalance) =>
 	ClassNames({
 		'quantity-indicator__circle': true,
 		'quantity-indicator__circle_red': (quantity / minimumBalance) * 100 <= 100,
@@ -19,54 +19,81 @@ const quantityIndicatorCircleClasses = (quantity, minimumBalance) =>
 	});
 
 const compareQuantity = (a, b) => {
-	if (a.quantity > b.quantity) return 1;
-	if (a.quantity === b.quantity) return 0;
-	if (a.quantity < b.quantity) return -1;
+	if (a.activeReceipt.current.quantity > b.activeReceipt.current.quantity) return 1;
+	if (a.activeReceipt.current.quantity === b.activeReceipt.current.quantity) return 0;
+	if (a.activeReceipt.current.quantity < b.activeReceipt.current.quantity) return -1;
 };
 
 const QuantityIndicator = props => {
-	const { type, dividedMarkers, receiptUnits, unitIssue, quantity, minimumBalance, markers } = props;
+	const { type, dividedPositions, divided, unitReceipt, unitIssue, minimumBalance, receipts, positions } = props;
+	let quantity, quantityPackages;
 
-	if (type === 'product') {
-		const markerExpiring = markers ? markers.sort(compareQuantity)[0] : undefined;
+	if (type === 'positionGroup' && !positions.length) return null;
+
+	quantity =
+		type === 'positionGroup'
+			? positions.reduce((sum, position) => sum + position.receipts.reduce((sum, receipt) => sum + receipt.current.quantity, 0), 0)
+			: receipts.reduce((sum, receipt) => sum + receipt.quantity, 0);
+
+	if (unitReceipt === 'nmp' && unitIssue === 'pce') {
+		quantityPackages =
+			type === 'positionGroup'
+				? positions.reduce(
+						(sum, position) => sum + position.receipts.reduce((sum, receipt) => sum + receipt.current.quantityPackages, 0),
+						0
+				  )
+				: receipts.reduce((sum, receipt) => sum + receipt.quantityPackages, 0);
+	}
+
+	if (type === 'positionGroup') {
+		const unitIssueGroup = positions.reduce((unitIssue, position) => {
+			return !unitIssue ? position.unitIssue : unitIssue !== position.unitIssue ? 'units' : unitIssue;
+		}, '');
+		const unitIssueGroupTransform = unitIssueGroup === 'pce' ? 'шт.' : unitIssueGroup === 'nmp' ? 'уп.' : 'ед.';
+
+		const positionExpiring = positions.length ? positions.slice(0).sort(compareQuantity)[0] : undefined;
+		const receiptExpiringQuantity = positionExpiring
+			? positionExpiring.receipts.reduce((sum, receipt) => sum + receipt.current.quantity, 0)
+			: undefined;
 
 		return (
-			<div className={quantityIndicatorClasses(dividedMarkers)}>
-				{dividedMarkers ? (
-					<div className={quantityIndicatorCircleClasses(markerExpiring.quantity, markerExpiring.minimumBalance)} />
-				) : (
+			<div className={qiClasses(dividedPositions)}>
+				{!dividedPositions ? (
 					<div>
-						{quantity} {receiptUnits === 'pce' ? 'шт.' : unitIssue === 'pce' ? 'шт.' : 'уп.'}
-						{receiptUnits === 'nmp' && unitIssue === 'pce' ? (
-							<span className="quantity-indicator__quantity-packages">
-								{markers.reduce((sum, marker) => sum + Math.ceil(marker.quantityPackages), 0)} уп.
-							</span>
-						) : null}
-						<div className={quantityIndicatorCircleClasses(quantity, minimumBalance)} />
+						{quantity + ' ' + unitIssueGroupTransform}
+						<span className={qiCircleClasses(quantity, minimumBalance)} />
 					</div>
+				) : (
+					<span className={qiCircleClasses(receiptExpiringQuantity, positionExpiring.minimumBalance)} />
 				)}
 			</div>
 		);
 	}
 
-	if (type === 'marker')
+	if (type === 'position') {
+		const unitIssueTransform = unitReceipt === 'pce' ? 'шт.' : unitIssue === 'pce' ? 'шт.' : 'уп.';
+
 		return (
 			<div className="quantity-indicator">
-				{quantity} {receiptUnits === 'pce' ? 'шт.' : unitIssue === 'pce' ? 'шт.' : 'уп.'}
-				{dividedMarkers ? <div className={quantityIndicatorCircleClasses(quantity, minimumBalance)} /> : null}
+				{quantity + ' ' + unitIssueTransform}
+				{unitReceipt === 'nmp' && unitIssue === 'pce' ? (
+					<span className="quantity-indicator__quantity-packages">{Math.ceil(quantityPackages) + ' уп.'}</span>
+				) : null}
+				{divided ? <span className={qiCircleClasses(quantity, minimumBalance)} /> : null}
 			</div>
 		);
+	}
 };
 
 QuantityIndicator.propTypes = {
 	children: PropTypes.node,
-	type: PropTypes.oneOf(['product', 'marker']).isRequired,
-	dividedMarkers: PropTypes.bool.isRequired,
-	receiptUnits: PropTypes.oneOf(['pce', 'nmp']).isRequired,
+	dividedPositions: PropTypes.bool,
+	type: PropTypes.oneOf(['positionGroup', 'position']).isRequired,
+	unitReceipt: PropTypes.oneOf(['pce', 'nmp']),
 	unitIssue: PropTypes.oneOf(['pce', 'nmp']),
-	quantity: PropTypes.number,
+	receipts: PropTypes.array,
 	minimumBalance: PropTypes.number,
-	markers: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+	positions: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
 };
 
 export default QuantityIndicator;

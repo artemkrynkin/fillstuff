@@ -2,24 +2,32 @@ import mongoose from 'mongoose';
 import i18n from 'i18n';
 // import validator from 'validator';
 
-import { numberToFixedDouble } from 'api/utils';
-
 const Schema = mongoose.Schema;
 
 let WriteOff = new Schema({
+	createdAt: {
+		type: Date,
+		default: Date.now,
+	},
 	stock: {
 		type: Schema.Types.ObjectId,
 		ref: 'Stock',
 		required: [true, i18n.__('Обязательное поле')],
-	},
-	marker: {
-		type: Schema.Types.ObjectId,
-		ref: 'Marker',
-		required: [true, i18n.__('Обязательное поле')],
+		select: false,
 	},
 	user: {
 		type: Schema.Types.ObjectId,
 		ref: 'User',
+		required: [true, i18n.__('Обязательное поле')],
+	},
+	position: {
+		type: Schema.Types.ObjectId,
+		ref: 'Position',
+		required: [true, i18n.__('Обязательное поле')],
+	},
+	receipt: {
+		type: Schema.Types.ObjectId,
+		ref: 'Receipt',
 		required: [true, i18n.__('Обязательное поле')],
 	},
 	quantity: {
@@ -27,22 +35,13 @@ let WriteOff = new Schema({
 		min: [0, 'Не может быть меньше 0'],
 		required: [true, i18n.__('Обязательное поле')],
 	},
-	unitPurchasePrice: {
-		type: Number,
-		min: [0, 'Не может быть меньше 0'],
-		required: [true, i18n.__('Обязательное поле')],
-		get: value => numberToFixedDouble(value),
-		set: value => numberToFixedDouble(value),
+	comment: {
+		type: String,
+		trim: true,
 	},
-	unitSellingPrice: {
+	__v: {
 		type: Number,
-		min: [0, 'Не может быть меньше 0'],
-		get: value => numberToFixedDouble(value),
-		set: value => numberToFixedDouble(value),
-	},
-	createdAt: {
-		type: Date,
-		default: Date.now,
+		select: false,
 	},
 });
 

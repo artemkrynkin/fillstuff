@@ -30,6 +30,8 @@ const memberInvitationOrEditSchema = Yup.object().shape({
 			.min(2)
 			.required(),
 		email: Yup.string()
+			.nullable(true)
+			.transform(value => (value === null ? '' : value))
 			.email()
 			.required(),
 	}),

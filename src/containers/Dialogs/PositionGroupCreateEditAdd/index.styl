@@ -1,0 +1,72 @@
+@import '~src/styles/helpers/_colors.styl';
+@import '~src/styles/helpers/_fonts.styl';
+@import '~src/styles/helpers/_media_queries.styl';
+
+.D-pgcae
+  &__search-text-field-container
+    margin 10px -25px 0
+    position sticky
+    top 0
+
+  &__clear-search
+    color $c-bg-300
+    font-size 16px
+    padding 12px
+    position absolute
+    right 13px
+    top 1px
+
+    &:hover
+      color $c-t-300
+
+  &__selected-positions
+    background-color white
+    border-bottom 1px solid $c-br-5
+    margin 0 -25px
+    padding 10px 25px 5px
+    position sticky
+    top 42px
+
+  &__select-positions
+    margin 0 -25px
+    padding 0 25px
+    width auto
+
+  &__select-positions-wrap
+    min-height 250px
+
+  &__select-position
+    align-items center
+    border-bottom 1px solid $c-br-5
+    cursor pointer
+    display flex
+    color $c-bg-700
+    font-size 14px
+    line-height 1.2
+    margin 0 -25px
+    padding 13px 25px
+    transition background-color 150ms ease-out
+
+    &:hover
+      background-color $c-br-2
+
+  &__select-position-checkbox
+    align-items center
+    border 2px solid $c-bg-100
+    border-radius 50%
+    display flex
+    justify-content center
+    height 24px
+    margin-right 10px
+    width 24px
+
+    & svg
+      color transparent
+      font-size 14px
+
+  &__select-position_selected &__select-position-checkbox
+    background-color $c-t-300
+    border-color $c-t-300
+
+    & svg
+      color white

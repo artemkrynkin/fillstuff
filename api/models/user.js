@@ -45,6 +45,10 @@ let User = new Schema({
 		type: Date,
 		default: Date.now,
 	},
+	__v: {
+		type: Number,
+		select: false,
+	},
 });
 
 if (!User.options.toObject) User.options.toObject = {};

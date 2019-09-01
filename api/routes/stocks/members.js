@@ -50,8 +50,6 @@ membersRouter.put(
 			user: { _id: userId, name, email },
 		} = req.body;
 
-		// console.log(userId, name, email);
-
 		await Stock.findById(req.params.stockId)
 			.then(async stock => {
 				const currentUserRole = findMemberInStock(req.user._id, stock).role;
@@ -67,7 +65,7 @@ membersRouter.put(
 			})
 			.catch(err => next(err));
 
-		await User.findOne({ email: email })
+		await User.findById(userId)
 			.then(async user => {
 				if (user && String(user._id) !== String(userId)) {
 					return next({

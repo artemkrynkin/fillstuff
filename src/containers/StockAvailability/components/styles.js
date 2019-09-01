@@ -10,13 +10,14 @@ export const ExpansionPanel = withStyles({
 	root: {
 		backgroundColor: 'transparent',
 		boxShadow: 'none',
+		marginBottom: 0,
 		'&$expanded': {
-			margin: 0,
+			margin: '0',
 		},
 		'&$disabled': {
 			backgroundColor: 'transparent',
 		},
-		'.sa-products__row-product:last-child &': {
+		'.sa-positions__position-group:last-child &': {
 			borderRadius: '0 0 8px 8px',
 			overflow: 'hidden',
 		},
@@ -36,7 +37,6 @@ export const ExpansionPanel = withStyles({
 export const ExpansionPanelSummary = withStyles({
 	root: {
 		backgroundColor: colorPalette.brightness.cBr2,
-		borderTop: `1px solid ${colorPalette.brightness.cBr5}`,
 		minHeight: 'initial',
 		padding: 0,
 		'&$expanded': {
@@ -52,7 +52,7 @@ export const ExpansionPanelSummary = withStyles({
 			opacity: 0,
 		},
 		'&:hover': {
-			backgroundColor: colorPalette.brightness.cBr4,
+			backgroundColor: colorPalette.brightness.cBr3,
 		},
 		'tr:first-child &': {
 			borderTop: 'none',
@@ -92,10 +92,14 @@ export const ExpansionPanelDetails = withStyles({
 
 export const TableCell = withStyles({
 	root: {
-		padding: '14px 16px',
+		padding: '14px 15px',
 	},
 	head: {
 		paddingTop: 18,
 		paddingBottom: 18,
+	},
+	body: {
+		borderTop: `1px solid ${colorPalette.brightness.cBr4}`,
+		borderBottom: 'none',
 	},
 })(MuiTableCell);

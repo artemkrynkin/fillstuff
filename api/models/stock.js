@@ -23,15 +23,11 @@ let Stock = new Schema({
 		default: Date.now,
 	},
 	status: {
-		numberProducts: {
+		numberPositions: {
 			type: Number,
 			default: 0,
 		},
-		numberMarkers: {
-			type: Number,
-			default: 0,
-		},
-		stockCost: {
+		stockPrice: {
 			type: Number,
 			default: 0,
 			get: value => numberToFixedDouble(value),
@@ -56,6 +52,10 @@ let Stock = new Schema({
 			},
 		},
 	],
+	__v: {
+		type: Number,
+		select: false,
+	},
 });
 
 export default mongoose.model('Stock', Stock);

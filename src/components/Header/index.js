@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import ClassNames from 'classnames';
@@ -9,7 +9,7 @@ import Divider from '@material-ui/core/Divider';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 
-import Popover from 'src/components/Popover';
+import DropdownMenu from 'src/components/DropdownMenu';
 
 import ColumnLeft from './components/ColumnLeft';
 
@@ -19,15 +19,13 @@ import './index.styl';
 
 class Header extends Component {
 	state = {
-		profileMenuOpen: null,
+		dropdownMenu: false,
 	};
 
-	onOpenProfileMenu = event => {
-		this.setState({ profileMenuOpen: event.currentTarget });
-	};
+	anchorDropdownMenu = createRef();
 
-	onCloseProfileMenu = () => {
-		this.setState({ profileMenuOpen: null });
+	onHandleDropdownMenu = () => {
+		this.setState({ dropdownMenu: !this.state.dropdownMenu });
 	};
 
 	onLogout = () => {
@@ -35,8 +33,8 @@ class Header extends Component {
 	};
 
 	render() {
-		const { profileMenuOpen } = this.state;
 		const { pageName, pageTitle, theme, position = 'sticky', currentUser, currentStock, pageParams } = this.props;
+		const { dropdownMenu } = this.state;
 
 		let headerClasses = ClassNames({
 			header: true,
@@ -55,34 +53,34 @@ class Header extends Component {
 				/>
 				<div className="header__column_right">
 					<div className="header__column-group_right">
-						<div className="header__profile" aria-haspopup="true" onClick={this.onOpenProfileMenu}>
+						<div className="header__profile" ref={this.anchorDropdownMenu} onClick={this.onHandleDropdownMenu}>
 							<div className="header__profile-name">{currentUser.name ? currentUser.name : currentUser.email}</div>
 							<div className="header__profile-photo">
 								{currentUser.profilePhoto ? <img src={currentUser.profilePhoto} alt="" /> : <FontAwesomeIcon icon={['fas', 'user-alt']} />}
 							</div>
-							<FontAwesomeIcon icon={['fas', 'angle-down']} className={profileMenuOpen ? 'open' : ''} />
+							<FontAwesomeIcon icon={['fas', 'angle-down']} className={dropdownMenu ? 'open' : ''} />
 						</div>
 					</div>
 				</div>
 
-				<Popover anchorEl={profileMenuOpen} open={Boolean(profileMenuOpen)} onClose={this.onCloseProfileMenu}>
+				<DropdownMenu anchor={this.anchorDropdownMenu} open={dropdownMenu} onClose={this.onHandleDropdownMenu} placement="bottom-end">
 					<MenuList>
 						<MenuItem
 							to={'/settings'}
 							component={React.forwardRef((props, ref) => (
 								<Link innerRef={ref} {...props} />
 							))}
-							onClick={this.onCloseProfileMenu}
+							onClick={this.onHandleDropdownMenu}
 						>
 							Настройки аккаунта
 						</MenuItem>
-						<MenuItem onClick={this.onCloseProfileMenu}>Оплата</MenuItem>
+						<MenuItem onClick={this.onHandleDropdownMenu}>Оплата</MenuItem>
 					</MenuList>
 					<Divider />
 					<MenuList>
 						<MenuItem onClick={this.onLogout}>Выйти</MenuItem>
 					</MenuList>
-				</Popover>
+				</DropdownMenu>
 			</AppBar>
 		);
 	}

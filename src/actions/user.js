@@ -20,11 +20,11 @@ export const getUser = () => {
 						type: 'UNAUTHORIZED_USER',
 						payload: error.response.data,
 					});
-
-					return Promise.resolve({ status: 'error' });
 				} else {
 					console.error(error.response);
 				}
+
+				return Promise.resolve({ status: 'error' });
 			});
 	};
 };
@@ -48,6 +48,8 @@ export const editUser = values => {
 					return Promise.resolve({ status: 'error', data: error.response.data });
 				} else {
 					console.error(error);
+
+					return Promise.resolve({ status: 'error' });
 				}
 			});
 	};
@@ -73,6 +75,8 @@ export const changeActiveStock = stockId => {
 			})
 			.catch(error => {
 				console.error(error);
+
+				return Promise.resolve({ status: 'error' });
 			});
 	};
 };

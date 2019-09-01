@@ -54,6 +54,9 @@ class Sidebar extends Component {
 								</div>
 
 								<ExpansionPanel
+									TransitionProps={{
+										timeout: 300,
+									}}
 									className="sidebar__menu-expansion"
 									expanded={activePage === 'availability' || activePage === 'write-offs'}
 									onChange={this.onChangeUrl('availability')}
@@ -96,6 +99,9 @@ class Sidebar extends Component {
 								</ExpansionPanel>
 
 								<ExpansionPanel
+									TransitionProps={{
+										timeout: 300,
+									}}
 									className="sidebar__menu-expansion"
 									expanded={activePage === 'orders' || activePage === 'purchases'}
 									onChange={this.onChangeUrl('orders')}

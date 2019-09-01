@@ -5,6 +5,11 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import colorPalette from 'shared/colorPalette';
 
 export const BliksideTheme = createMuiTheme({
+	props: {
+		MuiButtonBase: {
+			disableRipple: true,
+		},
+	},
 	palette: {
 		primary: {
 			main: colorPalette.teal.cT300,
@@ -231,8 +236,15 @@ export const BliksideTheme = createMuiTheme({
 					0 9px 46px 8px rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg600)}, 0.12)`,
 			},
 		},
+		MuiList: {
+			padding: {
+				paddingTop: 6,
+				paddingBottom: 6,
+			},
+		},
 		MuiListItem: {
 			button: {
+				transition: 'background-color 150ms ease-out',
 				'&:hover': {
 					backgroundColor: colorPalette.blueGrey.cBg50,
 				},
@@ -250,9 +262,8 @@ export const BliksideTheme = createMuiTheme({
 			root: {
 				color: colorPalette.blueGrey.cBg700,
 				fontSize: 14,
-				minHeight: 36,
+				minHeight: 34,
 				lineHeight: 1.2,
-				padding: '6px 10px',
 			},
 			gutters: {
 				paddingLeft: 10,
@@ -391,7 +402,7 @@ export const BliksideTheme = createMuiTheme({
 				color: colorPalette.blueGrey.cBg700,
 				fontSize: 13,
 				'&$disabled': {
-					color: colorPalette.blueGrey.cBg400,
+					color: colorPalette.blueGrey.cBg500,
 				},
 				'&$focused:not($error)': {
 					'& $input:not([readonly])': {
@@ -400,20 +411,18 @@ export const BliksideTheme = createMuiTheme({
 				},
 				'&$error': {
 					'& $input:not([readonly])': {
-						boxShadow: '0 0 0 2px #f44336 inset',
+						boxShadow: `0 0 0 2px ${colorPalette.other[0]} inset`,
 					},
 				},
 			},
 			input: {
 				backgroundColor: colorPalette.brightness.cBr4,
 				borderRadius: 5,
+				boxShadow: `0 0 0 2px ${colorPalette.brightness.cBr5} inset`,
 				boxSizing: 'border-box',
 				minHeight: 36,
 				padding: '5px 10px',
 				transition: 'background-color 150ms ease-out, box-shadow 150ms ease-out',
-				'&:hover': {
-					boxShadow: `0 0 0 2px ${colorPalette.brightness.cBr5} inset`,
-				},
 				'&[readonly]': {
 					backgroundColor: 'transparent',
 					boxShadow: 'none',
@@ -423,9 +432,14 @@ export const BliksideTheme = createMuiTheme({
 					},
 				},
 				'&$disabled': {
-					'&:hover': {
-						boxShadow: 'none',
-					},
+					backgroundColor: colorPalette.brightness.cBr3,
+					boxShadow: 'none',
+				},
+			},
+			inputMultiline: {
+				padding: '10px',
+				'&[readonly]': {
+					padding: '10px',
 				},
 			},
 		},
@@ -554,10 +568,6 @@ export const BliksideTheme = createMuiTheme({
 			},
 		},
 		MuiTableCell: {
-			root: {
-				color: colorPalette.blueGrey.cBg700,
-				borderBottomColor: colorPalette.brightness.cBr4,
-			},
 			head: {
 				borderBottomColor: colorPalette.brightness.cBr5,
 				color: colorPalette.blueGrey.cBg300,
@@ -565,6 +575,10 @@ export const BliksideTheme = createMuiTheme({
 				lineHeight: 1.3,
 				paddingTop: 18,
 				paddingBottom: 18,
+			},
+			body: {
+				color: colorPalette.blueGrey.cBg700,
+				borderBottomColor: colorPalette.brightness.cBr4,
 			},
 		},
 	},

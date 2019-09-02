@@ -55,9 +55,11 @@ class DialogPositionGroupCreateEditAdd extends Component {
 		selectedPositionGroup: PropTypes.object,
 	};
 
-	state = {
+	initialState = {
 		searchString: '',
 	};
+
+	state = this.initialState;
 
 	searchInputRef = React.createRef();
 
@@ -92,12 +94,19 @@ class DialogPositionGroupCreateEditAdd extends Component {
 		}
 	};
 
+	onExitedDialog = () => {
+		const { onExitedDialog } = this.props;
+
+		this.setState(this.initialState, () => {
+			if (onExitedDialog) onExitedDialog();
+		});
+	};
+
 	render() {
 		const {
 			type,
 			dialogOpen,
 			onCloseDialog,
-			onExitedDialog,
 			positionsInGroups: {
 				data: positionsInGroups,
 				isFetching: isLoadingPositionsInGroups,
@@ -131,7 +140,7 @@ class DialogPositionGroupCreateEditAdd extends Component {
 				  };
 
 		return (
-			<PDDialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth="md" scroll="body" stickyActions>
+			<PDDialog open={dialogOpen} onClose={onCloseDialog} onExited={this.onExitedDialog} maxWidth="md" scroll="body" stickyActions>
 				<PDDialogTitle theme="primary" onClose={onCloseDialog}>
 					{type === 'create' ? 'Создание новой группы' : type === 'edit' ? 'Редактирование группы' : 'Добавление позиций в группу'}
 				</PDDialogTitle>

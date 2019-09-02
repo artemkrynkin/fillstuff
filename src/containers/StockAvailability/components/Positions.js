@@ -64,8 +64,8 @@ const DialogPositionGroupQRCodeGeneration = DialogPositionOrGroupQRCodeGeneratio
 
 const DialogPositionQRCodeGeneration = DialogPositionOrGroupQRCodeGeneration;
 
-const DialogCreateWriteOff = Loadable({
-	loader: () => import('src/containers/Dialogs/CreateWriteOff' /* webpackChunkName: "Dialog_CreateWriteOff" */),
+const DialogWriteOffCreate = Loadable({
+	loader: () => import('src/containers/Dialogs/WriteOffCreate' /* webpackChunkName: "Dialog_WriteOffCreate" */),
 	loading: () => null,
 	delay: 200,
 });
@@ -83,7 +83,7 @@ class Positions extends Component {
 		dialogPositionRemoveFromGroup: false,
 		dialogPositionArchive: false,
 		dialogPositionQRCodeGeneration: false,
-		dialogCreateWriteOff: false,
+		dialogWriteOffCreate: false,
 	};
 
 	onPositionGroupDrop = () => this.setState({ positionGroup: null, dialogOpenedName: '' });
@@ -124,7 +124,7 @@ class Positions extends Component {
 			dialogPositionRemoveFromGroup,
 			dialogPositionArchive,
 			dialogPositionQRCodeGeneration,
-			dialogCreateWriteOff,
+			dialogWriteOffCreate,
 		} = this.state;
 
 		return (
@@ -213,14 +213,6 @@ class Positions extends Component {
 					onExitedDialog={this.onPositionGroupDrop}
 					currentStockId={currentStock._id}
 					type="positionGroup"
-					QRCodeData={
-						dialogOpenedName === 'dialogPositionGroupQRCodeGeneration'
-							? {
-									type: 'positionGroup',
-									id: positionGroup._id,
-							  }
-							: {}
-					}
 					selectedPositionOrGroup={dialogOpenedName === 'dialogPositionGroupQRCodeGeneration' ? positionGroup : null}
 				/>
 
@@ -256,14 +248,6 @@ class Positions extends Component {
 					onExitedDialog={this.onPositionDrop}
 					currentStockId={currentStock._id}
 					type="position"
-					QRCodeData={
-						dialogOpenedName === 'dialogPositionQRCodeGeneration'
-							? {
-									type: 'position',
-									id: position._id,
-							  }
-							: {}
-					}
 					selectedPositionOrGroup={dialogOpenedName === 'dialogPositionQRCodeGeneration' ? position : null}
 				/>
 
@@ -275,12 +259,12 @@ class Positions extends Component {
 					selectedPosition={dialogOpenedName === 'dialogPositionAddQuantity' ? position : null}
 				/>
 
-				<DialogCreateWriteOff
-					dialogOpen={dialogCreateWriteOff}
-					onCloseDialog={() => this.onCloseDialogByName('dialogCreateWriteOff')}
+				<DialogWriteOffCreate
+					dialogOpen={dialogWriteOffCreate}
+					onCloseDialog={() => this.onCloseDialogByName('dialogWriteOffCreate')}
 					onExitedDialog={this.onPositionDrop}
 					currentStockId={currentStock._id}
-					selectedPosition={dialogOpenedName === 'dialogCreateWriteOff' ? position : null}
+					selectedPosition={dialogOpenedName === 'dialogWriteOffCreate' ? position : null}
 				/>
 			</Paper>
 		);

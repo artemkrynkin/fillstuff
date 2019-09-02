@@ -35,7 +35,7 @@ const positions = (
 
 				state.data[positionIndex] = action.payload.position;
 			} else {
-				const positionGroupIndex = state.data.findIndex(positionGroup => positionGroup._id === action.payload.positionGroupId);
+				const positionGroupIndex = state.data.findIndex(positionGroup => positionGroup._id === action.payload.position.positionGroup);
 				const positionIndex = state.data[positionGroupIndex].positions.findIndex(position => position._id === action.payload.positionId);
 
 				state.data[positionGroupIndex].positions[positionIndex] = action.payload.position;

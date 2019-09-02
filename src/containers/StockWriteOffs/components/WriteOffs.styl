@@ -2,4 +2,38 @@
 @import '~src/styles/helpers/_fonts.styl';
 @import '~src/styles/helpers/_media_queries.styl';
 
-//.swo-write-offs
+.swo-write-offs
+  &__table-body > &__write-off:last-child
+    & > td:first-child
+      border-radius 0 0 0 8px
+
+    & > td:last-child
+      border-radius 0 0 8px 0
+
+  &__write-off
+    transition background-color 150ms ease-out
+
+    &:hover
+      background-color $c-br-2
+
+  &__write-off-actions-button
+    color $c-bg-200
+    padding 8px
+    width 36px
+
+    &:hover
+      background-color alpha($c-bg-100, 0.2)
+
+    & svg
+      font-size 20px
+
+  &__write-off-actions-button
+    opacity 0
+    transition color 150ms ease-out, opacity 150ms ease-out
+
+    &_active
+      color $c-bg-300
+      opacity 1
+
+  &__write-off:hover &__write-off-actions-button
+    opacity 1

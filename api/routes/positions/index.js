@@ -66,6 +66,18 @@ positionsRouter.get(
 	}
 );
 
+positionsRouter.get(
+	'/positions/:positionId',
+	// isAuthedResolver,
+	// (req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
+	(req, res, next) => {
+		Position.findById(req.params.positionId)
+			.populate('characteristics')
+			.then(position => res.json(position))
+			.catch(err => next({ code: 2, err }));
+	}
+);
+
 positionsRouter.post(
 	'/positions',
 	isAuthedResolver,
@@ -157,7 +169,7 @@ positionsRouter.put(
 		if (receiptUpdatedValues.sellingPrice) activeReceipt.sellingPrice = receiptUpdatedValues.sellingPrice;
 		if (receiptUpdatedValues.unitSellingPrice) activeReceipt.unitSellingPrice = receiptUpdatedValues.unitSellingPrice;
 
-		recountReceipt({ unitReceipt: position.unitReceipt, unitIssue: position.unitIssue }, positionUpdated.isFree, activeReceipt);
+		recountReceipt({ unitReceipt: position.unitReceipt, unitIssue: position.unitIssue }, positionUpdated.isFree, activeReceipt, false);
 
 		position.name = positionUpdated.name;
 		position.minimumBalance = positionUpdated.minimumBalance;

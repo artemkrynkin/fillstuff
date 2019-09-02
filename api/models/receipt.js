@@ -47,7 +47,7 @@ let Receipt = new Schema({
 			type: Number,
 			min: [0, 'Не может быть меньше 0'],
 			// get: value => numberToFixedDouble(value, 0),
-			set: value => numberToFixedDouble(value, 0),
+			set: value => numberToFixedDouble(value, 2),
 		},
 	},
 	initial: {
@@ -64,7 +64,7 @@ let Receipt = new Schema({
 			type: Number,
 			min: [0, 'Не может быть меньше 0'],
 			// get: value => numberToFixedDouble(value, 0),
-			set: value => numberToFixedDouble(value, 0),
+			set: value => numberToFixedDouble(value, 2),
 		},
 	},
 	additions: [

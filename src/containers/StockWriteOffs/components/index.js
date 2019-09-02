@@ -10,12 +10,8 @@ const Index = props => {
 
 	return (
 		<Grid container direction="row" justify="center" alignItems="flex-start" spacing={2}>
-			<Grid item xs={9}>
-				<WriteOffs currentUser={currentUser} currentStock={currentStock} selectedUserId={selectedUserId} />
-			</Grid>
-			<Grid item xs={3}>
-				<Members currentUser={currentUser} currentStock={currentStock} selectedUserId={selectedUserId} />
-			</Grid>
+			<WriteOffs currentUser={currentUser} currentStock={currentStock} selectedUserId={selectedUserId} />
+			<Members currentUser={currentUser} currentStock={currentStock} selectedUserId={selectedUserId} />
 		</Grid>
 	);
 };

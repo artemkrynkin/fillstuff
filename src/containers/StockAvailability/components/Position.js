@@ -123,7 +123,7 @@ const Position = props => {
 							<MenuItem
 								onClick={() => {
 									onHandleDropdownMenu();
-									onOpenDialogPosition('dialogCreateWriteOff', position);
+									onOpenDialogPosition('dialogWriteOffCreate', position);
 								}}
 							>
 								Списать количество

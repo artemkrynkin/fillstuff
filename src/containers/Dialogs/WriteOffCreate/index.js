@@ -25,7 +25,7 @@ const writeOffSchema = Yup.object().shape({
 	comment: Yup.string().required(),
 });
 
-class DialogCreateWriteOff extends Component {
+class DialogWriteOffCreate extends Component {
 	static propTypes = {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
@@ -147,4 +147,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 export default connect(
 	mapStateToProps,
 	mapDispatchToProps
-)(DialogCreateWriteOff);
+)(DialogWriteOffCreate);

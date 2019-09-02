@@ -30,12 +30,23 @@ const QRCodeGenerationSchema = Yup.object().shape({
 		.required(),
 });
 
+const QRNameClasses = QRCodeSize =>
+	ClassNames({
+		'dialog-print-qr-codes-product__qr-name': true,
+		'dialog-print-qr-codes-product__qr-name_hide': QRCodeSize <= 2,
+	});
+
+const QRCharacteristicsClasses = QRCodeSize =>
+	ClassNames({
+		'dialog-print-qr-codes-product__qr-characteristics': true,
+		'dialog-print-qr-codes-product__qr-characteristics_hide': QRCodeSize <= 2,
+	});
+
 class DialogPositionOrGroupQRCodeGeneration extends Component {
 	static propTypes = {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
 		type: PropTypes.oneOf(['positionGroup', 'position']),
-		QRCodeData: PropTypes.object.isRequired,
 		selectedPositionOrGroup: PropTypes.object,
 	};
 
@@ -56,13 +67,19 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 	};
 
 	generateQRCode = async () => {
-		const { QRCodeData } = this.props;
+		const { type, selectedPositionOrGroup } = this.props;
 		const { QRCodeSize, pixelsPerCentimeter } = this.state;
 
-		const url = await QRCode.toDataURL(JSON.stringify(QRCodeData), {
-			margin: 0,
-			width: QRCodeSize * pixelsPerCentimeter * (QRCodeSize > 2 ? 2 : 5),
-		});
+		const url = await QRCode.toDataURL(
+			JSON.stringify({
+				type: type,
+				id: selectedPositionOrGroup._id,
+			}),
+			{
+				margin: 0,
+				width: QRCodeSize * pixelsPerCentimeter * (QRCodeSize > 2 ? 2 : 5),
+			}
+		);
 
 		this.setState({ QRCodeDataUrl: url });
 	};
@@ -72,6 +89,8 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 		const { QRCodeDataUrl, QRCodeSize } = this.state;
 		const QRSettings = marks[QRCodeSize - 1].settings;
 		const { quantity } = values;
+
+		if (!selectedPositionOrGroup) return;
 
 		const PAGE_A4_W_PX = 595.28;
 		const PAGE_A4_W_MM = 210;
@@ -179,6 +198,13 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 		});
 	};
 
+	onEnter = () => {
+		const { selectedPositionOrGroup } = this.props;
+		const { QRCodeDataUrl } = this.state;
+
+		if (!QRCodeDataUrl && selectedPositionOrGroup) this.generateQRCode();
+	};
+
 	onExitedDialog = () => {
 		const { onExitedDialog } = this.props;
 
@@ -192,22 +218,20 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 		const { QRCodeDataUrl, QRCodeSize, pixelsPerCentimeter } = this.state;
 		const QRSettings = marks[QRCodeSize - 1].settings;
 
-		if (!QRCodeDataUrl && selectedPositionOrGroup) this.generateQRCode();
-
-		const QRNameClasses = ClassNames({
-			'dialog-print-qr-codes-product__qr-name': true,
-			'dialog-print-qr-codes-product__qr-name_hide': QRCodeSize <= 2,
-		});
-
-		const QRCharacteristicsClasses = ClassNames({
-			'dialog-print-qr-codes-product__qr-characteristics': true,
-			'dialog-print-qr-codes-product__qr-characteristics_hide': QRCodeSize <= 2,
-		});
+		if (!QRCodeDataUrl && !selectedPositionOrGroup) return null;
 
 		const QRWidth = QRCodeSize * pixelsPerCentimeter;
 
 		return (
-			<PDDialog open={dialogOpen} onClose={onCloseDialog} onExited={this.onExitedDialog} maxWidth="md" scroll="body" stickyActions>
+			<PDDialog
+				open={dialogOpen}
+				onEnter={this.onEnter}
+				onClose={onCloseDialog}
+				onExited={this.onExitedDialog}
+				maxWidth="md"
+				scroll="body"
+				stickyActions
+			>
 				<PDDialogTitle theme="primary" onClose={onCloseDialog}>
 					Генерация QR-кода
 				</PDDialogTitle>
@@ -257,7 +281,7 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 
 								<div className="dialog-print-qr-codes-product__qr-container" style={{ maxWidth: QRWidth }}>
 									<div
-										className={QRNameClasses}
+										className={QRNameClasses(QRCodeSize)}
 										style={{
 											fontSize: QRSettings.fontSize,
 											marginBottom:
@@ -268,7 +292,7 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 									</div>
 									{type === 'position' && selectedPositionOrGroup.characteristics.length ? (
 										<div
-											className={QRCharacteristicsClasses}
+											className={QRCharacteristicsClasses(QRCodeSize)}
 											style={{
 												fontSize: QRSettings.fontSize - 2,
 												marginBottom: QRSettings.margin,

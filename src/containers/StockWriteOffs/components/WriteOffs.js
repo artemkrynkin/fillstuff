@@ -1,24 +1,50 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
 import queryString from 'query-string';
+import Loadable from 'react-loadable';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
 
 import { history } from 'src/helpers/history';
 
 import { getWriteOffs } from 'src/actions/writeOffs';
 
+import WriteOff from './WriteOff';
+import { TableCell } from './styles';
+
 import './WriteOffs.styl';
 
+const DialogWriteOffDelete = Loadable({
+	loader: () => import('src/containers/Dialogs/WriteOffDelete' /* webpackChunkName: "Dialog_WriteOffDelete" */),
+	loading: () => null,
+	delay: 200,
+});
+
 class WriteOffs extends Component {
+	state = {
+		writeOff: null,
+		dialogOpenedName: '',
+		dialogWriteOffDelete: false,
+	};
+
+	onWriteOffDrop = () => this.setState({ position: null, dialogOpenedName: '' });
+
+	onOpenDialogByName = (dialogName, writeOff) =>
+		this.setState({
+			writeOff: writeOff,
+			dialogOpenedName: dialogName,
+			[dialogName]: true,
+		});
+
+	onCloseDialogByName = dialogName => this.setState({ [dialogName]: false });
+
 	componentDidMount() {
 		const { endDate, startDate } = queryString.parse(history.location.search);
 
@@ -35,65 +61,71 @@ class WriteOffs extends Component {
 
 	render() {
 		const {
+			currentStock,
 			writeOffs: {
 				data: writeOffs,
 				isFetching: isLoadingWriteOffs,
 				// error: errorWriteOffs
 			},
 		} = this.props;
+		const { writeOff, dialogOpenedName, dialogWriteOffDelete } = this.state;
 
 		return (
-			<Paper>
-				<Table>
-					<TableHead>
-						<TableRow>
-							<TableCell>Наименование</TableCell>
-							<TableCell>Имя</TableCell>
-							<TableCell align="right" width="130px">
-								Количество
-							</TableCell>
-							<TableCell align="right" width="180px">
-								Дата
-							</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{!isLoadingWriteOffs ? (
-							writeOffs && writeOffs.length ? (
-								writeOffs.map(writeOff => (
-									<TableRow key={writeOff._id}>
-										<TableCell>
-											{writeOff.position.name}{' '}
-											{writeOff.position.characteristics.reduce(
-												(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
-												''
-											)}
+			<Grid item xs={9}>
+				<Paper className="swo-write-offs">
+					<Table>
+						<TableHead>
+							<TableRow>
+								<TableCell>Наименование</TableCell>
+								<TableCell width={150}>Имя</TableCell>
+								<TableCell align="right" width={115}>
+									Количество
+								</TableCell>
+								<TableCell align="right" width={150}>
+									Дата
+								</TableCell>
+								<TableCell align="right" width={50} />
+							</TableRow>
+						</TableHead>
+						<TableBody className="swo-write-offs__table-body">
+							{!isLoadingWriteOffs ? (
+								writeOffs && writeOffs.length ? (
+									writeOffs.map(writeOff => (
+										<WriteOff
+											key={writeOff._id}
+											currentStockId={currentStock._id}
+											writeOff={writeOff}
+											onOpenDialogWriteOff={this.onOpenDialogByName}
+										/>
+									))
+								) : (
+									<TableRow>
+										<TableCell colSpan={4}>
+											<Typography variant="caption" align="center" component="div" style={{ padding: '1px 0' }}>
+												Еще не было списаний по позициям.
+											</Typography>
 										</TableCell>
-										<TableCell>{writeOff.user.name || writeOff.user.email}</TableCell>
-										<TableCell align="right">{writeOff.quantity}</TableCell>
-										{/* показывать дату, только если списание не за текущий год */}
-										<TableCell align="right">{moment(writeOff.createdAt).format('DD MMM в HH:mm')}</TableCell>
 									</TableRow>
-								))
+								)
 							) : (
 								<TableRow>
-									<TableCell colSpan={4}>
-										<Typography variant="caption" align="center" component="div" style={{ padding: '1px 0' }}>
-											Еще не было списаний по позициям.
-										</Typography>
+									<TableCell colSpan={4} style={{ padding: 12 }}>
+										<div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />
 									</TableCell>
 								</TableRow>
-							)
-						) : (
-							<TableRow>
-								<TableCell colSpan={4} style={{ padding: 12 }}>
-									<div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />
-								</TableCell>
-							</TableRow>
-						)}
-					</TableBody>
-				</Table>
-			</Paper>
+							)}
+						</TableBody>
+					</Table>
+
+					<DialogWriteOffDelete
+						dialogOpen={dialogWriteOffDelete}
+						onCloseDialog={() => this.onCloseDialogByName('dialogWriteOffDelete')}
+						onExitedDialog={this.onPositionDrop}
+						currentStockId={currentStock._id}
+						selectedWriteOff={dialogOpenedName === 'dialogWriteOffDelete' ? writeOff : null}
+					/>
+				</Paper>
+			</Grid>
 		);
 	}
 }

@@ -27,6 +27,16 @@ const products = (
 				isFetching: false,
 			};
 		}
+		case 'DELETE_WRITE_OFF': {
+			const writeOffIndex = state.data.findIndex(writeOff => writeOff._id === action.payload.writeOffId);
+
+			state.data.splice(writeOffIndex, 1);
+
+			return {
+				...state,
+				isFetching: false,
+			};
+		}
 		// case 'EDIT_PRODUCT': {
 		// 	const productIndex = state.data.findIndex(product => product._id === action.payload.productId);
 		//

@@ -38,8 +38,10 @@ export const characteristicTypeTransform = characteristicType => {
 	}
 };
 
-export const recountReceipt = ({ unitReceipt, unitIssue }, isFree, receipt) => {
-	if (receipt.initial.quantityPackages !== undefined) receipt.current.quantityPackages = receipt.initial.quantityPackages;
+export const recountReceipt = ({ unitReceipt, unitIssue }, isFree, receipt, recountQuantity = true) => {
+	console.log(recountQuantity);
+
+	if (recountQuantity && !isNaN(receipt.initial.quantityPackages)) receipt.current.quantityPackages = receipt.initial.quantityPackages;
 
 	/**
 	 * Считаем "количество"
@@ -47,14 +49,15 @@ export const recountReceipt = ({ unitReceipt, unitIssue }, isFree, receipt) => {
 	 * количество = количество упаковок * количество штук в упаковке
 	 */
 	if (
-		receipt.initial.quantityPackages !== undefined &&
-		receipt.quantityInUnit !== undefined &&
+		recountQuantity &&
+		!isNaN(receipt.initial.quantityPackages) &&
+		!isNaN(receipt.quantityInUnit) &&
 		unitReceipt === 'nmp' &&
 		unitIssue === 'pce'
 	) {
 		receipt.initial.quantity = receipt.initial.quantityPackages * receipt.quantityInUnit;
 	}
-	if (receipt.initial.quantity !== undefined) {
+	if (recountQuantity && !isNaN(receipt.initial.quantity)) {
 		receipt.current.quantity = receipt.initial.quantity;
 	}
 
@@ -68,10 +71,10 @@ export const recountReceipt = ({ unitReceipt, unitIssue }, isFree, receipt) => {
 	 * иначе:
 	 * цена покупки единицы = цена покупки
 	 */
-	if (receipt.purchasePrice !== undefined && receipt.quantityInUnit !== undefined && unitReceipt === 'nmp' && unitIssue === 'pce') {
+	if (!isNaN(receipt.purchasePrice) && !isNaN(receipt.quantityInUnit) && unitReceipt === 'nmp' && unitIssue === 'pce') {
 		receipt.unitPurchasePrice = receipt.purchasePrice / receipt.quantityInUnit;
 	} else {
-		if (receipt.purchasePrice !== undefined) {
+		if (!isNaN(receipt.purchasePrice)) {
 			receipt.unitPurchasePrice = receipt.purchasePrice;
 		}
 	}

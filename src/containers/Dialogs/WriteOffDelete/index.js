@@ -43,6 +43,7 @@ const DialogWriteOffDelete = props => {
 				}}
 				rightHandleProps={{
 					handleProps: {
+						autoFocus: true,
 						onClick: () =>
 							props.deleteWriteOff(selectedWriteOff._id).then(response => {
 								onCloseDialog();

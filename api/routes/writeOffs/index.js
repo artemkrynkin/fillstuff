@@ -82,7 +82,7 @@ writeOffsRouter.post(
 				code: 7,
 				message:
 					allQuantityReceipts === 0
-						? 'Маркер отсутствует на складе'
+						? 'Позиция отсутствует на складе'
 						: allQuantityReceipts - quantity < 0
 						? 'Вы пытаетесь списать количество большее, чем есть на складе'
 						: 'Unknown error',

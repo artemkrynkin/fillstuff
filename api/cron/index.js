@@ -10,7 +10,9 @@ const stocksIds = {};
 
 new CronJob(
 	'00 00 00 * * *',
-	function() {
+	() => {
+		console.log(`cron job for recalculate stocks launched in ${moment(new Date()).format('DD MMMM в HH:mm:ss')}`);
+
 		Stock.find().then(stocks => {
 			stocks.forEach(stock => {
 				if (stocksIds[stock._id] === undefined) {

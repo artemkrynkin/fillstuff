@@ -18,9 +18,10 @@ mongoose.Promise = bluebird;
 
 const options = {
 	useNewUrlParser: true,
-	useCreateIndex: true,
-	autoIndex: !IS_PROD,
 	useFindAndModify: false,
+	useCreateIndex: true,
+	useUnifiedTopology: true,
+	autoIndex: !IS_PROD,
 	// ssl: true,
 	// sslCA: fs.readFileSync('/usr/local/share/ca-certificates/Yandex/YandexInternalRootCA.crt'),
 	// replicaSet: 'rs01'

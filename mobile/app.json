@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "Blikside",
+    "slug": "blikside",
+    "privacy": "public",
+    "sdkVersion": "34.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "version": "0.0.1",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "bundleIdentifier": "blikside.com.blikside",
+      "buildNumber": "2"
+    },
+    "description": "",
+    "githubUrl": "https://github.com/artemkrynkin/bliksidemobile"
+  }
+}

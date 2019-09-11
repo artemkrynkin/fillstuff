@@ -1,9 +1,9 @@
 <div align="center">
 
-    [![Blikside](./public/img/media.png)](https://blikside.com)
-    
-    # Blikside
-    
+  [![Blikside](./public/img/media.png)](https://blikside.com)
+
+  ### Blikside
+
 </div>
 
 
@@ -77,7 +77,7 @@ Blikside имеет 3 больших этапа установки:
 node shared/install-dependencies.js
 ```
 
-Вы закончили установку! :135:
+Вы закончили установку! 💥
 
 ### Запуск приложения локально
 

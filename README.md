@@ -35,7 +35,7 @@
 - [**React-Native**](https://facebook.github.io/react-native/): Мобильные приложения
 - [**Expo**](https://expo.io/): Набор библиотек для React-Native
 
-#### Структура Проекта
+#### Структура папок
 
 ```sh
 blikside/

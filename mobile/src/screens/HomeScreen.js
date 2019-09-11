@@ -37,6 +37,7 @@ class HomeScreen extends Component {
 }
 
 function DevelopmentModeNotice() {
+	// eslint-disable-next-line
 	if (__DEV__) {
 		const learnMoreButton = (
 			<Text onPress={handleLearnMorePress} style={styles.helpLinkText}>
@@ -46,7 +47,7 @@ function DevelopmentModeNotice() {
 
 		return (
 			<Text style={styles.developmentModeText}>
-				Development mode is enabled: your app will be slower but you can use useful development tools. {learnMoreButton}
+				Development mode is enabled: your app will be slower but you can use useful development tools {learnMoreButton}
 			</Text>
 		);
 	} else {

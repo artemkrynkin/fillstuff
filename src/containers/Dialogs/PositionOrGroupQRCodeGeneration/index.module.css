@@ -1,0 +1,31 @@
+.qrContainer {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  min-height: 400px;
+  margin: 0 auto;
+  justify-content: center;
+  transition: width 200ms ease-out;
+}
+
+.qrCode {
+  transition: height 200ms ease-out, width 200ms ease-out;
+}
+
+.qrName,
+.qrCharacteristics {
+  font-family: var(--roboto);
+  line-height: 1.2;
+  hyphens: auto;
+  text-align: center;
+  transition: font-size 200ms ease-out, margin 200ms ease-out;
+}
+
+.qrNameHide,
+.qrCharacteristicsHide {
+  display: none;
+}
+
+.qrName {
+  font-weight: bold;
+}

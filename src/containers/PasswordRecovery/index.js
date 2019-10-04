@@ -14,6 +14,8 @@ import Head from 'src/components/head';
 
 // import { authenticate } from 'src/actions/auth';
 
+import styles from 'src/components/Layout/index.module.css';
+
 const PasswordRecovery = () => {
 	const { title: pageTitle, description: pageDescription } = generateMetaInfo({
 		type: 'password-recovery',
@@ -23,12 +25,12 @@ const PasswordRecovery = () => {
 	});
 
 	return (
-		<div className="page__inner-content">
+		<div className={styles.wrapper}>
 			<Head title={pageTitle} description={pageDescription} />
 
-			<div className="layout-auth__form">
+			<div className={styles.form}>
 				<h2>Восстановление пароля</h2>
-				<div className="layout-auth__form-fields">
+				<div className={styles.formFields}>
 					<Formik
 						initialValues={{ email: '', password: '' }}
 						validateOnBlur={false}
@@ -38,13 +40,7 @@ const PasswordRecovery = () => {
 								<FormControl margin="normal" fullWidth>
 									<Field name="email" placeholder="Email" component={TextField} autoFocus />
 								</FormControl>
-								<Button
-									type="submit"
-									disabled={isSubmitting}
-									className="layout-auth__login-btn"
-									variant="contained"
-									color="primary"
-								>
+								<Button type="submit" disabled={isSubmitting} className={styles.loginBtn} variant="contained" color="primary">
 									{isSubmitting ? <CircularProgress size={20} /> : 'Восстановить пароль'}
 								</Button>
 							</Form>
@@ -52,7 +48,7 @@ const PasswordRecovery = () => {
 					/>
 				</div>
 			</div>
-			<div className="layout-auth__bottom-info">
+			<div className={styles.bottomInfo}>
 				<Link to="/login">Я помню пароль!</Link>
 			</div>
 		</div>

@@ -1,0 +1,23 @@
+.container {
+  overflow: hidden;
+}
+
+.header {
+  align-items: center;
+  background-color: var(--c-hex-br-3);
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 0 0 1px var(--c-hex-bg-50);
+  min-height: 54px;
+  padding: 8px 15px;
+}
+
+.title {
+  color: var(--c-hex-bg-700);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.content {
+  padding: 20px 15px;
+}

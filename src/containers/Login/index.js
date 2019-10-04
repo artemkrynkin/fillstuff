@@ -20,6 +20,8 @@ import Head from 'src/components/head';
 
 import { login } from 'src/actions/authentication';
 
+import styles from 'src/components/Layout/index.module.css';
+
 const Login = props => {
 	const { title: pageTitle, description: pageDescription } = generateMetaInfo({
 		type: 'login',
@@ -38,15 +40,15 @@ const Login = props => {
 	const postAuthRedirectPath = redirectPath !== undefined || r !== undefined ? `${redirectPath || r}` : `${CLIENT_URL}/stocks`;
 
 	return (
-		<div className="page__inner-content">
+		<div className={styles.wrapper}>
 			<Head title={pageTitle} description={pageDescription} />
-			<div className="layout-auth__form">
+			<div className={styles.form}>
 				<h2>Войдите, чтобы начать</h2>
-				{/*<div className="layout-auth__or">*/}
+				{/*<div className={styles.or}>*/}
 				{/*	<Divider />*/}
-				{/*	<div className="layout-auth__or-text">или</div>*/}
+				{/*	<div className={styles.orText}>или</div>*/}
 				{/*</div>*/}
-				<div className="layout-auth__form-fields">
+				<div className={styles.formFields}>
 					<Formik
 						initialValues={{ email: '', password: '' }}
 						validateOnBlur={false}
@@ -95,24 +97,18 @@ const Login = props => {
 										{errors.unknown}
 									</FormHelperText>
 								) : null}
-								<Button
-									type="submit"
-									disabled={isSubmitting}
-									className="layout-auth__login-btn"
-									variant="contained"
-									color="primary"
-								>
+								<Button type="submit" disabled={isSubmitting} className={styles.loginBtn} variant="contained" color="primary">
 									{isSubmitting ? <CircularProgress size={20} /> : 'Войти'}
 								</Button>
 							</Form>
 						)}
 					/>
-					<div className="layout-auth__bottom-form-info">
+					<div className={styles.bottomFormInfo}>
 						<Link to="/password-recovery">Забыли пароль?</Link>
 					</div>
 				</div>
 			</div>
-			<div className="layout-auth__bottom-info">
+			<div className={styles.bottomInfo}>
 				Нет аккаунта? <Link to="/registration">Создайте его за пару секунд</Link>
 			</div>
 		</div>

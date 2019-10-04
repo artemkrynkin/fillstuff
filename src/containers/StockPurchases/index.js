@@ -5,7 +5,7 @@ import generateMetaInfo from 'shared/generate-meta-info';
 import Head from 'src/components/head';
 import Header from 'src/components/Header';
 
-import './index.styl';
+import stylesPage from 'src/styles/page.module.css';
 
 const StockPurchases = props => {
 	const metaInfo = {
@@ -20,11 +20,13 @@ const StockPurchases = props => {
 	});
 
 	return (
-		<div className="page__wrap">
+		<div className={stylesPage.pageWrap}>
 			<Head title={title} description={description} />
 
 			<Header pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
-			<div className="page__content stock-purchases"></div>
+			<div className={stylesPage.pageContent}>
+				<div className={`${stylesPage.pageContent}`}></div>
+			</div>
 		</div>
 	);
 };

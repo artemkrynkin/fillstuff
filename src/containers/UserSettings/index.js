@@ -7,7 +7,8 @@ import Head from 'src/components/head';
 import Header from 'src/components/Header';
 import { DisplayLoadingComponent } from 'src/components/Loading';
 
-import './index.styl';
+import stylesPage from 'src/styles/page.module.css';
+import styles from './index.module.css';
 
 const Index = Loadable({
 	loader: () => import('./components/index' /* webpackChunkName: "UserSettings_Index" */),
@@ -28,12 +29,12 @@ const UserSettings = () => {
 	});
 
 	return (
-		<div className="page__wrap">
+		<div className={stylesPage.pageWrap}>
 			<Head title={title} description={description} />
 
 			<Header pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
-			<div className="page__content user-settings">
-				<div className="page__inner-content">
+			<div className={`${stylesPage.pageContent} ${styles.container}`}>
+				<div className={styles.wrapper}>
 					<Index />
 				</div>
 			</div>

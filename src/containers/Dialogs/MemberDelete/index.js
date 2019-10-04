@@ -12,7 +12,7 @@ import { Dialog, PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
 
 import { deleteMember } from 'src/actions/stocks';
 
-import './index.styl';
+import styles from './index.module.css';
 
 class MemberDelete extends Component {
 	static propTypes = {
@@ -28,8 +28,8 @@ class MemberDelete extends Component {
 
 		let photoImgClasses = (member, dialog) => {
 			return ClassNames({
-				'D-member-delete__member-photo': dialog,
-				'D-member-delete__member-photo_null': dialog ? member.isWaiting || !member.user.profilePhoto : false,
+				[styles.photo]: dialog,
+				[styles.photoEmpty]: dialog ? member.isWaiting || !member.user.profilePhoto : false,
 			});
 		};
 
@@ -49,7 +49,7 @@ class MemberDelete extends Component {
 									<FontAwesomeIcon icon={['fas', 'user-alt']} />
 								)}
 							</div>
-							<div className="D-member-delete__member-details">
+							<div className={styles.details}>
 								{selectedMember.user._id !== currentUser._id ? (
 									<DialogContentText>
 										Вы уверены, что хотите удалить участника <b>{selectedMember.user.email}</b> из команды?

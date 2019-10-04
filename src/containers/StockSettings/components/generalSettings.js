@@ -22,7 +22,8 @@ import { SelectField } from 'src/components/SelectField';
 
 import { editStock } from 'src/actions/stocks';
 
-import './generalSettings.styl';
+import stylesGlobal from 'src/styles/globals.module.css';
+import styles from './generalSettings.module.css';
 
 const timezones = require('shared/timezones')
 	.map(timezone => {
@@ -75,7 +76,7 @@ const GeneralSettings = props => {
 				}}
 				render={({ errors, touched, isSubmitting }) => (
 					<Form>
-						<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" container>
+						<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" container>
 							<FormLabel style={{ minWidth: 124 }}>Название:</FormLabel>
 							{checkPermissions(currentUserRole, ['stock.full_control']) ? (
 								<Field
@@ -101,7 +102,7 @@ const GeneralSettings = props => {
 								/>
 							)}
 						</Grid>
-						<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" style={{ marginBottom: 0 }} container>
+						<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" style={{ marginBottom: 0 }} container>
 							<FormLabel style={{ minWidth: 124 }}>Часовой пояс:</FormLabel>
 							<FormControl fullWidth>
 								{checkPermissions(currentUserRole, ['stock.full_control']) ? (
@@ -129,7 +130,7 @@ const GeneralSettings = props => {
 							</FormControl>
 						</Grid>
 						{checkPermissions(currentUserRole, ['stock.full_control']) ? (
-							<Grid className="pd-rowGridFormSubmit" justify="flex-end" style={{ marginTop: 20 }} container>
+							<Grid className={styles.gridFormFooter} justify="flex-end" style={{ marginTop: 20 }} container>
 								<Button type="submit" disabled={isSubmitting} variant="contained" color="primary">
 									{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
 									<span style={{ opacity: Number(!isSubmitting) }}>Сохранить</span>

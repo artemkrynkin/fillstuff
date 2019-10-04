@@ -1,0 +1,129 @@
+.container {
+  align-items: center;
+  background-color: var(--c-hex-t-200);
+  flex-direction: row;
+  height: 50px;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 1200;
+}
+
+.container_themeBg {
+  background-color: transparent;
+}
+
+.buttonColorTeal400 {
+  background-color: var(--c-hex-t-400);
+}
+
+.buttonColorTeal400:hover {
+  background-color: var(--c-hex-t-500);
+}
+
+.column_left,
+.column_right {
+  align-items: center;
+  display: flex;
+}
+
+.column_left {
+  justify-content: flex-start;
+}
+
+.column_right {
+  justify-items: flex-end;
+}
+
+.columnGroup_left {
+  margin-right: 24px;
+}
+
+.columnGroup_right {
+  margin-left: 24px;
+}
+
+.leftElements {
+  display: flex;
+  align-items: center;
+}
+
+.titlePage {
+  color: white;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 1.2px;
+  text-shadow: 0 0 10px var(--c-hex-t-500);
+}
+
+.logo {
+  background: url('/img/logo_original.svg') no-repeat center center;
+  display: block;
+  height: 33px;
+  margin: 0 auto 0;
+  width: 200px;
+}
+
+.stock-btn svg {
+  margin-left: 10px;
+  transform: rotate(0deg);
+}
+
+.profile {
+  align-items: center;
+  display: flex;
+  cursor: pointer;
+  padding: 5px 0;
+  user-select: none;
+}
+
+.profile svg {
+  color: var(--c-hex-t-100);
+  transform: rotate(0deg);
+  transition: color 150ms ease-out;
+}
+
+.profile svg.open {
+  color: white;
+}
+
+.container_themeBg .profile svg {
+  color: var(--c-hex-sg-2);
+}
+
+.container_themeBg .profile svg.open {
+  color: var(--c-hex-sg-1);
+}
+
+.profileName {
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  user-select: none;
+  margin-right: 10px;
+  text-shadow: 0 0 10px var(--c-hex-t-500);
+}
+
+.profilePhoto {
+  align-items: flex-end;
+  border: 2px solid var(--c-hex-t-400);
+  border-radius: 50%;
+  display: flex;
+  height: 40px;
+  justify-content: center;
+  margin-right: 5px;
+  overflow: hidden;
+  width: 40px;
+}
+
+.profilePhoto svg {
+  font-size: 30px;
+}
+
+.profilePhoto img {
+  height: 100%;
+  width: 100%;
+}
+
+.container_themeBg .profileName + .profilePhoto {
+  border-color: rgba(var(--c-rgb-sg-2), 0.3);
+}

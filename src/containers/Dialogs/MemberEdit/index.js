@@ -22,7 +22,8 @@ import { PDDialog, PDDialogTitle, PDDialogActions } from 'src/components/Dialog'
 
 import { editMember } from 'src/actions/stocks';
 
-import './index.styl';
+import stylesGlobal from 'src/styles/globals.module.css';
+import styles from './index.module.css';
 
 const memberInvitationOrEditSchema = Yup.object().shape({
 	user: Yup.object().shape({
@@ -54,8 +55,8 @@ class MemberEdit extends Component {
 
 		let photoImgClasses = (member, dialog) => {
 			return ClassNames({
-				'D-member-edit__member-photo': dialog,
-				'D-member-edit__member-photo_null': dialog ? member.isWaiting || !member.user.profilePhoto : false,
+				[styles.photo]: dialog,
+				[styles.photoEmpty]: dialog ? member.isWaiting || !member.user.profilePhoto : false,
 			});
 		};
 
@@ -80,7 +81,7 @@ class MemberEdit extends Component {
 						render={({ errors, isSubmitting, values }) => (
 							<Form>
 								<DialogContent>
-									<Grid className="pd-rowGridFormLabelControl" direction="column" alignItems="center" container>
+									<Grid className={stylesGlobal.formLabelControl} direction="column" alignItems="center" container>
 										<div className={photoImgClasses(selectedMember, true)}>
 											{selectedMember.user.profilePhoto ? (
 												<img src={selectedMember.user.profilePhoto} alt="" />
@@ -89,7 +90,7 @@ class MemberEdit extends Component {
 											)}
 										</div>
 									</Grid>
-									<Grid className="pd-rowGridFormLabelControl">
+									<Grid className={stylesGlobal.formLabelControl}>
 										<Field
 											name="user.name"
 											label="Имя:"
@@ -101,7 +102,7 @@ class MemberEdit extends Component {
 											fullWidth
 										/>
 									</Grid>
-									<Grid className="pd-rowGridFormLabelControl">
+									<Grid className={stylesGlobal.formLabelControl}>
 										<Field
 											name="user.email"
 											label="Email:"
@@ -127,7 +128,7 @@ class MemberEdit extends Component {
 										<FormLabel>Роль:</FormLabel>
 										<Field name="role" component={RadioGroup} row>
 											<FormControlLabel
-												className="pd-formControlLabelRadioTitleSubtitle"
+												className={stylesGlobal.formRadioTitleSubtitle}
 												value="user"
 												control={
 													<Radio
@@ -138,14 +139,14 @@ class MemberEdit extends Component {
 													/>
 												}
 												label={
-													<div className="pd-formControlLabelRadioTitleSubtitle__label">
-														<div className="pd-formControlLabelRadioTitleSubtitle__title">Тату-мастер</div>
+													<div className={stylesGlobal.formRadioTitleSubtitleLabel}>
+														<div className={stylesGlobal.formRadioTitleSubtitleTitle}>Тату-мастер</div>
 													</div>
 												}
 												disabled={isSubmitting}
 											/>
 											<FormControlLabel
-												className="pd-formControlLabelRadioTitleSubtitle"
+												className={stylesGlobal.formRadioTitleSubtitle}
 												value="admin"
 												control={
 													<Radio
@@ -156,15 +157,15 @@ class MemberEdit extends Component {
 													/>
 												}
 												label={
-													<div className="pd-formControlLabelRadioTitleSubtitle__label">
-														<div className="pd-formControlLabelRadioTitleSubtitle__title">Администратор</div>
+													<div className={stylesGlobal.formRadioTitleSubtitleLabel}>
+														<div className={stylesGlobal.formRadioTitleSubtitleTitle}>Администратор</div>
 													</div>
 												}
 												disabled={isSubmitting}
 											/>
 											{checkPermissions(currentUserRole, ['stock.full_control']) ? (
 												<FormControlLabel
-													className="pd-formControlLabelRadioTitleSubtitle"
+													className={stylesGlobal.formRadioTitleSubtitle}
 													value="owner"
 													control={
 														<Radio
@@ -175,8 +176,8 @@ class MemberEdit extends Component {
 														/>
 													}
 													label={
-														<div className="pd-formControlLabelRadioTitleSubtitle__label">
-															<div className="pd-formControlLabelRadioTitleSubtitle__title">Владелец</div>
+														<div className={stylesGlobal.formRadioTitleSubtitleLabel}>
+															<div className={stylesGlobal.formRadioTitleSubtitleTitle}>Владелец</div>
 														</div>
 													}
 													disabled={isSubmitting}

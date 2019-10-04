@@ -22,7 +22,8 @@ import CardPaper from 'src/components/CardPaper';
 
 import { editUser } from 'src/actions/user';
 
-import './ProfileSettings.styl';
+import stylesGlobal from 'src/styles/globals.module.css';
+import styles from './ProfileSettings.module.css';
 
 const PersonalDataSchema = Yup.object().shape({
 	name: Yup.string()
@@ -110,8 +111,8 @@ class ProfileSettings extends Component {
 		const { visibleEmailFields, visiblePasswordFields, newProfilePhoto } = this.state;
 
 		let photoImgClasses = ClassNames({
-			'us-profile-settings__photo-img': true,
-			'us-profile-settings__photo-img_null': !user.profilePhoto,
+			[styles.photoImg]: true,
+			[styles.photoImg_null]: !user.profilePhoto,
 		});
 
 		let labelStyles = { minWidth: 94 };
@@ -119,7 +120,7 @@ class ProfileSettings extends Component {
 		return (
 			<CardPaper elevation={1} leftContent="Профиль" title style={{ marginBottom: 16 }}>
 				<Grid direction="row" alignItems="flex-start" spacing={3} container>
-					<Grid className="us-profile-settings__photo" item>
+					<Grid className={styles.photo} item>
 						<div className={photoImgClasses}>
 							{newProfilePhoto.base64 || user.profilePhoto ? (
 								<img src={newProfilePhoto.base64 || user.profilePhoto} alt="" />
@@ -129,12 +130,12 @@ class ProfileSettings extends Component {
 						</div>
 						<input id="profile-photo" type="file" accept="image/*" onChange={this.onChangeProfilePhoto} style={{ display: 'none' }} />
 						<label htmlFor="profile-photo">
-							<ButtonBase className="button-link-500" component="span" disableRipple>
+							<ButtonBase className={styles.buttonLink} component="span" disableRipple>
 								{user.profilePhoto ? 'Изменить' : 'Загрузить'} фотографию
 							</ButtonBase>
 						</label>
 					</Grid>
-					<Grid className="us-profile-settings__personal-data" item xs>
+					<Grid className={styles.personalData} item xs>
 						<Formik
 							initialValues={{
 								name: user.name,
@@ -171,7 +172,7 @@ class ProfileSettings extends Component {
 							}}
 							render={({ errors, touched, isSubmitting }) => (
 								<Form>
-									<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" container>
+									<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" container>
 										<FormLabel style={labelStyles}>Имя:</FormLabel>
 										<Field name="name" component={TextField} />
 									</Grid>
@@ -186,7 +187,7 @@ class ProfileSettings extends Component {
 						/>
 
 						<Divider style={{ margin: '20px 0' }} />
-						<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" alignItems="flex-start" container>
+						<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 							<FormLabel style={labelStyles}>Email:</FormLabel>
 							<Grid item>
 								{visibleEmailFields ? (
@@ -244,7 +245,7 @@ class ProfileSettings extends Component {
 								)}
 							</Grid>
 							<ButtonBase
-								className="button-link-500"
+								className={styles.buttonLink}
 								component="span"
 								disableRipple
 								onClick={this.onToggleEmailFields}
@@ -256,7 +257,7 @@ class ProfileSettings extends Component {
 
 						{user.email ? <Divider style={{ margin: '20px 0' }} /> : null}
 						{user.email ? (
-							<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" alignItems="flex-start" style={{ margin: 0 }} container>
+							<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" style={{ margin: 0 }} container>
 								<FormLabel style={labelStyles}>Пароль:</FormLabel>
 								<Grid item>
 									{visiblePasswordFields ? (
@@ -337,7 +338,7 @@ class ProfileSettings extends Component {
 									)}
 								</Grid>
 								<ButtonBase
-									className="button-link-500"
+									className={styles.buttonLink}
 									component="span"
 									disableRipple
 									onClick={this.onTogglePasswordFields}

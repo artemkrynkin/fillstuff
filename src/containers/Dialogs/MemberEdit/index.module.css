@@ -1,0 +1,26 @@
+.photo {
+  align-items: flex-end;
+  border-radius: 50%;
+  display: flex;
+  flex: none;
+  height: 150px;
+  justify-content: center;
+  margin: 0 auto;
+  overflow: hidden;
+  width: 150px;
+}
+
+.photo img {
+  height: 100%;
+  width: 100%;
+}
+
+.photoEmpty {
+  background-color: var(--c-hex-br-5);
+  border: 6px solid var(--c-hex-bg-100);
+}
+
+.photoEmpty svg {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 120px;
+}

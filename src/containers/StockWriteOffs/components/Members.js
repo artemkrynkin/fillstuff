@@ -7,7 +7,7 @@ import Grid from '@material-ui/core/Grid';
 
 import CardPaper from 'src/components/CardPaper';
 
-import './Members.styl';
+import styles from './Members.module.css';
 
 class Members extends Component {
 	render() {
@@ -15,19 +15,19 @@ class Members extends Component {
 
 		const photoImgClasses = member =>
 			ClassNames({
-				'swo-members__member-photo': true,
-				'swo-members__member-photo_null': member.isWaiting || !member.user.profilePhoto,
+				[styles.photo]: true,
+				[styles.photo_null]: member.isWaiting || !member.user.profilePhoto,
 			});
 
 		return (
-			<Grid className="swo-members" item xs={3}>
+			<Grid className={styles.container} item xs={3}>
 				<CardPaper
 					elevation={1}
 					leftContent="Участники"
 					rightContent={
 						<NavLink
-							className="swo-members__show-all-link"
-							activeClassName="swo-members__show-all-link_active"
+							className={styles.linkShowAll}
+							activeClassName={styles.linkShowAll_active}
 							to={`/stocks/${currentUser.activeStockId}/write-offs`}
 							exact
 							strict
@@ -37,13 +37,13 @@ class Members extends Component {
 					}
 					title
 				>
-					<div className="swo-members__list">
+					<div className={styles.list}>
 						{members.map((member, index) =>
 							!member.isWaiting ? (
-								<div className="swo-members__item" key={index}>
+								<div className={styles.item} key={index}>
 									<NavLink
-										className="swo-members__link"
-										activeClassName="swo-members__link_active"
+										className={styles.link}
+										activeClassName={styles.link_active}
 										to={`/stocks/${currentUser.activeStockId}/write-offs/${member.user._id}`}
 										exact
 										strict
@@ -55,7 +55,7 @@ class Members extends Component {
 												<FontAwesomeIcon icon={['fas', 'user-alt']} />
 											)}
 										</div>
-										<div className="swo-members__name">{member.user.name || member.user.email || 'Аноним'}</div>
+										<div className={styles.name}>{member.user.name || member.user.email || 'Аноним'}</div>
 									</NavLink>
 								</div>
 							) : null

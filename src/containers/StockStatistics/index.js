@@ -5,6 +5,8 @@ import generateMetaInfo from 'shared/generate-meta-info';
 import Head from 'src/components/head';
 import Header from 'src/components/Header';
 
+import stylesPage from 'src/styles/page.module.css';
+
 const StockStatistics = () => {
 	const metaInfo = {
 		pageName: 'stock-statistics',
@@ -18,12 +20,12 @@ const StockStatistics = () => {
 	});
 
 	return (
-		<div className="page__wrap">
+		<div className={stylesPage.pageWrap}>
 			<Head title={title} description={description} />
 
 			<Header pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
-			<div className="page__content">
-				<div className="page__inner-content stock-statistics"></div>
+			<div className={stylesPage.pageContent}>
+				<div className={`${stylesPage.pageContent}`}></div>
 			</div>
 		</div>
 	);

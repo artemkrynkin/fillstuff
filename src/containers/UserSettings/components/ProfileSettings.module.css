@@ -1,0 +1,46 @@
+.personalData {
+  max-width: calc(100% - (155px + 24px));
+}
+
+.photo {
+  text-align: center;
+}
+
+.photoImg {
+  border-radius: 8px;
+  box-shadow: 0 0 0 5px var(--c-hex-bg-100);
+  display: flex;
+  justify-content: center;
+  height: 150px;
+  margin: 0 5px 10px;
+  overflow: hidden;
+  width: 150px;
+}
+
+.photoImg img {
+  max-height: 100%;
+  width: auto;
+}
+
+.photoImg_null {
+  align-items: flex-end;
+  background-color: var(--c-hex-br-5);
+}
+
+.photoImg_null svg {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 140px;
+  margin-bottom: -15px;
+}
+
+.buttonLink {
+  background: none;
+  border: none;
+  color: var(--c-hex-t-500);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.buttonLink:hover {
+  color: var(--c-hex-t-400);
+}

@@ -16,13 +16,14 @@ import Grid from '@material-ui/core/Grid';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 
-import colorPalette from 'shared/colorPalette';
+import theme from 'shared/theme';
 
 import { PDDialog, PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
 
 import marks from './marks';
 
-import './index.styl';
+import stylesGlobal from 'src/styles/globals.module.css';
+import styles from './index.module.css';
 
 const QRCodeGenerationSchema = Yup.object().shape({
 	quantity: Yup.number()
@@ -32,14 +33,14 @@ const QRCodeGenerationSchema = Yup.object().shape({
 
 const QRNameClasses = QRCodeSize =>
 	ClassNames({
-		'dialog-print-qr-codes-product__qr-name': true,
-		'dialog-print-qr-codes-product__qr-name_hide': QRCodeSize <= 2,
+		[styles.qrName]: true,
+		[styles.qrNameHide]: QRCodeSize <= 2,
 	});
 
 const QRCharacteristicsClasses = QRCodeSize =>
 	ClassNames({
-		'dialog-print-qr-codes-product__qr-characteristics': true,
-		'dialog-print-qr-codes-product__qr-characteristics_hide': QRCodeSize <= 2,
+		[styles.qrCharacteristics]: true,
+		[styles.qrCharacteristicsHide]: QRCodeSize <= 2,
 	});
 
 class DialogPositionOrGroupQRCodeGeneration extends Component {
@@ -124,8 +125,8 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 						paddingRight: () => 20,
 						paddingTop: () => 20,
 						paddingBottom: () => 20,
-						hLineColor: (i, node) => colorPalette.blueGrey.cBg100,
-						vLineColor: (i, node) => colorPalette.blueGrey.cBg100,
+						hLineColor: (i, node) => theme.blueGrey.cBg100,
+						vLineColor: (i, node) => theme.blueGrey.cBg100,
 					},
 				});
 
@@ -244,7 +245,7 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 					render={({ errors, touched, isSubmitting, values }) => (
 						<Form>
 							<DialogContent>
-								<Grid className="pd-rowGridFormLabelControl">
+								<Grid className={stylesGlobal.formLabelControl}>
 									<Field
 										name="quantity"
 										type="number"
@@ -259,7 +260,7 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 									/>
 								</Grid>
 
-								<Grid className="pd-rowGridFormLabelControl">
+								<Grid className={stylesGlobal.formLabelControl}>
 									<InputLabel error={Boolean(errors.linkInShop)} style={{ minWidth: 146 }}>
 										Размер QR-кодов
 									</InputLabel>
@@ -279,7 +280,7 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 									</FormControl>
 								</Grid>
 
-								<div className="dialog-print-qr-codes-product__qr-container" style={{ maxWidth: QRWidth }}>
+								<div className={styles.qrContainer} style={{ maxWidth: QRWidth }}>
 									<div
 										className={QRNameClasses(QRCodeSize)}
 										style={{
@@ -304,7 +305,7 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 											)}
 										</div>
 									) : null}
-									<img className="dialog-print-qr-codes-product__qr-code" src={QRCodeDataUrl} width={QRWidth} height={QRWidth} alt="" />
+									<img className={styles.qrCode} src={QRCodeDataUrl} width={QRWidth} height={QRWidth} alt="" />
 								</div>
 							</DialogContent>
 							<PDDialogActions

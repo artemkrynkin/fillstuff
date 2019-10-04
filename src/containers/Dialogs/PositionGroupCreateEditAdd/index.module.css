@@ -1,0 +1,79 @@
+.textFieldSearchContainer {
+  margin: 10px -25px 0;
+  position: sticky;
+  top: 0;
+}
+
+.textFieldSearchClear {
+  color: var(--c-hex-bg-300);
+  font-size: 16px;
+  padding: 12px;
+  position: absolute;
+  right: 13px;
+  top: 1px;
+}
+
+.textFieldSearchClear:hover {
+  color: var(--c-hex-t-300);
+}
+
+.selectedPositions {
+  background-color: white;
+  border-bottom: 1px solid var(--c-hex-br-5);
+  margin: 0 -25px;
+  padding: 10px 25px 5px;
+  position: sticky;
+  top: 42px;
+}
+
+.selectPositions {
+  margin: 0 -25px;
+  padding: 0 25px;
+  width: auto;
+}
+
+.selectPositionsWrap {
+  min-height: 250px;
+}
+
+.selectPosition {
+  align-items: center;
+  border-bottom: 1px solid var(--c-hex-br-5);
+  cursor: pointer;
+  display: flex;
+  color: var(--c-hex-bg-700);
+  font-size: 14px;
+  line-height: 1.2;
+  margin: 0 -25px;
+  padding: 13px 25px;
+  transition: background-color 150ms ease-out;
+}
+
+.selectPosition:hover {
+  background-color: var(--c-hex-br-2);
+}
+
+.selectPositionCheckbox {
+  align-items: center;
+  border: 2px solid var(--c-hex-bg-100);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  height: 24px;
+  margin-right: 10px;
+  width: 24px;
+}
+
+.selectPositionCheckbox svg {
+  color: transparent;
+  font-size: 14px;
+}
+
+.selectPositionSelected .selectPositionCheckbox {
+  background-color: var(--c-hex-t-300);
+  border-color: var(--c-hex-t-300);
+}
+
+.selectPositionSelected .selectPositionCheckbox svg {
+  color: white;
+}

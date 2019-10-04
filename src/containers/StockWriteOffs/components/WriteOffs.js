@@ -19,7 +19,7 @@ import { getWriteOffs } from 'src/actions/writeOffs';
 import WriteOff from './WriteOff';
 import { TableCell } from './styles';
 
-import './WriteOffs.styl';
+import styles from './WriteOffs.module.css';
 
 const DialogWriteOffDelete = Loadable({
 	loader: () => import('src/containers/Dialogs/WriteOffDelete' /* webpackChunkName: "Dialog_WriteOffDelete" */),
@@ -34,7 +34,7 @@ class WriteOffs extends Component {
 		dialogWriteOffDelete: false,
 	};
 
-	onWriteOffDrop = () => this.setState({ position: null, dialogOpenedName: '' });
+	onWriteOffDrop = () => this.setState({ writeOff: null, dialogOpenedName: '' });
 
 	onOpenDialogByName = (dialogName, writeOff) =>
 		this.setState({
@@ -51,13 +51,13 @@ class WriteOffs extends Component {
 		this.props.getWriteOffs({ userId: this.props.selectedUserId, endDate, startDate });
 	}
 
-	UNSAFE_componentWillUpdate(nextProps, nextState, nextContext) {
-		const { endDate, startDate } = queryString.parse(history.location.search);
-
-		if (this.props.selectedUserId !== nextProps.selectedUserId) {
-			this.props.getWriteOffs({ userId: nextProps.selectedUserId, endDate, startDate });
-		}
-	}
+	// getSnapshotBeforeUpdate(prevProps, prevState) {
+	// 	const { endDate, startDate } = queryString.parse(history.location.search);
+	//
+	// 	if (this.props.selectedUserId !== prevProps.selectedUserId) {
+	// 		this.props.getWriteOffs({ userId: prevProps.selectedUserId, endDate, startDate });
+	// 	}
+	// }
 
 	render() {
 		const {
@@ -72,7 +72,7 @@ class WriteOffs extends Component {
 
 		return (
 			<Grid item xs={9}>
-				<Paper className="swo-write-offs">
+				<Paper>
 					<Table>
 						<TableHead>
 							<TableRow>
@@ -87,7 +87,7 @@ class WriteOffs extends Component {
 								<TableCell align="right" width={50} />
 							</TableRow>
 						</TableHead>
-						<TableBody className="swo-write-offs__table-body">
+						<TableBody className={styles.tableBody}>
 							{!isLoadingWriteOffs ? (
 								writeOffs && writeOffs.length ? (
 									writeOffs.map(writeOff => (
@@ -120,7 +120,7 @@ class WriteOffs extends Component {
 					<DialogWriteOffDelete
 						dialogOpen={dialogWriteOffDelete}
 						onCloseDialog={() => this.onCloseDialogByName('dialogWriteOffDelete')}
-						onExitedDialog={this.onPositionDrop}
+						onExitedDialog={this.onWriteOffDrop}
 						currentStockId={currentStock._id}
 						selectedWriteOff={dialogOpenedName === 'dialogWriteOffDelete' ? writeOff : null}
 					/>

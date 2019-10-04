@@ -2,20 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ClassNames from 'classnames';
 
-import './index.styl';
+import styles from './index.module.css';
 
 const qiClasses = dividedPositions =>
 	ClassNames({
-		'quantity-indicator': true,
-		'quantity-indicator_disappearing': dividedPositions,
+		[styles.disappearing]: dividedPositions,
 	});
 
 const qiCircleClasses = (quantity, minimumBalance) =>
 	ClassNames({
-		'quantity-indicator__circle': true,
-		'quantity-indicator__circle_red': (quantity / minimumBalance) * 100 <= 100,
-		'quantity-indicator__circle_yellow': (quantity / minimumBalance) * 100 > 100 && (quantity / minimumBalance) * 100 <= 150,
-		'quantity-indicator__circle_green': (quantity / minimumBalance) * 100 > 150,
+		[styles.circle]: true,
+		[styles.circle_red]: (quantity / minimumBalance) * 100 <= 100,
+		[styles.circle_yellow]: (quantity / minimumBalance) * 100 > 100 && (quantity / minimumBalance) * 100 <= 150,
+		[styles.circle_green]: (quantity / minimumBalance) * 100 > 150,
 	});
 
 const compareQuantity = (a, b) => {
@@ -74,10 +73,10 @@ const QuantityIndicator = props => {
 		const unitIssueTransform = unitReceipt === 'pce' ? 'шт.' : unitIssue === 'pce' ? 'шт.' : 'уп.';
 
 		return (
-			<div className="quantity-indicator">
+			<div>
 				{quantity + ' ' + unitIssueTransform}
 				{unitReceipt === 'nmp' && unitIssue === 'pce' ? (
-					<span className="quantity-indicator__quantity-packages">{Math.ceil(quantityPackages) + ' уп.'}</span>
+					<span className={styles.quantityPackages}>{Math.ceil(quantityPackages) + ' уп.'}</span>
 				) : null}
 				{divided ? <span className={qiCircleClasses(quantity, minimumBalance)} /> : null}
 			</div>

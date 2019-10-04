@@ -1,0 +1,19 @@
+.page {
+  display: flex;
+}
+
+.pageLayout {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 100vh;
+  width: calc(100% - 256px);
+}
+
+.pageWrap {}
+
+.pageContent {
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+}

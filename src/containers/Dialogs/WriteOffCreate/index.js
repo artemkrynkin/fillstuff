@@ -16,7 +16,7 @@ import { Dialog, PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
 import { getStockStatus } from 'src/actions/stocks';
 import { createWriteOff } from 'src/actions/writeOffs';
 
-import './index.styl';
+import stylesGlobal from 'src/styles/globals.module.css';
 
 const writeOffSchema = Yup.object().shape({
 	quantity: Yup.number()
@@ -64,7 +64,7 @@ class DialogWriteOffCreate extends Component {
 					render={({ errors, touched, isSubmitting, values }) => (
 						<Form>
 							<DialogContent>
-								<Grid className="pd-rowGridFormLabelControl">
+								<Grid className={stylesGlobal.formLabelControl}>
 									<MuiTextField
 										label="Наименование"
 										InputProps={{
@@ -77,7 +77,7 @@ class DialogWriteOffCreate extends Component {
 										fullWidth
 									/>
 								</Grid>
-								<Grid className="pd-rowGridFormLabelControl">
+								<Grid className={stylesGlobal.formLabelControl}>
 									<Field
 										name="quantity"
 										type="number"
@@ -91,7 +91,7 @@ class DialogWriteOffCreate extends Component {
 										autoFocus
 									/>
 								</Grid>
-								<Grid className="pd-rowGridFormLabelControl">
+								<Grid className={stylesGlobal.formLabelControl}>
 									<Field
 										name="comment"
 										label="Комментарий"

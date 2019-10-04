@@ -4,13 +4,13 @@ import ClassNames from 'classnames';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 
-import './index.styl';
+import styles from './index.module.css';
 
 const CardPaper = props => {
 	const { className, elevation, header = true, leftContent, rightContent, title, customRightColumn, style, children } = props;
 
 	let cardPaperClassesObj = {
-		'card-paper': true,
+		[styles.container]: true,
 	};
 
 	if (className)
@@ -29,8 +29,8 @@ const CardPaper = props => {
 	return (
 		<Paper className={cardPaperClasses} elevation={elevation} style={style}>
 			{header ? (
-				<Grid className="card-paper__header" container>
-					{leftContent && title ? <div className="card-paper__title">{leftContent}</div> : leftContent}
+				<Grid className={styles.header} container>
+					{leftContent && title ? <div className={styles.title}>{leftContent}</div> : leftContent}
 					{rightContent && !customRightColumn ? (
 						<Grid item style={{ marginLeft: 'auto' }}>
 							{rightContent}
@@ -40,7 +40,7 @@ const CardPaper = props => {
 					)}
 				</Grid>
 			) : null}
-			<div className="card-paper__content">{children}</div>
+			<div className={styles.content}>{children}</div>
 		</Paper>
 	);
 };

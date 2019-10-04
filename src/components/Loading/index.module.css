@@ -1,0 +1,14 @@
+.page {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+}
+
+.component {
+  align-items: center;
+  display: flex;
+  flex: auto;
+  justify-content: center;
+}

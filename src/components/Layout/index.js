@@ -2,25 +2,26 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-import './index.styl';
+import stylesPage from 'src/styles/page.module.css';
+import styles from './index.module.css';
 
 class Layout extends Component {
 	render() {
 		const { children, authed = false, theme = 'default' } = this.props;
 
 		return (
-			<div className="page__layout">
+			<div className={stylesPage.pageLayout}>
 				{authed ? (
 					theme === 'default' ? (
 						children
 					) : (
-						<div className="page__content layout_bg">{children}</div>
+						<div className={`${stylesPage.pageContent} ${styles.layout_bg}`}>{children}</div>
 					)
 				) : (
-					<div className="page__content layout_bg layout-auth">
-						<Link className="layout-auth__logo" to="/" />
+					<div className={`${stylesPage.pageContent} ${styles.layout_bg} ${styles.container}`}>
+						<Link className={styles.logo} to="/" />
 						{children}
-						<div className="layout-auth__code-of-conduct">
+						<div className={styles.codeOfConduct}>
 							Используя Blikside, вы соглашаетесь с{' '}
 							<a href="/manifest.json" target="_blank" rel="noreferrer noopener">
 								Политикой конфиденциальности

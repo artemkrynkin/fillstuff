@@ -8,7 +8,7 @@ import { history } from 'src/helpers/history';
 
 import { ExpansionPanel, ExpansionPanelSummary } from './styles';
 
-import './index.styl';
+import styles from './index.module.css';
 
 class Sidebar extends Component {
 	state = {
@@ -34,19 +34,15 @@ class Sidebar extends Component {
 		const { activePage } = this.state;
 
 		return (
-			<aside className="sidebar">
-				<div className="sidebar__wrap">
-					<Link className="sidebar__logo" to={`/stocks/${activeStockId}/dashboard`} />
-					<div className="sidebar__menu">
+			<aside className={styles.container}>
+				<div className={styles.wrapper}>
+					<Link className={styles.logo} to={`/stocks/${activeStockId}/dashboard`} />
+					<div className={styles.menu}>
 						{activeStockId ? (
 							<div>
-								<div className="sidebar__menu-item">
-									<NavLink
-										className="sidebar__menu-link"
-										activeClassName="sidebar__menu-link_active"
-										to={`/stocks/${activeStockId}/dashboard`}
-									>
-										<div className="sidebar__menu-icon">
+								<div className={styles.menuItem}>
+									<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to={`/stocks/${activeStockId}/dashboard`}>
+										<div className={styles.menuIcon}>
 											<FontAwesomeIcon icon={['far', 'tachometer']} />
 										</div>
 										Монитор
@@ -57,39 +53,39 @@ class Sidebar extends Component {
 									TransitionProps={{
 										timeout: 300,
 									}}
-									className="sidebar__menu-expansion"
+									className={styles.menuExpansion}
 									expanded={activePage === 'availability' || activePage === 'write-offs'}
 									onChange={this.onChangeUrl('availability')}
 								>
-									<ExpansionPanelSummary className="sidebar__menu-expansion-summary">
-										<div className="sidebar__menu-expansion-title">
-											<div className="sidebar__menu-expansion-title-icon">
+									<ExpansionPanelSummary className={styles.menuExpansionSummary}>
+										<div className={styles.menuExpansionTitle}>
+											<div className={styles.menuExpansionTitleIcon}>
 												<FontAwesomeIcon icon={['fal', 'warehouse']} />
 											</div>
 											Склад
 										</div>
 									</ExpansionPanelSummary>
-									<div className="sidebar__menu-expansion-details">
-										<div className="sidebar__menu-item">
+									<div className={styles.menuExpansionDetails}>
+										<div className={styles.menuItem}>
 											<NavLink
-												className="sidebar__menu-link"
-												activeClassName="sidebar__menu-link_active-expansion"
+												className={styles.menuLink}
+												activeClassName={styles.menuLink_activeExpansion}
 												to={`/stocks/${activeStockId}/availability`}
 											>
-												<div className="sidebar__menu-icon">
+												<div className={styles.menuIcon}>
 													<FontAwesomeIcon icon={['far', 'inventory']} />
 												</div>
 												Наличие
 											</NavLink>
 										</div>
 
-										<div className="sidebar__menu-item">
+										<div className={styles.menuItem}>
 											<NavLink
-												className="sidebar__menu-link"
-												activeClassName="sidebar__menu-link_active-expansion"
+												className={styles.menuLink}
+												activeClassName={styles.menuLink_activeExpansion}
 												to={`/stocks/${activeStockId}/write-offs`}
 											>
-												<div className="sidebar__menu-icon">
+												<div className={styles.menuIcon}>
 													<FontAwesomeIcon icon={['fal', 'clipboard-check']} />
 												</div>
 												Списания
@@ -102,39 +98,39 @@ class Sidebar extends Component {
 									TransitionProps={{
 										timeout: 300,
 									}}
-									className="sidebar__menu-expansion"
+									className={styles.menuExpansion}
 									expanded={activePage === 'orders' || activePage === 'purchases'}
 									onChange={this.onChangeUrl('orders')}
 								>
-									<ExpansionPanelSummary className="sidebar__menu-expansion-summary">
-										<div className="sidebar__menu-expansion-title">
-											<div className="sidebar__menu-expansion-title-icon">
+									<ExpansionPanelSummary className={styles.menuExpansionSummary}>
+										<div className={styles.menuExpansionTitle}>
+											<div className={styles.menuExpansionTitleIcon}>
 												<FontAwesomeIcon icon={['fal', 'shipping-timed']} />
 											</div>
 											Поступления
 										</div>
 									</ExpansionPanelSummary>
-									<div className="sidebar__menu-expansion-details">
-										<div className="sidebar__menu-item">
+									<div className={styles.menuExpansionDetails}>
+										<div className={styles.menuItem}>
 											<NavLink
-												className="sidebar__menu-link"
-												activeClassName="sidebar__menu-link_active-expansion"
+												className={styles.menuLink}
+												activeClassName={styles.menuLink_activeExpansion}
 												to={`/stocks/${activeStockId}/orders`}
 											>
-												<div className="sidebar__menu-icon">
+												<div className={styles.menuIcon}>
 													<FontAwesomeIcon icon={['fal', 'shopping-cart']} />
 												</div>
 												Заказы
 											</NavLink>
 										</div>
 
-										<div className="sidebar__menu-item">
+										<div className={styles.menuItem}>
 											<NavLink
-												className="sidebar__menu-link"
-												activeClassName="sidebar__menu-link_active-expansion"
+												className={styles.menuLink}
+												activeClassName={styles.menuLink_activeExpansion}
 												to={`/stocks/${activeStockId}/purchases`}
 											>
-												<div className="sidebar__menu-icon">
+												<div className={styles.menuIcon}>
 													<FontAwesomeIcon icon={['fal', 'bags-shopping']} />
 												</div>
 												Покупки
@@ -143,26 +139,18 @@ class Sidebar extends Component {
 									</div>
 								</ExpansionPanel>
 
-								<div className="sidebar__menu-item">
-									<NavLink
-										className="sidebar__menu-link"
-										activeClassName="sidebar__menu-link_active"
-										to={`/stocks/${activeStockId}/statistics`}
-									>
-										<div className="sidebar__menu-icon">
+								<div className={styles.menuItem}>
+									<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to={`/stocks/${activeStockId}/statistics`}>
+										<div className={styles.menuIcon}>
 											<FontAwesomeIcon icon={['far', 'chart-bar']} />
 										</div>
 										Статистика
 									</NavLink>
 								</div>
 
-								<div className="sidebar__menu-item">
-									<NavLink
-										className="sidebar__menu-link"
-										activeClassName="sidebar__menu-link_active"
-										to={`/stocks/${activeStockId}/settings`}
-									>
-										<div className="sidebar__menu-icon">
+								<div className={styles.menuItem}>
+									<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to={`/stocks/${activeStockId}/settings`}>
+										<div className={styles.menuIcon}>
 											<FontAwesomeIcon icon={['fal', 'cog']} />
 										</div>
 										Настройки
@@ -170,9 +158,13 @@ class Sidebar extends Component {
 								</div>
 							</div>
 						) : null}
-						{/*<div className="sidebar__menu-item sidebar__menu-item_down">*/}
-						{/*	<NavLink className="sidebar__menu-link" activeClassName="sidebar__menu-link_active" to="/support">*/}
-						{/*		<div className="sidebar__menu-icon">*/}
+						{/*<div className={`${styles.menuItem} ${styles.menuItem_down}`}>*/}
+						{/*	<NavLink*/}
+						{/*    className={styles.menuLink}*/}
+						{/*    activeClassName={styles.menuLink_active}*/}
+						{/*    to="/support"*/}
+						{/*  >*/}
+						{/*    <div className={styles.menuIcon}>*/}
 						{/*			<FontAwesomeIcon icon={['fal', 'question-circle']} />*/}
 						{/*		</div>*/}
 						{/*		Помощь*/}

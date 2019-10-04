@@ -1,4 +1,4 @@
-import colorPalette from 'shared/colorPalette';
+import theme from 'shared/theme';
 
 import { history } from './history';
 
@@ -48,7 +48,7 @@ export const calculateColor = text => {
 	for (let index in text) {
 		sum += text.charCodeAt(index);
 	}
-	return colorPalette.calculateColors[sum % colorPalette.calculateColors.length];
+	return theme.calculateColors[sum % theme.calculateColors.length];
 };
 
 export const changeStockCurrentUrl = stockId => {

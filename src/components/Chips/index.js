@@ -4,7 +4,7 @@ import ClassNames from 'classnames';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import './index.styl';
+import styles from './index.module.css';
 
 const renderChipLabel = chip => chip;
 
@@ -14,7 +14,7 @@ const Chips = props => {
 	const { className, chips, onRenderChipLabel = renderChipLabel, onRemoveChip = removeChip } = props;
 
 	let chipsClassesObj = {
-		chips: true,
+		[styles.container]: true,
 	};
 
 	if (className)
@@ -33,9 +33,9 @@ const Chips = props => {
 	return (
 		<div className={chipsClasses}>
 			{chips.map((chip, index) => (
-				<div className="chips__item" key={index}>
-					<div className="chips__label" children={onRenderChipLabel(chip)} />
-					<div className="chips__remove" onClick={() => onRemoveChip(chips, index)}>
+				<div className={styles.item} key={index}>
+					<div className={styles.label} children={onRenderChipLabel(chip)} />
+					<div className={styles.remove} onClick={() => onRemoveChip(chips, index)}>
 						<FontAwesomeIcon icon={['far', 'times']} />
 					</div>
 				</div>

@@ -10,7 +10,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from '@material-ui/core/IconButton';
 
-import './index.styl';
+import styles from './index.module.css';
 
 export const Dialog = props => {
 	return <MuiDialog transitionDuration={150} children={props.children} {...props} />;
@@ -24,7 +24,7 @@ const observeActions = (container, position = null, stickySelector) => {
 	const observer = new IntersectionObserver(
 		(records, observer) => {
 			const targetInfo = records[0].boundingClientRect;
-			const stickyTarget = records[0].target.parentElement.querySelector(stickySelector);
+			const stickyTarget = records[0].target.parentElement.querySelector(`.${stickySelector}`);
 			const rootBoundsInfo = records[0].rootBounds;
 
 			if (position === 'top') {
@@ -55,7 +55,7 @@ const observeActions = (container, position = null, stickySelector) => {
 		}
 	);
 
-	observer.observe(container.querySelector(`.pd-dialog__sentinel-${position}`));
+	observer.observe(container.querySelector(`.sentinel-${position}`));
 };
 
 export class PDDialog extends Component {
@@ -65,23 +65,23 @@ export class PDDialog extends Component {
 	};
 
 	onEnter = element => {
-		if (this.props.stickyTitle) observeActions(element, 'top', '.pd-dialog__title');
-		if (this.props.stickyActions) observeActions(element, 'bottom', '.pd-dialog__actions');
+		if (this.props.stickyTitle) observeActions(element, 'top', styles.stickyTitle);
+		if (this.props.stickyActions) observeActions(element, 'bottom', styles.actions);
 	};
 
 	render() {
 		const { stickyTitle, stickyActions, children, ...props } = this.props;
 
 		const dialogClasses = ClassNames({
-			'pd-dialog_sticky-title': stickyTitle,
-			'pd-dialog_sticky-actions': stickyActions,
+			[styles.stickyTitle]: stickyTitle,
+			[styles.stickyActions]: stickyActions,
 		});
 
 		return (
 			<MuiDialog onEnter={this.onEnter} className={dialogClasses} transitionDuration={150} {...props}>
-				{stickyTitle ? <div className="pd-dialog__sentinel-top" /> : null}
+				{stickyTitle ? <div className="sentinel-top" /> : null}
 				{children}
-				{stickyActions ? <div className="pd-dialog__sentinel-bottom" /> : null}
+				{stickyActions ? <div className="sentinel-bottom" /> : null}
 			</MuiDialog>
 		);
 	}
@@ -91,33 +91,33 @@ export const PDDialogTitle = props => {
 	const { theme, titlePositionCenter, leftHandleProps, onClose, children } = props;
 
 	const dialogTitleClasses = ClassNames({
-		'pd-dialog__title': true,
-		'pd-dialog__title_primary': children && theme === 'primary',
-		'pd-dialog__title_grey': children && theme === 'grey',
-		'pd-dialog__title_no-theme': !children,
+		[styles.title]: true,
+		[styles.title_primary]: children && theme === 'primary',
+		[styles.title_grey]: children && theme === 'grey',
+		[styles.title_noTheme]: !children,
 	});
 
 	const dialogTitleTextClasses = ClassNames({
-		'pd-dialog__title-text': true,
-		[`pd-dialog__title-text_center`]: titlePositionCenter,
+		[styles.titleText]: true,
+		[styles.titleText_center]: titlePositionCenter,
 	});
 
 	const dialogTitleActionLeftHandleClasses = ClassNames({
-		'pd-dialog__title-action-left-handle': true,
-		[`pd-dialog__title-action-left-handle_icon-left`]: leftHandleProps && leftHandleProps.iconPositionLeft,
+		[styles.headerActionLeftHandle]: true,
+		[styles.headerActionLeftHandle_iconLeft]: leftHandleProps && leftHandleProps.iconPositionLeft,
 	});
 
 	return (
 		<DialogTitle className={dialogTitleClasses} disableTypography>
 			{leftHandleProps && leftHandleProps.handleProps && leftHandleProps.text ? (
 				<ButtonBase className={dialogTitleActionLeftHandleClasses} disableRipple {...leftHandleProps.handleProps}>
-					<div className="pd-dialog__title-action-left-handle-text">{leftHandleProps.text}</div>
+					<div className={styles.headerActionLeftHandleText}>{leftHandleProps.text}</div>
 					{leftHandleProps.icon}
 				</ButtonBase>
 			) : null}
 			<div className={dialogTitleTextClasses} children={children} />
 			{onClose ? (
-				<IconButton className="pd-dialog__close" onClick={onClose} disableRipple>
+				<IconButton className={styles.close} onClick={onClose} disableRipple>
 					<FontAwesomeIcon icon={['fal', 'times']} />
 				</IconButton>
 			) : null}
@@ -142,26 +142,26 @@ export const PDDialogActions = props => {
 	const { disableSpacing, leftHandleProps, rightHandleProps } = props;
 
 	let dialogActionsClasses = ClassNames({
-		'pd-dialog__actions': true,
+		[styles.actions]: true,
 	});
 
 	return (
 		<DialogActions className={dialogActionsClasses} disableSpacing={disableSpacing}>
-			<div className="pd-dialog__actions-wrap">
+			<div className={styles.actionsWrap}>
 				{leftHandleProps && leftHandleProps.handleProps && leftHandleProps.text ? (
-					<Button className="pd-dialog__actions-left-handle" {...leftHandleProps.handleProps}>
-						<div className="pd-dialog__actions-handle-text-wrap">
+					<Button className={styles.actionsLeftHandle} {...leftHandleProps.handleProps}>
+						<div className={styles.actionsHandleTextWrap}>
 							{leftHandleProps.iconLeft ? leftHandleProps.iconLeft : null}
-							<div className="pd-dialog__actions-handle-text">{leftHandleProps.text}</div>
+							<div className={styles.actionsHandleText}>{leftHandleProps.text}</div>
 							{leftHandleProps.iconRight ? leftHandleProps.iconRight : null}
 						</div>
 					</Button>
 				) : null}
 				{rightHandleProps && rightHandleProps.handleProps && rightHandleProps.text ? (
-					<Button className="pd-dialog__actions-right-handle" variant="contained" color="primary" {...rightHandleProps.handleProps}>
-						<div className="pd-dialog__actions-handle-text-wrap">
+					<Button className={styles.actionsRightHandle} variant="contained" color="primary" {...rightHandleProps.handleProps}>
+						<div className={styles.actionsHandleTextWrap}>
 							{rightHandleProps.iconLeft ? rightHandleProps.iconLeft : null}
-							<div className="pd-dialog__actions-handle-text">{rightHandleProps.text}</div>
+							<div className={styles.actionsHandleText}>{rightHandleProps.text}</div>
 							{rightHandleProps.iconRight ? rightHandleProps.iconRight : null}
 						</div>
 					</Button>

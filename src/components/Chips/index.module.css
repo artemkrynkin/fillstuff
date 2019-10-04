@@ -1,0 +1,39 @@
+.container {
+  display: flex;
+  flex-flow: wrap;
+}
+
+.item {
+  align-items: center;
+  background-color: var(--c-hex-br-5);
+  border-radius: 5px;
+  display: flex;
+  margin: 0 5px 5px 0;
+}
+
+.label {
+  color: var(--c-hex-bg-700);
+  font-size: 13px;
+  line-height: 1;
+  padding: 5px 5px 6px 10px;
+}
+
+.remove {
+  border-radius: 0 5px 5px 0;
+  align-items: center;
+  color: var(--c-hex-bg-300);
+  cursor: pointer;
+  display: flex;
+  padding: 5px 8px;
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1), color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  width: 24px;
+}
+
+.remove:hover {
+  background-color: var(--c-hex-t-300);
+  color: white;
+}
+
+.remove svg {
+  font-size: 14px;
+}

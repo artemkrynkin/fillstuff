@@ -6,11 +6,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Tooltip from 'src/components/Tooltip';
 
+import styles from './Positions.module.css';
+
 const priceDisplayChangeIconClasses = priceChangeIsGood =>
 	ClassNames({
-		'sa-positions__price-display-change-icon': true,
-		'sa-positions__price-display-change-icon_green': priceChangeIsGood,
-		'sa-positions__price-display-change-icon_red': !priceChangeIsGood,
+		[styles.priceDisplayChangeIcon]: true,
+		[styles.priceDisplayChangeIcon_green]: priceChangeIsGood,
+		[styles.priceDisplayChangeIcon_red]: !priceChangeIsGood,
 	});
 
 const PriceDisplay = props => {

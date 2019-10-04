@@ -16,6 +16,8 @@ import Head from 'src/components/head';
 
 import { registration } from 'src/actions/registration';
 
+import styles from 'src/components/Layout/index.module.css';
+
 const RegistrationSchema = Yup.object().shape({
 	email: Yup.string()
 		.email('Некорректный Email')
@@ -37,12 +39,12 @@ class Registration extends Component {
 		});
 
 		return (
-			<div className="page__inner-content">
+			<div className={styles.wrapper}>
 				<Head title={pageTitle} description={pageDescription} />
 
-				<div className="layout-auth__form">
+				<div className={styles.form}>
 					<h2>Регистрация</h2>
-					<div className="layout-auth__form-fields">
+					<div className={styles.formFields}>
 						<Formik
 							initialValues={{ email: '', password: '' }}
 							validationSchema={RegistrationSchema}
@@ -59,13 +61,7 @@ class Registration extends Component {
 									<FormControl margin="normal" fullWidth>
 										<Field type="password" name="password" placeholder="Пароль" component={TextField} />
 									</FormControl>
-									<Button
-										type="submit"
-										disabled={isSubmitting}
-										className="layout-auth__login-btn"
-										variant="contained"
-										color="primary"
-									>
+									<Button type="submit" disabled={isSubmitting} className={styles.loginBtn} variant="contained" color="primary">
 										{isSubmitting ? <CircularProgress size={20} /> : 'Зарегистрироваться'}
 									</Button>
 								</Form>
@@ -73,7 +69,7 @@ class Registration extends Component {
 						/>
 					</div>
 				</div>
-				<div className="layout-auth__bottom-info">
+				<div className={styles.bottomInfo}>
 					Уже есть аккаунт? <Link to="/login">Войти</Link>
 				</div>
 			</div>

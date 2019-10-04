@@ -31,6 +31,8 @@ import StockSettings from 'src/containers/StockSettings';
 import Registration from 'src/containers/Registration';
 import UserSettings from 'src/containers/UserSettings';
 
+import stylesPage from 'src/styles/page.module.css';
+
 const LoginFallback = signedOutFallback(() => <Redirect to="/stocks" />, () => <Layout children={<Login />} />);
 
 const RegistrationFallback = signedOutFallback(() => <Redirect to="/stocks" />, () => <Layout children={<Registration />} />);
@@ -151,100 +153,102 @@ class Routes extends Component {
 
 		return (
 			<ThemeProvider theme={BliksideTheme}>
-				{/* Метатеги по умолчанию, переопределяемые чем-нибудь вниз по дереву */}
-				<Head title={title} description={description} />
+				<div className={stylesPage.page}>
+					{/* Метатеги по умолчанию, переопределяемые чем-нибудь вниз по дереву */}
+					<Head title={title} description={description} />
 
-				{/*
-				 AuthViewHandler often returns null, but is responsible for triggering
-				 things like the 'set username' prompt when a user auths and doesn't
-				 have a username set.
-				 */}
-				<AuthViewHandler>{() => null}</AuthViewHandler>
+					{/*
+           AuthViewHandler often returns null, but is responsible for triggering
+           things like the 'set username' prompt when a user auths and doesn't
+           have a username set.
+           */}
+					<AuthViewHandler>{() => null}</AuthViewHandler>
 
-				{currentUser && stocks.length ? <Sidebar /> : null}
+					{currentUser && stocks.length ? <Sidebar /> : null}
 
-				{/*
-				 Switch отображает только первое совпадение. Внутренняя маршрутизация происходит вниз по течению
-				 https://reacttraining.com/react-router/web/api/Switch
-				 */}
-				<Switch>
-					{/* Публичные бизнес страницы */}
-					{/* Страницы приложения */}
-					<Route path="/login" component={LoginFallback} exact strict sensitive />
-					<Route path="/registration" component={RegistrationFallback} exact strict sensitive />
-					<Route path="/password-recovery" component={PasswordRecoveryFallback} exact strict sensitive />
+					{/*
+           Switch отображает только первое совпадение. Внутренняя маршрутизация происходит вниз по течению
+           https://reacttraining.com/react-router/web/api/Switch
+           */}
+					<Switch>
+						{/* Публичные бизнес страницы */}
+						{/* Страницы приложения */}
+						<Route path="/login" component={LoginFallback} exact strict sensitive />
+						<Route path="/registration" component={RegistrationFallback} exact strict sensitive />
+						<Route path="/password-recovery" component={PasswordRecoveryFallback} exact strict sensitive />
 
-					<Route
-						path={['/stocks', '/stocks/:stockId']}
-						render={props => {
-							const { match } = props;
+						<Route
+							path={['/stocks', '/stocks/:stockId']}
+							render={props => {
+								const { match } = props;
 
-							if (Array.isArray(stocks) && stocks.some(stock => stock._id === match.params.stockId)) {
-								if (match.params.stockId || currentUser.activeStockId) {
-									return <Redirect to={`/stocks/${match.params.stockId || currentUser.activeStockId}/dashboard`} />;
+								if (Array.isArray(stocks) && stocks.some(stock => stock._id === match.params.stockId)) {
+									if (match.params.stockId || currentUser.activeStockId) {
+										return <Redirect to={`/stocks/${match.params.stockId || currentUser.activeStockId}/dashboard`} />;
+									}
 								}
-							}
 
-							return <StockNotFoundFallback {...props} currentStock={findCurrentStock(props.match)} />;
-						}}
-						exact
-						strict
-						sensitive
-					/>
-					<Route
-						path="/stocks/:stockId/dashboard"
-						render={props => <StockDashboardFallback {...props} currentStock={findCurrentStock(props.match)} />}
-						exact
-						strict
-						sensitive
-					/>
-					<Route
-						path="/stocks/:stockId/availability"
-						render={props => <StockAvailabilityFallback {...props} currentStock={findCurrentStock(props.match)} />}
-						exact
-						strict
-						sensitive
-					/>
-					<Route
-						path={['/stocks/:stockId/write-offs', '/stocks/:stockId/write-offs/:selectedUserId']}
-						render={props => <StockWriteOffsFallback {...props} currentStock={findCurrentStock(props.match)} />}
-						exact
-						strict
-						sensitive
-					/>
-					<Route
-						path="/stocks/:stockId/orders"
-						render={props => <StockOrdersFallback {...props} currentStock={findCurrentStock(props.match)} />}
-						exact
-						strict
-						sensitive
-					/>
-					<Route
-						path={'/stocks/:stockId/purchases'}
-						render={props => <StockPurchasesFallback {...props} currentStock={findCurrentStock(props.match)} />}
-						exact
-						strict
-						sensitive
-					/>
-					<Route
-						path="/stocks/:stockId/statistics"
-						render={props => <StockStatisticsFallback {...props} currentStock={findCurrentStock(props.match)} />}
-						exact
-						strict
-						sensitive
-					/>
-					<Route
-						path="/stocks/:stockId/settings"
-						render={props => <StockSettingsFallback {...props} currentStock={findCurrentStock(props.match)} />}
-						exact
-						strict
-						sensitive
-					/>
+								return <StockNotFoundFallback {...props} currentStock={findCurrentStock(props.match)} />;
+							}}
+							exact
+							strict
+							sensitive
+						/>
+						<Route
+							path="/stocks/:stockId/dashboard"
+							render={props => <StockDashboardFallback {...props} currentStock={findCurrentStock(props.match)} />}
+							exact
+							strict
+							sensitive
+						/>
+						<Route
+							path="/stocks/:stockId/availability"
+							render={props => <StockAvailabilityFallback {...props} currentStock={findCurrentStock(props.match)} />}
+							exact
+							strict
+							sensitive
+						/>
+						<Route
+							path={['/stocks/:stockId/write-offs', '/stocks/:stockId/write-offs/:selectedUserId']}
+							render={props => <StockWriteOffsFallback {...props} currentStock={findCurrentStock(props.match)} />}
+							exact
+							strict
+							sensitive
+						/>
+						<Route
+							path="/stocks/:stockId/orders"
+							render={props => <StockOrdersFallback {...props} currentStock={findCurrentStock(props.match)} />}
+							exact
+							strict
+							sensitive
+						/>
+						<Route
+							path={'/stocks/:stockId/purchases'}
+							render={props => <StockPurchasesFallback {...props} currentStock={findCurrentStock(props.match)} />}
+							exact
+							strict
+							sensitive
+						/>
+						<Route
+							path="/stocks/:stockId/statistics"
+							render={props => <StockStatisticsFallback {...props} currentStock={findCurrentStock(props.match)} />}
+							exact
+							strict
+							sensitive
+						/>
+						<Route
+							path="/stocks/:stockId/settings"
+							render={props => <StockSettingsFallback {...props} currentStock={findCurrentStock(props.match)} />}
+							exact
+							strict
+							sensitive
+						/>
 
-					<Route path="/settings" component={UserSettingsFallback} exact strict sensitive />
+						<Route path="/settings" component={UserSettingsFallback} exact strict sensitive />
 
-					<Route path="*" component={PageNotFound} />
-				</Switch>
+						<Route path="*" component={PageNotFound} />
+					</Switch>
+				</div>
 			</ThemeProvider>
 		);
 	}

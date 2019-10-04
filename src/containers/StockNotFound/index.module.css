@@ -1,0 +1,18 @@
+.container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: calc(100vh - 50px);
+}
+
+.wrapper {}
+
+.notfoundStock,
+.createStockOrSelect {
+  max-width: 500px;
+}
+
+.createStockOrSelect {
+  text-align: center;
+}

@@ -9,6 +9,8 @@ import TitlePageOrLogo from './TitlePageOrLogo';
 
 import { getCharacteristics } from 'src/actions/characteristics';
 
+import styles from '../index.module.css';
+
 const DialogPositionCreate = Loadable({
 	loader: () => import('src/containers/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateEdit" */),
 	loading: () => null,
@@ -44,11 +46,11 @@ class CLStockAvailability extends Component {
 		const { dialogPositionCreate, dialogPositionGroupCreate } = this.state;
 
 		return (
-			<div className="header__column_left">
+			<div className={styles.column_left}>
 				<TitlePageOrLogo pageTitle={pageTitle} theme={theme} />
-				<div className="header__column-group_left">
+				<div className={styles.columnGroup_left}>
 					<Button
-						className="mui-btn-ct400"
+						className={styles.buttonColorTeal400}
 						variant="contained"
 						color="primary"
 						style={{ marginRight: 8 }}
@@ -58,7 +60,7 @@ class CLStockAvailability extends Component {
 						Создать позицию
 					</Button>
 					<Button
-						className="mui-btn-ct400"
+						className={styles.buttonColorTeal400}
 						variant="contained"
 						color="primary"
 						style={{ marginRight: 8 }}

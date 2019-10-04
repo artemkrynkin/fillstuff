@@ -23,12 +23,13 @@ import { SearchTextField } from './styles';
 
 import { createPositionGroup, editPositionGroup, addPositionsInPositionGroup } from 'src/actions/positionGroups';
 
-import './index.styl';
+import stylesGlobal from 'src/styles/globals.module.css';
+import styles from './index.module.css';
 
 const selectPositionsClasses = (selectedPositions, positionId) => {
 	return ClassNames({
-		'D-pgcae__select-position': true,
-		'D-pgcae__select-position_selected': selectedPositions.some(selectedPosition => selectedPosition._id === positionId),
+		[styles.selectPosition]: true,
+		[styles.selectPositionSelected]: selectedPositions.some(selectedPosition => selectedPosition._id === positionId),
 	});
 };
 
@@ -156,7 +157,7 @@ class DialogPositionGroupCreateEditAdd extends Component {
 								{type === 'create' || type === 'edit' ? (
 									<div>
 										<Grid
-											className="pd-rowGridFormLabelControl"
+											className={stylesGlobal.formLabelControl}
 											style={{ marginBottom: 12 }}
 											wrap="nowrap"
 											alignItems="flex-start"
@@ -177,7 +178,7 @@ class DialogPositionGroupCreateEditAdd extends Component {
 											/>
 										</Grid>
 
-										<Grid className="pd-rowGridFormLabelControl" style={{ marginBottom: 12, paddingLeft: 110 }}>
+										<Grid className={stylesGlobal.formLabelControl} style={{ marginBottom: 12, paddingLeft: 110 }}>
 											<Grid>
 												<Field
 													name="dividedPositions"
@@ -191,7 +192,7 @@ class DialogPositionGroupCreateEditAdd extends Component {
 										</Grid>
 
 										{!values.dividedPositions ? (
-											<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" alignItems="flex-start" container>
+											<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 												<InputLabel error={Boolean(errors.minimumBalance)} style={{ minWidth: 100 }}>
 													Мин. остаток:
 												</InputLabel>
@@ -214,11 +215,11 @@ class DialogPositionGroupCreateEditAdd extends Component {
 								) : null}
 
 								{type === 'create' || type === 'add' ? (
-									<Grid className="D-pgcae__select-positions" direction="column" wrap="nowrap" container>
+									<Grid className={styles.selectPositions} direction="column" wrap="nowrap" container>
 										<InputLabel error={typeof errors.positions === 'string'} style={{ minWidth: 151 }}>
 											Выберите позиции: {typeof errors.positions === 'string' ? errors.positions : null}
 										</InputLabel>
-										<div className="D-pgcae__search-text-field-container">
+										<div className={styles.textFieldSearchContainer}>
 											<SearchTextField
 												inputRef={this.searchInputRef}
 												placeholder="Поиск позиций"
@@ -229,7 +230,7 @@ class DialogPositionGroupCreateEditAdd extends Component {
 												fullWidth
 											/>
 											{searchString ? (
-												<ButtonBase onClick={this.onClearSearch} className="D-pgcae__clear-search">
+												<ButtonBase onClick={this.onClearSearch} className={styles.textFieldSearchClear}>
 													<FontAwesomeIcon icon={['fal', 'times']} />
 												</ButtonBase>
 											) : null}
@@ -238,10 +239,10 @@ class DialogPositionGroupCreateEditAdd extends Component {
 											name="positions"
 											validateOnChange={false}
 											render={arrayHelpers => (
-												<div className="D-pgcae__select-positions-wrap">
+												<div className={styles.selectPositionsWrap}>
 													{values.positions.length ? (
 														<Chips
-															className="D-pgcae__selected-positions"
+															className={styles.selectedPositions}
 															chips={values.positions}
 															onRenderChipLabel={position => (
 																<span>
@@ -272,10 +273,10 @@ class DialogPositionGroupCreateEditAdd extends Component {
 																		else return arrayHelpers.push(position);
 																	}}
 																>
-																	<div className="D-pgcae__select-position-checkbox">
+																	<div className={styles.selectPositionCheckbox}>
 																		<FontAwesomeIcon icon={['far', 'check']} />
 																	</div>
-																	<div className="D-pgcae__select-position-name">
+																	<div>
 																		{position.name}{' '}
 																		{position.characteristics.reduce(
 																			(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,

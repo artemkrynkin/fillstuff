@@ -13,12 +13,14 @@ import QuantityIndicator from 'src/components/QuantityIndicator';
 import DropdownMenu from 'src/components/DropdownMenu';
 
 import { TableCell } from './styles';
+import styles from './Positions.module.css';
+
 import PriceDisplay from './PriceDisplay';
 
 const positionActionsButtonClasses = dropdownMenu =>
 	ClassNames({
-		'sa-positions__position-actions-button': true,
-		'sa-positions__position-actions-button_active': Boolean(dropdownMenu),
+		[styles.positionActionsButton]: true,
+		[styles.positionActionsButton_active]: Boolean(dropdownMenu),
 	});
 
 const Position = props => {
@@ -35,7 +37,7 @@ const Position = props => {
 		.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 
 	return (
-		<TableRow className="sa-positions__position">
+		<TableRow className={styles.position}>
 			<TableCell style={position.positionGroup ? { paddingLeft: 41 } : {}}>
 				{position.name}{' '}
 				{position.characteristics.reduce((fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`, '')}
@@ -80,7 +82,7 @@ const Position = props => {
 				/>
 			</TableCell>
 			<TableCell align="right" width={50} style={{ padding: '0 7px' }}>
-				<div className="sa-positions__position-actions">
+				<div>
 					<IconButton
 						ref={anchorDropdownMenu}
 						className={positionActionsButtonClasses(dropdownMenu)}
@@ -101,20 +103,6 @@ const Position = props => {
 							<MenuItem
 								onClick={() => {
 									onHandleDropdownMenu();
-								}}
-							>
-								Статистика позиции
-							</MenuItem>
-							<MenuItem
-								onClick={() => {
-									onHandleDropdownMenu();
-								}}
-							>
-								Поступления позиции
-							</MenuItem>
-							<MenuItem
-								onClick={() => {
-									onHandleDropdownMenu();
 									onOpenDialogPosition('dialogPositionAddQuantity', position);
 								}}
 							>
@@ -127,6 +115,20 @@ const Position = props => {
 								}}
 							>
 								Списать количество
+							</MenuItem>
+							<MenuItem
+								onClick={() => {
+									onHandleDropdownMenu();
+								}}
+							>
+								Статистика
+							</MenuItem>
+							<MenuItem
+								onClick={() => {
+									onHandleDropdownMenu();
+								}}
+							>
+								Поступления
 							</MenuItem>
 							{position.positionGroup ? (
 								<MenuItem

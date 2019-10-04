@@ -1,0 +1,37 @@
+html,
+body {
+  font-family: var(--fontStack);
+  font-weight: 400;
+}
+
+body {
+  background-color: var(--c-hex-bg-50);
+  color: var(--c-hex-bg-700);
+  margin: 0;
+  min-width: 1280px;
+}
+
+::selection {
+  background: var(--c-hex-t-A700);
+  color: white;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a,
+button,
+input,
+textarea {
+  outline: none !important;
+}
+
+img {
+  vertical-align: middle;
+}
+
+a {
+  color: var(--c-hex-t-500);
+  text-decoration: none;
+}

@@ -17,12 +17,14 @@ import QuantityIndicator from 'src/components/QuantityIndicator';
 import DropdownMenu from 'src/components/DropdownMenu';
 
 import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, TableCell } from './styles';
+import styles from './Positions.module.css';
+
 import Position from './Position';
 
 const positionGroupActionsButtonClasses = dropdownMenu =>
 	ClassNames({
-		'sa-positions__position-group-actions-button': true,
-		'sa-positions__position-group-actions-button_active': Boolean(dropdownMenu),
+		[styles.positionGroupActionsButton]: true,
+		[styles.positionGroupActionsButton_active]: Boolean(dropdownMenu),
 	});
 
 const PositionGroup = props => {
@@ -35,7 +37,7 @@ const PositionGroup = props => {
 	}
 
 	return (
-		<TableRow className="sa-positions__position-group">
+		<TableRow className={styles.positionGroup}>
 			<td colSpan={6} style={{ position: 'relative' }}>
 				<ExpansionPanel
 					TransitionProps={{
@@ -58,8 +60,8 @@ const PositionGroup = props => {
 									<TableCell width={36} style={{ paddingLeft: 5, paddingRight: 0 }} />
 									<TableCell style={{ paddingLeft: 5 }}>
 										{/*<TableCell>*/}
-										<span className="sa-positions__position-group-name">{positionGroup.name}</span>
-										<span className="sa-positions__positions-count">
+										<span className={styles.positionGroupName}>{positionGroup.name}</span>
+										<span className={styles.positionsCount}>
 											{positionGroup.positions.length +
 												' ' +
 												declensionNumber(positionGroup.positions.length, ['позиция', 'позиции', 'позиций'])}
@@ -101,7 +103,7 @@ const PositionGroup = props => {
 						</ExpansionPanelDetails>
 					) : null}
 				</ExpansionPanel>
-				<div className="sa-positions__position-group-actions">
+				<div className={styles.positionGroupActions}>
 					<IconButton
 						ref={anchorDropdownMenu}
 						className={positionGroupActionsButtonClasses(dropdownMenu)}

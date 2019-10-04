@@ -9,7 +9,8 @@ import Header from 'src/components/Header';
 import { DisplayLoadingComponent } from 'src/components/Loading';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 
-import './index.styl';
+import stylesPage from 'src/styles/page.module.css';
+import styles from './index.module.css';
 
 const Index = Loadable({
 	loader: () => import('./components/index' /* webpackChunkName: "StockSettings_Index" */),
@@ -32,12 +33,12 @@ const StockSettings = props => {
 	const { currentUser, currentStock } = props;
 
 	return (
-		<div className="page__layout-inner">
+		<div className={stylesPage.pageWrap}>
 			<Head title={title} description={description} />
 
 			<Header pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
-			<div className="page__content stock-settings">
-				<div className="page__inner-content">
+			<div className={`${stylesPage.pageContent} ${styles.container}`}>
+				<div className={styles.wrapper}>
 					<Index currentUser={currentUser} currentStock={currentStock} />
 				</div>
 			</div>

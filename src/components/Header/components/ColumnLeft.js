@@ -3,6 +3,8 @@ import React from 'react';
 import CLStockAvailability from './CLStockAvailability';
 import TitlePageOrLogo from './TitlePageOrLogo';
 
+import styles from '../index.module.css';
+
 const ColumnLeft = props => {
 	const { pageName } = props;
 
@@ -11,7 +13,7 @@ const ColumnLeft = props => {
 			return <CLStockAvailability {...props} />;
 		default:
 			return (
-				<div className="header__column_left">
+				<div className={styles.column_left}>
 					<TitlePageOrLogo {...props} />
 				</div>
 			);

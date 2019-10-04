@@ -1,0 +1,12 @@
+.title {
+  color: var(--c-hex-bg-400);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.content {
+  color: var(--c-hex-bg-700);
+  font-size: 15px;
+  font-weight: 600;
+  margin-left: 10px;
+}

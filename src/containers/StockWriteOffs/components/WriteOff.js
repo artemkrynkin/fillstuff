@@ -8,12 +8,14 @@ import IconButton from '@material-ui/core/IconButton';
 
 import { TableCell } from './styles';
 
+import styles from './WriteOffs.module.css';
+
 class WriteOff extends Component {
 	render() {
 		const { writeOff, onOpenDialogWriteOff } = this.props;
 
 		return (
-			<TableRow className="swo-write-offs__write-off">
+			<TableRow className={styles.writeOff}>
 				<TableCell>
 					{writeOff.position.name}{' '}
 					{writeOff.position.characteristics.reduce(
@@ -30,9 +32,9 @@ class WriteOff extends Component {
 					{moment(writeOff.createdAt).format('DD MMM в HH:mm')}
 				</TableCell>
 				<TableCell align="right" width={50} style={{ padding: '0 7px' }}>
-					<div className="swo-write-offs__write-off-actions">
+					<div>
 						<IconButton
-							className="swo-write-offs__write-off-actions-button"
+							className={styles.writeOffActionsButton}
 							onClick={() => onOpenDialogWriteOff('dialogWriteOffDelete', writeOff)}
 							size="small"
 						>

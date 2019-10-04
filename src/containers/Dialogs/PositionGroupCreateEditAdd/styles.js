@@ -1,12 +1,12 @@
 import MuiTextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core';
 
-import colorPalette from 'shared/colorPalette';
+import theme from 'shared/theme';
 
 export const SearchTextField = withStyles({
 	root: {
-		borderBottom: `1px solid ${colorPalette.brightness.cBr5}`,
-		borderTop: `1px solid ${colorPalette.brightness.cBr5}`,
+		borderBottom: `1px solid ${theme.brightness.cBr5}`,
+		borderTop: `1px solid ${theme.brightness.cBr5}`,
 		'& input': {
 			boxShadow: 'none !important',
 			borderRadius: 0,

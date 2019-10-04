@@ -2,16 +2,16 @@ import React from 'react';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import './index.styl';
+import styles from './index.module.css';
 
 export const LoadingPage = () => (
-	<div className="loading__page">
+	<div className={styles.page}>
 		<CircularProgress size={50} color="primary" thickness={3} />
 	</div>
 );
 
 export const LoadingComponent = () => (
-	<div className="loading__component">
+	<div className={styles.component}>
 		<CircularProgress size={25} color="primary" thickness={5} />
 	</div>
 );

@@ -7,7 +7,7 @@ import MuiTooltip from '@material-ui/core/Tooltip';
 import Fade from '@material-ui/core/Fade';
 import { makeStyles } from '@material-ui/core/styles';
 
-import colorPalette from 'shared/colorPalette';
+import theme from 'shared/theme';
 
 function arrowGenerator(color) {
 	return {
@@ -58,7 +58,7 @@ function arrowGenerator(color) {
 
 const useStylesArrow = makeStyles(() => ({
 	tooltip: {
-		backgroundColor: `rgba(${ColorConvert.hex.rgb(colorPalette.slateGrey.cSg5)}, 0.9)`,
+		backgroundColor: `rgba(${ColorConvert.hex.rgb(theme.slateGrey.cSg5)}, 0.9)`,
 		fontWeight: 400,
 		position: 'relative',
 	},
@@ -74,7 +74,7 @@ const useStylesArrow = makeStyles(() => ({
 			borderStyle: 'solid',
 		},
 	},
-	popper: arrowGenerator(`rgba(${ColorConvert.hex.rgb(colorPalette.slateGrey.cSg5)}, 0.9)`),
+	popper: arrowGenerator(`rgba(${ColorConvert.hex.rgb(theme.slateGrey.cSg5)}, 0.9)`),
 }));
 
 const Tooltip = props => {

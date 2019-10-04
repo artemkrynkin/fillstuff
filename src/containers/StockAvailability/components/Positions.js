@@ -17,7 +17,7 @@ import { TableCell } from './styles';
 import Position from './Position';
 import PositionGroup from './PositionGroup';
 
-import './Positions.styl';
+import styles from './Positions.module.css';
 
 const DialogPositionGroupCreateEditAdd = Loadable({
 	loader: () => import('src/containers/Dialogs/PositionGroupCreateEditAdd' /* webpackChunkName: "Dialog_PositionGroupCreateEditAdd" */),
@@ -128,9 +128,9 @@ class Positions extends Component {
 		} = this.state;
 
 		return (
-			<Paper className="sa-positions">
+			<Paper>
 				<Table>
-					<TableHead className="sa-positions__table-header-sticky">
+					<TableHead className={styles.tableHeaderSticky}>
 						<TableRow>
 							<TableCell>Наименование</TableCell>
 							<TableCell align="right" width={160}>
@@ -148,7 +148,7 @@ class Positions extends Component {
 							<TableCell width={50} />
 						</TableRow>
 					</TableHead>
-					<TableBody className="sa-positions__table-body">
+					<TableBody className={styles.tableBody}>
 						{!isLoadingPositionsInGroups ? (
 							positionsInGroups && positionsInGroups.length ? (
 								positionsInGroups.map(positionOrGroup =>

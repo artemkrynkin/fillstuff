@@ -4,7 +4,7 @@ import MuiTableCell from '@material-ui/core/TableCell';
 // import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import { withStyles } from '@material-ui/core';
 
-import colorPalette from 'shared/colorPalette';
+import theme from 'shared/theme';
 
 // export const ExpansionPanel = withStyles({
 // 	root: {
@@ -36,7 +36,7 @@ import colorPalette from 'shared/colorPalette';
 //
 // export const ExpansionPanelSummary = withStyles({
 // 	root: {
-// 		backgroundColor: colorPalette.brightness.cBr2,
+// 		backgroundColor: theme.brightness.cBr2,
 // 		minHeight: 'initial',
 // 		padding: 0,
 // 		'&$expanded': {
@@ -52,7 +52,7 @@ import colorPalette from 'shared/colorPalette';
 // 			opacity: 0,
 // 		},
 // 		'&:hover': {
-// 			backgroundColor: colorPalette.brightness.cBr3,
+// 			backgroundColor: theme.brightness.cBr3,
 // 		},
 // 		'tr:first-child &': {
 // 			borderTop: 'none',
@@ -65,7 +65,7 @@ import colorPalette from 'shared/colorPalette';
 // 		},
 // 	},
 // 	expandIcon: {
-// 		color: colorPalette.blueGrey.cBg200,
+// 		color: theme.blueGrey.cBg200,
 // 		order: -1,
 // 		marginLeft: 5,
 // 		marginRight: '0 !important',
@@ -99,7 +99,7 @@ export const TableCell = withStyles({
 		paddingBottom: 18,
 	},
 	body: {
-		borderTop: `1px solid ${colorPalette.brightness.cBr4}`,
+		borderTop: `1px solid ${theme.brightness.cBr4}`,
 		borderBottom: 'none',
 	},
 })(MuiTableCell);

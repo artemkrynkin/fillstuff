@@ -1,0 +1,100 @@
+.tableHeaderSticky th {
+  background-color: white;
+  border-bottom-color: transparent;
+  box-shadow: 0 1px 0 0 var(--c-hex-br-5);
+  position: sticky;
+  top: 50px;
+  z-index: 1;
+}
+
+.tableHeaderSticky th:first-child {
+  border-radius: 8px 0 0 0;
+}
+
+.tableHeaderSticky th:last-child {
+  border-radius: 0 8px 0 0;
+}
+
+.tableBody > .position:last-child > td:first-child {
+  border-radius: 0 0 0 8px;
+}
+
+.tableBody > .position:last-child > td:last-child {
+  border-radius: 0 0 8px 0;
+}
+
+.positionGroupName {
+  color: var(--c-hex-bg-600);
+  font-weight: 800;
+}
+
+.positionsCount {
+  color: var(--c-hex-bg-300);
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 5px;
+}
+
+.priceDisplayChangeIcon {
+  color: var(--c-hex-bg-300);
+  display: inline-block;
+  font-size: 12px;
+  margin: -1px 0 0 5px;
+  vertical-align: middle;
+}
+
+.priceDisplayChangeIcon_red {
+  color: var(--c-hex-o-1);
+}
+
+.priceDisplayChangeIcon_green {
+  color: var(--c-hex-t-A700);
+}
+
+.position {
+  transition: background-color 150ms ease-out;
+}
+
+.position:hover {
+  background-color: var(--c-hex-br-2);
+}
+
+.positionGroupActionsButton,
+.positionActionsButton {
+  color: var(--c-hex-bg-200);
+  padding: 8px;
+  width: 36px;
+}
+
+.positionGroupActionsButton:hover,
+.positionActionsButton:hover {
+  background-color: rgba(var(--c-rgb-bg-100), 0.2);
+}
+
+.positionGroupActionsButton svg,
+.positionActionsButton svg {
+  font-size: 20px;
+}
+
+.positionGroupActions {
+  position: absolute;
+  right: 7px;
+  top: 6px;
+}
+
+.positionGroupActionsButton,
+.positionActionsButton {
+  opacity: 0;
+  transition: color 150ms ease-out, opacity 150ms ease-out;
+}
+
+.positionGroupActionsButton_active,
+.positionActionsButton_active {
+  color: var(--c-hex-bg-300);
+  opacity: 1;
+}
+
+.positionGroup:hover .positionGroupActionsButton,
+.position:hover .positionActionsButton {
+  opacity: 1;
+}

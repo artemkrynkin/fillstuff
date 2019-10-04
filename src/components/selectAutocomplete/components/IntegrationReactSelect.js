@@ -15,9 +15,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import colorPalette from 'shared/colorPalette';
+import theme from 'shared/theme';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(DefaultTheme => ({
 	root: {
 		flexGrow: 1,
 		height: 250,
@@ -34,68 +34,71 @@ const useStyles = makeStyles(theme => ({
 		overflow: 'hidden',
 	},
 	chip: {
-		margin: theme.spacing(0.5, 0.25),
+		margin: DefaultTheme.spacing(0.5, 0.25),
 	},
 	chipFocused: {
-		backgroundColor: emphasize(theme.palette.type === 'light' ? theme.palette.grey[300] : theme.palette.grey[700], 0.08),
+		backgroundColor: emphasize(
+			DefaultTheme.palette.type === 'light' ? DefaultTheme.palette.grey[300] : DefaultTheme.palette.grey[700],
+			0.08
+		),
 	},
 	noOptionsMessage: {
-		padding: theme.spacing(1, 2),
+		padding: DefaultTheme.spacing(1, 2),
 	},
 	singleValue: {
-		color: colorPalette.blueGrey.cBg700,
+		color: theme.blueGrey.cBg700,
 		fontSize: 13,
 	},
 	singleValueDisabled: {
-		color: colorPalette.blueGrey.cBg400,
+		color: theme.blueGrey.cBg400,
 		fontSize: 13,
 	},
 	placeholder: {
-		color: `rgba(${ColorConvert.hex.rgb(colorPalette.blueGrey.cBg700)}, 0.42)`,
+		color: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg700)}, 0.42)`,
 		fontSize: 13,
 		position: 'absolute',
 	},
 	paper: {
 		position: 'absolute',
 		zIndex: 1,
-		marginTop: theme.spacing(1),
+		marginTop: DefaultTheme.spacing(1),
 		left: 0,
 		right: 0,
 	},
 	divider: {
-		height: theme.spacing(2),
+		height: DefaultTheme.spacing(2),
 	},
 }));
 
 const selectStyles = {
 	clearIndicator: base => ({
 		...base,
-		color: colorPalette.blueGrey.cBg300,
+		color: theme.blueGrey.cBg300,
 		cursor: 'pointer',
 		fontSize: 16,
 		'&:hover': {
-			color: colorPalette.teal.cT300,
+			color: theme.teal.cT300,
 		},
 	}),
 	dropdownIndicator: base => ({
 		...base,
-		color: colorPalette.blueGrey.cBg300,
+		color: theme.blueGrey.cBg300,
 		cursor: 'pointer',
 		fontSize: 16,
 		'&:hover': {
-			color: colorPalette.blueGrey.cBg300,
+			color: theme.blueGrey.cBg300,
 		},
 	}),
 	indicatorSeparator: base => ({
 		...base,
-		backgroundColor: colorPalette.blueGrey.cBg100,
+		backgroundColor: theme.blueGrey.cBg100,
 		marginBottom: 4,
 		marginTop: 4,
 	}),
 	input: base => ({
 		...base,
 		margin: 0,
-		color: colorPalette.blueGrey.cBg700,
+		color: theme.blueGrey.cBg700,
 		'& input': {
 			font: 'inherit',
 		},

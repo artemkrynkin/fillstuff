@@ -19,7 +19,7 @@ import Routes from 'src/routes';
 
 import 'src/helpers/fontAwesomeIcons';
 import 'src/helpers/yupLocale';
-import 'src/styles/common.styl';
+import 'src/styles/common.css';
 
 const store = initStore(window.__DATA__ || {});
 

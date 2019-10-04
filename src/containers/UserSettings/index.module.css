@@ -1,0 +1,14 @@
+.container .wrapper {
+  padding: 20px;
+}
+
+.content {
+  top: 0;
+}
+
+@media (min-width: var(--media-lg)) {
+  .content {
+    position: sticky;
+    top: 72px;
+  }
+}

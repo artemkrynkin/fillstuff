@@ -7,7 +7,7 @@ import ResizeSensor from 'css-element-queries/src/ResizeSensor';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import './index.styl';
+import styles from './index.module.css';
 
 class SliderScroller extends Component {
 	constructor(props) {
@@ -29,23 +29,23 @@ class SliderScroller extends Component {
 	};
 
 	setClasses() {
-		const sliderScrollerWrap = this.sliderScroller.querySelector('.slider-scroller__wrap-scroll');
+		const sliderScrollerWrap = this.sliderScroller.querySelector(`.${styles.wrapScroll}`);
 		const removeClass = direction => {
 			switch (direction) {
 				case 'right':
 				case 'both':
 				case 'left':
-					this.sliderScroller.classList.remove(`slider-scroller_scroll-${direction}`);
+					this.sliderScroller.classList.remove(`scroll-${direction}`);
 					break;
 				default:
-					this.sliderScroller.classList.remove('slider-scroller_scroll-right');
-					this.sliderScroller.classList.remove('slider-scroller_scroll-both');
-					this.sliderScroller.classList.remove('slider-scroller_scroll-left');
+					this.sliderScroller.classList.remove('scroll-right');
+					this.sliderScroller.classList.remove('scroll-both');
+					this.sliderScroller.classList.remove('scroll-left');
 			}
 		};
 		const addDirectionClass = direction => {
-			if (!this.sliderScroller.classList.contains(`slider-scroller_scroll-${direction}`)) {
-				this.sliderScroller.classList.add(`slider-scroller_scroll-${direction}`);
+			if (!this.sliderScroller.classList.contains(`scroll-${direction}`)) {
+				this.sliderScroller.classList.add(`scroll-${direction}`);
 			}
 		};
 
@@ -77,7 +77,7 @@ class SliderScroller extends Component {
 		this.setClasses();
 
 		new ResizeSensor(this.sliderScroller, this.setClasses);
-		new ResizeSensor(this.sliderScroller.querySelector('.slider-scroller__wrap'), this.setClasses);
+		new ResizeSensor(this.sliderScroller.querySelector(`.${styles.wrap}`), this.setClasses);
 	};
 
 	render() {
@@ -85,13 +85,13 @@ class SliderScroller extends Component {
 
 		let componentClasses = ClassNames({
 			[className]: !!className,
-			'slider-scroller': true,
+			[styles.container]: true,
 		});
 
 		let animationProgress = 0;
 
 		const handleClickArrowLeft = event => {
-			const sliderScrollerWrap = event.currentTarget.parentElement.querySelector('.slider-scroller__wrap-scroll'),
+			const sliderScrollerWrap = event.currentTarget.parentElement.querySelector(`.${styles.wrapScroll}`),
 				shiftValue = Math.round(sliderScrollerWrap.clientWidth / 2);
 
 			if (animationProgress !== 100) anime.remove(sliderScrollerWrap);
@@ -108,7 +108,7 @@ class SliderScroller extends Component {
 			});
 		};
 		const handleClickArrowRight = event => {
-			const sliderScrollerWrap = event.currentTarget.parentElement.querySelector('.slider-scroller__wrap-scroll'),
+			const sliderScrollerWrap = event.currentTarget.parentElement.querySelector(`.${styles.wrapScroll}`),
 				shiftValue = Math.round(sliderScrollerWrap.clientWidth / 2);
 
 			if (animationProgress !== 100) anime.remove(sliderScrollerWrap);
@@ -116,10 +116,7 @@ class SliderScroller extends Component {
 			anime({
 				targets: sliderScrollerWrap,
 				scrollLeft: {
-					value: Math.min(
-						sliderScrollerWrap.scrollLeft + shiftValue,
-						sliderScrollerWrap.scrollWidth - sliderScrollerWrap.clientWidth
-					),
+					value: Math.min(sliderScrollerWrap.scrollLeft + shiftValue, sliderScrollerWrap.scrollWidth - sliderScrollerWrap.clientWidth),
 					duration: 300,
 					easing: 'easeInOutQuad',
 					delay: 0,
@@ -130,21 +127,21 @@ class SliderScroller extends Component {
 
 		return (
 			<div ref={this.sliderScrollRef} className={componentClasses}>
-				<div className="slider-scroller__wrap-overflow">
-					<div className="slider-scroller__wrap-scroll" onScroll={this.onScroll}>
-						<div className="slider-scroller__wrap" children={<div className="slider-scroller__wrap-content">{children}</div>} />
+				<div className={styles.wrapOverflow}>
+					<div className={styles.wrapScroll} onScroll={this.onScroll}>
+						<div className={styles.wrap} children={<div className={styles.wrapContent}>{children}</div>} />
 					</div>
 				</div>
 
-				<span className="slider-scroller__arrow slider-scroller__arrow_left" onClick={handleClickArrowLeft}>
+				<span className={`${styles.arrow} ${styles.arrow_left}`} onClick={handleClickArrowLeft}>
 					<FontAwesomeIcon icon={['fal', 'angle-left']} />
 				</span>
-				{shadows ? <div className="slider-scroller__arrow-shadow slider-scroller__arrow-shadow_direction_left" /> : null}
+				{shadows ? <div className={`${styles.arrowShadow} ${styles.arrowShadow_directionLeft}`} /> : null}
 
-				<span className="slider-scroller__arrow slider-scroller__arrow_right" onClick={handleClickArrowRight}>
+				<span className={`${styles.arrow} ${styles.arrow_right}`} onClick={handleClickArrowRight}>
 					<FontAwesomeIcon icon={['fal', 'angle-right']} />
 				</span>
-				{shadows ? <div className="slider-scroller__arrow-shadow slider-scroller__arrow-shadow_direction_right" /> : null}
+				{shadows ? <div className={`${styles.arrowShadow} ${styles.arrowShadow_directionRight}`} /> : null}
 			</div>
 		);
 	}

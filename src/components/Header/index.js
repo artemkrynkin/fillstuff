@@ -15,7 +15,7 @@ import ColumnLeft from './components/ColumnLeft';
 
 import { logout } from 'src/actions/authentication';
 
-import './index.styl';
+import styles from './index.module.css';
 
 class Header extends Component {
 	state = {
@@ -37,8 +37,8 @@ class Header extends Component {
 		const { dropdownMenu } = this.state;
 
 		let headerClasses = ClassNames({
-			header: true,
-			header_theme_bg: theme === 'bg',
+			[styles.container]: true,
+			[styles.container_themeBg]: theme === 'bg',
 		});
 
 		return (
@@ -51,11 +51,11 @@ class Header extends Component {
 					currentStock={currentStock}
 					pageParams={pageParams}
 				/>
-				<div className="header__column_right">
-					<div className="header__column-group_right">
-						<div className="header__profile" ref={this.anchorDropdownMenu} onClick={this.onHandleDropdownMenu}>
-							<div className="header__profile-name">{currentUser.name ? currentUser.name : currentUser.email}</div>
-							<div className="header__profile-photo">
+				<div className={styles.column_right}>
+					<div className={styles.columnGroup_right}>
+						<div className={styles.profile} ref={this.anchorDropdownMenu} onClick={this.onHandleDropdownMenu}>
+							<div className={styles.profileName}>{currentUser.name ? currentUser.name : currentUser.email}</div>
+							<div className={styles.profilePhoto}>
 								{currentUser.profilePhoto ? <img src={currentUser.profilePhoto} alt="" /> : <FontAwesomeIcon icon={['fas', 'user-alt']} />}
 							</div>
 							<FontAwesomeIcon icon={['fas', 'angle-down']} className={dropdownMenu ? 'open' : ''} />

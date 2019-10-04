@@ -13,7 +13,7 @@ import { memberRoleTransform, findMemberInStock, checkPermissions } from 'shared
 import CardPaper from 'src/components/CardPaper';
 import Popover from 'src/components/Popover';
 
-import './team.styl';
+import styles from './team.module.css';
 
 const MemberInvitationOrLogin = Loadable({
 	loader: () => import('src/containers/Dialogs/MemberInvitationOrLogin' /* webpackChunkName: "Dialog_MemberInvitationOrLogin" */),
@@ -96,10 +96,8 @@ class Team extends Component {
 
 		let photoImgClasses = (member, dialog) => {
 			return ClassNames({
-				'ps-team__member-photo': !dialog,
-				'ps-team__member-photo_null': !dialog ? member.isWaiting || !member.user.profilePhoto : false,
-				'ps-team-dialog__member-photo': dialog,
-				'ps-team-dialog__member-photo_null': dialog ? member.isWaiting || !member.user.profilePhoto : false,
+				[styles.photo]: !dialog,
+				[styles.photo_null]: !dialog ? member.isWaiting || !member.user.profilePhoto : false,
 			});
 		};
 
@@ -117,10 +115,10 @@ class Team extends Component {
 					}
 					style={{ marginBottom: 16 }}
 				>
-					<div className="ps-team__list">
+					<div className={styles.list}>
 						{members.map(member =>
 							!member.isWaiting ? (
-								<div className="ps-team__member-item" key={member._id}>
+								<div className={styles.item} key={member._id}>
 									<div className={photoImgClasses(member)}>
 										{member.user.profilePhoto ? (
 											<img src={member.user.profilePhoto} alt="" />
@@ -128,16 +126,16 @@ class Team extends Component {
 											<FontAwesomeIcon icon={['fas', 'user-alt']} />
 										)}
 									</div>
-									<div className="ps-team__member-details">
-										<div className="ps-team__member-title">
+									<div className={styles.details}>
+										<div className={styles.title}>
 											{member.user.name ? member.user.name : member.user.email}
-											<div className="ps-team__member-role">{memberRoleTransform(member.role)}</div>
+											<div className={styles.role}>{memberRoleTransform(member.role)}</div>
 										</div>
-										{member.user.name && member.user.email ? <div className="ps-team__member-subtitle">{member.user.email}</div> : null}
+										{member.user.name && member.user.email ? <div className={styles.caption}>{member.user.email}</div> : null}
 									</div>
 									{member.role !== 'owner' || (member.role === 'owner' && checkPermissions(currentUserRole, ['stock.full_control'])) ? (
 										<IconButton
-											className="ps-team__member-actions"
+											className={styles.actions}
 											aria-haspopup="true"
 											onClick={event => this.onOpenMemberActionsMenu(event, member)}
 										>

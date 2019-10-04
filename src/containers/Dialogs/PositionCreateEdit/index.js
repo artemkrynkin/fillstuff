@@ -33,7 +33,8 @@ import { createPosition, editPosition } from 'src/actions/positions';
 
 import positionSchema from './positionSchema';
 
-import './index.styl';
+import stylesGlobal from 'src/styles/globals.module.css';
+import styles from './index.module.css';
 
 class DialogPositionCreateEdit extends Component {
 	static propTypes = {
@@ -175,7 +176,7 @@ class DialogPositionCreateEdit extends Component {
 					render={({ errors, isSubmitting, values, setFieldValue }) => (
 						<Form>
 							<DialogContent>
-								<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" alignItems="flex-start" container>
+								<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 									<InputLabel error={Boolean(errors.name)} style={{ minWidth: 146 }}>
 										Наименование:
 									</InputLabel>
@@ -191,7 +192,7 @@ class DialogPositionCreateEdit extends Component {
 									/>
 								</Grid>
 
-								<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" alignItems="flex-start" container>
+								<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 									<InputLabel error={Boolean(errors.unitReceipt)} style={{ minWidth: 146 }}>
 										Единица поступления:
 									</InputLabel>
@@ -234,7 +235,7 @@ class DialogPositionCreateEdit extends Component {
 									)}
 								</Grid>
 
-								<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" alignItems="flex-start" container>
+								<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 									<InputLabel error={Boolean(errors.unitIssue)} style={{ minWidth: 146 }}>
 										Единица отпуска:
 									</InputLabel>
@@ -277,7 +278,7 @@ class DialogPositionCreateEdit extends Component {
 									)}
 								</Grid>
 
-								<Grid className="pd-rowGridFormLabelControl" style={{ marginBottom: 12 }} container spacing={2}>
+								<Grid className={stylesGlobal.formLabelControl} style={{ marginBottom: 12 }} container spacing={2}>
 									{values.unitReceipt === 'pce' || values.unitIssue !== 'pce' ? (
 										<Grid xs={6} item>
 											{type === 'create' ? (
@@ -378,7 +379,7 @@ class DialogPositionCreateEdit extends Component {
 								</Grid>
 
 								<Grid
-									className="pd-rowGridFormLabelControl"
+									className={stylesGlobal.formLabelControl}
 									alignItems={values.isFree ? (Boolean(errors.purchasePrice) && values.isFree ? 'center' : 'flex-end') : 'stretch'}
 									spacing={2}
 									style={{ marginBottom: 12 }}
@@ -453,7 +454,7 @@ class DialogPositionCreateEdit extends Component {
 									</Grid>
 								</Grid>
 
-								<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" alignItems="flex-start" container>
+								<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 									<InputLabel error={Boolean(errors.linkInShop)} style={{ minWidth: 146 }}>
 										Ссылка / Магазин:
 									</InputLabel>
@@ -478,7 +479,7 @@ class DialogPositionCreateEdit extends Component {
 										<Grid>
 											{values.characteristics.length ? (
 												<Grid
-													className="pd-rowGridFormLabelControl"
+													className={stylesGlobal.formLabelControl}
 													style={{ marginBottom: 11 }}
 													wrap="nowrap"
 													alignItems="flex-start"
@@ -500,8 +501,8 @@ class DialogPositionCreateEdit extends Component {
 											) : null}
 
 											{checkCharacteristicsOnAbsenceInPosition(values).length ? (
-												<Grid className="pd-rowGridFormLabelControl" wrap="nowrap" alignItems="flex-start" spacing={2} container>
-													<Grid className="pd-rowGridFormLabelControl" xs={6} style={{ marginBottom: 0 }} item>
+												<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" spacing={2} container>
+													<Grid className={stylesGlobal.formLabelControl} xs={6} style={{ marginBottom: 0 }} item>
 														{!values.characteristics.length ? (
 															<InputLabel style={{ display: 'inline-flex', minWidth: 146 }}>Характеристики:</InputLabel>
 														) : (
@@ -580,7 +581,7 @@ class DialogPositionCreateEdit extends Component {
 																options={characteristics.filter(value => value.type === values.characteristicTemp.type)}
 															/>
 														</FormControl>
-														<div className="D-pam-create__add-characteristic">
+														<div className={styles.addCharacteristic}>
 															<IconButton
 																aria-haspopup="true"
 																size="small"

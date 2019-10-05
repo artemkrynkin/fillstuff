@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import queryString from 'query-string';
-import Loadable from 'react-loadable';
+import loadable from '@loadable/component';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Table from '@material-ui/core/Table';
@@ -21,11 +21,9 @@ import { TableCell } from './styles';
 
 import styles from './WriteOffs.module.css';
 
-const DialogWriteOffDelete = Loadable({
-	loader: () => import('src/containers/Dialogs/WriteOffDelete' /* webpackChunkName: "Dialog_WriteOffDelete" */),
-	loading: () => null,
-	delay: 200,
-});
+const DialogWriteOffDelete = loadable(() =>
+	import('src/containers/Dialogs/WriteOffDelete' /* webpackChunkName: "Dialog_WriteOffDelete" */)
+);
 
 class WriteOffs extends Component {
 	state = {

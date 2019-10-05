@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Loadable from 'react-loadable';
+import loadable from '@loadable/component';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
@@ -11,17 +11,13 @@ import { getCharacteristics } from 'src/actions/characteristics';
 
 import styles from '../index.module.css';
 
-const DialogPositionCreate = Loadable({
-	loader: () => import('src/containers/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateEdit" */),
-	loading: () => null,
-	delay: 200,
-});
+const DialogPositionCreate = loadable(() =>
+	import('src/containers/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateEdit" */)
+);
 
-const DialogPositionGroupCreate = Loadable({
-	loader: () => import('src/containers/Dialogs/PositionGroupCreateEditAdd' /* webpackChunkName: "Dialog_PositionGroupCreateEditAdd" */),
-	loading: () => null,
-	delay: 200,
-});
+const DialogPositionGroupCreate = loadable(() =>
+	import('src/containers/Dialogs/PositionGroupCreateEditAdd' /* webpackChunkName: "Dialog_PositionGroupCreateEditAdd" */)
+);
 
 class CLStockAvailability extends Component {
 	state = {

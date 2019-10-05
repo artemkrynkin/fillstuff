@@ -6,7 +6,6 @@ import Stock from 'api/models/stock';
 import Position from 'api/models/position';
 import WriteOff from 'api/models/writeOff';
 import Receipt from '../../models/receipt';
-import { recountReceipt } from '../../../shared/checkPositionAndReceipt';
 
 const writeOffsRouter = Router();
 

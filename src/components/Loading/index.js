@@ -15,7 +15,3 @@ export const LoadingComponent = () => (
 		<CircularProgress size={25} color="primary" thickness={5} />
 	</div>
 );
-
-export const DisplayLoadingComponent = props => {
-	return props.pastDelay ? <LoadingComponent /> : null;
-};

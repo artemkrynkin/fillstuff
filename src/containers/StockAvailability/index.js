@@ -1,21 +1,19 @@
 import React, { Component } from 'react';
 import { compose } from 'redux';
-import Loadable from 'react-loadable';
+import loadable from '@loadable/component';
 
 import generateMetaInfo from 'shared/generate-meta-info';
 
 import Head from 'src/components/head';
 import Header from 'src/components/Header';
-import { DisplayLoadingComponent } from 'src/components/Loading';
+import { LoadingComponent } from 'src/components/Loading';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 
 import stylesPage from 'src/styles/page.module.css';
 import styles from './index.module.css';
 
-const Index = Loadable({
-	loader: () => import('./components/index' /* webpackChunkName: "StockAvailability_Index" */),
-	loading: DisplayLoadingComponent,
-	delay: 200,
+const Index = loadable(() => import('./components/index' /* webpackChunkName: "StockAvailability_Index" */), {
+	fallback: <LoadingComponent />,
 });
 
 class StockAvailability extends Component {

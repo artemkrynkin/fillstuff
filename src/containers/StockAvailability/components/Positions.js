@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Loadable from 'react-loadable';
+import loadable from '@loadable/component';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Table from '@material-ui/core/Table';
@@ -19,56 +19,41 @@ import PositionGroup from './PositionGroup';
 
 import styles from './Positions.module.css';
 
-const DialogPositionGroupCreateEditAdd = Loadable({
-	loader: () => import('src/containers/Dialogs/PositionGroupCreateEditAdd' /* webpackChunkName: "Dialog_PositionGroupCreateEditAdd" */),
-	loading: () => null,
-	delay: 200,
-});
+const DialogPositionGroupCreateEditAdd = loadable(() =>
+	import('src/containers/Dialogs/PositionGroupCreateEditAdd' /* webpackChunkName: "Dialog_PositionGroupCreateEditAdd" */)
+);
 
 const DialogPositionGroupEdit = DialogPositionGroupCreateEditAdd;
 
 const DialogPositionGroupAdd = DialogPositionGroupCreateEditAdd;
 
-const DialogPositionEdit = Loadable({
-	loader: () => import('src/containers/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateEdit" */),
-	loading: () => null,
-	delay: 200,
-});
+const DialogPositionEdit = loadable(() =>
+	import('src/containers/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateEdit" */)
+);
 
-const DialogPositionAddQuantity = Loadable({
-	loader: () => import('src/containers/Dialogs/PositionAddQuantity' /* webpackChunkName: "Dialog_PositionAddQuantity" */),
-	loading: () => null,
-	delay: 200,
-});
+const DialogPositionAddQuantity = loadable(() =>
+	import('src/containers/Dialogs/PositionAddQuantity' /* webpackChunkName: "Dialog_PositionAddQuantity" */)
+);
 
-const DialogPositionRemoveFromGroup = Loadable({
-	loader: () => import('src/containers/Dialogs/PositionRemoveFromGroup' /* webpackChunkName: "Dialog_PositionRemoveFromGroup" */),
-	loading: () => null,
-	delay: 200,
-});
+const DialogPositionRemoveFromGroup = loadable(() =>
+	import('src/containers/Dialogs/PositionRemoveFromGroup' /* webpackChunkName: "Dialog_PositionRemoveFromGroup" */)
+);
 
-const DialogPositionArchive = Loadable({
-	loader: () => import('src/containers/Dialogs/PositionArchive' /* webpackChunkName: "Dialog_PositionArchive" */),
-	loading: () => null,
-	delay: 200,
-});
+const DialogPositionArchive = loadable(() =>
+	import('src/containers/Dialogs/PositionArchive' /* webpackChunkName: "Dialog_PositionArchive" */)
+);
 
-const DialogPositionOrGroupQRCodeGeneration = Loadable({
-	loader: () =>
-		import('src/containers/Dialogs/PositionOrGroupQRCodeGeneration' /* webpackChunkName: "Dialog_PositionOrGroupQRCodeGeneration" */),
-	loading: () => null,
-	delay: 200,
-});
+const DialogPositionOrGroupQRCodeGeneration = loadable(() =>
+	import('src/containers/Dialogs/PositionOrGroupQRCodeGeneration' /* webpackChunkName: "Dialog_PositionOrGroupQRCodeGeneration" */)
+);
 
 const DialogPositionGroupQRCodeGeneration = DialogPositionOrGroupQRCodeGeneration;
 
 const DialogPositionQRCodeGeneration = DialogPositionOrGroupQRCodeGeneration;
 
-const DialogWriteOffCreate = Loadable({
-	loader: () => import('src/containers/Dialogs/WriteOffCreate' /* webpackChunkName: "Dialog_WriteOffCreate" */),
-	loading: () => null,
-	delay: 200,
-});
+const DialogWriteOffCreate = loadable(() =>
+	import('src/containers/Dialogs/WriteOffCreate' /* webpackChunkName: "Dialog_WriteOffCreate" */)
+);
 
 class Positions extends Component {
 	state = {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ClassNames from 'classnames';
-import Loadable from 'react-loadable';
+import loadable from '@loadable/component';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
@@ -15,23 +15,13 @@ import Popover from 'src/components/Popover';
 
 import styles from './team.module.css';
 
-const MemberInvitationOrLogin = Loadable({
-	loader: () => import('src/containers/Dialogs/MemberInvitationOrLogin' /* webpackChunkName: "Dialog_MemberInvitationOrLogin" */),
-	loading: () => null,
-	delay: 200,
-});
+const MemberInvitationOrLogin = loadable(() =>
+	import('src/containers/Dialogs/MemberInvitationOrLogin' /* webpackChunkName: "Dialog_MemberInvitationOrLogin" */)
+);
 
-const DialogMemberEdit = Loadable({
-	loader: () => import('src/containers/Dialogs/MemberEdit' /* webpackChunkName: "Dialog_MemberEdit" */),
-	loading: () => null,
-	delay: 200,
-});
+const DialogMemberEdit = loadable(() => import('src/containers/Dialogs/MemberEdit' /* webpackChunkName: "Dialog_MemberEdit" */));
 
-const DialogMemberDelete = Loadable({
-	loader: () => import('src/containers/Dialogs/MemberDelete' /* webpackChunkName: "Dialog_MemberDelete" */),
-	loading: () => null,
-	delay: 200,
-});
+const DialogMemberDelete = loadable(() => import('src/containers/Dialogs/MemberDelete' /* webpackChunkName: "Dialog_MemberDelete" */));
 
 class Team extends Component {
 	state = {

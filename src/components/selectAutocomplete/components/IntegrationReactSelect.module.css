@@ -1,0 +1,9 @@
+.optionSelected {
+  background-color: var(--c-hex-t-300);
+  color: white;
+  margin: -6px -10px;
+  padding: 6px 10px;
+  word-break: break-all;
+  white-space: initial;
+  width: calc(100% + 20px);
+}

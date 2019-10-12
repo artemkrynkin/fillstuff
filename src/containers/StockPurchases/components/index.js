@@ -2,15 +2,15 @@ import React from 'react';
 
 import Grid from '@material-ui/core/Grid';
 
-import ProfileSettings from './ProfileSettings';
+import Toolbar from './Toolbar';
 
-import styles from '../index.module.css';
+const Index = props => {
+	const { currentUser, currentStock } = props;
 
-const Index = () => {
 	return (
 		<Grid container direction="row" justify="center" alignItems="flex-start" spacing={2}>
-			<Grid className={styles.content} item xs={12}>
-				<ProfileSettings />
+			<Grid item xs={12}>
+				<Toolbar currentUser={currentUser} currentStock={currentStock} />
 			</Grid>
 		</Grid>
 	);

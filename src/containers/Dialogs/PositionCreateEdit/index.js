@@ -577,7 +577,6 @@ class DialogPositionCreateEdit extends Component {
 																menuPosition="fixed"
 																placeholder="Выберите или создайте"
 																noOptionsMessage={() => 'Не создано ни одного значения, введите текст, чтобы создать'}
-																formatCreateLabel={value => `Нажмите, чтобы создать «${value}»`}
 																options={characteristics.filter(value => value.type === values.characteristicTemp.type)}
 															/>
 														</FormControl>

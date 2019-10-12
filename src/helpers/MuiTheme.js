@@ -251,9 +251,9 @@ export const BliksideTheme = createMuiTheme({
 			},
 			root: {
 				'&$selected': {
-					backgroundColor: theme.blueGrey.cBg100,
+					backgroundColor: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg100)}, 0.6)`,
 					'&:hover': {
-						backgroundColor: theme.blueGrey.cBg100,
+						backgroundColor: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg100)}, 0.6)`,
 					},
 				},
 			},
@@ -350,6 +350,13 @@ export const BliksideTheme = createMuiTheme({
 				},
 			},
 			contained: {
+				boxShadow: null,
+				'&:hover': {
+					boxShadow: null,
+				},
+				'&:active': {
+					boxShadow: null,
+				},
 				'&$disabled': {
 					backgroundColor: theme.brightness.cBr4,
 					color: theme.blueGrey.cBg300,
@@ -357,18 +364,28 @@ export const BliksideTheme = createMuiTheme({
 						backgroundColor: theme.brightness.cBr4,
 					},
 				},
+				'&$focusVisible': {
+					boxShadow: null,
+				},
 			},
 			containedPrimary: {
 				boxShadow: [
-					`0 2px 5px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.25)`,
+					`0 1px 5px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.2)`,
 					`0 2px 2px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.14)`,
 					`0 3px 1px -2px rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.12)`,
 				].join(),
 				'&:active': {
 					boxShadow: [
-						`0 5px 5px -3px rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.25)`,
-						`0 8px 10px 1px rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.14)`,
-						`0 3px 14px 2px rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.12)`,
+						`0 1px 5px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.2)`,
+						`0 2px 2px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.14)`,
+						`0 3px 1px -2px rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.12)`,
+					].join(),
+				},
+				'&:hover': {
+					boxShadow: [
+						`0 2px 4px -1px rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.2)`,
+						`0 4px 5px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.14)`,
+						`0 1px 10px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.12)`,
 					].join(),
 				},
 			},

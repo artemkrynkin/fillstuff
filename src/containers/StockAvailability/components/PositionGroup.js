@@ -14,26 +14,26 @@ import Divider from '@material-ui/core/Divider';
 import { declensionNumber } from 'src/helpers/utils';
 
 import QuantityIndicator from 'src/components/QuantityIndicator';
-import DropdownMenu from 'src/components/DropdownMenu';
+import Dropdown from 'src/components/Dropdown';
 
 import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, TableCell } from './styles';
 import styles from './Positions.module.css';
 
 import Position from './Position';
 
-const positionGroupActionsButtonClasses = dropdownMenu =>
+const positionGroupActionsButtonClasses = dropdownActions =>
 	ClassNames({
 		[styles.positionGroupActionsButton]: true,
-		[styles.positionGroupActionsButton_active]: Boolean(dropdownMenu),
+		[styles.positionGroupActionsButton_active]: Boolean(dropdownActions),
 	});
 
 const PositionGroup = props => {
 	const { currentStockId, positionGroup, onOpenDialogPositionGroup, onOpenDialogPosition } = props;
-	const anchorDropdownMenu = useRef(null);
-	const [dropdownMenu, setDropdownMenu] = useState(false);
+	const refDropdownActions = useRef(null);
+	const [dropdownActions, setDropdownActions] = useState(false);
 
-	function onHandleDropdownMenu() {
-		setDropdownMenu(prevValue => !prevValue);
+	function onHandleDropdownActions() {
+		setDropdownActions(prevValue => !prevValue);
 	}
 
 	return (
@@ -105,25 +105,25 @@ const PositionGroup = props => {
 				</ExpansionPanel>
 				<div className={styles.positionGroupActions}>
 					<IconButton
-						ref={anchorDropdownMenu}
-						className={positionGroupActionsButtonClasses(dropdownMenu)}
-						onClick={onHandleDropdownMenu}
+						ref={refDropdownActions}
+						className={positionGroupActionsButtonClasses(dropdownActions)}
+						onClick={onHandleDropdownActions}
 						size="small"
 					>
 						<FontAwesomeIcon icon={['far', 'ellipsis-h']} />
 					</IconButton>
 
-					<DropdownMenu
-						anchor={anchorDropdownMenu}
-						open={dropdownMenu}
-						onClose={onHandleDropdownMenu}
+					<Dropdown
+						anchor={refDropdownActions}
+						open={dropdownActions}
+						onClose={onHandleDropdownActions}
 						placement="bottom-end"
 						disablePortal={false}
 					>
 						<MenuList>
 							<MenuItem
 								onClick={() => {
-									onHandleDropdownMenu();
+									onHandleDropdownActions();
 									onOpenDialogPositionGroup('dialogPositionGroupAdd', positionGroup);
 								}}
 							>
@@ -134,7 +134,7 @@ const PositionGroup = props => {
 						<MenuList>
 							<MenuItem
 								onClick={() => {
-									onHandleDropdownMenu();
+									onHandleDropdownActions();
 									onOpenDialogPositionGroup('dialogPositionGroupQRCodeGeneration', positionGroup);
 								}}
 							>
@@ -142,14 +142,14 @@ const PositionGroup = props => {
 							</MenuItem>
 							<MenuItem
 								onClick={() => {
-									onHandleDropdownMenu();
+									onHandleDropdownActions();
 									onOpenDialogPositionGroup('dialogPositionGroupEdit', positionGroup);
 								}}
 							>
 								Редактировать
 							</MenuItem>
 						</MenuList>
-					</DropdownMenu>
+					</Dropdown>
 				</div>
 			</td>
 		</TableRow>

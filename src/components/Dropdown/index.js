@@ -5,8 +5,6 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
-import MenuItem from '@material-ui/core/MenuItem';
-import MenuList from '@material-ui/core/MenuList';
 import { makeStyles } from '@material-ui/core/styles';
 
 function arrowGenerator(color) {
@@ -72,8 +70,8 @@ const useStylesArrow = makeStyles(() => ({
 	popper: arrowGenerator('white'),
 }));
 
-const DropdownMenu = props => {
-	const { anchor, open, onClose, arrow = true, items, children, ...remainingProps } = props;
+const Dropdown = props => {
+	const { anchor, open, onClose, arrow = true, offset, children, ...remainingProps } = props;
 	const { arrow: arrowClasses, popper } = useStylesArrow();
 	const [arrowRef, setArrowRef] = useState(null);
 
@@ -83,11 +81,23 @@ const DropdownMenu = props => {
 		onClose();
 	}
 
+	const popperStyle = {
+		zIndex: 1300,
+	};
+
+	if (~!remainingProps.placement.search('top') || ~!remainingProps.placement.search('bottom')) {
+		popperStyle.marginTop = offset;
+		popperStyle.marginBottom = offset;
+	} else if (~!remainingProps.placement.search('left') || ~!remainingProps.placement.search('right')) {
+		popperStyle.marginLeft = offset;
+		popperStyle.marginRight = offset;
+	}
+
 	return (
 		<Popper
 			anchorEl={anchor.current}
 			open={open}
-			style={{ zIndex: 1300 }}
+			style={popperStyle}
 			transition
 			disablePortal
 			modifiers={{
@@ -110,17 +120,7 @@ const DropdownMenu = props => {
 					<Paper elevation={3}>
 						{arrow ? <span className={arrowClasses} ref={setArrowRef} /> : null}
 						<ClickAwayListener onClickAway={handleClose}>
-							{items && items.length ? (
-								<MenuList>
-									{items.map(({ label, ...props }, index) => (
-										<MenuItem key={index} {...props}>
-											{label}
-										</MenuItem>
-									))}
-								</MenuList>
-							) : (
-								<div>{children}</div>
-							)}
+							<div>{children}</div>
 						</ClickAwayListener>
 					</Paper>
 				</Fade>
@@ -129,10 +129,10 @@ const DropdownMenu = props => {
 	);
 };
 
-DropdownMenu.propTypes = {
+Dropdown.propTypes = {
 	anchor: PropTypes.object.isRequired,
 	open: PropTypes.bool.isRequired,
 	onClose: PropTypes.func.isRequired,
 };
 
-export default DropdownMenu;
+export default Dropdown;

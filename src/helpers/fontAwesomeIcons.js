@@ -35,6 +35,7 @@ import {
 	faExclamationCircle as farExclamationCircle,
 	faChevronDown as farChevronDown,
 	faChevronUp as farChevronUp,
+	faSearch as farSearch,
 } from '@fortawesome/pro-regular-svg-icons';
 
 import {
@@ -97,6 +98,7 @@ library.add(
 	farExclamationCircle,
 	farChevronDown,
 	farChevronUp,
+	farSearch,
 
 	// Light
 	falAngleLeft,

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { compose } from 'redux';
 import loadable from '@loadable/component';
 
@@ -16,34 +16,32 @@ const Index = loadable(() => import('./components/index' /* webpackChunkName: "S
 	fallback: <LoadingComponent />,
 });
 
-class StockAvailability extends Component {
-	render() {
-		const metaInfo = {
-			pageName: 'stock-availability',
-			pageTitle: 'Склад',
-		};
-		const { title, description } = generateMetaInfo({
-			type: metaInfo.pageName,
-			data: {
-				title: `${metaInfo.pageTitle} - Наличие`,
-			},
-		});
+const StockAvailability = props => {
+	const metaInfo = {
+		pageName: 'stock-availability',
+		pageTitle: 'Склад',
+	};
+	const { title, description } = generateMetaInfo({
+		type: metaInfo.pageName,
+		data: {
+			title: `${metaInfo.pageTitle} - Наличие`,
+		},
+	});
 
-		const { currentUser, currentStock } = this.props;
+	const { currentUser, currentStock } = props;
 
-		return (
-			<div className={stylesPage.pageWrap}>
-				<Head title={title} description={description} />
+	return (
+		<div className={stylesPage.pageWrap}>
+			<Head title={title} description={description} />
 
-				<Header pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
-				<div className={`${stylesPage.pageContent} ${styles.container}`}>
-					<div className={styles.wrapper}>
-						<Index currentUser={currentUser} currentStock={currentStock} />
-					</div>
+			<Header pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
+			<div className={`${stylesPage.pageContent} ${styles.container}`}>
+				<div className={styles.wrapper}>
+					<Index currentUser={currentUser} currentStock={currentStock} />
 				</div>
 			</div>
-		);
-	}
-}
+		</div>
+	);
+};
 
 export default compose(withCurrentUser)(StockAvailability);

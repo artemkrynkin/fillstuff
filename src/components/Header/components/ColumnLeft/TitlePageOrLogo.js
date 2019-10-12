@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import styles from '../index.module.css';
+import styles from 'src/components/Header/index.module.css';
 
 const TitlePageOrLogo = props => {
 	const { pageTitle, theme } = props;

@@ -44,18 +44,14 @@ class WriteOffs extends Component {
 	onCloseDialogByName = dialogName => this.setState({ [dialogName]: false });
 
 	componentDidMount() {
-		const { endDate, startDate } = queryString.parse(history.location.search);
-
-		this.props.getWriteOffs({ userId: this.props.selectedUserId, endDate, startDate });
+		this.props.getWriteOffs();
 	}
 
-	// getSnapshotBeforeUpdate(prevProps, prevState) {
-	// 	const { endDate, startDate } = queryString.parse(history.location.search);
-	//
-	// 	if (this.props.selectedUserId !== prevProps.selectedUserId) {
-	// 		this.props.getWriteOffs({ userId: prevProps.selectedUserId, endDate, startDate });
-	// 	}
-	// }
+	componentDidUpdate(prevProps, prevState) {
+		if (this.props.selectedUserId !== prevProps.selectedUserId) {
+			this.props.getWriteOffs();
+		}
+	}
 
 	render() {
 		const {
@@ -137,8 +133,15 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
 	const { currentStock } = ownProps;
 
+	const { endDate, startDate } = queryString.parse(history.location.search);
+	const params = {
+		userId: ownProps.selectedUserId,
+		endDate,
+		startDate,
+	};
+
 	return {
-		getWriteOffs: params => dispatch(getWriteOffs(currentStock._id, params)),
+		getWriteOffs: () => dispatch(getWriteOffs(currentStock._id, params)),
 	};
 };
 

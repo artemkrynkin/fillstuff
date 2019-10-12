@@ -1,4 +1,4 @@
-import MuiTextField from '@material-ui/core/TextField';
+import InputBase from '@material-ui/core/InputBase';
 import { withStyles } from '@material-ui/core';
 
 import theme from 'shared/theme';
@@ -14,4 +14,4 @@ export const SearchTextField = withStyles({
 			padding: '0 25px',
 		},
 	},
-})(MuiTextField);
+})(InputBase);

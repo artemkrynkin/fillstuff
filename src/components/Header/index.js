@@ -9,7 +9,7 @@ import Divider from '@material-ui/core/Divider';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 
-import DropdownMenu from 'src/components/DropdownMenu';
+import Dropdown from 'src/components/Dropdown';
 
 import ColumnLeft from './components/ColumnLeft';
 
@@ -19,14 +19,12 @@ import styles from './index.module.css';
 
 class Header extends Component {
 	state = {
-		dropdownMenu: false,
+		dropdownProfile: false,
 	};
 
-	anchorDropdownMenu = createRef();
+	refDropdownProfile = createRef();
 
-	onHandleDropdownMenu = () => {
-		this.setState({ dropdownMenu: !this.state.dropdownMenu });
-	};
+	onHandleDropdownProfile = () => this.setState({ dropdownProfile: !this.state.dropdownProfile });
 
 	onLogout = () => {
 		this.props.logout();
@@ -34,7 +32,7 @@ class Header extends Component {
 
 	render() {
 		const { pageName, pageTitle, theme, position = 'sticky', currentUser, currentStock, pageParams } = this.props;
-		const { dropdownMenu } = this.state;
+		const { dropdownProfile } = this.state;
 
 		let headerClasses = ClassNames({
 			[styles.container]: true,
@@ -53,34 +51,34 @@ class Header extends Component {
 				/>
 				<div className={styles.column_right}>
 					<div className={styles.columnGroup_right}>
-						<div className={styles.profile} ref={this.anchorDropdownMenu} onClick={this.onHandleDropdownMenu}>
+						<div className={styles.profile} ref={this.refDropdownProfile} onClick={this.onHandleDropdownProfile}>
 							<div className={styles.profileName}>{currentUser.name ? currentUser.name : currentUser.email}</div>
 							<div className={styles.profilePhoto}>
 								{currentUser.profilePhoto ? <img src={currentUser.profilePhoto} alt="" /> : <FontAwesomeIcon icon={['fas', 'user-alt']} />}
 							</div>
-							<FontAwesomeIcon icon={['fas', 'angle-down']} className={dropdownMenu ? 'open' : ''} />
+							<FontAwesomeIcon icon={['fas', 'angle-down']} className={dropdownProfile ? 'open' : ''} />
 						</div>
 					</div>
 				</div>
 
-				<DropdownMenu anchor={this.anchorDropdownMenu} open={dropdownMenu} onClose={this.onHandleDropdownMenu} placement="bottom-end">
+				<Dropdown anchor={this.refDropdownProfile} open={dropdownProfile} onClose={this.onHandleDropdownProfile} placement="bottom-end">
 					<MenuList>
 						<MenuItem
 							to={'/settings'}
 							component={React.forwardRef((props, ref) => (
 								<Link innerRef={ref} {...props} />
 							))}
-							onClick={this.onHandleDropdownMenu}
+							onClick={this.onHandleDropdownProfile}
 						>
 							Настройки аккаунта
 						</MenuItem>
-						<MenuItem onClick={this.onHandleDropdownMenu}>Оплата</MenuItem>
+						<MenuItem onClick={this.onHandleDropdownProfile}>Оплата</MenuItem>
 					</MenuList>
 					<Divider />
 					<MenuList>
 						<MenuItem onClick={this.onLogout}>Выйти</MenuItem>
 					</MenuList>
-				</DropdownMenu>
+				</Dropdown>
 			</AppBar>
 		);
 	}

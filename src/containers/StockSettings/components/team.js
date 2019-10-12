@@ -23,6 +23,13 @@ const DialogMemberEdit = loadable(() => import('src/containers/Dialogs/MemberEdi
 
 const DialogMemberDelete = loadable(() => import('src/containers/Dialogs/MemberDelete' /* webpackChunkName: "Dialog_MemberDelete" */));
 
+const photoImgClasses = member => {
+	return ClassNames({
+		[styles.photo]: true,
+		[styles.photo_null]: member.isWaiting || !member.user.profilePhoto,
+	});
+};
+
 class Team extends Component {
 	state = {
 		memberActionsMenuOpen: null,
@@ -83,13 +90,6 @@ class Team extends Component {
 		} = this.props;
 
 		const { memberActionsMenuOpen, selectedMember, dialogMemberEdit, dialogMemberDelete, dialogMemberInvitationOrLogin } = this.state;
-
-		let photoImgClasses = (member, dialog) => {
-			return ClassNames({
-				[styles.photo]: !dialog,
-				[styles.photo_null]: !dialog ? member.isWaiting || !member.user.profilePhoto : false,
-			});
-		};
 
 		if (!checkPermissions(currentUserRole, ['stock.control'])) return null;
 		else

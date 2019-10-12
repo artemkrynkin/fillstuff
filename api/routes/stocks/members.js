@@ -7,7 +7,6 @@ import { isAuthedResolver, hasPermissionsInStock } from 'api/utils/permissions';
 
 import Stock from 'api/models/stock';
 import User from 'api/models/user';
-import { updateCookieUserData } from '../../utils/update-cookie-user-data';
 
 const membersRouter = Router();
 

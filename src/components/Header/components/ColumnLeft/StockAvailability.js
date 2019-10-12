@@ -9,7 +9,7 @@ import TitlePageOrLogo from './TitlePageOrLogo';
 
 import { getCharacteristics } from 'src/actions/characteristics';
 
-import styles from '../index.module.css';
+import styles from 'src/components/Header/index.module.css';
 
 const DialogPositionCreate = loadable(() =>
 	import('src/containers/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateEdit" */)
@@ -19,7 +19,7 @@ const DialogPositionGroupCreate = loadable(() =>
 	import('src/containers/Dialogs/PositionGroupCreateEditAdd' /* webpackChunkName: "Dialog_PositionGroupCreateEditAdd" */)
 );
 
-class CLStockAvailability extends Component {
+class StockAvailability extends Component {
 	state = {
 		dialogPositionCreate: false,
 		dialogPositionGroupCreate: false,
@@ -96,4 +96,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 export default connect(
 	null,
 	mapDispatchToProps
-)(CLStockAvailability);
+)(StockAvailability);

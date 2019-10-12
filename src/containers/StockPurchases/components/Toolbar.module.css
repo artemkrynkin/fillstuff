@@ -1,0 +1,150 @@
+.container {
+  background-color: var(--c-hex-br-4);
+}
+
+.topContainer {
+  position: relative;
+}
+
+.bottomContainer {
+  border-top: 1px solid var(--c-hex-br-5);
+}
+
+.loadingForm {
+  bottom: 0;
+  margin: auto 0;
+  position: absolute;
+  top: 0;
+  right: 15px;
+}
+
+.textFieldSearchClear {
+  color: var(--c-hex-bg-300);
+  font-size: 16px;
+  padding: 12px 15px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.textFieldSearchClear:hover {
+  color: var(--c-hex-t-300);
+}
+
+.filterButtonLink,
+.filterButtonLinkRed {
+  background: none;
+  border: none;
+  display: flex;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 12px 15px;
+}
+
+.filterButtonLink {
+  color: var(--c-hex-t-500);
+}
+
+.filterButtonLink:hover {
+  color: var(--c-hex-t-400);
+}
+
+.filterButtonLinkRed {
+  color: var(--c-hex-o-1);
+}
+
+.filterButtonLinkRed:hover {
+  color: rgba(var(--c-rgb-o-1), 0.8);
+}
+
+.filterButtonLink span,
+.filterButtonLinkRed span {
+  display: block;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filterButtonLink svg {
+  color: var(--c-hex-t-300);
+  font-size: 12px;
+  margin: 2px 0 0 5px;
+  transform: rotate(0deg);
+  transition: color 150ms ease-out;
+}
+
+.dropdownContent {
+  padding: 15px;
+}
+
+.dropdownFooter {
+  border-top: 1px solid var(--c-hex-br-5);
+  padding: 10px 15px;
+}
+
+.dropdownContentColumn {
+  width: 100px;
+}
+
+.dropdownContentSeparated {
+  padding: 0 10px;
+}
+
+.dropdownFooterColumn {
+  text-align: center;
+  width: 50%;
+}
+
+.textFieldErrorHidden > p {
+  display: none;
+}
+
+.memberPhoto {
+  align-items: flex-end;
+  border-radius: 50%;
+  display: flex;
+  flex: none;
+  height: 32px;
+  justify-content: center;
+  margin-right: 5px;
+  overflow: hidden;
+  width: 32px;
+}
+
+.memberPhoto img {
+  height: 100%;
+  width: 100%;
+}
+
+.memberPhotoNull {
+  background-color: var(--c-hex-br-5);
+  border: 2px solid var(--c-hex-bg-100);
+}
+
+.memberPhotoNull svg {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 22px;
+}
+
+.memberDetails {
+  display: flex;
+  flex-direction: column;
+  padding: 0 5px;
+}
+
+.memberTitle {
+  align-items: center;
+  color: var(--c-hex-bg-600);
+  display: inline-flex;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.memberCaption {
+  color: var(--c-hex-bg-400);
+  font-size: 11px;
+  line-height: 1;
+  margin-top: 7px;
+}

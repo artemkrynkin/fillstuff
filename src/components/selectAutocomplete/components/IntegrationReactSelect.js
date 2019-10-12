@@ -11,11 +11,12 @@ import { emphasize, makeStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
-// import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import theme from 'shared/theme';
+
+import styles from './IntegrationReactSelect.module.css';
 
 const useStyles = makeStyles(DefaultTheme => ({
 	root: {
@@ -103,6 +104,20 @@ const selectStyles = {
 			font: 'inherit',
 		},
 	}),
+	menu: base => ({
+		...base,
+		boxShadow: [
+			`0 1px 8px 0 rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg600)}, 0.2)`,
+			`0 3px 4px 0 rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg600)}, 0.14)`,
+			`0 3px 3px -2px rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg600)}, 0.12)`,
+		].join(),
+		borderRadius: 8,
+	}),
+	menuList: base => ({
+		...base,
+		paddingBottom: 6,
+		paddingTop: 6,
+	}),
 };
 
 const NoOptionsMessage = props => {
@@ -161,15 +176,7 @@ Control.propTypes = {
 
 const Option = props => {
 	return (
-		<MenuItem
-			ref={props.innerRef}
-			selected={props.isFocused}
-			component="div"
-			style={{
-				fontWeight: props.isSelected ? 500 : 400,
-			}}
-			{...props.innerProps}
-		>
+		<MenuItem ref={props.innerRef} selected={props.isSelected} component="div" {...props.innerProps}>
 			{props.children}
 		</MenuItem>
 	);
@@ -264,25 +271,10 @@ const LoadingIndicator = props => {
 	return <div style={{ marginRight: 8 }} children={<CircularProgress size={16} />} />;
 };
 
-// const Menu = props => {
-// 	return (
-// 		<Paper className={props.selectProps.classes.paper} {...props.innerProps}>
-// 			{props.children}
-// 		</Paper>
-// 	);
-// };
-//
-// Menu.propTypes = {
-// 	children: PropTypes.node,
-// 	innerProps: PropTypes.object,
-// 	selectProps: PropTypes.object,
-// };
-
 const components = {
 	ClearIndicator,
 	Control,
 	DropdownIndicator,
-	// Menu,
 	LoadingIndicator,
 	MultiValue,
 	NoOptionsMessage,
@@ -293,6 +285,7 @@ const components = {
 };
 
 const IntegrationReactSelect = props => {
+	const { formatCreateLabel, ...remainingProps } = props;
 	const classes = useStyles();
 
 	return (
@@ -302,7 +295,12 @@ const IntegrationReactSelect = props => {
 			components={components}
 			onChange={option => (option !== null ? props.form.setFieldValue(props.field.name, option.value) : null)}
 			onBlur={props.field.onBlur}
-			{...props}
+			formatCreateLabel={value => (
+				<div className={styles.optionSelected}>
+					{formatCreateLabel || `Создать`} «{value}»
+				</div>
+			)}
+			{...remainingProps}
 		/>
 	);
 };

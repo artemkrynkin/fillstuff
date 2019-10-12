@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ClassNames from 'classnames';
@@ -18,11 +18,11 @@ import Typography from '@material-ui/core/Typography';
 import { PDDialog, PDDialogTitle, PDDialogActions } from 'src/components/Dialog';
 import Chips from 'src/components/Chips';
 
-import positionGroupSchema from './positionGroupSchema';
-import { SearchTextField } from './styles';
-
 import { createPositionGroup, editPositionGroup, addPositionsInPositionGroup } from 'src/actions/positionGroups';
 
+import positionGroupSchema from './positionGroupSchema';
+
+import { SearchTextField } from './styles';
 import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
 
@@ -62,7 +62,7 @@ class DialogPositionGroupCreateEditAdd extends Component {
 
 	state = this.initialState;
 
-	searchInputRef = React.createRef();
+	searchInputRef = createRef();
 
 	onTypeSearch = ({ target: { value } }) => this.setState({ searchString: value });
 
@@ -223,10 +223,8 @@ class DialogPositionGroupCreateEditAdd extends Component {
 											<SearchTextField
 												inputRef={this.searchInputRef}
 												placeholder="Поиск позиций"
-												InputProps={{
-													value: searchString,
-													onChange: this.onTypeSearch,
-												}}
+												value={searchString}
+												onChange={this.onTypeSearch}
 												fullWidth
 											/>
 											{searchString ? (

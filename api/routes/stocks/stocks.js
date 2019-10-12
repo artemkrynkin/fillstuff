@@ -11,11 +11,16 @@ const stocksRouter = Router();
 
 const debug = require('debug')('api:stocks');
 
-stocksRouter.get('/', isAuthedResolver, (req, res, next) => {
-	Stock.find({ 'members.user': req.user._id })
+stocksRouter.get('/', isAuthedResolver, async (req, res, next) => {
+	const stocks = await Stock.find({ 'members.user': req.user._id })
 		.populate('members.user', 'profilePhoto name email')
-		.then(stocks => setTimeout(() => res.json(stocks), 200))
 		.catch(err => next(err));
+
+	stocks.forEach(stock => {
+		stock.members = stock.members.filter(member => !member.isWaiting);
+	});
+
+	res.json(stocks);
 });
 
 stocksRouter.get('/:stockId/status', isAuthedResolver, (req, res, next) => {

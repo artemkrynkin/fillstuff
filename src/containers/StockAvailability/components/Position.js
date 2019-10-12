@@ -10,26 +10,26 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
 
 import QuantityIndicator from 'src/components/QuantityIndicator';
-import DropdownMenu from 'src/components/DropdownMenu';
+import Dropdown from 'src/components/Dropdown';
 
 import { TableCell } from './styles';
 import styles from './Positions.module.css';
 
 import PriceDisplay from './PriceDisplay';
 
-const positionActionsButtonClasses = dropdownMenu =>
+const positionActionsButtonClasses = dropdownActions =>
 	ClassNames({
 		[styles.positionActionsButton]: true,
-		[styles.positionActionsButton_active]: Boolean(dropdownMenu),
+		[styles.positionActionsButton_active]: Boolean(dropdownActions),
 	});
 
 const Position = props => {
 	const { position, onOpenDialogPosition } = props;
-	const anchorDropdownMenu = useRef(null);
-	const [dropdownMenu, setDropdownMenu] = useState(false);
+	const refDropdownActions = useRef(null);
+	const [dropdownActions, setDropdownActions] = useState(false);
 
-	function onHandleDropdownMenu() {
-		setDropdownMenu(prevValue => !prevValue);
+	function onHandleDropdownActions() {
+		setDropdownActions(prevValue => !prevValue);
 	}
 
 	const receiptsReceived = position.receipts
@@ -84,25 +84,25 @@ const Position = props => {
 			<TableCell align="right" width={50} style={{ padding: '0 7px' }}>
 				<div>
 					<IconButton
-						ref={anchorDropdownMenu}
-						className={positionActionsButtonClasses(dropdownMenu)}
-						onClick={onHandleDropdownMenu}
+						ref={refDropdownActions}
+						className={positionActionsButtonClasses(dropdownActions)}
+						onClick={onHandleDropdownActions}
 						size="small"
 					>
 						<FontAwesomeIcon icon={['far', 'ellipsis-h']} />
 					</IconButton>
 
-					<DropdownMenu
-						anchor={anchorDropdownMenu}
-						open={dropdownMenu}
-						onClose={onHandleDropdownMenu}
+					<Dropdown
+						anchor={refDropdownActions}
+						open={dropdownActions}
+						onClose={onHandleDropdownActions}
 						placement="bottom-end"
 						disablePortal={false}
 					>
 						<MenuList>
 							<MenuItem
 								onClick={() => {
-									onHandleDropdownMenu();
+									onHandleDropdownActions();
 									onOpenDialogPosition('dialogPositionAddQuantity', position);
 								}}
 							>
@@ -110,7 +110,7 @@ const Position = props => {
 							</MenuItem>
 							<MenuItem
 								onClick={() => {
-									onHandleDropdownMenu();
+									onHandleDropdownActions();
 									onOpenDialogPosition('dialogWriteOffCreate', position);
 								}}
 							>
@@ -118,14 +118,14 @@ const Position = props => {
 							</MenuItem>
 							<MenuItem
 								onClick={() => {
-									onHandleDropdownMenu();
+									onHandleDropdownActions();
 								}}
 							>
 								Статистика
 							</MenuItem>
 							<MenuItem
 								onClick={() => {
-									onHandleDropdownMenu();
+									onHandleDropdownActions();
 								}}
 							>
 								Поступления
@@ -133,7 +133,7 @@ const Position = props => {
 							{position.positionGroup ? (
 								<MenuItem
 									onClick={() => {
-										onHandleDropdownMenu();
+										onHandleDropdownActions();
 										onOpenDialogPosition('dialogPositionRemoveFromGroup', position);
 									}}
 								>
@@ -145,7 +145,7 @@ const Position = props => {
 						<MenuList>
 							<MenuItem
 								onClick={() => {
-									onHandleDropdownMenu();
+									onHandleDropdownActions();
 									onOpenDialogPosition('dialogPositionQRCodeGeneration', position);
 								}}
 							>
@@ -153,7 +153,7 @@ const Position = props => {
 							</MenuItem>
 							<MenuItem
 								onClick={() => {
-									onHandleDropdownMenu();
+									onHandleDropdownActions();
 									onOpenDialogPosition('dialogPositionEdit', position);
 								}}
 							>
@@ -161,14 +161,14 @@ const Position = props => {
 							</MenuItem>
 							<MenuItem
 								onClick={() => {
-									onHandleDropdownMenu();
+									onHandleDropdownActions();
 									onOpenDialogPosition('dialogPositionArchive', position);
 								}}
 							>
 								Архивировать
 							</MenuItem>
 						</MenuList>
-					</DropdownMenu>
+					</Dropdown>
 				</div>
 			</TableCell>
 		</TableRow>

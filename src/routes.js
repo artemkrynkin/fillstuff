@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { compose } from 'redux';
 import { Route, Switch, Redirect } from 'react-router';
 
-import { ThemeProvider } from '@material-ui/styles';
+import { ThemeProvider } from '@material-ui/core/styles';
 
 import generateMetaInfo from 'shared/generate-meta-info';
 
@@ -26,6 +26,7 @@ import StockAvailability from 'src/containers/StockAvailability';
 import StockWriteOffs from 'src/containers/StockWriteOffs';
 import StockOrders from 'src/containers/StockOrders';
 import StockPurchases from 'src/containers/StockPurchases';
+import StockPurchaseCreate from 'src/containers/StockPurchaseCreate';
 import StockStatistics from 'src/containers/StockStatistics';
 import StockSettings from 'src/containers/StockSettings';
 import Registration from 'src/containers/Registration';
@@ -91,6 +92,15 @@ const StockPurchasesFallback = signedOutFallback(
 		</StockPageFallback>
 	),
 	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/purchases`} />} />
+);
+
+const StockPurchaseCreateFallback = signedOutFallback(
+	props => (
+		<StockPageFallback {...props}>
+			<StockPurchaseCreate currentStock={props.currentStock} match={props.match} />
+		</StockPageFallback>
+	),
+	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/purchases/create`} />} />
 );
 
 const StockStatisticsFallback = signedOutFallback(
@@ -225,6 +235,13 @@ class Routes extends Component {
 						<Route
 							path={'/stocks/:stockId/purchases'}
 							render={props => <StockPurchasesFallback {...props} currentStock={findCurrentStock(props.match)} />}
+							exact
+							strict
+							sensitive
+						/>
+						<Route
+							path={'/stocks/:stockId/purchases/create'}
+							render={props => <StockPurchaseCreateFallback {...props} currentStock={findCurrentStock(props.match)} />}
 							exact
 							strict
 							sensitive

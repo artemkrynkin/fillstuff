@@ -57,7 +57,6 @@ let Position = new Schema({
 	activeReceipt: {
 		type: Schema.Types.ObjectId,
 		ref: 'Receipt',
-		required: [true, i18n.__('Обязательное поле')],
 	},
 	// Минимальный остаток
 	minimumBalance: {
@@ -68,11 +67,6 @@ let Position = new Schema({
 	isFree: {
 		type: Boolean,
 		default: false,
-	},
-	// Ссылка на товар в магазине
-	linkInShop: {
-		type: String,
-		required: [true, i18n.__('Обязательное поле')],
 	},
 	// Характеристики
 	characteristics: [

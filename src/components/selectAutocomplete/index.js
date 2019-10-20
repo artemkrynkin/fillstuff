@@ -1,3 +1,4 @@
-import IntegrationReactSelect from './components/IntegrationReactSelect';
+import { IntegrationSelectAutocompleteCreate, IntegrationSelectAutocomplete } from './components/IntegrationReactSelect';
 
-export const SelectAutocompleteCreate = IntegrationReactSelect;
+export const SelectAutocompleteCreate = IntegrationSelectAutocompleteCreate;
+export const SelectAutocomplete = IntegrationSelectAutocomplete;

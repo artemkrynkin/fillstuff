@@ -2,6 +2,9 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faVk, faInstagram } from '@fortawesome/free-brands-svg-icons';
 
 import {
+	faAngleLeft as fasAngleLeft,
+	faAngleRight as fasAngleRight,
+	faAngleUp as fasAngleUp,
 	faAngleDown as fasAngleDown,
 	faHeart as fasHeart,
 	faComment as fasComment,
@@ -58,6 +61,7 @@ import {
 	faShippingTimed as falShippingTimed,
 	faShoppingCart as falShoppingCart,
 	faBagsShopping as falBagsShopping,
+	faExternalLinkSquare as falExternalLinkSquare,
 } from '@fortawesome/pro-light-svg-icons';
 
 library.add(
@@ -66,6 +70,9 @@ library.add(
 	faInstagram,
 
 	// Solid
+	fasAngleLeft,
+	fasAngleRight,
+	fasAngleUp,
 	fasAngleDown,
 	fasHeart,
 	fasComment,
@@ -119,5 +126,6 @@ library.add(
 	falPlusCircle,
 	falShippingTimed,
 	falShoppingCart,
-	falBagsShopping
+	falBagsShopping,
+	falExternalLinkSquare
 );

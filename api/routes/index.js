@@ -6,6 +6,7 @@ import positions from './positions';
 import positionGroups from './positionGroups';
 import characteristics from './characteristics';
 import writeOffs from './writeOffs';
+import other from './other';
 
 const router = app => {
 	app.use('/auth', authRoutes);
@@ -16,6 +17,7 @@ const router = app => {
 	app.use('/api', positionGroups);
 	app.use('/api', characteristics);
 	app.use('/api', writeOffs);
+	app.use('/api', other);
 };
 
 export default router;

@@ -11,7 +11,8 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
 import { getCharacteristics } from 'src/actions/characteristics';
-import { getPositionsInGroups } from 'src/actions/positions';
+import { getPositionsInGroups } from 'src/actions/positionsInGroups';
+import { getPositions } from 'src/actions/positions';
 
 import { TableCell } from './styles';
 import Position from './Position';
@@ -26,6 +27,10 @@ const DialogPositionGroupCreateEditAdd = loadable(() =>
 const DialogPositionGroupEdit = DialogPositionGroupCreateEditAdd;
 
 const DialogPositionGroupAdd = DialogPositionGroupCreateEditAdd;
+
+const DialogPositionReceiptEdit = loadable(() =>
+	import('src/containers/Dialogs/PositionReceiptCreateEdit' /* webpackChunkName: "Dialog_PositionReceiptCreateEdit" */)
+);
 
 const DialogPositionEdit = loadable(() =>
 	import('src/containers/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateEdit" */)
@@ -55,6 +60,12 @@ const DialogWriteOffCreate = loadable(() =>
 	import('src/containers/Dialogs/WriteOffCreate' /* webpackChunkName: "Dialog_WriteOffCreate" */)
 );
 
+const compareByName = (a, b) => {
+	if (a.name > b.name) return 1;
+	else if (a.name < b.name) return -1;
+	else return 0;
+};
+
 class Positions extends Component {
 	state = {
 		positionGroup: null,
@@ -63,6 +74,7 @@ class Positions extends Component {
 		dialogPositionGroupEdit: false,
 		dialogPositionGroupAdd: false,
 		dialogPositionGroupQRCodeGeneration: false,
+		dialogPositionReceiptEdit: false,
 		dialogPositionEdit: false,
 		dialogPositionAddQuantity: false,
 		dialogPositionRemoveFromGroup: false,
@@ -83,9 +95,10 @@ class Positions extends Component {
 
 	onCloseDialogByName = dialogName => this.setState({ [dialogName]: false });
 
-	componentDidMount() {
-		this.props.getPositionsInGroups();
+	async componentDidMount() {
 		this.props.getCharacteristics();
+		this.props.getPositionsInGroups();
+		this.props.getPositions();
 	}
 
 	render() {
@@ -104,6 +117,7 @@ class Positions extends Component {
 			dialogPositionGroupEdit,
 			dialogPositionGroupAdd,
 			dialogPositionGroupQRCodeGeneration,
+			dialogPositionReceiptEdit,
 			dialogPositionEdit,
 			dialogPositionAddQuantity,
 			dialogPositionRemoveFromGroup,
@@ -202,6 +216,15 @@ class Positions extends Component {
 				/>
 
 				{/* Dialogs Positions */}
+				<DialogPositionReceiptEdit
+					type="edit"
+					dialogOpen={dialogPositionReceiptEdit}
+					onCloseDialog={() => this.onCloseDialogByName('dialogPositionReceiptEdit')}
+					onExitedDialog={this.onPositionDrop}
+					currentStockId={currentStock._id}
+					selectedPosition={dialogOpenedName === 'dialogPositionReceiptEdit' ? position : null}
+				/>
+
 				<DialogPositionEdit
 					type="edit"
 					dialogOpen={dialogPositionEdit}
@@ -257,8 +280,25 @@ class Positions extends Component {
 }
 
 const mapStateToProps = state => {
+	const {
+		positionsInGroups: {
+			data: positionsInGroups,
+			isFetching: isLoadingPositionsInGroups,
+			// error: errorPositions
+		},
+	} = state;
+
+	let positionsInGroupsSort = {
+		data: null,
+		isFetching: isLoadingPositionsInGroups,
+	};
+
+	if (!isLoadingPositionsInGroups && positionsInGroups) {
+		positionsInGroupsSort.data = positionsInGroups.sort(compareByName);
+	}
+
 	return {
-		positionsInGroups: state.positions,
+		positionsInGroups: positionsInGroupsSort,
 	};
 };
 
@@ -268,6 +308,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
 		getCharacteristics: () => dispatch(getCharacteristics(currentStock._id)),
 		getPositionsInGroups: () => dispatch(getPositionsInGroups(currentStock._id)),
+		getPositions: () => dispatch(getPositions(currentStock._id)),
 	};
 };
 

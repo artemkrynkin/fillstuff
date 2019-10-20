@@ -115,7 +115,7 @@ class ProfileSettings extends Component {
 			[styles.photoImg_null]: !user.profilePhoto,
 		});
 
-		let labelStyles = { minWidth: 94 };
+		let labelStyles = { minWidth: 52 };
 
 		return (
 			<CardPaper elevation={1} leftContent="Профиль" title style={{ marginBottom: 16 }}>

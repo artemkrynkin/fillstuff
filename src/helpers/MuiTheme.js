@@ -1,11 +1,25 @@
+import React from 'react';
 import ColorConvert from 'color-convert';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { createMuiTheme } from '@material-ui/core/styles';
 
 import theme from 'shared/theme';
+import stylesDialog from 'src/components/Dialog/index.module.css';
 
 export const BliksideTheme = createMuiTheme({
 	props: {
+		MuiInputLabel: {
+			disableAnimation: true,
+		},
+		MuiInput: {
+			autoComplete: 'off',
+		},
+		MuiCheckbox: {
+			color: 'primary',
+			icon: <FontAwesomeIcon icon={['far', 'square']} />,
+			checkedIcon: <FontAwesomeIcon icon={['fas', 'check-square']} />,
+		},
 		MuiButtonBase: {
 			disableRipple: true,
 		},
@@ -72,6 +86,18 @@ export const BliksideTheme = createMuiTheme({
 		},
 	},
 	overrides: {
+		MuiContainer: {
+			root: {
+				'@media (min-width: 600px)': {
+					paddingLeft: 0,
+					paddingRight: 0,
+				},
+				'@media (min-width: 960px)': {
+					paddingLeft: 0,
+					paddingRight: 0,
+				},
+			},
+		},
 		MuiTypography: {
 			gutterBottom: {
 				marginBottom: 10,
@@ -321,6 +347,12 @@ export const BliksideTheme = createMuiTheme({
 			},
 		},
 		MuiInputLabel: {
+			formControl: {
+				top: null,
+				left: null,
+				position: null,
+				transform: null,
+			},
 			shrink: {
 				transform: 'translate(0, 0)',
 			},
@@ -348,6 +380,9 @@ export const BliksideTheme = createMuiTheme({
 				'$outlinedPrimary &': {
 					color: theme.teal.cT300,
 				},
+			},
+			text: {
+				padding: '6px 12px',
 			},
 			contained: {
 				boxShadow: null,
@@ -398,6 +433,11 @@ export const BliksideTheme = createMuiTheme({
 			outlinedPrimary: {
 				color: `rgba(${ColorConvert.hex.rgb(theme.teal.cT100)}, 0.8)`,
 			},
+			iconSizeMedium: {
+				'& > *:first-child': {
+					fontSize: 18,
+				},
+			},
 		},
 		MuiInput: {
 			underline: {
@@ -410,7 +450,7 @@ export const BliksideTheme = createMuiTheme({
 			},
 			formControl: {
 				'label + &': {
-					marginTop: 21,
+					marginTop: 5,
 				},
 			},
 		},
@@ -558,7 +598,7 @@ export const BliksideTheme = createMuiTheme({
 			},
 			paper: {
 				margin: 20,
-				'.pd-dialog_sticky-actions &': {
+				[`.${stylesDialog.stickyTitle} &, .${stylesDialog.stickyActions} &`]: {
 					overflowY: 'initial',
 				},
 			},

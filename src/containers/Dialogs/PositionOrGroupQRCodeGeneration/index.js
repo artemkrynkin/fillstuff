@@ -246,24 +246,11 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 						<Form>
 							<DialogContent>
 								<Grid className={stylesGlobal.formLabelControl}>
-									<Field
-										name="quantity"
-										type="number"
-										label="Количество QR-кодов в PDF"
-										component={TextField}
-										InputLabelProps={{
-											shrink: true,
-										}}
-										autoComplete="off"
-										fullWidth
-										autoFocus
-									/>
+									<Field name="quantity" type="number" label="Количество QR-кодов в PDF" component={TextField} fullWidth autoFocus />
 								</Grid>
 
 								<Grid className={stylesGlobal.formLabelControl}>
-									<InputLabel error={Boolean(errors.linkInShop)} style={{ minWidth: 146 }}>
-										Размер QR-кодов
-									</InputLabel>
+									<InputLabel style={{ minWidth: 146 }}>Размер QR-кодов</InputLabel>
 									<FormControl fullWidth>
 										<Slider
 											disabled={isSubmitting}

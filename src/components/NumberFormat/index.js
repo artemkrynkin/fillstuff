@@ -27,4 +27,22 @@ NumberFormat.propTypes = {
 	onChange: PropTypes.func,
 };
 
+export const currencyFormatProps = {
+	thousandSeparator: ' ',
+	decimalScale: 2,
+	allowNegative: false,
+	suffix: ' ₽',
+};
+
+export const currencyFormatInputProps = {
+	thousandSeparator: ' ',
+	decimalScale: 2,
+	allowNegative: false,
+	suffix: ' ₽',
+	isAllowed: values => {
+		const { formattedValue, floatValue } = values;
+		return formattedValue === '' || floatValue <= 9999999;
+	},
+};
+
 export default NumberFormat;

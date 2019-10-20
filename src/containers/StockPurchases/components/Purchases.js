@@ -10,7 +10,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
 import { getCharacteristics } from 'src/actions/characteristics';
-import { getPositionsInGroups } from 'src/actions/positions';
+import { getPositions } from 'src/actions/positions';
 
 import styles from './Purchases.module.css';
 
@@ -29,7 +29,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 	return {
 		getCharacteristics: () => dispatch(getCharacteristics(currentStock._id)),
-		getPositionsInGroups: () => dispatch(getPositionsInGroups(currentStock._id)),
+		getPositions: () => dispatch(getPositions(currentStock._id)),
 	};
 };
 

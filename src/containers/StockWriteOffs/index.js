@@ -20,12 +20,12 @@ class StockWriteOffs extends Component {
 	render() {
 		const metaInfo = {
 			pageName: 'stock-write-offs',
-			pageTitle: 'Склад',
+			pageTitle: 'Списания',
 		};
 		const { title, description } = generateMetaInfo({
 			type: metaInfo.pageName,
 			data: {
-				title: `${metaInfo.pageTitle} - Списания`,
+				title: metaInfo.pageTitle,
 			},
 		});
 

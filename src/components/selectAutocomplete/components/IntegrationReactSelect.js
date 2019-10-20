@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import ClassNames from 'classnames';
 import ColorConvert from 'color-convert';
-import { components as reactSelectComponents } from 'react-select';
+import Select, { components as reactSelectComponents } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -72,6 +72,12 @@ const useStyles = makeStyles(DefaultTheme => ({
 }));
 
 const selectStyles = {
+	container: base => ({
+		...base,
+		'label + &': {
+			marginTop: 5,
+		},
+	}),
 	clearIndicator: base => ({
 		...base,
 		color: theme.blueGrey.cBg300,
@@ -284,7 +290,7 @@ const components = {
 	ValueContainer,
 };
 
-const IntegrationReactSelect = props => {
+export const IntegrationSelectAutocompleteCreate = props => {
 	const { formatCreateLabel, ...remainingProps } = props;
 	const classes = useStyles();
 
@@ -305,4 +311,18 @@ const IntegrationReactSelect = props => {
 	);
 };
 
-export default IntegrationReactSelect;
+export const IntegrationSelectAutocomplete = props => {
+	const { formatCreateLabel, ...remainingProps } = props;
+	const classes = useStyles();
+
+	return (
+		<Select
+			classes={classes}
+			styles={selectStyles}
+			components={components}
+			onChange={option => (option !== null ? props.form.setFieldValue(props.field.name, option.value) : null)}
+			onBlur={props.field.onBlur}
+			{...remainingProps}
+		/>
+	);
+};

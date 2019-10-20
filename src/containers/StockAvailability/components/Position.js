@@ -41,6 +41,7 @@ const Position = props => {
 			<TableCell style={position.positionGroup ? { paddingLeft: 41 } : {}}>
 				{position.name}{' '}
 				{position.characteristics.reduce((fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`, '')}
+				{!position.receipts.length ? <span className={styles.noReceipts}>Нет поступлений</span> : null}
 			</TableCell>
 			<TableCell align="right" width={160}>
 				<QuantityIndicator
@@ -56,30 +57,38 @@ const Position = props => {
 				{position.divided ? position.minimumBalance : null}
 			</TableCell>
 			<TableCell align="right" width={140}>
-				<PriceDisplay
-					unitReceipt={position.unitReceipt}
-					unitIssue={position.unitIssue}
-					quantity={position.activeReceipt.current.quantity}
-					isFree={false}
-					price={position.activeReceipt.unitPurchasePrice}
-					receiptsReceived={receiptsReceived}
-					receiptNearestPrice={receiptsReceived.length ? receiptsReceived[0].unitPurchasePrice : undefined}
-					priceChangeIsGood={false}
-					title="цена закупки"
-				/>
+				{position.activeReceipt ? (
+					<PriceDisplay
+						unitReceipt={position.unitReceipt}
+						unitIssue={position.unitIssue}
+						quantity={position.activeReceipt.current.quantity}
+						isFree={false}
+						price={position.activeReceipt.unitPurchasePrice}
+						receiptsReceived={receiptsReceived}
+						receiptNearestPrice={receiptsReceived.length ? receiptsReceived[0].unitPurchasePrice : undefined}
+						priceChangeIsGood={false}
+						title="цена закупки"
+					/>
+				) : (
+					'-'
+				)}
 			</TableCell>
 			<TableCell align="right" width={140}>
-				<PriceDisplay
-					unitReceipt={position.unitReceipt}
-					unitIssue={position.unitIssue}
-					quantity={position.activeReceipt.current.quantity}
-					isFree={position.isFree}
-					price={position.activeReceipt.unitSellingPrice}
-					receiptsReceived={receiptsReceived}
-					receiptNearestPrice={receiptsReceived.length ? receiptsReceived[0].unitSellingPrice : undefined}
-					priceChangeIsGood={true}
-					title="цена продажи"
-				/>
+				{position.activeReceipt ? (
+					<PriceDisplay
+						unitReceipt={position.unitReceipt}
+						unitIssue={position.unitIssue}
+						quantity={position.activeReceipt.current.quantity}
+						isFree={position.isFree}
+						price={position.activeReceipt.unitSellingPrice}
+						receiptsReceived={receiptsReceived}
+						receiptNearestPrice={receiptsReceived.length ? receiptsReceived[0].unitSellingPrice : undefined}
+						priceChangeIsGood={true}
+						title="цена продажи"
+					/>
+				) : (
+					'-'
+				)}
 			</TableCell>
 			<TableCell align="right" width={50} style={{ padding: '0 7px' }}>
 				<div>
@@ -99,49 +108,59 @@ const Position = props => {
 						placement="bottom-end"
 						disablePortal={false}
 					>
-						<MenuList>
-							<MenuItem
-								onClick={() => {
-									onHandleDropdownActions();
-									onOpenDialogPosition('dialogPositionAddQuantity', position);
-								}}
-							>
-								Добавить количество
-							</MenuItem>
-							<MenuItem
-								onClick={() => {
-									onHandleDropdownActions();
-									onOpenDialogPosition('dialogWriteOffCreate', position);
-								}}
-							>
-								Списать количество
-							</MenuItem>
-							<MenuItem
-								onClick={() => {
-									onHandleDropdownActions();
-								}}
-							>
-								Статистика
-							</MenuItem>
-							<MenuItem
-								onClick={() => {
-									onHandleDropdownActions();
-								}}
-							>
-								Поступления
-							</MenuItem>
-							{position.positionGroup ? (
-								<MenuItem
-									onClick={() => {
-										onHandleDropdownActions();
-										onOpenDialogPosition('dialogPositionRemoveFromGroup', position);
-									}}
-								>
-									Открепить от группы
-								</MenuItem>
-							) : null}
-						</MenuList>
-						<Divider />
+						{position.receipts.length || position.positionGroup ? (
+							<MenuList>
+								{position.receipts.length ? (
+									<MenuItem
+										onClick={() => {
+											onHandleDropdownActions();
+											onOpenDialogPosition('dialogPositionAddQuantity', position);
+										}}
+									>
+										Добавить количество
+									</MenuItem>
+								) : null}
+								{position.receipts.length ? (
+									<MenuItem
+										onClick={() => {
+											onHandleDropdownActions();
+											onOpenDialogPosition('dialogWriteOffCreate', position);
+										}}
+									>
+										Списать количество
+									</MenuItem>
+								) : null}
+								{position.receipts.length ? (
+									<MenuItem
+										onClick={() => {
+											onHandleDropdownActions();
+										}}
+									>
+										Статистика
+									</MenuItem>
+								) : null}
+								{position.receipts.length ? (
+									<MenuItem
+										onClick={() => {
+											onHandleDropdownActions();
+										}}
+									>
+										Поступления
+									</MenuItem>
+								) : null}
+								{position.positionGroup ? (
+									<MenuItem
+										onClick={() => {
+											onHandleDropdownActions();
+											onOpenDialogPosition('dialogPositionRemoveFromGroup', position);
+										}}
+									>
+										Открепить от группы
+									</MenuItem>
+								) : null}
+							</MenuList>
+						) : null}
+						{position.receipts.length || position.positionGroup ? <Divider /> : null}
 						<MenuList>
 							<MenuItem
 								onClick={() => {
@@ -154,7 +173,11 @@ const Position = props => {
 							<MenuItem
 								onClick={() => {
 									onHandleDropdownActions();
-									onOpenDialogPosition('dialogPositionEdit', position);
+									if (position.activeReceipt && position.receipts.length) {
+										onOpenDialogPosition('dialogPositionReceiptEdit', position);
+									} else {
+										onOpenDialogPosition('dialogPositionEdit', position);
+									}
 								}}
 							>
 								Редактировать

@@ -19,12 +19,12 @@ const Index = loadable(() => import('./components/index' /* webpackChunkName: "S
 const StockPurchases = props => {
 	const metaInfo = {
 		pageName: 'stock-purchases',
-		pageTitle: 'Поступления',
+		pageTitle: 'Покупки',
 	};
 	const { title, description } = generateMetaInfo({
 		type: metaInfo.pageName,
 		data: {
-			title: `${metaInfo.pageTitle} - Покупки`,
+			title: metaInfo.pageTitle,
 		},
 	});
 

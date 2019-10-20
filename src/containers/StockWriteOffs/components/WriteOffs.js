@@ -10,7 +10,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
 
 import { history } from 'src/helpers/history';
 
@@ -48,7 +47,7 @@ class WriteOffs extends Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if (this.props.selectedUserId !== prevProps.selectedUserId) {
+		if (prevProps.selectedUserId !== this.props.selectedUserId) {
 			this.props.getWriteOffs();
 		}
 	}
@@ -65,61 +64,59 @@ class WriteOffs extends Component {
 		const { writeOff, dialogOpenedName, dialogWriteOffDelete } = this.state;
 
 		return (
-			<Grid item xs={9}>
-				<Paper>
-					<Table>
-						<TableHead>
-							<TableRow>
-								<TableCell>Наименование</TableCell>
-								<TableCell width={150}>Имя</TableCell>
-								<TableCell align="right" width={115}>
-									Количество
-								</TableCell>
-								<TableCell align="right" width={150}>
-									Дата
-								</TableCell>
-								<TableCell align="right" width={50} />
-							</TableRow>
-						</TableHead>
-						<TableBody className={styles.tableBody}>
-							{!isLoadingWriteOffs ? (
-								writeOffs && writeOffs.length ? (
-									writeOffs.map(writeOff => (
-										<WriteOff
-											key={writeOff._id}
-											currentStockId={currentStock._id}
-											writeOff={writeOff}
-											onOpenDialogWriteOff={this.onOpenDialogByName}
-										/>
-									))
-								) : (
-									<TableRow>
-										<TableCell colSpan={4}>
-											<Typography variant="caption" align="center" component="div" style={{ padding: '1px 0' }}>
-												Еще не было списаний по позициям.
-											</Typography>
-										</TableCell>
-									</TableRow>
-								)
+			<Paper>
+				<Table>
+					<TableHead>
+						<TableRow>
+							<TableCell>Наименование</TableCell>
+							<TableCell width={150}>Имя</TableCell>
+							<TableCell align="right" width={115}>
+								Количество
+							</TableCell>
+							<TableCell align="right" width={150}>
+								Дата
+							</TableCell>
+							<TableCell align="right" width={50} />
+						</TableRow>
+					</TableHead>
+					<TableBody className={styles.tableBody}>
+						{!isLoadingWriteOffs ? (
+							writeOffs && writeOffs.length ? (
+								writeOffs.map(writeOff => (
+									<WriteOff
+										key={writeOff._id}
+										currentStockId={currentStock._id}
+										writeOff={writeOff}
+										onOpenDialogWriteOff={this.onOpenDialogByName}
+									/>
+								))
 							) : (
 								<TableRow>
-									<TableCell colSpan={4} style={{ padding: 12 }}>
-										<div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />
+									<TableCell colSpan={4}>
+										<Typography variant="caption" align="center" component="div" style={{ padding: '1px 0' }}>
+											Еще не было списаний по позициям.
+										</Typography>
 									</TableCell>
 								</TableRow>
-							)}
-						</TableBody>
-					</Table>
+							)
+						) : (
+							<TableRow>
+								<TableCell colSpan={4} style={{ padding: 12 }}>
+									<div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />
+								</TableCell>
+							</TableRow>
+						)}
+					</TableBody>
+				</Table>
 
-					<DialogWriteOffDelete
-						dialogOpen={dialogWriteOffDelete}
-						onCloseDialog={() => this.onCloseDialogByName('dialogWriteOffDelete')}
-						onExitedDialog={this.onWriteOffDrop}
-						currentStockId={currentStock._id}
-						selectedWriteOff={dialogOpenedName === 'dialogWriteOffDelete' ? writeOff : null}
-					/>
-				</Paper>
-			</Grid>
+				<DialogWriteOffDelete
+					dialogOpen={dialogWriteOffDelete}
+					onCloseDialog={() => this.onCloseDialogByName('dialogWriteOffDelete')}
+					onExitedDialog={this.onWriteOffDrop}
+					currentStockId={currentStock._id}
+					selectedWriteOff={dialogOpenedName === 'dialogWriteOffDelete' ? writeOff : null}
+				/>
+			</Paper>
 		);
 	}
 }

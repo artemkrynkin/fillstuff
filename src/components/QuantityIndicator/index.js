@@ -72,7 +72,7 @@ const QuantityIndicator = props => {
 	if (type === 'position') {
 		const unitIssueTransform = unitReceipt === 'pce' ? 'шт.' : unitIssue === 'pce' ? 'шт.' : 'уп.';
 
-		return (
+		return receipts.length ? (
 			<div>
 				{quantity + ' ' + unitIssueTransform}
 				{unitReceipt === 'nmp' && unitIssue === 'pce' ? (
@@ -80,6 +80,8 @@ const QuantityIndicator = props => {
 				) : null}
 				{divided ? <span className={qiCircleClasses(quantity, minimumBalance)} /> : null}
 			</div>
+		) : (
+			'-'
 		);
 	}
 };

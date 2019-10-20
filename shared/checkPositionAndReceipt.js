@@ -39,8 +39,6 @@ export const characteristicTypeTransform = characteristicType => {
 };
 
 export const recountReceipt = ({ unitReceipt, unitIssue }, isFree, receipt, recountQuantity = true) => {
-	console.log(recountQuantity);
-
 	if (recountQuantity && !isNaN(receipt.initial.quantityPackages)) receipt.current.quantityPackages = receipt.initial.quantityPackages;
 
 	/**

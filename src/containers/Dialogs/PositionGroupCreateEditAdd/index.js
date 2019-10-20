@@ -18,7 +18,7 @@ import Typography from '@material-ui/core/Typography';
 import { PDDialog, PDDialogTitle, PDDialogActions } from 'src/components/Dialog';
 import Chips from 'src/components/Chips';
 
-import { createPositionGroup, editPositionGroup, addPositionsInPositionGroup } from 'src/actions/positionGroups';
+import { createPositionGroup, editPositionGroup, addPositionInGroup } from 'src/actions/positionGroups';
 
 import positionGroupSchema from './positionGroupSchema';
 
@@ -34,7 +34,7 @@ const selectPositionsClasses = (selectedPositions, positionId) => {
 };
 
 const findOnlyPositionByName = (position, string) => {
-	if (position.positions) return false;
+	if (position.positionGroup) return false;
 
 	const searchString = String(string).toLowerCase();
 	const characteristics = position.characteristics.reduce(
@@ -44,6 +44,12 @@ const findOnlyPositionByName = (position, string) => {
 	const positionName = String(position.name + ' ' + characteristics).toLowerCase();
 
 	return positionName.indexOf(searchString) !== -1;
+};
+
+const compareByName = (a, b) => {
+	if (a.name > b.name) return 1;
+	else if (a.name < b.name) return -1;
+	else return 0;
 };
 
 class DialogPositionGroupCreateEditAdd extends Component {
@@ -77,7 +83,7 @@ class DialogPositionGroupCreateEditAdd extends Component {
 
 		switch (type) {
 			case 'add':
-				return this.props.addPositionsInPositionGroup(positionGroup._id, positionGroup).then(response => {
+				return this.props.addPositionInGroup(positionGroup._id, positionGroup).then(response => {
 					if (response.status === 'success') onCloseDialog();
 					else actions.setSubmitting(false);
 				});
@@ -108,9 +114,9 @@ class DialogPositionGroupCreateEditAdd extends Component {
 			type,
 			dialogOpen,
 			onCloseDialog,
-			positionsInGroups: {
-				data: positionsInGroups,
-				isFetching: isLoadingPositionsInGroups,
+			positions: {
+				data: allPositions,
+				isFetching: isLoadingAllPositions,
 				// error: errorPositions
 			},
 			selectedPositionGroup,
@@ -119,7 +125,10 @@ class DialogPositionGroupCreateEditAdd extends Component {
 
 		if ((type === 'edit' || type === 'add') && !selectedPositionGroup) return null;
 
-		const positions = positionsInGroups ? positionsInGroups.filter(position => findOnlyPositionByName(position, searchString)) : [];
+		const positions =
+			!isLoadingAllPositions && allPositions
+				? allPositions.filter(position => findOnlyPositionByName(position, searchString)).sort(compareByName)
+				: [];
 
 		let initialValues =
 			type === 'create'
@@ -166,28 +175,12 @@ class DialogPositionGroupCreateEditAdd extends Component {
 											<InputLabel error={Boolean(errors.name)} style={{ minWidth: 100 }}>
 												Наименование:
 											</InputLabel>
-											<Field
-												name="name"
-												component={TextField}
-												InputLabelProps={{
-													shrink: true,
-												}}
-												autoComplete="off"
-												autoFocus
-												fullWidth
-											/>
+											<Field name="name" component={TextField} autoFocus fullWidth />
 										</Grid>
 
 										<Grid className={stylesGlobal.formLabelControl} style={{ marginBottom: 12, paddingLeft: 110 }}>
 											<Grid>
-												<Field
-													name="dividedPositions"
-													Label={{ label: 'Считать позиции раздельно' }}
-													component={CheckboxWithLabel}
-													color="primary"
-													icon={<FontAwesomeIcon icon={['far', 'square']} />}
-													checkedIcon={<FontAwesomeIcon icon={['fas', 'check-square']} />}
-												/>
+												<Field name="dividedPositions" Label={{ label: 'Считать позиции раздельно' }} component={CheckboxWithLabel} />
 											</Grid>
 										</Grid>
 
@@ -197,17 +190,7 @@ class DialogPositionGroupCreateEditAdd extends Component {
 													Мин. остаток:
 												</InputLabel>
 												<FormControl fullWidth>
-													<Field
-														name="minimumBalance"
-														type="number"
-														placeholder="0"
-														component={TextField}
-														InputLabelProps={{
-															shrink: true,
-														}}
-														autoComplete="off"
-														fullWidth
-													/>
+													<Field name="minimumBalance" type="number" placeholder="0" component={TextField} fullWidth />
 												</FormControl>
 											</Grid>
 										) : null}
@@ -238,23 +221,7 @@ class DialogPositionGroupCreateEditAdd extends Component {
 											validateOnChange={false}
 											render={arrayHelpers => (
 												<div className={styles.selectPositionsWrap}>
-													{values.positions.length ? (
-														<Chips
-															className={styles.selectedPositions}
-															chips={values.positions}
-															onRenderChipLabel={position => (
-																<span>
-																	{position.name}{' '}
-																	{position.characteristics.reduce(
-																		(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
-																		''
-																	)}
-																</span>
-															)}
-															onRemoveChip={(chips, index) => arrayHelpers.remove(index)}
-														/>
-													) : null}
-													{!isLoadingPositionsInGroups ? (
+													{!isLoadingAllPositions ? (
 														positions.length ? (
 															positions.map((position, index) => (
 																<div
@@ -295,6 +262,22 @@ class DialogPositionGroupCreateEditAdd extends Component {
 													) : (
 														<div children={<CircularProgress size={20} />} style={{ marginTop: 20, textAlign: 'center' }} />
 													)}
+													{values.positions.length ? (
+														<Chips
+															className={styles.selectedPositions}
+															chips={values.positions}
+															onRenderChipLabel={position => (
+																<span>
+																	{position.name}{' '}
+																	{position.characteristics.reduce(
+																		(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
+																		''
+																	)}
+																</span>
+															)}
+															onRemoveChip={(chips, index) => arrayHelpers.remove(index)}
+														/>
+													) : null}
 												</div>
 											)}
 										/>
@@ -334,7 +317,7 @@ class DialogPositionGroupCreateEditAdd extends Component {
 
 const mapStateToProps = state => {
 	return {
-		positionsInGroups: state.positions,
+		positions: state.positions,
 	};
 };
 
@@ -344,7 +327,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
 		createPositionGroup: positionGroup => dispatch(createPositionGroup(currentStockId, positionGroup)),
 		editPositionGroup: (positionGroupId, newValues) => dispatch(editPositionGroup(positionGroupId, newValues)),
-		addPositionsInPositionGroup: (positionGroupId, newValues) => dispatch(addPositionsInPositionGroup(positionGroupId, newValues)),
+		addPositionInGroup: (positionGroupId, newValues) => dispatch(addPositionInGroup(positionGroupId, newValues)),
 	};
 };
 

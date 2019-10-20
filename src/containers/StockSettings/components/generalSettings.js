@@ -106,7 +106,7 @@ const GeneralSettings = props => {
 							<FormLabel style={{ minWidth: 124 }}>Часовой пояс:</FormLabel>
 							<FormControl fullWidth>
 								{checkPermissions(currentUserRole, ['stock.full_control']) ? (
-									<SelectField name="timezone" error={Boolean(errors.timezone)} displayEmpty>
+									<SelectField name="timezone" error={Boolean(errors.timezone)}>
 										<MenuItem value="">Не выбран</MenuItem>
 										{timezones.map((timezone, index) => {
 											return (

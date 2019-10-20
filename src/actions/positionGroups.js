@@ -3,17 +3,11 @@ import axios from 'axios';
 export const createPositionGroup = (stockId, positionGroup) => {
 	return async dispatch => {
 		return await axios
-			.post(
-				`/api/position-groups`,
-				{
-					...positionGroup,
+			.post('/api/position-groups', positionGroup, {
+				params: {
+					stockId,
 				},
-				{
-					params: {
-						stockId,
-					},
-				}
-			)
+			})
 			.then(async response => {
 				const { data: positionGroup } = response;
 
@@ -65,7 +59,7 @@ export const editPositionGroup = (positionGroupId, newValues) => {
 	};
 };
 
-export const addPositionsInPositionGroup = (positionGroupId, newValues) => {
+export const addPositionInGroup = (positionGroupId, newValues) => {
 	return async dispatch => {
 		return await axios
 			.post(`/api/position-groups/${positionGroupId}/add-positions`, newValues)
@@ -73,7 +67,7 @@ export const addPositionsInPositionGroup = (positionGroupId, newValues) => {
 				const positionGroup = response.data;
 
 				dispatch({
-					type: 'ADD_POSITION_IN_POSITION_GROUP',
+					type: 'ADD_POSITION_IN_GROUP',
 					payload: {
 						positionGroupId,
 						positionGroup,

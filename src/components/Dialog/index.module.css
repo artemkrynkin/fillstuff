@@ -25,7 +25,7 @@
   z-index: 1100;
 }
 
-.stickyTitle .title.stuck {
+.stickyTitle .title:global(.stuck) {
   border-bottom: 1px solid var(--c-hex-bg-50);
   border-radius: 0;
 }
@@ -124,7 +124,7 @@
   position: sticky;
 }
 
-.stickyActions .actions.stuck {
+.stickyActions .actions:global(.stuck) {
   border-top: 1px solid var(--c-hex-bg-50);
   border-radius: 0;
 }

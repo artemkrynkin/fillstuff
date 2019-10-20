@@ -20,10 +20,13 @@
 .selectedPositions {
   background-color: white;
   border-bottom: 1px solid var(--c-hex-br-5);
-  margin: 0 -25px;
+  border-top: 1px solid var(--c-hex-br-5);
+  bottom: 46px;
+  max-height: 110px;
+  margin: -1px -25px 0;
   padding: 10px 25px 5px;
+  overflow: auto;
   position: sticky;
-  top: 42px;
 }
 
 .selectPositions {

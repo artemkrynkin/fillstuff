@@ -17,6 +17,7 @@ export const SelectField = props => (
 			transitionDuration: 150,
 			TransitionComponent: Fade,
 		}}
+		displayEmpty
 		{...props}
 	/>
 );
@@ -30,6 +31,7 @@ export const SelectFastField = props => (
 			transitionDuration: 150,
 			TransitionComponent: Fade,
 		}}
+		displayEmpty
 		{...props}
 	/>
 );

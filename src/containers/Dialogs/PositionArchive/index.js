@@ -8,7 +8,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import { Dialog, PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
 
 import { getStockStatus } from 'src/actions/stocks';
-import { archivePosition } from 'src/actions/positions';
+import { archivePositionInGroup } from 'src/actions/positionsInGroups';
 
 const DialogPositionArchive = props => {
 	const { dialogOpen, onCloseDialog, onExitedDialog, selectedPosition } = props;
@@ -43,8 +43,9 @@ const DialogPositionArchive = props => {
 				}}
 				rightHandleProps={{
 					handleProps: {
+						autoFocus: true,
 						onClick: () =>
-							props.archivePosition(selectedPosition._id, selectedPosition.positionGroup).then(response => {
+							props.archivePositionInGroup(selectedPosition._id, selectedPosition.positionGroup).then(response => {
 								onCloseDialog();
 
 								if (response.status === 'success') props.getStockStatus();
@@ -70,7 +71,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 	return {
 		getStockStatus: () => dispatch(getStockStatus(currentStockId)),
-		archivePosition: (positionId, positionGroupId) => dispatch(archivePosition(currentStockId, positionId, positionGroupId)),
+		archivePositionInGroup: (positionId, positionGroupId) => dispatch(archivePositionInGroup(currentStockId, positionId, positionGroupId)),
 	};
 };
 

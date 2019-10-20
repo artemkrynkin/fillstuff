@@ -72,6 +72,7 @@ const Login = props => {
 										InputProps={{
 											error: Boolean(errors.unknown),
 										}}
+										autoComplete="on"
 										autoFocus
 									/>
 								</FormControl>

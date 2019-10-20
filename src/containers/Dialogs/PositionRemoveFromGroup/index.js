@@ -8,7 +8,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import { Dialog, PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
 
 import { getStockStatus } from 'src/actions/stocks';
-import { removeFromGroupPosition } from 'src/actions/positions';
+import { removePositionFromGroup } from 'src/actions/positionsInGroups';
 
 const DialogPositionRemoveFromGroup = props => {
 	const { dialogOpen, onCloseDialog, onExitedDialog, selectedPosition } = props;
@@ -43,7 +43,7 @@ const DialogPositionRemoveFromGroup = props => {
 				}}
 				rightHandleProps={{
 					handleProps: {
-						onClick: () => props.removeFromGroupPosition(selectedPosition._id, selectedPosition.positionGroup).then(onCloseDialog),
+						onClick: () => props.removePositionFromGroup(selectedPosition._id, selectedPosition.positionGroup).then(onCloseDialog),
 					},
 					text: 'Открепить',
 				}}
@@ -65,8 +65,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 	return {
 		getStockStatus: () => dispatch(getStockStatus(currentStockId)),
-		removeFromGroupPosition: (positionId, positionGroupId) =>
-			dispatch(removeFromGroupPosition(currentStockId, positionId, positionGroupId)),
+		removePositionFromGroup: (positionId, positionGroupId) =>
+			dispatch(removePositionFromGroup(currentStockId, positionId, positionGroupId)),
 	};
 };
 

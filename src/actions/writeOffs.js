@@ -37,7 +37,7 @@ export const createWriteOff = (stockId, userId, positionId, values) => {
 				const position = response.data;
 
 				dispatch({
-					type: 'EDIT_POSITION',
+					type: 'EDIT_POSITION_IN_GROUP',
 					payload: {
 						positionId,
 						position,

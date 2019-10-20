@@ -1,0 +1,31 @@
+.form {
+}
+
+.filterButtonLink {
+  background: none;
+  border: none;
+  color: var(--c-hex-t-500);
+  display: flex;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.filterButtonLink:hover {
+  color: var(--c-hex-t-400);
+}
+
+.filterButtonLink span {
+  display: block;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filterButtonLink svg {
+  color: var(--c-hex-t-300);
+  font-size: 12px;
+  margin: 2px 0 0 5px;
+  transform: rotate(0deg);
+  transition: color 150ms ease-out;
+}

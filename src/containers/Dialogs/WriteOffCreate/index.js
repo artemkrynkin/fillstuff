@@ -71,39 +71,14 @@ class DialogWriteOffCreate extends Component {
 											value: selectedPosition.name,
 											readOnly: true,
 										}}
-										InputLabelProps={{
-											shrink: true,
-										}}
 										fullWidth
 									/>
 								</Grid>
 								<Grid className={stylesGlobal.formLabelControl}>
-									<Field
-										name="quantity"
-										type="number"
-										label="Количество"
-										component={TextField}
-										InputLabelProps={{
-											shrink: true,
-										}}
-										autoComplete="off"
-										fullWidth
-										autoFocus
-									/>
+									<Field name="quantity" type="number" label="Количество" component={TextField} fullWidth autoFocus />
 								</Grid>
 								<Grid className={stylesGlobal.formLabelControl}>
-									<Field
-										name="comment"
-										label="Комментарий"
-										component={TextField}
-										InputLabelProps={{
-											shrink: true,
-										}}
-										autoComplete="off"
-										rowsMax={4}
-										multiline
-										fullWidth
-									/>
+									<Field name="comment" label="Комментарий" component={TextField} rowsMax={4} multiline fullWidth />
 								</Grid>
 							</DialogContent>
 							<PDDialogActions

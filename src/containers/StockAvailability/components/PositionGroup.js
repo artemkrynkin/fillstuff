@@ -72,7 +72,7 @@ const PositionGroup = props => {
 											type="positionGroup"
 											dividedPositions={positionGroup.dividedPositions}
 											minimumBalance={positionGroup.minimumBalance}
-											positions={positionGroup.positions}
+											positions={positionGroup.positions.filter(position => position.activeReceipt && position.receipts.length)}
 										/>
 									</TableCell>
 									<TableCell align="right" width={130}>

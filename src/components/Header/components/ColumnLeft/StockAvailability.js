@@ -11,8 +11,8 @@ import { getCharacteristics } from 'src/actions/characteristics';
 
 import styles from 'src/components/Header/index.module.css';
 
-const DialogPositionCreate = loadable(() =>
-	import('src/containers/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateEdit" */)
+const DialogPositionReceiptCreate = loadable(() =>
+	import('src/containers/Dialogs/PositionReceiptCreateEdit' /* webpackChunkName: "Dialog_PositionReceiptCreateEdit" */)
 );
 
 const DialogPositionGroupCreate = loadable(() =>
@@ -21,17 +21,17 @@ const DialogPositionGroupCreate = loadable(() =>
 
 class StockAvailability extends Component {
 	state = {
-		dialogPositionCreate: false,
+		dialogPositionReceiptCreate: false,
 		dialogPositionGroupCreate: false,
 	};
 
-	onOpenDialogPositionCreate = async () => {
+	onOpenDialogPositionReceiptCreate = async () => {
 		await this.props.getCharacteristics();
 
-		this.setState({ dialogPositionCreate: true });
+		this.setState({ dialogPositionReceiptCreate: true });
 	};
 
-	onCloseDialogPositionCreate = () => this.setState({ dialogPositionCreate: false });
+	onCloseDialogPositionReceiptCreate = () => this.setState({ dialogPositionReceiptCreate: false });
 
 	onOpenDialogPositionGroupCreate = async () => this.setState({ dialogPositionGroupCreate: true });
 
@@ -39,7 +39,7 @@ class StockAvailability extends Component {
 
 	render() {
 		const { pageTitle, theme, currentStock } = this.props;
-		const { dialogPositionCreate, dialogPositionGroupCreate } = this.state;
+		const { dialogPositionReceiptCreate, dialogPositionGroupCreate } = this.state;
 
 		return (
 			<div className={styles.column_left}>
@@ -50,7 +50,7 @@ class StockAvailability extends Component {
 						variant="contained"
 						color="primary"
 						style={{ marginRight: 8 }}
-						onClick={this.onOpenDialogPositionCreate}
+						onClick={this.onOpenDialogPositionReceiptCreate}
 					>
 						<FontAwesomeIcon icon={['far', 'plus']} style={{ marginRight: 10 }} />
 						Создать позицию
@@ -67,10 +67,10 @@ class StockAvailability extends Component {
 					</Button>
 				</div>
 
-				<DialogPositionCreate
+				<DialogPositionReceiptCreate
 					type="create"
-					dialogOpen={dialogPositionCreate}
-					onCloseDialog={this.onCloseDialogPositionCreate}
+					dialogOpen={dialogPositionReceiptCreate}
+					onCloseDialog={this.onCloseDialogPositionReceiptCreate}
 					currentStockId={currentStock._id}
 				/>
 

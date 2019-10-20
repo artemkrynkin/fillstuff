@@ -126,6 +126,15 @@ let Receipt = new Schema({
 		// get: value => numberToFixedDouble(value),
 		set: value => numberToFixedDouble(value),
 	},
+	// Название магазина
+	shopName: {
+		type: String,
+		required: [true, i18n.__('Обязательное поле')],
+	},
+	// Ссылка на товар в магазине
+	shopLink: {
+		type: String,
+	},
 	comment: {
 		type: String,
 		trim: true,

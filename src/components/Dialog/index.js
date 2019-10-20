@@ -64,9 +64,13 @@ export class PDDialog extends Component {
 		stickyActions: PropTypes.bool,
 	};
 
-	onEnter = element => {
-		if (this.props.stickyTitle) observeActions(element, 'top', styles.stickyTitle);
-		if (this.props.stickyActions) observeActions(element, 'bottom', styles.actions);
+	onEnterDialog = element => {
+		const { onEnter, stickyTitle, stickyActions } = this.props;
+
+		if (stickyTitle) observeActions(element, 'top', styles.stickyTitle);
+		if (stickyActions) observeActions(element, 'bottom', styles.actions);
+
+		if (typeof onEnter === 'function') onEnter();
 	};
 
 	render() {
@@ -78,7 +82,7 @@ export class PDDialog extends Component {
 		});
 
 		return (
-			<MuiDialog onEnter={this.onEnter} className={dialogClasses} transitionDuration={150} {...props}>
+			<MuiDialog className={dialogClasses} transitionDuration={150} {...props} onEnter={this.onEnterDialog}>
 				{stickyTitle ? <div className="sentinel-top" /> : null}
 				{children}
 				{stickyActions ? <div className="sentinel-bottom" /> : null}

@@ -91,28 +91,10 @@ class MemberEdit extends Component {
 										</div>
 									</Grid>
 									<Grid className={stylesGlobal.formLabelControl}>
-										<Field
-											name="user.name"
-											label="Имя:"
-											component={TextField}
-											InputLabelProps={{
-												shrink: true,
-											}}
-											autoComplete="off"
-											fullWidth
-										/>
+										<Field name="user.name" label="Имя:" component={TextField} fullWidth />
 									</Grid>
 									<Grid className={stylesGlobal.formLabelControl}>
-										<Field
-											name="user.email"
-											label="Email:"
-											component={TextField}
-											InputLabelProps={{
-												shrink: true,
-											}}
-											autoComplete="off"
-											fullWidth
-										/>
+										<Field name="user.email" label="Email:" component={TextField} fullWidth />
 										{Boolean(values.user.email) && Boolean(values.user.email !== (selectedMember.user.email || '')) ? (
 											<FormHelperText component="div">
 												На {selectedMember.user.email ? <b>новый</b> : null} Email придёт письмо с подтверждением.

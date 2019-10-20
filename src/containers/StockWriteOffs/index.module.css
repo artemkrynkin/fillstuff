@@ -1,3 +1,8 @@
 .container .wrapper {
-  padding: 20px;
+  padding: 32px;
+}
+
+.memberContainer {
+  position: sticky;
+  top: 50px;
 }

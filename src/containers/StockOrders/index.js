@@ -10,12 +10,12 @@ import stylesPage from 'src/styles/page.module.css';
 const StockOrders = props => {
 	const metaInfo = {
 		pageName: 'stock-orders',
-		pageTitle: 'Поступления',
+		pageTitle: 'Заказы',
 	};
 	const { title, description } = generateMetaInfo({
 		type: metaInfo.pageName,
 		data: {
-			title: `${metaInfo.pageTitle} - Заказы`,
+			title: metaInfo.pageTitle,
 		},
 	});
 

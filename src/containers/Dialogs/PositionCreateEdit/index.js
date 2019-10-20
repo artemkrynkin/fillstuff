@@ -14,13 +14,11 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
 import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
-import MuiTextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
 
 import translitRu from 'shared/translit/ru';
 import { unitTypes, unitTypeTransform, characteristicTypeTransform } from 'shared/checkPositionAndReceipt';
 
-import { onAddCharacteristicInPosition, checkCharacteristicsOnAbsenceInPosition, onUnitSellingPriceCalc } from 'src/helpers/positionUtils';
+import { onAddCharacteristicInPosition, checkCharacteristicsOnAbsenceInPosition } from 'src/helpers/positionUtils';
 
 import { PDDialog, PDDialogTitle, PDDialogActions } from 'src/components/Dialog';
 import { SelectAutocompleteCreate } from 'src/components/selectAutocomplete';
@@ -46,9 +44,11 @@ class DialogPositionCreateEdit extends Component {
 		selectedPosition: PropTypes.object,
 	};
 
-	state = {
+	initialState = {
 		isLoadingCharacteristics: false,
 	};
+
+	state = this.initialState;
 
 	onCreateCharacteristic = (values, setFieldValue) => {
 		this.setState({ isLoadingCharacteristics: true }, () => {
@@ -62,64 +62,36 @@ class DialogPositionCreateEdit extends Component {
 		});
 	};
 
-	onPositionCreate = (values, actions) => {
-		const { type, onCloseDialog, positionAndReceipt = positionSchema(type, true).cast(values) } = this.props;
+	onPositionCreateEdit = (values, actions) => {
+		const { type, onCloseDialog, position = positionSchema(true).cast(values) } = this.props;
 
-		const { quantity, quantityPackages, quantityInUnit, purchasePrice, sellingPrice, unitSellingPrice, ...position } = positionAndReceipt;
-
-		let receipt = {
-			initial: {},
-		};
-
-		if (!isNaN(quantity)) receipt.initial.quantity = quantity;
-		if (!isNaN(quantityPackages)) receipt.initial.quantityPackages = quantityPackages;
-		if (!isNaN(quantityInUnit)) receipt.quantityInUnit = quantityInUnit;
-		if (!isNaN(purchasePrice)) receipt.purchasePrice = purchasePrice;
-		if (!isNaN(sellingPrice)) receipt.sellingPrice = sellingPrice;
-		if (!isNaN(unitSellingPrice)) receipt.unitSellingPrice = unitSellingPrice;
-
-		this.props.createPosition(position, receipt).then(response => {
-			if (response.status === 'success') {
-				this.props.getStockStatus();
-				onCloseDialog();
-			} else actions.setSubmitting(false);
-		});
+		if (type === 'create') {
+			this.props.createPosition(position).then(response => {
+				if (response.status === 'success') {
+					this.props.getStockStatus();
+					onCloseDialog();
+				} else actions.setSubmitting(false);
+			});
+		} else {
+			this.props.editPosition(position._id, position).then(response => {
+				if (response.status === 'success') {
+					this.props.getStockStatus();
+					onCloseDialog();
+				} else actions.setSubmitting(false);
+			});
+		}
 	};
 
-	onPositionEdit = (values, actions) => {
-		const {
-			type,
-			onCloseDialog,
-			selectedPosition: {
-				activeReceipt: {
-					quantityInUnit: quantityInUnitOld,
-					purchasePrice: purchasePriceOld,
-					sellingPrice: sellingPriceOld,
-					unitSellingPrice: unitSellingPriceOld,
-				},
-			},
-			positionAndReceipt = positionSchema(type, true).cast(values),
-		} = this.props;
+	onExitedDialog = () => {
+		const { onExitedDialog } = this.props;
 
-		const { activeReceipt, receipts, quantityInUnit, purchasePrice, sellingPrice, unitSellingPrice, ...position } = positionAndReceipt;
-
-		let receipt = {};
-
-		if (!isNaN(quantityInUnit) && quantityInUnit !== quantityInUnitOld) receipt.quantityInUnit = quantityInUnit;
-		if (!isNaN(purchasePrice) && purchasePrice !== purchasePriceOld) receipt.purchasePrice = purchasePrice;
-		if (!isNaN(sellingPrice) && sellingPrice !== sellingPriceOld) receipt.sellingPrice = sellingPrice;
-		if (!isNaN(unitSellingPrice) && unitSellingPrice !== unitSellingPriceOld) receipt.unitSellingPrice = unitSellingPrice;
-
-		this.props.editPosition(position._id, position, receipt).then(response => {
-			if (response.status === 'success') {
-				this.props.getStockStatus();
-				onCloseDialog();
-			} else actions.setSubmitting(false);
+		this.setState(this.initialState, () => {
+			if (onExitedDialog) onExitedDialog();
 		});
 	};
 
 	render() {
-		const { type, dialogOpen, onCloseDialog, onExitedDialog, currentStockId, characteristics, selectedPosition } = this.props;
+		const { type, dialogOpen, onCloseDialog, currentStockId, characteristics, selectedPosition } = this.props;
 		const { isLoadingCharacteristics } = this.state;
 
 		if (type === 'edit' && !selectedPosition) return null;
@@ -133,19 +105,12 @@ class DialogPositionCreateEdit extends Component {
 						unitIssue: '',
 						minimumBalance: '',
 						isFree: false,
-						linkInShop: '',
 						characteristics: [],
 						characteristicTemp: {
 							type: '',
 							value: '',
 							valueTemp: '',
 						},
-						quantity: '',
-						quantityPackages: '',
-						quantityInUnit: '',
-						purchasePrice: '',
-						sellingPrice: '',
-						unitSellingPrice: '',
 				  }
 				: {
 						characteristicTemp: {
@@ -153,26 +118,20 @@ class DialogPositionCreateEdit extends Component {
 							value: '',
 							valueTemp: '',
 						},
-						quantityInUnit: selectedPosition.activeReceipt.quantityInUnit,
-						purchasePrice: selectedPosition.activeReceipt.purchasePrice,
-						sellingPrice: selectedPosition.activeReceipt.sellingPrice,
-						unitSellingPrice: selectedPosition.activeReceipt.unitSellingPrice,
 						...selectedPosition,
 				  };
 
 		return (
-			<PDDialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth="lg" scroll="body" stickyActions>
+			<PDDialog open={dialogOpen} onClose={onCloseDialog} onExited={this.onExitedDialog} maxWidth="lg" scroll="body" stickyActions>
 				<PDDialogTitle theme="primary" onClose={onCloseDialog}>
 					{type === 'create' ? 'Создание новой позиции' : 'Редактирование позиции'}
 				</PDDialogTitle>
 				<Formik
 					initialValues={initialValues}
-					validationSchema={() => positionSchema(type)}
+					validationSchema={() => positionSchema()}
 					validateOnBlur={false}
 					validateOnChange={false}
-					onSubmit={(values, actions) =>
-						type === 'create' ? this.onPositionCreate(values, actions) : this.onPositionEdit(values, actions)
-					}
+					onSubmit={(values, actions) => this.onPositionCreateEdit(values, actions)}
 					render={({ errors, isSubmitting, values, setFieldValue }) => (
 						<Form>
 							<DialogContent>
@@ -180,296 +139,75 @@ class DialogPositionCreateEdit extends Component {
 									<InputLabel error={Boolean(errors.name)} style={{ minWidth: 146 }}>
 										Наименование:
 									</InputLabel>
-									<Field
-										name="name"
-										component={TextField}
-										InputLabelProps={{
-											shrink: true,
-										}}
-										autoComplete="off"
-										autoFocus
-										fullWidth
-									/>
+									<Field name="name" component={TextField} autoFocus fullWidth />
 								</Grid>
 
 								<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 									<InputLabel error={Boolean(errors.unitReceipt)} style={{ minWidth: 146 }}>
 										Единица поступления:
 									</InputLabel>
-									{type === 'create' ? (
-										<FormControl fullWidth>
-											<SelectField
-												name="unitReceipt"
-												inputProps={{
-													onChange: ({ target: { value } }) => {
-														setFieldValue('unitReceipt', value);
+									<FormControl fullWidth>
+										<SelectField
+											name="unitReceipt"
+											inputProps={{
+												onChange: ({ target: { value } }) => {
+													setFieldValue('unitReceipt', value);
 
-														if (value === 'pce') setFieldValue('unitIssue', value);
-													},
-												}}
-												error={Boolean(errors.unitReceipt)}
-												displayEmpty
-											>
-												<MenuItem value="" disabled>
-													Выберите
+													if (value === 'pce') setFieldValue('unitIssue', value);
+												},
+											}}
+											error={Boolean(errors.unitReceipt)}
+										>
+											<MenuItem value="" disabled>
+												Выберите
+											</MenuItem>
+											{unitTypes.map((unitType, index) => (
+												<MenuItem key={index} value={unitType}>
+													{unitTypeTransform(unitType)}
 												</MenuItem>
-												{unitTypes.map((unitType, index) => (
-													<MenuItem key={index} value={unitType}>
-														{unitTypeTransform(unitType)}
-													</MenuItem>
-												))}
-											</SelectField>
-											{Boolean(errors.unitReceipt) ? <FormHelperText error>{errors.unitReceipt}</FormHelperText> : null}
-										</FormControl>
-									) : (
-										<FormControl fullWidth>
-											<MuiTextField
-												name="unitReceipt"
-												InputProps={{
-													value: unitTypeTransform(values.unitReceipt),
-												}}
-												disabled
-												fullWidth
-											/>
-										</FormControl>
-									)}
+											))}
+										</SelectField>
+										{Boolean(errors.unitReceipt) ? <FormHelperText error>{errors.unitReceipt}</FormHelperText> : null}
+									</FormControl>
 								</Grid>
 
 								<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 									<InputLabel error={Boolean(errors.unitIssue)} style={{ minWidth: 146 }}>
 										Единица отпуска:
 									</InputLabel>
-									{type === 'create' ? (
-										<FormControl fullWidth>
-											<SelectField
-												name="unitIssue"
-												inputProps={{
-													onChange: ({ target: { value } }) => {
-														setFieldValue('unitIssue', value);
+									<FormControl fullWidth>
+										<SelectField
+											name="unitIssue"
+											inputProps={{
+												onChange: ({ target: { value } }) => {
+													setFieldValue('unitIssue', value);
 
-														if (value === 'nmp') setFieldValue('unitReceipt', value);
-													},
-												}}
-												error={Boolean(errors.unitIssue)}
-												displayEmpty
-											>
-												<MenuItem value="" disabled>
-													Выберите
-												</MenuItem>
-												{unitTypes.map((unitType, index) => (
-													<MenuItem key={index} value={unitType}>
-														{unitTypeTransform(unitType)}
-													</MenuItem>
-												))}
-											</SelectField>
-											{Boolean(errors.unitIssue) ? <FormHelperText error>{errors.unitIssue}</FormHelperText> : null}
-										</FormControl>
-									) : (
-										<FormControl fullWidth>
-											<MuiTextField
-												name="unitIssue"
-												InputProps={{
-													value: unitTypeTransform(values.unitIssue),
-												}}
-												disabled
-												fullWidth
-											/>
-										</FormControl>
-									)}
-								</Grid>
-
-								<Grid className={stylesGlobal.formLabelControl} style={{ marginBottom: 12 }} container spacing={2}>
-									{values.unitReceipt === 'pce' || values.unitIssue !== 'pce' ? (
-										<Grid xs={6} item>
-											{type === 'create' ? (
-												<Field
-													name="quantity"
-													type="number"
-													label={`Количество ${values.unitReceipt === 'nmp' && values.unitIssue !== 'pce' ? 'упаковок' : 'штук'}:`}
-													placeholder="0"
-													component={TextField}
-													InputLabelProps={{
-														shrink: true,
-													}}
-													autoComplete="off"
-													fullWidth
-												/>
-											) : (
-												<MuiTextField
-													name="quantity"
-													label={`Количество ${values.unitReceipt === 'nmp' && values.unitIssue !== 'pce' ? 'упаковок' : 'штук'}:`}
-													InputProps={{
-														value: values.activeReceipt.current.quantity,
-													}}
-													disabled
-													fullWidth
-												/>
-											)}
-										</Grid>
-									) : (
-										<Grid xs={values.unitReceipt === 'nmp' && values.unitIssue === 'pce' ? 4 : 6} item>
-											{type === 'create' ? (
-												<Field
-													name="quantityPackages"
-													type="number"
-													label="Количество упаковок:"
-													placeholder="0"
-													component={TextField}
-													InputLabelProps={{
-														shrink: true,
-													}}
-													autoComplete="off"
-													fullWidth
-												/>
-											) : (
-												<MuiTextField
-													name="quantityPackages"
-													label="Количество упаковок:"
-													InputProps={{
-														value: Math.ceil(values.activeReceipt.current.quantityPackages),
-													}}
-													disabled
-													fullWidth
-												/>
-											)}
-										</Grid>
-									)}
-
-									{values.unitReceipt === 'nmp' && values.unitIssue === 'pce' ? (
-										<Grid xs={4} item>
-											<Field
-												name="quantityInUnit"
-												type="number"
-												label="Штук в упаковке:"
-												placeholder="0"
-												component={TextField}
-												InputLabelProps={{
-													shrink: true,
-												}}
-												inputProps={{
-													onChange: ({ target: { value } }) => onUnitSellingPriceCalc(value, 'quantityInUnit', values, setFieldValue),
-												}}
-												disabled={type === 'edit'}
-												autoComplete="off"
-												fullWidth
-											/>
-										</Grid>
-									) : null}
-
-									<Grid xs={values.unitReceipt === 'nmp' && values.unitIssue === 'pce' ? 4 : 6} item>
-										{values.divided ? (
-											<Field
-												name="minimumBalance"
-												type="number"
-												label={`Мин. остаток в ${values.unitReceipt === 'nmp' && values.unitIssue !== 'pce' ? 'упаковках' : 'штуках'}:`}
-												placeholder="0"
-												component={TextField}
-												InputLabelProps={{
-													shrink: true,
-												}}
-												autoComplete="off"
-												fullWidth
-											/>
-										) : (
-											<Grid alignItems="flex-end" style={{ height: '100%', paddingBottom: 1 }} container>
-												<Typography variant="caption">Вы можете изменить минимальный остаток в группе позиции.</Typography>
-											</Grid>
-										)}
-									</Grid>
-								</Grid>
-
-								<Grid
-									className={stylesGlobal.formLabelControl}
-									alignItems={values.isFree ? (Boolean(errors.purchasePrice) && values.isFree ? 'center' : 'flex-end') : 'stretch'}
-									spacing={2}
-									style={{ marginBottom: 12 }}
-									container
-								>
-									<Grid xs={6} item>
-										<Field
-											name="purchasePrice"
-											type="number"
-											label={`Цена закупки${values.unitReceipt === 'nmp' && values.unitIssue === 'pce' ? ' упаковки' : ''}:`}
-											placeholder="0"
-											component={TextField}
-											InputLabelProps={{
-												shrink: true,
+													if (value === 'nmp') setFieldValue('unitReceipt', value);
+												},
 											}}
-											inputProps={
-												values.unitReceipt === 'nmp' && values.unitIssue === 'pce'
-													? {
-															onChange: ({ target: { value } }) => onUnitSellingPriceCalc(value, 'purchasePrice', values, setFieldValue),
-													  }
-													: {
-															onChange: ({ target: { value } }) => {
-																setFieldValue('purchasePrice', value);
-																setFieldValue('sellingPrice', value);
-															},
-													  }
-											}
-											autoComplete="off"
-											fullWidth
-										/>
-									</Grid>
-
-									<Grid xs={6} item>
-										{!values.isFree ? (
-											values.unitReceipt === 'nmp' && values.unitIssue === 'pce' ? (
-												<Field
-													name="unitSellingPrice"
-													type="number"
-													label="Цена продажи штуки:"
-													placeholder="0"
-													component={TextField}
-													InputLabelProps={{
-														shrink: true,
-													}}
-													autoComplete="off"
-													fullWidth
-												/>
-											) : (
-												<Field
-													name="sellingPrice"
-													type="number"
-													label="Цена продажи:"
-													placeholder={String(values.purchasePrice || 0)}
-													component={TextField}
-													InputLabelProps={{
-														shrink: true,
-													}}
-													autoComplete="off"
-													fullWidth
-												/>
-											)
-										) : null}
-
-										<Field
-											name="isFree"
-											Label={{ label: 'Бесплатно' }}
-											component={CheckboxWithLabel}
-											color="primary"
-											icon={<FontAwesomeIcon icon={['far', 'square']} />}
-											checkedIcon={<FontAwesomeIcon icon={['fas', 'check-square']} />}
-										/>
-									</Grid>
+											error={Boolean(errors.unitIssue)}
+										>
+											<MenuItem value="" disabled>
+												Выберите
+											</MenuItem>
+											{unitTypes.map((unitType, index) => (
+												<MenuItem key={index} value={unitType}>
+													{unitTypeTransform(unitType)}
+												</MenuItem>
+											))}
+										</SelectField>
+										{Boolean(errors.unitIssue) ? <FormHelperText error>{errors.unitIssue}</FormHelperText> : null}
+										<Field name="isFree" Label={{ label: 'Бесплатный отпуск позиции' }} component={CheckboxWithLabel} />
+									</FormControl>
 								</Grid>
 
 								<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
-									<InputLabel error={Boolean(errors.linkInShop)} style={{ minWidth: 146 }}>
-										Ссылка / Магазин:
+									<InputLabel error={Boolean(errors.unitIssue)} style={{ minWidth: 146 }}>
+										Мин. остаток
+										<br />
+										{`в ${values.unitReceipt === 'nmp' && values.unitIssue !== 'pce' ? 'упаковках' : 'штуках'}:`}
 									</InputLabel>
-									<FormControl fullWidth>
-										<Field
-											name="linkInShop"
-											component={TextField}
-											placeholder="Ссылка на товар в интернет-магазине или название магазина"
-											InputLabelProps={{
-												shrink: true,
-											}}
-											autoComplete="off"
-											fullWidth
-										/>
-									</FormControl>
+									<Field name="minimumBalance" type="number" placeholder="0" component={TextField} fullWidth />
 								</Grid>
 
 								<FieldArray
@@ -522,7 +260,6 @@ class DialogPositionCreateEdit extends Component {
 																		}
 																	},
 																}}
-																displayEmpty
 															>
 																<MenuItem value="" disabled>
 																	Выберите
@@ -547,7 +284,7 @@ class DialogPositionCreateEdit extends Component {
 																value={values.characteristicTemp.value}
 																inputValue={values.characteristicTemp.valueTemp}
 																onChange={option => {
-																	setFieldValue('characteristicTemp.value', option);
+																	setFieldValue('characteristicTemp.value', option || '');
 
 																	if (values.characteristicTemp.valueTemp) {
 																		setFieldValue('characteristicTemp.valueTemp', '');
@@ -634,8 +371,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
 		getStockStatus: () => dispatch(getStockStatus(currentStockId)),
 		createCharacteristic: values => dispatch(createCharacteristic(values)),
-		createPosition: (position, receipt) => dispatch(createPosition(currentStockId, position, receipt)),
-		editPosition: (positionId, position, receipt) => dispatch(editPosition(positionId, position, receipt)),
+		createPosition: position => dispatch(createPosition(currentStockId, position)),
+		editPosition: (positionId, position) => dispatch(editPosition(positionId, position)),
 	};
 };
 

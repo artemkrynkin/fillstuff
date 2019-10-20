@@ -14,7 +14,7 @@ import MuiTextField from '@material-ui/core/TextField/TextField';
 import { Dialog, PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
 
 import { getStockStatus } from 'src/actions/stocks';
-import { addQuantityPosition } from 'src/actions/positions';
+import { addQuantityInPosition } from 'src/actions/positions';
 
 import stylesGlobal from 'src/styles/globals.module.css';
 
@@ -37,7 +37,7 @@ class DialogPositionAddQuantity extends Component {
 	onSubmit = (values, actions) => {
 		const { onCloseDialog, selectedPosition } = this.props;
 
-		this.props.addQuantityPosition(selectedPosition._id, values).then(response => {
+		this.props.addQuantityInPosition(selectedPosition._id, values).then(response => {
 			if (response.status === 'success') {
 				this.props.getStockStatus();
 				onCloseDialog();
@@ -71,39 +71,14 @@ class DialogPositionAddQuantity extends Component {
 											value: selectedPosition.name,
 											readOnly: true,
 										}}
-										InputLabelProps={{
-											shrink: true,
-										}}
 										fullWidth
 									/>
 								</Grid>
 								<Grid className={stylesGlobal.formLabelControl}>
-									<Field
-										name="quantity"
-										type="number"
-										label="Количество"
-										component={TextField}
-										InputLabelProps={{
-											shrink: true,
-										}}
-										autoComplete="off"
-										fullWidth
-										autoFocus
-									/>
+									<Field name="quantity" type="number" label="Количество" component={TextField} fullWidth autoFocus />
 								</Grid>
 								<Grid className={stylesGlobal.formLabelControl}>
-									<Field
-										name="comment"
-										label="Комментарий"
-										component={TextField}
-										InputLabelProps={{
-											shrink: true,
-										}}
-										autoComplete="off"
-										rowsMax={4}
-										multiline
-										fullWidth
-									/>
+									<Field name="comment" label="Комментарий" component={TextField} rowsMax={4} multiline fullWidth />
 								</Grid>
 							</DialogContent>
 							<PDDialogActions
@@ -134,7 +109,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 	return {
 		getStockStatus: () => dispatch(getStockStatus(currentStockId)),
-		addQuantityPosition: (positionId, values) => dispatch(addQuantityPosition(currentStockId, positionId, values)),
+		addQuantityInPosition: (positionId, values) => dispatch(addQuantityInPosition(currentStockId, positionId, values)),
 	};
 };
 

@@ -1,8 +1,6 @@
 import { InputBase } from 'formik-material-ui';
 import { withStyles } from '@material-ui/core';
 
-// import theme from 'shared/theme';
-
 export const SearchTextField = withStyles({
 	root: {
 		'& input': {

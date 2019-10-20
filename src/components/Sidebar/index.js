@@ -75,7 +75,7 @@ class Sidebar extends Component {
 												<div className={styles.menuIcon}>
 													<FontAwesomeIcon icon={['far', 'inventory']} />
 												</div>
-												Наличие
+												В наличии
 											</NavLink>
 										</div>
 

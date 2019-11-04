@@ -1,6 +1,6 @@
 {
   "name": "blikside",
-  "version": "0.1.2",
+  "version": "1.0.1-alpha",
   "private": true,
   "devDependencies": {
     "backpack-core": "^0.8.4",

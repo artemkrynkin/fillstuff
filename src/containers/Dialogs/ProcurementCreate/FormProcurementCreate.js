@@ -310,7 +310,7 @@ const FormProcurementCreate = props => {
 													value={receipt.purchasePrice + receipt.costDelivery}
 													renderText={value =>
 														!values.divideCostDeliverySellingPositions || !receipt.position.isFree
-															? `С учётом стоимости доставки ${value}`
+															? `${value} с учётом стоимости доставки`
 															: 'Стоимость доставки не включена'
 													}
 													displayType="text"
@@ -345,7 +345,7 @@ const FormProcurementCreate = props => {
 												<Field
 													name={`receipts.${index}.sellingPrice`}
 													label="Цена продажи:"
-													placeholder={`${String(receipt.purchasePrice || 0)} ₽`}
+													placeholder={`${String(receipt.purchasePrice || 0)}`}
 													as={TextField}
 													error={Boolean(formError(touched, errors, `receipts.${index}.sellingPrice`))}
 													helperText={formError(touched, errors, `receipts.${index}.sellingPrice`)}
@@ -383,7 +383,7 @@ const FormProcurementCreate = props => {
 											<FormHelperText>
 												<NumberFormat
 													value={receipt.unitSellingPrice + receipt.unitCostDelivery}
-													renderText={value => `С учётом стоимости доставки ${value}`}
+													renderText={value => `${value} с учётом стоимости доставки`}
 													displayType="text"
 													onValueChange={() => {}}
 													{...currencyFormatProps}

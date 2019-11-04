@@ -3,16 +3,16 @@ import React from 'react';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 
-import PurchaseCreateForm from './PurchaseCreateForm';
+import Procurement from './Procurement';
 
 const Index = props => {
-	const { currentUser, currentStock } = props;
+	const { currentUser, currentStock, procurementId } = props;
 
 	return (
 		<Container maxWidth="md">
 			<Grid container direction="row" justify="center" alignItems="flex-start" spacing={2}>
 				<Grid item xs={12}>
-					<PurchaseCreateForm currentUser={currentUser} currentStock={currentStock} />
+					<Procurement currentUser={currentUser} currentStock={currentStock} procurementId={procurementId} />
 				</Grid>
 			</Grid>
 		</Container>

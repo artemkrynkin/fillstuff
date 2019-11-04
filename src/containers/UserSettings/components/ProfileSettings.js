@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ClassNames from 'classnames';
 import moment from 'moment';
-
 import { Formik, Form, Field } from 'formik';
-import { TextField } from 'formik-material-ui';
 import * as Yup from 'yup';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,7 +14,9 @@ import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormLabel from '@material-ui/core/FormLabel';
 import Grid from '@material-ui/core/Grid';
-import MuiTextField from '@material-ui/core/TextField';
+import TextField from '@material-ui/core/TextField';
+
+import { sleep } from 'shared/utils';
 
 import CardPaper from 'src/components/CardPaper';
 
@@ -118,7 +118,7 @@ class ProfileSettings extends Component {
 		let labelStyles = { minWidth: 52 };
 
 		return (
-			<CardPaper elevation={1} leftContent="Профиль" title style={{ marginBottom: 16 }}>
+			<CardPaper leftContent="Профиль" title style={{ marginBottom: 16 }}>
 				<Grid direction="row" alignItems="flex-start" spacing={3} container>
 					<Grid className={styles.photo} item>
 						<div className={photoImgClasses}>
@@ -142,7 +142,9 @@ class ProfileSettings extends Component {
 							}}
 							validationSchema={PersonalDataSchema}
 							validateOnBlur={false}
-							onSubmit={(values, actions) => {
+							onSubmit={async (values, actions) => {
+								await sleep(500);
+
 								let valuesFormData;
 
 								if (newProfilePhoto.file && newProfilePhoto.base64) {
@@ -170,21 +172,29 @@ class ProfileSettings extends Component {
 									}
 								});
 							}}
-							render={({ errors, touched, isSubmitting }) => (
+						>
+							{({ errors, isSubmitting, touched }) => (
 								<Form>
-									<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" container>
+									<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 										<FormLabel style={labelStyles}>Имя:</FormLabel>
-										<Field name="name" component={TextField} />
+										<Field
+											name="name"
+											error={Boolean(touched.name && errors.name)}
+											helperText={(touched.name && errors.name) || ''}
+											as={TextField}
+										/>
 									</Grid>
 									<Grid justify="flex-end" container>
 										<Button type="submit" disabled={isSubmitting} variant="contained" color="primary">
 											{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
-											<span style={{ opacity: Number(!isSubmitting) }}>Сохранить</span>
+											<span className="loading-button-label" style={{ opacity: Number(!isSubmitting) }}>
+												Сохранить
+											</span>
 										</Button>
 									</Grid>
 								</Form>
 							)}
-						/>
+						</Formik>
 
 						<Divider style={{ margin: '20px 0' }} />
 						<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
@@ -195,7 +205,9 @@ class ProfileSettings extends Component {
 										initialValues={{ newEmail: '' }}
 										validationSchema={EmailSchema}
 										validateOnBlur={false}
-										onSubmit={(values, actions) => {
+										onSubmit={async (values, actions) => {
+											await sleep(500);
+
 											this.props.editUser(values).then(response => {
 												if (response.status === 'success') {
 													actions.resetForm();
@@ -209,10 +221,18 @@ class ProfileSettings extends Component {
 												}
 											});
 										}}
-										render={({ errors, touched, isSubmitting, values }) => (
+									>
+										{({ errors, isSubmitting, touched, values }) => (
 											<Form>
 												<FormControl margin="dense" fullWidth>
-													<Field name="newEmail" component={TextField} placeholder="Новый Email" autoFocus />
+													<Field
+														name="newEmail"
+														error={Boolean(touched.newEmail && errors.newEmail)}
+														helperText={(touched.newEmail && errors.newEmail) || ''}
+														as={TextField}
+														placeholder="Новый Email"
+														autoFocus
+													/>
 													{!errors.newEmail && Boolean(values.newEmail) && Boolean(values.newEmail !== (user.email || '')) ? (
 														<FormHelperText component="div">
 															На {user.email ? <b>новый</b> : null} Email придёт письмо с подтверждением.
@@ -227,15 +247,16 @@ class ProfileSettings extends Component {
 												<FormControl>
 													<Button type="submit" disabled={isSubmitting} variant="contained" color="primary">
 														{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
-														<span style={{ opacity: Number(!isSubmitting) }}>{user.email ? 'Сохранить' : 'Установить'}</span>
+														<span className="loading-button-label" style={{ opacity: Number(!isSubmitting) }}>
+															{user.email ? 'Сохранить' : 'Установить'}
+														</span>
 													</Button>
 												</FormControl>
 											</Form>
 										)}
-									/>
+									</Formik>
 								) : (
-									<MuiTextField
-										name="emailReadonly"
+									<TextField
 										InputProps={{
 											readOnly: true,
 											value: user.email ? user.email : 'ещё не установлен',
@@ -269,7 +290,9 @@ class ProfileSettings extends Component {
 											}}
 											validationSchema={user.hasPassword ? ChangePasswordSchema : SetPasswordSchema}
 											validateOnBlur={false}
-											onSubmit={(values, actions) => {
+											onSubmit={async (values, actions) => {
+												await sleep(500);
+
 												let newValues = JSON.parse(JSON.stringify(values));
 
 												if (!user.hasPassword) {
@@ -290,14 +313,17 @@ class ProfileSettings extends Component {
 													}
 												});
 											}}
-											render={({ errors, touched, isSubmitting }) => (
+										>
+											{({ errors, isSubmitting, touched }) => (
 												<Form>
 													{user.hasPassword ? (
 														<FormControl margin="dense" fullWidth>
 															<Field
 																name="oldPassword"
 																type="password"
-																component={TextField}
+																error={Boolean(touched.oldPassword && errors.oldPassword)}
+																helperText={(touched.oldPassword && errors.oldPassword) || ''}
+																as={TextField}
 																placeholder="Старый пароль"
 																autoFocus={user.hasPassword}
 															/>
@@ -307,28 +333,38 @@ class ProfileSettings extends Component {
 														<Field
 															name="newPassword"
 															type="password"
-															component={TextField}
+															error={Boolean(touched.newPassword && errors.newPassword)}
+															helperText={(touched.newPassword && errors.newPassword) || ''}
+															as={TextField}
 															placeholder={user.hasPassword ? 'Новый пароль' : ''}
 															autoFocus={!user.hasPassword}
 														/>
 													</FormControl>
 													{user.hasPassword ? (
 														<FormControl margin="dense" fullWidth>
-															<Field name="confirmPassword" type="password" component={TextField} placeholder="Повторите пароль" />
+															<Field
+																name="confirmPassword"
+																type="password"
+																error={Boolean(touched.confirmPassword && errors.confirmPassword)}
+																helperText={(touched.confirmPassword && errors.confirmPassword) || ''}
+																as={TextField}
+																placeholder="Повторите пароль"
+															/>
 														</FormControl>
 													) : null}
 													<FormControl>
 														<Button type="submit" disabled={isSubmitting} variant="contained" color="primary">
 															{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
-															<span style={{ opacity: Number(!isSubmitting) }}>{user.hasPassword ? 'Изменить пароль' : 'Установить'}</span>
+															<span className="loading-button-label" style={{ opacity: Number(!isSubmitting) }}>
+																{user.hasPassword ? 'Изменить пароль' : 'Установить'}
+															</span>
 														</Button>
 													</FormControl>
 												</Form>
 											)}
-										/>
+										</Formik>
 									) : (
-										<MuiTextField
-											name="passwordReadonly"
+										<TextField
 											InputProps={{
 												readOnly: true,
 												value: user.hasPassword ? `обновлён ${moment(user.passwordUpdate).fromNow()}` : 'ещё не установлен',

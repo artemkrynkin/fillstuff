@@ -84,6 +84,7 @@ class Positions extends Component {
 	};
 
 	onPositionGroupDrop = () => this.setState({ positionGroup: null, dialogOpenedName: '' });
+
 	onPositionDrop = () => this.setState({ position: null, dialogOpenedName: '' });
 
 	onOpenDialogByName = (dialogName, positionOrGroup) =>
@@ -95,7 +96,7 @@ class Positions extends Component {
 
 	onCloseDialogByName = dialogName => this.setState({ [dialogName]: false });
 
-	async componentDidMount() {
+	componentDidMount() {
 		this.props.getCharacteristics();
 		this.props.getPositionsInGroups();
 		this.props.getPositions();

@@ -63,9 +63,13 @@ const Position = props => {
 						unitIssue={position.unitIssue}
 						quantity={position.activeReceipt.current.quantity}
 						isFree={false}
-						price={position.activeReceipt.unitPurchasePrice}
+						price={Number((position.activeReceipt.unitPurchasePrice + position.activeReceipt.unitCostDelivery).toFixed(2))}
 						receiptsReceived={receiptsReceived}
-						receiptNearestPrice={receiptsReceived.length ? receiptsReceived[0].unitPurchasePrice : undefined}
+						receiptNearestPrice={
+							receiptsReceived.length
+								? Number((receiptsReceived[0].unitPurchasePrice + receiptsReceived[0].unitCostDelivery).toFixed(2))
+								: undefined
+						}
 						priceChangeIsGood={false}
 						title="цена закупки"
 					/>
@@ -80,9 +84,13 @@ const Position = props => {
 						unitIssue={position.unitIssue}
 						quantity={position.activeReceipt.current.quantity}
 						isFree={position.isFree}
-						price={position.activeReceipt.unitSellingPrice}
+						price={Number((position.activeReceipt.unitSellingPrice + position.activeReceipt.unitCostDelivery).toFixed(2))}
 						receiptsReceived={receiptsReceived}
-						receiptNearestPrice={receiptsReceived.length ? receiptsReceived[0].unitSellingPrice : undefined}
+						receiptNearestPrice={
+							receiptsReceived.length
+								? Number((receiptsReceived[0].unitSellingPrice + receiptsReceived[0].unitCostDelivery).toFixed(2))
+								: undefined
+						}
 						priceChangeIsGood={true}
 						title="цена продажи"
 					/>

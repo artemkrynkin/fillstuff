@@ -1,12 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-
 import { Formik, Form, Field } from 'formik';
-import { TextField } from 'formik-material-ui';
 
-import Button from '@material-ui/core/Button/Button';
-import CircularProgress from '@material-ui/core/CircularProgress/CircularProgress';
-import FormControl from '@material-ui/core/FormControl/FormControl';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import FormControl from '@material-ui/core/FormControl';
+import TextField from '@material-ui/core/TextField';
 
 import generateMetaInfo from 'shared/generate-meta-info';
 
@@ -35,17 +34,18 @@ const PasswordRecovery = () => {
 						initialValues={{ email: '', password: '' }}
 						validateOnBlur={false}
 						// onSubmit={(values, actions) => this.props.dispatch(authenticate(values, actions))}
-						render={({ errors, touched, isSubmitting }) => (
+					>
+						{({ errors, isSubmitting, touched }) => (
 							<Form>
 								<FormControl margin="normal" fullWidth>
-									<Field name="email" placeholder="Email" component={TextField} autoFocus />
+									<Field name="email" placeholder="Email" as={TextField} autoFocus />
 								</FormControl>
 								<Button type="submit" disabled={isSubmitting} className={styles.loginBtn} variant="contained" color="primary">
 									{isSubmitting ? <CircularProgress size={20} /> : 'Восстановить пароль'}
 								</Button>
 							</Form>
 						)}
-					/>
+					</Formik>
 				</div>
 			</div>
 			<div className={styles.bottomInfo}>

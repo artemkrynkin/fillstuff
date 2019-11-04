@@ -7,7 +7,7 @@ import Paper from '@material-ui/core/Paper';
 import styles from './index.module.css';
 
 const CardPaper = props => {
-	const { className, elevation, header = true, leftContent, rightContent, title, customRightColumn, style, children } = props;
+	const { className, elevation = 1, header = true, leftContent, rightContent, title, customRightColumn, style, children } = props;
 
 	let cardPaperClassesObj = {
 		[styles.container]: true,

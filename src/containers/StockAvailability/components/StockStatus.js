@@ -10,8 +10,8 @@ const StockStatus = props => {
 	const { currentStock } = props;
 
 	return (
-		<CardPaper elevation={1} header={false} style={{ marginBottom: 16 }}>
-			<Grid justify="space-between" container>
+		<CardPaper header={false} style={{ marginBottom: 16 }}>
+			<Grid container>
 				<Grid item xs={6}>
 					<Grid alignItems="flex-end" justify="flex-start" container>
 						<div className={styles.title}>Количество позиций:</div>

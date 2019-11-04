@@ -7,6 +7,7 @@ import positions from './positions';
 import characteristics from './characteristics';
 import writeOffs from './writeOffs';
 import purchases from './purchases';
+import procurements from './procurements';
 
 const getReducers = () => {
 	return combineReducers({
@@ -17,6 +18,7 @@ const getReducers = () => {
 		characteristics,
 		writeOffs,
 		purchases,
+		procurements,
 	});
 };
 

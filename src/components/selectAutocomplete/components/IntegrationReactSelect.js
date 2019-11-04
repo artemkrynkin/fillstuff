@@ -153,11 +153,13 @@ const Control = props => {
 		children,
 		innerProps,
 		innerRef,
+		isDisabled,
 		selectProps: { classes, TextFieldProps },
 	} = props;
 
 	return (
 		<TextField
+			disabled={isDisabled}
 			fullWidth
 			InputProps={{
 				inputComponent,
@@ -299,8 +301,8 @@ export const IntegrationSelectAutocompleteCreate = props => {
 			classes={classes}
 			styles={selectStyles}
 			components={components}
-			onChange={option => (option !== null ? props.form.setFieldValue(props.field.name, option.value) : null)}
-			onBlur={props.field.onBlur}
+			onChange={option => (option !== null && props.field ? props.form.setFieldValue(props.field.name, option.value) : null)}
+			onBlur={props.field ? props.field.onBlur : null}
 			formatCreateLabel={value => (
 				<div className={styles.optionSelected}>
 					{formatCreateLabel || `Создать`} «{value}»
@@ -320,8 +322,8 @@ export const IntegrationSelectAutocomplete = props => {
 			classes={classes}
 			styles={selectStyles}
 			components={components}
-			onChange={option => (option !== null ? props.form.setFieldValue(props.field.name, option.value) : null)}
-			onBlur={props.field.onBlur}
+			onChange={option => (option !== null && props.field ? props.form.setFieldValue(props.field.name, option.value) : () => {})}
+			onBlur={props.field ? props.field.onBlur : () => {}}
 			{...remainingProps}
 		/>
 	);

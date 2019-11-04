@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-
 import { Formik, Form, Field } from 'formik';
-import { TextField } from 'formik-material-ui';
 import * as Yup from 'yup';
 
 import Button from '@material-ui/core/Button/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import FormControl from '@material-ui/core/FormControl';
+import TextField from '@material-ui/core/TextField';
 
 import generateMetaInfo from 'shared/generate-meta-info';
 
@@ -24,6 +23,11 @@ const RegistrationSchema = Yup.object().shape({
 		.required('Обязательное поле'),
 	password: Yup.string().required('Обязательное поле'),
 });
+
+const initialValues = {
+	email: '',
+	password: '',
+};
 
 class Registration extends Component {
 	setRememberRegData = data => {
@@ -46,27 +50,45 @@ class Registration extends Component {
 					<h2>Регистрация</h2>
 					<div className={styles.formFields}>
 						<Formik
-							initialValues={{ email: '', password: '' }}
+							initialValues={initialValues}
 							validationSchema={RegistrationSchema}
 							validateOnBlur={false}
+							validateOnChange={false}
 							onSubmit={(values, actions) => {
 								this.setRememberRegData(values);
 								this.props.registration(values, actions);
 							}}
-							render={({ errors, touched, isSubmitting }) => (
-								<Form>
-									<FormControl margin="normal" fullWidth>
-										<Field name="email" placeholder="Email" component={TextField} autoFocus />
-									</FormControl>
-									<FormControl margin="normal" fullWidth>
-										<Field type="password" name="password" placeholder="Пароль" component={TextField} />
-									</FormControl>
-									<Button type="submit" disabled={isSubmitting} className={styles.loginBtn} variant="contained" color="primary">
-										{isSubmitting ? <CircularProgress size={20} /> : 'Зарегистрироваться'}
-									</Button>
-								</Form>
-							)}
-						/>
+						>
+							{({ errors, isSubmitting, touched }) => {
+								return (
+									<Form>
+										<FormControl margin="normal" fullWidth>
+											<Field
+												name="email"
+												placeholder="Email"
+												error={Boolean(touched.email && errors.email)}
+												helperText={(touched.email && errors.email) || ''}
+												as={TextField}
+												autoFocus
+											/>
+										</FormControl>
+										<FormControl margin="normal" fullWidth>
+											<Field
+												type="password"
+												name="password"
+												placeholder="Пароль"
+												error={Boolean(touched.password && errors.password)}
+												helperText={(touched.password && errors.password) || ''}
+												as={TextField}
+											/>
+										</FormControl>
+										<Button type="submit" disabled={isSubmitting} className={styles.loginBtn} variant="contained" color="primary">
+											{isSubmitting ? <CircularProgress size={20} /> : 'Зарегистрироваться'}
+										</Button>
+									</Form>
+								);
+							}}
+						</Formik>
 					</div>
 				</div>
 				<div className={styles.bottomInfo}>

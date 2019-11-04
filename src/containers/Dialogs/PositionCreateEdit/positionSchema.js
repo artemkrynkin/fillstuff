@@ -18,6 +18,8 @@ const positionSchema = (depopulate = false) => {
 			.when('divided', (divided, schema) => {
 				return divided ? schema.min(1).required() : schema;
 			}),
+		shopName: Yup.string().required(),
+		shopLink: Yup.string(),
 		characteristics: Yup.array()
 			.when('empty', (empty, schema) => (depopulate ? schema.of(Yup.string()) : schema))
 			.transform((currentValue, originalValue) => {

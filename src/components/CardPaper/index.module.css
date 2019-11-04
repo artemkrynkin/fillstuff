@@ -1,12 +1,10 @@
-.container {
-  overflow: hidden;
-}
+.container {}
 
 .header {
   align-items: center;
   background-color: var(--c-hex-br-3);
+  border-bottom: 1px solid var(--c-hex-bg-50);
   border-radius: 8px 8px 0 0;
-  box-shadow: 0 0 0 1px var(--c-hex-bg-50);
   min-height: 54px;
   padding: 8px 15px;
 }

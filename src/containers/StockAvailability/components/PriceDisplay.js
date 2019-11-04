@@ -18,7 +18,7 @@ const priceDisplayChangeIconClasses = priceChangeIsGood =>
 const PriceDisplay = props => {
 	const { receiptsReceived, receiptNearestPrice, unitReceipt, unitIssue, quantity, isFree, price, priceChangeIsGood, title } = props;
 
-	if (receiptsReceived.length && receiptNearestPrice !== price)
+	if (!isFree && receiptsReceived.length && receiptNearestPrice !== price)
 		return (
 			<Tooltip
 				title={
@@ -31,7 +31,7 @@ const PriceDisplay = props => {
 				interactive
 			>
 				<div style={{ display: 'inline-block' }}>
-					{!isFree ? price : '-'} ₽
+					{price} ₽
 					{receiptNearestPrice > price ? (
 						<span className={priceDisplayChangeIconClasses(priceChangeIsGood)}>
 							<FontAwesomeIcon icon={['far', 'chevron-up']} />

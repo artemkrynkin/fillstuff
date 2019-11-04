@@ -78,7 +78,7 @@ const useStylesArrow = makeStyles(() => ({
 }));
 
 const Tooltip = props => {
-	const { arrow = true } = props;
+	const { arrow = true, ...remainingProps } = props;
 	const { arrow: arrowClasses, ...classes } = useStylesArrow();
 	const [arrowRef, setArrowRef] = useState(null);
 
@@ -99,7 +99,7 @@ const Tooltip = props => {
 					},
 				},
 			}}
-			{...props}
+			{...remainingProps}
 			title={
 				<React.Fragment>
 					{props.title}

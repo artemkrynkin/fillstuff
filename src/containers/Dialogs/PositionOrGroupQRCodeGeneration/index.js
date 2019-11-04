@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ClassNames from 'classnames';
 
 import { Formik, Form, Field } from 'formik';
-import { TextField } from 'formik-material-ui';
 import * as Yup from 'yup';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
@@ -13,10 +12,12 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { DialogContent } from '@material-ui/core';
 import Slider from '@material-ui/core/Slider';
 import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 
 import theme from 'shared/theme';
+import { sleep } from 'shared/utils';
 
 import { PDDialog, PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
 
@@ -85,7 +86,9 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 		this.setState({ QRCodeDataUrl: url });
 	};
 
-	onGenerateAndSavePDF = (actions, values) => {
+	onGenerateAndSavePDF = async (actions, values) => {
+		await sleep(500);
+
 		const { type, selectedPositionOrGroup } = this.props;
 		const { QRCodeDataUrl, QRCodeSize } = this.state;
 		const QRSettings = marks[QRCodeSize - 1].settings;
@@ -165,11 +168,11 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 							alignment: 'center',
 						});
 
-						contentColumn.push({
-							text: type === 'positionGroup' ? 'ГРУППА' : 'ПОЗИЦИЯ',
-							fontSize: 5,
-							margin: [0, 5, 0, 0],
-						});
+						// contentColumn.push({
+						// 	text: type === 'positionGroup' ? 'ГРУППА' : 'ПОЗИЦИЯ',
+						// 	fontSize: 5,
+						// 	margin: [0, 5, 0, 0],
+						// });
 
 						generatedQRs += 1;
 					} else {
@@ -184,11 +187,9 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 			return content;
 		};
 
-		const contentGen = contentGeneration();
-
 		const docDefinition = {
 			pageMargins: Object.values(PAGE_MARGINS),
-			content: contentGen,
+			content: contentGeneration(),
 			defaultStyle: {
 				pageSize: 'A4',
 			},
@@ -241,12 +242,22 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 					validationSchema={QRCodeGenerationSchema}
 					validateOnBlur={false}
 					validateOnChange={false}
-					onSubmit={(values, actions) => setTimeout(() => this.onGenerateAndSavePDF(actions, values), 500)}
-					render={({ errors, touched, isSubmitting, values }) => (
+					onSubmit={(values, actions) => this.onGenerateAndSavePDF(actions, values)}
+				>
+					{({ errors, isSubmitting, touched }) => (
 						<Form>
 							<DialogContent>
 								<Grid className={stylesGlobal.formLabelControl}>
-									<Field name="quantity" type="number" label="Количество QR-кодов в PDF" component={TextField} fullWidth autoFocus />
+									<Field
+										name="quantity"
+										type="number"
+										label="Количество QR-кодов в PDF"
+										error={Boolean(touched.quantity && errors.quantity)}
+										helperText={(touched.quantity && errors.quantity) || ''}
+										as={TextField}
+										fullWidth
+										autoFocus
+									/>
 								</Grid>
 
 								<Grid className={stylesGlobal.formLabelControl}>
@@ -312,7 +323,7 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 							/>
 						</Form>
 					)}
-				/>
+				</Formik>
 			</PDDialog>
 		);
 	}

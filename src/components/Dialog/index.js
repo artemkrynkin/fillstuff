@@ -183,7 +183,7 @@ PDDialogActions.propTypes = {
 	disableSpacing: PropTypes.bool,
 	leftHandleProps: PropTypes.shape({
 		handleProps: PropTypes.object,
-		text: PropTypes.node.isRequired,
+		text: PropTypes.node,
 		iconLeft: PropTypes.oneOfType([PropTypes.node, PropTypes.element]),
 		iconRight: PropTypes.oneOfType([PropTypes.node, PropTypes.element]),
 	}),

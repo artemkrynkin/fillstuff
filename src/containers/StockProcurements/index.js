@@ -12,14 +12,14 @@ import { withCurrentUser } from 'src/components/withCurrentUser';
 import stylesPage from 'src/styles/page.module.css';
 import styles from './index.module.css';
 
-const Index = loadable(() => import('./components/index' /* webpackChunkName: "StockPurchases_Index" */), {
+const Index = loadable(() => import('./components/index' /* webpackChunkName: "StockProcurements_Index" */), {
 	fallback: <LoadingComponent />,
 });
 
-const StockPurchases = props => {
+const StockProcurements = props => {
 	const metaInfo = {
-		pageName: 'stock-purchases',
-		pageTitle: 'Покупки',
+		pageName: 'stock-procurements',
+		pageTitle: 'Закупки',
 	};
 	const { title, description } = generateMetaInfo({
 		type: metaInfo.pageName,
@@ -44,4 +44,4 @@ const StockPurchases = props => {
 	);
 };
 
-export default compose(withCurrentUser)(StockPurchases);
+export default compose(withCurrentUser)(StockProcurements);

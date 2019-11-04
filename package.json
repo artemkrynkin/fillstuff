@@ -38,7 +38,7 @@
     "debug": "^4.1.1",
     "express": "^4.17.1",
     "express-enforces-ssl": "^1.1.0",
-    "formik": "1.5.8",
+    "formik": "2.0.3",
     "formik-material-ui": "0.0.22",
     "helmet": "3.21.1",
     "history": "4.10.1",

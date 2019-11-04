@@ -21,7 +21,7 @@ export const onUnitSellingPriceCalc = (value, fieldName, position, setFieldValue
 
 	const checkEmptinessField = position[`${fieldName === 'quantityInUnit' ? 'purchasePrice' : 'quantityInUnit'}`];
 	const setValue = fieldName === 'quantityInUnit' ? position.purchasePrice / value : value / position.quantityInUnit;
-	const conditionSetValue = !!value && !!checkEmptinessField ? setValue.toFixed(2) : '';
+	const conditionSetValue = !!value && !!checkEmptinessField ? setValue : '';
 
 	setFieldValue('unitSellingPrice', conditionSetValue);
 };

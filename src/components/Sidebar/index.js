@@ -94,50 +94,18 @@ class Sidebar extends Component {
 									</div>
 								</ExpansionPanel>
 
-								<ExpansionPanel
-									TransitionProps={{
-										timeout: 300,
-									}}
-									className={styles.menuExpansion}
-									expanded={activePage === 'orders' || activePage === 'purchases'}
-									onChange={this.onChangeUrl('orders')}
-								>
-									<ExpansionPanelSummary className={styles.menuExpansionSummary}>
-										<div className={styles.menuExpansionTitle}>
-											<div className={styles.menuExpansionTitleIcon}>
-												<FontAwesomeIcon icon={['fal', 'shipping-timed']} />
-											</div>
-											Поступления
+								<div className={styles.menuItem}>
+									<NavLink
+										className={styles.menuLink}
+										activeClassName={styles.menuLink_active}
+										to={`/stocks/${activeStockId}/procurements`}
+									>
+										<div className={styles.menuIcon}>
+											<FontAwesomeIcon icon={['fal', 'shipping-timed']} />
 										</div>
-									</ExpansionPanelSummary>
-									<div className={styles.menuExpansionDetails}>
-										<div className={styles.menuItem}>
-											<NavLink
-												className={styles.menuLink}
-												activeClassName={styles.menuLink_activeExpansion}
-												to={`/stocks/${activeStockId}/orders`}
-											>
-												<div className={styles.menuIcon}>
-													<FontAwesomeIcon icon={['fal', 'shopping-cart']} />
-												</div>
-												Заказы
-											</NavLink>
-										</div>
-
-										<div className={styles.menuItem}>
-											<NavLink
-												className={styles.menuLink}
-												activeClassName={styles.menuLink_activeExpansion}
-												to={`/stocks/${activeStockId}/purchases`}
-											>
-												<div className={styles.menuIcon}>
-													<FontAwesomeIcon icon={['fal', 'bags-shopping']} />
-												</div>
-												Покупки
-											</NavLink>
-										</div>
-									</div>
-								</ExpansionPanel>
+										Закупки
+									</NavLink>
+								</div>
 
 								<div className={styles.menuItem}>
 									<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to={`/stocks/${activeStockId}/statistics`}>
@@ -147,15 +115,16 @@ class Sidebar extends Component {
 										Статистика
 									</NavLink>
 								</div>
-
-								<div className={styles.menuItem}>
-									<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to={`/stocks/${activeStockId}/settings`}>
-										<div className={styles.menuIcon}>
-											<FontAwesomeIcon icon={['fal', 'cog']} />
-										</div>
-										Настройки
-									</NavLink>
-								</div>
+							</div>
+						) : null}
+						{activeStockId ? (
+							<div className={`${styles.menuItem} ${styles.menuItem_down}`}>
+								<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to={`/stocks/${activeStockId}/settings`}>
+									<div className={styles.menuIcon}>
+										<FontAwesomeIcon icon={['fal', 'cog']} />
+									</div>
+									Настройки
+								</NavLink>
 							</div>
 						) : null}
 						{/*<div className={`${styles.menuItem} ${styles.menuItem_down}`}>*/}

@@ -68,6 +68,15 @@ let Position = new Schema({
 		type: Boolean,
 		default: false,
 	},
+	// Название магазина
+	shopName: {
+		type: String,
+		required: [true, i18n.__('Обязательное поле')],
+	},
+	// Ссылка на товар в магазине
+	shopLink: {
+		type: String,
+	},
 	// Характеристики
 	characteristics: [
 		{

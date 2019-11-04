@@ -1,20 +1,30 @@
-.addCharacteristic {
+.addCharacteristic,
+.externalLink {
   display: inline-flex;
   margin: 2px 0 2px 16px;
 }
 
-.addCharacteristic button {
+.addCharacteristic button,
+.externalLink button {
   background-color: transparent !important;
   color: var(--c-hex-t-300);
   padding: 3px 0;
   transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.addCharacteristic button[disabled] {
+.addCharacteristic button[disabled],
+.externalLink button[disabled] {
   color: var(--c-hex-bg-100);
 }
 
-.addCharacteristic button svg {
+.addCharacteristic button svg,
+.externalLink button svg {
   font-size: 26px;
   width: 26px !important;
 }
+
+.externalLink button a {
+  color: currentColor;
+  display: inherit;
+}
+

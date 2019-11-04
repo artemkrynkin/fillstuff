@@ -34,17 +34,21 @@ export const createWriteOff = (stockId, userId, positionId, values) => {
 				...values,
 			})
 			.then(response => {
-				const position = response.data;
+				if (!response.data.code) {
+					const position = response.data;
 
-				dispatch({
-					type: 'EDIT_POSITION_IN_GROUP',
-					payload: {
-						positionId,
-						position,
-					},
-				});
+					dispatch({
+						type: 'EDIT_POSITION',
+						payload: {
+							positionId,
+							position,
+						},
+					});
 
-				return Promise.resolve({ status: 'success' });
+					return Promise.resolve({ status: 'success' });
+				} else {
+					return Promise.resolve({ status: 'error', message: response.data.message });
+				}
 			})
 			.catch(error => {
 				if (error.response) {

@@ -9,7 +9,7 @@ import passport from 'passport';
 
 import { URL } from 'url';
 import isBliksideUrl from 'api/utils/is-blikside-url';
-import { timeout } from 'shared/utils';
+import { sleep } from 'shared/utils';
 
 const debug = require('debug')('shared:middlewares:logging');
 
@@ -22,7 +22,7 @@ export const createSigninRoutes = (strategy, strategyOptions) => {
 		let redirectUrl = req.session.redirectUrl ? new URL(req.session.redirectUrl) : new URL(FALLBACK_URL);
 
 		if (err) return next(err);
-		if (err) await timeout(300);
+		if (err) await sleep(300);
 		// redirectUrl.searchParams.append('authed', 'true');
 
 		// Delete the redirectURL from the session again so we don't redirect

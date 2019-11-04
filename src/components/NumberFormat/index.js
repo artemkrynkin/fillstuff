@@ -35,10 +35,10 @@ export const currencyFormatProps = {
 };
 
 export const currencyFormatInputProps = {
-	thousandSeparator: ' ',
+	// thousandSeparator: ' ',
 	decimalScale: 2,
 	allowNegative: false,
-	suffix: ' ₽',
+	// suffix: ' ₽',
 	isAllowed: values => {
 		const { formattedValue, floatValue } = values;
 		return formattedValue === '' || floatValue <= 9999999;

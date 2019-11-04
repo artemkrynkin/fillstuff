@@ -269,15 +269,14 @@ positionsRouter.put(
 		if (receiptUpdatedValues.purchasePrice) activeReceipt.purchasePrice = receiptUpdatedValues.purchasePrice;
 		if (receiptUpdatedValues.sellingPrice) activeReceipt.sellingPrice = receiptUpdatedValues.sellingPrice;
 		if (receiptUpdatedValues.unitSellingPrice) activeReceipt.unitSellingPrice = receiptUpdatedValues.unitSellingPrice;
-		if (receiptUpdatedValues.shopName) activeReceipt.shopName = receiptUpdatedValues.shopName;
-		if (receiptUpdatedValues.shopLink !== undefined) activeReceipt.shopLink = receiptUpdatedValues.shopLink;
 
 		recountReceipt({ unitReceipt: position.unitReceipt, unitIssue: position.unitIssue }, positionUpdated.isFree, activeReceipt, false);
 
 		position.name = positionUpdated.name;
 		position.minimumBalance = positionUpdated.minimumBalance;
 		position.isFree = positionUpdated.isFree;
-		position.characteristics = positionUpdated.characteristics;
+		position.shopName = positionUpdated.shopName;
+		position.shopLink = positionUpdated.shopLink;
 
 		const activeReceiptErr = activeReceipt.validateSync();
 		const positionErr = position.validateSync();
@@ -318,7 +317,7 @@ positionsRouter.post(
 	isAuthedResolver,
 	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
 	async (req, res, next) => {
-		const { quantity, comment } = req.body;
+		let { quantity = Number(req.body.quantity), comment } = req.body;
 
 		const position = await Position.findById(req.params.positionId)
 			.populate({ path: 'stock', select: 'status' })
@@ -429,16 +428,16 @@ positionsRouter.get(
 			.populate('positionGroup')
 			.populate({
 				path: 'receipts',
-				match: { status: /expected|received|active/ },
+				match: { status: /received|active/ },
 			})
 			.catch(err => next({ code: 2, err }));
 
-		if (position.receipts.some(receipt => receipt.status === 'expected')) {
-			return res.json({
-				code: 400,
-				message: 'Позиция не может быть архивирована, пока есть поступление в одном из непоступивших заказов.',
-			});
-		}
+		// if (position.receipts.some(receipt => receipt.status === 'expected')) {
+		// 	return res.json({
+		// 		code: 400,
+		// 		message: 'Позиция не может быть архивирована, пока есть поступление в одном из непоступивших заказов.',
+		// 	});
+		// }
 
 		Position.findByIdAndUpdate(position._id, {
 			$set: { isArchived: true, divided: true },

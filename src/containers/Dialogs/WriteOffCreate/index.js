@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
 import { Formik, Form, Field } from 'formik';
-import { TextField } from 'formik-material-ui';
 import * as Yup from 'yup';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
-import MuiTextField from '@material-ui/core/TextField/TextField';
+import TextField from '@material-ui/core/TextField/TextField';
 
 import { Dialog, PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
+import NumberFormat from 'src/components/NumberFormat';
 
 import { getStockStatus } from 'src/actions/stocks';
 import { createWriteOff } from 'src/actions/writeOffs';
@@ -38,10 +37,10 @@ class DialogWriteOffCreate extends Component {
 		const { onCloseDialog, currentUser, selectedPosition } = this.props;
 
 		this.props.createWriteOff(currentUser._id, selectedPosition._id, values).then(response => {
-			if (response.status === 'success') {
-				this.props.getStockStatus();
-				onCloseDialog();
-			} else actions.setSubmitting(false);
+			if (response.status === 'success') this.props.getStockStatus();
+			else actions.setSubmitting(false);
+
+			onCloseDialog();
 		});
 	};
 
@@ -61,11 +60,13 @@ class DialogWriteOffCreate extends Component {
 					validateOnBlur={false}
 					validateOnChange={false}
 					onSubmit={(values, actions) => this.onSubmit(values, actions)}
-					render={({ errors, touched, isSubmitting, values }) => (
+				>
+					{({ errors, isSubmitting, touched }) => (
 						<Form>
 							<DialogContent>
 								<Grid className={stylesGlobal.formLabelControl}>
-									<MuiTextField
+									<TextField
+										className="none-padding"
 										label="Наименование"
 										InputProps={{
 											value: selectedPosition.name,
@@ -75,10 +76,34 @@ class DialogWriteOffCreate extends Component {
 									/>
 								</Grid>
 								<Grid className={stylesGlobal.formLabelControl}>
-									<Field name="quantity" type="number" label="Количество" component={TextField} fullWidth autoFocus />
+									<Field
+										name="quantity"
+										label="Количество"
+										error={Boolean(touched.quantity && errors.quantity)}
+										helperText={(touched.quantity && errors.quantity) || ''}
+										as={TextField}
+										InputProps={{
+											inputComponent: NumberFormat,
+											inputProps: {
+												allowNegative: false,
+											},
+										}}
+										fullWidth
+										autoFocus
+									/>
 								</Grid>
 								<Grid className={stylesGlobal.formLabelControl}>
-									<Field name="comment" label="Комментарий" component={TextField} rowsMax={4} multiline fullWidth />
+									<Field
+										name="comment"
+										label="Комментарий"
+										error={Boolean(touched.comment && errors.comment)}
+										helperText={(touched.comment && errors.comment) || ''}
+										as={TextField}
+										rows={2}
+										rowsMax={4}
+										multiline
+										fullWidth
+									/>
 								</Grid>
 							</DialogContent>
 							<PDDialogActions
@@ -98,7 +123,7 @@ class DialogWriteOffCreate extends Component {
 							/>
 						</Form>
 					)}
-				/>
+				</Formik>
 			</Dialog>
 		);
 	}

@@ -1,3 +1,5 @@
+import { getIn } from 'formik';
+
 import theme from 'shared/theme';
 
 import { history } from './history';
@@ -74,4 +76,10 @@ export const changeStockCurrentUrl = stockId => {
 	}
 
 	return location.pathname;
+};
+
+export const formError = (touched, errors, name, helperText = null) => {
+	const error = getIn(errors, name);
+	const touch = getIn(touched, name);
+	return touch && error ? error : helperText;
 };

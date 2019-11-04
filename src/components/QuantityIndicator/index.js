@@ -29,19 +29,22 @@ const QuantityIndicator = props => {
 
 	if (type === 'positionGroup' && !positions.length) return null;
 
-	quantity =
-		type === 'positionGroup'
-			? positions.reduce((sum, position) => sum + position.receipts.reduce((sum, receipt) => sum + receipt.current.quantity, 0), 0)
-			: receipts.reduce((sum, receipt) => sum + receipt.quantity, 0);
+	if (type === 'positionGroup') {
+		quantity = positions.reduce((sum, position) => {
+			return sum + position.receipts.reduce((sum, receipt) => sum + receipt.current.quantity, 0);
+		}, 0);
+	} else {
+		quantity = receipts.reduce((sum, receipt) => sum + receipt.quantity, 0);
+	}
 
 	if (unitReceipt === 'nmp' && unitIssue === 'pce') {
-		quantityPackages =
-			type === 'positionGroup'
-				? positions.reduce(
-						(sum, position) => sum + position.receipts.reduce((sum, receipt) => sum + receipt.current.quantityPackages, 0),
-						0
-				  )
-				: receipts.reduce((sum, receipt) => sum + receipt.quantityPackages, 0);
+		if (type === 'positionGroup') {
+			quantityPackages = positions.reduce((sum, position) => {
+				return sum + position.receipts.reduce((sum, receipt) => sum + receipt.current.quantityPackages, 0);
+			}, 0);
+		} else {
+			quantityPackages = receipts.reduce((sum, receipt) => sum + receipt.quantityPackages, 0);
+		}
 	}
 
 	if (type === 'positionGroup') {
@@ -69,7 +72,7 @@ const QuantityIndicator = props => {
 		);
 	}
 
-	if (type === 'position') {
+	if (type === 'position' || type === 'receipt') {
 		const unitIssueTransform = unitReceipt === 'pce' ? 'шт.' : unitIssue === 'pce' ? 'шт.' : 'уп.';
 
 		return receipts.length ? (
@@ -78,7 +81,7 @@ const QuantityIndicator = props => {
 				{unitReceipt === 'nmp' && unitIssue === 'pce' ? (
 					<span className={styles.quantityPackages}>{Math.ceil(quantityPackages) + ' уп.'}</span>
 				) : null}
-				{divided ? <span className={qiCircleClasses(quantity, minimumBalance)} /> : null}
+				{divided && type === 'position' ? <span className={qiCircleClasses(quantity, minimumBalance)} /> : null}
 			</div>
 		) : (
 			'-'
@@ -89,7 +92,7 @@ const QuantityIndicator = props => {
 QuantityIndicator.propTypes = {
 	children: PropTypes.node,
 	dividedPositions: PropTypes.bool,
-	type: PropTypes.oneOf(['positionGroup', 'position']).isRequired,
+	type: PropTypes.oneOf(['positionGroup', 'position', 'receipt']).isRequired,
 	unitReceipt: PropTypes.oneOf(['pce', 'nmp']),
 	unitIssue: PropTypes.oneOf(['pce', 'nmp']),
 	receipts: PropTypes.array,

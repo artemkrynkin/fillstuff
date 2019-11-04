@@ -2,14 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import queryString from 'query-string';
-
 import { Formik, Form, Field } from 'formik';
-import { TextField } from 'formik-material-ui';
 
 import Button from '@material-ui/core/Button/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 // import Divider from '@material-ui/core/Divider';
 import FormControl from '@material-ui/core/FormControl';
+import TextField from '@material-ui/core/TextField';
 import FormHelperText from '@material-ui/core/FormHelperText';
 
 import generateMetaInfo from 'shared/generate-meta-info';
@@ -62,48 +61,47 @@ const Login = props => {
 
 							props.login(values, actions, postAuthRedirectPath);
 						}}
-						render={({ errors, touched, isSubmitting }) => (
-							<Form>
-								<FormControl margin="normal" fullWidth>
-									<Field
-										name="email"
-										placeholder="Email"
-										component={TextField}
-										InputProps={{
-											error: Boolean(errors.unknown),
-										}}
-										autoComplete="on"
-										autoFocus
-									/>
-								</FormControl>
-								<FormControl margin="normal" fullWidth>
-									<Field
-										name="password"
-										type="password"
-										placeholder="Пароль"
-										component={TextField}
-										InputProps={{
-											error: Boolean(errors.unknown),
-										}}
-									/>
-								</FormControl>
-								{errors.unknown ? (
-									<FormHelperText
-										style={{
-											textAlign: 'center',
-											margin: '-10px 0 10px',
-										}}
-										error
-									>
-										{errors.unknown}
-									</FormHelperText>
-								) : null}
-								<Button type="submit" disabled={isSubmitting} className={styles.loginBtn} variant="contained" color="primary">
-									{isSubmitting ? <CircularProgress size={20} /> : 'Войти'}
-								</Button>
-							</Form>
-						)}
-					/>
+					>
+						{({ errors, isSubmitting, touched }) => {
+							return (
+								<Form>
+									<FormControl margin="normal" fullWidth>
+										<Field
+											name="email"
+											placeholder="Email"
+											error={Boolean((touched.email || touched.password) && errors.unknown)}
+											as={TextField}
+											autoComplete="on"
+											autoFocus
+										/>
+									</FormControl>
+									<FormControl margin="normal" fullWidth>
+										<Field
+											name="password"
+											type="password"
+											placeholder="Пароль"
+											error={Boolean((touched.email || touched.password) && errors.unknown)}
+											as={TextField}
+										/>
+									</FormControl>
+									{(touched.email || touched.password) && errors.unknown ? (
+										<FormHelperText
+											style={{
+												textAlign: 'center',
+												margin: '-10px 0 10px',
+											}}
+											error
+										>
+											{errors.unknown}
+										</FormHelperText>
+									) : null}
+									<Button type="submit" disabled={isSubmitting} className={styles.loginBtn} variant="contained" color="primary">
+										{isSubmitting ? <CircularProgress size={20} /> : 'Войти'}
+									</Button>
+								</Form>
+							);
+						}}
+					</Formik>
 					<div className={styles.bottomFormInfo}>
 						<Link to="/password-recovery">Забыли пароль?</Link>
 					</div>

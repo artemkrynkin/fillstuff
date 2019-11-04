@@ -3,17 +3,33 @@ import ColorConvert from 'color-convert';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { createMuiTheme } from '@material-ui/core/styles';
+import Fade from '@material-ui/core/Fade';
 
 import theme from 'shared/theme';
+
+import stylesGlobal from 'src/styles/globals.module.css';
 import stylesDialog from 'src/components/Dialog/index.module.css';
 
 export const BliksideTheme = createMuiTheme({
 	props: {
 		MuiInputLabel: {
 			disableAnimation: true,
+			shrink: true,
 		},
 		MuiInput: {
 			autoComplete: 'off',
+		},
+		MuiInputBase: {
+			autoComplete: 'off',
+		},
+		MuiSelect: {
+			IconComponent: () => <FontAwesomeIcon icon={['far', 'angle-down']} className={stylesGlobal.MuiSelectIcon} />,
+			MenuProps: {
+				elevation: 3,
+				transitionDuration: 150,
+				TransitionComponent: Fade,
+			},
+			displayEmpty: true,
 		},
 		MuiCheckbox: {
 			color: 'primary',
@@ -380,6 +396,9 @@ export const BliksideTheme = createMuiTheme({
 				'$outlinedPrimary &': {
 					color: theme.teal.cT300,
 				},
+				'& .loading-button-label': {
+					transition: 'opacity 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+				},
 			},
 			text: {
 				padding: '6px 12px',
@@ -450,7 +469,7 @@ export const BliksideTheme = createMuiTheme({
 			},
 			formControl: {
 				'label + &': {
-					marginTop: 5,
+					marginTop: null,
 				},
 			},
 		},
@@ -497,6 +516,19 @@ export const BliksideTheme = createMuiTheme({
 				padding: '10px',
 				'&[readonly]': {
 					padding: '10px',
+				},
+			},
+			formControl: {
+				'label + &': {
+					marginTop: 5,
+				},
+			},
+		},
+		MuiInputAdornment: {
+			root: {
+				color: theme.blueGrey.cBg500,
+				'& p': {
+					color: theme.blueGrey.cBg500,
 				},
 			},
 		},
@@ -562,8 +594,12 @@ export const BliksideTheme = createMuiTheme({
 		MuiCheckbox: {
 			root: {
 				color: theme.blueGrey.cBg200,
+				alignSelf: 'flex-start',
 				'& svg': {
 					width: '18px !important',
+				},
+				'& + span': {
+					padding: '8px 0 9px',
 				},
 			},
 			colorPrimary: {

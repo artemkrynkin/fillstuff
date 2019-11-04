@@ -126,14 +126,19 @@ let Receipt = new Schema({
 		// get: value => numberToFixedDouble(value),
 		set: value => numberToFixedDouble(value),
 	},
-	// Название магазина
-	shopName: {
-		type: String,
-		required: [true, i18n.__('Обязательное поле')],
+	// Стоимость доставки
+	costDelivery: {
+		type: Number,
+		min: [0, 'Не может быть меньше 0'],
+		default: 0,
+		set: value => numberToFixedDouble(value),
 	},
-	// Ссылка на товар в магазине
-	shopLink: {
-		type: String,
+	// Стоимость доставки
+	unitCostDelivery: {
+		type: Number,
+		min: [0, 'Не может быть меньше 0'],
+		default: 0,
+		set: value => numberToFixedDouble(value),
 	},
 	comment: {
 		type: String,

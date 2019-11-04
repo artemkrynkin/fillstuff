@@ -317,7 +317,8 @@ positionsRouter.post(
 	isAuthedResolver,
 	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
 	async (req, res, next) => {
-		let { quantity = Number(req.body.quantity), comment } = req.body;
+		const { comment } = req.body;
+		const quantity = Number(req.body.quantity);
 
 		const position = await Position.findById(req.params.positionId)
 			.populate({ path: 'stock', select: 'status' })

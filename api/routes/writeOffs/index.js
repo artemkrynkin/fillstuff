@@ -57,7 +57,8 @@ writeOffsRouter.post(
 	// isAuthedResolver,
 	// (req, res, next) => hasPermissionsInStock(req, res, next, ['products.scanning']),
 	async (req, res, next) => {
-		let { stockId, userId, positionId, quantity = Number(req.body.quantity) || 1, comment } = req.body;
+		let { stockId, userId, positionId, comment } = req.body;
+		const quantity = Number(req.body.quantity) || 1;
 
 		const position = await Position.findById(positionId)
 			.populate({ path: 'stock', select: 'status' })

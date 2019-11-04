@@ -13,7 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import styles from './index.module.css';
 
 export const Dialog = props => {
-	return <MuiDialog transitionDuration={150} children={props.children} {...props} />;
+	return <MuiDialog transitionDuration={200} children={props.children} {...props} />;
 };
 
 Dialog.propTypes = {
@@ -82,7 +82,7 @@ export class PDDialog extends Component {
 		});
 
 		return (
-			<MuiDialog className={dialogClasses} transitionDuration={150} {...props} onEnter={this.onEnterDialog}>
+			<MuiDialog className={dialogClasses} transitionDuration={200} {...props} onEnter={this.onEnterDialog}>
 				{stickyTitle ? <div className="sentinel-top" /> : null}
 				{children}
 				{stickyActions ? <div className="sentinel-bottom" /> : null}

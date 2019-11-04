@@ -56,8 +56,6 @@ const FormProcurementCreate = props => {
 
 	const onChangeTextSearchPosition = value => setTextSearchPosition(value);
 
-	console.log(values);
-
 	return (
 		<Form>
 			<DialogContent>

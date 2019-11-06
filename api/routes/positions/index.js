@@ -277,6 +277,7 @@ positionsRouter.put(
 		position.isFree = positionUpdated.isFree;
 		position.shopName = positionUpdated.shopName;
 		position.shopLink = positionUpdated.shopLink;
+		position.characteristics = positionUpdated.characteristics;
 
 		const activeReceiptErr = activeReceipt.validateSync();
 		const positionErr = position.validateSync();

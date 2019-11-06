@@ -39,6 +39,9 @@ procurementsRouter.get(
 				path: 'receipts',
 				populate: {
 					path: 'position',
+					populate: {
+						path: 'characteristics',
+					},
 				},
 			})
 			.sort({ createdAt: -1 })

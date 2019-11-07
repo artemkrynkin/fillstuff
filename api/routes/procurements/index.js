@@ -90,6 +90,9 @@ procurementsRouter.get(
 				path: 'receipts',
 				populate: {
 					path: 'position',
+					populate: {
+						path: 'characteristics',
+					},
 				},
 			})
 			.then(procurement => res.json(procurement))

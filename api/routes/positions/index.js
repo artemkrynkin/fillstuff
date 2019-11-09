@@ -160,8 +160,12 @@ positionsRouter.put(
 		const position = await Position.findById(req.params.positionId).catch(err => next({ code: 2, err }));
 
 		position.name = positionUpdated.name;
+		position.unitReceipt = positionUpdated.unitReceipt;
+		position.unitIssue = positionUpdated.unitIssue;
 		position.minimumBalance = positionUpdated.minimumBalance;
 		position.isFree = positionUpdated.isFree;
+		position.shopName = positionUpdated.shopName;
+		position.shopLink = positionUpdated.shopLink;
 		position.characteristics = positionUpdated.characteristics;
 
 		const positionErr = position.validateSync();

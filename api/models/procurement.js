@@ -32,7 +32,7 @@ let Procurement = new Schema({
 		default: 0,
 		set: value => numberToFixedDouble(value, 0),
 	},
-	purchasePricePositions: {
+	purchasePrice: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,

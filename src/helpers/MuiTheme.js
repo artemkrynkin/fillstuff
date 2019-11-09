@@ -346,6 +346,9 @@ export const BliksideTheme = createMuiTheme({
 				fontSize: 13,
 				lineHeight: 1.2,
 				marginLeft: 2,
+				'&$disabled': {
+					color: null,
+				},
 			},
 		},
 		MuiFormLabel: {

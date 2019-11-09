@@ -17,34 +17,39 @@ import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
 import { PDDialogActions } from 'src/components/Dialog';
 import NumberFormat, { currencyFormatProps, currencyFormatInputProps } from 'src/components/NumberFormat';
 import { SelectAutocomplete } from 'src/components/selectAutocomplete';
-import Tooltip from 'src/components/Tooltip';
 
 import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
 
-const onUnitSellingPriceCalc = (value, fieldName, receipt, index, setFieldValue) => {
+const onUnitSellingPriceCalc = (value, fieldName, receipt, index, setFieldValue, currentStock) => {
 	setFieldValue(`receipts.${index}.${fieldName}`, value);
 
 	const checkEmptinessField = receipt[`${fieldName === 'quantityInUnit' ? 'purchasePrice' : 'quantityInUnit'}`];
 	const setValue = fieldName === 'quantityInUnit' ? receipt.purchasePrice / value : value / receipt.quantityInUnit;
 	const conditionSetValue = !!value && !!checkEmptinessField ? setValue : '';
 
+	if (
+		currentStock.actualSellingPriceInProcurementCreate &&
+		receipt.position.activeReceipt &&
+		Number(conditionSetValue) < receipt.position.activeReceipt.unitSellingPrice
+	)
+		return;
+
 	setFieldValue(`receipts.${index}.unitSellingPrice`, conditionSetValue);
 };
 
 const FormProcurementCreate = props => {
 	const {
+		currentStock,
 		onOpenDialogPositionCreate,
 		receiptInitialValues,
 		onHandleEditFormProcurement,
-		onFormRecounted,
 		positions: {
 			data: positions,
 			isFetching: isLoadingPositions,
 			// error: errorPositions
 		},
 		formEditable,
-		formRecounted,
 		formikProps: { errors, isSubmitting, submitForm, setFieldValue, touched, values },
 	} = props;
 	const [textSearchPosition, setTextSearchPosition] = useState('');
@@ -60,7 +65,7 @@ const FormProcurementCreate = props => {
 		<Form>
 			<DialogContent>
 				<Grid className={stylesGlobal.formLabelControl} spacing={2} style={{ marginBottom: 12 }} container>
-					<Grid style={{ width: 'calc(100% - 350px)' }} item>
+					<Grid xs={6} item>
 						<FastField
 							name="number"
 							label="Номер чека или накладной:"
@@ -72,7 +77,26 @@ const FormProcurementCreate = props => {
 							fullWidth
 						/>
 					</Grid>
-					<Grid style={{ width: 350 }} item>
+					<Grid xs={3} item>
+						<FastField
+							name="purchasePrice"
+							placeholder="0"
+							label="Стоимость закупки:"
+							error={Boolean(touched.purchasePrice && errors.purchasePrice)}
+							helperText={(touched.purchasePrice && errors.purchasePrice) || ''}
+							as={TextField}
+							InputProps={{
+								endAdornment: <InputAdornment position="end">₽</InputAdornment>,
+								inputComponent: NumberFormat,
+								inputProps: {
+									...currencyFormatInputProps,
+								},
+							}}
+							disabled={isSubmitting || !formEditable}
+							fullWidth
+						/>
+					</Grid>
+					<Grid xs={3} item>
 						<Field
 							name="costDelivery"
 							placeholder="0"
@@ -84,41 +108,19 @@ const FormProcurementCreate = props => {
 								inputProps: {
 									...currencyFormatInputProps,
 								},
-								onChange: ({ target: { value } }) => {
-									setFieldValue('costDelivery', value);
-
-									onFormRecounted(!value);
-								},
 							}}
 							disabled={isSubmitting || !formEditable}
 							fullWidth
 						/>
-						{values.receipts.some(receipt => !receipt.position.isFree) ? (
-							<Grid alignItems="center" container>
-								<Field
-									type="checkbox"
-									name="divideCostDeliverySellingPositions"
-									Label={{ label: 'Распределить на позиции для продажи' }}
-									as={CheckboxWithLabel}
-									disabled={isSubmitting || !formEditable}
-								/>
-								<Tooltip
-									title={
-										<div>
-											Стоимость доставки будет распределена только на позиции для продажи.
-											<br />
-											Цены закупки/продажи у всех остальных позиций останутся без изменений
-										</div>
-									}
-									placement="bottom-end"
-									interactive
-								>
-									<div>
-										<FontAwesomeIcon className={styles.iconCostDeliveryDivide} icon={['fal', 'question-circle']} />
-									</div>
-								</Tooltip>
-							</Grid>
-						) : null}
+						<Grid alignItems="center" container>
+							<Field
+								type="checkbox"
+								name="divideCostDeliverySellingPositions"
+								Label={{ label: 'Распределить между позициями для продажи' }}
+								as={CheckboxWithLabel}
+								disabled={isSubmitting || !formEditable || !values.receipts.some(receipt => !receipt.position.isFree)}
+							/>
+						</Grid>
 					</Grid>
 				</Grid>
 
@@ -128,39 +130,61 @@ const FormProcurementCreate = props => {
 					render={arrayHelpers => (
 						<div className={styles.receipts}>
 							{formEditable ? (
-								<Grid className={stylesGlobal.formLabelControl} alignItems="flex-start" spacing={2} style={{ marginBottom: 12 }} container>
-									<Grid xs={9} item>
-										<SelectAutocomplete
-											value={textSearchPosition}
-											onChange={(option, { action }) => {
-												if (action === 'select-option') {
-													arrayHelpers.push(receiptInitialValues(option));
-													onChangeTextSearchPosition(textSearchPosition);
+								<div>
+									<Grid
+										className={stylesGlobal.formLabelControl}
+										alignItems="flex-start"
+										spacing={2}
+										style={{ marginBottom: 12 }}
+										container
+									>
+										<Grid xs={9} item>
+											<SelectAutocomplete
+												value={textSearchPosition}
+												onChange={(option, { action }) => {
+													if (action === 'select-option') {
+														let activeReceiptSellingPrice = {};
+
+														if (currentStock.actualSellingPriceInProcurementCreate && option.activeReceipt) {
+															activeReceiptSellingPrice.sellingPrice = option.activeReceipt.sellingPrice;
+															activeReceiptSellingPrice.unitSellingPrice = option.activeReceipt.unitSellingPrice;
+														}
+
+														arrayHelpers.push(receiptInitialValues(option, activeReceiptSellingPrice));
+														onChangeTextSearchPosition(textSearchPosition);
+													}
+												}}
+												onInputChange={(value, { action }) => {
+													if (action !== 'input-blur' && action !== 'menu-close') {
+														onChangeTextSearchPosition(value);
+													}
+												}}
+												menuPlacement="auto"
+												menuPosition="fixed"
+												placeholder="Выберите позицию"
+												noOptionsMessage={() =>
+													receipts.length === 0 ? 'Нет позиций для выбора. Создайте новую позицию' : 'Среди позиций совпадений не найдено.'
 												}
-											}}
-											onInputChange={(value, { action }) => {
-												if (action !== 'input-blur' && action !== 'menu-close') {
-													onChangeTextSearchPosition(value);
-												}
-											}}
-											menuPlacement="auto"
-											menuPosition="fixed"
-											placeholder="Выберите позицию"
-											noOptionsMessage={() =>
-												receipts.length === 0 ? 'Нет позиций для выбора. Создайте новую позицию' : 'Среди позиций совпадений не найдено.'
-											}
-											options={receipts}
-											isDisabled={isSubmitting || !formEditable}
-											isClearable
-										/>
-										{typeof errors.receipts === 'string' ? <FormHelperText error>{errors.receipts}</FormHelperText> : null}
+												options={receipts}
+												isDisabled={isSubmitting || !formEditable}
+												isClearable
+											/>
+											{typeof errors.receipts === 'string' ? <FormHelperText error>{errors.receipts}</FormHelperText> : null}
+										</Grid>
+										<Grid xs={3} item>
+											<Button onClick={onOpenDialogPositionCreate} variant="outlined" color="primary" fullWidth>
+												Создать новую позицию
+											</Button>
+										</Grid>
 									</Grid>
-									<Grid xs={3} item>
-										<Button onClick={onOpenDialogPositionCreate} variant="outlined" color="primary" fullWidth>
-											Создать новую позицию
-										</Button>
-									</Grid>
-								</Grid>
+									{Object.keys(errors).length === 1 && Object.keys(errors).some(value => value === 'purchasePriceTemp') ? (
+										<Grid style={{ marginBottom: 20 }} container>
+											<FormHelperText error>
+												<b>{errors.purchasePriceTemp}</b>
+											</FormHelperText>
+										</Grid>
+									) : null}
+								</div>
 							) : (
 								<Grid className={styles.totalContainer} direction="column" alignItems="flex-end" container>
 									<NumberFormat
@@ -175,10 +199,21 @@ const FormProcurementCreate = props => {
 										{...currencyFormatProps}
 									/>
 									<NumberFormat
-										value={values.purchasePricePositions}
+										value={values.purchasePrice}
 										renderText={value => (
-											<div className={styles.purchasePricePositions}>
-												Позиций на сумму: <span>{value}</span>
+											<div className={styles.purchasePrice}>
+												Стоимость закупки: <span>{value}</span>
+											</div>
+										)}
+										displayType="text"
+										onValueChange={() => {}}
+										{...currencyFormatProps}
+									/>
+									<NumberFormat
+										value={values.costDelivery || 0}
+										renderText={value => (
+											<div className={styles.costDelivery}>
+												Стоимость доставки: <span>{value}</span>
 											</div>
 										)}
 										displayType="text"
@@ -263,7 +298,7 @@ const FormProcurementCreate = props => {
 													inputProps: {
 														allowNegative: false,
 														onChange: ({ target: { value } }) => {
-															onUnitSellingPriceCalc(value, 'quantityInUnit', receipt, index, setFieldValue);
+															onUnitSellingPriceCalc(value, 'quantityInUnit', receipt, index, setFieldValue, currentStock);
 														},
 													},
 												}}
@@ -274,93 +309,168 @@ const FormProcurementCreate = props => {
 									) : null}
 
 									<Grid style={{ width: 180 }} item>
-										<Field
-											name={`receipts.${index}.purchasePrice`}
-											label={`Цена закупки${
-												receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce' ? ' упаковки' : ''
-											}:`}
-											placeholder="0"
-											as={TextField}
-											error={Boolean(formError(touched, errors, `receipts.${index}.purchasePrice`))}
-											helperText={formError(touched, errors, `receipts.${index}.purchasePrice`)}
-											InputProps={{
-												endAdornment: <InputAdornment position="end">₽</InputAdornment>,
-												inputComponent: NumberFormat,
-												inputProps: {
-													...currencyFormatInputProps,
-													onChange: ({ target: { value } }) => {
-														if (receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce') {
-															onUnitSellingPriceCalc(value, 'purchasePrice', receipt, index, setFieldValue);
-														} else {
-															setFieldValue(`receipts.${index}.purchasePrice`, value);
-															setFieldValue(`receipts.${index}.sellingPrice`, value);
-															setFieldValue(`receipts.${index}.unitSellingPrice`, value);
-														}
+										{formEditable ? (
+											<Field
+												name={`receipts.${index}.purchasePrice`}
+												label={`Цена закупки${
+													receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce' ? ' упаковки' : ''
+												}:`}
+												placeholder="0"
+												as={TextField}
+												error={Boolean(formError(touched, errors, `receipts.${index}.purchasePrice`))}
+												helperText={formError(touched, errors, `receipts.${index}.purchasePrice`)}
+												InputProps={{
+													endAdornment: <InputAdornment position="end">₽</InputAdornment>,
+													inputComponent: NumberFormat,
+													inputProps: {
+														...currencyFormatInputProps,
+														onChange: ({ target: { value } }) => {
+															if (receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce') {
+																onUnitSellingPriceCalc(value, 'purchasePrice', receipt, index, setFieldValue, currentStock);
+															} else {
+																setFieldValue(`receipts.${index}.purchasePrice`, value);
 
-														onFormRecounted(!values.costDelivery);
+																if (
+																	currentStock.actualSellingPriceInProcurementCreate &&
+																	receipt.position.activeReceipt &&
+																	Number(value) < receipt.position.activeReceipt.sellingPrice
+																)
+																	return;
+
+																setFieldValue(`receipts.${index}.sellingPrice`, value);
+																setFieldValue(`receipts.${index}.unitSellingPrice`, value);
+															}
+														},
 													},
-												},
-											}}
-											disabled={isSubmitting || !formEditable}
-											fullWidth
-										/>
-										{!formEditable && formRecounted ? (
-											<FormHelperText>
-												<NumberFormat
-													value={receipt.purchasePrice + receipt.costDelivery}
-													renderText={value =>
-														!values.divideCostDeliverySellingPositions || !receipt.position.isFree
-															? `${value} с учётом стоимости доставки`
-															: 'Стоимость доставки не включена'
-													}
-													displayType="text"
-													onValueChange={() => {}}
-													{...currencyFormatProps}
-												/>
-											</FormHelperText>
-										) : null}
+												}}
+												disabled={isSubmitting || !formEditable}
+												fullWidth
+											/>
+										) : (
+											<TextField
+												label={`Цена закупки${
+													receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce' ? ' упаковки' : ''
+												}:`}
+												defaultValue={receipt.purchasePrice + receipt.costDelivery}
+												helperText={
+													Boolean(values.costDelivery) ? (
+														<NumberFormat
+															value={receipt.purchasePrice}
+															renderText={value => (
+																<span style={{ display: 'inline-block', margin: '0 15px 0 8px' }}>
+																	{!values.divideCostDeliverySellingPositions || !receipt.position.isFree ? (
+																		<span>
+																			<b>{value}</b> без учёта стоимости доставки
+																		</span>
+																	) : (
+																		'Стоимость доставки не распределяется на эту позицию'
+																	)}
+																</span>
+															)}
+															displayType="text"
+															onValueChange={() => {}}
+															{...currencyFormatProps}
+														/>
+													) : null
+												}
+												InputProps={{
+													endAdornment: <InputAdornment position="end">₽</InputAdornment>,
+													inputComponent: NumberFormat,
+													inputProps: {
+														...currencyFormatInputProps,
+													},
+												}}
+												disabled
+												fullWidth
+											/>
+										)}
 									</Grid>
 
 									<Grid style={{ width: 180 }} item>
 										{!receipt.position.isFree ? (
-											receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce' ? (
-												<Field
-													name={`receipts.${index}.unitSellingPrice`}
-													label="Цена продажи штуки:"
-													placeholder="0"
-													as={TextField}
-													error={Boolean(formError(touched, errors, `receipts.${index}.unitSellingPrice`))}
-													helperText={formError(touched, errors, `receipts.${index}.unitSellingPrice`)}
-													InputProps={{
-														endAdornment: <InputAdornment position="end">₽</InputAdornment>,
-														inputComponent: NumberFormat,
-														inputProps: {
-															...currencyFormatInputProps,
-														},
-													}}
-													disabled={isSubmitting || !formEditable}
-													fullWidth
-												/>
-											) : (
-												<Field
-													name={`receipts.${index}.sellingPrice`}
-													label="Цена продажи:"
-													placeholder={`${String(receipt.purchasePrice || 0)}`}
-													as={TextField}
-													error={Boolean(formError(touched, errors, `receipts.${index}.sellingPrice`))}
-													helperText={formError(touched, errors, `receipts.${index}.sellingPrice`)}
-													InputProps={{
-														endAdornment: <InputAdornment position="end">₽</InputAdornment>,
-														inputComponent: NumberFormat,
-														inputProps: {
-															...currencyFormatInputProps,
-															onChange: ({ target: { value } }) => {
-																setFieldValue(`receipts.${index}.sellingPrice`, value);
-																setFieldValue(`receipts.${index}.unitSellingPrice`, value);
+											formEditable ? (
+												receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce' ? (
+													<Field
+														name={`receipts.${index}.unitSellingPrice`}
+														label="Цена продажи штуки:"
+														placeholder="0"
+														as={TextField}
+														error={Boolean(formError(touched, errors, `receipts.${index}.unitSellingPrice`))}
+														helperText={formError(touched, errors, `receipts.${index}.unitSellingPrice`)}
+														InputProps={{
+															endAdornment: <InputAdornment position="end">₽</InputAdornment>,
+															inputComponent: NumberFormat,
+															inputProps: {
+																...currencyFormatInputProps,
 															},
+														}}
+														disabled={isSubmitting || !formEditable}
+														fullWidth
+													/>
+												) : (
+													<Field
+														name={`receipts.${index}.sellingPrice`}
+														label="Цена продажи:"
+														placeholder="0"
+														as={TextField}
+														error={Boolean(formError(touched, errors, `receipts.${index}.sellingPrice`))}
+														helperText={formError(touched, errors, `receipts.${index}.sellingPrice`)}
+														InputProps={{
+															endAdornment: <InputAdornment position="end">₽</InputAdornment>,
+															inputComponent: NumberFormat,
+															inputProps: {
+																...currencyFormatInputProps,
+																onChange: ({ target: { value } }) => {
+																	setFieldValue(`receipts.${index}.sellingPrice`, value);
+																	setFieldValue(`receipts.${index}.unitSellingPrice`, value);
+																},
+															},
+														}}
+														disabled={isSubmitting || !formEditable}
+														fullWidth
+													/>
+												)
+											) : (
+												<TextField
+													label={
+														receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce'
+															? 'Цена продажи штуки:'
+															: 'Цена продажи:'
+													}
+													defaultValue={receipt.unitSellingPrice + receipt.unitCostDelivery}
+													helperText={
+														Boolean(values.costDelivery) ? (
+															<NumberFormat
+																value={
+																	receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce'
+																		? receipt.unitSellingPrice
+																		: receipt.sellingPrice
+																}
+																renderText={value => (
+																	<span style={{ display: 'inline-block', margin: '0 15px 0 8px' }}>
+																		{!values.divideCostDeliverySellingPositions || !receipt.position.isFree ? (
+																			<span>
+																				<b>{value}</b> без учёта стоимости доставки
+																			</span>
+																		) : (
+																			'Стоимость доставки не распределяется на эту позицию'
+																		)}
+																	</span>
+																)}
+																displayType="text"
+																onValueChange={() => {}}
+																{...currencyFormatProps}
+															/>
+														) : null
+													}
+													InputProps={{
+														endAdornment: <InputAdornment position="end">₽</InputAdornment>,
+														inputComponent: NumberFormat,
+														inputProps: {
+															...currencyFormatInputProps,
 														},
 													}}
-													disabled={isSubmitting || !formEditable}
+													disabled
 													fullWidth
 												/>
 											)
@@ -379,25 +489,18 @@ const FormProcurementCreate = props => {
 												fullWidth
 											/>
 										)}
-										{!receipt.position.isFree && !formEditable && formRecounted ? (
-											<FormHelperText>
-												<NumberFormat
-													value={receipt.unitSellingPrice + receipt.unitCostDelivery}
-													renderText={value => `${value} с учётом стоимости доставки`}
-													displayType="text"
-													onValueChange={() => {}}
-													{...currencyFormatProps}
-												/>
-											</FormHelperText>
-										) : null}
 									</Grid>
 
 									{formEditable ? (
 										<div className={styles.removeReceipt}>
 											<IconButton
-												aria-haspopup="true"
 												size="small"
-												onClick={() => arrayHelpers.remove(index)}
+												onClick={() => {
+													arrayHelpers.remove(index);
+													if (values.receipts.filter(receipt => !receipt.position.isFree).length === 1) {
+														setFieldValue('divideCostDeliverySellingPositions', false);
+													}
+												}}
 												disableRipple
 												disableFocusRipple
 											>
@@ -431,7 +534,6 @@ const FormProcurementCreate = props => {
 								handleProps: {
 									onClick: () => {
 										onHandleEditFormProcurement(true);
-										onFormRecounted(false);
 									},
 								},
 								text: 'Редактировать закупку',
@@ -445,10 +547,12 @@ const FormProcurementCreate = props => {
 					},
 					text: isSubmitting ? (
 						<CircularProgress size={20} />
-					) : !formEditable && formRecounted ? (
+					) : !formEditable ? (
 						'Занести на склад'
+					) : Number(values.costDelivery) ? (
+						'Проверить данные и распределить доставку между позициями'
 					) : (
-						'Включить доставку в стоимость'
+						'Проверить данные'
 					),
 				}}
 			/>

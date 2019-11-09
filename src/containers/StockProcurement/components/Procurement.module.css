@@ -129,7 +129,7 @@
 }
 
 .procurementTotalPurchasePrice,
-.procurementPurchasePricePositions,
+.procurementPurchasePrice,
 .procurementCostDelivery {
   color: var(--c-hex-bg-500);
 }
@@ -139,17 +139,17 @@
   margin-bottom: 10px;
 }
 
-.procurementPurchasePricePositions {
+.procurementPurchasePrice {
   margin-bottom: 5px;
 }
 
-.procurementPurchasePricePositions,
+.procurementPurchasePrice,
 .procurementCostDelivery {
   font-size: 12px;
 }
 
 .procurementTotalPurchasePrice span,
-.procurementPurchasePricePositions span,
+.procurementPurchasePrice span,
 .procurementCostDelivery span {
   color: var(--c-hex-bg-700);
   font-weight: 700;

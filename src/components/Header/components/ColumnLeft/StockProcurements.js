@@ -49,7 +49,7 @@ const StockProcurements = props => {
 				type="create"
 				dialogOpen={dialogProcurementCreate}
 				onCloseDialog={onCloseDialogProcurementCreate}
-				currentStockId={currentStock._id}
+				currentStock={currentStock}
 			/>
 		</div>
 	);

@@ -1,12 +1,15 @@
 import * as Yup from 'yup';
 
 const procurementSchema = Yup.object().shape({
-	number: Yup.string()
-		.matches(/^[a-zA-Z0-9]+$/, 'Номер должен состоять только из латинских символов и цифр')
+	number: Yup.string().required(),
+	costDelivery: Yup.number()
+		.transform(value => (isNaN(value) ? 0 : value))
+		.min(0),
+	purchasePrice: Yup.number()
+		.min(0)
 		.required(),
-	costDelivery: Yup.number(),
+	purchasePriceTemp: Yup.number().min(0),
 	totalPurchasePrice: Yup.number().min(0),
-	totalPurchasePriceWithCostDelivery: Yup.number().min(0),
 	receipts: Yup.array(
 		Yup.object().shape({
 			quantity: Yup.number()
@@ -43,6 +46,12 @@ const procurementSchema = Yup.object().shape({
 				.transform(value => (isNaN(value) ? null : value))
 				.min(0)
 				.required(),
+			costDelivery: Yup.number()
+				.transform(value => (isNaN(value) ? 0 : value))
+				.min(0),
+			unitCostDelivery: Yup.number()
+				.transform(value => (isNaN(value) ? 0 : value))
+				.min(0),
 		})
 	)
 		// eslint-disable-next-line

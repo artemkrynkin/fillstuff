@@ -39,6 +39,7 @@ import {
 	faChevronDown as farChevronDown,
 	faChevronUp as farChevronUp,
 	faSearch as farSearch,
+	faUndo as farUndo,
 } from '@fortawesome/pro-regular-svg-icons';
 
 import {
@@ -107,6 +108,7 @@ library.add(
 	farChevronDown,
 	farChevronUp,
 	farSearch,
+	farUndo,
 
 	// Light
 	falAngleLeft,

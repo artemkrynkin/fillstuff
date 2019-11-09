@@ -18,6 +18,10 @@ let Stock = new Schema({
 		type: String,
 		default: !!~require('shared/timezones').indexOf(momentTz.tz.guess()) ? momentTz.tz.guess() : '',
 	},
+	actualSellingPriceInProcurementCreate: {
+		type: Boolean,
+		default: true,
+	},
 	createdAt: {
 		type: Date,
 		default: Date.now,

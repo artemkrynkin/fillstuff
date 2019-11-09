@@ -21,7 +21,7 @@ const DialogPositionCreate = loadable(() =>
 	import('src/containers/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateEdit" */)
 );
 
-const receiptInitialValues = position => ({
+const receiptInitialValues = (position, remainingValues) => ({
 	position,
 	quantity: '',
 	quantityPackages: '',
@@ -31,12 +31,14 @@ const receiptInitialValues = position => ({
 	unitSellingPrice: '',
 	costDelivery: '',
 	unitCostDelivery: '',
+	...remainingValues,
 });
 
 const initialValues = {
 	number: '',
 	costDelivery: '',
-	purchasePricePositions: 0,
+	purchasePrice: '',
+	purchasePriceTemp: 0,
 	totalPurchasePrice: 0,
 	divideCostDeliverySellingPositions: false,
 	receipts: [],
@@ -49,13 +51,12 @@ class ProcurementCreate extends Component {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
 		onExitedDialog: PropTypes.func,
-		currentStockId: PropTypes.string.isRequired,
+		currentStock: PropTypes.object.isRequired,
 	};
 
 	initialState = {
 		dialogPositionCreate: false,
 		formEditable: true,
-		formRecounted: true,
 	};
 
 	state = this.initialState;
@@ -70,15 +71,13 @@ class ProcurementCreate extends Component {
 
 	onHandleEditFormProcurement = value => this.setState({ formEditable: value });
 
-	onFormRecounted = value => this.setState({ formRecounted: value });
-
 	onSubmit = (values, actions) => {
 		const { onCloseDialog, procurement = procurementSchema.cast(values) } = this.props;
-		const { formEditable, formRecounted } = this.state;
+		const { formEditable } = this.state;
 
-		if (formEditable && !formRecounted) {
-			let totalPurchaseCost = 0;
-			let totalPurchaseCostSellingPositions = 0;
+		if (formEditable) {
+			let purchasePricePositions = 0;
+			let purchasePriceSellingPositions = 0;
 			let numberAllPositions = 0;
 			let numberPaidPositions = 0;
 			let numberZeroPositions = 0;
@@ -86,30 +85,47 @@ class ProcurementCreate extends Component {
 			procurement.receipts.forEach(receipt => {
 				const quantityPackagesOrQuantity = receipt.quantityPackages ? receipt.quantityPackages : receipt.quantity;
 
-				totalPurchaseCost += quantityPackagesOrQuantity * receipt.purchasePrice;
-				if (!receipt.position.isFree) totalPurchaseCostSellingPositions += quantityPackagesOrQuantity * receipt.purchasePrice;
+				purchasePricePositions += quantityPackagesOrQuantity * receipt.purchasePrice;
+				if (!receipt.position.isFree) purchasePriceSellingPositions += quantityPackagesOrQuantity * receipt.purchasePrice;
 				numberAllPositions += quantityPackagesOrQuantity;
 
 				if (receipt.purchasePrice) numberPaidPositions += quantityPackagesOrQuantity;
 				else numberZeroPositions += quantityPackagesOrQuantity;
 			});
 
-			if (totalPurchaseCost) {
+			if (procurement.purchasePrice !== purchasePricePositions) {
+				actions.setFieldError(
+					'purchasePriceTemp',
+					<span>
+						Стоимость внесённых позиций не соответствует стоимости закупки.
+						<br />
+						Проверьте правильность внесённых данных.
+					</span>
+				);
+				actions.setSubmitting(false);
+
+				return;
+			}
+
+			actions.setFieldValue('purchasePriceTemp', purchasePricePositions);
+			actions.setFieldValue('totalPurchasePrice', procurement.purchasePrice + procurement.costDelivery);
+
+			if (purchasePricePositions) {
 				procurement.receipts.forEach(receipt => {
 					if (receipt.purchasePrice) {
 						if (numberZeroPositions && !procurement.divideCostDeliverySellingPositions) {
 							receipt.costDelivery = UnitCostDeliveryCalc.mixed.paid(
 								receipt.purchasePrice,
-								totalPurchaseCost,
+								purchasePricePositions,
 								procurement.costDelivery,
 								numberAllPositions,
 								numberPaidPositions
 							);
 						} else {
 							receipt.costDelivery = !procurement.divideCostDeliverySellingPositions
-								? UnitCostDeliveryCalc.paid(receipt.purchasePrice, totalPurchaseCost, procurement.costDelivery)
+								? UnitCostDeliveryCalc.paid(receipt.purchasePrice, purchasePricePositions, procurement.costDelivery)
 								: !receipt.position.isFree
-								? UnitCostDeliveryCalc.selling(receipt.purchasePrice, totalPurchaseCostSellingPositions, procurement.costDelivery)
+								? UnitCostDeliveryCalc.selling(receipt.purchasePrice, purchasePriceSellingPositions, procurement.costDelivery)
 								: 0;
 						}
 
@@ -150,27 +166,14 @@ class ProcurementCreate extends Component {
 				});
 			}
 
-			let purchasePricePositions = 0;
-			let totalPurchasePrice = 0;
-
-			procurement.receipts.forEach(receipt => {
-				purchasePricePositions += (receipt.quantityPackages ? receipt.quantityPackages : receipt.quantity) * receipt.purchasePrice;
-			});
-
-			totalPurchasePrice += purchasePricePositions + procurement.costDelivery;
-
-			actions.setFieldValue('purchasePricePositions', purchasePricePositions);
-			actions.setFieldValue('totalPurchasePrice', totalPurchasePrice);
-
 			actions.setFieldValue('receipts', procurement.receipts);
 
-			this.setState({
-				formEditable: false,
-				formRecounted: true,
-			});
+			this.setState({ formEditable: false });
 
 			actions.setSubmitting(false);
 		} else {
+			delete procurement.purchasePriceTemp;
+
 			procurement.receipts = procurement.receipts.map(receiptValues => {
 				const {
 					position,
@@ -219,8 +222,8 @@ class ProcurementCreate extends Component {
 	};
 
 	render() {
-		const { dialogOpen, onCloseDialog, currentStockId, positions } = this.props;
-		const { dialogPositionCreate, formEditable, formRecounted } = this.state;
+		const { dialogOpen, onCloseDialog, currentStock, positions } = this.props;
+		const { dialogPositionCreate, formEditable } = this.state;
 
 		return (
 			<PDDialog
@@ -247,13 +250,12 @@ class ProcurementCreate extends Component {
 				>
 					{props => (
 						<FormProcurementCreate
+							currentStock={currentStock}
 							onOpenDialogPositionCreate={this.onOpenDialogPositionCreate}
 							receiptInitialValues={receiptInitialValues}
 							onHandleEditFormProcurement={this.onHandleEditFormProcurement}
-							onFormRecounted={this.onFormRecounted}
 							positions={positions}
 							formEditable={formEditable}
-							formRecounted={formRecounted}
 							formikProps={props}
 						/>
 					)}
@@ -263,7 +265,7 @@ class ProcurementCreate extends Component {
 					type="create"
 					dialogOpen={dialogPositionCreate}
 					onCloseDialog={this.onCloseDialogPositionCreate}
-					currentStockId={currentStockId}
+					currentStockId={currentStock._id}
 				/>
 			</PDDialog>
 		);
@@ -276,13 +278,13 @@ const mapStateToProps = state => {
 	if (positions.data && positions.data.length > 0) {
 		positions.data = positions.data.map(position => {
 			return {
+				activeReceipt: position.activeReceipt,
 				_id: position._id,
 				unitIssue: position.unitIssue,
 				unitReceipt: position.unitReceipt,
 				isFree: position.isFree,
 				label:
 					position.name +
-					' ' +
 					position.characteristics.reduce((fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`, ''),
 				value: position._id,
 			};
@@ -295,12 +297,12 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentStockId } = ownProps;
+	const { currentStock } = ownProps;
 
 	return {
-		getStockStatus: () => dispatch(getStockStatus(currentStockId)),
-		getCharacteristics: () => dispatch(getCharacteristics(currentStockId)),
-		createProcurement: procurement => dispatch(createProcurement(currentStockId, procurement)),
+		getStockStatus: () => dispatch(getStockStatus(currentStock._id)),
+		getCharacteristics: () => dispatch(getCharacteristics(currentStock._id)),
+		createProcurement: procurement => dispatch(createProcurement(currentStock._id, procurement)),
 	};
 };
 

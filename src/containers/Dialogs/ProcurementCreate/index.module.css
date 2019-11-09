@@ -27,6 +27,19 @@
   transition: color 150ms ease-out;
 }
 
+.prevSellingPrice {
+  background-color: transparent !important;
+  bottom: 0;
+  position: absolute;
+  padding: 0 10px;
+  right: 19px;
+  top: 0;
+}
+
+.prevSellingPrice svg {
+  font-size: 14px;
+}
+
 .removeReceipt {
   display: inline-flex;
   margin: 32px 4px auto auto;
@@ -74,7 +87,8 @@
 }
 
 .totalPurchasePrice,
-.purchasePricePositions {
+.purchasePrice,
+.costDelivery {
   color: var(--c-hex-bg-500);
 }
 
@@ -83,13 +97,15 @@
   margin-bottom: 10px;
 }
 
-.purchasePricePositions {
+.purchasePrice,
+.costDelivery {
   font-size: 12px;
   margin-bottom: 5px;
 }
 
 .totalPurchasePrice span,
-.purchasePricePositions span {
+.purchasePrice span,
+.costDelivery span {
   color: var(--c-hex-bg-700);
   font-weight: 700;
 }

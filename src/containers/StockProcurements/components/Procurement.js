@@ -85,10 +85,10 @@ const Procurement = props => {
 							{...currencyFormatProps}
 						/>
 						<NumberFormat
-							value={procurement.purchasePricePositions}
+							value={procurement.purchasePrice}
 							renderText={value => (
-								<div className={styles.procurementPurchasePricePositions}>
-									Позиций на сумму: <span>{value}</span>
+								<div className={styles.procurementPurchasePrice}>
+									Стоимость закупки: <span>{value}</span>
 								</div>
 							)}
 							displayType="text"

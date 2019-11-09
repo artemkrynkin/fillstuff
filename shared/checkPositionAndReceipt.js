@@ -44,7 +44,7 @@ export const UnitCostDeliveryCalc = {
 		 * Расчет стоимости доставки единицы позиции с НЕ нулевой ценой закупки в смешанной закупке
 		 *
 		 * @param {number} uPP - Цена закпки единицы (unit Purchase Price)
-		 * @param {number} TPC - Общая стоимость закупки (Total Purchase Cost)
+		 * @param {number} TPP - Общая стоимость закупки (Total Purchase Price)
 		 * @param {number} CD - Стоимость доставки (Cost Delivery)
 		 * @param {number} NAp - Количество всех позиций (Number All positions)
 		 * @param {number} NPp - Количество платных позиций (Number Paid positions)
@@ -52,8 +52,8 @@ export const UnitCostDeliveryCalc = {
 		 * @const {number} uCD_p - Стоимость доставки единицы в процентах (unit Cost Delivery percent)
 		 * @return {number} uCD - Стоимость доставки единицы (unit Cost Delivery)
 		 */
-		paid: (uPP, TPC, CD, NAp, NPp) => {
-			const uCD_p = (uPP / TPC) * ((100 * NPp) / NAp);
+		paid: (uPP, TPP, CD, NAp, NPp) => {
+			const uCD_p = (uPP / TPP) * ((100 * NPp) / NAp);
 
 			const uCD = (CD / 100) * uCD_p;
 
@@ -83,14 +83,14 @@ export const UnitCostDeliveryCalc = {
 	 * Расчет стоимости доставки единицы позиции
 	 *
 	 * @param {number} uPP - Цена закупки единицы (unit Purchase Price)
-	 * @param {number} TPC - Общая стоимость закупки (Total Purchase Cost)
+	 * @param {number} TPP - Общая стоимость закупки (Total Purchase Price)
 	 * @param {number} CD - Стоимость доставки (Cost Delivery)
 	 *
 	 * @const {number} uCD_p - Стоимость доставки единицы в процентах (unit Cost Delivery percent)
 	 * @return {number} uCD - Стоимость доставки единицы (unit Cost Delivery)
 	 */
-	paid: (uPP, TPC, CD) => {
-		const uCD_p = (uPP / TPC) * 100;
+	paid: (uPP, TPP, CD) => {
+		const uCD_p = (uPP / TPP) * 100;
 
 		const uCD = (CD / 100) * uCD_p;
 
@@ -100,14 +100,14 @@ export const UnitCostDeliveryCalc = {
 	 * Расчет стоимости доставки единицы позиции
 	 *
 	 * @param {number} uPP - Цена закупки единицы (unit Purchase Price)
-	 * @param {number} TPCsp - Общая стоимость закупки продаваемых позиций (Total Purchase Cost selling positions)
+	 * @param {number} TPPsp - Общая стоимость закупки продаваемых позиций (Total Purchase Price selling positions)
 	 * @param {number} CD - Стоимость доставки (Cost Delivery)
 	 *
 	 * @const {number} uCD_p - Стоимость доставки единицы в процентах (unit Cost Delivery percent)
 	 * @return {number} uCD - Стоимость доставки единицы (unit Cost Delivery)
 	 */
-	selling: (uPP, TPCsp, CD) => {
-		const uCD_p = (uPP / TPCsp) * 100;
+	selling: (uPP, TPPsp, CD) => {
+		const uCD_p = (uPP / TPPsp) * 100;
 
 		const uCD = (CD / 100) * uCD_p;
 

@@ -179,7 +179,7 @@ const FormPositionCreateEdit = props => {
 								style={{ width: 'calc(100% - 42px)' }}
 							/>
 							<div className={styles.externalLink}>
-								<IconButton aria-haspopup="true" size="small" disabled={!validator.isURL(values.shopLink)} disableRipple disableFocusRipple>
+								<IconButton size="small" disabled={!validator.isURL(values.shopLink)} disableRipple disableFocusRipple>
 									{validator.isURL(values.shopLink) ? (
 										<a
 											// eslint-disable-next-line
@@ -308,7 +308,6 @@ const FormPositionCreateEdit = props => {
 										</FormControl>
 										<div className={styles.addCharacteristic}>
 											<IconButton
-												aria-haspopup="true"
 												size="small"
 												onClick={() => onAddCharacteristicInPosition(values, setFieldValue, arrayHelpersCharacteristics)}
 												disabled={values.characteristicTemp.type === '' || values.characteristicTemp.value === ''}

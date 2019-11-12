@@ -59,7 +59,6 @@ const PositionGroup = props => {
 								<TableRow>
 									<TableCell width={36} style={{ paddingLeft: 5, paddingRight: 0 }} />
 									<TableCell style={{ paddingLeft: 5 }}>
-										{/*<TableCell>*/}
 										<span className={styles.positionGroupName}>{positionGroup.name}</span>
 										<span className={styles.positionsCount}>
 											{positionGroup.positions.length +

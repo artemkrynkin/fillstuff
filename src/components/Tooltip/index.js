@@ -58,7 +58,7 @@ function arrowGenerator(color) {
 
 const useStylesArrow = makeStyles(() => ({
 	tooltip: {
-		backgroundColor: `rgba(${ColorConvert.hex.rgb(theme.slateGrey.cSg5)}, 0.9)`,
+		backgroundColor: `rgba(${ColorConvert.hex.rgb(theme.slateGrey.cSg5)}, 0.85)`,
 		fontWeight: 400,
 		position: 'relative',
 	},
@@ -74,7 +74,7 @@ const useStylesArrow = makeStyles(() => ({
 			borderStyle: 'solid',
 		},
 	},
-	popper: arrowGenerator(`rgba(${ColorConvert.hex.rgb(theme.slateGrey.cSg5)}, 0.9)`),
+	popper: arrowGenerator(`rgba(${ColorConvert.hex.rgb(theme.slateGrey.cSg5)}, 0.85)`),
 }));
 
 const Tooltip = props => {

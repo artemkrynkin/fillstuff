@@ -17,7 +17,7 @@ stocksRouter.get('/', isAuthedResolver, async (req, res, next) => {
 		.catch(err => next(err));
 
 	stocks.forEach(stock => {
-		stock.members = stock.members.filter(member => !member.isWaiting);
+		stock.members = stock.members.filter(member => !member.isWaiting && member.role.match(/owner|admin|user/));
 	});
 
 	res.json(stocks);

@@ -602,7 +602,8 @@ export const BliksideTheme = createMuiTheme({
 					width: '18px !important',
 				},
 				'& + span': {
-					padding: '8px 0 9px',
+					alignSelf: 'flex-start',
+					paddingTop: 9,
 				},
 			},
 			colorPrimary: {

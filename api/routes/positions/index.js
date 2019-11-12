@@ -164,6 +164,7 @@ positionsRouter.put(
 		position.unitIssue = positionUpdated.unitIssue;
 		position.minimumBalance = positionUpdated.minimumBalance;
 		position.isFree = positionUpdated.isFree;
+		position.extraCharge = positionUpdated.extraCharge;
 		position.shopName = positionUpdated.shopName;
 		position.shopLink = positionUpdated.shopLink;
 		position.characteristics = positionUpdated.characteristics;
@@ -279,6 +280,7 @@ positionsRouter.put(
 		position.name = positionUpdated.name;
 		position.minimumBalance = positionUpdated.minimumBalance;
 		position.isFree = positionUpdated.isFree;
+		position.extraCharge = positionUpdated.extraCharge;
 		position.shopName = positionUpdated.shopName;
 		position.shopLink = positionUpdated.shopLink;
 		position.characteristics = positionUpdated.characteristics;

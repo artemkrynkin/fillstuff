@@ -28,6 +28,7 @@ import Chips from 'src/components/Chips';
 
 import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
+import InputAdornment from '@material-ui/core/InputAdornment';
 
 const FormPositionCreateEdit = props => {
 	const {
@@ -123,7 +124,7 @@ const FormPositionCreateEdit = props => {
 				</Grid>
 
 				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
-					<InputLabel error={Boolean(touched.minimumBalance && errors.unitIssue)} style={{ minWidth: 146 }}>
+					<InputLabel error={Boolean(touched.minimumBalance && errors.minimumBalance)} style={{ minWidth: 146 }}>
 						Мин. остаток
 						<br />
 						{`в ${values.unitReceipt === 'nmp' && values.unitIssue !== 'pce' ? 'упаковках' : 'штуках'}:`}
@@ -143,6 +144,34 @@ const FormPositionCreateEdit = props => {
 						fullWidth
 					/>
 				</Grid>
+
+				{!values.isFree ? (
+					<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
+						<InputLabel error={Boolean(touched.extraCharge && errors.extraCharge)} style={{ minWidth: 146 }}>
+							Процент студии:
+						</InputLabel>
+						<Field
+							name="extraCharge"
+							placeholder="0"
+							error={Boolean(touched.extraCharge && errors.extraCharge)}
+							helperText={(touched.extraCharge && errors.extraCharge) || ''}
+							as={TextField}
+							InputProps={{
+								endAdornment: <InputAdornment position="end">%</InputAdornment>,
+								inputComponent: NumberFormat,
+								inputProps: {
+									decimalScale: 0,
+									allowNegative: false,
+									isAllowed: values => {
+										const { formattedValue, floatValue } = values;
+										return formattedValue === '' || floatValue <= 1000;
+									},
+								},
+							}}
+							fullWidth
+						/>
+					</Grid>
+				) : null}
 
 				<Grid
 					className={stylesGlobal.formLabelControl}

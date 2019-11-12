@@ -110,6 +110,7 @@ class DialogPositionCreateEdit extends Component {
 						unitIssue: '',
 						minimumBalance: '',
 						isFree: false,
+						extraCharge: '',
 						shopName: '',
 						shopLink: '',
 						characteristics: [],

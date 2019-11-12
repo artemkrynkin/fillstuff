@@ -53,6 +53,9 @@ const positionSchema = (type, depopulate = false) => {
 			.when(['unitReceipt', 'unitIssue'], (unitReceipt, unitIssue, schema) => {
 				return unitReceipt === 'nmp' && unitIssue === 'pce' ? schema.min(0).required() : schema.strip();
 			}),
+		extraCharge: Yup.number()
+			.min(0)
+			.required(),
 		shopName: Yup.string().required(),
 		shopLink: Yup.string(),
 		characteristics: Yup.array()

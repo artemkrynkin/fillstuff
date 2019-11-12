@@ -26,7 +26,7 @@ const GeneralSettings = props => {
 	const initialValues = {
 		name: currentStock.name,
 		timezone: currentStock.timezone,
-		actualSellingPriceInProcurementCreate: currentStock.actualSellingPriceInProcurementCreate,
+		settings: currentStock.settings,
 	};
 
 	return (

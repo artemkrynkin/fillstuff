@@ -68,6 +68,10 @@ let Position = new Schema({
 		type: Boolean,
 		default: false,
 	},
+	extraCharge: {
+		type: Number,
+		default: 0,
+	},
 	// Название магазина
 	shopName: {
 		type: String,

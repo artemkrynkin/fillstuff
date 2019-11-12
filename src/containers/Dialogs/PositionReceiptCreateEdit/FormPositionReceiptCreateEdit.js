@@ -294,7 +294,7 @@ const FormPositionReceiptCreateEdit = props => {
 								<Field
 									name="sellingPrice"
 									label="Цена продажи:"
-									placeholder={String(values.purchasePrice || 0)}
+									placeholder="0"
 									error={Boolean(touched.sellingPrice && errors.sellingPrice)}
 									helperText={(touched.sellingPrice && errors.sellingPrice) || ''}
 									as={TextField}
@@ -313,6 +313,34 @@ const FormPositionReceiptCreateEdit = props => {
 						<Field type="checkbox" name="isFree" Label={{ label: 'Бесплатный отпуск позиции' }} as={CheckboxWithLabel} />
 					</Grid>
 				</Grid>
+
+				{!values.isFree ? (
+					<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
+						<InputLabel error={Boolean(touched.extraCharge && errors.extraCharge)} style={{ minWidth: 146 }}>
+							Процент студии:
+						</InputLabel>
+						<Field
+							name="extraCharge"
+							placeholder="0"
+							error={Boolean(touched.extraCharge && errors.extraCharge)}
+							helperText={(touched.extraCharge && errors.extraCharge) || ''}
+							as={TextField}
+							InputProps={{
+								endAdornment: <InputAdornment position="end">%</InputAdornment>,
+								inputComponent: NumberFormat,
+								inputProps: {
+									decimalScale: 0,
+									allowNegative: false,
+									isAllowed: values => {
+										const { formattedValue, floatValue } = values;
+										return formattedValue === '' || floatValue <= 1000;
+									},
+								},
+							}}
+							fullWidth
+						/>
+					</Grid>
+				) : null}
 
 				<Grid
 					className={stylesGlobal.formLabelControl}

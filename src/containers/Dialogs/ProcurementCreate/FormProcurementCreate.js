@@ -11,36 +11,30 @@ import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField/TextField';
 
+import { percentOfNumber } from 'shared/utils';
+
 import { formError } from 'src/helpers/utils';
 
 import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
 import { PDDialogActions } from 'src/components/Dialog';
 import NumberFormat, { currencyFormatProps, currencyFormatInputProps } from 'src/components/NumberFormat';
 import { SelectAutocomplete } from 'src/components/selectAutocomplete';
+import Tooltip from 'src/components/Tooltip';
 
-import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
 
-const onUnitSellingPriceCalc = (value, fieldName, receipt, index, setFieldValue, currentStock) => {
+const onUnitSellingPriceCalc = (value, fieldName, receipt, index, setFieldValue) => {
 	setFieldValue(`receipts.${index}.${fieldName}`, value);
 
 	const checkEmptinessField = receipt[`${fieldName === 'quantityInUnit' ? 'purchasePrice' : 'quantityInUnit'}`];
 	const setValue = fieldName === 'quantityInUnit' ? receipt.purchasePrice / value : value / receipt.quantityInUnit;
 	const conditionSetValue = !!value && !!checkEmptinessField ? setValue : '';
 
-	if (
-		currentStock.actualSellingPriceInProcurementCreate &&
-		receipt.position.activeReceipt &&
-		Number(conditionSetValue) < receipt.position.activeReceipt.unitSellingPrice
-	)
-		return;
-
 	setFieldValue(`receipts.${index}.unitSellingPrice`, conditionSetValue);
 };
 
 const FormProcurementCreate = props => {
 	const {
-		currentStock,
 		onOpenDialogPositionCreate,
 		receiptInitialValues,
 		onHandleEditFormProcurement,
@@ -64,7 +58,7 @@ const FormProcurementCreate = props => {
 	return (
 		<Form>
 			<DialogContent>
-				<Grid className={stylesGlobal.formLabelControl} spacing={2} style={{ marginBottom: 12 }} container>
+				<Grid style={{ marginBottom: 12 }} spacing={2} container>
 					<Grid xs={6} item>
 						<FastField
 							name="number"
@@ -118,7 +112,7 @@ const FormProcurementCreate = props => {
 								name="divideCostDeliverySellingPositions"
 								Label={{ label: 'Распределить между позициями для продажи' }}
 								as={CheckboxWithLabel}
-								disabled={isSubmitting || !formEditable || !values.receipts.some(receipt => !receipt.position.isFree)}
+								disabled={isSubmitting || !formEditable}
 							/>
 						</Grid>
 					</Grid>
@@ -131,26 +125,13 @@ const FormProcurementCreate = props => {
 						<div className={styles.receipts}>
 							{formEditable ? (
 								<div>
-									<Grid
-										className={stylesGlobal.formLabelControl}
-										alignItems="flex-start"
-										spacing={2}
-										style={{ marginBottom: 12 }}
-										container
-									>
+									<Grid alignItems="flex-start" spacing={2} style={{ marginBottom: 12 }} container>
 										<Grid xs={9} item>
 											<SelectAutocomplete
 												value={textSearchPosition}
 												onChange={(option, { action }) => {
 													if (action === 'select-option') {
-														let activeReceiptSellingPrice = {};
-
-														if (currentStock.actualSellingPriceInProcurementCreate && option.activeReceipt) {
-															activeReceiptSellingPrice.sellingPrice = option.activeReceipt.sellingPrice;
-															activeReceiptSellingPrice.unitSellingPrice = option.activeReceipt.unitSellingPrice;
-														}
-
-														arrayHelpers.push(receiptInitialValues(option, activeReceiptSellingPrice));
+														arrayHelpers.push(receiptInitialValues(option));
 														onChangeTextSearchPosition(textSearchPosition);
 													}
 												}}
@@ -224,14 +205,7 @@ const FormProcurementCreate = props => {
 							)}
 
 							{values.receipts.map((receipt, index) => (
-								<Grid
-									key={index}
-									className={`${styles.receipt} ${stylesGlobal.formLabelControl}`}
-									alignItems="flex-start"
-									spacing={2}
-									style={{ marginBottom: 12 }}
-									container
-								>
+								<Grid key={index} className={styles.receipt} alignItems="flex-start" spacing={2} style={{ marginBottom: 12 }} container>
 									<Grid style={{ width: 190 }} item>
 										<TextField
 											className="none-padding"
@@ -298,7 +272,7 @@ const FormProcurementCreate = props => {
 													inputProps: {
 														allowNegative: false,
 														onChange: ({ target: { value } }) => {
-															onUnitSellingPriceCalc(value, 'quantityInUnit', receipt, index, setFieldValue, currentStock);
+															onUnitSellingPriceCalc(value, 'quantityInUnit', receipt, index, setFieldValue);
 														},
 													},
 												}}
@@ -326,16 +300,9 @@ const FormProcurementCreate = props => {
 														...currencyFormatInputProps,
 														onChange: ({ target: { value } }) => {
 															if (receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce') {
-																onUnitSellingPriceCalc(value, 'purchasePrice', receipt, index, setFieldValue, currentStock);
+																onUnitSellingPriceCalc(value, 'purchasePrice', receipt, index, setFieldValue);
 															} else {
 																setFieldValue(`receipts.${index}.purchasePrice`, value);
-
-																if (
-																	currentStock.actualSellingPriceInProcurementCreate &&
-																	receipt.position.activeReceipt &&
-																	Number(value) < receipt.position.activeReceipt.sellingPrice
-																)
-																	return;
 
 																setFieldValue(`receipts.${index}.sellingPrice`, value);
 																setFieldValue(`receipts.${index}.unitSellingPrice`, value);
@@ -347,42 +314,44 @@ const FormProcurementCreate = props => {
 												fullWidth
 											/>
 										) : (
-											<TextField
-												label={`Цена закупки${
-													receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce' ? ' упаковки' : ''
-												}:`}
-												defaultValue={receipt.purchasePrice + receipt.costDelivery}
-												helperText={
-													Boolean(values.costDelivery) ? (
+											<Tooltip
+												title={
+													<div>
 														<NumberFormat
 															value={receipt.purchasePrice}
-															renderText={value => (
-																<span style={{ display: 'inline-block', margin: '0 15px 0 8px' }}>
-																	{!values.divideCostDeliverySellingPositions || !receipt.position.isFree ? (
-																		<span>
-																			<b>{value}</b> без учёта стоимости доставки
-																		</span>
-																	) : (
-																		'Стоимость доставки не распределяется на эту позицию'
-																	)}
-																</span>
-															)}
+															renderText={value => `Начальная цена закупки: ${value}`}
 															displayType="text"
 															onValueChange={() => {}}
 															{...currencyFormatProps}
 														/>
-													) : null
+														<br />
+														<NumberFormat
+															value={receipt.costDelivery}
+															renderText={value => `Стоимость доставки: ${value}`}
+															displayType="text"
+															onValueChange={() => {}}
+															{...currencyFormatProps}
+														/>
+													</div>
 												}
-												InputProps={{
-													endAdornment: <InputAdornment position="end">₽</InputAdornment>,
-													inputComponent: NumberFormat,
-													inputProps: {
-														...currencyFormatInputProps,
-													},
-												}}
-												disabled
-												fullWidth
-											/>
+												placement="bottom"
+											>
+												<TextField
+													label={`Цена закупки${
+														receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce' ? ' упаковки' : ''
+													}:`}
+													defaultValue={receipt.purchasePrice + receipt.costDelivery}
+													InputProps={{
+														endAdornment: <InputAdornment position="end">₽</InputAdornment>,
+														inputComponent: NumberFormat,
+														inputProps: {
+															...currencyFormatInputProps,
+														},
+													}}
+													disabled
+													fullWidth
+												/>
+											</Tooltip>
 										)}
 									</Grid>
 
@@ -405,6 +374,10 @@ const FormProcurementCreate = props => {
 															},
 														}}
 														disabled={isSubmitting || !formEditable}
+														validate={value => {
+															if (value < receipt.purchasePrice / receipt.quantityInUnit)
+																return 'Цена продажи не может быть меньше цены закупки';
+														}}
 														fullWidth
 													/>
 												) : (
@@ -427,52 +400,67 @@ const FormProcurementCreate = props => {
 															},
 														}}
 														disabled={isSubmitting || !formEditable}
+														validate={value => {
+															if (value < receipt.purchasePrice) return 'Цена продажи не может быть меньше цены закупки';
+														}}
 														fullWidth
 													/>
 												)
 											) : (
-												<TextField
-													label={
-														receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce'
-															? 'Цена продажи штуки:'
-															: 'Цена продажи:'
-													}
-													defaultValue={receipt.unitSellingPrice + receipt.unitCostDelivery}
-													helperText={
-														Boolean(values.costDelivery) ? (
+												<Tooltip
+													title={
+														<div>
 															<NumberFormat
-																value={
-																	receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce'
-																		? receipt.unitSellingPrice
-																		: receipt.sellingPrice
-																}
-																renderText={value => (
-																	<span style={{ display: 'inline-block', margin: '0 15px 0 8px' }}>
-																		{!values.divideCostDeliverySellingPositions || !receipt.position.isFree ? (
-																			<span>
-																				<b>{value}</b> без учёта стоимости доставки
-																			</span>
-																		) : (
-																			'Стоимость доставки не распределяется на эту позицию'
-																		)}
-																	</span>
-																)}
+																value={receipt.unitSellingPrice}
+																renderText={value => `Начальная цена продажи: ${value}`}
 																displayType="text"
 																onValueChange={() => {}}
 																{...currencyFormatProps}
 															/>
-														) : null
+															<br />
+															<NumberFormat
+																value={receipt.unitCostDelivery}
+																renderText={value => `Стоимость доставки: ${value}`}
+																displayType="text"
+																onValueChange={() => {}}
+																{...currencyFormatProps}
+															/>
+															<br />
+															{receipt.position.extraCharge > 0 ? (
+																<NumberFormat
+																	value={percentOfNumber(receipt.unitSellingPrice, receipt.position.extraCharge)}
+																	renderText={value => `Процент студии: ${value}`}
+																	displayType="text"
+																	onValueChange={() => {}}
+																	{...currencyFormatProps}
+																/>
+															) : null}
+														</div>
 													}
-													InputProps={{
-														endAdornment: <InputAdornment position="end">₽</InputAdornment>,
-														inputComponent: NumberFormat,
-														inputProps: {
-															...currencyFormatInputProps,
-														},
-													}}
-													disabled
-													fullWidth
-												/>
+													placement="bottom"
+												>
+													<TextField
+														label={
+															receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce'
+																? 'Цена продажи штуки:'
+																: 'Цена продажи:'
+														}
+														defaultValue={
+															receipt.unitSellingPrice +
+															receipt.unitCostDelivery +
+															percentOfNumber(receipt.unitSellingPrice, receipt.position.extraCharge)
+														}
+														InputProps={{
+															endAdornment: <InputAdornment position="end">₽</InputAdornment>,
+															inputComponent: NumberFormat,
+															inputProps: {
+																...currencyFormatInputProps,
+															},
+														}}
+														disabled
+														fullWidth
+													/>
+												</Tooltip>
 											)
 										) : (
 											<TextField
@@ -493,17 +481,7 @@ const FormProcurementCreate = props => {
 
 									{formEditable ? (
 										<div className={styles.removeReceipt}>
-											<IconButton
-												size="small"
-												onClick={() => {
-													arrayHelpers.remove(index);
-													if (values.receipts.filter(receipt => !receipt.position.isFree).length === 1) {
-														setFieldValue('divideCostDeliverySellingPositions', false);
-													}
-												}}
-												disableRipple
-												disableFocusRipple
-											>
+											<IconButton size="small" onClick={() => arrayHelpers.remove(index)} disableRipple disableFocusRipple>
 												<FontAwesomeIcon icon={['fal', 'times']} />
 											</IconButton>
 										</div>
@@ -514,18 +492,20 @@ const FormProcurementCreate = props => {
 					)}
 				/>
 
-				<Grid>
-					<FastField
-						name="comment"
-						label="Комментарий:"
-						as={TextField}
-						rows={2}
-						rowsMax={4}
-						disabled={isSubmitting || !formEditable}
-						multiline
-						fullWidth
-					/>
-				</Grid>
+				{formEditable || values.comment ? (
+					<Grid>
+						<FastField
+							name="comment"
+							label="Комментарий:"
+							as={TextField}
+							rows={2}
+							rowsMax={4}
+							disabled={isSubmitting || !formEditable}
+							multiline
+							fullWidth
+						/>
+					</Grid>
+				) : null}
 			</DialogContent>
 			<PDDialogActions
 				leftHandleProps={
@@ -550,9 +530,9 @@ const FormProcurementCreate = props => {
 					) : !formEditable ? (
 						'Занести на склад'
 					) : Number(values.costDelivery) ? (
-						'Проверить данные и распределить доставку между позициями'
+						'Включить доставку и процент студии в стоимость'
 					) : (
-						'Проверить данные'
+						'Включить процент студии в стоимость'
 					),
 				}}
 			/>

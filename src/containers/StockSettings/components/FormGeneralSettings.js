@@ -110,8 +110,8 @@ const FormGeneralSettings = props => {
 					<Grid item>
 						<Field
 							type="checkbox"
-							name="actualSellingPriceInProcurementCreate"
-							Label={{ label: 'При создании новой закупки всегда использовать актуальную цену продажи' }}
+							name="settings.procurements.divideCostDeliverySellingPositions"
+							Label={{ label: 'Распределять стоимость доставки только между позициями для продажи' }}
 							as={CheckboxWithLabel}
 							disabled={isSubmitting}
 						/>

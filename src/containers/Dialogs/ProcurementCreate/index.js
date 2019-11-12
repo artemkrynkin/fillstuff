@@ -34,17 +34,6 @@ const receiptInitialValues = (position, remainingValues) => ({
 	...remainingValues,
 });
 
-const initialValues = {
-	number: '',
-	costDelivery: '',
-	purchasePrice: '',
-	purchasePriceTemp: 0,
-	totalPurchasePrice: 0,
-	divideCostDeliverySellingPositions: false,
-	receipts: [],
-	comment: '',
-};
-
 class ProcurementCreate extends Component {
 	static propTypes = {
 		type: PropTypes.oneOf(['create']).isRequired,
@@ -81,12 +70,16 @@ class ProcurementCreate extends Component {
 			let numberAllPositions = 0;
 			let numberPaidPositions = 0;
 			let numberZeroPositions = 0;
+			let numberSellingPositions = 0;
 
 			procurement.receipts.forEach(receipt => {
 				const quantityPackagesOrQuantity = receipt.quantityPackages ? receipt.quantityPackages : receipt.quantity;
 
 				purchasePricePositions += quantityPackagesOrQuantity * receipt.purchasePrice;
-				if (!receipt.position.isFree) purchasePriceSellingPositions += quantityPackagesOrQuantity * receipt.purchasePrice;
+				if (!receipt.position.isFree) {
+					purchasePriceSellingPositions += quantityPackagesOrQuantity * receipt.purchasePrice;
+					numberSellingPositions += 1;
+				}
 				numberAllPositions += quantityPackagesOrQuantity;
 
 				if (receipt.purchasePrice) numberPaidPositions += quantityPackagesOrQuantity;
@@ -113,20 +106,22 @@ class ProcurementCreate extends Component {
 			if (purchasePricePositions) {
 				procurement.receipts.forEach(receipt => {
 					if (receipt.purchasePrice) {
-						if (numberZeroPositions && !procurement.divideCostDeliverySellingPositions) {
-							receipt.costDelivery = UnitCostDeliveryCalc.mixed.paid(
-								receipt.purchasePrice,
-								purchasePricePositions,
-								procurement.costDelivery,
-								numberAllPositions,
-								numberPaidPositions
-							);
-						} else {
-							receipt.costDelivery = !procurement.divideCostDeliverySellingPositions
-								? UnitCostDeliveryCalc.paid(receipt.purchasePrice, purchasePricePositions, procurement.costDelivery)
-								: !receipt.position.isFree
+						if (procurement.divideCostDeliverySellingPositions) {
+							receipt.costDelivery = !receipt.position.isFree
 								? UnitCostDeliveryCalc.selling(receipt.purchasePrice, purchasePriceSellingPositions, procurement.costDelivery)
+								: numberSellingPositions === 0 && receipt.position.isFree
+								? UnitCostDeliveryCalc.paid(receipt.purchasePrice, purchasePricePositions, procurement.costDelivery)
 								: 0;
+						} else {
+							receipt.costDelivery = numberZeroPositions
+								? UnitCostDeliveryCalc.mixed.paid(
+										receipt.purchasePrice,
+										purchasePricePositions,
+										procurement.costDelivery,
+										numberAllPositions,
+										numberPaidPositions
+								  )
+								: UnitCostDeliveryCalc.paid(receipt.purchasePrice, purchasePricePositions, procurement.costDelivery);
 						}
 
 						receipt.unitCostDelivery =
@@ -225,6 +220,17 @@ class ProcurementCreate extends Component {
 		const { dialogOpen, onCloseDialog, currentStock, positions } = this.props;
 		const { dialogPositionCreate, formEditable } = this.state;
 
+		const initialValues = {
+			number: '',
+			costDelivery: '',
+			purchasePrice: '',
+			purchasePriceTemp: 0,
+			totalPurchasePrice: 0,
+			divideCostDeliverySellingPositions: currentStock.settings.procurements.divideCostDeliverySellingPositions,
+			receipts: [],
+			comment: '',
+		};
+
 		return (
 			<PDDialog
 				open={dialogOpen}
@@ -278,11 +284,11 @@ const mapStateToProps = state => {
 	if (positions.data && positions.data.length > 0) {
 		positions.data = positions.data.map(position => {
 			return {
-				activeReceipt: position.activeReceipt,
 				_id: position._id,
 				unitIssue: position.unitIssue,
 				unitReceipt: position.unitReceipt,
 				isFree: position.isFree,
+				extraCharge: position.extraCharge,
 				label:
 					position.name +
 					position.characteristics.reduce((fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`, ''),

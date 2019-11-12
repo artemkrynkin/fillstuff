@@ -18,9 +18,13 @@ let Stock = new Schema({
 		type: String,
 		default: !!~require('shared/timezones').indexOf(momentTz.tz.guess()) ? momentTz.tz.guess() : '',
 	},
-	actualSellingPriceInProcurementCreate: {
-		type: Boolean,
-		default: true,
+	settings: {
+		procurements: {
+			divideCostDeliverySellingPositions: {
+				type: Boolean,
+				default: false,
+			},
+		},
 	},
 	createdAt: {
 		type: Date,
@@ -46,7 +50,7 @@ let Stock = new Schema({
 			},
 			role: {
 				type: String,
-				enum: ['owner', 'admin', 'user'],
+				enum: ['owner', 'admin', 'user', 'fired'],
 				default: 'user',
 			},
 			isWaiting: Boolean,

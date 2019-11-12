@@ -299,8 +299,8 @@ positionsRouter.put(
 				$set: {
 					'status.stockPrice':
 						statusOld.stockPrice +
-						(activeReceipt.current.quantity * activeReceipt.unitPurchasePrice -
-							activeReceiptOld.current.quantity * activeReceiptOld.unitPurchasePrice),
+						(activeReceipt.current.quantity * (activeReceipt.unitPurchasePrice + activeReceipt.unitCostDelivery) -
+							activeReceiptOld.current.quantity * (activeReceiptOld.unitPurchasePrice + activeReceiptOld.unitCostDelivery)),
 				},
 			},
 			{ runValidators: true }
@@ -366,7 +366,7 @@ positionsRouter.post(
 			position.stock,
 			{
 				$set: {
-					'status.stockPrice': statusOld.stockPrice + quantity * activeReceipt.unitPurchasePrice,
+					'status.stockPrice': statusOld.stockPrice + quantity * (activeReceipt.unitPurchasePrice + activeReceipt.unitCostDelivery),
 				},
 			},
 			{ runValidators: true }
@@ -475,7 +475,7 @@ positionsRouter.get(
 		} = position;
 
 		const purchasePriceReceiptsPosition = receipts.reduce((sum, receipt) => {
-			return sum + receipt.current.quantity * receipt.unitPurchasePrice;
+			return sum + receipt.current.quantity * (receipt.unitPurchasePrice + receipt.unitCostDelivery);
 		}, 0);
 
 		Stock.findByIdAndUpdate(

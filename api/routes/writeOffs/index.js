@@ -1,11 +1,13 @@
 import { Router } from 'express';
 
+import { percentOfNumber } from 'shared/utils';
+
 import { isAuthedResolver, hasPermissionsInStock } from 'api/utils/permissions';
 
 import Stock from 'api/models/stock';
 import Position from 'api/models/position';
 import WriteOff from 'api/models/writeOff';
-import Receipt from '../../models/receipt';
+import Receipt from 'api/models/receipt';
 
 const writeOffsRouter = Router();
 
@@ -43,7 +45,11 @@ writeOffsRouter.get(
 				populate: {
 					path: 'characteristics',
 				},
-				select: 'createdAt name characteristics',
+				select: 'name characteristics',
+			})
+			.populate({
+				path: 'receipt',
+				select: 'unitCostDelivery',
 			})
 			.populate('user', 'name email')
 			.sort({ createdAt: -1 })
@@ -71,7 +77,6 @@ writeOffsRouter.post(
 
 		const {
 			stock: { status: statusOld },
-			activeReceipt,
 			receipts = position.receipts.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)),
 		} = position;
 
@@ -89,64 +94,86 @@ writeOffsRouter.post(
 			});
 		}
 
-		const newWriteOff = new WriteOff({
-			stock: stockId,
-			user: userId,
-			position: position._id,
-			receipt: position.activeReceipt._id,
-			quantity: quantity,
-			comment: comment,
-		});
+		const newWriteOffs = [];
+		const newWriteOffsErr = [];
+		const updateReceipts = [];
+		let remainingQuantity = quantity;
+		let writeOffCost = 0;
 
-		const newWriteOffErr = newWriteOff.validateSync();
+		receipts.forEach((receipt, index) => {
+			if (remainingQuantity !== 0) {
+				const currentWriteOffQuantity = remainingQuantity > receipt.current.quantity ? receipt.current.quantity : remainingQuantity;
 
-		if (newWriteOffErr) return next({ code: newWriteOffErr.errors ? 5 : 2, err: newWriteOffErr });
+				const newWriteOff = new WriteOff({
+					stock: stockId,
+					user: userId,
+					position: position._id,
+					receipt: receipt._id,
+					quantity: currentWriteOffQuantity,
+					cost: receipt.unitSellingPrice + receipt.unitCostDelivery + percentOfNumber(receipt.unitSellingPrice, position.extraCharge),
+					unitSellingPrice: receipt.unitSellingPrice,
+					extraCharge: position.extraCharge,
+					comment: comment,
+				});
 
-		if (quantity > 1) {
-		} else {
-			const updateReceipts = [];
+				const newWriteOffErr = newWriteOff.validateSync();
 
-			const activeReceiptSet = {
-				current: {
-					quantity: activeReceipt.current.quantity - quantity,
-				},
-			};
+				newWriteOffs.push(newWriteOff.save());
+				if (newWriteOffErr) newWriteOffsErr.push(newWriteOffErr);
 
-			if (position.unitReceipt === 'nmp' && position.unitIssue === 'pce') {
-				activeReceiptSet.current.quantityPackages = (activeReceipt.current.quantity - quantity) / activeReceipt.quantityInUnit;
-			}
+				const currentReceiptSet = {
+					current: {
+						quantity: remainingQuantity > receipt.current.quantity ? 0 : receipt.current.quantity - remainingQuantity,
+					},
+				};
 
-			if (receipts[1] !== undefined && activeReceiptSet.current.quantity === 0) {
-				activeReceiptSet.status = 'closed';
+				if (position.unitReceipt === 'nmp' && position.unitIssue === 'pce') {
+					currentReceiptSet.current.quantityPackages = currentReceiptSet.current.quantity / receipt.quantityInUnit;
+				}
+
+				if (receipts[index + 1] !== undefined && currentReceiptSet.current.quantity === 0) {
+					currentReceiptSet.status = 'closed';
+				}
+
+				remainingQuantity = remainingQuantity > receipt.current.quantity ? Math.abs(receipt.current.quantity - remainingQuantity) : 0;
+				writeOffCost += currentWriteOffQuantity * (receipt.unitPurchasePrice + receipt.unitCostDelivery);
+
+				const activeReceiptId =
+					receipts[index + 1] !== undefined && currentReceiptSet.current.quantity === 0 ? receipts[index + 1]._id : receipt._id;
+
+				if (
+					remainingQuantity === 0 &&
+					(currentReceiptSet.current.quantity === 0 || (index !== 0 && currentReceiptSet.current.quantity !== 0))
+				) {
+					updateReceipts.push(
+						Receipt.findByIdAndUpdate(activeReceiptId, { $set: { status: 'active' } }, { runValidators: true }).catch(err =>
+							next({ code: 2, err })
+						),
+						Position.findByIdAndUpdate(position._id, { $set: { activeReceipt: activeReceiptId } }, { runValidators: true }).catch(err =>
+							next({ code: 2, err })
+						)
+					);
+				}
 
 				updateReceipts.push(
-					Receipt.findByIdAndUpdate(receipts[1]._id, { $set: { status: 'active' } }, { runValidators: true }).catch(err =>
-						next({ code: 2, err })
-					),
-					Position.findByIdAndUpdate(position._id, { $set: { activeReceipt: receipts[1]._id } }, { runValidators: true }).catch(err =>
-						next({ code: 2, err })
-					)
+					Receipt.findByIdAndUpdate(receipt._id, { $set: currentReceiptSet }, { runValidators: true }).catch(err => next({ code: 2, err }))
 				);
 			}
+		});
 
-			updateReceipts.push(
-				Receipt.findByIdAndUpdate(activeReceipt._id, { $set: activeReceiptSet }, { runValidators: true }).catch(err =>
-					next({ code: 2, err })
-				)
-			);
+		if (newWriteOffsErr.length) return next({ code: 2 });
 
-			await Promise.all([newWriteOff.save(), ...updateReceipts]);
+		await Promise.all([...newWriteOffs, ...updateReceipts]);
 
-			Stock.findByIdAndUpdate(
-				stockId,
-				{
-					$set: {
-						'status.stockPrice': statusOld.stockPrice - quantity * (activeReceipt.unitPurchasePrice + activeReceipt.unitCostDelivery),
-					},
+		Stock.findByIdAndUpdate(
+			stockId,
+			{
+				$set: {
+					'status.stockPrice': statusOld.stockPrice - writeOffCost,
 				},
-				{ runValidators: true }
-			).catch(err => next({ code: 2, err }));
-		}
+			},
+			{ runValidators: true }
+		).catch(err => next({ code: 2, err }));
 
 		Position.findById(position._id)
 			.populate({
@@ -192,7 +219,7 @@ writeOffsRouter.delete(
 			writeOff.stock,
 			{
 				$set: {
-					'status.stockPrice': statusOld.stockPrice + writeOff.quantity * receipt.unitPurchasePrice,
+					'status.stockPrice': statusOld.stockPrice + writeOff.quantity * (receipt.unitPurchasePrice + receipt.unitCostDelivery),
 				},
 			},
 			{ runValidators: true }

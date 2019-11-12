@@ -192,7 +192,10 @@ procurementsRouter.post(
 				$set: {
 					'status.stockPrice':
 						statusOld.stockPrice +
-						procurement.receipts.reduce((sum, receipt) => sum + receipt.initial.quantity * receipt.unitPurchasePrice, 0),
+						procurement.receipts.reduce(
+							(sum, receipt) => sum + receipt.initial.quantity * (receipt.unitPurchasePrice + receipt.unitCostDelivery),
+							0
+						),
 				},
 			},
 			{ runValidators: true }

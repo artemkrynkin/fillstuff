@@ -73,8 +73,12 @@ procurementsRouter.get(
 		procurements.forEach(procurement => procurement.depopulate('stock'));
 
 		res.json({
-			count: procurementsCount,
-			items: procurements,
+			data: procurements,
+			paging: {
+				limit: 0,
+				offset: 0,
+				total: procurementsCount,
+			},
 		});
 	}
 );

@@ -22,7 +22,7 @@ const positions = (
 			};
 		}
 		case 'CREATE_PROCUREMENT': {
-			state.data.items.unshift(action.payload);
+			state.data.data.unshift(action.payload);
 
 			return {
 				...state,

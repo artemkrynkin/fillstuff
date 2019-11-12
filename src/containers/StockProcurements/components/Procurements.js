@@ -45,9 +45,9 @@ class Procurements extends Component {
 		return (
 			<div className={styles.procurements}>
 				{!isLoadingProcurementsDates ? (
-					procurementDatesData && procurementDatesData.items.length ? (
+					procurementDatesData && procurementDatesData.data.length ? (
 						<div>
-							{procurementDatesData.items.map((procurementDates, index) => (
+							{procurementDatesData.data.map((procurementDates, index) => (
 								<div className={styles.procurementDate} key={index}>
 									<div className={styles.procurementDateTitle}>
 										{moment(procurementDates.date).calendar(null, procurementDatesCalendarFormat)}
@@ -58,7 +58,7 @@ class Procurements extends Component {
 								</div>
 							))}
 						</div>
-					) : procurementDatesData && procurementDatesData.count ? (
+					) : procurementDatesData && procurementDatesData.paging.total ? (
 						<div className={styles.procurementsNone}>
 							Среди закупок совпадений не найдено.
 							<br />
@@ -91,8 +91,7 @@ const mapStateToProps = state => {
 
 	if (!isLoadingProcurements && procurementsData) {
 		procurementDates.data = {
-			count: procurementsData.count,
-			items: _.chain(procurementsData.items)
+			data: _.chain(procurementsData.data)
 				.groupBy(procurement => {
 					const momentDate = moment(procurement.createdAt).set({
 						hour: 0,
@@ -105,6 +104,7 @@ const mapStateToProps = state => {
 				})
 				.map((value, key) => ({ date: key, procurements: value }))
 				.value(),
+			paging: procurementsData.paging,
 		};
 	}
 

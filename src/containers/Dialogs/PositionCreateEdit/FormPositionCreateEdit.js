@@ -119,7 +119,7 @@ const FormPositionCreateEdit = props => {
 							</Field>
 							{touched.unitIssue && errors.unitIssue ? <FormHelperText error>{errors.unitIssue}</FormHelperText> : null}
 						</FormControl>
-						<Field type="checkbox" name="isFree" Label={{ label: 'Бесплатный отпуск позиции' }} as={CheckboxWithLabel} />
+						<Field type="checkbox" name="isFree" Label={{ label: 'Предоставляется студией бесплатно' }} as={CheckboxWithLabel} />
 					</Grid>
 				</Grid>
 

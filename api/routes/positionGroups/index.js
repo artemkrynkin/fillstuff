@@ -18,7 +18,7 @@ positionGroupsRouter.get(
 			.populate({
 				path: 'positions',
 				populate: {
-					path: 'characteristics',
+					path: 'activeReceipt characteristics',
 				},
 			})
 			.then(positionGroup => res.json(positionGroup))

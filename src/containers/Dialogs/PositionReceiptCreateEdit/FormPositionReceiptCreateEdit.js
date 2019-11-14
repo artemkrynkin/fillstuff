@@ -310,7 +310,7 @@ const FormPositionReceiptCreateEdit = props => {
 							)
 						) : null}
 
-						<Field type="checkbox" name="isFree" Label={{ label: 'Бесплатный отпуск позиции' }} as={CheckboxWithLabel} />
+						<Field type="checkbox" name="isFree" Label={{ label: 'Предоставляется студией бесплатно' }} as={CheckboxWithLabel} />
 					</Grid>
 				</Grid>
 

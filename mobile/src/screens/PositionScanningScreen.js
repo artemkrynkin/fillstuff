@@ -1,86 +1,60 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import { connect } from 'react-redux';
 import {
 	AsyncStorage,
 	StyleSheet,
 	Text,
 	View,
-	Alert,
-	Modal,
 	TouchableHighlight,
 	TouchableOpacity,
 	FlatList,
 	ScrollView,
 	AppState,
 	Vibration,
+	ImageBackground,
+	TextInput,
+	Alert,
 } from 'react-native';
+import { Asset } from 'expo-asset';
 import Constants from 'expo-constants';
+import { Camera } from 'expo-camera';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import * as Permissions from 'expo-permissions';
 import * as Haptics from 'expo-haptics';
 import { Audio } from 'expo-av';
-import * as MailComposer from 'expo-mail-composer';
+import Modal from 'react-native-modal';
+
+import theme from '../constants/theme';
+
+import { percentOfNumber } from '../helpers/utils';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 
 import { getPosition, getPositionGroup, createWriteOff } from '../actions/positions';
 
 class PositionScanningScreen extends Component {
+	initialRemainingState = {
+		barCodeScanned: false,
+		position: null,
+		positionGroup: null,
+		modalPosition: false,
+		modalPositionGroup: false,
+		quantity: '',
+	};
+
 	state = {
 		appState: AppState.currentState,
 		hasCameraPermission: null,
 		type: BarCodeScanner.Constants.Type.back,
-		scanned: false,
-		positionGroup: null,
-		modalPositionList: false,
-		confirmation: false,
+		...this.initialRemainingState,
 	};
 
-	onSendBugReport = async () => {
-		const { appState, hasCameraPermission, type, scanned, positionGroup, modalPositionList } = this.state;
+	cameraRef = createRef();
+	textFieldQuantity = createRef();
 
-		const authorized = await AsyncStorage.getItem('authorized');
-		const stockId = await AsyncStorage.getItem('stockId');
-		const userId = await AsyncStorage.getItem('userId');
-		const role = await AsyncStorage.getItem('role');
-
-		await MailComposer.composeAsync({
-			recipients: ['pagesppl@icloud.com'],
-			subject: 'Отчёт об ошибке',
-			body: `STORAGE DATA
-			authorized: ${authorized}
-			stockId: ${stockId}
-			userId: ${userId}
-			role: ${role}
-			
-			STATE SCREEN
-			appState: ${appState}
-			hasCameraPermission: ${hasCameraPermission}
-			type: ${type}
-			scanned: ${scanned}
-			positionGroup: ${positionGroup ? 'object' : 'null'}
-			modalPositionList: ${modalPositionList}
-			
-			PLATFORM AND VERSION:
-			Model: ${Constants.platform.ios.model}
-			Version: ${Constants.platform.ios.systemVersion}`,
-		});
-	};
-
-	onCloseModalPositionList = () => {
-		this.setState({
-			modalPositionList: false,
-			positionGroup: null,
-		});
-	};
-
-	onCloseModalPositionListAndScannedEnable = () => {
-		this.setState({
-			scanned: false,
-			modalPositionList: false,
-			positionGroup: null,
-			confirmation: false,
-		});
+	onSetInitialRemainingState = () => {
+		this.setState(this.initialRemainingState);
+		this.cameraRef.resumePreview();
 	};
 
 	onBarCodeScanned = async ({ data }) => {
@@ -89,96 +63,151 @@ class PositionScanningScreen extends Component {
 
 			const stockId = await AsyncStorage.getItem('stockId');
 
-			this.setState({ scanned: true }, () => {
-				if (Constants.platform.ios.model.match(/iPhone 5|iPhone 5C|iPhone 5s|iPhone 6|iPhone 6 Plus|iPhone 6s|iPhone 6s Plus|iPhone SE/)) {
+			this.setState({ barCodeScanned: true }, () => {
+				if (
+					Constants.platform.android ||
+					Constants.platform.ios.model.match(/iPhone 5|iPhone 5C|iPhone 5s|iPhone 6|iPhone 6 Plus|iPhone 6s|iPhone 6s Plus|iPhone SE/)
+				) {
 					Vibration.vibrate();
 				}
 
 				switch (qrData.type) {
 					case 'positionGroup':
 						return this.props.getPositionGroup(stockId, qrData.id).then(response => {
+							if (response.status === 'error') return this.onSetInitialRemainingState();
+
 							const positionGroup = response.data;
 
 							Haptics.impactAsync('heavy');
+							this.cameraRef.pausePreview();
 
-							this.setState({
-								modalPositionList: true,
-								positionGroup: positionGroup,
-							});
+							this.setState({ positionGroup: positionGroup });
+							this.onHandlerModalPositionGroup(true);
 						});
 					case 'position':
 						return this.props.getPosition(stockId, qrData.id).then(response => {
+							if (response.status === 'error') return this.onSetInitialRemainingState();
+
 							const position = response.data;
 
 							Haptics.impactAsync('heavy');
+							this.cameraRef.pausePreview();
 
-							this.writeOffConfirm(position);
+							this.onSavePosition(position);
+							this.onHandlerModalPosition(true);
 						});
 					default:
-						return this.onCloseModalPositionListAndScannedEnable();
+						return this.onSetInitialRemainingState();
 				}
 			});
 		} catch {
-			this.onCloseModalPositionListAndScannedEnable();
+			return this.onSetInitialRemainingState();
 		}
 	};
 
-	writeOffConfirm = async position => {
-		const { modalPositionList } = this.state;
+	onSavePosition = position => this.setState({ position });
+
+	onHandlerModalPosition = visible => {
+		const { modalPositionGroup } = this.state;
+
+		const setState = {
+			modalPosition: visible,
+		};
+
+		if (!visible) {
+			setState.barCodeScanned = false;
+		}
+
+		if (!modalPositionGroup) {
+			this.setState(setState, () => {
+				if (!visible) {
+					this.cameraRef.resumePreview();
+					this.setState({ quantity: '' });
+				}
+			});
+
+			setTimeout(
+				() => {
+					if (visible) this.textFieldQuantity.current.focus();
+					else this.textFieldQuantity.current.blur();
+				},
+				visible ? 150 : 0
+			);
+		} else {
+			this.setState({ modalPositionGroup: false }, () => {
+				setTimeout(() => {
+					this.setState(setState);
+
+					setTimeout(
+						() => {
+							if (visible) this.textFieldQuantity.current.focus();
+							else this.textFieldQuantity.current.blur();
+						},
+						visible ? 150 : 0
+					);
+				}, 450);
+			});
+		}
+	};
+
+	onHandlerModalPositionGroup = visible => {
+		const setState = {
+			modalPositionGroup: visible,
+		};
+
+		if (!visible) {
+			setState.barCodeScanned = false;
+		}
+
+		this.setState(setState, () => {
+			if (!visible) {
+				this.cameraRef.resumePreview();
+			}
+		});
+	};
+
+	onChangeQuantity = value => this.setState({ quantity: value });
+
+	writeOffConfirm = async (positionId, quantity) => {
 		const stockId = await AsyncStorage.getItem('stockId');
 		const userId = await AsyncStorage.getItem('userId');
 
-		this.setState({ confirmation: true }, () => {
-			Alert.alert(
-				position.name,
-				'',
-				[
-					{
-						text: 'Отмена',
-						onPress: () => (!modalPositionList ? this.setState({ scanned: false, confirmation: false }) : null),
-					},
-					{
-						text: 'Подтвердить',
-						onPress: () =>
-							this.props.createWriteOff(stockId, userId, position._id).then(async response => {
-								if (response.data.code === 7) {
-									await Haptics.notificationAsync('error');
+		this.props.createWriteOff(stockId, userId, positionId, quantity).then(async response => {
+			if (response.data.code === 7) {
+				await Haptics.notificationAsync('error');
 
-									Alert.alert(
-										response.data.message,
-										'',
-										[
-											{
-												text: 'Отмена',
-												onPress: () => this.onCloseModalPositionListAndScannedEnable(),
-											},
-										],
-										{ cancelable: false }
-									);
-								} else {
-									try {
-										const soundObject = new Audio.Sound();
+				this.onSetInitialRemainingState();
+				setTimeout(() => {
+					Alert.alert(
+						response.data.message,
+						'',
+						[
+							{
+								text: 'ОК',
+							},
+						],
+						{ cancelable: false }
+					);
+				}, 450);
+			} else {
+				try {
+					const soundObject = new Audio.Sound();
 
-										await soundObject.loadAsync(require('../../assets/sounds/write-off_confirmation.aac'));
+					await soundObject.loadAsync(require('../../assets/sounds/write-off_confirmation.aac'));
 
-										await Promise.all([soundObject.playAsync(), Haptics.notificationAsync('success')]);
-									} catch {}
+					await Promise.all([soundObject.playAsync(), Haptics.notificationAsync('success')]);
+				} catch {}
 
-									this.onCloseModalPositionListAndScannedEnable();
-								}
-							}),
-					},
-				],
-				{ cancelable: false }
-			);
+				this.onSetInitialRemainingState();
+			}
 		});
 	};
 
 	onHandleAppStateChange = nextAppState => {
-		const { confirmation, modalPositionList } = this.state;
+		const { barCodeScanned } = this.state;
 
 		if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-			if (!confirmation && !modalPositionList) this.setState({ scanned: false });
+			if (barCodeScanned) this.onSetInitialRemainingState();
 		}
 		this.setState({ appState: nextAppState });
 	};
@@ -196,7 +225,7 @@ class PositionScanningScreen extends Component {
 	}
 
 	render() {
-		const { hasCameraPermission, scanned, positionGroup, modalPositionList } = this.state;
+		const { hasCameraPermission, barCodeScanned, position, positionGroup, modalPosition, modalPositionGroup, quantity } = this.state;
 
 		if (hasCameraPermission === null) {
 			return <View />;
@@ -211,57 +240,156 @@ class PositionScanningScreen extends Component {
 		} else {
 			return (
 				<View style={{ flex: 1 }}>
-					<BarCodeScanner
-						barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
-						onBarCodeScanned={!scanned ? this.onBarCodeScanned : undefined}
+					<Camera
+						ref={ref => (this.cameraRef = ref)}
+						barCodeScannerSettings={{
+							barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
+						}}
+						onBarCodeScanned={!barCodeScanned ? this.onBarCodeScanned : undefined}
 						style={StyleSheet.absoluteFillObject}
 					/>
-					<TouchableOpacity
-						style={styles.sendBugReportButton}
-						onPress={this.onSendBugReport}
-						children={<FontAwesomeIcon color="white" icon={['fal', 'bug']} size={25} />}
-					/>
 					<View style={styles.scanningContainer}>
-						<View style={styles.scanningContainerBox} />
-						<View>
-							<Text style={styles.scanningContainerText}>Наведите камеру</Text>
-							<Text style={styles.scanningContainerText}>на QR-код</Text>
-						</View>
+						<ImageBackground
+							source={Asset.fromModule(require('../../assets/images/cameraDetect.png'))}
+							style={{ ...styles.scanningContainerBox, opacity: Number(!modalPositionGroup && !modalPosition) }}
+						/>
 					</View>
+
 					<Modal
-						animationType="slide"
-						transparent={false}
-						visible={modalPositionList}
-						onDismiss={this.onCloseModalPositionListAndScannedEnable}
+						animationInTiming={200}
+						animationOutTiming={400}
+						avoidKeyboard
+						isVisible={modalPosition}
+						onBackdropPress={() => this.onHandlerModalPosition(false)}
+						onSwipeComplete={() => this.onHandlerModalPosition(false)}
+						swipeDirection={['down']}
+						style={styles.modal}
 					>
-						<View style={styles.modalSelectPositionContainer}>
-							<TouchableOpacity
-								style={styles.modalSelectPositionClose}
-								onPress={this.onCloseModalPositionList}
-								children={<FontAwesomeIcon icon={['fal', 'times']} size={25} />}
-							/>
-							<ScrollView style={styles.modalSelectPositionScroll}>
-								{positionGroup ? <Text style={styles.modalSelectPositionTitle}>{positionGroup.name}</Text> : null}
-								{positionGroup ? (
-									<FlatList
-										data={positionGroup.positions}
-										keyExtractor={position => position._id}
-										renderItem={({ item: position }) => (
-											<TouchableHighlight onPress={() => this.writeOffConfirm(position)} underlayColor="#ddd">
-												<View style={styles.modalSelectPositionListItem}>
-													<Text style={styles.modalSelectPositionListItemText}>
-														{position.name}{' '}
-														{position.characteristics.reduce(
-															(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
-															''
-														)}
+						<View style={styles.modalContainer}>
+							{position ? (
+								<View>
+									<View style={styles.modalHeader}>
+										<Text style={styles.modalTitle}>{position.name}</Text>
+										{position.characteristics.length ? (
+											<Text style={styles.modalSubtitle}>
+												{position.characteristics.reduce(
+													(fullCharacteristics, characteristic) => `${fullCharacteristics}${characteristic.label} `,
+													''
+												)}
+											</Text>
+										) : null}
+										<TouchableOpacity
+											style={styles.modalClose}
+											onPress={() => this.onHandlerModalPosition(false)}
+											children={<FontAwesomeIcon style={styles.modalCloseIcon} icon={['fal', 'times']} size={18} />}
+										/>
+									</View>
+									<View style={styles.modalContent}>
+										{!position.isFree ? (
+											<View>
+												<Text style={styles.sellingPrice}>
+													Цена продажи {position.unitIssue === 'pce' ? 'шт.' : 'уп.'}:{' '}
+													<Text style={styles.sellingPriceBold}>
+														{position.activeReceipt.unitSellingPrice +
+															position.activeReceipt.costDelivery +
+															percentOfNumber(position.activeReceipt.unitSellingPrice, position.extraCharge)}{' '}
+														₽
 													</Text>
+												</Text>
+												<Text style={styles.sellingPriceSubtitle}>
+													C учётом стоимости доставки <Text style={{ fontWeight: '600' }}>{position.activeReceipt.costDelivery} ₽</Text>
+												</Text>
+											</View>
+										) : (
+											<Text style={styles.sellingPrice}>
+												Цена продажи {position.unitIssue === 'pce' ? 'шт.' : 'уп.'}: <Text style={styles.sellingPriceBold}>Бесплатно</Text>
+											</Text>
+										)}
+										<View style={styles.form}>
+											<Text style={styles.inputLabel}>Количество:</Text>
+											<TextInput
+												ref={this.textFieldQuantity}
+												keyboardAppearance="light"
+												keyboardType="number-pad"
+												maxLength={2}
+												placeholder="0"
+												style={styles.textField}
+												onChangeText={value => this.onChangeQuantity(value)}
+												value={quantity}
+											/>
+											<TouchableHighlight
+												onPress={() => (Number(quantity) ? this.writeOffConfirm(position._id, quantity) : {})}
+												style={Number(quantity) ? { ...styles.buttonSubmit } : { ...styles.buttonSubmit, ...styles.buttonSubmitDisabled }}
+												underlayColor={Number(quantity) ? theme.teal.cT200 : theme.blueGrey.cBg50}
+											>
+												<View>
+													{Number(quantity) ? (
+														<Text style={styles.buttonSubmitText}>
+															Списать <Text style={{ fontWeight: '800' }}>{Number(quantity)}</Text>{' '}
+															{position.unitIssue === 'pce' ? 'шт.' : 'уп.'}
+														</Text>
+													) : (
+														<Text style={{ ...styles.buttonSubmitText, ...styles.buttonSubmitTextDisabled }}>Списать</Text>
+													)}
 												</View>
 											</TouchableHighlight>
-										)}
-									/>
-								) : null}
-							</ScrollView>
+										</View>
+									</View>
+								</View>
+							) : null}
+						</View>
+					</Modal>
+
+					<Modal
+						animationInTiming={200}
+						animationOutTiming={400}
+						isVisible={modalPositionGroup}
+						onBackdropPress={() => this.onHandlerModalPositionGroup(false)}
+						onSwipeComplete={() => this.onHandlerModalPositionGroup(false)}
+						swipeDirection={['down']}
+						propagateSwipe
+						style={styles.modal}
+					>
+						<View style={styles.modalContainer}>
+							{positionGroup ? (
+								<View>
+									<View style={styles.modalHeader}>
+										<Text style={styles.modalTitle}>{positionGroup.name}</Text>
+										<TouchableOpacity
+											style={styles.modalClose}
+											onPress={() => this.onHandlerModalPositionGroup(false)}
+											children={<FontAwesomeIcon style={styles.modalCloseIcon} icon={['fal', 'times']} size={18} />}
+										/>
+									</View>
+									<View style={{ maxHeight: 500 }}>
+										<ScrollView>
+											<FlatList
+												data={positionGroup.positions}
+												keyExtractor={position => position._id}
+												renderItem={({ item: position }) => (
+													<TouchableHighlight
+														onPress={() => {
+															this.onSavePosition(position);
+															this.onHandlerModalPosition(true);
+														}}
+														underlayColor={theme.brightness.cBr4}
+													>
+														<View style={styles.modalPositionListItem}>
+															<Text style={styles.modalPositionListItemText}>
+																{position.name}
+																{position.characteristics.reduce(
+																	(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
+																	''
+																)}
+															</Text>
+														</View>
+													</TouchableHighlight>
+												)}
+											/>
+										</ScrollView>
+									</View>
+								</View>
+							) : null}
 						</View>
 					</Modal>
 				</View>
@@ -277,54 +405,123 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 	},
 	scanningContainerBox: {
-		borderWidth: 6,
-		borderColor: 'white',
-		borderStyle: 'dashed',
-		borderRadius: 30,
-		marginBottom: 40,
 		height: 250,
 		width: 250,
 	},
-	scanningContainerText: {
-		color: 'white',
-		fontSize: 26,
-		textAlign: 'center',
-		marginTop: 10,
+	modal: {
+		justifyContent: 'flex-end',
+		margin: 0,
+		marginTop: Constants.statusBarHeight,
 	},
-	sendBugReportButton: {
-		color: 'white',
-		marginTop: Constants.statusBarHeight + 5,
+	modalContainer: {
+		backgroundColor: 'white',
+		borderTopLeftRadius: 12,
+		borderTopRightRadius: 12,
+	},
+	modalHeader: {
+		borderBottomColor: theme.brightness.cBr5,
+		borderBottomWidth: StyleSheet.hairlineWidth,
+		paddingTop: 15,
+		paddingBottom: 15,
+		paddingLeft: 15,
+		paddingRight: 15,
+		position: 'relative',
+	},
+	modalTitle: {
+		color: theme.blueGrey.cBg700,
+		fontSize: 26,
+		fontWeight: 'bold',
+	},
+	modalSubtitle: {
+		color: theme.blueGrey.cBg400,
+		fontSize: 14,
+		marginTop: 5,
+	},
+	modalClose: {
+		alignItems: 'center',
+		backgroundColor: theme.blueGrey.cBg50,
+		borderRadius: 30,
+		justifyContent: 'center',
+		height: 30,
 		position: 'absolute',
 		right: 20,
-		zIndex: 1,
+		top: 15,
+		width: 30,
 	},
-	modalSelectPositionContainer: {
-		flex: 1,
-		paddingTop: Constants.statusBarHeight,
+	modalCloseIcon: {
+		color: theme.blueGrey.cBg600,
 	},
-	modalSelectPositionScroll: {
-		flex: 1,
-	},
-	modalSelectPositionClose: {
-		marginLeft: 15,
-		width: 25,
-	},
-	modalSelectPositionTitle: {
-		fontSize: 30,
-		marginLeft: 15,
-		marginTop: 5,
-		marginBottom: 10,
-	},
-	modalSelectPositionListItem: {
-		borderTopColor: '#bbb',
-		borderTopWidth: StyleSheet.hairlineWidth,
+	modalContent: {
 		paddingTop: 20,
 		paddingBottom: 20,
 		paddingLeft: 15,
 		paddingRight: 15,
 	},
-	modalSelectPositionListItemHighlight: {},
-	modalSelectPositionListItemText: {
+	sellingPrice: {
+		color: theme.blueGrey.cBg600,
+		fontSize: 16,
+	},
+	sellingPriceBold: {
+		fontSize: 24,
+		fontWeight: 'bold',
+		marginLeft: 5,
+	},
+	sellingPriceSubtitle: {
+		color: theme.blueGrey.cBg400,
+		fontSize: 11,
+		marginTop: 5,
+	},
+	form: {
+		marginTop: 20,
+	},
+	inputLabel: {
+		color: theme.blueGrey.cBg400,
+		fontSize: 14,
+		fontWeight: '500',
+		marginBottom: 5,
+	},
+	textField: {
+		height: 44,
+		backgroundColor: theme.brightness.cBr4,
+		borderColor: theme.brightness.cBr5,
+		borderWidth: 2,
+		borderRadius: 5,
+		paddingLeft: 10,
+		paddingRight: 10,
+	},
+	buttonSubmit: {
+		backgroundColor: theme.teal.cT300,
+		borderRadius: 8,
+		marginTop: 20,
+		paddingTop: 10,
+		paddingBottom: 10,
+		paddingLeft: 15,
+		paddingRight: 15,
+	},
+	buttonSubmitDisabled: {
+		backgroundColor: theme.blueGrey.cBg50,
+	},
+	buttonSubmitText: {
+		color: 'white',
+		fontSize: 18,
+		fontWeight: '600',
+		letterSpacing: 0.25,
+		textAlign: 'center',
+	},
+	buttonSubmitTextDisabled: {
+		color: theme.blueGrey.cBg300,
+	},
+	modalPositionListItem: {
+		borderBottomColor: theme.brightness.cBr5,
+		borderBottomWidth: StyleSheet.hairlineWidth,
+		paddingTop: 20,
+		paddingBottom: 20,
+		paddingLeft: 15,
+		paddingRight: 15,
+	},
+	modalPositionListItemHighlight: {},
+	modalPositionListItemText: {
+		color: theme.blueGrey.cBg700,
 		fontSize: 16,
 	},
 });
@@ -333,7 +530,7 @@ const mapDispatchToProps = dispatch => {
 	return {
 		getPosition: (stockId, positionId) => dispatch(getPosition(stockId, positionId)),
 		getPositionGroup: (stockId, positionGroupId) => dispatch(getPositionGroup(stockId, positionGroupId)),
-		createWriteOff: (stockId, userId, positionId) => dispatch(createWriteOff(stockId, userId, positionId)),
+		createWriteOff: (stockId, userId, positionId, quantity) => dispatch(createWriteOff(stockId, userId, positionId, quantity)),
 	};
 };
 

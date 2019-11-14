@@ -470,7 +470,7 @@ const FormProcurementCreate = props => {
 														? 'Цена продажи штуки:'
 														: 'Цена продажи:'
 												}
-												defaultValue="Бесплатный отпуск"
+												defaultValue="Бесплатно"
 												inputProps={{
 													readOnly: true,
 												}}
@@ -529,10 +529,8 @@ const FormProcurementCreate = props => {
 						<CircularProgress size={20} />
 					) : !formEditable ? (
 						'Занести на склад'
-					) : Number(values.costDelivery) ? (
-						'Включить доставку и процент студии в стоимость'
 					) : (
-						'Включить процент студии в стоимость'
+						'Включить доставку и процент студии в стоимость'
 					),
 				}}
 			/>

@@ -99,6 +99,7 @@ positionsRouter.get(
 	(req, res, next) => {
 		Position.findById(req.params.positionId)
 			.populate('characteristics')
+			.populate('activeReceipt')
 			.then(position => res.json(position))
 			.catch(err => next({ code: 2, err }));
 	}

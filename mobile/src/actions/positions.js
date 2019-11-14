@@ -9,7 +9,8 @@ export const getPosition = (stockId, positionId) => {
 			.then(response => {
 				const position = response.data;
 
-				return Promise.resolve({ status: 'success', data: position });
+				if (position) return Promise.resolve({ status: 'success', data: position });
+				else return Promise.resolve({ status: 'error' });
 			})
 			.catch(error => {
 				console.error(error);
@@ -28,7 +29,8 @@ export const getPositionGroup = (stockId, positionGroupId) => {
 			.then(response => {
 				const positionGroup = response.data;
 
-				return Promise.resolve({ status: 'success', data: positionGroup });
+				if (positionGroup) return Promise.resolve({ status: 'success', data: positionGroup });
+				else return Promise.resolve({ status: 'error' });
 			})
 			.catch(error => {
 				console.error(error);
@@ -38,13 +40,14 @@ export const getPositionGroup = (stockId, positionGroupId) => {
 	};
 };
 
-export const createWriteOff = (stockId, userId, positionId) => {
+export const createWriteOff = (stockId, userId, positionId, quantity) => {
 	return async dispatch => {
 		return await axios
 			.post('/write-offs', {
 				stockId,
 				userId,
 				positionId,
+				quantity,
 			})
 			.then(response => {
 				return Promise.resolve({ status: 'success', data: response.data });

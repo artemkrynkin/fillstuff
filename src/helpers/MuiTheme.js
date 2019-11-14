@@ -407,8 +407,11 @@ export const BliksideTheme = createMuiTheme({
 				padding: '6px 12px',
 			},
 			contained: {
+				backgroundColor: theme.blueGrey.cBg50,
+				color: theme.blueGrey.cBg600,
 				boxShadow: null,
 				'&:hover': {
+					backgroundColor: theme.blueGrey.cBg100,
 					boxShadow: null,
 				},
 				'&:active': {

@@ -10,6 +10,8 @@ import TableBody from '@material-ui/core/TableBody';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 
 import { history } from 'src/helpers/history';
 
@@ -17,7 +19,7 @@ import NumberFormat, { currencyFormatProps } from 'src/components/NumberFormat';
 import CardPaper from 'src/components/CardPaper';
 import QuantityIndicator from 'src/components/QuantityIndicator';
 
-import { getProcurement } from 'src/actions/procurements';
+import { getProcurement, editProcurement } from 'src/actions/procurements';
 
 import { TableCell } from './styles';
 import styles from './Procurement.module.css';
@@ -31,6 +33,43 @@ const photoImgClasses = user =>
 class Procurement extends Component {
 	state = {
 		procurementData: null,
+		commentEditable: false,
+		newComment: '',
+	};
+
+	onHandleCommentEditable = () => {
+		const {
+			procurementData: { data: procurement },
+			commentEditable,
+		} = this.state;
+
+		this.setState({ commentEditable: !commentEditable });
+
+		if (!commentEditable) this.setState({ newComment: procurement.comment });
+	};
+
+	onSetNewComment = value =>
+		this.setState({
+			newComment: value,
+		});
+
+	onSaveNewComment = () => {
+		const {
+			procurementData: { data: procurement },
+			newComment,
+		} = this.state;
+
+		this.props.editProcurement(procurement._id, { comment: newComment }).then(() => {
+			const newProcurement = { ...procurement, comment: newComment };
+
+			this.setState({
+				procurementData: {
+					data: newProcurement,
+				},
+			});
+
+			this.onHandleCommentEditable();
+		});
 	};
 
 	componentDidMount() {
@@ -38,7 +77,10 @@ class Procurement extends Component {
 
 		this.props.getProcurement().then(response => {
 			if (response.status === 'success') {
-				this.setState({ procurementData: response });
+				this.setState({
+					procurementData: response,
+					newComment: response.data.comment,
+				});
 			} else {
 				history.push({
 					pathname: `/stocks/${currentUser.activeStockId}/procurements`,
@@ -48,7 +90,7 @@ class Procurement extends Component {
 	}
 
 	render() {
-		const { procurementData } = this.state;
+		const { procurementData, commentEditable, newComment } = this.state;
 
 		if (!procurementData) return <div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />;
 
@@ -74,14 +116,35 @@ class Procurement extends Component {
 								</div>
 							</Grid>
 						</Grid>
-						<Grid xs={6} item></Grid>
 					</Grid>
-					{procurement.comment ? (
-						<div className={styles.procurementComment}>
-							<div className={styles.procurementCommentTitle}>Комментарий:</div>
-							<div className={styles.procurementCommentContent}>{procurement.comment}</div>
-						</div>
-					) : null}
+					<div className={styles.procurementComment}>
+						<div className={styles.procurementCommentTitle}>Комментарий:</div>
+						{!commentEditable ? (
+							<div className={styles.procurementCommentContent} onClick={!commentEditable ? this.onHandleCommentEditable : null}>
+								{procurement.comment ? procurement.comment : <span>Изменить комментарий</span>}
+							</div>
+						) : (
+							<div>
+								<TextField
+									value={newComment}
+									onChange={({ target: { value } }) => this.onSetNewComment(value)}
+									rows={2}
+									rowsMax={4}
+									multiline
+									fullWidth
+									autoFocus
+								/>
+								<div>
+									<Button variant="contained" size="small" style={{ marginRight: 8 }} onClick={this.onHandleCommentEditable}>
+										Отмена
+									</Button>
+									<Button variant="contained" color="primary" size="small" style={{ marginRight: 8 }} onClick={this.onSaveNewComment}>
+										Сохранить комментарий
+									</Button>
+								</div>
+							</div>
+						)}
+					</div>
 					<Grid className={styles.procurementTotal} container>
 						<Grid xs={6} item>
 							<Grid style={{ height: '100%' }} container>
@@ -180,6 +243,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 	return {
 		getProcurement: () => dispatch(getProcurement(currentStock._id, procurementId)),
+		editProcurement: (procurementId, newValues) => dispatch(editProcurement(currentStock._id, procurementId, newValues)),
 	};
 };
 

@@ -11,6 +11,8 @@ import TableBody from '@material-ui/core/TableBody';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Collapse from '@material-ui/core/Collapse';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 
 import NumberFormat, { currencyFormatProps } from 'src/components/NumberFormat';
 import CardPaper from 'src/components/CardPaper';
@@ -26,11 +28,27 @@ const photoImgClasses = user =>
 	});
 
 const Procurement = props => {
-	const { currentUser, procurement } = props;
+	const { currentUser, procurement, editProcurement } = props;
 	const [expanded, setExpanded] = useState(false);
+	const [commentEditable, setCommentEditable] = useState(false);
+	const [newComment, setNewComment] = useState(procurement.comment);
 
 	const onHandleExpand = () => {
 		setExpanded(!expanded);
+	};
+
+	const onHandleCommentEditable = () => {
+		setCommentEditable(!commentEditable);
+
+		if (!commentEditable) setNewComment(procurement.comment);
+	};
+
+	const onSetNewComment = value => {
+		setNewComment(value);
+	};
+
+	const onSaveNewComment = () => {
+		editProcurement(procurement._id, { comment: newComment }, () => onHandleCommentEditable());
 	};
 
 	return (
@@ -54,14 +72,35 @@ const Procurement = props => {
 						</div>
 					</Grid>
 				</Grid>
-				<Grid xs={6} item></Grid>
 			</Grid>
-			{procurement.comment ? (
-				<div className={styles.procurementComment}>
-					<div className={styles.procurementCommentTitle}>Комментарий:</div>
-					<div className={styles.procurementCommentContent}>{procurement.comment}</div>
-				</div>
-			) : null}
+			<div className={styles.procurementComment}>
+				<div className={styles.procurementCommentTitle}>Комментарий:</div>
+				{!commentEditable ? (
+					<div className={styles.procurementCommentContent} onClick={!commentEditable ? onHandleCommentEditable : null}>
+						{procurement.comment ? procurement.comment : <span>Изменить комментарий</span>}
+					</div>
+				) : (
+					<div>
+						<TextField
+							defaultValue={newComment}
+							onChange={({ target: { value } }) => onSetNewComment(value)}
+							rows={2}
+							rowsMax={4}
+							multiline
+							fullWidth
+							autoFocus
+						/>
+						<div>
+							<Button variant="contained" size="small" style={{ marginRight: 8 }} onClick={onHandleCommentEditable}>
+								Отмена
+							</Button>
+							<Button variant="contained" color="primary" size="small" style={{ marginRight: 8 }} onClick={onSaveNewComment}>
+								Сохранить комментарий
+							</Button>
+						</div>
+					</div>
+				)}
+			</div>
 			<Grid className={styles.procurementTotal} container>
 				<Grid xs={6} item>
 					<Grid style={{ height: '100%' }} container>

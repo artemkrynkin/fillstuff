@@ -8,6 +8,7 @@ import Stock from 'api/models/stock';
 import Position from 'api/models/position';
 import Receipt from 'api/models/receipt';
 import Procurement from 'api/models/procurement';
+import positionsRouter from '../positions';
 
 const procurementsRouter = Router();
 
@@ -204,6 +205,39 @@ procurementsRouter.post(
 		procurement.depopulate('stock');
 
 		res.json(procurement);
+	}
+);
+
+procurementsRouter.put(
+	'/procurements/:procurementId',
+	isAuthedResolver,
+	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
+	async (req, res, next) => {
+		const { procurement: procurementUpdated } = req.body;
+
+		const procurement = await Procurement.findById(req.params.procurementId).catch(err => next({ code: 2, err }));
+
+		procurement.comment = procurementUpdated.comment;
+
+		const procurementErr = procurement.validateSync();
+
+		if (procurementErr) return next({ code: procurementErr.errors ? 5 : 2, err: procurementErr });
+
+		await Promise.all([procurement.save()]);
+
+		Procurement.findById(procurement._id)
+			.populate('user', 'profilePhoto name email')
+			.populate({
+				path: 'receipts',
+				populate: {
+					path: 'position',
+					populate: {
+						path: 'characteristics',
+					},
+				},
+			})
+			.then(procurement => res.json(procurement))
+			.catch(err => next({ code: 2, err }));
 	}
 );
 

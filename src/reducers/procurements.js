@@ -29,6 +29,18 @@ const positions = (
 				isFetching: false,
 			};
 		}
+		case 'EDIT_PROCUREMENT': {
+			if (state.data) {
+				const procurementIndex = state.data.data.findIndex(procurement => procurement._id === action.payload.procurementId);
+
+				if (!!~procurementIndex) state.data.data[procurementIndex] = action.payload.procurement;
+			}
+
+			return {
+				...state,
+				isFetching: false,
+			};
+		}
 		case 'UNAUTHORIZED_USER': {
 			return {
 				...state,

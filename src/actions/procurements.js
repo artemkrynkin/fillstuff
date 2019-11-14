@@ -52,7 +52,7 @@ export const createProcurement = (stockId, procurement) => {
 	return async dispatch => {
 		return await axios
 			.post(
-				`/api/procurements`,
+				'/api/procurements',
 				{
 					procurement,
 				},
@@ -68,6 +68,45 @@ export const createProcurement = (stockId, procurement) => {
 				dispatch({
 					type: 'CREATE_PROCUREMENT',
 					payload: procurement,
+				});
+
+				return Promise.resolve({ status: 'success' });
+			})
+			.catch(error => {
+				if (error.response) {
+					return Promise.resolve({ status: 'error', data: error.response.data });
+				} else {
+					console.error(error);
+
+					return Promise.resolve({ status: 'error' });
+				}
+			});
+	};
+};
+
+export const editProcurement = (stockId, procurementId, procurement) => {
+	return async dispatch => {
+		return await axios
+			.put(
+				`/api/procurements/${procurementId}`,
+				{
+					procurement,
+				},
+				{
+					params: {
+						stockId,
+					},
+				}
+			)
+			.then(response => {
+				const { data: procurement } = response;
+
+				dispatch({
+					type: 'EDIT_PROCUREMENT',
+					payload: {
+						procurementId,
+						procurement,
+					},
 				});
 
 				return Promise.resolve({ status: 'success' });

@@ -6,6 +6,8 @@ import { Provider } from 'react-redux';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
 import AppNavigator from './src/navigation/AppNavigator';
 
 import { initStore } from './src/store';
@@ -38,7 +40,9 @@ const AppView = props => {
 const App = () => {
 	return (
 		<Provider store={store}>
-			<AppView />
+			<SafeAreaProvider>
+				<AppView />
+			</SafeAreaProvider>
 		</Provider>
 	);
 };
@@ -69,7 +73,7 @@ function handleFinishLoading(setLoadingComplete) {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#fff',
+		backgroundColor: 'black',
 	},
 });
 

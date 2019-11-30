@@ -104,7 +104,7 @@ class WriteOffs extends Component {
 							)
 						) : (
 							<TableRow>
-								<TableCell colSpan={4} style={{ padding: 12 }}>
+								<TableCell colSpan={5} style={{ padding: 12 }}>
 									<div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />
 								</TableCell>
 							</TableRow>

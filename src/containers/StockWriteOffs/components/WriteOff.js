@@ -28,7 +28,7 @@ class WriteOff extends Component {
 					{writeOff.quantity}
 				</TableCell>
 				<TableCell align="right" width={80}>
-					{writeOff.cost || writeOff.receipt.unitSellingPrice} ₽
+					{!writeOff.position.isFree ? `${writeOff.cost || writeOff.receipt.unitSellingPrice} ₽` : '-'}
 				</TableCell>
 				{/* показывать год, только если списание не за текущий год */}
 				<TableCell align="right" width={140}>

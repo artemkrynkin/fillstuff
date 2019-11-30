@@ -70,10 +70,13 @@ class WriteOffs extends Component {
 						<TableRow>
 							<TableCell>Наименование</TableCell>
 							<TableCell width={150}>Имя</TableCell>
-							<TableCell align="right" width={115}>
-								Количество
+							<TableCell align="right" width={80}>
+								Кол-во
 							</TableCell>
-							<TableCell align="right" width={150}>
+							<TableCell align="right" width={80}>
+								Цена
+							</TableCell>
+							<TableCell align="right" width={140}>
 								Дата
 							</TableCell>
 							<TableCell align="right" width={50} />

@@ -26,7 +26,7 @@ writeOffsRouter.get(
 			endDateLt = req.query.endDate ? new Date(req.query.endDate) : currentDate,
 			startDateGte = req.query.startDate
 				? new Date(req.query.startDate)
-				: new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, currentDate.getDate()),
+				: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - 15),
 		} = req.query;
 
 		const conditions = {

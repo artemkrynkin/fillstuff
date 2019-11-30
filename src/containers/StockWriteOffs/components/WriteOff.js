@@ -24,11 +24,14 @@ class WriteOff extends Component {
 					)}
 				</TableCell>
 				<TableCell width={150}>{writeOff.user.name || 'Аноним'}</TableCell>
-				<TableCell align="right" width={115}>
+				<TableCell align="right" width={80}>
 					{writeOff.quantity}
 				</TableCell>
+				<TableCell align="right" width={80}>
+					{writeOff.cost || writeOff.receipt.unitSellingPrice} ₽
+				</TableCell>
 				{/* показывать год, только если списание не за текущий год */}
-				<TableCell align="right" width={150}>
+				<TableCell align="right" width={140}>
 					{moment(writeOff.createdAt).format('DD MMM в HH:mm')}
 				</TableCell>
 				<TableCell align="right" width={50} style={{ padding: '0 7px' }}>

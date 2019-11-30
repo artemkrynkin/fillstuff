@@ -245,30 +245,39 @@ const FormPositionReceiptCreateEdit = props => {
 					container
 				>
 					<Grid xs={6} item>
-						<Field
-							name="purchasePrice"
-							label={`Цена закупки${values.unitReceipt === 'nmp' && values.unitIssue === 'pce' ? ' упаковки' : ''}:`}
-							placeholder="0"
-							error={Boolean(touched.purchasePrice && errors.purchasePrice)}
-							helperText={(touched.purchasePrice && errors.purchasePrice) || ''}
-							as={TextField}
-							InputProps={{
-								endAdornment: <InputAdornment position="end">₽</InputAdornment>,
-								inputComponent: NumberFormat,
-								inputProps: {
-									...currencyFormatInputProps,
-								},
-								onChange: ({ target: { value } }) => {
-									if (values.unitReceipt === 'nmp' && values.unitIssue === 'pce') {
-										onUnitSellingPriceCalc(value, 'purchasePrice', values, setFieldValue);
-									} else {
-										setFieldValue('purchasePrice', value);
-										setFieldValue('sellingPrice', value);
-									}
-								},
-							}}
-							fullWidth
-						/>
+						{type === 'create' ? (
+							<Field
+								name="purchasePrice"
+								label={`Цена закупки${values.unitReceipt === 'nmp' && values.unitIssue === 'pce' ? ' упаковки' : ''}:`}
+								placeholder="0"
+								error={Boolean(touched.purchasePrice && errors.purchasePrice)}
+								helperText={(touched.purchasePrice && errors.purchasePrice) || ''}
+								as={TextField}
+								InputProps={{
+									endAdornment: <InputAdornment position="end">₽</InputAdornment>,
+									inputComponent: NumberFormat,
+									inputProps: {
+										...currencyFormatInputProps,
+									},
+									onChange: ({ target: { value } }) => {
+										if (values.unitReceipt === 'nmp' && values.unitIssue === 'pce') {
+											onUnitSellingPriceCalc(value, 'purchasePrice', values, setFieldValue);
+										} else {
+											setFieldValue('purchasePrice', value);
+											setFieldValue('sellingPrice', value);
+										}
+									},
+								}}
+								fullWidth
+							/>
+						) : (
+							<TextField
+								label={`Цена закупки${values.unitReceipt === 'nmp' && values.unitIssue === 'pce' ? ' упаковки' : ''}:`}
+								defaultValue={values.activeReceipt.purchasePrice}
+								disabled
+								fullWidth
+							/>
+						)}
 					</Grid>
 
 					<Grid xs={6} item>

@@ -18,9 +18,9 @@ const positionSchema = (depopulate = false) => {
 			.when('divided', (divided, schema) => {
 				return divided ? schema.min(1).required() : schema;
 			}),
-		extraCharge: Yup.number()
-			.min(0)
-			.required(),
+		extraCharge: Yup.number().when('isFree', (isFree, schema) => {
+			return isFree ? schema.transform(value => (isNaN(value) ? 0 : value)) : schema.min(0).required();
+		}),
 		shopName: Yup.string().required(),
 		shopLink: Yup.string(),
 		characteristics: Yup.array()

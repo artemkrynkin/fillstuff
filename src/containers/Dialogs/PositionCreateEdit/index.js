@@ -21,6 +21,7 @@ class DialogPositionCreateEdit extends Component {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
 		onExitedDialog: PropTypes.func,
+		onCallback: PropTypes.func,
 		currentStockId: PropTypes.string.isRequired,
 		selectedPosition: PropTypes.object,
 	};
@@ -60,10 +61,12 @@ class DialogPositionCreateEdit extends Component {
 	};
 
 	onPositionCreateEdit = (values, actions) => {
-		const { type, onCloseDialog, position = positionSchema(true).cast(values) } = this.props;
+		const { type, onCloseDialog, onCallback, position = positionSchema(true).cast(values) } = this.props;
 
 		if (type === 'create') {
 			this.props.createPosition(position).then(response => {
+				if (onCallback !== undefined) onCallback(response);
+
 				if (response.status === 'success') {
 					this.props.getStockStatus();
 					onCloseDialog();
@@ -71,6 +74,8 @@ class DialogPositionCreateEdit extends Component {
 			});
 		} else {
 			this.props.editPosition(position._id, position).then(response => {
+				if (onCallback !== undefined) onCallback(response);
+
 				if (response.status === 'success') {
 					this.props.getStockStatus();
 					onCloseDialog();

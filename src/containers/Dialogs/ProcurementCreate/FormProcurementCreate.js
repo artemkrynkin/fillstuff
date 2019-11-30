@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Field, FastField, FieldArray } from 'formik';
+import loadable from '@loadable/component';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
@@ -21,7 +22,14 @@ import NumberFormat, { currencyFormatProps, currencyFormatInputProps } from 'src
 import { SelectAutocomplete } from 'src/components/selectAutocomplete';
 import Tooltip from 'src/components/Tooltip';
 
+import { getCharacteristics } from 'src/actions/characteristics';
+
 import styles from './index.module.css';
+import { connect } from 'react-redux';
+
+const DialogPositionCreate = loadable(() =>
+	import('src/containers/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateEdit" */)
+);
 
 const onUnitSellingPriceCalc = (value, fieldName, receipt, index, setFieldValue) => {
 	setFieldValue(`receipts.${index}.${fieldName}`, value);
@@ -35,7 +43,7 @@ const onUnitSellingPriceCalc = (value, fieldName, receipt, index, setFieldValue)
 
 const FormProcurementCreate = props => {
 	const {
-		onOpenDialogPositionCreate,
+		currentStock,
 		receiptInitialValues,
 		onHandleEditFormProcurement,
 		positions: {
@@ -46,12 +54,21 @@ const FormProcurementCreate = props => {
 		formEditable,
 		formikProps: { errors, isSubmitting, submitForm, setFieldValue, touched, values },
 	} = props;
+	const [dialogPositionCreate, setDialogPositionCreate] = useState(false);
 	const [textSearchPosition, setTextSearchPosition] = useState('');
 
-	const receipts =
+	const positionsNotSelected =
 		!isLoadingPositions && positions
 			? positions.filter(position => !values.receipts.some(receipt => receipt.position && receipt.position._id === position._id))
 			: [];
+
+	const onOpenDialogPositionCreate = async () => {
+		await props.getCharacteristics();
+
+		setDialogPositionCreate(true);
+	};
+
+	const onCloseDialogPositionCreate = () => setDialogPositionCreate(false);
 
 	const onChangeTextSearchPosition = value => setTextSearchPosition(value);
 
@@ -144,9 +161,11 @@ const FormProcurementCreate = props => {
 												menuPosition="fixed"
 												placeholder="Выберите позицию"
 												noOptionsMessage={() =>
-													receipts.length === 0 ? 'Нет позиций для выбора. Создайте новую позицию' : 'Среди позиций совпадений не найдено.'
+													positionsNotSelected.length === 0
+														? 'Нет позиций для выбора. Создайте новую позицию'
+														: 'Среди позиций совпадений не найдено.'
 												}
-												options={receipts}
+												options={positionsNotSelected}
 												isDisabled={isSubmitting || !formEditable}
 												isClearable
 											/>
@@ -488,6 +507,35 @@ const FormProcurementCreate = props => {
 									) : null}
 								</Grid>
 							))}
+
+							<DialogPositionCreate
+								type="create"
+								dialogOpen={dialogPositionCreate}
+								onCloseDialog={onCloseDialogPositionCreate}
+								onCallback={response => {
+									if (response.status === 'success') {
+										const position = response.data;
+
+										arrayHelpers.push(
+											receiptInitialValues({
+												_id: position._id,
+												unitIssue: position.unitIssue,
+												unitReceipt: position.unitReceipt,
+												isFree: position.isFree,
+												extraCharge: position.extraCharge,
+												label:
+													position.name +
+													position.characteristics.reduce(
+														(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
+														''
+													),
+												value: position._id,
+											})
+										);
+									}
+								}}
+								currentStockId={currentStock._id}
+							/>
 						</div>
 					)}
 				/>
@@ -538,4 +586,15 @@ const FormProcurementCreate = props => {
 	);
 };
 
-export default FormProcurementCreate;
+const mapDispatchToProps = (dispatch, ownProps) => {
+	const { currentStock } = ownProps;
+
+	return {
+		getCharacteristics: () => dispatch(getCharacteristics(currentStock._id)),
+	};
+};
+
+export default connect(
+	null,
+	mapDispatchToProps
+)(FormProcurementCreate);

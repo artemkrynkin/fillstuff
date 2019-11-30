@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import loadable from '@loadable/component';
 
 import { Formik } from 'formik';
 
@@ -11,15 +10,10 @@ import { sleep } from 'shared/utils';
 import { PDDialog, PDDialogTitle } from 'src/components/Dialog';
 
 import { getStockStatus } from 'src/actions/stocks';
-import { getCharacteristics } from 'src/actions/characteristics';
 import { createProcurement } from 'src/actions/procurements';
 
 import FormProcurementCreate from './FormProcurementCreate';
 import procurementSchema from './procurementSchema';
-
-const DialogPositionCreate = loadable(() =>
-	import('src/containers/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateEdit" */)
-);
 
 const receiptInitialValues = (position, remainingValues) => ({
 	position,
@@ -44,19 +38,10 @@ class ProcurementCreate extends Component {
 	};
 
 	initialState = {
-		dialogPositionCreate: false,
 		formEditable: true,
 	};
 
 	state = this.initialState;
-
-	onOpenDialogPositionCreate = async () => {
-		await this.props.getCharacteristics();
-
-		this.setState({ dialogPositionCreate: true });
-	};
-
-	onCloseDialogPositionCreate = () => this.setState({ dialogPositionCreate: false });
 
 	onHandleEditFormProcurement = value => this.setState({ formEditable: value });
 
@@ -218,7 +203,7 @@ class ProcurementCreate extends Component {
 
 	render() {
 		const { dialogOpen, onCloseDialog, currentStock, positions } = this.props;
-		const { dialogPositionCreate, formEditable } = this.state;
+		const { formEditable } = this.state;
 
 		const initialValues = {
 			number: '',
@@ -257,7 +242,6 @@ class ProcurementCreate extends Component {
 					{props => (
 						<FormProcurementCreate
 							currentStock={currentStock}
-							onOpenDialogPositionCreate={this.onOpenDialogPositionCreate}
 							receiptInitialValues={receiptInitialValues}
 							onHandleEditFormProcurement={this.onHandleEditFormProcurement}
 							positions={positions}
@@ -266,13 +250,6 @@ class ProcurementCreate extends Component {
 						/>
 					)}
 				</Formik>
-
-				<DialogPositionCreate
-					type="create"
-					dialogOpen={dialogPositionCreate}
-					onCloseDialog={this.onCloseDialogPositionCreate}
-					currentStockId={currentStock._id}
-				/>
 			</PDDialog>
 		);
 	}
@@ -307,7 +284,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 	return {
 		getStockStatus: () => dispatch(getStockStatus(currentStock._id)),
-		getCharacteristics: () => dispatch(getCharacteristics(currentStock._id)),
 		createProcurement: procurement => dispatch(createProcurement(currentStock._id, procurement)),
 	};
 };

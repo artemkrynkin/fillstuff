@@ -44,7 +44,7 @@ const PriceDisplay = props => {
 				</div>
 			</Tooltip>
 		);
-	else return `${!isFree ? price + ' ₽' : '-'}`;
+	else return !isFree ? `${price} ₽` : 'Бесплатно';
 };
 
 PriceDisplay.propTypes = {

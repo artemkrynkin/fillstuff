@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ClassNames from 'classnames';
 import moment from 'moment';
+import validator from 'validator';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Grid from '@material-ui/core/Grid';
@@ -128,6 +129,7 @@ class Procurement extends Component {
 								<TextField
 									value={newComment}
 									onChange={({ target: { value } }) => this.onSetNewComment(value)}
+									onBlur={validator.equals(procurement.comment, newComment) ? this.onHandleCommentEditable : () => {}}
 									rows={2}
 									rowsMax={4}
 									multiline
@@ -227,7 +229,7 @@ class Procurement extends Component {
 										{receipt.unitPurchasePrice} ₽
 									</TableCell>
 									<TableCell align="right" width={160}>
-										{receipt.unitSellingPrice} ₽
+										{!receipt.position.isFree ? `${receipt.unitSellingPrice} ₽` : 'Бесплатно'}
 									</TableCell>
 								</TableRow>
 							))}

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import ClassNames from 'classnames';
 import moment from 'moment';
+import validator from 'validator';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ButtonBase from '@material-ui/core/ButtonBase';
@@ -84,6 +85,7 @@ const Procurement = props => {
 						<TextField
 							defaultValue={newComment}
 							onChange={({ target: { value } }) => onSetNewComment(value)}
+							onBlur={validator.equals(procurement.comment, newComment) ? onHandleCommentEditable : () => {}}
 							rows={2}
 							rowsMax={4}
 							multiline
@@ -187,7 +189,7 @@ const Procurement = props => {
 									{receipt.unitPurchasePrice} ₽
 								</TableCell>
 								<TableCell align="right" width={160}>
-									{receipt.unitSellingPrice} ₽
+									{!receipt.position.isFree ? `${receipt.unitSellingPrice} ₽` : 'Бесплатно'}
 								</TableCell>
 							</TableRow>
 						))}

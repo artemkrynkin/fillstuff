@@ -86,6 +86,7 @@ const Procurement = props => {
 							defaultValue={newComment}
 							onChange={({ target: { value } }) => onSetNewComment(value)}
 							onBlur={validator.equals(procurement.comment, newComment) ? onHandleCommentEditable : () => {}}
+							onFocus={event => (event.target.selectionStart = event.target.value.length)}
 							rows={2}
 							rowsMax={4}
 							multiline

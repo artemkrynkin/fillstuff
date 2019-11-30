@@ -130,6 +130,7 @@ class Procurement extends Component {
 									value={newComment}
 									onChange={({ target: { value } }) => this.onSetNewComment(value)}
 									onBlur={validator.equals(procurement.comment, newComment) ? this.onHandleCommentEditable : () => {}}
+									onFocus={event => (event.target.selectionStart = event.target.value.length)}
 									rows={2}
 									rowsMax={4}
 									multiline

@@ -22,7 +22,7 @@ const StockProcurements = props => {
 
 	const onOpenDialogProcurementCreate = async () => {
 		props.getPositionsInGroups();
-		await props.getPositions();
+		await props.getPositions(false);
 
 		setDialogProcurementCreate(true);
 	};
@@ -60,11 +60,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 	return {
 		getPositionsInGroups: () => dispatch(getPositionsInGroups(currentStock._id)),
-		getPositions: () => dispatch(getPositions(currentStock._id)),
+		getPositions: request => dispatch(getPositions(currentStock._id, request)),
 	};
 };
 
-export default connect(
-	null,
-	mapDispatchToProps
-)(StockProcurements);
+export default connect(null, mapDispatchToProps)(StockProcurements);

@@ -71,7 +71,7 @@ const useStylesArrow = makeStyles(() => ({
 }));
 
 const Dropdown = props => {
-	const { anchor, open, onClose, arrow = true, offset, children, ...remainingProps } = props;
+	const { anchor, open, onClose, arrow = true, offset, children, innerContentStyle, ...remainingProps } = props;
 	const { arrow: arrowClasses, popper } = useStylesArrow();
 	const [arrowRef, setArrowRef] = useState(null);
 
@@ -120,7 +120,7 @@ const Dropdown = props => {
 					<Paper elevation={3}>
 						{arrow ? <span className={arrowClasses} ref={setArrowRef} /> : null}
 						<ClickAwayListener onClickAway={handleClose}>
-							<div>{children}</div>
+							<div style={innerContentStyle}>{children}</div>
 						</ClickAwayListener>
 					</Paper>
 				</Fade>

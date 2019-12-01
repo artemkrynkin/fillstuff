@@ -39,6 +39,15 @@ export const BliksideTheme = createMuiTheme({
 		MuiButtonBase: {
 			disableRipple: true,
 		},
+		MuiTooltip: {
+			enterDelay: 50,
+			leaveDelay: 100,
+			TransitionComponent: Fade,
+			TransitionProps: {
+				timeout: 150,
+			},
+			arrow: true,
+		},
 	},
 	palette: {
 		primary: {
@@ -126,9 +135,10 @@ export const BliksideTheme = createMuiTheme({
 		},
 		MuiTooltip: {
 			tooltip: {
-				backgroundColor: theme.slateGrey.cSg3,
+				backgroundColor: `rgba(${ColorConvert.hex.rgb(theme.slateGrey.cSg5)}, 0.85)`,
 				borderRadius: 5,
 				fontSize: 12,
+				fontWeight: 400,
 				lineHeight: 1.2,
 			},
 			tooltipPlacementLeft: {
@@ -154,6 +164,9 @@ export const BliksideTheme = createMuiTheme({
 				'@media (min-width: 600px)': {
 					margin: '10px 0',
 				},
+			},
+			arrow: {
+				color: `rgba(${ColorConvert.hex.rgb(theme.slateGrey.cSg5)}, 0.85)`,
 			},
 		},
 		MuiPaper: {

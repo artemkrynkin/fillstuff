@@ -33,6 +33,7 @@ const Index = props => {
 		amountTo: queryInitialValues.amountTo || '',
 		amountFromView: queryInitialValues.amountFrom || '',
 		amountToView: queryInitialValues.amountTo || '',
+		position: queryInitialValues.position || 'all',
 		role: queryInitialValues.role || 'all',
 	};
 

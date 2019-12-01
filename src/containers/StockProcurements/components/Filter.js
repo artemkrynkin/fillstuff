@@ -11,6 +11,7 @@ import { sleep } from 'shared/utils';
 
 import { history } from 'src/helpers/history';
 
+import { getPositions } from 'src/actions/positions';
 import { getProcurements } from 'src/actions/procurements';
 
 import FormFilter from './FormFilter';
@@ -22,12 +23,14 @@ let filterNumberFieldTimer;
 
 class Filter extends Component {
 	state = {
-		dropdown1: false,
-		dropdown4: false,
+		dropdownAmount: false,
+		dropdownPosition: false,
+		dropdownRole: false,
 	};
 
-	refDropdown1 = createRef();
-	refDropdown4 = createRef();
+	refDropdownAmount = createRef();
+	refDropdownPosition = createRef();
+	refDropdownRole = createRef();
 	refFilterNumberInput = createRef();
 
 	handlerDropdown = ({ name, value }, values, setFieldValue) => {
@@ -35,7 +38,7 @@ class Filter extends Component {
 
 		if (values) {
 			switch (name) {
-				case 'dropdown1':
+				case 'dropdownAmount':
 					if (!values.amountFromView || !values.amountToView) {
 						setFieldValue('amountFrom', '', false);
 						setFieldValue('amountTo', '', false);
@@ -44,7 +47,9 @@ class Filter extends Component {
 						setFieldValue('amountTo', values.amountToView, false);
 					}
 					break;
-				case 'dropdown4':
+				case 'dropdownPosition':
+					break;
+				case 'dropdownRole':
 					break;
 				default:
 					return;
@@ -69,7 +74,7 @@ class Filter extends Component {
 	};
 
 	onResetFilterAmount = (setFieldValue, submitForm) => {
-		this.handlerDropdown({ name: 'dropdown1' });
+		this.handlerDropdown({ name: 'dropdownAmount' });
 
 		setFieldValue('amountFrom', '', false);
 		setFieldValue('amountTo', '', false);
@@ -80,9 +85,16 @@ class Filter extends Component {
 	};
 
 	onChangeFilterRole = (role, setFieldValue, submitForm) => {
-		this.handlerDropdown({ name: 'dropdown4' });
+		this.handlerDropdown({ name: 'dropdownRole' });
 
 		setFieldValue('role', role, false);
+		submitForm();
+	};
+
+	onChangeFilterPosition = (position, setFieldValue, submitForm) => {
+		this.handlerDropdown({ name: 'dropdownPosition' });
+
+		setFieldValue('position', position, false);
 		submitForm();
 	};
 
@@ -92,6 +104,7 @@ class Filter extends Component {
 		setFieldValue('amountTo', '', false);
 		setFieldValue('amountFromView', '', false);
 		setFieldValue('amountToView', '', false);
+		setFieldValue('position', 'all', false);
 		setFieldValue('role', 'all', false);
 		submitForm();
 	};
@@ -121,6 +134,7 @@ class Filter extends Component {
 			prevProps.procurementsQueryParams.number !== this.props.procurementsQueryParams.number ||
 			prevProps.procurementsQueryParams.amountFrom !== this.props.procurementsQueryParams.amountFrom ||
 			prevProps.procurementsQueryParams.amountTo !== this.props.procurementsQueryParams.amountTo ||
+			prevProps.procurementsQueryParams.position !== this.props.procurementsQueryParams.position ||
 			prevProps.procurementsQueryParams.role !== this.props.procurementsQueryParams.role
 		) {
 			const filterParams = Object.assign({}, this.props.procurementsQueryParams);
@@ -131,9 +145,14 @@ class Filter extends Component {
 		}
 	}
 
+	componentDidMount() {
+		this.props.getPositions();
+	}
+
 	render() {
 		const {
 			currentStock,
+			positions,
 			members = currentStock.members
 				.filter(member => member.role.match(/owner|admin/))
 				.map(member => {
@@ -145,7 +164,7 @@ class Filter extends Component {
 				.sort((memberA, memberB) => (memberA.roleBitMask > memberB.roleBitMask ? -1 : 1)),
 			procurementsQueryParams,
 		} = this.props;
-		const { dropdown1, dropdown4 } = this.state;
+		const { dropdownAmount, dropdownPosition, dropdownRole } = this.state;
 
 		return (
 			<Paper className={styles.container}>
@@ -163,16 +182,22 @@ class Filter extends Component {
 							onChangeFilterNumber={this.onChangeFilterNumber}
 							onClearFilterNumber={this.onClearFilterNumber}
 							onResetFilterAmount={this.onResetFilterAmount}
+							onChangeFilterPosition={this.onChangeFilterPosition}
 							onChangeFilterRole={this.onChangeFilterRole}
 							onResetAllFilters={this.onResetAllFilters}
+							positions={positions}
 							members={members}
-							dropdown1={{
-								state: dropdown1,
-								ref: this.refDropdown1,
+							dropdownAmount={{
+								state: dropdownAmount,
+								ref: this.refDropdownAmount,
 							}}
-							dropdown4={{
-								state: dropdown4,
-								ref: this.refDropdown4,
+							dropdownPosition={{
+								state: dropdownPosition,
+								ref: this.refDropdownPosition,
+							}}
+							dropdownRole={{
+								state: dropdownRole,
+								ref: this.refDropdownRole,
 							}}
 							refFilterNumberInput={this.refFilterNumberInput}
 							formikProps={props}
@@ -184,15 +209,36 @@ class Filter extends Component {
 	}
 }
 
+const mapStateToProps = state => {
+	const {
+		positions: {
+			data: positionsData,
+			isFetching: isLoadingPositions,
+			// error: errorPositions
+		},
+	} = state;
+
+	const positions = {
+		data: null,
+		isFetching: isLoadingPositions,
+	};
+
+	if (!isLoadingPositions && positionsData) {
+		positions.data = positionsData.filter(position => position.receipts.length);
+	}
+
+	return {
+		positions: positions,
+	};
+};
+
 const mapDispatchToProps = (dispatch, ownProps) => {
 	const { currentStock } = ownProps;
 
 	return {
+		getPositions: () => dispatch(getPositions(currentStock._id)),
 		getProcurements: params => dispatch(getProcurements(currentStock._id, params)),
 	};
 };
 
-export default connect(
-	null,
-	mapDispatchToProps
-)(Filter);
+export default connect(mapStateToProps, mapDispatchToProps)(Filter);

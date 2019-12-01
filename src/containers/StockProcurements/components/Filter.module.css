@@ -66,7 +66,7 @@
   white-space: nowrap;
 }
 
-.filterButtonLink svg {
+.filterButtonLink > svg {
   color: var(--c-hex-t-300);
   font-size: 12px;
   margin: 2px 0 0 5px;
@@ -98,6 +98,13 @@
 
 .textFieldErrorHidden > p {
   display: none;
+}
+
+.isArchived {
+  color: var(--c-hex-o-15);
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 5px;
 }
 
 .memberPhoto {

@@ -8,7 +8,6 @@ import Stock from 'api/models/stock';
 import Position from 'api/models/position';
 import Receipt from 'api/models/receipt';
 import Procurement from 'api/models/procurement';
-import positionsRouter from '../positions';
 
 const procurementsRouter = Router();
 
@@ -19,7 +18,7 @@ procurementsRouter.get(
 	isAuthedResolver,
 	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
 	async (req, res, next) => {
-		const { stockId, number, amountFrom, amountTo, role } = req.query;
+		const { stockId, number, amountFrom, amountTo, position, role } = req.query;
 
 		let conditions = {
 			stock: stockId,
@@ -51,6 +50,10 @@ procurementsRouter.get(
 
 		let procurements = await procurementsPromise;
 		const procurementsCount = await procurementsCountPromise;
+
+		if (position && position !== 'all') {
+			procurements = procurements.filter(procurement => procurement.receipts.some(receipt => String(receipt.position._id) === position));
+		}
 
 		switch (role) {
 			case 'owners':

@@ -10,7 +10,8 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import TextField from '@material-ui/core/TextField/TextField';
+import TextField from '@material-ui/core/TextField';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { percentOfNumber } from 'shared/utils';
 
@@ -20,7 +21,6 @@ import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
 import { PDDialogActions } from 'src/components/Dialog';
 import NumberFormat, { currencyFormatProps, currencyFormatInputProps } from 'src/components/NumberFormat';
 import { SelectAutocomplete } from 'src/components/selectAutocomplete';
-import Tooltip from 'src/components/Tooltip';
 
 import { getCharacteristics } from 'src/actions/characteristics';
 
@@ -338,7 +338,7 @@ const FormProcurementCreate = props => {
 													<div>
 														<NumberFormat
 															value={receipt.purchasePrice}
-															renderText={value => `Начальная цена закупки: ${value}`}
+															renderText={value => `Цена закупки: ${value}`}
 															displayType="text"
 															onValueChange={() => {}}
 															{...currencyFormatProps}
@@ -353,7 +353,6 @@ const FormProcurementCreate = props => {
 														/>
 													</div>
 												}
-												placement="bottom"
 											>
 												<TextField
 													label={`Цена закупки${
@@ -431,7 +430,7 @@ const FormProcurementCreate = props => {
 														<div>
 															<NumberFormat
 																value={receipt.unitSellingPrice}
-																renderText={value => `Начальная цена продажи: ${value}`}
+																renderText={value => `Цена продажи: ${value}`}
 																displayType="text"
 																onValueChange={() => {}}
 																{...currencyFormatProps}
@@ -456,7 +455,6 @@ const FormProcurementCreate = props => {
 															) : null}
 														</div>
 													}
-													placement="bottom"
 												>
 													<TextField
 														label={

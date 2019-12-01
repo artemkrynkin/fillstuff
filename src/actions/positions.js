@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-export const getPositions = stockId => {
+export const getPositions = (stockId, request = true) => {
 	return async dispatch => {
-		dispatch({ type: 'REQUEST_POSITIONS' });
+		if (request) dispatch({ type: 'REQUEST_POSITIONS' });
 
 		return await axios
 			.get('/api/positions', {

@@ -45,7 +45,7 @@ writeOffsRouter.get(
 				populate: {
 					path: 'characteristics',
 				},
-				select: 'name characteristics',
+				select: 'name isFree characteristics',
 			})
 			.populate({
 				path: 'receipt',

@@ -95,8 +95,11 @@ const Login = props => {
 											{errors.unknown}
 										</FormHelperText>
 									) : null}
-									<Button type="submit" disabled={isSubmitting} className={styles.loginBtn} variant="contained" color="primary">
-										{isSubmitting ? <CircularProgress size={20} /> : 'Войти'}
+									<Button type="submit" disabled={isSubmitting} variant="contained" color="primary" fullWidth>
+										{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
+										<span className="loading-button-label" style={{ opacity: Number(!isSubmitting) }}>
+											Войти
+										</span>
 									</Button>
 								</Form>
 							);
@@ -120,7 +123,4 @@ const mapDispatchToProps = () => {
 	};
 };
 
-export default connect(
-	null,
-	mapDispatchToProps
-)(Login);
+export default connect(null, mapDispatchToProps)(Login);

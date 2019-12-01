@@ -57,7 +57,7 @@ const FormProcurementCreate = props => {
 	const [dialogPositionCreate, setDialogPositionCreate] = useState(false);
 	const [textSearchPosition, setTextSearchPosition] = useState('');
 
-	const positionsNotSelected =
+	const positionsAvailable =
 		!isLoadingPositions && positions
 			? positions.filter(position => !values.receipts.some(receipt => receipt.position && receipt.position._id === position._id))
 			: [];
@@ -161,11 +161,11 @@ const FormProcurementCreate = props => {
 												menuPosition="fixed"
 												placeholder="Выберите позицию"
 												noOptionsMessage={() =>
-													positionsNotSelected.length === 0
+													positionsAvailable.length === 0
 														? 'Нет позиций для выбора. Создайте новую позицию'
 														: 'Среди позиций совпадений не найдено.'
 												}
-												options={positionsNotSelected}
+												options={positionsAvailable}
 												isDisabled={isSubmitting || !formEditable}
 												isClearable
 											/>
@@ -594,7 +594,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	};
 };
 
-export default connect(
-	null,
-	mapDispatchToProps
-)(FormProcurementCreate);
+export default connect(null, mapDispatchToProps)(FormProcurementCreate);

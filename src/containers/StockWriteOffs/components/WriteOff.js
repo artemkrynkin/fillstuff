@@ -23,7 +23,7 @@ class WriteOff extends Component {
 						''
 					)}
 				</TableCell>
-				<TableCell width={150}>{writeOff.user.name || 'Аноним'}</TableCell>
+				<TableCell width={150}>{writeOff.user.name}</TableCell>
 				<TableCell align="right" width={80}>
 					{writeOff.quantity}
 				</TableCell>

@@ -537,6 +537,9 @@ export const BliksideTheme = createMuiTheme({
 					padding: '10px',
 				},
 			},
+			multiline: {
+				padding: 0,
+			},
 			formControl: {
 				'label + &': {
 					marginTop: 5,
@@ -692,6 +695,72 @@ export const BliksideTheme = createMuiTheme({
 			body: {
 				color: theme.blueGrey.cBg700,
 				borderBottomColor: theme.brightness.cBr4,
+			},
+		},
+		MuiPickersStaticWrapper: {
+			staticWrapperRoot: {
+				backgroundColor: null,
+			},
+		},
+		MuiPickersCalendarHeader: {
+			switchHeader: {
+				paddingRight: 5,
+			},
+			transitionContainer: {
+				height: 24,
+				order: -1,
+				'& > p': {
+					color: theme.blueGrey.cBg200,
+					fontSize: 13,
+					fontWeight: 600,
+					lineHeight: 1.4,
+					padding: '3px 0 3px 14px',
+					textAlign: 'left',
+					textTransform: 'capitalize',
+				},
+			},
+			dayLabel: {
+				color: theme.blueGrey.cBg300,
+				fontSize: 13,
+				fontWeight: 600,
+				margin: '0 4px',
+				textTransform: 'capitalize',
+			},
+			iconButton: {
+				color: theme.blueGrey.cBg300,
+				margin: '0',
+				'& svg': {
+					fontSize: 20,
+					width: '20px !important',
+				},
+				'&:hover': {
+					backgroundColor: theme.blueGrey.cBg50,
+				},
+				'&$disabled': {
+					color: theme.blueGrey.cBg100,
+				},
+			},
+			disabled: {},
+		},
+		MuiPickersDay: {
+			day: {
+				color: theme.blueGrey.cBg600,
+				height: 28,
+				margin: '4px 8px',
+				width: 28,
+				'& p': {
+					fontWeight: 600,
+				},
+				'&:hover': {
+					backgroundColor: theme.blueGrey.cBg50,
+				},
+			},
+			current: {
+				border: `1px solid ${theme.teal.cT300}`,
+				color: null,
+			},
+			dayDisabled: {
+				color: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg600)}, 0.2)`,
 			},
 		},
 	},

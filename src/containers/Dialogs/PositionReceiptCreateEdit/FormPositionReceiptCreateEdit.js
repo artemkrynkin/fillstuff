@@ -248,7 +248,7 @@ const FormPositionReceiptCreateEdit = props => {
 						{type === 'create' ? (
 							<Field
 								name="purchasePrice"
-								label={`Цена закупки${values.unitReceipt === 'nmp' && values.unitIssue === 'pce' ? ' упаковки' : ''}:`}
+								label={`Цена покупки${values.unitReceipt === 'nmp' && values.unitIssue === 'pce' ? ' упаковки' : ''}:`}
 								placeholder="0"
 								error={Boolean(touched.purchasePrice && errors.purchasePrice)}
 								helperText={(touched.purchasePrice && errors.purchasePrice) || ''}
@@ -272,7 +272,7 @@ const FormPositionReceiptCreateEdit = props => {
 							/>
 						) : (
 							<TextField
-								label={`Цена закупки${values.unitReceipt === 'nmp' && values.unitIssue === 'pce' ? ' упаковки' : ''}:`}
+								label={`Цена покупки${values.unitReceipt === 'nmp' && values.unitIssue === 'pce' ? ' упаковки' : ''}:`}
 								defaultValue={values.activeReceipt.purchasePrice}
 								disabled
 								fullWidth

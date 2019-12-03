@@ -26,6 +26,10 @@ let Procurement = new Schema({
 		type: String,
 		required: [true, i18n.__('Обязательное поле')],
 	},
+	date: {
+		type: Date,
+		required: [true, i18n.__('Обязательное поле')],
+	},
 	costDelivery: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
@@ -55,10 +59,6 @@ let Procurement = new Schema({
 			required: [true, i18n.__('Обязательное поле')],
 		},
 	],
-	comment: {
-		type: String,
-		trim: true,
-	},
 	__v: {
 		type: Number,
 		select: false,

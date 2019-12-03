@@ -1,50 +1,5 @@
-.filterButtonLink {
-  background: none;
-  border: none;
-  color: var(--c-hex-t-500);
-  display: flex;
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.filterButtonLink:hover {
-  color: var(--c-hex-t-400);
-}
-
-.filterButtonLink span {
-  display: block;
-  max-width: 220px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.filterButtonLink svg {
-  color: var(--c-hex-t-300);
-  font-size: 12px;
-  margin: 2px 0 0 5px;
-  transform: rotate(-90deg);
-  transition: color 150ms ease-out, transform 150ms ease-out;
-  width: 8px !important;
-}
-
-.filterButtonLink svg:global(.open) {
-  transform: rotate(0deg);
-}
-
 .procurement {
   margin-bottom: 16px;
-}
-
-.procurementHeader {
-  margin-bottom: 15px;
-}
-
-.procurementTotal {
-  border-top: 1px solid var(--c-hex-br-5);
-  margin: 10px -15px 0;
-  padding: 10px 15px 0;
-  width: calc(100% + 30px)
 }
 
 .procurementNumber {
@@ -52,54 +7,40 @@
   display: inline-block;
   font-size: 16px;
   font-weight: 600;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 .procurementNumber:hover {
   color: var(--c-hex-t-400);
 }
 
-.procurementCreatedDate,
-.procurementUserName {
-  color: var(--c-hex-bg-400);
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.procurementCreatedDate {
-  margin-right: 15px;
-}
-
 .procurementUser {
   align-items: center;
   display: flex;
+  margin-bottom: 15px;
 }
 
 .procurementUserPhoto {
-  align-items: flex-end;
-  border-radius: 50%;
-  display: flex;
-  flex: none;
-  height: 18px;
-  justify-content: center;
+  background-color: var(--c-hex-br-5);
+  height: 20px;
   margin-right: 5px;
-  overflow: hidden;
-  width: 18px;
+  width: 20px;
 }
 
-.procurementUserPhoto img {
+.procurementUserIcon {
+  align-items: flex-end;
+  justify-content: center;
+  border: 2px solid var(--c-hex-bg-100);
+  border-radius: 50%;
+  display: flex;
   height: 100%;
+  overflow: hidden;
   width: 100%;
 }
 
-.procurementUserPhotoNull {
-  background-color: var(--c-hex-br-5);
-  border: 1px solid var(--c-hex-bg-100);
-}
-
-.procurementUserPhotoNull svg {
+.procurementUserPhoto svg {
   color: rgba(255, 255, 255, 0.9);
-  font-size: 12px;
+  font-size: 24px;
 }
 
 .procurementUserName {
@@ -109,33 +50,45 @@
   white-space: nowrap;
 }
 
-.procurementComment {
-  margin-bottom: 10px;
+.procurementUserName {
+  color: var(--c-hex-bg-500);
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 10px;
 }
 
-.procurementCommentTitle {
-  color: var(--c-hex-bg-300);
+.detailsButton {
+  background: none;
+  border: none;
+  color: var(--c-hex-bg-500);
+  display: flex;
   font-size: 13px;
-  margin-bottom: 5px;
+  font-weight: 500;
 }
 
-.procurementCommentContent {
-  color: var(--c-hex-bg-700);
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 13px;
-  line-height: 1.2;
-  margin: 0 -4px;
-  padding: 4px;
-  white-space: pre;
+.detailsButton:hover {
+  color: var(--c-hex-bg-400);
 }
 
-.procurementCommentContent:hover {
-  background-color: var(--c-hex-br-4);
+.detailsButton span {
+  display: block;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.procurementCommentContent span {
-  color: var(--c-hex-bg-300);
+.detailsButton svg {
+  color: var(--c-hex-bg-600);
+  font-size: 12px;
+  margin: 2px 0 0 5px;
+  transform: rotate(-90deg);
+  transition: color 150ms ease-out, transform 150ms ease-out;
+  width: 8px !important;
+}
+
+.detailsButton svg:global(.open) {
+  transform: rotate(0deg);
 }
 
 .procurementTotalPurchasePrice,
@@ -145,7 +98,8 @@
 }
 
 .procurementTotalPurchasePrice {
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 600;
   margin-bottom: 10px;
 }
 
@@ -166,11 +120,15 @@
 }
 
 .procurementTotalPurchasePrice span {
-  font-size: 20px;
+  font-size: 16px;
+}
+
+.procurementReceiptsCollapse {
+  margin: 0 -15px;
 }
 
 .procurementReceipts {
-  margin: 10px 0 0;
+  padding: 0 15px;
 }
 
 .isArchived {

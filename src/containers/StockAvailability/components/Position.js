@@ -73,7 +73,7 @@ const Position = props => {
 								: undefined
 						}
 						priceChangeIsGood={false}
-						title="цена закупки"
+						title="цена покупки"
 					/>
 				) : (
 					'-'

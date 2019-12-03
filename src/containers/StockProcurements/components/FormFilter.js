@@ -241,6 +241,15 @@ const FormFilter = props => {
 				>
 					{!isLoadingPositions && positions && positions.length ? (
 						<List component="nav">
+							<ListItem
+								disabled={isSubmitting}
+								selected={values.position === 'all'}
+								onClick={() => onChangeFilterPosition('all', setFieldValue, submitForm)}
+								component={MenuItem}
+								button
+							>
+								Все позиции
+							</ListItem>
 							{positions.map((position, index) => (
 								<ListItem
 									key={index}
@@ -319,7 +328,7 @@ const FormFilter = props => {
 									)}
 								</div>
 								<div className={styles.memberDetails}>
-									<div className={styles.memberTitle}>{member.user.name || member.user.email}</div>
+									<div className={styles.memberTitle}>{member.user.name}</div>
 									<div className={styles.memberCaption}>{memberRoleTransform(member.role)}</div>
 								</div>
 							</ListItem>

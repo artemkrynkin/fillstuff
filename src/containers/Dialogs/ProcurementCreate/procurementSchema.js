@@ -1,7 +1,13 @@
 import * as Yup from 'yup';
+import moment from 'moment';
 
 const procurementSchema = Yup.object().shape({
 	number: Yup.string().required(),
+	date: Yup.date()
+		.required()
+		.transform(function(value, originalValue) {
+			if (moment(value).isValid()) return value;
+		}),
 	costDelivery: Yup.number()
 		.transform(value => (isNaN(value) ? 0 : value))
 		.min(0),

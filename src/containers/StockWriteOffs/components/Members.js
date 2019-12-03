@@ -53,7 +53,7 @@ class Members extends Component {
 											<FontAwesomeIcon icon={['fas', 'user-alt']} />
 										)}
 									</div>
-									<div className={styles.name}>{member.user.name || member.user.email || 'Аноним'}</div>
+									<div className={styles.name}>{member.user.name}</div>
 								</NavLink>
 							</div>
 						) : null

@@ -71,7 +71,10 @@ class ProcurementCreate extends Component {
 				else numberZeroPositions += quantityPackagesOrQuantity;
 			});
 
-			if (procurement.purchasePrice !== purchasePricePositions) {
+			if (
+				procurement.purchasePrice !== purchasePricePositions &&
+				procurement.purchasePrice - procurement.costDelivery !== purchasePricePositions
+			) {
 				actions.setFieldError(
 					'purchasePriceTemp',
 					<span>
@@ -86,7 +89,12 @@ class ProcurementCreate extends Component {
 			}
 
 			actions.setFieldValue('purchasePriceTemp', purchasePricePositions);
-			actions.setFieldValue('totalPurchasePrice', procurement.purchasePrice + procurement.costDelivery);
+			if (procurement.purchasePrice - procurement.costDelivery === purchasePricePositions) {
+				actions.setFieldValue('purchasePrice', purchasePricePositions);
+				actions.setFieldValue('totalPurchasePrice', purchasePricePositions);
+			} else {
+				actions.setFieldValue('totalPurchasePrice', procurement.purchasePrice + procurement.costDelivery);
+			}
 
 			if (purchasePricePositions) {
 				procurement.receipts.forEach(receipt => {
@@ -207,6 +215,7 @@ class ProcurementCreate extends Component {
 
 		const initialValues = {
 			number: '',
+			date: null,
 			costDelivery: '',
 			purchasePrice: '',
 			purchasePriceTemp: 0,
@@ -288,7 +297,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	};
 };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(ProcurementCreate);
+export default connect(mapStateToProps, mapDispatchToProps)(ProcurementCreate);

@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Form, Field, FastField, FieldArray } from 'formik';
 import loadable from '@loadable/component';
+import moment from 'moment';
+import MomentUtils from '@date-io/moment';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
@@ -13,6 +15,9 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
 
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { DatePicker } from '@material-ui/pickers';
+
 import { percentOfNumber } from 'shared/utils';
 
 import { formError } from 'src/helpers/utils';
@@ -21,6 +26,7 @@ import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
 import { PDDialogActions } from 'src/components/Dialog';
 import NumberFormat, { currencyFormatProps, currencyFormatInputProps } from 'src/components/NumberFormat';
 import { SelectAutocomplete } from 'src/components/selectAutocomplete';
+import Dropdown from 'src/components/Dropdown';
 
 import { getCharacteristics } from 'src/actions/characteristics';
 
@@ -55,6 +61,8 @@ const FormProcurementCreate = props => {
 		formikProps: { errors, isSubmitting, submitForm, setFieldValue, touched, values },
 	} = props;
 	const [dialogPositionCreate, setDialogPositionCreate] = useState(false);
+	const refDropdownDate = useRef(null);
+	const [dropdownDate, setDropdownDate] = useState(false);
 	const [textSearchPosition, setTextSearchPosition] = useState('');
 
 	const positionsAvailable =
@@ -70,16 +78,23 @@ const FormProcurementCreate = props => {
 
 	const onCloseDialogPositionCreate = () => setDialogPositionCreate(false);
 
+	const onHandleDropdownDate = value => setDropdownDate(!value === null || value === undefined ? !dropdownDate : value);
+
+	const onChangeDate = date => {
+		setFieldValue('date', date);
+		onHandleDropdownDate(false);
+	};
+
 	const onChangeTextSearchPosition = value => setTextSearchPosition(value);
 
 	return (
 		<Form>
 			<DialogContent>
 				<Grid style={{ marginBottom: 12 }} spacing={2} container>
-					<Grid xs={6} item>
+					<Grid xs={4} item>
 						<FastField
 							name="number"
-							label="Номер чека или накладной:"
+							label="Номер чека/накладной:"
 							error={Boolean(touched.number && errors.number)}
 							helperText={(touched.number && errors.number) || ''}
 							as={TextField}
@@ -88,11 +103,51 @@ const FormProcurementCreate = props => {
 							fullWidth
 						/>
 					</Grid>
+					<Grid xs={2} item>
+						<TextField
+							ref={refDropdownDate}
+							name="date"
+							label="От:"
+							error={Boolean(touched.date && errors.date)}
+							helperText={(touched.date && errors.date) || ''}
+							disabled={isSubmitting || !formEditable}
+							value={values.date ? moment(values.date).format('DD.MM.YYYY') : ''}
+							onFocus={() => onHandleDropdownDate(true)}
+							fullWidth
+						/>
+
+						<Dropdown
+							anchor={refDropdownDate}
+							open={dropdownDate}
+							onClose={() => onHandleDropdownDate(false)}
+							placement="bottom"
+							arrow={false}
+							disablePortal={false}
+						>
+							<MuiPickersUtilsProvider utils={MomentUtils}>
+								<DatePicker
+									value={values.date}
+									onChange={onChangeDate}
+									variant="static"
+									leftArrowButtonProps={{
+										size: 'small',
+									}}
+									leftArrowIcon={<FontAwesomeIcon icon={['far', 'angle-left']} />}
+									rightArrowButtonProps={{
+										size: 'small',
+									}}
+									rightArrowIcon={<FontAwesomeIcon icon={['far', 'angle-right']} />}
+									disableFuture
+									disableToolbar
+								/>
+							</MuiPickersUtilsProvider>
+						</Dropdown>
+					</Grid>
 					<Grid xs={3} item>
 						<FastField
 							name="purchasePrice"
 							placeholder="0"
-							label="Стоимость закупки:"
+							label="Итого по чеку/накладной:"
 							error={Boolean(touched.purchasePrice && errors.purchasePrice)}
 							helperText={(touched.purchasePrice && errors.purchasePrice) || ''}
 							as={TextField}
@@ -123,16 +178,17 @@ const FormProcurementCreate = props => {
 							disabled={isSubmitting || !formEditable}
 							fullWidth
 						/>
-						<Grid alignItems="center" container>
-							<Field
-								type="checkbox"
-								name="divideCostDeliverySellingPositions"
-								Label={{ label: 'Распределить между позициями для продажи' }}
-								as={CheckboxWithLabel}
-								disabled={isSubmitting || !formEditable}
-							/>
-						</Grid>
 					</Grid>
+				</Grid>
+
+				<Grid alignItems="center" style={{ marginBottom: 12 }} container>
+					<Field
+						type="checkbox"
+						name="divideCostDeliverySellingPositions"
+						Label={{ label: 'Распределить стоимость доставки между позициями для продажи' }}
+						as={CheckboxWithLabel}
+						disabled={isSubmitting || !formEditable}
+					/>
 				</Grid>
 
 				<FieldArray
@@ -191,7 +247,7 @@ const FormProcurementCreate = props => {
 										value={values.totalPurchasePrice}
 										renderText={value => (
 											<div className={styles.totalPurchasePrice}>
-												Сумма закупки: <span>{value}</span>
+												Итого: <span>{value}</span>
 											</div>
 										)}
 										displayType="text"
@@ -202,7 +258,7 @@ const FormProcurementCreate = props => {
 										value={values.purchasePrice}
 										renderText={value => (
 											<div className={styles.purchasePrice}>
-												Стоимость закупки: <span>{value}</span>
+												Стоимость позиций: <span>{value}</span>
 											</div>
 										)}
 										displayType="text"
@@ -305,7 +361,7 @@ const FormProcurementCreate = props => {
 										{formEditable ? (
 											<Field
 												name={`receipts.${index}.purchasePrice`}
-												label={`Цена закупки${
+												label={`Цена покупки${
 													receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce' ? ' упаковки' : ''
 												}:`}
 												placeholder="0"
@@ -338,7 +394,7 @@ const FormProcurementCreate = props => {
 													<div>
 														<NumberFormat
 															value={receipt.purchasePrice}
-															renderText={value => `Цена закупки: ${value}`}
+															renderText={value => `Цена покупки: ${value}`}
 															displayType="text"
 															onValueChange={() => {}}
 															{...currencyFormatProps}
@@ -355,7 +411,7 @@ const FormProcurementCreate = props => {
 												}
 											>
 												<TextField
-													label={`Цена закупки${
+													label={`Цена покупки${
 														receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce' ? ' упаковки' : ''
 													}:`}
 													defaultValue={receipt.purchasePrice + receipt.costDelivery}

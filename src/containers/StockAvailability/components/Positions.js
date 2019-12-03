@@ -140,7 +140,7 @@ class Positions extends Component {
 								Мин. остаток
 							</TableCell>
 							<TableCell align="right" width={140}>
-								Цена закупки
+								Цена покупки
 							</TableCell>
 							<TableCell align="right" width={140}>
 								Цена продажи
@@ -313,7 +313,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	};
 };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(Positions);
+export default connect(mapStateToProps, mapDispatchToProps)(Positions);

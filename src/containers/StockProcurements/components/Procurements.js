@@ -5,7 +5,7 @@ import moment from 'moment';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import { getProcurements, editProcurement } from 'src/actions/procurements';
+import { getProcurements } from 'src/actions/procurements';
 
 import Procurement from './Procurement';
 
@@ -27,10 +27,6 @@ const procurementDatesCalendarFormat = {
 };
 
 class Procurements extends Component {
-	editProcurement = (procurementId, newValues, callback) => {
-		this.props.editProcurement(procurementId, newValues).then(callback);
-	};
-
 	componentDidMount() {
 		this.props.getProcurements();
 	}
@@ -57,7 +53,7 @@ class Procurements extends Component {
 										{moment(procurementDates.date).calendar(null, procurementDatesCalendarFormat)}
 									</div>
 									{procurementDates.procurements.map((procurement, index) => (
-										<Procurement currentUser={currentUser} procurement={procurement} key={index} editProcurement={this.editProcurement} />
+										<Procurement currentUser={currentUser} procurement={procurement} key={index} />
 									))}
 								</div>
 							))}
@@ -126,11 +122,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 	return {
 		getProcurements: () => dispatch(getProcurements(currentStock._id, params)),
-		editProcurement: (procurementId, newValues) => dispatch(editProcurement(currentStock._id, procurementId, newValues)),
 	};
 };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(Procurements);
+export default connect(mapStateToProps, mapDispatchToProps)(Procurements);

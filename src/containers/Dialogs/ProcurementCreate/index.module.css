@@ -93,14 +93,18 @@
 }
 
 .totalPurchasePrice {
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 600;
   margin-bottom: 10px;
+}
+
+.purchasePrice {
+  margin-bottom: 5px;
 }
 
 .purchasePrice,
 .costDelivery {
   font-size: 12px;
-  margin-bottom: 5px;
 }
 
 .totalPurchasePrice span,
@@ -111,5 +115,5 @@
 }
 
 .totalPurchasePrice span {
-  font-size: 20px;
+  font-size: 16px;
 }

@@ -2,6 +2,14 @@
   margin-bottom: 16px;
 }
 
+.procurementWrapper {
+  margin: -20px -15px;
+}
+
+.procurementHeader {
+  padding: 20px 15px 25px;
+}
+
 .procurementNumber,
 .procurementDetails {
   color: var(--c-hex-bg-600);
@@ -14,49 +22,6 @@
   margin-bottom: 10px;
 }
 
-.procurementUser {
-  align-items: center;
-  display: flex;
-  margin-bottom: 15px;
-}
-
-.procurementUserPhoto {
-  background-color: var(--c-hex-br-5);
-  height: 20px;
-  margin-right: 5px;
-  width: 20px;
-}
-
-.procurementUserIcon {
-  align-items: flex-end;
-  justify-content: center;
-  border: 2px solid var(--c-hex-bg-100);
-  border-radius: 50%;
-  display: flex;
-  height: 100%;
-  overflow: hidden;
-  width: 100%;
-}
-
-.procurementUserPhoto svg {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 24px;
-}
-
-.procurementUserName {
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.procurementUserName {
-  color: var(--c-hex-bg-500);
-  font-size: 12px;
-  font-weight: 600;
-  margin-right: 10px;
-}
-
 .procurementTotalPurchasePrice,
 .procurementPurchasePrice,
 .procurementCostDelivery {
@@ -64,7 +29,7 @@
 }
 
 .procurementTotalPurchasePrice {
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   margin-bottom: 10px;
 }
@@ -89,14 +54,51 @@
   font-size: 16px;
 }
 
+.procurementUser {
+  align-items: center;
+  display: flex;
+}
+
+.procurementUserPhoto {
+  background-color: var(--c-hex-br-5);
+  height: 30px;
+  margin-right: 10px;
+  width: 30px;
+}
+
+.procurementUserIcon {
+  align-items: flex-end;
+  justify-content: center;
+  border: 2px solid var(--c-hex-bg-100);
+  border-radius: 50%;
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
+}
+
+.procurementUserPhoto svg {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 24px;
+}
+
+.procurementUserName {
+  color: var(--c-hex-bg-600);
+  font-size: 13px;
+  font-weight: 600;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .procurementDetails {
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 .procurementReceipts {
   border-top: 1px solid var(--c-hex-br-5);
-  margin: 15px -15px 0;
-  padding: 30px 15px 0;
+  padding: 25px 15px 0;
 }
 
 .isArchived {

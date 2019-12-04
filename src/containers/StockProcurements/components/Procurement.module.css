@@ -2,93 +2,31 @@
   margin-bottom: 16px;
 }
 
+.procurementWrapper {
+  margin: -20px -15px;
+}
+
+.procurementHeader {
+  cursor: pointer;
+  user-select: none;
+  padding: 20px 15px 0;
+}
+
+.procurementNumber,
+.procurementTotalPurchasePrice,
+.procurementDetails {
+  font-size: 16px;
+  font-weight: 600;
+}
+
 .procurementNumber {
   color: var(--c-hex-t-500);
   display: inline-block;
-  font-size: 16px;
-  font-weight: 600;
   margin-bottom: 10px;
 }
 
 .procurementNumber:hover {
   color: var(--c-hex-t-400);
-}
-
-.procurementUser {
-  align-items: center;
-  display: flex;
-  margin-bottom: 15px;
-}
-
-.procurementUserPhoto {
-  background-color: var(--c-hex-br-5);
-  height: 20px;
-  margin-right: 5px;
-  width: 20px;
-}
-
-.procurementUserIcon {
-  align-items: flex-end;
-  justify-content: center;
-  border: 2px solid var(--c-hex-bg-100);
-  border-radius: 50%;
-  display: flex;
-  height: 100%;
-  overflow: hidden;
-  width: 100%;
-}
-
-.procurementUserPhoto svg {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 24px;
-}
-
-.procurementUserName {
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.procurementUserName {
-  color: var(--c-hex-bg-500);
-  font-size: 12px;
-  font-weight: 600;
-  margin-right: 10px;
-}
-
-.detailsButton {
-  background: none;
-  border: none;
-  color: var(--c-hex-bg-500);
-  display: flex;
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.detailsButton:hover {
-  color: var(--c-hex-bg-400);
-}
-
-.detailsButton span {
-  display: block;
-  max-width: 220px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.detailsButton svg {
-  color: var(--c-hex-bg-600);
-  font-size: 12px;
-  margin: 2px 0 0 5px;
-  transform: rotate(-90deg);
-  transition: color 150ms ease-out, transform 150ms ease-out;
-  width: 8px !important;
-}
-
-.detailsButton svg:global(.open) {
-  transform: rotate(0deg);
 }
 
 .procurementTotalPurchasePrice,
@@ -98,8 +36,6 @@
 }
 
 .procurementTotalPurchasePrice {
-  font-size: 13px;
-  font-weight: 600;
   margin-bottom: 10px;
 }
 
@@ -119,16 +55,75 @@
   font-weight: 700;
 }
 
-.procurementTotalPurchasePrice span {
-  font-size: 16px;
+.procurementUser {
+  align-items: center;
+  display: flex;
 }
 
-.procurementReceiptsCollapse {
-  margin: 0 -15px;
+.procurementUserPhoto {
+  background-color: var(--c-hex-br-5);
+  height: 30px;
+  margin-right: 10px;
+  width: 30px;
+}
+
+.procurementUserIcon {
+  align-items: flex-end;
+  justify-content: center;
+  border: 2px solid var(--c-hex-bg-100);
+  border-radius: 50%;
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
+}
+
+.procurementUserPhoto svg {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 24px;
+}
+
+.procurementUserName {
+  color: var(--c-hex-bg-600);
+  font-size: 13px;
+  font-weight: 600;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.detailsButton {
+  background: none;
+  border: none;
+  color: var(--c-hex-bg-300);
+  display: flex;
+  font-size: 13px;
+  font-weight: 500;
+  padding-bottom: 5px;
+  width: 100%;
+}
+
+.detailsButton svg {
+  font-size: 18px;
+  transform: rotate(180deg);
+  transition: color 150ms ease-out, transform 150ms ease-out;
+  width: 18px !important;
+}
+
+.detailsButton svg:global(.open) {
+  transform: rotate(0deg);
+}
+
+.procurementDetails {
+  color: var(--c-hex-bg-600);
+  display: inline-block;
+  margin-bottom: 5px;
 }
 
 .procurementReceipts {
-  padding: 0 15px;
+  border-top: 1px solid var(--c-hex-br-5);
+  padding: 25px 15px 0;
 }
 
 .isArchived {

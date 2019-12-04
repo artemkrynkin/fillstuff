@@ -23,119 +23,123 @@ const Procurement = props => {
 	const { currentUser, procurement } = props;
 	const [expanded, setExpanded] = useState(false);
 
-	const onHandleExpand = () => {
-		setExpanded(!expanded);
+	const onHandleExpand = event => {
+		if (event.target.className !== styles.procurementNumber) setExpanded(!expanded);
 	};
 
 	return (
 		<CardPaper className={styles.procurement} header={false}>
-			<Grid container>
-				<Grid xs={6} item>
-					<Link className={styles.procurementNumber} to={`/stocks/${currentUser.activeStockId}/procurements/${procurement._id}`}>
-						№{procurement.number} от {moment(procurement.date).format('DD.MM.YYYY')}
-					</Link>
-					<div className={styles.procurementUser}>
-						<Avatar
-							className={styles.procurementUserPhoto}
-							src={procurement.user.profilePhoto}
-							alt={procurement.user.name}
-							children={<div className={styles.procurementUserIcon} children={<FontAwesomeIcon icon={['fas', 'user-alt']} />} />}
-						/>
-						<Grid alignItems="flex-end" container>
-							<div className={styles.procurementUserName}>{procurement.user.name}</div>
+			<div className={styles.procurementWrapper}>
+				<div className={styles.procurementHeader} onClick={onHandleExpand}>
+					<Grid container>
+						<Grid xs={6} item>
+							<Link className={styles.procurementNumber} to={`/stocks/${currentUser.activeStockId}/procurements/${procurement._id}`}>
+								№{procurement.number} от {moment(procurement.date).format('DD.MM.YYYY')}
+							</Link>
+							<div className={styles.procurementUser}>
+								<Avatar
+									className={styles.procurementUserPhoto}
+									src={procurement.user.profilePhoto}
+									alt={procurement.user.name}
+									children={<div className={styles.procurementUserIcon} children={<FontAwesomeIcon icon={['fas', 'user-alt']} />} />}
+								/>
+								<Grid alignItems="flex-end" container>
+									<div className={styles.procurementUserName}>{procurement.user.name}</div>
+								</Grid>
+							</div>
 						</Grid>
-					</div>
-					<ButtonBase onClick={onHandleExpand} className={styles.detailsButton} disableRipple>
-						<span>Детали закупки</span>
-						<FontAwesomeIcon icon={['far', 'angle-down']} className={expanded ? 'open' : ''} />
-					</ButtonBase>
-				</Grid>
-				<Grid xs={6} item>
-					<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
-						<NumberFormat
-							value={procurement.totalPurchasePrice}
-							renderText={value => (
-								<div className={styles.procurementTotalPurchasePrice}>
-									Итого: <span>{value}</span>
-								</div>
-							)}
-							displayType="text"
-							onValueChange={() => {}}
-							{...currencyFormatProps}
-						/>
-						<NumberFormat
-							value={procurement.purchasePrice}
-							renderText={value => (
-								<div className={styles.procurementPurchasePrice}>
-									Стоимость позиций: <span>{value}</span>
-								</div>
-							)}
-							displayType="text"
-							onValueChange={() => {}}
-							{...currencyFormatProps}
-						/>
-						<NumberFormat
-							value={procurement.costDelivery}
-							renderText={value => (
-								<div className={styles.procurementCostDelivery}>
-									Стоимость доставки: <span>{value}</span>
-								</div>
-							)}
-							displayType="text"
-							onValueChange={() => {}}
-							{...currencyFormatProps}
-						/>
+						<Grid xs={6} item>
+							<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
+								<NumberFormat
+									value={procurement.totalPurchasePrice}
+									renderText={value => (
+										<div className={styles.procurementTotalPurchasePrice}>
+											Итого: <span>{value}</span>
+										</div>
+									)}
+									displayType="text"
+									onValueChange={() => {}}
+									{...currencyFormatProps}
+								/>
+								<NumberFormat
+									value={procurement.purchasePrice}
+									renderText={value => (
+										<div className={styles.procurementPurchasePrice}>
+											Стоимость позиций: <span>{value}</span>
+										</div>
+									)}
+									displayType="text"
+									onValueChange={() => {}}
+									{...currencyFormatProps}
+								/>
+								<NumberFormat
+									value={procurement.costDelivery}
+									renderText={value => (
+										<div className={styles.procurementCostDelivery}>
+											Стоимость доставки: <span>{value}</span>
+										</div>
+									)}
+									displayType="text"
+									onValueChange={() => {}}
+									{...currencyFormatProps}
+								/>
+							</Grid>
+						</Grid>
 					</Grid>
-				</Grid>
-			</Grid>
-			<Collapse className={styles.procurementReceiptsCollapse} in={expanded} timeout={300} unmountOnExit>
-				<div className={styles.procurementReceipts}>
-					<Table>
-						<TableHead>
-							<TableRow>
-								<TableCell>Наименование</TableCell>
-								<TableCell align="right" width={160}>
-									Количество
-								</TableCell>
-								<TableCell align="right" width={160}>
-									Цена покупки
-								</TableCell>
-								<TableCell align="right" width={160}>
-									Цена продажи
-								</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{procurement.receipts.map((receipt, index) => (
-								<TableRow key={index}>
-									<TableCell>
-										{receipt.position.name}{' '}
-										{receipt.position.characteristics.reduce(
-											(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
-											''
-										)}
-										{receipt.position.isArchived ? <span className={styles.isArchived}>В архиве</span> : null}
+					<ButtonBase className={styles.detailsButton} disableRipple>
+						<FontAwesomeIcon icon={['far', 'angle-up']} className={expanded ? 'open' : ''} />
+					</ButtonBase>
+				</div>
+				<Collapse in={expanded} timeout={300} unmountOnExit>
+					<div className={styles.procurementReceipts}>
+						<div className={styles.procurementDetails}>Детали закупки</div>
+						<Table>
+							<TableHead>
+								<TableRow>
+									<TableCell>Наименование</TableCell>
+									<TableCell align="right" width={160}>
+										Количество
 									</TableCell>
 									<TableCell align="right" width={160}>
-										<QuantityIndicator
-											type="receipt"
-											unitReceipt={receipt.position.unitReceipt}
-											unitIssue={receipt.position.unitIssue}
-											receipts={[{ ...receipt.initial }]}
-										/>
+										Цена покупки
 									</TableCell>
 									<TableCell align="right" width={160}>
-										{receipt.unitPurchasePrice} ₽
-									</TableCell>
-									<TableCell align="right" width={160}>
-										{!receipt.position.isFree ? `${receipt.unitSellingPrice} ₽` : 'Бесплатно'}
+										Цена продажи
 									</TableCell>
 								</TableRow>
-							))}
-						</TableBody>
-					</Table>
-				</div>
-			</Collapse>
+							</TableHead>
+							<TableBody>
+								{procurement.receipts.map((receipt, index) => (
+									<TableRow key={index}>
+										<TableCell>
+											{receipt.position.name}{' '}
+											{receipt.position.characteristics.reduce(
+												(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
+												''
+											)}
+											{receipt.position.isArchived ? <span className={styles.isArchived}>В архиве</span> : null}
+										</TableCell>
+										<TableCell align="right" width={160}>
+											<QuantityIndicator
+												type="receipt"
+												unitReceipt={receipt.position.unitReceipt}
+												unitIssue={receipt.position.unitIssue}
+												receipts={[{ ...receipt.initial }]}
+											/>
+										</TableCell>
+										<TableCell align="right" width={160}>
+											{receipt.unitPurchasePrice} ₽
+										</TableCell>
+										<TableCell align="right" width={160}>
+											{!receipt.position.isFree ? `${receipt.unitSellingPrice} ₽` : 'Бесплатно'}
+										</TableCell>
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
+					</div>
+				</Collapse>
+			</div>
 		</CardPaper>
 	);
 };

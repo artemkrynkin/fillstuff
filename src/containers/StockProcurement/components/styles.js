@@ -20,8 +20,5 @@ export const TableCell = withStyles({
 	body: {
 		borderTop: `1px solid ${theme.brightness.cBr4}`,
 		borderBottom: 'none',
-		'tr:last-child > &': {
-			paddingBottom: 0,
-		},
 	},
 })(MuiTableCell);

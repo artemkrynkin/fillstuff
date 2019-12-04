@@ -32,6 +32,9 @@ import { getCharacteristics } from 'src/actions/characteristics';
 
 import styles from './index.module.css';
 import { connect } from 'react-redux';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import stylesGlobal from '../../../styles/globals.module.css';
 
 const DialogPositionCreate = loadable(() =>
 	import('src/containers/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateEdit" */)
@@ -104,17 +107,25 @@ const FormProcurementCreate = props => {
 						/>
 					</Grid>
 					<Grid xs={2} item>
-						<TextField
-							ref={refDropdownDate}
-							name="date"
-							label="От:"
-							error={Boolean(touched.date && errors.date)}
-							helperText={(touched.date && errors.date) || ''}
-							disabled={isSubmitting || !formEditable}
-							value={values.date ? moment(values.date).format('DD.MM.YYYY') : ''}
-							onFocus={() => onHandleDropdownDate(true)}
-							fullWidth
-						/>
+						<Grid
+							className={stylesGlobal.formLabelControl}
+							wrap="nowrap"
+							alignItems={Boolean(touched.date && errors.date) ? 'center' : 'flex-end'}
+							container
+						>
+							<InputLabel style={{ margin: '0 8px 0 -8px' }}>от</InputLabel>
+							<TextField
+								ref={refDropdownDate}
+								name="date"
+								label="Дата:"
+								error={Boolean(touched.date && errors.date)}
+								helperText={(touched.date && errors.date) || ''}
+								disabled={isSubmitting || !formEditable}
+								value={values.date ? moment(values.date).format('DD.MM.YYYY') : ''}
+								onFocus={() => onHandleDropdownDate(true)}
+								fullWidth
+							/>
+						</Grid>
 
 						<Dropdown
 							anchor={refDropdownDate}

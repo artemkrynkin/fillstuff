@@ -736,11 +736,10 @@ export const BliksideTheme = createMuiTheme({
 				'&:hover': {
 					backgroundColor: theme.blueGrey.cBg50,
 				},
-				'&$disabled': {
+				'&:disabled': {
 					color: theme.blueGrey.cBg100,
 				},
 			},
-			disabled: {},
 		},
 		MuiPickersDay: {
 			day: {

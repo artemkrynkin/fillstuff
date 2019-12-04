@@ -1,5 +1,7 @@
 import React from 'react';
 import ClassNames from 'classnames';
+import moment from 'moment';
+import MomentUtils from '@date-io/moment';
 import { Field, Form } from 'formik';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,6 +16,9 @@ import InputBase from '@material-ui/core/InputBase';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { DatePicker } from '@material-ui/pickers';
+
 import { memberRoleTransform } from 'shared/roles-access-rights';
 
 import NumberFormat, { currencyFormatInputProps, currencyFormatProps } from 'src/components/NumberFormat';
@@ -22,7 +27,6 @@ import Dropdown from 'src/components/Dropdown';
 import { SearchTextField } from './Filter.styles';
 
 import styles from './Filter.module.css';
-import { TableCell } from './styles';
 
 const roles = ['all', 'owners', 'admins'];
 
@@ -42,7 +46,7 @@ const filterRoleTransform = (roleSelected, members) => {
 };
 
 const DropdownFooter = props => {
-	const { onResetHandler, isSubmitting } = props;
+	const { onResetHandler, isSubmitting, disabledSubmit } = props;
 
 	return (
 		<Grid className={styles.dropdownFooter} alignItems="center" justify="center" container>
@@ -52,7 +56,13 @@ const DropdownFooter = props => {
 				</Button>
 			</Grid>
 			<Grid className={styles.dropdownFooterColumn} item>
-				<Button type="submit" disabled={isSubmitting} size="small" variant="contained" color="primary">
+				<Button
+					type="submit"
+					disabled={disabledSubmit ? isSubmitting || disabledSubmit : isSubmitting}
+					size="small"
+					variant="contained"
+					color="primary"
+				>
 					Сохранить
 				</Button>
 			</Grid>
@@ -72,6 +82,7 @@ const FormFilter = props => {
 		handlerDropdown,
 		onChangeFilterNumber,
 		onClearFilterNumber,
+		onResetFilterDate,
 		onResetFilterAmount,
 		onChangeFilterPosition,
 		onChangeFilterRole,
@@ -82,10 +93,11 @@ const FormFilter = props => {
 			// error: errorPositions
 		},
 		members,
+		refFilterNumberInput,
+		dropdownDate: { state: dropdownDate, ref: refDropdownDate },
 		dropdownAmount: { state: dropdownAmount, ref: refDropdownAmount },
 		dropdownPosition: { state: dropdownPosition, ref: refDropdownPosition },
 		dropdownRole: { state: dropdownRole, ref: refDropdownRole },
-		refFilterNumberInput,
 		formikProps: { errors, isSubmitting, values, setFieldValue, submitForm },
 	} = props;
 
@@ -117,6 +129,92 @@ const FormFilter = props => {
 			</Grid>
 
 			<Grid className={styles.bottomContainer} container>
+				{/* Filter Date */}
+				<Grid item>
+					<ButtonBase
+						ref={refDropdownDate}
+						className={styles.filterButtonLink}
+						onClick={() => handlerDropdown({ name: 'dropdownDate' })}
+						disableRipple
+					>
+						{values.dateStartView && values.dateEndView ? (
+							<span>
+								{moment(values.dateStartView).format('D MMMM')}
+								{' - '}
+								{moment(values.dateEndView).format('D MMMM')}
+							</span>
+						) : (
+							<span>Все даты</span>
+						)}
+						<FontAwesomeIcon icon={['far', 'angle-down']} />
+					</ButtonBase>
+				</Grid>
+
+				<Dropdown
+					anchor={refDropdownDate}
+					open={dropdownDate}
+					onClose={() => handlerDropdown({ name: 'dropdownDate' }, values, setFieldValue)}
+					placement="bottom-start"
+				>
+					<Grid className={styles.dropdownContent} alignItems="center" container>
+						<MuiPickersUtilsProvider utils={MomentUtils}>
+							<Grid className={styles.dropdownContentColumn} style={{ width: 'auto' }} item>
+								<DatePicker
+									value={values.dateStart}
+									onChange={date => {
+										setFieldValue('dateStart', date.format('YYYY-MM-DD'), false);
+
+										if (moment(values.dateEnd).isBefore(date)) {
+											setFieldValue('dateEnd', date.format('YYYY-MM-DD'), false);
+										}
+									}}
+									variant="static"
+									leftArrowButtonProps={{
+										size: 'small',
+									}}
+									leftArrowIcon={<FontAwesomeIcon icon={['far', 'angle-left']} />}
+									rightArrowButtonProps={{
+										size: 'small',
+									}}
+									rightArrowIcon={<FontAwesomeIcon icon={['far', 'angle-right']} />}
+									maxDate={values.dateEnd}
+									disableFuture
+									disableToolbar
+								/>
+							</Grid>
+							<Grid className={styles.dropdownContentColumn} style={{ width: 'auto' }} item>
+								<DatePicker
+									value={values.dateEnd}
+									onChange={date => {
+										setFieldValue('dateEnd', date.format('YYYY-MM-DD'), false);
+
+										if (moment(values.dateStart).isAfter(date)) {
+											setFieldValue('dateStart', date.format('YYYY-MM-DD'), false);
+										}
+									}}
+									variant="static"
+									leftArrowButtonProps={{
+										size: 'small',
+									}}
+									leftArrowIcon={<FontAwesomeIcon icon={['far', 'angle-left']} />}
+									rightArrowButtonProps={{
+										size: 'small',
+									}}
+									rightArrowIcon={<FontAwesomeIcon icon={['far', 'angle-right']} />}
+									minDate={values.dateStart}
+									disableFuture
+									disableToolbar
+								/>
+							</Grid>
+						</MuiPickersUtilsProvider>
+					</Grid>
+					<DropdownFooter
+						onResetHandler={() => onResetFilterDate(setFieldValue, submitForm)}
+						isSubmitting={isSubmitting}
+						disabledSubmit={!values.dateStart || !values.dateEnd}
+					/>
+				</Dropdown>
+
 				{/* Filter Amount */}
 				<Grid item>
 					<ButtonBase
@@ -337,7 +435,13 @@ const FormFilter = props => {
 				</Dropdown>
 
 				<Grid item style={{ marginLeft: 'auto' }}>
-					{values.number || values.amountFromView || values.amountToView || values.position !== 'all' || values.role !== 'all' ? (
+					{values.number ||
+					values.dateStartView ||
+					values.dateEndView ||
+					values.amountFromView ||
+					values.amountToView ||
+					values.position !== 'all' ||
+					values.role !== 'all' ? (
 						<ButtonBase onClick={() => onResetAllFilters(setFieldValue, submitForm)} className={styles.filterButtonLinkRed} disableRipple>
 							<span>Сбросить фильтры</span>
 						</ButtonBase>

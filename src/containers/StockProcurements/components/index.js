@@ -1,5 +1,6 @@
 import React from 'react';
 import queryString from 'query-string';
+import moment from 'moment';
 
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
@@ -14,8 +15,28 @@ const Index = props => {
 
 	let queryInitialValues = queryString.parse(history.location.search);
 
-	if (isNaN(queryInitialValues.amountFrom)) queryInitialValues.amountFrom = '';
-	if (isNaN(queryInitialValues.amountTo)) queryInitialValues.amountTo = '';
+	if (
+		(queryInitialValues.dateStart || queryInitialValues.dateEnd) &&
+		(!moment(queryInitialValues.dateStart).isValid() || !moment(queryInitialValues.dateEnd).isValid())
+	) {
+		queryInitialValues.dateStart = '';
+		queryInitialValues.dateEnd = '';
+	}
+	if (
+		queryInitialValues.dateStart &&
+		queryInitialValues.dateEnd &&
+		moment(queryInitialValues.dateStart).isValid() && moment(queryInitialValues.dateEnd).isValid() &&
+		moment(queryInitialValues.dateStart).isAfter(queryInitialValues.dateEnd)
+	) {
+		const dateStart = queryInitialValues.dateStart;
+
+		queryInitialValues.dateStart = queryInitialValues.dateEnd;
+		queryInitialValues.dateEnd = dateStart;
+	}
+	if (isNaN(queryInitialValues.amountFrom) || isNaN(queryInitialValues.amountTo)) {
+		queryInitialValues.amountFrom = '';
+		queryInitialValues.amountTo = '';
+	}
 	if (
 		!isNaN(queryInitialValues.amountFrom) &&
 		!isNaN(queryInitialValues.amountTo) &&
@@ -29,6 +50,10 @@ const Index = props => {
 
 	let procurementsQueryParams = {
 		number: queryInitialValues.number || '',
+		dateStart: queryInitialValues.dateStart || '',
+		dateEnd: queryInitialValues.dateEnd || '',
+		dateStartView: queryInitialValues.dateStart || '',
+		dateEndView: queryInitialValues.dateEnd || '',
 		amountFrom: queryInitialValues.amountFrom || '',
 		amountTo: queryInitialValues.amountTo || '',
 		amountFromView: queryInitialValues.amountFrom || '',

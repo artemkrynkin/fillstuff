@@ -19,15 +19,19 @@ import filterSchema from './filterSchema';
 
 import styles from './Filter.module.css';
 
+const dropdownNameList = ['dropdownDate', 'dropdownAmount', 'dropdownPosition', 'dropdownRole'];
+
 let filterNumberFieldTimer;
 
 class Filter extends Component {
 	state = {
+		dropdownDate: false,
 		dropdownAmount: false,
 		dropdownPosition: false,
 		dropdownRole: false,
 	};
 
+	refDropdownDate = createRef();
 	refDropdownAmount = createRef();
 	refDropdownPosition = createRef();
 	refDropdownRole = createRef();
@@ -38,6 +42,15 @@ class Filter extends Component {
 
 		if (values) {
 			switch (name) {
+				case 'dropdownDate':
+					if (!values.dateStartView || !values.dateEndView) {
+						setFieldValue('dateStart', '', false);
+						setFieldValue('dateEnd', '', false);
+					} else {
+						setFieldValue('dateStart', values.dateStartView, false);
+						setFieldValue('dateEnd', values.dateEndView, false);
+					}
+					break;
 				case 'dropdownAmount':
 					if (!values.amountFromView || !values.amountToView) {
 						setFieldValue('amountFrom', '', false);
@@ -73,6 +86,17 @@ class Filter extends Component {
 		submitForm();
 	};
 
+	onResetFilterDate = (setFieldValue, submitForm) => {
+		this.handlerDropdown({ name: 'dropdownDate' });
+
+		setFieldValue('dateStart', '', false);
+		setFieldValue('dateEdn', '', false);
+		setFieldValue('dateStartView', '', false);
+		setFieldValue('dateEndView', '', false);
+
+		submitForm();
+	};
+
 	onResetFilterAmount = (setFieldValue, submitForm) => {
 		this.handlerDropdown({ name: 'dropdownAmount' });
 
@@ -84,13 +108,6 @@ class Filter extends Component {
 		submitForm();
 	};
 
-	onChangeFilterRole = (role, setFieldValue, submitForm) => {
-		this.handlerDropdown({ name: 'dropdownRole' });
-
-		setFieldValue('role', role, false);
-		submitForm();
-	};
-
 	onChangeFilterPosition = (position, setFieldValue, submitForm) => {
 		this.handlerDropdown({ name: 'dropdownPosition' });
 
@@ -98,8 +115,19 @@ class Filter extends Component {
 		submitForm();
 	};
 
+	onChangeFilterRole = (role, setFieldValue, submitForm) => {
+		this.handlerDropdown({ name: 'dropdownRole' });
+
+		setFieldValue('role', role, false);
+		submitForm();
+	};
+
 	onResetAllFilters = (setFieldValue, submitForm) => {
 		setFieldValue('number', '', false);
+		setFieldValue('dateStart', '', false);
+		setFieldValue('dateEnd', '', false);
+		setFieldValue('dateStartView', '', false);
+		setFieldValue('dateEndView', '', false);
 		setFieldValue('amountFrom', '', false);
 		setFieldValue('amountTo', '', false);
 		setFieldValue('amountFromView', '', false);
@@ -110,12 +138,16 @@ class Filter extends Component {
 	};
 
 	onSubmit = async (values, actions) => {
+		actions.setFieldValue('dateStartView', values.dateStart, false);
+		actions.setFieldValue('dateEndView', values.dateEnd, false);
 		actions.setFieldValue('amountFromView', values.amountFrom, false);
 		actions.setFieldValue('amountToView', values.amountTo, false);
 
-		const filterParams = filterSchema.cast(values);
+		for (let i = 0; i < dropdownNameList.length; i++) {
+			this.handlerDropdown({ name: dropdownNameList[i], value: false });
+		}
 
-		for (let i = 0; i < 4; i++) this.handlerDropdown({ name: `dropdown${i + 1}`, value: false });
+		const filterParams = filterSchema.cast(values);
 
 		Object.keys(filterParams).forEach(key => filterParams[key] === '' && delete filterParams[key]);
 
@@ -132,12 +164,14 @@ class Filter extends Component {
 	componentDidUpdate(prevProps, prevState) {
 		if (
 			prevProps.procurementsQueryParams.number !== this.props.procurementsQueryParams.number ||
+			prevProps.procurementsQueryParams.dateStart !== this.props.procurementsQueryParams.dateStart ||
+			prevProps.procurementsQueryParams.dateEnd !== this.props.procurementsQueryParams.dateEnd ||
 			prevProps.procurementsQueryParams.amountFrom !== this.props.procurementsQueryParams.amountFrom ||
 			prevProps.procurementsQueryParams.amountTo !== this.props.procurementsQueryParams.amountTo ||
 			prevProps.procurementsQueryParams.position !== this.props.procurementsQueryParams.position ||
 			prevProps.procurementsQueryParams.role !== this.props.procurementsQueryParams.role
 		) {
-			const filterParams = Object.assign({}, this.props.procurementsQueryParams);
+			const filterParams = filterSchema.cast(Object.assign({}, this.props.procurementsQueryParams));
 
 			Object.keys(filterParams).forEach(key => filterParams[key] === '' && delete filterParams[key]);
 
@@ -164,7 +198,7 @@ class Filter extends Component {
 				.sort((memberA, memberB) => (memberA.roleBitMask > memberB.roleBitMask ? -1 : 1)),
 			procurementsQueryParams,
 		} = this.props;
-		const { dropdownAmount, dropdownPosition, dropdownRole } = this.state;
+		const { dropdownDate, dropdownAmount, dropdownPosition, dropdownRole } = this.state;
 
 		return (
 			<Paper className={styles.container}>
@@ -181,12 +215,18 @@ class Filter extends Component {
 							handlerDropdown={this.handlerDropdown}
 							onChangeFilterNumber={this.onChangeFilterNumber}
 							onClearFilterNumber={this.onClearFilterNumber}
+							onResetFilterDate={this.onResetFilterDate}
 							onResetFilterAmount={this.onResetFilterAmount}
 							onChangeFilterPosition={this.onChangeFilterPosition}
 							onChangeFilterRole={this.onChangeFilterRole}
 							onResetAllFilters={this.onResetAllFilters}
 							positions={positions}
 							members={members}
+							refFilterNumberInput={this.refFilterNumberInput}
+							dropdownDate={{
+								state: dropdownDate,
+								ref: this.refDropdownDate,
+							}}
 							dropdownAmount={{
 								state: dropdownAmount,
 								ref: this.refDropdownAmount,
@@ -199,7 +239,6 @@ class Filter extends Component {
 								state: dropdownRole,
 								ref: this.refDropdownRole,
 							}}
-							refFilterNumberInput={this.refFilterNumberInput}
 							formikProps={props}
 						/>
 					)}

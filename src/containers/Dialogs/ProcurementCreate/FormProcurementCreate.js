@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { connect } from 'react-redux';
 import { Form, Field, FastField, FieldArray } from 'formik';
 import loadable from '@loadable/component';
 import moment from 'moment';
@@ -14,6 +15,7 @@ import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
+import InputLabel from '@material-ui/core/InputLabel';
 
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { DatePicker } from '@material-ui/pickers';
@@ -30,11 +32,8 @@ import Dropdown from 'src/components/Dropdown';
 
 import { getCharacteristics } from 'src/actions/characteristics';
 
+import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
-import { connect } from 'react-redux';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import stylesGlobal from '../../../styles/globals.module.css';
 
 const DialogPositionCreate = loadable(() =>
 	import('src/containers/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateEdit" */)

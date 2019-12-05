@@ -222,7 +222,6 @@ class ProcurementCreate extends Component {
 			totalPurchasePrice: 0,
 			divideCostDeliverySellingPositions: currentStock.settings.procurements.divideCostDeliverySellingPositions,
 			receipts: [],
-			comment: '',
 		};
 
 		return (

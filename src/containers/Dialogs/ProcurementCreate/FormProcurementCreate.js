@@ -92,7 +92,7 @@ const FormProcurementCreate = props => {
 	return (
 		<Form>
 			<DialogContent>
-				<Grid style={{ marginBottom: 12 }} spacing={2} container>
+				<Grid style={{ marginBottom: 2 }} spacing={2} container>
 					<Grid xs={4} item>
 						<FastField
 							name="number"
@@ -110,6 +110,7 @@ const FormProcurementCreate = props => {
 							className={stylesGlobal.formLabelControl}
 							wrap="nowrap"
 							alignItems={Boolean(touched.date && errors.date) ? 'center' : 'flex-end'}
+							style={{ marginBottom: 0 }}
 							container
 						>
 							<InputLabel style={{ margin: '0 8px 0 -8px' }}>от</InputLabel>
@@ -191,7 +192,7 @@ const FormProcurementCreate = props => {
 					</Grid>
 				</Grid>
 
-				<Grid alignItems="center" style={{ marginBottom: 12 }} container>
+				<Grid alignItems="center" style={{ marginBottom: 10 }} container>
 					<Field
 						type="checkbox"
 						name="divideCostDeliverySellingPositions"
@@ -251,43 +252,7 @@ const FormProcurementCreate = props => {
 										</Grid>
 									) : null}
 								</div>
-							) : (
-								<Grid className={styles.totalContainer} direction="column" alignItems="flex-end" container>
-									<NumberFormat
-										value={values.totalPurchasePrice}
-										renderText={value => (
-											<div className={styles.totalPurchasePrice}>
-												Итого: <span>{value}</span>
-											</div>
-										)}
-										displayType="text"
-										onValueChange={() => {}}
-										{...currencyFormatProps}
-									/>
-									<NumberFormat
-										value={values.purchasePrice}
-										renderText={value => (
-											<div className={styles.purchasePrice}>
-												Стоимость позиций: <span>{value}</span>
-											</div>
-										)}
-										displayType="text"
-										onValueChange={() => {}}
-										{...currencyFormatProps}
-									/>
-									<NumberFormat
-										value={values.costDelivery || 0}
-										renderText={value => (
-											<div className={styles.costDelivery}>
-												Стоимость доставки: <span>{value}</span>
-											</div>
-										)}
-										displayType="text"
-										onValueChange={() => {}}
-										{...currencyFormatProps}
-									/>
-								</Grid>
-							)}
+							) : null}
 
 							{values.receipts.map((receipt, index) => (
 								<Grid key={index} className={styles.receipt} alignItems="flex-start" spacing={2} style={{ marginBottom: 12 }} container>
@@ -603,21 +568,6 @@ const FormProcurementCreate = props => {
 						</div>
 					)}
 				/>
-
-				{formEditable || values.comment ? (
-					<Grid>
-						<FastField
-							name="comment"
-							label="Комментарий:"
-							as={TextField}
-							rows={2}
-							rowsMax={4}
-							disabled={isSubmitting || !formEditable}
-							multiline
-							fullWidth
-						/>
-					</Grid>
-				) : null}
 			</DialogContent>
 			<PDDialogActions
 				leftHandleProps={

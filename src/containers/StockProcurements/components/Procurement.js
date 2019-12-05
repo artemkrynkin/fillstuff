@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import ClassNames from 'classnames';
 import moment from 'moment';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,14 +15,15 @@ import Avatar from '@material-ui/core/Avatar';
 
 import NumberFormat, { currencyFormatProps } from 'src/components/NumberFormat';
 import CardPaper from 'src/components/CardPaper';
-import QuantityIndicator from 'src/components/QuantityIndicator';
+
+import Receipt from './Receipt';
 
 import { TableCell } from './styles';
 import styles from './Procurement.module.css';
 
 const Procurement = props => {
-	const { currentUser, procurement } = props;
-	const [expanded, setExpanded] = useState(false);
+	const { procurement, currentUser, procurementsQueryParams } = props;
+	const [expanded, setExpanded] = useState(procurementsQueryParams.position !== 'all');
 
 	const onHandleExpand = event => {
 		if (event.target.className !== styles.procurementNumber) setExpanded(!expanded);
@@ -86,13 +88,9 @@ const Procurement = props => {
 							</Grid>
 						</Grid>
 					</Grid>
-					<ButtonBase className={styles.detailsButton} disableRipple>
-						<FontAwesomeIcon icon={['far', 'angle-up']} className={expanded ? 'open' : ''} />
-					</ButtonBase>
 				</div>
 				<Collapse in={expanded} timeout={300} unmountOnExit>
 					<div className={styles.procurementReceipts}>
-						<div className={styles.procurementDetails}>Детали закупки</div>
 						<Table>
 							<TableHead>
 								<TableRow>
@@ -110,35 +108,22 @@ const Procurement = props => {
 							</TableHead>
 							<TableBody>
 								{procurement.receipts.map((receipt, index) => (
-									<TableRow key={index}>
-										<TableCell>
-											{receipt.position.name}{' '}
-											{receipt.position.characteristics.reduce(
-												(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
-												''
-											)}
-											{receipt.position.isArchived ? <span className={styles.isArchived}>В архиве</span> : null}
-										</TableCell>
-										<TableCell align="right" width={160}>
-											<QuantityIndicator
-												type="receipt"
-												unitReceipt={receipt.position.unitReceipt}
-												unitIssue={receipt.position.unitIssue}
-												receipts={[{ ...receipt.initial }]}
-											/>
-										</TableCell>
-										<TableCell align="right" width={160}>
-											{receipt.unitPurchasePrice} ₽
-										</TableCell>
-										<TableCell align="right" width={160}>
-											{!receipt.position.isFree ? `${receipt.unitSellingPrice} ₽` : 'Бесплатно'}
-										</TableCell>
-									</TableRow>
+									<Receipt key={index} receipt={receipt} positionSameFilter={receipt.position._id === procurementsQueryParams.position} />
 								))}
 							</TableBody>
 						</Table>
 					</div>
 				</Collapse>
+				<ButtonBase
+					className={ClassNames({
+						[styles.detailsButton]: true,
+						open: expanded,
+					})}
+					onClick={onHandleExpand}
+					disableRipple
+				>
+					<FontAwesomeIcon icon={['far', 'angle-down']} className={expanded ? 'open' : ''} />
+				</ButtonBase>
 			</div>
 		</CardPaper>
 	);

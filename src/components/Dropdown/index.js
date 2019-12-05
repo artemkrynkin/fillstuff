@@ -117,7 +117,7 @@ const Dropdown = props => {
 						timeout: 150,
 					}}
 				>
-					<Paper elevation={3}>
+					<Paper style={{ overflow: 'hidden' }} elevation={3}>
 						{arrow ? <span className={arrowClasses} ref={setArrowRef} /> : null}
 						<ClickAwayListener onClickAway={handleClose}>
 							<div style={innerContentStyle}>{children}</div>

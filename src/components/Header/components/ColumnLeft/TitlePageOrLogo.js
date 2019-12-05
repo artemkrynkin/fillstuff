@@ -1,15 +1,10 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import queryString from 'query-string';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { history } from 'src/helpers/history';
-
 import styles from 'src/components/Header/index.module.css';
-
-const backToPage = pageParams => {
-	if (!!~document.referrer.search(pageParams.backToPage)) history.go(-1);
-	else history.push(pageParams.backToPage);
-};
 
 const TitlePageOrLogo = props => {
 	const {
@@ -19,12 +14,15 @@ const TitlePageOrLogo = props => {
 	} = props;
 
 	if (pageParams && pageParams.backToPage !== undefined) {
+		const parseUrlReferrer = queryString.parseUrl(document.referrer);
+		const queryReferrerString = queryString.stringify(parseUrlReferrer.query);
+
 		return (
 			<div className={styles.columnGroup_left}>
-				<div className={styles.backToPage} onClick={() => backToPage(pageParams)}>
+				<Link className={styles.backToPage} to={pageParams.backToPage + (queryReferrerString ? `?${queryReferrerString}` : '')}>
 					<FontAwesomeIcon className={styles.backToPageIcon} icon={['far', 'angle-left']} />
 					<div className={styles.titlePage}>{pageTitle}</div>
-				</div>
+				</Link>
 			</div>
 		);
 	} else {

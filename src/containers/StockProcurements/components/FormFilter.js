@@ -41,7 +41,7 @@ const filterRoleTransform = (roleSelected, members) => {
 		default:
 			const member = members.find(member => member.user._id === roleSelected);
 
-			return member ? member.user.name : 'Все роли';
+			return member ? member.user.name : 'Не выбрано';
 	}
 };
 
@@ -320,8 +320,10 @@ const FormFilter = props => {
 									)}
 									{positionByFiltered.isArchived ? <span className={styles.isArchived}>В архиве</span> : null}
 								</span>
-							) : (
+							) : isLoadingPositions ? (
 								<CircularProgress size={13} />
+							) : (
+								'Не выбрано'
 							)
 						) : (
 							<span>Все позиции</span>
@@ -335,7 +337,7 @@ const FormFilter = props => {
 					open={dropdownPosition}
 					onClose={() => handlerDropdown({ name: 'dropdownPosition' }, values, setFieldValue)}
 					placement="bottom-start"
-					innerContentStyle={{ minWidth: 125, maxHeight: 200, overflow: 'auto' }}
+					innerContentStyle={{ minWidth: 125, maxHeight: 300, overflow: 'auto' }}
 				>
 					{!isLoadingPositions && positions && positions.length ? (
 						<List component="nav">
@@ -395,6 +397,7 @@ const FormFilter = props => {
 					open={dropdownRole}
 					onClose={() => handlerDropdown({ name: 'dropdownRole' }, values, setFieldValue)}
 					placement="bottom-start"
+					innerContentStyle={{ maxHeight: 300, overflow: 'auto' }}
 				>
 					<List component="nav">
 						{roles.map((role, index) => (

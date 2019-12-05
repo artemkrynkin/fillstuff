@@ -15,9 +15,10 @@ import { history } from 'src/helpers/history';
 
 import NumberFormat, { currencyFormatProps } from 'src/components/NumberFormat';
 import CardPaper from 'src/components/CardPaper';
-import QuantityIndicator from 'src/components/QuantityIndicator';
 
 import { getProcurement } from 'src/actions/procurements';
+
+import Receipt from './Receipt';
 
 import { TableCell } from './styles';
 import styles from './Procurement.module.css';
@@ -111,7 +112,6 @@ class Procurement extends Component {
 							</Grid>
 						</Grid>
 						<div className={styles.procurementReceipts}>
-							<div className={styles.procurementDetails}>Детали закупки</div>
 							<Table>
 								<TableHead>
 									<TableRow>
@@ -129,30 +129,7 @@ class Procurement extends Component {
 								</TableHead>
 								<TableBody>
 									{procurement.receipts.map((receipt, index) => (
-										<TableRow key={index}>
-											<TableCell>
-												{receipt.position.name}{' '}
-												{receipt.position.characteristics.reduce(
-													(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
-													''
-												)}
-												{receipt.position.isArchived ? <span className={styles.isArchived}>В архиве</span> : null}
-											</TableCell>
-											<TableCell align="right" width={160}>
-												<QuantityIndicator
-													type="receipt"
-													unitReceipt={receipt.position.unitReceipt}
-													unitIssue={receipt.position.unitIssue}
-													receipts={[{ ...receipt.initial }]}
-												/>
-											</TableCell>
-											<TableCell align="right" width={160}>
-												{receipt.unitPurchasePrice} ₽
-											</TableCell>
-											<TableCell align="right" width={160}>
-												{!receipt.position.isFree ? `${receipt.unitSellingPrice} ₽` : 'Бесплатно'}
-											</TableCell>
-										</TableRow>
+										<Receipt key={index} receipt={receipt} />
 									))}
 								</TableBody>
 							</Table>

@@ -33,9 +33,15 @@ positionsRouter.get(
 			})
 			.catch(err => next({ code: 2, err }));
 
+		const compareByName = (a, b) => {
+			if (a.name > b.name) return 1;
+			else if (a.name < b.name) return -1;
+			else return 0;
+		};
+
 		const positions = await positionsPromise;
 
-		res.json(positions);
+		res.json(positions.sort(compareByName));
 	}
 );
 

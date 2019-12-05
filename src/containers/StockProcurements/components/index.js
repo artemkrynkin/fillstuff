@@ -17,7 +17,7 @@ const Index = props => {
 
 	if (
 		(queryInitialValues.dateStart || queryInitialValues.dateEnd) &&
-		(!moment(queryInitialValues.dateStart).isValid() || !moment(queryInitialValues.dateEnd).isValid())
+		(!moment(queryInitialValues.dateStart || new Date('')).isValid() || !moment(queryInitialValues.dateEnd || new Date('')).isValid())
 	) {
 		queryInitialValues.dateStart = '';
 		queryInitialValues.dateEnd = '';
@@ -25,7 +25,8 @@ const Index = props => {
 	if (
 		queryInitialValues.dateStart &&
 		queryInitialValues.dateEnd &&
-		moment(queryInitialValues.dateStart).isValid() && moment(queryInitialValues.dateEnd).isValid() &&
+		moment(queryInitialValues.dateStart || new Date('')).isValid() &&
+		moment(queryInitialValues.dateEnd || new Date('')).isValid() &&
 		moment(queryInitialValues.dateStart).isAfter(queryInitialValues.dateEnd)
 	) {
 		const dateStart = queryInitialValues.dateStart;
@@ -40,7 +41,7 @@ const Index = props => {
 	if (
 		!isNaN(queryInitialValues.amountFrom) &&
 		!isNaN(queryInitialValues.amountTo) &&
-		queryInitialValues.amountFrom > queryInitialValues.amountTo
+		+queryInitialValues.amountFrom > +queryInitialValues.amountTo
 	) {
 		const amountFrom = queryInitialValues.amountFrom;
 

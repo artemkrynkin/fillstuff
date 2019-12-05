@@ -1,45 +1,3 @@
-.buttonLink {
-  background: none;
-  border: none;
-  color: var(--c-hex-t-500);
-  display: flex;
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.buttonLink:hover {
-  color: var(--c-hex-t-400);
-}
-
-.buttonLink span {
-  display: block;
-  max-width: 220px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.buttonLink svg {
-  color: var(--c-hex-t-300);
-  font-size: 12px;
-  margin: 2px 0 0 5px;
-  transform: rotate(0deg);
-  transition: color 150ms ease-out;
-}
-
-.prevSellingPrice {
-  background-color: transparent !important;
-  bottom: 0;
-  position: absolute;
-  padding: 0 10px;
-  right: 19px;
-  top: 0;
-}
-
-.prevSellingPrice svg {
-  font-size: 14px;
-}
-
 .removeReceipt {
   display: inline-flex;
   margin: 32px 4px auto auto;
@@ -58,8 +16,7 @@
 
 .receipts {
   border-top: 1px solid var(--c-hex-br-5);
-  border-bottom: 1px solid var(--c-hex-br-5);
-  margin: 0 -25px 20px;
+  margin: 0 -25px -12px;
   padding: 20px 25px 0;
 }
 
@@ -78,42 +35,4 @@
 .iconCostDeliveryDivide {
   color: var(--c-hex-bg-300);
   margin-left: 10px;
-}
-
-.totalContainer {
-  border-bottom: 1px solid var(--c-hex-br-5);
-  margin-bottom: 20px;
-  padding-bottom: 20px;
-}
-
-.totalPurchasePrice,
-.purchasePrice,
-.costDelivery {
-  color: var(--c-hex-bg-500);
-}
-
-.totalPurchasePrice {
-  font-size: 13px;
-  font-weight: 600;
-  margin-bottom: 10px;
-}
-
-.purchasePrice {
-  margin-bottom: 5px;
-}
-
-.purchasePrice,
-.costDelivery {
-  font-size: 12px;
-}
-
-.totalPurchasePrice span,
-.purchasePrice span,
-.costDelivery span {
-  color: var(--c-hex-bg-700);
-  font-weight: 700;
-}
-
-.totalPurchasePrice span {
-  font-size: 16px;
 }

@@ -7,6 +7,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { getProcurements } from 'src/actions/procurements';
 
+import filterSchema from './filterSchema';
 import Procurement from './Procurement';
 
 import styles from './Procurements.module.css';
@@ -40,6 +41,7 @@ class Procurements extends Component {
 				isFetching: isLoadingProcurementsDates,
 				// error: errorProcurementsDates
 			},
+			procurementsQueryParams,
 		} = this.props;
 
 		return (
@@ -53,7 +55,12 @@ class Procurements extends Component {
 										{moment(procurementDates.date).calendar(null, procurementDatesCalendarFormat)}
 									</div>
 									{procurementDates.procurements.map((procurement, index) => (
-										<Procurement currentUser={currentUser} procurement={procurement} key={index} />
+										<Procurement
+											key={index}
+											procurement={procurement}
+											currentUser={currentUser}
+											procurementsQueryParams={procurementsQueryParams}
+										/>
 									))}
 								</div>
 							))}
@@ -116,7 +123,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
 	const { currentStock, procurementsQueryParams } = ownProps;
 
-	const params = Object.assign({}, procurementsQueryParams);
+	const params = filterSchema.cast(Object.assign({}, procurementsQueryParams));
 
 	Object.keys(params).forEach(key => params[key] === '' && delete params[key]);
 

@@ -1,5 +1,7 @@
+import ColorConvert from 'color-convert';
+
 import MuiTableCell from '@material-ui/core/TableCell';
-import { withStyles } from '@material-ui/core';
+import { withStyles, makeStyles } from '@material-ui/core';
 
 import theme from 'shared/theme';
 
@@ -22,3 +24,15 @@ export const TableCell = withStyles({
 		borderBottom: 'none',
 	},
 })(MuiTableCell);
+
+export const TableRowHighlight = makeStyles({
+	root: {
+		backgroundColor: `rgba(${ColorConvert.hex.rgb(theme.teal.cT50)}, 0.6)`,
+	},
+});
+
+export const TableCellHighlight = makeStyles({
+	root: {
+		fontWeight: 600,
+	},
+});

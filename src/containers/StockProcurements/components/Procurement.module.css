@@ -62,9 +62,9 @@
 
 .procurementUserPhoto {
   background-color: var(--c-hex-br-5);
-  height: 30px;
+  height: 28px;
   margin-right: 10px;
-  width: 30px;
+  width: 28px;
 }
 
 .procurementUserIcon {
@@ -80,7 +80,7 @@
 
 .procurementUserPhoto svg {
   color: rgba(255, 255, 255, 0.9);
-  font-size: 24px;
+  font-size: 20px;
 }
 
 .procurementUserName {
@@ -96,34 +96,34 @@
 .detailsButton {
   background: none;
   border: none;
-  color: var(--c-hex-bg-300);
+  color: var(--c-hex-bg-200);
   display: flex;
-  font-size: 13px;
-  font-weight: 500;
+  margin-top: -3px;
   padding-bottom: 5px;
+  transition: margin-top 150ms ease-out, padding-top 150ms ease-out;
   width: 100%;
+}
+
+.detailsButton:global(.open) {
+  margin-top: 0;
+  padding-top: 3px;
 }
 
 .detailsButton svg {
   font-size: 18px;
-  transform: rotate(180deg);
+  transform: rotate(0deg);
   transition: color 150ms ease-out, transform 150ms ease-out;
   width: 18px !important;
 }
 
 .detailsButton svg:global(.open) {
-  transform: rotate(0deg);
-}
-
-.procurementDetails {
-  color: var(--c-hex-bg-600);
-  display: inline-block;
-  margin-bottom: 5px;
+  transform: rotate(180deg);
 }
 
 .procurementReceipts {
   border-top: 1px solid var(--c-hex-br-5);
-  padding: 25px 15px 0;
+  margin-top: 20px;
+  padding: 0 15px;
 }
 
 .isArchived {

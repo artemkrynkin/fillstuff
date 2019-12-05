@@ -26,7 +26,7 @@ procurementsRouter.get(
 
 		if (number) conditions.number = { $regex: number, $options: 'i' };
 		if (dateStart && dateEnd) {
-			conditions.date = {
+			conditions.createdAt = {
 				$gte: new Date(dateStart),
 				$lt: new Date(dateEnd),
 			};

@@ -629,6 +629,14 @@ export const BliksideTheme = createMuiTheme({
 				'&$disabled': {
 					color: theme.blueGrey.cBg100,
 				},
+				'&:hover': {
+					backgroundColor: 'transparent',
+				},
+				'&$checked': {
+					'&:hover': {
+						backgroundColor: 'transparent',
+					},
+				},
 			},
 		},
 		MuiDialog: {

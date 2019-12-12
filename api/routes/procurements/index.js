@@ -18,7 +18,7 @@ procurementsRouter.get(
 	isAuthedResolver,
 	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
 	async (req, res, next) => {
-		const { stockId, number, dateStart, dateEnd, amountFrom, amountTo, position, role } = req.query;
+		const { stockId, number, dateStart, dateEnd, position, role } = req.query;
 
 		let conditions = {
 			stock: stockId,
@@ -27,69 +27,79 @@ procurementsRouter.get(
 		if (number) conditions.number = { $regex: number, $options: 'i' };
 		if (dateStart && dateEnd) {
 			conditions.createdAt = {
-				$gte: new Date(dateStart),
-				$lt: new Date(dateEnd),
-			};
-		}
-		if (amountFrom && amountTo) {
-			conditions.totalPurchasePrice = {
-				$gte: amountFrom,
-				$lte: amountTo,
+				$gte: new Date(Number(dateStart)),
+				$lte: new Date(Number(dateEnd)),
 			};
 		}
 
-		const procurementsPromise = Procurement.find(conditions)
-			.populate({ path: 'stock', select: 'members' })
-			.populate('user', 'profilePhoto name email')
-			.populate({
-				path: 'receipts',
-				populate: {
-					path: 'position',
+		const procurementsPromise = Procurement.paginate(conditions, {
+			sort: { createdAt: -1 },
+			populate: [
+				{
+					path: 'stock',
+					select: 'members',
+				},
+				{
+					path: 'user',
+					select: 'profilePhoto name email',
+				},
+				{
+					path: 'receipts',
 					populate: {
-						path: 'characteristics',
+						path: 'position',
+						populate: {
+							path: 'characteristics',
+						},
 					},
 				},
-			})
-			.sort({ createdAt: -1 })
-			.catch(err => next({ code: 2, err }));
+			],
+			pagination: false,
+			customLabels: {
+				docs: 'data',
+				meta: 'paging',
+			},
+		}).catch(err => next({ code: 2, err }));
 		const procurementsCountPromise = Procurement.estimatedDocumentCount();
 
 		let procurements = await procurementsPromise;
 		const procurementsCount = await procurementsCountPromise;
 
 		if (position && position !== 'all') {
-			procurements = procurements.filter(procurement => procurement.receipts.some(receipt => String(receipt.position._id) === position));
+			procurements.data = procurements.data.filter(procurement =>
+				procurement.receipts.some(receipt => String(receipt.position._id) === position)
+			);
 		}
 
 		switch (role) {
 			case 'owners':
-				procurements = procurements.filter(procurement => {
+				procurements.data = procurements.data.filter(procurement => {
 					return procurement.stock.members.some(member => String(member.user) === String(procurement.user._id) && member.role === 'owner');
 				});
 				break;
 			case 'admins':
-				procurements = procurements.filter(procurement => {
+				procurements.data = procurements.data.filter(procurement => {
 					return procurement.stock.members.some(member => String(member.user) === String(procurement.user._id) && member.role === 'admin');
 				});
 				break;
-			// case 'all': // Удалить если все будет работать на production
 			default:
 				if (role && role !== 'all') {
-					procurements = procurements.filter(procurement => String(procurement.user._id) === role);
+					procurements.data = procurements.data.filter(procurement => String(procurement.user._id) === role);
 				}
 				break;
 		}
 
-		procurements.forEach(procurement => procurement.depopulate('stock'));
+		procurements.data.forEach(procurement => procurement.depopulate('stock'));
 
-		res.json({
-			data: procurements,
-			paging: {
-				limit: 0,
-				offset: 0,
-				total: procurementsCount,
-			},
-		});
+		setTimeout(
+			() =>
+				res.json({
+					data: procurements.data,
+					paging: {
+						totalCount: procurementsCount,
+					},
+				}),
+			500
+		);
 	}
 );
 

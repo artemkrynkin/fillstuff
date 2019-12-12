@@ -17,8 +17,11 @@ const Receipt = props => {
 	const TableRowHighlightClasses = TableRowHighlight();
 	const TableCellHighlightClasses = TableCellHighlight();
 
-	const unitSellingPrice =
-		receipt.unitSellingPrice + receipt.unitCostDelivery + percentOfNumber(receipt.unitSellingPrice, receipt.position.extraCharge);
+	const unitSellingPrice = Number(
+		(receipt.unitSellingPrice + receipt.unitCostDelivery + percentOfNumber(receipt.unitSellingPrice, receipt.position.extraCharge)).toFixed(
+			2
+		)
+	);
 
 	return (
 		<TableRow classes={positionSameFilter ? { root: TableRowHighlightClasses.root } : {}}>

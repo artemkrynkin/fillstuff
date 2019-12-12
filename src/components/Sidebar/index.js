@@ -115,16 +115,15 @@ class Sidebar extends Component {
 										Статистика
 									</NavLink>
 								</div>
-							</div>
-						) : null}
-						{activeStockId ? (
-							<div className={`${styles.menuItem} ${styles.menuItem_down}`}>
-								<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to={`/stocks/${activeStockId}/settings`}>
-									<div className={styles.menuIcon}>
-										<FontAwesomeIcon icon={['fal', 'cog']} />
-									</div>
-									Настройки
-								</NavLink>
+
+								<div className={styles.menuItem}>
+									<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to={`/stocks/${activeStockId}/settings`}>
+										<div className={styles.menuIcon}>
+											<FontAwesomeIcon icon={['fal', 'cog']} />
+										</div>
+										Настройки
+									</NavLink>
+								</div>
 							</div>
 						) : null}
 						{/*<div className={`${styles.menuItem} ${styles.menuItem_down}`}>*/}

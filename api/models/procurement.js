@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 // import validator from 'validator';
 import i18n from 'i18n';
 
@@ -64,5 +65,7 @@ let Procurement = new Schema({
 		select: false,
 	},
 });
+
+Procurement.plugin(mongoosePaginate);
 
 export default mongoose.model('Procurement', Procurement);

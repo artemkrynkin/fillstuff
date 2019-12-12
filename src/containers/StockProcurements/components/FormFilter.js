@@ -1,5 +1,4 @@
 import React from 'react';
-import ClassNames from 'classnames';
 import moment from 'moment';
 import MomentUtils from '@date-io/moment';
 import { Field, Form } from 'formik';
@@ -7,21 +6,20 @@ import { Field, Form } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Grid from '@material-ui/core/Grid';
 import ButtonBase from '@material-ui/core/ButtonBase';
-import InputLabel from '@material-ui/core/InputLabel';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
-import InputBase from '@material-ui/core/InputBase';
+import Divider from '@material-ui/core/Divider';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
-
+import Avatar from '@material-ui/core/Avatar';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { DatePicker } from '@material-ui/pickers';
 
 import { memberRoleTransform } from 'shared/roles-access-rights';
 
-import NumberFormat, { currencyFormatInputProps, currencyFormatProps } from 'src/components/NumberFormat';
+import { weekActive, monthActive, paginationCalendarFormat } from 'src/components/Pagination/utils';
 import Dropdown from 'src/components/Dropdown';
 
 import { SearchTextField } from './Filter.styles';
@@ -50,11 +48,13 @@ const DropdownFooter = props => {
 
 	return (
 		<Grid className={styles.dropdownFooter} alignItems="center" justify="center" container>
-			<Grid className={styles.dropdownFooterColumn} item>
-				<Button onClick={onResetHandler} disabled={isSubmitting} size="small" variant="outlined">
-					Сбросить
-				</Button>
-			</Grid>
+			{typeof onResetHandler === 'function' ? (
+				<Grid className={styles.dropdownFooterColumn} item>
+					<Button onClick={onResetHandler} disabled={isSubmitting} size="small" variant="outlined">
+						Сбросить
+					</Button>
+				</Grid>
+			) : null}
 			<Grid className={styles.dropdownFooterColumn} item>
 				<Button
 					type="submit"
@@ -70,20 +70,12 @@ const DropdownFooter = props => {
 	);
 };
 
-const photoImgClasses = member => {
-	return ClassNames({
-		[styles.memberPhoto]: true,
-		[styles.memberPhotoNull]: member.isWaiting || !member.user.profilePhoto,
-	});
-};
-
 const FormFilter = props => {
 	const {
 		handlerDropdown,
 		onChangeFilterNumber,
 		onClearFilterNumber,
-		onResetFilterDate,
-		onResetFilterAmount,
+		onChangeFilterDate,
 		onChangeFilterPosition,
 		onChangeFilterRole,
 		onResetAllFilters,
@@ -95,10 +87,16 @@ const FormFilter = props => {
 		members,
 		refFilterNumberInput,
 		dropdownDate: { state: dropdownDate, ref: refDropdownDate },
-		dropdownAmount: { state: dropdownAmount, ref: refDropdownAmount },
+		dropdownDateRange: { state: dropdownDateRange, ref: refDropdownDateRange },
 		dropdownPosition: { state: dropdownPosition, ref: refDropdownPosition },
 		dropdownRole: { state: dropdownRole, ref: refDropdownRole },
-		formikProps: { errors, isSubmitting, values, setFieldValue, submitForm },
+		formikProps: {
+			// errors,
+			isSubmitting,
+			values,
+			setFieldValue,
+			submitForm,
+		},
 	} = props;
 
 	const positionByFiltered =
@@ -134,26 +132,78 @@ const FormFilter = props => {
 					<ButtonBase
 						ref={refDropdownDate}
 						className={styles.filterButtonLink}
-						onClick={() => handlerDropdown({ name: 'dropdownDate' })}
+						onClick={() => {
+							handlerDropdown('dropdownDate');
+							handlerDropdown('dropdownDateRange', false);
+						}}
 						disableRipple
 					>
-						{values.dateStartView && values.dateEndView ? (
+						{weekActive(values.dateStartView, values.dateEndView) ? (
+							<span>За текущую неделю</span>
+						) : monthActive(values.dateStartView, values.dateEndView) ? (
+							<span>За текущий месяц</span>
+						) : !isNaN(values.dateStartView) && !isNaN(values.dateEndView) ? (
 							<span>
-								{moment(values.dateStartView).format('D MMMM')}
-								{' - '}
-								{moment(values.dateEndView).format('D MMMM')}
+								{monthActive(values.dateStartView, values.dateEndView, false)
+									? moment(values.dateStartView).calendar(
+											null,
+											paginationCalendarFormat(monthActive(values.dateStartView, values.dateEndView, false))
+									  )
+									: moment(values.dateStartView).isSame(values.dateEndView, 'day')
+									? moment(values.dateStartView).calendar(null, paginationCalendarFormat(false))
+									: moment(values.dateStartView).calendar(null, paginationCalendarFormat(false)) +
+									  ' - ' +
+									  moment(values.dateEndView).calendar(null, paginationCalendarFormat(false))}
 							</span>
 						) : (
-							<span>Все даты</span>
+							'Некорректная дата'
 						)}
 						<FontAwesomeIcon icon={['far', 'angle-down']} />
 					</ButtonBase>
 				</Grid>
 
+				<Dropdown anchor={refDropdownDate} open={dropdownDate} onClose={() => handlerDropdown('dropdownDate')} placement="bottom-start">
+					<List component="nav">
+						<ListItem
+							disabled={isSubmitting}
+							selected={weekActive(values.dateStartView, values.dateEndView)}
+							onClick={() => onChangeFilterDate('currentWeek', setFieldValue, submitForm)}
+							component={MenuItem}
+							button
+						>
+							За текущую неделю
+						</ListItem>
+						<ListItem
+							disabled={isSubmitting}
+							selected={monthActive(values.dateStartView, values.dateEndView)}
+							onClick={() => onChangeFilterDate('currentMonth', setFieldValue, submitForm)}
+							component={MenuItem}
+							button
+						>
+							За текущий месяц
+						</ListItem>
+					</List>
+					<Divider />
+					<List component="nav">
+						<ListItem
+							ref={refDropdownDateRange}
+							disabled={isSubmitting}
+							onClick={() => {
+								handlerDropdown('dropdownDate');
+								handlerDropdown('dropdownDateRange');
+							}}
+							component={MenuItem}
+							button
+						>
+							Указать период
+						</ListItem>
+					</List>
+				</Dropdown>
+
 				<Dropdown
 					anchor={refDropdownDate}
-					open={dropdownDate}
-					onClose={() => handlerDropdown({ name: 'dropdownDate' }, values, setFieldValue)}
+					open={dropdownDateRange}
+					onClose={() => handlerDropdown('dropdownDateRange')}
 					placement="bottom-start"
 				>
 					<Grid className={styles.dropdownContent} alignItems="center" container>
@@ -162,10 +212,10 @@ const FormFilter = props => {
 								<DatePicker
 									value={values.dateStart}
 									onChange={date => {
-										setFieldValue('dateStart', date.format('YYYY-MM-DD'), false);
+										setFieldValue('dateStart', date.valueOf(), false);
 
 										if (moment(values.dateEnd).isBefore(date)) {
-											setFieldValue('dateEnd', date.format('YYYY-MM-DD'), false);
+											setFieldValue('dateEnd', date.valueOf(), false);
 										}
 									}}
 									variant="static"
@@ -186,10 +236,12 @@ const FormFilter = props => {
 								<DatePicker
 									value={values.dateEnd}
 									onChange={date => {
-										setFieldValue('dateEnd', date.format('YYYY-MM-DD'), false);
+										const dateEnd = date.set({ second: 59, millisecond: 999 });
 
-										if (moment(values.dateStart).isAfter(date)) {
-											setFieldValue('dateStart', date.format('YYYY-MM-DD'), false);
+										setFieldValue('dateEnd', dateEnd.valueOf(), false);
+
+										if (moment(values.dateStart).isAfter(dateEnd)) {
+											setFieldValue('dateStart', dateEnd.valueOf(), false);
 										}
 									}}
 									variant="static"
@@ -208,98 +260,7 @@ const FormFilter = props => {
 							</Grid>
 						</MuiPickersUtilsProvider>
 					</Grid>
-					<DropdownFooter
-						onResetHandler={() => onResetFilterDate(setFieldValue, submitForm)}
-						isSubmitting={isSubmitting}
-						disabledSubmit={!values.dateStart || !values.dateEnd}
-					/>
-				</Dropdown>
-
-				{/* Filter Amount */}
-				<Grid item>
-					<ButtonBase
-						ref={refDropdownAmount}
-						className={styles.filterButtonLink}
-						onClick={() => handlerDropdown({ name: 'dropdownAmount' })}
-						disableRipple
-					>
-						{values.amountFromView && values.amountToView ? (
-							<span>
-								<NumberFormat
-									value={values.amountFromView}
-									renderText={value => `от ${value}`}
-									displayType="text"
-									onValueChange={() => {}}
-									{...currencyFormatProps}
-								/>{' '}
-								<NumberFormat
-									value={values.amountToView}
-									renderText={value => `до ${value}`}
-									displayType="text"
-									onValueChange={() => {}}
-									{...currencyFormatProps}
-								/>
-							</span>
-						) : (
-							<span>Любая сумма</span>
-						)}
-						<FontAwesomeIcon icon={['far', 'angle-down']} />
-					</ButtonBase>
-				</Grid>
-
-				<Dropdown
-					anchor={refDropdownAmount}
-					open={dropdownAmount}
-					onClose={() => handlerDropdown({ name: 'dropdownAmount' }, values, setFieldValue)}
-					placement="bottom-start"
-				>
-					<Grid className={styles.dropdownContent} alignItems="center" container>
-						<Grid className={styles.dropdownContentColumn} item>
-							<Field
-								className={styles.textFieldErrorHidden}
-								name="amountFrom"
-								error={Boolean(errors.amountFrom)}
-								as={InputBase}
-								inputComponent={NumberFormat}
-								inputProps={{
-									...currencyFormatInputProps,
-								}}
-								placeholder="от"
-								validate={value => {
-									const from = parseFloat(values.amountFrom.replace(/ /g, ''));
-									const to = parseFloat(values.amountTo.replace(/ /g, ''));
-
-									if ((!values.amountFrom && values.amountTo) || from > to) return true;
-								}}
-								autoFocus
-								fullWidth
-							/>
-						</Grid>
-						<Grid className={styles.dropdownContentSeparated} item>
-							<InputLabel>&ndash;</InputLabel>
-						</Grid>
-						<Grid className={styles.dropdownContentColumn} item>
-							<Field
-								className={styles.textFieldErrorHidden}
-								name="amountTo"
-								error={Boolean(errors.amountTo)}
-								as={InputBase}
-								inputComponent={NumberFormat}
-								inputProps={{
-									...currencyFormatInputProps,
-								}}
-								placeholder="до"
-								validate={value => {
-									const from = parseFloat(values.amountFrom.replace(/ /g, ''));
-									const to = parseFloat(values.amountTo.replace(/ /g, ''));
-
-									if ((!values.amountTo && values.amountFrom) || to < from) return true;
-								}}
-								fullWidth
-							/>
-						</Grid>
-					</Grid>
-					<DropdownFooter onResetHandler={() => onResetFilterAmount(setFieldValue, submitForm)} isSubmitting={isSubmitting} />
+					<DropdownFooter isSubmitting={isSubmitting} disabledSubmit={!values.dateStart || !values.dateEnd} />
 				</Dropdown>
 
 				{/* Filter Position */}
@@ -307,7 +268,7 @@ const FormFilter = props => {
 					<ButtonBase
 						ref={refDropdownPosition}
 						className={styles.filterButtonLink}
-						onClick={() => handlerDropdown({ name: 'dropdownPosition' })}
+						onClick={() => handlerDropdown('dropdownPosition')}
 						disableRipple
 					>
 						{values.position !== 'all' ? (
@@ -335,7 +296,7 @@ const FormFilter = props => {
 				<Dropdown
 					anchor={refDropdownPosition}
 					open={dropdownPosition}
-					onClose={() => handlerDropdown({ name: 'dropdownPosition' }, values, setFieldValue)}
+					onClose={() => handlerDropdown('dropdownPosition')}
 					placement="bottom-start"
 					innerContentStyle={{ minWidth: 125, maxHeight: 300, overflow: 'auto' }}
 				>
@@ -384,7 +345,7 @@ const FormFilter = props => {
 					<ButtonBase
 						ref={refDropdownRole}
 						className={styles.filterButtonLink}
-						onClick={() => handlerDropdown({ name: 'dropdownRole' })}
+						onClick={() => handlerDropdown('dropdownRole')}
 						disableRipple
 					>
 						<span>{filterRoleTransform(values.role, members)}</span>
@@ -395,7 +356,7 @@ const FormFilter = props => {
 				<Dropdown
 					anchor={refDropdownRole}
 					open={dropdownRole}
-					onClose={() => handlerDropdown({ name: 'dropdownRole' }, values, setFieldValue)}
+					onClose={() => handlerDropdown('dropdownRole')}
 					placement="bottom-start"
 					innerContentStyle={{ maxHeight: 300, overflow: 'auto' }}
 				>
@@ -421,16 +382,17 @@ const FormFilter = props => {
 								component={MenuItem}
 								button
 							>
-								<div className={photoImgClasses(member)}>
-									{member.user.profilePhoto ? (
-										<img src={member.user.profilePhoto} alt="" />
-									) : (
-										<FontAwesomeIcon icon={['fas', 'user-alt']} />
-									)}
-								</div>
-								<div className={styles.memberDetails}>
-									<div className={styles.memberTitle}>{member.user.name}</div>
-									<div className={styles.memberCaption}>{memberRoleTransform(member.role)}</div>
+								<div className={styles.user}>
+									<Avatar
+										className={styles.userPhoto}
+										src={member.user.profilePhoto}
+										alt={member.user.name}
+										children={<div className={styles.userIcon} children={<FontAwesomeIcon icon={['fas', 'user-alt']} />} />}
+									/>
+									<Grid direction="column" container>
+										<div className={styles.userTitle}>{member.user.name}</div>
+										<div className={styles.userCaption}>{memberRoleTransform(member.role)}</div>
+									</Grid>
 								</div>
 							</ListItem>
 						))}
@@ -439,10 +401,7 @@ const FormFilter = props => {
 
 				<Grid item style={{ marginLeft: 'auto' }}>
 					{values.number ||
-					values.dateStartView ||
-					values.dateEndView ||
-					values.amountFromView ||
-					values.amountToView ||
+					(!weekActive(values.dateStartView, values.dateEndView) && !monthActive(values.dateStartView, values.dateEndView)) ||
 					values.position !== 'all' ||
 					values.role !== 'all' ? (
 						<ButtonBase onClick={() => onResetAllFilters(setFieldValue, submitForm)} className={styles.filterButtonLinkRed} disableRipple>

@@ -22,8 +22,8 @@ import { TableCell } from './styles';
 import styles from './Procurement.module.css';
 
 const Procurement = props => {
-	const { procurement, currentUser, procurementsQueryParams } = props;
-	const [expanded, setExpanded] = useState(procurementsQueryParams.position !== 'all');
+	const { procurement, currentUser, queryParams } = props;
+	const [expanded, setExpanded] = useState(queryParams.position !== 'all');
 
 	const onHandleExpand = event => {
 		if (event.target.className !== styles.procurementNumber) setExpanded(!expanded);
@@ -108,7 +108,7 @@ const Procurement = props => {
 							</TableHead>
 							<TableBody>
 								{procurement.receipts.map((receipt, index) => (
-									<Receipt key={index} receipt={receipt} positionSameFilter={receipt.position._id === procurementsQueryParams.position} />
+									<Receipt key={index} receipt={receipt} positionSameFilter={receipt.position._id === queryParams.position} />
 								))}
 							</TableBody>
 						</Table>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import queryString from 'query-string';
 import moment from 'moment';
 
@@ -12,63 +12,80 @@ import Procurements from './Procurements';
 
 const Index = props => {
 	const { currentUser, currentStock } = props;
+	const [loadedDocs, setLoadedDocs] = useState(15);
+	const perPage = 15;
 
-	let queryInitialValues = queryString.parse(history.location.search);
+	const onChangeLoadedDocs = resetLoadedDocs => {
+		if (!resetLoadedDocs) setLoadedDocs(loadedDocs + perPage);
+		else setLoadedDocs(perPage);
+	};
 
-	if (
-		(queryInitialValues.dateStart || queryInitialValues.dateEnd) &&
-		(!moment(queryInitialValues.dateStart || new Date('')).isValid() || !moment(queryInitialValues.dateEnd || new Date('')).isValid())
-	) {
-		queryInitialValues.dateStart = '';
-		queryInitialValues.dateEnd = '';
+	const queryInitialParams = queryString.parse(history.location.search);
+
+	queryInitialParams.dateStart = Number(queryInitialParams.dateStart);
+	queryInitialParams.dateEnd = Number(queryInitialParams.dateEnd);
+
+	if (!isNaN(queryInitialParams.dateStart) || !isNaN(queryInitialParams.dateEnd)) {
+		if (!moment(queryInitialParams.dateStart || new Date('')).isValid() || !moment(queryInitialParams.dateEnd || new Date('')).isValid()) {
+			queryInitialParams.dateStart = moment()
+				.startOf('month')
+				.valueOf();
+			queryInitialParams.dateEnd = moment()
+				.endOf('month')
+				.valueOf();
+		} else if (
+			moment(queryInitialParams.dateStart || new Date('')).isValid() &&
+			moment(queryInitialParams.dateEnd || new Date('')).isValid() &&
+			moment(queryInitialParams.dateStart).isAfter(queryInitialParams.dateEnd)
+		) {
+			const dateStart = queryInitialParams.dateStart;
+
+			queryInitialParams.dateStart = queryInitialParams.dateEnd;
+			queryInitialParams.dateEnd = dateStart;
+		}
+	} else {
+		queryInitialParams.dateStart = moment()
+			.startOf('month')
+			.valueOf();
+		queryInitialParams.dateEnd = moment()
+			.endOf('month')
+			.valueOf();
 	}
-	if (
-		queryInitialValues.dateStart &&
-		queryInitialValues.dateEnd &&
-		moment(queryInitialValues.dateStart || new Date('')).isValid() &&
-		moment(queryInitialValues.dateEnd || new Date('')).isValid() &&
-		moment(queryInitialValues.dateStart).isAfter(queryInitialValues.dateEnd)
-	) {
-		const dateStart = queryInitialValues.dateStart;
 
-		queryInitialValues.dateStart = queryInitialValues.dateEnd;
-		queryInitialValues.dateEnd = dateStart;
-	}
-	if (isNaN(queryInitialValues.amountFrom) || isNaN(queryInitialValues.amountTo)) {
-		queryInitialValues.amountFrom = '';
-		queryInitialValues.amountTo = '';
-	}
-	if (
-		!isNaN(queryInitialValues.amountFrom) &&
-		!isNaN(queryInitialValues.amountTo) &&
-		+queryInitialValues.amountFrom > +queryInitialValues.amountTo
-	) {
-		const amountFrom = queryInitialValues.amountFrom;
-
-		queryInitialValues.amountFrom = queryInitialValues.amountTo;
-		queryInitialValues.amountTo = amountFrom;
-	}
-
-	let procurementsQueryParams = {
-		number: queryInitialValues.number || '',
-		dateStart: queryInitialValues.dateStart || '',
-		dateEnd: queryInitialValues.dateEnd || '',
-		dateStartView: queryInitialValues.dateStart || '',
-		dateEndView: queryInitialValues.dateEnd || '',
-		amountFrom: queryInitialValues.amountFrom || '',
-		amountTo: queryInitialValues.amountTo || '',
-		amountFromView: queryInitialValues.amountFrom || '',
-		amountToView: queryInitialValues.amountTo || '',
-		position: queryInitialValues.position || 'all',
-		role: queryInitialValues.role || 'all',
+	let queryParams = {
+		number: queryInitialParams.number || '',
+		dateStart: queryInitialParams.dateStart || '',
+		dateEnd: queryInitialParams.dateEnd || '',
+		dateStartView: queryInitialParams.dateStart || '',
+		dateEndView: queryInitialParams.dateEnd || '',
+		position: queryInitialParams.position || 'all',
+		role: queryInitialParams.role || 'all',
 	};
 
 	return (
 		<Container maxWidth="md">
 			<Grid container direction="row" justify="center" alignItems="flex-start" spacing={2}>
 				<Grid item xs={12}>
-					<Filter currentUser={currentUser} currentStock={currentStock} procurementsQueryParams={procurementsQueryParams} />
-					<Procurements currentUser={currentUser} currentStock={currentStock} procurementsQueryParams={procurementsQueryParams} />
+					<Filter
+						currentUser={currentUser}
+						currentStock={currentStock}
+						queryParams={queryParams}
+						paging={{
+							loadedDocs,
+							perPage,
+							onChangeLoadedDocs,
+						}}
+					/>
+					<Procurements
+						currentUser={currentUser}
+						currentStock={currentStock}
+						queryParams={queryParams}
+						paging={{
+							loadedDocs,
+							perPage,
+							onChangeLoadedDocs,
+						}}
+					/>
 				</Grid>
 			</Grid>
 		</Container>

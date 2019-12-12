@@ -1,6 +1,7 @@
 import React, { Component, createRef } from 'react';
 // import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import queryString from 'query-string';
 import { Formik } from 'formik';
 
@@ -19,56 +20,26 @@ import filterSchema from './filterSchema';
 
 import styles from './Filter.module.css';
 
-const dropdownNameList = ['dropdownDate', 'dropdownAmount', 'dropdownPosition', 'dropdownRole'];
-
 let filterNumberFieldTimer;
 
 class Filter extends Component {
 	state = {
 		dropdownDate: false,
-		dropdownAmount: false,
+		dropdownDateRange: false,
 		dropdownPosition: false,
 		dropdownRole: false,
 	};
 
+	refFilterNumberInput = createRef();
 	refDropdownDate = createRef();
-	refDropdownAmount = createRef();
+	refDropdownDateRange = createRef();
 	refDropdownPosition = createRef();
 	refDropdownRole = createRef();
-	refFilterNumberInput = createRef();
 
-	handlerDropdown = ({ name, value }, values, setFieldValue) => {
-		this.setState({ [name]: value === null || value === undefined ? !this.state[name] : value });
-
-		if (values) {
-			switch (name) {
-				case 'dropdownDate':
-					if (!values.dateStartView || !values.dateEndView) {
-						setFieldValue('dateStart', '', false);
-						setFieldValue('dateEnd', '', false);
-					} else {
-						setFieldValue('dateStart', values.dateStartView, false);
-						setFieldValue('dateEnd', values.dateEndView, false);
-					}
-					break;
-				case 'dropdownAmount':
-					if (!values.amountFromView || !values.amountToView) {
-						setFieldValue('amountFrom', '', false);
-						setFieldValue('amountTo', '', false);
-					} else {
-						setFieldValue('amountFrom', values.amountFromView, false);
-						setFieldValue('amountTo', values.amountToView, false);
-					}
-					break;
-				case 'dropdownPosition':
-					break;
-				case 'dropdownRole':
-					break;
-				default:
-					return;
-			}
-		}
-	};
+	handlerDropdown = (name, value) =>
+		this.setState({
+			[name]: value === null || value === undefined ? !this.state[name] : value,
+		});
 
 	onChangeFilterNumber = ({ target: { value } }, setFieldValue, submitForm) => {
 		setFieldValue('number', value);
@@ -86,74 +57,95 @@ class Filter extends Component {
 		submitForm();
 	};
 
-	onResetFilterDate = (setFieldValue, submitForm) => {
-		this.handlerDropdown({ name: 'dropdownDate' });
+	onChangeFilterDate = (intervalDate, setFieldValue, submitForm) => {
+		const momentDate = moment();
 
-		setFieldValue('dateStart', '', false);
-		setFieldValue('dateEdn', '', false);
-		setFieldValue('dateStartView', '', false);
-		setFieldValue('dateEndView', '', false);
+		this.handlerDropdown('dropdownDate');
 
-		submitForm();
-	};
+		switch (intervalDate) {
+			case 'currentWeek': {
+				const startWeek = momentDate.startOf('isoWeek').valueOf();
+				const endWeek = momentDate.endOf('isoWeek').valueOf();
 
-	onResetFilterAmount = (setFieldValue, submitForm) => {
-		this.handlerDropdown({ name: 'dropdownAmount' });
+				setFieldValue('dateStart', startWeek, false);
+				setFieldValue('dateEnd', endWeek, false);
+				break;
+			}
+			case 'currentMonth':
+			default: {
+				const startMonth = momentDate.startOf('month').valueOf();
+				const endMonth = momentDate.endOf('month').valueOf();
 
-		setFieldValue('amountFrom', '', false);
-		setFieldValue('amountTo', '', false);
-		setFieldValue('amountFromView', '', false);
-		setFieldValue('amountToView', '', false);
-
+				setFieldValue('dateStart', startMonth, false);
+				setFieldValue('dateEnd', endMonth, false);
+				break;
+			}
+		}
 		submitForm();
 	};
 
 	onChangeFilterPosition = (position, setFieldValue, submitForm) => {
-		this.handlerDropdown({ name: 'dropdownPosition' });
+		this.handlerDropdown('dropdownPosition');
 
 		setFieldValue('position', position, false);
 		submitForm();
 	};
 
 	onChangeFilterRole = (role, setFieldValue, submitForm) => {
-		this.handlerDropdown({ name: 'dropdownRole' });
+		this.handlerDropdown('dropdownRole');
 
 		setFieldValue('role', role, false);
 		submitForm();
 	};
 
 	onResetAllFilters = (setFieldValue, submitForm) => {
+		const momentDate = moment();
+		const startMonth = momentDate.startOf('month').valueOf();
+		const endMonth = momentDate.endOf('month').valueOf();
+
 		setFieldValue('number', '', false);
-		setFieldValue('dateStart', '', false);
-		setFieldValue('dateEnd', '', false);
-		setFieldValue('dateStartView', '', false);
-		setFieldValue('dateEndView', '', false);
-		setFieldValue('amountFrom', '', false);
-		setFieldValue('amountTo', '', false);
-		setFieldValue('amountFromView', '', false);
-		setFieldValue('amountToView', '', false);
+		setFieldValue('dateStart', startMonth, false);
+		setFieldValue('dateEnd', endMonth, false);
+		setFieldValue('dateStartView', startMonth, false);
+		setFieldValue('dateEndView', endMonth, false);
 		setFieldValue('position', 'all', false);
 		setFieldValue('role', 'all', false);
 		submitForm();
 	};
 
 	onSubmit = async (values, actions) => {
+		const { paging } = this.props;
+
+		const momentDate = moment();
+		const dropdownNameList = ['dropdownDate', 'dropdownDateRange', 'dropdownPosition', 'dropdownRole'];
+
+		paging.onChangeLoadedDocs(true);
+
 		actions.setFieldValue('dateStartView', values.dateStart, false);
 		actions.setFieldValue('dateEndView', values.dateEnd, false);
-		actions.setFieldValue('amountFromView', values.amountFrom, false);
-		actions.setFieldValue('amountToView', values.amountTo, false);
 
 		for (let i = 0; i < dropdownNameList.length; i++) {
-			this.handlerDropdown({ name: dropdownNameList[i], value: false });
+			this.handlerDropdown(dropdownNameList[i], false);
 		}
 
 		const filterParams = filterSchema.cast(values);
 
 		Object.keys(filterParams).forEach(key => filterParams[key] === '' && delete filterParams[key]);
 
-		history.push({
+		if (
+			momentDate.startOf('month').isSame(filterParams.dateStart, 'day') &&
+			momentDate.endOf('month').isSame(filterParams.dateEnd, 'day')
+		) {
+			delete filterParams.dateStart;
+			delete filterParams.dateEnd;
+		}
+		if (filterParams.position === 'all') delete filterParams.position;
+		if (filterParams.role === 'all') delete filterParams.role;
+
+		history.replace({
 			search: queryString.stringify(filterParams),
 		});
+
 		actions.setSubmitting(true);
 
 		await sleep(150);
@@ -163,15 +155,13 @@ class Filter extends Component {
 
 	componentDidUpdate(prevProps, prevState) {
 		if (
-			prevProps.procurementsQueryParams.number !== this.props.procurementsQueryParams.number ||
-			prevProps.procurementsQueryParams.dateStart !== this.props.procurementsQueryParams.dateStart ||
-			prevProps.procurementsQueryParams.dateEnd !== this.props.procurementsQueryParams.dateEnd ||
-			prevProps.procurementsQueryParams.amountFrom !== this.props.procurementsQueryParams.amountFrom ||
-			prevProps.procurementsQueryParams.amountTo !== this.props.procurementsQueryParams.amountTo ||
-			prevProps.procurementsQueryParams.position !== this.props.procurementsQueryParams.position ||
-			prevProps.procurementsQueryParams.role !== this.props.procurementsQueryParams.role
+			prevProps.queryParams.number !== this.props.queryParams.number ||
+			prevProps.queryParams.dateStart !== this.props.queryParams.dateStart ||
+			prevProps.queryParams.dateEnd !== this.props.queryParams.dateEnd ||
+			prevProps.queryParams.position !== this.props.queryParams.position ||
+			prevProps.queryParams.role !== this.props.queryParams.role
 		) {
-			const filterParams = filterSchema.cast(Object.assign({}, this.props.procurementsQueryParams));
+			const filterParams = filterSchema.cast(Object.assign({}, this.props.queryParams));
 
 			Object.keys(filterParams).forEach(key => filterParams[key] === '' && delete filterParams[key]);
 
@@ -196,14 +186,14 @@ class Filter extends Component {
 					};
 				})
 				.sort((memberA, memberB) => (memberA.roleBitMask > memberB.roleBitMask ? -1 : 1)),
-			procurementsQueryParams,
+			queryParams,
 		} = this.props;
-		const { dropdownDate, dropdownAmount, dropdownPosition, dropdownRole } = this.state;
+		const { dropdownDate, dropdownDateRange, dropdownPosition, dropdownRole } = this.state;
 
 		return (
 			<Paper className={styles.container}>
 				<Formik
-					initialValues={procurementsQueryParams}
+					initialValues={queryParams}
 					validationSchema={filterSchema}
 					validateOnBlur={false}
 					validateOnChange={false}
@@ -215,8 +205,7 @@ class Filter extends Component {
 							handlerDropdown={this.handlerDropdown}
 							onChangeFilterNumber={this.onChangeFilterNumber}
 							onClearFilterNumber={this.onClearFilterNumber}
-							onResetFilterDate={this.onResetFilterDate}
-							onResetFilterAmount={this.onResetFilterAmount}
+							onChangeFilterDate={this.onChangeFilterDate}
 							onChangeFilterPosition={this.onChangeFilterPosition}
 							onChangeFilterRole={this.onChangeFilterRole}
 							onResetAllFilters={this.onResetAllFilters}
@@ -227,9 +216,9 @@ class Filter extends Component {
 								state: dropdownDate,
 								ref: this.refDropdownDate,
 							}}
-							dropdownAmount={{
-								state: dropdownAmount,
-								ref: this.refDropdownAmount,
+							dropdownDateRange={{
+								state: dropdownDateRange,
+								ref: this.refDropdownDateRange,
 							}}
 							dropdownPosition={{
 								state: dropdownPosition,

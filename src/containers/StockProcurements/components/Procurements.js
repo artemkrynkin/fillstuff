@@ -2,8 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import moment from 'moment';
+import queryString from 'query-string';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
+
+import { history } from 'src/helpers/history';
+
+import { getFollowingDates } from 'src/components/Pagination/utils';
+import LoadMoreButton from 'src/components/Pagination/LoadMoreButton';
 
 import { getProcurements } from 'src/actions/procurements';
 
@@ -12,22 +18,63 @@ import Procurement from './Procurement';
 
 import styles from './Procurements.module.css';
 
-const procurementDatesCalendarFormat = {
+const calendarFormat = {
 	sameDay: 'Сегодня',
 	nextDay: 'Завтра',
 	nextWeek: function(now) {
-		return this.isSame(now, 'year') ? 'D MMMM' : 'D MMMM YYYY';
+		return this.isSame(now, 'year') ? 'D MMMM, dddd' : 'D MMMM YYYY';
 	},
 	lastDay: 'Вчера',
 	lastWeek: function(now) {
-		return this.isSame(now, 'year') ? 'D MMMM' : 'D MMMM YYYY';
+		return this.isSame(now, 'year') ? 'D MMMM, dddd' : 'D MMMM YYYY';
 	},
 	sameElse: function(now) {
-		return this.isSame(now, 'year') ? 'D MMMM' : 'D MMMM YYYY';
+		return this.isSame(now, 'year') ? 'D MMMM, dddd' : 'D MMMM YYYY';
 	},
 };
 
+const generateProcurementGrouped = (loadedDocs, data) => {
+	const procurements = data.slice();
+
+	procurements.length = loadedDocs < data.length ? loadedDocs : data.length;
+
+	return _.chain(procurements)
+		.groupBy(procurement => {
+			const momentDate = moment(procurement.createdAt).set({
+				hour: 0,
+				minute: 0,
+				second: 0,
+				millisecond: 0,
+			});
+
+			return momentDate.format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
+		})
+		.map((value, key) => ({ date: key, procurements: value }))
+		.value();
+};
+
 class Procurements extends Component {
+	onLoadOtherDates = () => {
+		const { queryParams, paging } = this.props;
+
+		const filterParams = filterSchema.cast(Object.assign({}, queryParams));
+
+		Object.keys(filterParams).forEach(key => filterParams[key] === '' && delete filterParams[key]);
+
+		const followingDates = getFollowingDates(filterParams.dateStart, filterParams.dateEnd);
+
+		filterParams.dateStart = followingDates.dateStart.valueOf();
+		filterParams.dateEnd = followingDates.dateEnd.valueOf();
+
+		history.replace({
+			search: queryString.stringify(filterParams),
+		});
+
+		this.setState(this.initialState);
+
+		paging.onChangeLoadedDocs(true);
+	};
+
 	componentDidMount() {
 		this.props.getProcurements();
 	}
@@ -36,44 +83,48 @@ class Procurements extends Component {
 		const {
 			// currentStock,
 			currentUser,
-			procurementsDates: {
-				data: procurementDatesData,
-				isFetching: isLoadingProcurementsDates,
+			queryParams,
+			paging,
+			procurements: {
+				data: procurementData,
+				isFetching: isLoadingProcurements,
 				// error: errorProcurementsDates
 			},
-			procurementsQueryParams,
 		} = this.props;
 
 		return (
 			<div className={styles.procurements}>
-				{!isLoadingProcurementsDates ? (
-					procurementDatesData && procurementDatesData.data.length ? (
+				{!isLoadingProcurements && procurementData ? (
+					procurementData.data.length && procurementData.paging.totalCount ? (
 						<div>
-							{procurementDatesData.data.map((procurementDates, index) => (
+							{generateProcurementGrouped(paging.loadedDocs, procurementData.data).map((procurementDates, index) => (
 								<div className={styles.procurementDate} key={index}>
-									<div className={styles.procurementDateTitle}>
-										{moment(procurementDates.date).calendar(null, procurementDatesCalendarFormat)}
-									</div>
+									<div className={styles.procurementDateTitle}>{moment(procurementDates.date).calendar(null, calendarFormat)}</div>
 									{procurementDates.procurements.map((procurement, index) => (
-										<Procurement
-											key={index}
-											procurement={procurement}
-											currentUser={currentUser}
-											procurementsQueryParams={procurementsQueryParams}
-										/>
+										<Procurement key={index} procurement={procurement} currentUser={currentUser} queryParams={queryParams} />
 									))}
 								</div>
 							))}
 						</div>
-					) : procurementDatesData && procurementDatesData.paging.total ? (
+					) : !procurementData.data.length && procurementData.paging.totalCount ? (
 						<div className={styles.procurementsNone}>
-							Среди закупок совпадений не найдено.
+							Среди закупок не найдено совпадений за выбранный период.
 							<br />
 							Попробуйте изменить запрос.
 						</div>
 					) : (
 						<div className={styles.procurementsNone}>Еще не создано ни одной закупки.</div>
 					)
+				) : null}
+				{!isLoadingProcurements && procurementData && procurementData.paging.totalCount ? (
+					<LoadMoreButton
+						loaded={paging.loadedDocs}
+						count={procurementData.data.length}
+						dateStart={queryParams.dateStart}
+						dateEnd={queryParams.dateEnd}
+						onLoadMore={() => paging.onChangeLoadedDocs()}
+						onLoadOtherDates={this.onLoadOtherDates}
+					/>
 				) : (
 					<div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />
 				)}
@@ -83,52 +134,20 @@ class Procurements extends Component {
 }
 
 const mapStateToProps = state => {
-	const {
-		procurements: {
-			data: procurementsData,
-			isFetching: isLoadingProcurements,
-			// error: errorProcurements
-		},
-	} = state;
-
-	const procurementDates = {
-		data: null,
-		isFetching: isLoadingProcurements,
-	};
-
-	if (!isLoadingProcurements && procurementsData) {
-		procurementDates.data = {
-			data: _.chain(procurementsData.data)
-				.groupBy(procurement => {
-					const momentDate = moment(procurement.createdAt).set({
-						hour: 0,
-						minute: 0,
-						second: 0,
-						millisecond: 0,
-					});
-
-					return momentDate.format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
-				})
-				.map((value, key) => ({ date: key, procurements: value }))
-				.value(),
-			paging: procurementsData.paging,
-		};
-	}
-
 	return {
-		procurementsDates: procurementDates,
+		procurements: state.procurements,
 	};
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentStock, procurementsQueryParams } = ownProps;
+	const { currentStock, queryParams } = ownProps;
 
-	const params = filterSchema.cast(Object.assign({}, procurementsQueryParams));
+	const filterParams = filterSchema.cast(Object.assign({}, queryParams));
 
-	Object.keys(params).forEach(key => params[key] === '' && delete params[key]);
+	Object.keys(filterParams).forEach(key => filterParams[key] === '' && delete filterParams[key]);
 
 	return {
-		getProcurements: () => dispatch(getProcurements(currentStock._id, params)),
+		getProcurements: params => dispatch(getProcurements(currentStock._id, params || filterParams)),
 	};
 };
 

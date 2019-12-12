@@ -41,9 +41,7 @@ const GeneralSettings = props => {
 					await sleep(500);
 
 					props.editStock(values).then(response => {
-						if (response.status === 'success') {
-							actions.resetForm();
-						} else {
+						if (response.status === 'error') {
 							if (response.data.formErrors) {
 								response.data.formErrors.forEach(error => {
 									actions.setFieldError(error.field, error.message);
@@ -75,7 +73,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	};
 };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(GeneralSettings);
+export default connect(mapStateToProps, mapDispatchToProps)(GeneralSettings);

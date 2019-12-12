@@ -157,9 +157,8 @@ class ProfileSettings extends Component {
 									});
 								}
 
-								this.props.editUser(valuesFormData ? valuesFormData : values).then(response => {
+								this.props.editUser(values).then(response => {
 									if (response.status === 'success') {
-										actions.resetForm();
 										this.onResetNewProfilePhoto();
 									} else {
 										if (response.data.formErrors) {
@@ -403,7 +402,4 @@ const mapDispatchToProps = dispatch => {
 	};
 };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(ProfileSettings);
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileSettings);

@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import moment from 'moment';
+import _ from 'lodash';
 
 import { percentOfNumber } from 'shared/utils';
 
@@ -17,44 +19,135 @@ writeOffsRouter.get(
 	'/write-offs',
 	isAuthedResolver,
 	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
-	(req, res, next) => {
-		const currentDate = new Date();
-
-		const {
-			stockId,
-			userId,
-			endDateLt = req.query.endDate ? new Date(req.query.endDate) : currentDate,
-			startDateGte = req.query.startDate
-				? new Date(req.query.startDate)
-				: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - 15),
-		} = req.query;
+	async (req, res, next) => {
+		const { stockId, dateStart, dateEnd, position, role } = req.query;
 
 		const conditions = {
 			stock: stockId,
-			createdAt: {
-				$gte: startDateGte,
-				$lt: endDateLt,
-			},
 		};
 
-		if (userId) conditions.user = userId;
+		if (dateStart && dateEnd) {
+			conditions.createdAt = {
+				$gte: new Date(Number(dateStart)),
+				$lte: new Date(Number(dateEnd)),
+			};
+		}
+		if (position && position !== 'all') conditions.position = position;
 
-		WriteOff.find(conditions)
-			.populate({
-				path: 'position',
-				populate: {
-					path: 'characteristics',
+		const writeOffsPromise = WriteOff.paginate(conditions, {
+			sort: { createdAt: -1 },
+			populate: [
+				{
+					path: 'stock',
+					select: 'members',
 				},
-				select: 'name isFree characteristics',
+				{
+					path: 'position',
+					populate: {
+						path: 'characteristics',
+					},
+					select: 'name unitIssue isFree characteristics',
+				},
+				{
+					path: 'receipt',
+					select: 'unitPurchasePrice',
+				},
+				{
+					path: 'user',
+					select: 'profilePhoto name email',
+				},
+			],
+			pagination: false,
+			customLabels: {
+				docs: 'data',
+				meta: 'paging',
+			},
+		}).catch(err => next({ code: 2, err }));
+		const writeOffCountPromise = WriteOff.estimatedDocumentCount();
+
+		const writeOffs = await writeOffsPromise;
+		const writeOffsCount = await writeOffCountPromise;
+
+		switch (role) {
+			case 'owners':
+				writeOffs.data = writeOffs.data.filter(writeOff => {
+					return writeOff.stock.members.some(member => String(member.user) === String(writeOff.user._id) && member.role === 'owner');
+				});
+				break;
+			case 'admins':
+				writeOffs.data = writeOffs.data.filter(writeOff => {
+					return writeOff.stock.members.some(member => String(member.user) === String(writeOff.user._id) && member.role === 'admin');
+				});
+				break;
+			default:
+				if (role && role !== 'all') {
+					writeOffs.data = writeOffs.data.filter(writeOff => String(writeOff.user._id) === role);
+				}
+				break;
+		}
+
+		writeOffs.data = _.chain(writeOffs.data)
+			.groupBy(writeOff => {
+				return moment(writeOff.createdAt)
+					.set({
+						hour: 0,
+						minute: 0,
+						second: 0,
+						millisecond: 0,
+					})
+					.format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
 			})
-			.populate({
-				path: 'receipt',
-				select: 'unitCostDelivery',
+			.map((items, date) => {
+				const indicators = {
+					total: 0,
+					sellingPositions: 0,
+					freePositions: 0,
+				};
+
+				items.forEach(item => {
+					indicators.total += item.quantity * item.receipt.unitPurchasePrice;
+					if (!item.position.isFree) indicators.sellingPositions += item.quantity * item.receipt.unitPurchasePrice;
+					else indicators.freePositions += item.quantity * item.receipt.unitPurchasePrice;
+
+					item.depopulate('stock');
+					item.depopulate('receipt');
+				});
+
+				indicators.total = Number(indicators.total.toFixed(2));
+				indicators.sellingPositions = Number(indicators.sellingPositions.toFixed(2));
+				indicators.freePositions = Number(indicators.freePositions.toFixed(2));
+
+				return {
+					date,
+					indicators,
+					items,
+				};
 			})
-			.populate('user', 'name email')
-			.sort({ createdAt: -1 })
-			.then(writeOffs => res.json(writeOffs))
-			.catch(err => next(err));
+			.value();
+
+		const indicators = {
+			total: 0,
+			sellingPositions: 0,
+			freePositions: 0,
+		};
+
+		writeOffs.data.forEach(writeOffsDay => {
+			indicators.total += writeOffsDay.indicators.total;
+			indicators.sellingPositions += writeOffsDay.indicators.sellingPositions;
+			indicators.freePositions += writeOffsDay.indicators.freePositions;
+		});
+
+		indicators.total = Number(indicators.total.toFixed(2));
+		indicators.sellingPositions = Number(indicators.sellingPositions.toFixed(2));
+		indicators.freePositions = Number(indicators.freePositions.toFixed(2));
+
+		res.json({
+			data: writeOffs.data,
+			indicators,
+			paging: {
+				totalCount: writeOffsCount,
+			},
+		});
 	}
 );
 
@@ -98,7 +191,7 @@ writeOffsRouter.post(
 		const newWriteOffsErr = [];
 		const updateReceipts = [];
 		let remainingQuantity = quantity;
-		let writeOffCost = 0;
+		let stockPrice = 0;
 
 		receipts.forEach((receipt, index) => {
 			if (remainingQuantity !== 0) {
@@ -110,8 +203,11 @@ writeOffsRouter.post(
 					position: position._id,
 					receipt: receipt._id,
 					quantity: currentWriteOffQuantity,
-					cost: receipt.unitSellingPrice + receipt.unitCostDelivery + percentOfNumber(receipt.unitSellingPrice, position.extraCharge),
+					cost: !position.isFree
+						? receipt.unitSellingPrice + receipt.unitCostDelivery + percentOfNumber(receipt.unitSellingPrice, position.extraCharge)
+						: 0,
 					unitSellingPrice: receipt.unitSellingPrice,
+					unitCostDelivery: receipt.unitCostDelivery,
 					extraCharge: position.extraCharge,
 					comment: comment,
 				});
@@ -136,7 +232,7 @@ writeOffsRouter.post(
 				}
 
 				remainingQuantity = remainingQuantity > receipt.current.quantity ? Math.abs(receipt.current.quantity - remainingQuantity) : 0;
-				writeOffCost += currentWriteOffQuantity * (receipt.unitPurchasePrice + receipt.unitCostDelivery);
+				stockPrice += currentWriteOffQuantity * (receipt.unitPurchasePrice + receipt.unitCostDelivery);
 
 				const activeReceiptId =
 					receipts[index + 1] !== undefined && currentReceiptSet.current.quantity === 0 ? receipts[index + 1]._id : receipt._id;
@@ -169,7 +265,7 @@ writeOffsRouter.post(
 			stockId,
 			{
 				$set: {
-					'status.stockPrice': statusOld.stockPrice - writeOffCost,
+					'status.stockPrice': statusOld.stockPrice - stockPrice,
 				},
 			},
 			{ runValidators: true }

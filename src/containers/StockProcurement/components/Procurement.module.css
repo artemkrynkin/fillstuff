@@ -1,71 +1,71 @@
-.procurement {
+.container {
   margin-bottom: 16px;
 }
 
-.procurementWrapper {
+.wrapper {
   margin: -20px -15px;
 }
 
-.procurementHeader {
+.header {
   padding: 20px 15px;
 }
 
-.procurementNumber {
+.title {
   color: var(--c-hex-bg-600);
   display: inline-block;
   font-size: 16px;
   font-weight: 600;
 }
 
-.procurementNumber {
+.title {
   margin-bottom: 10px;
 }
 
-.procurementTotalPurchasePrice,
-.procurementPurchasePrice,
-.procurementCostDelivery {
+.totalPurchasePrice,
+.purchasePrice,
+.costDelivery {
   color: var(--c-hex-bg-500);
 }
 
-.procurementTotalPurchasePrice {
+.totalPurchasePrice {
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 10px;
 }
 
-.procurementPurchasePrice {
+.purchasePrice {
   margin-bottom: 5px;
 }
 
-.procurementPurchasePrice,
-.procurementCostDelivery {
+.purchasePrice,
+.costDelivery {
   font-size: 12px;
 }
 
-.procurementTotalPurchasePrice span,
-.procurementPurchasePrice span,
-.procurementCostDelivery span {
+.totalPurchasePrice span,
+.purchasePrice span,
+.costDelivery span {
   color: var(--c-hex-bg-700);
   font-weight: 700;
 }
 
-.procurementTotalPurchasePrice span {
+.totalPurchasePrice span {
   font-size: 16px;
 }
 
-.procurementUser {
+.user {
   align-items: center;
   display: flex;
 }
 
-.procurementUserPhoto {
+.userPhoto {
   background-color: var(--c-hex-br-5);
   height: 28px;
   margin-right: 10px;
   width: 28px;
 }
 
-.procurementUserIcon {
+.userIcon {
   align-items: flex-end;
   justify-content: center;
   border: 2px solid var(--c-hex-bg-100);
@@ -76,12 +76,12 @@
   width: 100%;
 }
 
-.procurementUserPhoto svg {
+.userPhoto svg {
   color: rgba(255, 255, 255, 0.9);
   font-size: 20px;
 }
 
-.procurementUserName {
+.userName {
   color: var(--c-hex-bg-600);
   font-size: 13px;
   font-weight: 600;
@@ -91,7 +91,7 @@
   white-space: nowrap;
 }
 
-.procurementReceipts {
+.receipts {
   border-top: 1px solid var(--c-hex-br-5);
   padding: 0 15px;
 }

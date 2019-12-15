@@ -15,17 +15,19 @@ import { TableCell } from './styles';
 const Receipt = props => {
 	const { receipt } = props;
 
-	const unitSellingPrice =
-		receipt.unitSellingPrice + receipt.unitCostDelivery + percentOfNumber(receipt.unitSellingPrice, receipt.position.extraCharge);
+	const unitSellingPrice = () => {
+		const extraCharge = percentOfNumber(receipt.unitSellingPrice, receipt.position.extraCharge);
+
+		return Number(receipt.unitSellingPrice + receipt.unitCostDelivery + extraCharge);
+	};
 
 	return (
 		<TableRow>
 			<TableCell>
 				{receipt.position.name}{' '}
-				{receipt.position.characteristics.reduce(
-					(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
-					''
-				)}
+				{receipt.position.characteristics.reduce((fullCharacteristics, characteristic) => {
+					return `${fullCharacteristics} ${characteristic.label}`;
+				}, '')}
 				{receipt.position.isArchived ? <span className={styles.isArchived}>В архиве</span> : null}
 			</TableCell>
 			<TableCell align="right" width={160}>
@@ -72,7 +74,7 @@ const Receipt = props => {
 							</div>
 						}
 					>
-						<span>{unitSellingPrice} ₽</span>
+						<span>{unitSellingPrice()} ₽</span>
 					</Tooltip>
 				) : (
 					'Бесплатно'

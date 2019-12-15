@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
-// import validator from 'validator';
 import i18n from 'i18n';
+// import validator from 'validator';
 
 import { numberToFixedDouble } from 'api/utils';
 

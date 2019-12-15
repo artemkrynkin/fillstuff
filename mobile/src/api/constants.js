@@ -2,7 +2,7 @@ import Constants from 'expo-constants';
 
 const ENV = {
 	dev: {
-		apiUrl: 'http://192.168.0.144:3001/api',
+		apiUrl: 'http://192.168.1.4:3001/api',
 	},
 	staging: {
 		apiUrl: 'https://staging.blikside.com/api',

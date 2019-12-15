@@ -1,4 +1,3 @@
-// import { InputBase } from 'formik-material-ui';
 import InputBase from '@material-ui/core/InputBase';
 import { withStyles } from '@material-ui/core';
 

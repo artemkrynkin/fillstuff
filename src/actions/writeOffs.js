@@ -1,20 +1,23 @@
 import axios from 'axios';
 
-export const getWriteOffs = (stockId, params) => {
+export const getWriteOffs = (stockId, params = {}, showRequest = true) => {
 	return async dispatch => {
-		dispatch({ type: 'REQUEST_WRITE_OFFS' });
-
-		const requestParams = { stockId, ...params };
+		if (showRequest) dispatch({ type: 'REQUEST_WRITE_OFFS' });
 
 		return await axios
 			.get('/api/write-offs', {
-				params: requestParams,
+				params: {
+					stockId,
+					...params,
+				},
 			})
 			.then(response => {
 				dispatch({
 					type: 'RECEIVE_WRITE_OFFS',
 					payload: response.data,
 				});
+
+				return Promise.resolve({ status: 'success' });
 			})
 			.catch(error => {
 				console.error(error.response);

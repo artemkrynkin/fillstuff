@@ -54,22 +54,22 @@ class Procurement extends Component {
 
 		if (procurementData)
 			return (
-				<CardPaper className={styles.procurement} header={false}>
-					<div className={styles.procurementWrapper}>
-						<Grid className={styles.procurementHeader} container>
+				<CardPaper className={styles.container} header={false}>
+					<div className={styles.wrapper}>
+						<Grid className={styles.header} container>
 							<Grid xs={6} item>
-								<div className={styles.procurementNumber}>
+								<div className={styles.title}>
 									№{procurement.number} от {moment(procurement.date).format('DD.MM.YYYY')}
 								</div>
-								<div className={styles.procurementUser}>
+								<div className={styles.user}>
 									<Avatar
-										className={styles.procurementUserPhoto}
+										className={styles.userPhoto}
 										src={procurement.user.profilePhoto}
 										alt={procurement.user.name}
-										children={<div className={styles.procurementUserIcon} children={<FontAwesomeIcon icon={['fas', 'user-alt']} />} />}
+										children={<div className={styles.userIcon} children={<FontAwesomeIcon icon={['fas', 'user-alt']} />} />}
 									/>
 									<Grid alignItems="flex-end" container>
-										<div className={styles.procurementUserName}>{procurement.user.name}</div>
+										<div className={styles.userName}>{procurement.user.name}</div>
 									</Grid>
 								</div>
 							</Grid>
@@ -78,7 +78,7 @@ class Procurement extends Component {
 									<NumberFormat
 										value={procurement.totalPurchasePrice}
 										renderText={value => (
-											<div className={styles.procurementTotalPurchasePrice}>
+											<div className={styles.totalPurchasePrice}>
 												Итого: <span>{value}</span>
 											</div>
 										)}
@@ -89,7 +89,7 @@ class Procurement extends Component {
 									<NumberFormat
 										value={procurement.purchasePrice}
 										renderText={value => (
-											<div className={styles.procurementPurchasePrice}>
+											<div className={styles.purchasePrice}>
 												Стоимость позиций: <span>{value}</span>
 											</div>
 										)}
@@ -100,7 +100,7 @@ class Procurement extends Component {
 									<NumberFormat
 										value={procurement.costDelivery}
 										renderText={value => (
-											<div className={styles.procurementCostDelivery}>
+											<div className={styles.costDelivery}>
 												Стоимость доставки: <span>{value}</span>
 											</div>
 										)}
@@ -111,7 +111,7 @@ class Procurement extends Component {
 								</Grid>
 							</Grid>
 						</Grid>
-						<div className={styles.procurementReceipts}>
+						<div className={styles.receipts}>
 							<Table>
 								<TableHead>
 									<TableRow>

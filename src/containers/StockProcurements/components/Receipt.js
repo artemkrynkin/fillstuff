@@ -17,20 +17,19 @@ const Receipt = props => {
 	const TableRowHighlightClasses = TableRowHighlight();
 	const TableCellHighlightClasses = TableCellHighlight();
 
-	const unitSellingPrice = Number(
-		(receipt.unitSellingPrice + receipt.unitCostDelivery + percentOfNumber(receipt.unitSellingPrice, receipt.position.extraCharge)).toFixed(
-			2
-		)
-	);
+	const unitSellingPrice = () => {
+		const extraCharge = percentOfNumber(receipt.unitSellingPrice, receipt.position.extraCharge);
+
+		return Number(receipt.unitSellingPrice + receipt.unitCostDelivery + extraCharge);
+	};
 
 	return (
 		<TableRow classes={positionSameFilter ? { root: TableRowHighlightClasses.root } : {}}>
 			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}}>
 				{receipt.position.name}{' '}
-				{receipt.position.characteristics.reduce(
-					(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
-					''
-				)}
+				{receipt.position.characteristics.reduce((fullCharacteristics, characteristic) => {
+					return `${fullCharacteristics} ${characteristic.label}`;
+				}, '')}
 				{receipt.position.isArchived ? <span className={styles.isArchived}>В архиве</span> : null}
 			</TableCell>
 			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="right" width={160}>
@@ -77,7 +76,7 @@ const Receipt = props => {
 							</div>
 						}
 					>
-						<span>{unitSellingPrice} ₽</span>
+						<span>{unitSellingPrice()} ₽</span>
 					</Tooltip>
 				) : (
 					'Бесплатно'

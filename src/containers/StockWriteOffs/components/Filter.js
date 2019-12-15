@@ -13,14 +13,12 @@ import { sleep } from 'shared/utils';
 import { history } from 'src/helpers/history';
 
 import { getPositions } from 'src/actions/positions';
-import { getProcurements } from 'src/actions/procurements';
+import { getWriteOffs } from 'src/actions/writeOffs';
 
 import FormFilter from './FormFilter';
 import filterSchema from './filterSchema';
 
 import styles from './Filter.module.css';
-
-let filterNumberFieldTimer;
 
 class Filter extends Component {
 	static propTypes = {
@@ -36,7 +34,6 @@ class Filter extends Component {
 		dropdownRole: false,
 	};
 
-	refFilterNumberInput = createRef();
 	refDropdownDate = createRef();
 	refDropdownDateRange = createRef();
 	refDropdownPosition = createRef();
@@ -46,22 +43,6 @@ class Filter extends Component {
 		this.setState({
 			[name]: value === null || value === undefined ? !this.state[name] : value,
 		});
-
-	onChangeFilterNumber = ({ target: { value } }, setFieldValue, submitForm) => {
-		setFieldValue('number', value);
-
-		clearTimeout(filterNumberFieldTimer);
-
-		filterNumberFieldTimer = setTimeout(() => submitForm(), 150);
-	};
-
-	onClearFilterNumber = (setFieldValue, submitForm) => {
-		setFieldValue('number', '', false);
-
-		this.refFilterNumberInput.current.focus();
-
-		submitForm();
-	};
 
 	onChangeFilterDate = (intervalDate, setFieldValue, submitForm) => {
 		const momentDate = moment();
@@ -109,7 +90,6 @@ class Filter extends Component {
 		const startMonth = momentDate.startOf('month').valueOf();
 		const endMonth = momentDate.endOf('month').valueOf();
 
-		setFieldValue('number', '', false);
 		setFieldValue('dateStart', startMonth, false);
 		setFieldValue('dateEnd', endMonth, false);
 		setFieldValue('dateStartView', startMonth, false);
@@ -138,7 +118,10 @@ class Filter extends Component {
 
 		Object.keys(queryParams).forEach(key => (queryParams[key] === '' || queryParams[key] === 'all') && delete queryParams[key]);
 
-		if (momentDate.startOf('month').isSame(queryParams.dateStart, 'day') && momentDate.endOf('month').isSame(queryParams.dateEnd, 'day')) {
+		if (
+			momentDate.startOf('isoWeek').isSame(queryParams.dateStart, 'day') &&
+			momentDate.endOf('isoWeek').isSame(queryParams.dateEnd, 'day')
+		) {
 			delete queryParams.dateStart;
 			delete queryParams.dateEnd;
 		}
@@ -158,7 +141,6 @@ class Filter extends Component {
 		const { filterParams } = this.props;
 
 		if (
-			prevProps.filterParams.number !== filterParams.number ||
 			prevProps.filterParams.dateStart !== filterParams.dateStart ||
 			prevProps.filterParams.dateEnd !== filterParams.dateEnd ||
 			prevProps.filterParams.position !== filterParams.position ||
@@ -168,7 +150,7 @@ class Filter extends Component {
 
 			Object.keys(queryParams).forEach(key => (queryParams[key] === '' || queryParams[key] === 'all') && delete queryParams[key]);
 
-			this.props.getProcurements(queryParams);
+			this.props.getWriteOffs(queryParams);
 		}
 	}
 
@@ -181,7 +163,7 @@ class Filter extends Component {
 			currentStock,
 			positions,
 			members = currentStock.members
-				.filter(member => member.role.match(/owner|admin/))
+				// .filter(member => member.role.match(/owner|admin/))
 				.map(member => {
 					return {
 						...member,
@@ -211,15 +193,12 @@ class Filter extends Component {
 					{props => (
 						<FormFilter
 							handlerDropdown={this.handlerDropdown}
-							onChangeFilterNumber={this.onChangeFilterNumber}
-							onClearFilterNumber={this.onClearFilterNumber}
 							onChangeFilterDate={this.onChangeFilterDate}
 							onChangeFilterPosition={this.onChangeFilterPosition}
 							onChangeFilterRole={this.onChangeFilterRole}
 							onResetAllFilters={this.onResetAllFilters}
 							positions={positions}
 							members={members}
-							refFilterNumberInput={this.refFilterNumberInput}
 							dropdownDate={{
 								state: dropdownDate,
 								ref: this.refDropdownDate,
@@ -273,7 +252,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 	return {
 		getPositions: () => dispatch(getPositions(currentStock._id)),
-		getProcurements: params => dispatch(getProcurements(currentStock._id, params)),
+		getWriteOffs: params => dispatch(getWriteOffs(currentStock._id, params)),
 	};
 };
 

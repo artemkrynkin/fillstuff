@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import MomentUtils from '@date-io/moment';
-import { Field, Form } from 'formik';
+import { Form } from 'formik';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Grid from '@material-ui/core/Grid';
@@ -21,8 +21,6 @@ import { memberRoleTransform } from 'shared/roles-access-rights';
 
 import { weekActive, monthActive, paginationCalendarFormat } from 'src/components/Pagination/utils';
 import Dropdown from 'src/components/Dropdown';
-
-import { SearchTextField } from './Filter.styles';
 
 import styles from './Filter.module.css';
 
@@ -73,8 +71,6 @@ const DropdownFooter = props => {
 const FormFilter = props => {
 	const {
 		handlerDropdown,
-		onChangeFilterNumber,
-		onClearFilterNumber,
 		onChangeFilterDate,
 		onChangeFilterPosition,
 		onChangeFilterRole,
@@ -85,7 +81,6 @@ const FormFilter = props => {
 			// error: errorPositions
 		},
 		members,
-		refFilterNumberInput,
 		dropdownDate: { state: dropdownDate, ref: refDropdownDate },
 		dropdownDateRange: { state: dropdownDateRange, ref: refDropdownDateRange },
 		dropdownPosition: { state: dropdownPosition, ref: refDropdownPosition },
@@ -109,26 +104,6 @@ const FormFilter = props => {
 
 	return (
 		<Form>
-			<Grid className={styles.topContainer} container>
-				<Field
-					inputRef={refFilterNumberInput}
-					name="number"
-					as={SearchTextField}
-					inputProps={{
-						onChange: event => onChangeFilterNumber(event, setFieldValue, submitForm),
-					}}
-					disabled={false}
-					placeholder="Поиск по номеру чека или накладной"
-					fullWidth
-				/>
-				{values.number && !isSubmitting ? (
-					<ButtonBase onClick={() => onClearFilterNumber(setFieldValue, submitForm)} className={styles.textFieldFilterNumberClear}>
-						<FontAwesomeIcon icon={['fal', 'times']} />
-					</ButtonBase>
-				) : null}
-				{isSubmitting ? <CircularProgress className={styles.loadingForm} size={20} /> : null}
-			</Grid>
-
 			<Grid className={styles.bottomContainer} container>
 				{/* Filter Date */}
 				<Grid item>
@@ -400,7 +375,7 @@ const FormFilter = props => {
 				</Grid>
 
 				<Grid item style={{ marginLeft: 'auto' }}>
-					{values.number || (!isWeekActive() && !isMonthActive()) || values.position !== 'all' || values.role !== 'all' ? (
+					{(!isWeekActive() && !isMonthActive()) || values.position !== 'all' || values.role !== 'all' ? (
 						<ButtonBase onClick={() => onResetAllFilters(setFieldValue, submitForm)} className={styles.filterButtonLinkRed} disableRipple>
 							<span>Сбросить фильтры</span>
 						</ButtonBase>

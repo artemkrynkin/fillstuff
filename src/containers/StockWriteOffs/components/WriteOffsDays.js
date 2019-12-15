@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 import moment from 'moment';
 import queryString from 'query-string';
 
@@ -12,11 +11,12 @@ import { history } from 'src/helpers/history';
 import { getFollowingDates } from 'src/components/Pagination/utils';
 import LoadMoreButton from 'src/components/Pagination/LoadMoreButton';
 
-import { getProcurements } from 'src/actions/procurements';
+import { getWriteOffs } from 'src/actions/writeOffs';
 
-import Procurement from './Procurement';
+import PeriodIndicators from './PeriodIndicators';
+import WriteOffDay from './WriteOffDay';
 
-import styles from './Procurements.module.css';
+import styles from './WriteOffsDays.module.css';
 
 const calendarFormat = {
 	sameDay: 'Сегодня',
@@ -33,29 +33,16 @@ const calendarFormat = {
 	},
 };
 
-const generateProcurementGrouped = (loadedDocs, data) => {
-	const procurements = data.slice();
+const generateWriteOffsDays = (loadedDocs, data) => {
+	const writeOffsDays = data.slice();
 
-	procurements.length = loadedDocs < data.length ? loadedDocs : data.length;
+	writeOffsDays.length = loadedDocs < data.length ? loadedDocs : data.length;
 
-	return _.chain(procurements)
-		.groupBy(procurement => {
-			return moment(procurement.createdAt)
-				.set({
-					hour: 0,
-					minute: 0,
-					second: 0,
-					millisecond: 0,
-				})
-				.format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
-		})
-		.map((items, date) => ({ date, items }))
-		.value();
+	return writeOffsDays;
 };
 
-class Procurements extends Component {
+class WriteOffsDays extends Component {
 	static propTypes = {
-		currentUser: PropTypes.object.isRequired,
 		currentStockId: PropTypes.string.isRequired,
 		filterParams: PropTypes.object.isRequired,
 		paging: PropTypes.object.isRequired,
@@ -89,54 +76,52 @@ class Procurements extends Component {
 
 		Object.keys(queryParams).forEach(key => (queryParams[key] === '' || queryParams[key] === 'all') && delete queryParams[key]);
 
-		this.props.getProcurements(queryParams);
+		this.props.getWriteOffs(queryParams);
 	}
 
 	render() {
 		const {
-			currentUser,
 			filterParams,
 			paging,
-			procurements: {
-				data: procurementData,
-				isFetching: isLoadingProcurements,
+			writeOffs: {
+				data: writeOffsData,
+				isFetching: isLoadingWriteOffs,
 				// error: errorProcurementsDates
 			},
 		} = this.props;
 
 		return (
 			<div className={styles.container}>
-				{!isLoadingProcurements && procurementData ? (
-					procurementData.data.length && procurementData.paging.totalCount ? (
+				{!isLoadingWriteOffs && writeOffsData ? (
+					writeOffsData.data.length && writeOffsData.paging.totalCount ? (
 						<div>
-							{generateProcurementGrouped(paging.loadedDocs, procurementData.data).map((procurementDates, index) => (
+							<PeriodIndicators indicators={writeOffsData.indicators} />
+							{generateWriteOffsDays(paging.loadedDocs, writeOffsData.data).map((writeOffsDay, index) => (
 								<div className={styles.date} key={index}>
-									<div className={styles.dateTitle}>{moment(procurementDates.date).calendar(null, calendarFormat)}</div>
-									{procurementDates.items.map((procurement, index) => (
-										<Procurement key={index} procurement={procurement} currentUser={currentUser} filterParams={filterParams} />
-									))}
+									<div className={styles.dateTitle}>{moment(writeOffsDay.date).calendar(null, calendarFormat)}</div>
+									<WriteOffDay key={index} date={writeOffsDay.date} indicators={writeOffsDay.indicators} writeOffs={writeOffsDay.items} />
 								</div>
 							))}
 						</div>
-					) : !procurementData.data.length && procurementData.paging.totalCount ? (
+					) : !writeOffsData.data.length && writeOffsData.paging.totalCount ? (
 						<div className={styles.none}>
-							Среди закупок не найдено совпадений за выбранный период.
+							Среди списаний не найдено совпадений за выбранный период.
 							<br />
 							Попробуйте изменить запрос.
 						</div>
 					) : (
-						<div className={styles.none}>Еще не создано ни одной закупки.</div>
+						<div className={styles.none}>Еще не списано ни одной позиции.</div>
 					)
 				) : null}
-				{!isLoadingProcurements && procurementData && procurementData.paging.totalCount ? (
+				{!isLoadingWriteOffs && writeOffsData && writeOffsData.paging.totalCount ? (
 					<LoadMoreButton
 						loaded={paging.loadedDocs}
-						count={procurementData.data.length}
-						textButton="Показать закупки за"
+						count={writeOffsData.data.length}
+						textButton="Показать списания за"
 						showDates={true}
 						dateStart={filterParams.dateStart}
 						dateEnd={filterParams.dateEnd}
-						onLoadMore={paging.onChangeLoadedDocs}
+						onLoadMore={() => paging.onChangeLoadedDocs()}
 						onLoadOtherDates={this.onLoadOtherDates}
 					/>
 				) : (
@@ -149,7 +134,7 @@ class Procurements extends Component {
 
 const mapStateToProps = state => {
 	return {
-		procurements: state.procurements,
+		writeOffs: state.writeOffs,
 	};
 };
 
@@ -157,8 +142,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	const { currentStockId } = ownProps;
 
 	return {
-		getProcurements: params => dispatch(getProcurements(currentStockId, params)),
+		getWriteOffs: params => dispatch(getWriteOffs(currentStockId, params)),
 	};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Procurements);
+export default connect(mapStateToProps, mapDispatchToProps)(WriteOffsDays);

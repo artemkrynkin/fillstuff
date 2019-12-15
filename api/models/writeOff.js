@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 import i18n from 'i18n';
 import { numberToFixedDouble } from '../utils';
 // import validator from 'validator';
@@ -46,6 +47,11 @@ let WriteOff = new Schema({
 		min: [0, 'Не может быть меньше 0'],
 		set: value => numberToFixedDouble(value),
 	},
+	unitCostDelivery: {
+		type: Number,
+		min: [0, 'Не может быть меньше 0'],
+		set: value => numberToFixedDouble(value),
+	},
 	extraCharge: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
@@ -60,5 +66,7 @@ let WriteOff = new Schema({
 		select: false,
 	},
 });
+
+WriteOff.plugin(mongoosePaginate);
 
 export default mongoose.model('WriteOff', WriteOff);

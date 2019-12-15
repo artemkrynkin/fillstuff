@@ -61,7 +61,7 @@ procurementsRouter.get(
 		}).catch(err => next({ code: 2, err }));
 		const procurementsCountPromise = Procurement.estimatedDocumentCount();
 
-		let procurements = await procurementsPromise;
+		const procurements = await procurementsPromise;
 		const procurementsCount = await procurementsCountPromise;
 
 		if (position && position !== 'all') {
@@ -90,16 +90,12 @@ procurementsRouter.get(
 
 		procurements.data.forEach(procurement => procurement.depopulate('stock'));
 
-		setTimeout(
-			() =>
-				res.json({
-					data: procurements.data,
-					paging: {
-						totalCount: procurementsCount,
-					},
-				}),
-			500
-		);
+		res.json({
+			data: procurements.data,
+			paging: {
+				totalCount: procurementsCount,
+			},
+		});
 	}
 );
 

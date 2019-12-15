@@ -6,29 +6,12 @@
   position: relative;
 }
 
-.bottomContainer {
-  border-top: 1px solid var(--c-hex-br-5);
-}
-
 .loadingForm {
   bottom: 0;
   margin: auto 0;
   position: absolute;
   top: 0;
   right: 15px;
-}
-
-.textFieldFilterNumberClear {
-  color: var(--c-hex-bg-300);
-  font-size: 16px;
-  padding: 12px 20px;
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-
-.textFieldFilterNumberClear:hover {
-  color: var(--c-hex-t-300);
 }
 
 .filterButtonLink,

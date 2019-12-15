@@ -1,58 +1,54 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 import moment from 'moment';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Avatar from '@material-ui/core/Avatar';
+import Grid from '@material-ui/core/Grid';
 import TableRow from '@material-ui/core/TableRow';
-import IconButton from '@material-ui/core/IconButton';
 
-import { TableCell } from './styles';
+import styles from './WriteOffDay.module.css';
 
-import styles from './WriteOffs.module.css';
+import { TableCell, TableCellHighlight, TableRowHighlight } from './styles';
 
-class WriteOff extends Component {
-	render() {
-		const { writeOff, onOpenDialogWriteOff } = this.props;
+const WriteOff = props => {
+	const { writeOff, positionSameFilter } = props;
+	const TableRowHighlightClasses = TableRowHighlight();
+	const TableCellHighlightClasses = TableCellHighlight();
 
-		return (
-			<TableRow className={styles.writeOff}>
-				<TableCell>
-					{writeOff.position.name}{' '}
-					{writeOff.position.characteristics.reduce(
-						(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
-						''
-					)}
-				</TableCell>
-				<TableCell width={150}>{writeOff.user.name}</TableCell>
-				<TableCell align="right" width={80}>
-					{writeOff.quantity}
-				</TableCell>
-				<TableCell align="right" width={80}>
-					{!writeOff.position.isFree ? `${writeOff.cost || writeOff.receipt.unitSellingPrice} ₽` : '-'}
-				</TableCell>
-				{/* показывать год, только если списание не за текущий год */}
-				<TableCell align="right" width={140}>
-					{moment(writeOff.createdAt).format('DD MMM в HH:mm')}
-				</TableCell>
-				<TableCell align="right" width={50} style={{ padding: '0 7px' }}>
-					<div>
-						<IconButton
-							className={styles.writeOffActionsButton}
-							onClick={() => onOpenDialogWriteOff('dialogWriteOffDelete', writeOff)}
-							size="small"
-						>
-							<FontAwesomeIcon icon={['fal', 'times']} />
-						</IconButton>
-					</div>
-				</TableCell>
-			</TableRow>
-		);
-	}
-}
-
-WriteOff.propTypes = {
-	currentStockId: PropTypes.string.isRequired,
-	writeOff: PropTypes.object.isRequired,
+	return (
+		<TableRow classes={positionSameFilter ? { root: TableRowHighlightClasses.root } : {}}>
+			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}}>
+				{writeOff.position.name}{' '}
+				{writeOff.position.characteristics.reduce((fullCharacteristics, characteristic) => {
+					return `${fullCharacteristics} ${characteristic.label}`;
+				}, '')}
+				{writeOff.position.isArchived ? <span className={styles.isArchived}>В архиве</span> : null}
+			</TableCell>
+			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="left" width={180}>
+				<div className={styles.user}>
+					<Avatar
+						className={styles.userPhoto}
+						src={writeOff.user.profilePhoto}
+						alt={writeOff.user.name}
+						children={<div className={styles.userIcon} children={<FontAwesomeIcon icon={['fas', 'user-alt']} />} />}
+					/>
+					<Grid style={{ maxWidth: 112 }} alignItems="flex-end" container>
+						<div className={styles.userName}>{writeOff.user.name}</div>
+					</Grid>
+				</div>
+			</TableCell>
+			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="right" width={125}>
+				{writeOff.quantity} {writeOff.position.unitIssue === 'pce' ? 'шт.' : 'уп.'}
+			</TableCell>
+			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="right" width={135}>
+				{moment()
+					.subtract({ hour: 1 })
+					.isBefore(writeOff.createdAt)
+					? moment(writeOff.createdAt).fromNow()
+					: moment(writeOff.createdAt).format('в HH:mm')}
+			</TableCell>
+		</TableRow>
+	);
 };
 
 export default WriteOff;

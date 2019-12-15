@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import ClassNames from 'classnames';
 import moment from 'moment';
 
@@ -11,19 +10,18 @@ import TableBody from '@material-ui/core/TableBody';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Collapse from '@material-ui/core/Collapse';
-import Avatar from '@material-ui/core/Avatar';
 
 import NumberFormat, { currencyFormatProps } from 'src/components/NumberFormat';
 import CardPaper from 'src/components/CardPaper';
 
-import Receipt from './Receipt';
+import WriteOff from './WriteOff';
 
 import { TableCell } from './styles';
-import styles from './Procurement.module.css';
+import styles from './WriteOffDay.module.css';
 
-const Procurement = props => {
-	const { procurement, currentUser, filterParams } = props;
-	const [expanded, setExpanded] = useState(filterParams.position !== 'all');
+const WriteOffDay = props => {
+	const { date, indicators, writeOffs } = props;
+	const [expanded, setExpanded] = useState(moment(date).isSame(new Date(), 'day'));
 
 	const onHandleExpand = event => {
 		if (event.target.className !== styles.title) setExpanded(!expanded);
@@ -34,29 +32,14 @@ const Procurement = props => {
 			<div className={styles.wrapper}>
 				<div className={styles.header} onClick={onHandleExpand}>
 					<Grid container>
-						<Grid xs={6} item>
-							<Link className={styles.title} to={`/stocks/${currentUser.activeStockId}/procurements/${procurement._id}`}>
-								№{procurement.number} от {moment(procurement.date).format('DD.MM.YYYY')}
-							</Link>
-							<div className={styles.user}>
-								<Avatar
-									className={styles.userPhoto}
-									src={procurement.user.profilePhoto}
-									alt={procurement.user.name}
-									children={<div className={styles.userIcon} children={<FontAwesomeIcon icon={['fas', 'user-alt']} />} />}
-								/>
-								<Grid alignItems="flex-end" container>
-									<div className={styles.userName}>{procurement.user.name}</div>
-								</Grid>
-							</div>
-						</Grid>
+						<Grid xs={6} item />
 						<Grid xs={6} item>
 							<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
 								<NumberFormat
-									value={procurement.totalPurchasePrice}
+									value={indicators.total}
 									renderText={value => (
 										<div className={styles.totalPurchasePrice}>
-											Итого: <span>{value}</span>
+											Всего: <span>{value}</span>
 										</div>
 									)}
 									displayType="text"
@@ -64,10 +47,10 @@ const Procurement = props => {
 									{...currencyFormatProps}
 								/>
 								<NumberFormat
-									value={procurement.purchasePrice}
+									value={indicators.sellingPositions}
 									renderText={value => (
 										<div className={styles.purchasePrice}>
-											Стоимость позиций: <span>{value}</span>
+											По позициям для продажи: <span>{value}</span>
 										</div>
 									)}
 									displayType="text"
@@ -75,10 +58,10 @@ const Procurement = props => {
 									{...currencyFormatProps}
 								/>
 								<NumberFormat
-									value={procurement.costDelivery}
+									value={indicators.freePositions}
 									renderText={value => (
 										<div className={styles.costDelivery}>
-											Стоимость доставки: <span>{value}</span>
+											По бесплатным позициям: <span>{value}</span>
 										</div>
 									)}
 									displayType="text"
@@ -95,20 +78,20 @@ const Procurement = props => {
 							<TableHead>
 								<TableRow>
 									<TableCell>Наименование</TableCell>
-									<TableCell align="right" width={160}>
+									<TableCell align="left" width={180}>
+										Участник
+									</TableCell>
+									<TableCell align="right" width={125}>
 										Количество
 									</TableCell>
-									<TableCell align="right" width={160}>
-										Цена покупки
-									</TableCell>
-									<TableCell align="right" width={160}>
-										Цена продажи
+									<TableCell align="right" width={135}>
+										Время
 									</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableBody>
-								{procurement.receipts.map((receipt, index) => (
-									<Receipt key={index} receipt={receipt} positionSameFilter={receipt.position._id === filterParams.position} />
+								{writeOffs.map((writeOff, index) => (
+									<WriteOff key={index} writeOff={writeOff} />
 								))}
 							</TableBody>
 						</Table>
@@ -129,4 +112,4 @@ const Procurement = props => {
 	);
 };
 
-export default Procurement;
+export default WriteOffDay;

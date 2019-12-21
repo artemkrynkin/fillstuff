@@ -110,8 +110,8 @@ const FormGeneralSettings = props => {
 					<Grid item>
 						<Field
 							type="checkbox"
-							name="settings.procurements.divideCostDeliverySellingPositions"
-							Label={{ label: 'Распределять стоимость доставки только между позициями для продажи' }}
+							name="settings.procurements.notCompensateCostDelivery"
+							Label={{ label: 'Не компенсировать стоимость доставки за счёт позиций для продажи' }}
 							as={CheckboxWithLabel}
 							disabled={isSubmitting}
 						/>

@@ -1,3 +1,47 @@
+.receipts {
+  border-top: 1px solid var(--c-hex-br-5);
+  margin: 10px -25px -12px;
+  padding-top: 10px;
+}
+
+.receiptsHeader {
+  margin-bottom: -8px;
+  padding: 0 25px;
+}
+
+.addPositionContainer {
+  background-color: white;
+  padding: 8px 25px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.addPositionContainer.disabled {
+  display: none;
+}
+
+.addPositionContainer:global(.stuck) {
+  box-shadow: 0 1px 0 var(--c-hex-br-5);
+}
+
+.receiptsItems {
+  margin-top: 14px;
+  padding: 0 25px;
+}
+
+.receiptItem {
+  border-bottom: 1px solid var(--c-hex-br-5);
+  margin-bottom: 30px;
+  padding-bottom: 10px;
+}
+
+.receiptItem:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
 .removeReceipt {
   display: inline-flex;
   margin: 32px 4px auto auto;
@@ -12,27 +56,4 @@
 .removeReceipt button svg {
   font-size: 20px;
   width: 20px !important;
-}
-
-.receipts {
-  border-top: 1px solid var(--c-hex-br-5);
-  margin: 0 -25px -12px;
-  padding: 20px 25px 0;
-}
-
-.receipt {
-  border-bottom: 1px solid var(--c-hex-br-5);
-  margin-bottom: 30px;
-  padding-bottom: 10px;
-}
-
-.receipt:last-child {
-  border-bottom: none;
-  margin-bottom: 0;
-  padding-bottom: 0;
-}
-
-.iconCostDeliveryDivide {
-  color: var(--c-hex-bg-300);
-  margin-left: 10px;
 }

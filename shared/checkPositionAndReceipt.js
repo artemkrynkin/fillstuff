@@ -38,93 +38,115 @@ export const characteristicTypeTransform = characteristicType => {
 	}
 };
 
-export const UnitCostDeliveryCalc = {
-	mixed: {
+export const UnitCostDelivery = {
+	indicators: receipts => {
 		/**
-		 * Расчет стоимости доставки единицы позиции с НЕ нулевой ценой закупки в смешанной закупке
-		 *
-		 * @param {number} uPP - Цена закпки единицы (unit Purchase Price)
-		 * @param {number} TPP - Общая стоимость закупки (Total Purchase Price)
-		 * @param {number} CD - Стоимость доставки (Cost Delivery)
-		 * @param {number} NAp - Количество всех позиций (Number All positions)
-		 * @param {number} NPp - Количество платных позиций (Number Paid positions)
-		 *
-		 * @const {number} uCD_p - Стоимость доставки единицы в процентах (unit Cost Delivery percent)
-		 * @return {number} uCD - Стоимость доставки единицы (unit Cost Delivery)
+		 * @param pricePositions - Стоимость позиций
+		 * @param pricePositionsSelling - Стоимость позиций для продажи
+		 * @param positions - Количество позиций для продажи
+		 * @param unitsPositions - Количество единиц позиций для продажи
+		 * @param unitsPaidPositions - Количество единиц платных позиций для продажи
+		 * @param unitsZeroPositions - Количество единиц позиций для продажи с нулевой ценой покупки
 		 */
-		paid: (uPP, TPP, CD, NAp, NPp) => {
-			const uCD_p = (uPP / TPP) * ((100 * NPp) / NAp);
+		return receipts.reduce(
+			(indicators, receipt) => {
+				const quantity = receipt.quantityPackages ? receipt.quantityPackages : receipt.quantity;
 
-			const uCD = (CD / 100) * uCD_p;
+				indicators.pricePositions += quantity * receipt.purchasePrice;
 
-			return Number(uCD.toFixed(2));
+				if (!receipt.position.isFree) {
+					indicators.pricePositionsSelling += quantity * receipt.purchasePrice;
+
+					indicators.selling.positionsCount += 1;
+					indicators.selling.unitsPositionsCount += quantity;
+
+					if (receipt.purchasePrice) indicators.selling.unitsPaidPositionsCount += quantity;
+					else indicators.selling.unitsZeroPositionsCount += quantity;
+				}
+
+				return indicators;
+			},
+			{
+				pricePositions: 0,
+				pricePositionsSelling: 0,
+				selling: {
+					positionsCount: 0,
+					unitsPositionsCount: 0,
+					unitsPaidPositionsCount: 0,
+					unitsZeroPositionsCount: 0,
+				},
+			}
+		);
+	},
+	calc: {
+		mixed: {
+			/**
+			 * Расчет стоимости доставки единицы позиции для продажи в смешанной закупке
+			 *
+			 * @param {number} unitPurchasePrice - Цена покупки единицы
+			 * @param {number} pricePositionsSelling - Стоимость позиций для продажи
+			 * @param {number} costDelivery - Стоимость доставки
+			 * @param {number} unitsPositionsCount - Количество единиц позиций для продажи
+			 * @param {number} unitsPaidPositionsCount - Количество единиц платных позиций для продажи
+			 *
+			 * @return {number} unitCostDelivery - Стоимость доставки единицы
+			 */
+			paid: ({ unitPurchasePrice, pricePositionsSelling, costDelivery, unitsPositionsCount, unitsPaidPositionsCount }) => {
+				const unitCostDeliveryPercent =
+					(unitPurchasePrice / pricePositionsSelling) * ((100 * unitsPaidPositionsCount) / unitsPositionsCount);
+
+				const unitCostDelivery = (costDelivery / 100) * unitCostDeliveryPercent;
+
+				return Number(unitCostDelivery.toFixed(2));
+			},
+			/**
+			 * Расчет стоимости доставки единицы позиции для продажи с нулевой ценой покупки в смешанной закупке
+			 *
+			 * @param {number} costDelivery - Стоимость доставки
+			 * @param {array} costDeliveryPaidPositions - Массив со стоимостями доставки и количеством единиц платных позиций
+			 * @param {number} unitsZeroPositionsCount - Количество единиц позиций для продажи с нулевой ценой покупки
+			 *
+			 * @return {number} unitCostDelivery - Стоимость доставки единицы
+			 */
+			zero: ({ costDelivery, costDeliveryPaidPositions, unitsZeroPositionsCount }) => {
+				const costDeliveryPaidPositionsSum = costDeliveryPaidPositions.reduce((sum, { costDelivery, quantity }) => {
+					return sum + costDelivery * quantity;
+				}, 0);
+
+				const unitCostDelivery = (costDelivery - costDeliveryPaidPositionsSum) / unitsZeroPositionsCount;
+
+				return Number(unitCostDelivery.toFixed(2));
+			},
 		},
 		/**
-		 * Расчет стоимости доставки единицы позиции с нулевой ценой закупки в смешанной закупке
+		 * Расчет стоимости доставки единицы позиции для продажи
 		 *
-		 * @param {number} CD - Стоимость доставки (Cost Delivery)
-		 * @param {array} ACDPp - Массив со стоимостями доставки платных позиций (Array Cost Delivery Paid positions)
-		 * @param {number} NZp - Количество позиций с нулевой стоимостью закупки (Number Zero positions)
+		 * @param {number} unitPurchasePrice - Цена покупки единицы
+		 * @param {number} pricePositionsSelling - Стоимость позиций для продажи
+		 * @param {number} costDelivery - Стоимость доставки
 		 *
-		 * @return {number} uCD - Стоимость доставки единицы (unit Cost Delivery)
+		 * @return {number} unitCostDelivery - Стоимость доставки единицы
 		 */
-		zero: (CD, ACDPp, NZp) => {
-			const uCD =
-				(CD -
-					ACDPp.reduce((sum, receipt) => {
-						return sum + receipt.costDelivery * receipt.quantity;
-					}, 0)) /
-				NZp;
+		paid: ({ unitPurchasePrice, pricePositionsSelling, costDelivery }) => {
+			const unitCostDeliveryPercent = (unitPurchasePrice / pricePositionsSelling) * 100;
 
-			return Number(uCD.toFixed(2));
+			const unitCostDelivery = (costDelivery / 100) * unitCostDeliveryPercent;
+
+			return Number(unitCostDelivery.toFixed(2));
 		},
-	},
-	/**
-	 * Расчет стоимости доставки единицы позиции
-	 *
-	 * @param {number} uPP - Цена закупки единицы (unit Purchase Price)
-	 * @param {number} TPP - Общая стоимость закупки (Total Purchase Price)
-	 * @param {number} CD - Стоимость доставки (Cost Delivery)
-	 *
-	 * @const {number} uCD_p - Стоимость доставки единицы в процентах (unit Cost Delivery percent)
-	 * @return {number} uCD - Стоимость доставки единицы (unit Cost Delivery)
-	 */
-	paid: (uPP, TPP, CD) => {
-		const uCD_p = (uPP / TPP) * 100;
+		/**
+		 * Расчет стоимости доставки единицы позиции для продажи с нулевым итогом в закупке
+		 *
+		 * @param {number} costDelivery - Стоимость доставки
+		 * @param {number} unitsPositionsCount - Количество единиц позиций для продажи
+		 *
+		 * @return {number} unitCostDelivery - Стоимость доставки единицы
+		 */
+		zeroTotalPrice: ({ costDelivery, unitsPositionsCount }) => {
+			const unitCostDelivery = costDelivery / unitsPositionsCount;
 
-		const uCD = (CD / 100) * uCD_p;
-
-		return Number(uCD.toFixed(2));
-	},
-	/**
-	 * Расчет стоимости доставки единицы позиции
-	 *
-	 * @param {number} uPP - Цена закупки единицы (unit Purchase Price)
-	 * @param {number} TPPsp - Общая стоимость закупки продаваемых позиций (Total Purchase Price selling positions)
-	 * @param {number} CD - Стоимость доставки (Cost Delivery)
-	 *
-	 * @const {number} uCD_p - Стоимость доставки единицы в процентах (unit Cost Delivery percent)
-	 * @return {number} uCD - Стоимость доставки единицы (unit Cost Delivery)
-	 */
-	selling: (uPP, TPPsp, CD) => {
-		const uCD_p = (uPP / TPPsp) * 100;
-
-		const uCD = (CD / 100) * uCD_p;
-
-		return Number(uCD.toFixed(2));
-	},
-	/**
-	 * Расчет стоимости доставки единицы позиции с нулевой суммой в закупке
-	 *
-	 * @param {number} CD - Стоимость доставки (Cost Delivery)
-	 * @param {number} NAp - Количество всех позиций (Number All positions)
-	 *
-	 * @return {number} uCD - Стоимость доставки единицы (unit Cost Delivery)
-	 */
-	zeroTotalPrice: (CD, NAp) => {
-		const uCD = CD / NAp;
-
-		return Number(uCD.toFixed(2));
+			return Number(unitCostDelivery.toFixed(2));
+		},
 	},
 };
 

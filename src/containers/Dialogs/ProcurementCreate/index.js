@@ -4,16 +4,18 @@ import { connect } from 'react-redux';
 
 import { Formik } from 'formik';
 
-import { UnitCostDeliveryCalc } from 'shared/checkPositionAndReceipt';
+import { UnitCostDelivery } from 'shared/checkPositionAndReceipt';
 import { sleep } from 'shared/utils';
 
-import { PDDialog, PDDialogTitle } from 'src/components/Dialog';
+import { observeActions, PDDialog, PDDialogTitle } from 'src/components/Dialog';
 
 import { getStockStatus } from 'src/actions/stocks';
 import { createProcurement } from 'src/actions/procurements';
 
 import FormProcurementCreate from './FormProcurementCreate';
 import procurementSchema from './procurementSchema';
+
+import styles from './index.module.css';
 
 const receiptInitialValues = (position, remainingValues) => ({
 	position,
@@ -46,37 +48,19 @@ class ProcurementCreate extends Component {
 	onHandleEditFormProcurement = value => this.setState({ formEditable: value });
 
 	onSubmit = (values, actions) => {
-		const { onCloseDialog, procurement = procurementSchema.cast(values) } = this.props;
+		const { onCloseDialog } = this.props;
 		const { formEditable } = this.state;
+		const procurement = procurementSchema.cast(values);
 
 		if (formEditable) {
-			let purchasePricePositions = 0;
-			let purchasePriceSellingPositions = 0;
-			let numberAllPositions = 0;
-			let numberPaidPositions = 0;
-			let numberZeroPositions = 0;
-			let numberSellingPositions = 0;
-
-			procurement.receipts.forEach(receipt => {
-				const quantityPackagesOrQuantity = receipt.quantityPackages ? receipt.quantityPackages : receipt.quantity;
-
-				purchasePricePositions += quantityPackagesOrQuantity * receipt.purchasePrice;
-				if (!receipt.position.isFree) {
-					purchasePriceSellingPositions += quantityPackagesOrQuantity * receipt.purchasePrice;
-					numberSellingPositions += 1;
-				}
-				numberAllPositions += quantityPackagesOrQuantity;
-
-				if (receipt.purchasePrice) numberPaidPositions += quantityPackagesOrQuantity;
-				else numberZeroPositions += quantityPackagesOrQuantity;
-			});
+			const indicators = UnitCostDelivery.indicators(procurement.receipts);
 
 			if (
-				procurement.purchasePrice !== purchasePricePositions &&
-				procurement.purchasePrice - procurement.costDelivery !== purchasePricePositions
+				procurement.totalPrice !== indicators.pricePositions &&
+				procurement.totalPrice - procurement.costDelivery !== indicators.pricePositions
 			) {
 				actions.setFieldError(
-					'purchasePriceTemp',
+					'pricePositions',
 					<span>
 						Стоимость внесённых позиций не соответствует стоимости закупки.
 						<br />
@@ -88,33 +72,30 @@ class ProcurementCreate extends Component {
 				return;
 			}
 
-			actions.setFieldValue('purchasePriceTemp', purchasePricePositions);
-			if (procurement.purchasePrice - procurement.costDelivery === purchasePricePositions) {
-				actions.setFieldValue('purchasePrice', purchasePricePositions);
-				actions.setFieldValue('totalPurchasePrice', purchasePricePositions);
-			} else {
-				actions.setFieldValue('totalPurchasePrice', procurement.purchasePrice + procurement.costDelivery);
-			}
+			actions.setFieldValue('pricePositions', indicators.pricePositions);
 
-			if (purchasePricePositions) {
+			// Если есть позиции для продажи и стоимость доставки компенсируется за счет позиций для продажи
+			if (indicators.selling.positionsCount && !procurement.notCompensateCostDelivery) {
 				procurement.receipts.forEach(receipt => {
-					if (receipt.purchasePrice) {
-						if (procurement.divideCostDeliverySellingPositions) {
-							receipt.costDelivery = !receipt.position.isFree
-								? UnitCostDeliveryCalc.selling(receipt.purchasePrice, purchasePriceSellingPositions, procurement.costDelivery)
-								: numberSellingPositions === 0 && receipt.position.isFree
-								? UnitCostDeliveryCalc.paid(receipt.purchasePrice, purchasePricePositions, procurement.costDelivery)
-								: 0;
+					if (!receipt.position.isFree && receipt.purchasePrice) {
+						if (!indicators.selling.unitsZeroPositionsCount) {
+							const params = {
+								unitPurchasePrice: receipt.purchasePrice,
+								pricePositionsSelling: indicators.pricePositionsSelling,
+								costDelivery: procurement.costDelivery,
+							};
+
+							receipt.costDelivery = UnitCostDelivery.calc.paid(params);
 						} else {
-							receipt.costDelivery = numberZeroPositions
-								? UnitCostDeliveryCalc.mixed.paid(
-										receipt.purchasePrice,
-										purchasePricePositions,
-										procurement.costDelivery,
-										numberAllPositions,
-										numberPaidPositions
-								  )
-								: UnitCostDeliveryCalc.paid(receipt.purchasePrice, purchasePricePositions, procurement.costDelivery);
+							const params = {
+								unitPurchasePrice: receipt.purchasePrice,
+								pricePositionsSelling: indicators.pricePositionsSelling,
+								costDelivery: procurement.costDelivery,
+								unitsPositionsCount: indicators.selling.unitsPositionsCount,
+								unitsPaidPositionsCount: indicators.selling.unitsPaidPositionsCount,
+							};
+
+							receipt.costDelivery = UnitCostDelivery.calc.mixed.paid(params);
 						}
 
 						receipt.unitCostDelivery =
@@ -122,19 +103,40 @@ class ProcurementCreate extends Component {
 								? Number((receipt.costDelivery / receipt.quantityInUnit).toFixed(2))
 								: receipt.costDelivery;
 					}
+
+					if (receipt.position.isFree) {
+						receipt.costDelivery = 0;
+						receipt.unitCostDelivery = 0;
+					}
 				});
 
-				if (!procurement.divideCostDeliverySellingPositions) {
-					const paidPositions = procurement.receipts
-						.filter(receipt => receipt.purchasePrice)
+				// Считаем стоимость доставки позиций с нулевой ценой покупки, если они есть
+				if (indicators.selling.unitsZeroPositionsCount) {
+					const costDeliveryPaidPositions = procurement.receipts
+						.filter(receipt => !receipt.position.isFree && receipt.purchasePrice)
 						.map(receipt => ({
 							costDelivery: receipt.costDelivery,
-							quantity: receipt.quantityPackages ? receipt.quantityPackages : receipt.quantity,
+							quantity: receipt.quantityInUnit ? receipt.quantityPackages : receipt.quantity,
 						}));
 
 					procurement.receipts.forEach(receipt => {
-						if (!receipt.purchasePrice) {
-							receipt.costDelivery = UnitCostDeliveryCalc.mixed.zero(procurement.costDelivery, paidPositions, numberZeroPositions);
+						if (!receipt.position.isFree && !receipt.purchasePrice) {
+							if (indicators.selling.unitsPaidPositionsCount) {
+								const params = {
+									costDelivery: procurement.costDelivery,
+									costDeliveryPaidPositions: costDeliveryPaidPositions,
+									unitsZeroPositionsCount: indicators.selling.unitsZeroPositionsCount,
+								};
+
+								receipt.costDelivery = UnitCostDelivery.calc.mixed.zero(params);
+							} else {
+								const params = {
+									costDelivery: procurement.costDelivery,
+									unitsPositionsCount: indicators.selling.unitsPositionsCount,
+								};
+
+								receipt.costDelivery = UnitCostDelivery.calc.zeroTotalPrice(params);
+							}
 
 							receipt.unitCostDelivery =
 								receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce'
@@ -145,12 +147,8 @@ class ProcurementCreate extends Component {
 				}
 			} else {
 				procurement.receipts.forEach(receipt => {
-					receipt.costDelivery = UnitCostDeliveryCalc.zeroTotalPrice(procurement.costDelivery, numberAllPositions);
-
-					receipt.unitCostDelivery =
-						receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce'
-							? Number((receipt.costDelivery / receipt.quantityInUnit).toFixed(2))
-							: receipt.costDelivery;
+					receipt.costDelivery = 0;
+					receipt.unitCostDelivery = 0;
 				});
 			}
 
@@ -160,8 +158,6 @@ class ProcurementCreate extends Component {
 
 			actions.setSubmitting(false);
 		} else {
-			delete procurement.purchasePriceTemp;
-
 			procurement.receipts = procurement.receipts.map(receiptValues => {
 				const {
 					position,
@@ -201,6 +197,10 @@ class ProcurementCreate extends Component {
 		}
 	};
 
+	onEnterDialog = element => {
+		observeActions(element, styles.addPositionContainer, 'top', 'AddPositionContainer');
+	};
+
 	onExitedDialog = () => {
 		const { onExitedDialog } = this.props;
 
@@ -217,10 +217,9 @@ class ProcurementCreate extends Component {
 			number: '',
 			date: null,
 			costDelivery: '',
-			purchasePrice: '',
-			purchasePriceTemp: 0,
-			totalPurchasePrice: 0,
-			divideCostDeliverySellingPositions: currentStock.settings.procurements.divideCostDeliverySellingPositions,
+			pricePositions: 0,
+			totalPrice: '',
+			notCompensateCostDelivery: currentStock.settings.procurements.notCompensateCostDelivery,
 			receipts: [],
 		};
 
@@ -232,6 +231,7 @@ class ProcurementCreate extends Component {
 				onExited={this.onExitedDialog}
 				maxWidth="xl"
 				scroll="body"
+				stickyAnyone
 				stickyActions
 			>
 				<PDDialogTitle theme="primary" onClose={onCloseDialog}>

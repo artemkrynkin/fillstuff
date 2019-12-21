@@ -11,11 +11,10 @@ const procurementSchema = Yup.object().shape({
 	costDelivery: Yup.number()
 		.transform(value => (isNaN(value) ? 0 : value))
 		.min(0),
-	purchasePrice: Yup.number()
+	pricePositions: Yup.number().min(0),
+	totalPrice: Yup.number()
 		.min(0)
 		.required(),
-	purchasePriceTemp: Yup.number().min(0),
-	totalPurchasePrice: Yup.number().min(0),
 	receipts: Yup.array(
 		Yup.object().shape({
 			quantity: Yup.number()

@@ -27,21 +27,31 @@ const options = {
 	// replicaSet: 'rs01'
 };
 
-mongoose.connect(IS_PROD ? uri_prod : uri_dev, options);
+const DBConnection = mongoose.connection;
 
-const connectDB = mongoose.connection;
-
-connectDB
-	.on('error', console.info)
-	.on('disconnected', () => {
-		debug('Disconnected DB');
-		logger.warn('Disconnected DB');
-
-		connectDB();
+DBConnection.once('connecting', () => {
+	debug('Connecting to MongoDB...');
+	logger.warn('Connecting to MongoDB...');
+})
+	.on('error', error => {
+		console.error('Error in MongoDB connection: ' + error);
+		logger.warn('Error in MongoDB connection: ' + error);
+		mongoose.disconnect();
 	})
-	.once('open', () => {
-		debug('Connection DB');
-		logger.warn('Connection DB');
+	.once('connected', () => {
+		debug('Connected MongoDB');
+		logger.warn('Connected MongoDB');
+	})
+	.on('reconnected', () => {
+		debug('Reconnected MongoDB');
+		logger.warn('Reconnected MongoDB');
+	})
+	.on('disconnected', () => {
+		debug('Disconnected MongoDB');
+		logger.warn('Disconnected MongoDB');
+		mongoose.connect(IS_PROD ? uri_prod : uri_dev, options);
 	});
 
-export default connectDB;
+mongoose.connect(IS_PROD ? uri_prod : uri_dev, options);
+
+export default DBConnection;

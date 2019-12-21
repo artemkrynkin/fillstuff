@@ -106,14 +106,14 @@ class Filter extends Component {
 
 	onResetAllFilters = (setFieldValue, submitForm) => {
 		const momentDate = moment();
-		const startMonth = momentDate.startOf('month').valueOf();
-		const endMonth = momentDate.endOf('month').valueOf();
+		const startWeek = momentDate.startOf('isoWeek').valueOf();
+		const endWeek = momentDate.endOf('isoWeek').valueOf();
 
 		setFieldValue('number', '', false);
-		setFieldValue('dateStart', startMonth, false);
-		setFieldValue('dateEnd', endMonth, false);
-		setFieldValue('dateStartView', startMonth, false);
-		setFieldValue('dateEndView', endMonth, false);
+		setFieldValue('dateStart', startWeek, false);
+		setFieldValue('dateEnd', endWeek, false);
+		setFieldValue('dateStartView', startWeek, false);
+		setFieldValue('dateEndView', endWeek, false);
 		setFieldValue('position', 'all', false);
 		setFieldValue('role', 'all', false);
 		submitForm();

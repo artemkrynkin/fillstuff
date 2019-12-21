@@ -20,7 +20,7 @@ let Stock = new Schema({
 	},
 	settings: {
 		procurements: {
-			divideCostDeliverySellingPositions: {
+			notCompensateCostDelivery: {
 				type: Boolean,
 				default: false,
 			},

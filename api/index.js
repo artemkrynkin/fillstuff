@@ -5,7 +5,7 @@ debug('logging with debug enabled!');
 import express from 'express';
 import compression from 'compression';
 
-import connectDB from 'shared/db';
+import DBConnection from 'shared/db';
 import csrf from 'shared/middlewares/csrf';
 import errorHandler from 'shared/middlewares/error-handler';
 import i18n from 'shared/middlewares/i18n';
@@ -50,7 +50,7 @@ app.use('/', (req, res) => {
 
 app.use(errorHandler);
 
-connectDB.once('open', () => {
+DBConnection.once('open', () => {
 	app.listen(PORT, err => {
 		if (err) return debug('Oops, something went wrong!', err);
 

@@ -122,7 +122,6 @@
 .receipts {
   border-top: 1px solid var(--c-hex-br-5);
   margin-top: 20px;
-  padding: 0 15px;
 }
 
 .isArchived {

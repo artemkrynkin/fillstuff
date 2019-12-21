@@ -20,16 +20,18 @@ Dialog.propTypes = {
 	children: PropTypes.node,
 };
 
-const observeActions = (container, position = null, stickySelector) => {
+export const observeActions = (container, stickySelector, position = null, sentinelAdditionalText = '') => {
 	const observer = new IntersectionObserver(
 		(records, observer) => {
 			const targetInfo = records[0].boundingClientRect;
-			const stickyTarget = records[0].target.parentElement.querySelector(`.${stickySelector}`);
+			const stickyTarget = records[0].target.parentElement ? records[0].target.parentElement.querySelector(`.${stickySelector}`) : null;
 			const rootBoundsInfo = records[0].rootBounds;
 
-			if (position === 'top') {
-				// console.log(targetInfo.bottom, rootBoundsInfo.top);
+			if (!stickyTarget) {
+				return console.error(`Property 'stickyTarget' is null. Perhaps the element class '${stickySelector}' is incorrect or notfound.`);
+			}
 
+			if (position + sentinelAdditionalText === `top${sentinelAdditionalText}`) {
 				if (targetInfo.bottom < rootBoundsInfo.top) {
 					stickyTarget.classList.toggle('stuck', true);
 				}
@@ -39,7 +41,7 @@ const observeActions = (container, position = null, stickySelector) => {
 				}
 			}
 
-			if (position === 'bottom') {
+			if (position + sentinelAdditionalText === `bottom${sentinelAdditionalText}`) {
 				if (targetInfo.bottom > rootBoundsInfo.top) {
 					stickyTarget.classList.toggle('stuck', true);
 				}
@@ -55,28 +57,30 @@ const observeActions = (container, position = null, stickySelector) => {
 		}
 	);
 
-	observer.observe(container.querySelector(`.sentinel-${position}`));
+	observer.observe(container.querySelector(`.sentinel-${position}${sentinelAdditionalText}`));
 };
 
 export class PDDialog extends Component {
 	static propTypes = {
 		stickyTitle: PropTypes.bool,
 		stickyActions: PropTypes.bool,
+		stickyAnyone: PropTypes.bool,
 	};
 
 	onEnterDialog = element => {
 		const { onEnter, stickyTitle, stickyActions } = this.props;
 
-		if (stickyTitle) observeActions(element, 'top', styles.stickyTitle);
-		if (stickyActions) observeActions(element, 'bottom', styles.actions);
+		if (stickyTitle) observeActions(element, styles.title, 'top');
+		if (stickyActions) observeActions(element, styles.actions, 'bottom');
 
-		if (typeof onEnter === 'function') onEnter();
+		if (typeof onEnter === 'function') onEnter(element);
 	};
 
 	render() {
-		const { stickyTitle, stickyActions, children, ...props } = this.props;
+		const { stickyAnyone, stickyTitle, stickyActions, children, ...props } = this.props;
 
 		const dialogClasses = ClassNames({
+			[styles.sticky]: stickyAnyone,
 			[styles.stickyTitle]: stickyTitle,
 			[styles.stickyActions]: stickyActions,
 		});

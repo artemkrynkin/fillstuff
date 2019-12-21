@@ -8,12 +8,6 @@ import theme from 'shared/theme';
 export const TableCell = withStyles({
 	root: {
 		padding: '14px 15px',
-		'&:first-child': {
-			paddingLeft: 0,
-		},
-		'&:last-child': {
-			paddingRight: 0,
-		},
 	},
 	head: {
 		paddingTop: 18,

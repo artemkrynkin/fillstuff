@@ -27,7 +27,7 @@ const FormFieldArrayReceipt = props => {
 		formikProps: { errors, isSubmitting, setFieldValue, touched },
 	} = props;
 	const sellingPriceFieldRef = useRef(null);
-	const [sellingPriceEditable, setSellingPriceEditable] = useState(false);
+	const [sellingPriceEditable, setSellingPriceEditable] = useState(!receipt.position.isFree);
 
 	const onHandleSellingPriceEditable = value => setSellingPriceEditable(value);
 
@@ -39,8 +39,8 @@ const FormFieldArrayReceipt = props => {
 			: null;
 
 	useEffect(() => {
-		if (sellingPriceFieldRef && sellingPriceEditable) sellingPriceFieldRef.current.querySelector('input').focus();
-	}, [sellingPriceEditable]);
+		if (!formEditable && sellingPriceFieldRef && sellingPriceEditable) sellingPriceFieldRef.current.querySelector('input').focus();
+	}, [formEditable, sellingPriceEditable]);
 
 	return (
 		<Grid className={styles.receiptItem} alignItems="flex-start" spacing={2} container>
@@ -191,9 +191,7 @@ const FormFieldArrayReceipt = props => {
 									) : null}
 								</div>
 							}
-							disableFocusListener={sellingPriceEditable}
 							disableHoverListener={sellingPriceEditable}
-							disableTouchListener={sellingPriceEditable}
 						>
 							<div>
 								<Field

@@ -124,9 +124,9 @@ class WriteOffsDays extends Component {
 						onLoadMore={() => paging.onChangeLoadedDocs()}
 						onLoadOtherDates={this.onLoadOtherDates}
 					/>
-				) : (
+				) : isLoadingWriteOffs ? (
 					<div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />
-				)}
+				) : null}
 			</div>
 		);
 	}

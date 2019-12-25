@@ -2,8 +2,6 @@ import { Router } from 'express';
 import moment from 'moment';
 import _ from 'lodash';
 
-import { percentOfNumber } from 'shared/utils';
-
 import { isAuthedResolver, hasPermissionsInStock } from 'api/utils/permissions';
 
 import Stock from 'api/models/stock';
@@ -203,12 +201,11 @@ writeOffsRouter.post(
 					position: position._id,
 					receipt: receipt._id,
 					quantity: currentWriteOffQuantity,
-					cost: !position.isFree
-						? receipt.unitSellingPrice + receipt.unitCostDelivery + percentOfNumber(receipt.unitSellingPrice, position.extraCharge)
-						: 0,
+					cost: !position.isFree ? receipt.unitSellingPrice : 0,
 					unitSellingPrice: receipt.unitSellingPrice,
 					unitCostDelivery: receipt.unitCostDelivery,
-					extraCharge: position.extraCharge,
+					unitExtraCharge: position.unitExtraCharge,
+					unitManualExtraCharge: receipt.manualExtraCharge,
 					comment: comment,
 				});
 
@@ -232,7 +229,7 @@ writeOffsRouter.post(
 				}
 
 				remainingQuantity = remainingQuantity > receipt.current.quantity ? Math.abs(receipt.current.quantity - remainingQuantity) : 0;
-				stockPrice += currentWriteOffQuantity * (receipt.unitPurchasePrice + receipt.unitCostDelivery);
+				stockPrice += currentWriteOffQuantity * receipt.unitPurchasePrice;
 
 				const activeReceiptId =
 					receipts[index + 1] !== undefined && currentReceiptSet.current.quantity === 0 ? receipts[index + 1]._id : receipt._id;
@@ -315,7 +312,7 @@ writeOffsRouter.delete(
 			writeOff.stock,
 			{
 				$set: {
-					'status.stockPrice': statusOld.stockPrice + writeOff.quantity * (receipt.unitPurchasePrice + receipt.unitCostDelivery),
+					'status.stockPrice': statusOld.stockPrice + writeOff.quantity * receipt.unitPurchasePrice,
 				},
 			},
 			{ runValidators: true }

@@ -21,6 +21,7 @@ const products = (
 		}
 		case 'CREATE_WRITE_OFF': {
 			state.data.unshift(action.payload);
+			state.data.paging.totalCount += 1;
 
 			return {
 				...state,

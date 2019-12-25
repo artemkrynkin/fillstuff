@@ -23,6 +23,7 @@ const positions = (
 		}
 		case 'CREATE_PROCUREMENT': {
 			state.data.data.unshift(action.payload);
+			state.data.paging.totalCount += 1;
 
 			return {
 				...state,

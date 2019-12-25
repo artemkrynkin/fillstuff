@@ -36,7 +36,14 @@ const Procurement = props => {
 					<Grid container>
 						<Grid xs={6} item>
 							<Link className={styles.title} to={`/stocks/${currentUser.activeStockId}/procurements/${procurement._id}`}>
-								№{procurement.number} от {moment(procurement.date).format('DD.MM.YYYY')}
+								{!procurement.noInvoice ? (
+									<div>
+										<span>№</span>
+										{procurement.number} от {moment(procurement.date).format('DD.MM.YYYY')}
+									</div>
+								) : (
+									<div>Закупка от {moment(procurement.createdAt).format('DD.MM.YYYY')}</div>
+								)}
 							</Link>
 							<div className={styles.user}>
 								<Avatar
@@ -53,9 +60,9 @@ const Procurement = props => {
 						<Grid xs={6} item>
 							<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
 								<NumberFormat
-									value={procurement.totalPurchasePrice}
+									value={procurement.totalPrice}
 									renderText={value => (
-										<div className={styles.totalPurchasePrice}>
+										<div className={styles.totalPrice}>
 											Итого: <span>{value}</span>
 										</div>
 									)}
@@ -64,9 +71,9 @@ const Procurement = props => {
 									{...currencyFormatProps}
 								/>
 								<NumberFormat
-									value={procurement.purchasePrice}
+									value={procurement.pricePositions}
 									renderText={value => (
-										<div className={styles.purchasePrice}>
+										<div className={styles.pricePositions}>
 											Стоимость позиций: <span>{value}</span>
 										</div>
 									)}

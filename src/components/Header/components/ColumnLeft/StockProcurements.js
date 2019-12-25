@@ -39,8 +39,8 @@ const StockProcurements = props => {
 					color="primary"
 					style={{ marginRight: 8 }}
 					onClick={onOpenDialogProcurementCreate}
+					startIcon={<FontAwesomeIcon icon={['far', 'plus']} fixedWidth />}
 				>
-					<FontAwesomeIcon icon={['far', 'plus']} style={{ marginRight: 10 }} />
 					Создать закупку
 				</Button>
 			</div>

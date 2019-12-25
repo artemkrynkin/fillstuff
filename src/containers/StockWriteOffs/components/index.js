@@ -10,8 +10,8 @@ import Filter from './Filter';
 import WriteOffsDays from './WriteOffsDays';
 
 const momentDate = moment();
-const dateStart = momentDate.startOf('isoWeek').valueOf();
-const dateEnd = momentDate.endOf('isoWeek').valueOf();
+const dateStart = momentDate.startOf('month').valueOf();
+const dateEnd = momentDate.endOf('month').valueOf();
 
 const Index = props => {
 	const { currentStock } = props;

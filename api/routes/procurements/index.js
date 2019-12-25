@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { recountReceipt } from 'shared/checkPositionAndReceipt';
+import { receiptCalc } from 'shared/checkPositionAndReceipt';
 
 import { isAuthedResolver, hasPermissionsInStock } from 'api/utils/permissions';
 
@@ -8,6 +8,8 @@ import Stock from 'api/models/stock';
 import Position from 'api/models/position';
 import Receipt from 'api/models/receipt';
 import Procurement from 'api/models/procurement';
+import validator from 'validator';
+import i18n from 'i18n';
 
 const procurementsRouter = Router();
 
@@ -128,6 +130,19 @@ procurementsRouter.post(
 		const { stockId } = req.query;
 		const { procurement: newProcurementValues } = req.body;
 
+		if (!newProcurementValues.noInvoice && (!newProcurementValues.number || !newProcurementValues.date)) {
+			const customErr = [];
+			const error = fieldName => ({
+				field: fieldName,
+				message: i18n.__('Обязательное поле'),
+			});
+
+			if (!newProcurementValues.number) customErr.push(error('number'));
+			if (!newProcurementValues.date) customErr.push(error('number'));
+
+			return next({ code: 5, customErr: customErr });
+		}
+
 		const positions = await Position.find({ _id: { $in: newProcurementValues.receipts.map(receipt => receipt.position) } })
 			.populate({
 				path: 'activeReceipt',
@@ -145,10 +160,12 @@ procurementsRouter.post(
 				stock: stockId,
 				user: req.user._id,
 				status: position.activeReceipt && position.activeReceipt.current.quantity !== 0 ? 'received' : 'active',
-				comment: `Поступление закупки №${newProcurementValues.number}`,
 			});
 
-			recountReceipt({ unitReceipt: position.unitReceipt, unitIssue: position.unitIssue }, position.isFree, newReceipt);
+			receiptCalc.quantity(newReceipt, {
+				unitReceipt: position.unitReceipt,
+				unitIssue: position.unitIssue,
+			});
 
 			updatePositionsAndActiveReceipt.push(
 				Position.findByIdAndUpdate(position, {
@@ -208,10 +225,9 @@ procurementsRouter.post(
 				$set: {
 					'status.stockPrice':
 						statusOld.stockPrice +
-						procurement.receipts.reduce(
-							(sum, receipt) => sum + receipt.initial.quantity * (receipt.unitPurchasePrice + receipt.unitCostDelivery),
-							0
-						),
+						procurement.receipts.reduce((sum, receipt) => {
+							return sum + receipt.initial.quantity * receipt.unitPurchasePrice;
+						}, 0),
 				},
 			},
 			{ runValidators: true }

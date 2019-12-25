@@ -1,3 +1,5 @@
+import { formatToCurrency, percentOfNumber } from 'shared/utils';
+
 export const unitTypes = ['pce', 'nmp'];
 
 export const unitTypeTransform = unitType => {
@@ -97,7 +99,7 @@ export const UnitCostDelivery = {
 
 				const unitCostDelivery = (costDelivery / 100) * unitCostDeliveryPercent;
 
-				return Number(unitCostDelivery.toFixed(2));
+				return formatToCurrency(unitCostDelivery);
 			},
 			/**
 			 * Расчет стоимости доставки единицы позиции для продажи с нулевой ценой покупки в смешанной закупке
@@ -115,7 +117,7 @@ export const UnitCostDelivery = {
 
 				const unitCostDelivery = (costDelivery - costDeliveryPaidPositionsSum) / unitsZeroPositionsCount;
 
-				return Number(unitCostDelivery.toFixed(2));
+				return formatToCurrency(unitCostDelivery);
 			},
 		},
 		/**
@@ -132,7 +134,7 @@ export const UnitCostDelivery = {
 
 			const unitCostDelivery = (costDelivery / 100) * unitCostDeliveryPercent;
 
-			return Number(unitCostDelivery.toFixed(2));
+			return formatToCurrency(unitCostDelivery);
 		},
 		/**
 		 * Расчет стоимости доставки единицы позиции для продажи с нулевым итогом в закупке
@@ -145,65 +147,67 @@ export const UnitCostDelivery = {
 		zeroTotalPrice: ({ costDelivery, unitsPositionsCount }) => {
 			const unitCostDelivery = costDelivery / unitsPositionsCount;
 
-			return Number(unitCostDelivery.toFixed(2));
+			return formatToCurrency(unitCostDelivery);
 		},
 	},
 };
 
-export const recountReceipt = ({ unitReceipt, unitIssue }, isFree, receipt, recountQuantity = true) => {
-	if (recountQuantity && !isNaN(receipt.initial.quantityPackages)) receipt.current.quantityPackages = receipt.initial.quantityPackages;
+export const receiptCalc = {
+	quantity: (receipt, { unitReceipt, unitIssue }) => {
+		if (!isNaN(receipt.initial.quantityPackages) && !isNaN(receipt.quantityInUnit) && unitReceipt === 'nmp' && unitIssue === 'pce') {
+			receipt.initial.quantity = receipt.initial.quantityPackages * receipt.quantityInUnit;
 
-	/**
-	 * Считаем "количество"
-	 *
-	 * количество = количество упаковок * количество штук в упаковке
-	 */
-	if (
-		recountQuantity &&
-		!isNaN(receipt.initial.quantityPackages) &&
-		!isNaN(receipt.quantityInUnit) &&
-		unitReceipt === 'nmp' &&
-		unitIssue === 'pce'
-	) {
-		receipt.initial.quantity = receipt.initial.quantityPackages * receipt.quantityInUnit;
-	}
-	if (recountQuantity && !isNaN(receipt.initial.quantity)) {
-		receipt.current.quantity = receipt.initial.quantity;
-	}
-
-	/**
-	 * Считаем "цену покупки единицы"
-	 *
-	 * если "единица поступления" === упаковки и "единица отпуска" === штуки
-	 * то:
-	 * цена покупки единицы = цена покупки / количество штук в упаковке
-	 *
-	 * иначе:
-	 * цена покупки единицы = цена покупки
-	 */
-	if (!isNaN(receipt.purchasePrice) && !isNaN(receipt.quantityInUnit) && unitReceipt === 'nmp' && unitIssue === 'pce') {
-		receipt.unitPurchasePrice = receipt.purchasePrice / receipt.quantityInUnit;
-	} else {
-		if (!isNaN(receipt.purchasePrice)) {
-			receipt.unitPurchasePrice = receipt.purchasePrice;
+			receipt.current.quantityPackages = receipt.initial.quantityPackages;
 		}
-	}
 
-	/**
-	 * Считаем "цену продажи" и "цену продажи единицы"
-	 *
-	 * если "единица поступления" === упаковки и "единица отпуска" === штуки
-	 * то:
-	 * цена продажи = количество единиц * цена продажи единицы
-	 *
-	 * иначе:
-	 * цена продажи единицы = цена продажи
-	 */
-	if (receipt.quantityInUnit !== undefined && receipt.unitSellingPrice !== undefined && unitReceipt === 'nmp' && unitIssue === 'pce') {
-		receipt.sellingPrice = receipt.quantityInUnit * receipt.unitSellingPrice;
-	} else {
-		if (receipt.sellingPrice !== undefined) {
-			receipt.unitSellingPrice = receipt.sellingPrice;
+		if (!isNaN(receipt.initial.quantity)) receipt.current.quantity = receipt.initial.quantity;
+	},
+	unitPurchasePrice: (receipt, { unitReceipt, unitIssue }) => {
+		receipt.unitPurchasePrice =
+			unitReceipt === 'nmp' && unitIssue === 'pce'
+				? formatToCurrency(receipt.purchasePrice / receipt.quantityInUnit)
+				: receipt.purchasePrice;
+	},
+	sellingPrice: (receipt, { isFree, extraCharge }) => {
+		receipt.sellingPrice = receipt.purchasePrice;
+		receipt.unitSellingPrice = receipt.unitPurchasePrice;
+
+		if (isFree) return;
+
+		receipt.extraCharge = formatToCurrency(percentOfNumber(receipt.purchasePrice, extraCharge));
+		receipt.unitExtraCharge = formatToCurrency(percentOfNumber(receipt.unitPurchasePrice, extraCharge));
+
+		receipt.sellingPrice = formatToCurrency(receipt.purchasePrice + receipt.costDelivery + receipt.extraCharge);
+		receipt.unitSellingPrice = formatToCurrency(receipt.unitPurchasePrice + receipt.unitCostDelivery + receipt.unitExtraCharge);
+	},
+	manualExtraCharge: (receipt, { isFree, unitReceipt, unitIssue }) => {
+		receipt.manualExtraCharge = 0;
+		receipt.unitManualExtraCharge = 0;
+
+		if (isFree) return;
+
+		if (unitReceipt === 'nmp' && unitIssue === 'pce') {
+			const autoGenUnitSellingPrice = formatToCurrency(receipt.unitPurchasePrice + receipt.unitCostDelivery + receipt.unitExtraCharge);
+
+			if (receipt.unitSellingPrice <= autoGenUnitSellingPrice) return;
+
+			receipt.unitSellingPrice = formatToCurrency(receipt.unitSellingPrice);
+
+			receipt.unitManualExtraCharge = formatToCurrency(receipt.unitSellingPrice - autoGenUnitSellingPrice);
+			receipt.manualExtraCharge = formatToCurrency(receipt.unitManualExtraCharge * receipt.quantityInUnit);
+
+			receipt.sellingPrice = formatToCurrency(autoGenUnitSellingPrice * receipt.quantityInUnit + receipt.manualExtraCharge);
+		} else {
+			const autoGenSellingPrice = formatToCurrency(receipt.purchasePrice + receipt.costDelivery + receipt.extraCharge);
+
+			if (receipt.sellingPrice <= autoGenSellingPrice) return;
+
+			receipt.sellingPrice = formatToCurrency(receipt.sellingPrice);
+
+			receipt.manualExtraCharge = formatToCurrency(receipt.sellingPrice - autoGenSellingPrice);
+			receipt.unitManualExtraCharge = receipt.manualExtraCharge;
+
+			receipt.unitSellingPrice = formatToCurrency(autoGenSellingPrice + receipt.unitManualExtraCharge);
 		}
-	}
+	},
 };

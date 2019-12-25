@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import ClassNames from 'classnames';
 
@@ -67,6 +67,8 @@ export class PDDialog extends Component {
 		stickyAnyone: PropTypes.bool,
 	};
 
+	dialogRef = createRef();
+
 	onEnterDialog = element => {
 		const { onEnter, stickyTitle, stickyActions } = this.props;
 
@@ -86,7 +88,7 @@ export class PDDialog extends Component {
 		});
 
 		return (
-			<MuiDialog className={dialogClasses} transitionDuration={200} {...props} onEnter={this.onEnterDialog}>
+			<MuiDialog ref={this.dialogRef} className={dialogClasses} transitionDuration={200} {...props} onEnter={this.onEnterDialog}>
 				{stickyTitle ? <div className="sentinel-top" /> : null}
 				{children}
 				{stickyActions ? <div className="sentinel-bottom" /> : null}
@@ -94,6 +96,8 @@ export class PDDialog extends Component {
 		);
 	}
 }
+
+export const PDDialogFR = forwardRef((props, ref) => <PDDialog innerRef={ref} {...props} />);
 
 export const PDDialogTitle = props => {
 	const { theme, titlePositionCenter, leftHandleProps, onClose, children } = props;

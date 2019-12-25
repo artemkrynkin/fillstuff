@@ -9,8 +9,6 @@ import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
 
-import { percentOfNumber } from 'shared/utils';
-
 import QuantityIndicator from 'src/components/QuantityIndicator';
 import Dropdown from 'src/components/Dropdown';
 
@@ -65,13 +63,9 @@ const Position = props => {
 						unitIssue={position.unitIssue}
 						quantity={position.activeReceipt.current.quantity}
 						isFree={false}
-						price={Number((position.activeReceipt.unitPurchasePrice + position.activeReceipt.unitCostDelivery).toFixed(2))}
+						price={Number(position.activeReceipt.unitPurchasePrice.toFixed(2))}
 						receiptsReceived={receiptsReceived}
-						receiptNearestPrice={
-							receiptsReceived.length
-								? Number((receiptsReceived[0].unitPurchasePrice + receiptsReceived[0].unitCostDelivery).toFixed(2))
-								: undefined
-						}
+						receiptNearestPrice={receiptsReceived.length ? Number(receiptsReceived[0].unitPurchasePrice.toFixed(2)) : undefined}
 						priceChangeIsGood={false}
 						title="цена покупки"
 					/>
@@ -86,25 +80,9 @@ const Position = props => {
 						unitIssue={position.unitIssue}
 						quantity={position.activeReceipt.current.quantity}
 						isFree={position.isFree}
-						price={Number(
-							(
-								position.activeReceipt.unitSellingPrice +
-								position.activeReceipt.unitCostDelivery +
-								percentOfNumber(position.activeReceipt.unitSellingPrice, position.extraCharge)
-							).toFixed(2)
-						)}
+						price={Number(position.activeReceipt.unitSellingPrice.toFixed(2))}
 						receiptsReceived={receiptsReceived}
-						receiptNearestPrice={
-							receiptsReceived.length
-								? Number(
-										(
-											receiptsReceived[0].unitSellingPrice +
-											receiptsReceived[0].unitCostDelivery +
-											percentOfNumber(receiptsReceived[0].unitSellingPrice, position.extraCharge)
-										).toFixed(2)
-								  )
-								: undefined
-						}
+						receiptNearestPrice={receiptsReceived.length ? Number(receiptsReceived[0].unitSellingPrice.toFixed(2)) : undefined}
 						priceChangeIsGood={true}
 						title="цена продажи"
 					/>

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { recountReceipt } from 'shared/checkPositionAndReceipt';
+import { receiptCalc } from 'shared/checkPositionAndReceipt';
 
 import { isAuthedResolver, hasPermissionsInStock } from 'api/utils/permissions';
 
@@ -216,7 +216,23 @@ positionsRouter.post(
 
 		newReceipt.position = newPosition._id;
 
-		recountReceipt({ unitReceipt: newPosition.unitReceipt, unitIssue: newPosition.unitIssue }, newPosition.isFree, newReceipt);
+		receiptCalc.quantity(newReceipt, {
+			unitReceipt: newPosition.unitReceipt,
+			unitIssue: newPosition.unitIssue,
+		});
+		receiptCalc.unitPurchasePrice(newReceipt, {
+			unitReceipt: newPosition.unitReceipt,
+			unitIssue: newPosition.unitIssue,
+		});
+		receiptCalc.sellingPrice(newReceipt, {
+			isFree: newPosition.isFree,
+			extraCharge: newPosition.extraCharge,
+		});
+		receiptCalc.manualExtraCharge(newReceipt, {
+			isFree: newPosition.isFree,
+			unitReceipt: newPosition.unitReceipt,
+			unitIssue: newPosition.unitIssue,
+		});
 
 		const newReceiptErr = newReceipt.validateSync();
 		const newPositionErr = newPosition.validateSync();
@@ -282,7 +298,19 @@ positionsRouter.put(
 		if (receiptUpdatedValues.sellingPrice) activeReceipt.sellingPrice = receiptUpdatedValues.sellingPrice;
 		if (receiptUpdatedValues.unitSellingPrice) activeReceipt.unitSellingPrice = receiptUpdatedValues.unitSellingPrice;
 
-		recountReceipt({ unitReceipt: position.unitReceipt, unitIssue: position.unitIssue }, positionUpdated.isFree, activeReceipt, false);
+		receiptCalc.unitPurchasePrice(activeReceipt, {
+			unitReceipt: position.unitReceipt,
+			unitIssue: position.unitIssue,
+		});
+		receiptCalc.sellingPrice(activeReceipt, {
+			isFree: position.isFree,
+			extraCharge: position.extraCharge,
+		});
+		receiptCalc.manualExtraCharge(activeReceipt, {
+			isFree: position.isFree,
+			unitReceipt: position.unitReceipt,
+			unitIssue: position.unitIssue,
+		});
 
 		position.name = positionUpdated.name;
 		position.minimumBalance = positionUpdated.minimumBalance;
@@ -306,8 +334,8 @@ positionsRouter.put(
 				$set: {
 					'status.stockPrice':
 						statusOld.stockPrice +
-						(activeReceipt.current.quantity * (activeReceipt.unitPurchasePrice + activeReceipt.unitCostDelivery) -
-							activeReceiptOld.current.quantity * (activeReceiptOld.unitPurchasePrice + activeReceiptOld.unitCostDelivery)),
+						(activeReceipt.current.quantity * activeReceipt.unitPurchasePrice -
+							activeReceiptOld.current.quantity * activeReceiptOld.unitPurchasePrice),
 				},
 			},
 			{ runValidators: true }
@@ -373,7 +401,7 @@ positionsRouter.post(
 			position.stock,
 			{
 				$set: {
-					'status.stockPrice': statusOld.stockPrice + quantity * (activeReceipt.unitPurchasePrice + activeReceipt.unitCostDelivery),
+					'status.stockPrice': statusOld.stockPrice + quantity * activeReceipt.unitPurchasePrice,
 				},
 			},
 			{ runValidators: true }
@@ -482,7 +510,7 @@ positionsRouter.get(
 		} = position;
 
 		const purchasePriceReceiptsPosition = receipts.reduce((sum, receipt) => {
-			return sum + receipt.current.quantity * (receipt.unitPurchasePrice + receipt.unitCostDelivery);
+			return sum + receipt.current.quantity * receipt.unitPurchasePrice;
 		}, 0);
 
 		Stock.findByIdAndUpdate(

@@ -3,7 +3,7 @@ import React from 'react';
 import TableRow from '@material-ui/core/TableRow';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { percentOfNumber } from 'shared/utils';
+import { formatToCurrency } from 'shared/utils';
 
 import NumberFormat, { currencyFormatProps } from 'src/components/NumberFormat';
 import QuantityIndicator from 'src/components/QuantityIndicator';
@@ -14,12 +14,6 @@ import { TableCell } from './styles';
 
 const Receipt = props => {
 	const { receipt } = props;
-
-	const unitSellingPrice = () => {
-		const extraCharge = percentOfNumber(receipt.unitSellingPrice, receipt.position.extraCharge);
-
-		return Number(receipt.unitSellingPrice + receipt.unitCostDelivery + extraCharge);
-	};
 
 	return (
 		<TableRow>
@@ -39,7 +33,7 @@ const Receipt = props => {
 				/>
 			</TableCell>
 			<TableCell align="right" width={160}>
-				{receipt.unitPurchasePrice} ₽
+				{formatToCurrency(receipt.unitPurchasePrice, true)} ₽
 			</TableCell>
 			<TableCell align="right" width={160}>
 				{!receipt.position.isFree ? (
@@ -47,25 +41,37 @@ const Receipt = props => {
 						title={
 							<div>
 								<NumberFormat
-									value={receipt.unitSellingPrice}
-									renderText={value => `Цена продажи: ${value}`}
+									value={receipt.unitPurchasePrice}
+									renderText={value => `Цена покупки: ${value}`}
 									displayType="text"
 									onValueChange={() => {}}
 									{...currencyFormatProps}
 								/>
-								<br />
-								<NumberFormat
-									value={receipt.unitCostDelivery}
-									renderText={value => `Стоимость доставки: ${value}`}
-									displayType="text"
-									onValueChange={() => {}}
-									{...currencyFormatProps}
-								/>
-								<br />
-								{receipt.position.extraCharge > 0 ? (
+								{receipt.unitCostDelivery > 0 ? <br /> : null}
+								{receipt.unitCostDelivery > 0 ? (
 									<NumberFormat
-										value={percentOfNumber(receipt.unitSellingPrice, receipt.position.extraCharge)}
+										value={receipt.unitCostDelivery}
+										renderText={value => `Стоимость доставки: ${value}`}
+										displayType="text"
+										onValueChange={() => {}}
+										{...currencyFormatProps}
+									/>
+								) : null}
+								{receipt.unitExtraCharge > 0 ? <br /> : null}
+								{receipt.unitExtraCharge > 0 ? (
+									<NumberFormat
+										value={receipt.unitExtraCharge}
 										renderText={value => `Процент студии: ${value}`}
+										displayType="text"
+										onValueChange={() => {}}
+										{...currencyFormatProps}
+									/>
+								) : null}
+								{receipt.unitManualExtraCharge > 0 ? <br /> : null}
+								{receipt.unitManualExtraCharge > 0 ? (
+									<NumberFormat
+										value={receipt.unitManualExtraCharge}
+										renderText={value => `Ручная наценка: ${value}`}
 										displayType="text"
 										onValueChange={() => {}}
 										{...currencyFormatProps}
@@ -74,7 +80,7 @@ const Receipt = props => {
 							</div>
 						}
 					>
-						<span>{unitSellingPrice()} ₽</span>
+						<span>{formatToCurrency(receipt.unitSellingPrice, true)} ₽</span>
 					</Tooltip>
 				) : (
 					'Бесплатно'

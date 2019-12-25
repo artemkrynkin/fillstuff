@@ -69,6 +69,7 @@ let Position = new Schema({
 		type: Boolean,
 		default: false,
 	},
+	// Процент наценки
 	extraCharge: {
 		type: Number,
 		default: 0,

@@ -23,13 +23,11 @@ let Procurement = new Schema({
 		ref: 'User',
 		required: [true, i18n.__('Обязательное поле')],
 	},
-	number: {
-		type: String,
-		required: [true, i18n.__('Обязательное поле')],
-	},
-	date: {
-		type: Date,
-		required: [true, i18n.__('Обязательное поле')],
+	number: String,
+	date: Date,
+	noInvoice: {
+		type: Boolean,
+		default: false,
 	},
 	costDelivery: {
 		type: Number,
@@ -49,7 +47,7 @@ let Procurement = new Schema({
 		default: 0,
 		set: value => numberToFixedDouble(value, 0),
 	},
-	notCompensateCostDelivery: {
+	compensateCostDelivery: {
 		type: Boolean,
 		default: false,
 	},

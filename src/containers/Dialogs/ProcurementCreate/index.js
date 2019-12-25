@@ -1,21 +1,33 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { Formik } from 'formik';
 
-import { UnitCostDelivery } from 'shared/checkPositionAndReceipt';
-import { sleep } from 'shared/utils';
+import { UnitCostDelivery, receiptCalc } from 'shared/checkPositionAndReceipt';
+import { sleep, formatToCurrency } from 'shared/utils';
 
-import { observeActions, PDDialog, PDDialogTitle } from 'src/components/Dialog';
+import { observeActions, PDDialogFR, PDDialogTitle } from 'src/components/Dialog';
 
 import { getStockStatus } from 'src/actions/stocks';
 import { createProcurement } from 'src/actions/procurements';
 
+import { positionTransform } from './helpers';
 import FormProcurementCreate from './FormProcurementCreate';
 import procurementSchema from './procurementSchema';
 
 import styles from './index.module.css';
+
+const initialValues = {
+	number: '',
+	noInvoice: false,
+	date: undefined,
+	costDelivery: '',
+	pricePositions: 0,
+	totalPrice: '',
+	compensateCostDelivery: true,
+	receipts: [],
+};
 
 const receiptInitialValues = (position, remainingValues) => ({
 	position,
@@ -23,10 +35,15 @@ const receiptInitialValues = (position, remainingValues) => ({
 	quantityPackages: '',
 	quantityInUnit: '',
 	purchasePrice: '',
+	unitPurchasePrice: '',
 	sellingPrice: '',
 	unitSellingPrice: '',
 	costDelivery: '',
 	unitCostDelivery: '',
+	extraCharge: '',
+	unitExtraCharge: '',
+	manualExtraCharge: '',
+	unitManualExtraCharge: '',
 	...remainingValues,
 });
 
@@ -45,6 +62,8 @@ class ProcurementCreate extends Component {
 
 	state = this.initialState;
 
+	dialogRef = createRef();
+
 	onHandleEditFormProcurement = value => this.setState({ formEditable: value });
 
 	onSubmit = (values, actions) => {
@@ -59,23 +78,40 @@ class ProcurementCreate extends Component {
 				procurement.totalPrice !== indicators.pricePositions &&
 				procurement.totalPrice - procurement.costDelivery !== indicators.pricePositions
 			) {
-				actions.setFieldError(
-					'pricePositions',
-					<span>
-						Стоимость внесённых позиций не соответствует стоимости закупки.
-						<br />
-						Проверьте правильность внесённых данных.
-					</span>
-				);
+				actions.setErrors({
+					totalPrice: true,
+					pricePositions: (
+						<span>
+							Стоимость позиций в закупке не соответствует полю <b>Итого</b>.
+							<br />
+							Проверьте правильность внесённых данных.
+						</span>
+					),
+					receipts: procurement.receipts.map(receipt => {
+						return {
+							[receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce' ? 'quantityPackages' : 'quantity']: true,
+							purchasePrice: true,
+						};
+					}),
+				});
+
 				actions.setSubmitting(false);
+
+				this.dialogRef.current.querySelector('.MuiDialogTitle-root').scrollIntoView({
+					behavior: 'smooth',
+					block: 'start',
+				});
 
 				return;
 			}
 
 			actions.setFieldValue('pricePositions', indicators.pricePositions);
+			if (procurement.totalPrice === indicators.pricePositions) {
+				actions.setFieldValue('totalPrice', indicators.pricePositions + procurement.costDelivery);
+			}
 
 			// Если есть позиции для продажи и стоимость доставки компенсируется за счет позиций для продажи
-			if (indicators.selling.positionsCount && !procurement.notCompensateCostDelivery) {
+			if (indicators.selling.positionsCount && procurement.compensateCostDelivery) {
 				procurement.receipts.forEach(receipt => {
 					if (!receipt.position.isFree && receipt.purchasePrice) {
 						if (!indicators.selling.unitsZeroPositionsCount) {
@@ -100,7 +136,7 @@ class ProcurementCreate extends Component {
 
 						receipt.unitCostDelivery =
 							receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce'
-								? Number((receipt.costDelivery / receipt.quantityInUnit).toFixed(2))
+								? formatToCurrency(receipt.costDelivery / receipt.quantityInUnit)
 								: receipt.costDelivery;
 					}
 
@@ -140,7 +176,7 @@ class ProcurementCreate extends Component {
 
 							receipt.unitCostDelivery =
 								receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce'
-									? Number((receipt.costDelivery / receipt.quantityInUnit).toFixed(2))
+									? formatToCurrency(receipt.costDelivery / receipt.quantityInUnit)
 									: receipt.costDelivery;
 						}
 					});
@@ -152,40 +188,38 @@ class ProcurementCreate extends Component {
 				});
 			}
 
+			// Формируем цену покупки единицы и цену продажи
+			procurement.receipts.forEach(receipt => {
+				receiptCalc.unitPurchasePrice(receipt, {
+					unitReceipt: receipt.position.unitReceipt,
+					unitIssue: receipt.position.unitIssue,
+				});
+
+				receiptCalc.sellingPrice(receipt, {
+					isFree: receipt.position.isFree,
+					extraCharge: receipt.position.extraCharge,
+				});
+			});
+
 			actions.setFieldValue('receipts', procurement.receipts);
 
 			this.setState({ formEditable: false });
 
 			actions.setSubmitting(false);
 		} else {
-			procurement.receipts = procurement.receipts.map(receiptValues => {
-				const {
-					position,
-					quantity,
-					quantityPackages,
-					quantityInUnit,
-					purchasePrice,
-					sellingPrice,
-					unitSellingPrice,
-					costDelivery,
-					unitCostDelivery,
-				} = receiptValues;
+			procurement.receipts = procurement.receipts.map(receipt => {
+				const { position, quantity, quantityPackages, ...remainingValues } = receipt;
 
-				let receipt = {
+				const newReceipt = {
 					position: position._id,
 					initial: {},
+					...remainingValues,
 				};
 
-				if (!isNaN(quantity)) receipt.initial.quantity = quantity;
-				if (!isNaN(quantityPackages)) receipt.initial.quantityPackages = quantityPackages;
-				if (!isNaN(quantityInUnit)) receipt.quantityInUnit = quantityInUnit;
-				if (!isNaN(purchasePrice)) receipt.purchasePrice = purchasePrice;
-				if (!isNaN(sellingPrice)) receipt.sellingPrice = sellingPrice;
-				if (!isNaN(unitSellingPrice)) receipt.unitSellingPrice = unitSellingPrice;
-				if (!isNaN(costDelivery)) receipt.costDelivery = costDelivery;
-				if (!isNaN(unitCostDelivery)) receipt.unitCostDelivery = unitCostDelivery;
+				if (!isNaN(quantity)) newReceipt.initial.quantity = quantity;
+				if (!isNaN(quantityPackages)) newReceipt.initial.quantityPackages = quantityPackages;
 
-				return receipt;
+				return newReceipt;
 			});
 
 			this.props.createProcurement(procurement).then(response => {
@@ -213,18 +247,13 @@ class ProcurementCreate extends Component {
 		const { dialogOpen, onCloseDialog, currentStock, positions } = this.props;
 		const { formEditable } = this.state;
 
-		const initialValues = {
-			number: '',
-			date: null,
-			costDelivery: '',
-			pricePositions: 0,
-			totalPrice: '',
-			notCompensateCostDelivery: currentStock.settings.procurements.notCompensateCostDelivery,
-			receipts: [],
-		};
+		if (currentStock.settings.procurements.compensateCostDelivery) {
+			initialValues.compensateCostDelivery = currentStock.settings.procurements.compensateCostDelivery;
+		}
 
 		return (
-			<PDDialog
+			<PDDialogFR
+				ref={this.dialogRef}
 				open={dialogOpen}
 				onEnter={this.onEnterDialog}
 				onClose={onCloseDialog}
@@ -240,7 +269,7 @@ class ProcurementCreate extends Component {
 				<Formik
 					initialValues={initialValues}
 					validationSchema={procurementSchema}
-					validateOnBlur={false}
+					validateOnBlur={!formEditable}
 					validateOnChange={false}
 					onSubmit={async (values, actions) => {
 						await sleep(500);
@@ -249,7 +278,8 @@ class ProcurementCreate extends Component {
 				>
 					{props => (
 						<FormProcurementCreate
-							currentStock={currentStock}
+							dialogRef={this.dialogRef}
+							currentStockId={currentStock._id}
 							receiptInitialValues={receiptInitialValues}
 							onHandleEditFormProcurement={this.onHandleEditFormProcurement}
 							positions={positions}
@@ -258,28 +288,16 @@ class ProcurementCreate extends Component {
 						/>
 					)}
 				</Formik>
-			</PDDialog>
+			</PDDialogFR>
 		);
 	}
 }
 
 const mapStateToProps = state => {
-	let positions = { ...state.positions };
+	const positions = { ...state.positions };
 
 	if (positions.data && positions.data.length > 0) {
-		positions.data = positions.data.map(position => {
-			return {
-				_id: position._id,
-				unitIssue: position.unitIssue,
-				unitReceipt: position.unitReceipt,
-				isFree: position.isFree,
-				extraCharge: position.extraCharge,
-				label:
-					position.name +
-					position.characteristics.reduce((fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`, ''),
-				value: position._id,
-			};
-		});
+		positions.data = positions.data.map(position => positionTransform(position));
 	}
 
 	return {

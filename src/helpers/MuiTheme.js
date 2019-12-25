@@ -473,7 +473,7 @@ export const BliksideTheme = createMuiTheme({
 			},
 			iconSizeMedium: {
 				'& > *:first-child': {
-					fontSize: 18,
+					fontSize: 16,
 				},
 			},
 		},

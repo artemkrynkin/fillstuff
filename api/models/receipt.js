@@ -105,15 +105,15 @@ let Receipt = new Schema({
 		// get: value => numberToFixedDouble(value),
 		set: value => numberToFixedDouble(value),
 	},
-	// Цена продажи
-	sellingPrice: {
+	// Цена покупки единицы
+	unitPurchasePrice: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		// get: value => numberToFixedDouble(value),
 		set: value => numberToFixedDouble(value),
 	},
-	// Цена покупки единицы
-	unitPurchasePrice: {
+	// Цена продажи
+	sellingPrice: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		// get: value => numberToFixedDouble(value),
@@ -135,6 +135,32 @@ let Receipt = new Schema({
 	},
 	// Стоимость доставки
 	unitCostDelivery: {
+		type: Number,
+		min: [0, 'Не может быть меньше 0'],
+		default: 0,
+		set: value => numberToFixedDouble(value),
+	},
+	// Наценка
+	extraCharge: {
+		type: Number,
+		min: [0, 'Не может быть меньше 0'],
+		default: 0,
+		set: value => numberToFixedDouble(value),
+	},
+	unitExtraCharge: {
+		type: Number,
+		min: [0, 'Не может быть меньше 0'],
+		default: 0,
+		set: value => numberToFixedDouble(value),
+	},
+	// Ручная наценка
+	manualExtraCharge: {
+		type: Number,
+		min: [0, 'Не может быть меньше 0'],
+		default: 0,
+		set: value => numberToFixedDouble(value),
+	},
+	unitManualExtraCharge: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,

@@ -400,7 +400,7 @@ const FormFilter = props => {
 				</Grid>
 
 				<Grid item style={{ marginLeft: 'auto' }}>
-					{values.number || (!isWeekActive() && !isMonthActive()) || values.position !== 'all' || values.role !== 'all' ? (
+					{values.number || !isMonthActive() || values.position !== 'all' || values.role !== 'all' ? (
 						<ButtonBase onClick={() => onResetAllFilters(setFieldValue, submitForm)} className={styles.filterButtonLinkRed} disableRipple>
 							<span>Сбросить фильтры</span>
 						</ButtonBase>

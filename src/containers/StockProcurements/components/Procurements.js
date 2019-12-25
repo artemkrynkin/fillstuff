@@ -139,9 +139,9 @@ class Procurements extends Component {
 						onLoadMore={paging.onChangeLoadedDocs}
 						onLoadOtherDates={this.onLoadOtherDates}
 					/>
-				) : (
+				) : isLoadingProcurements ? (
 					<div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />
-				)}
+				) : null}
 			</div>
 		);
 	}

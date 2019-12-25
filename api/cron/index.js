@@ -30,11 +30,7 @@ new CronJob(
 								});
 
 								const stockPrice = positions.reduce((sum, position) => {
-									return (
-										sum +
-										position.activeReceipt.current.quantity *
-											(position.activeReceipt.unitPurchasePrice + position.activeReceipt.unitCostDelivery)
-									);
+									return sum + position.activeReceipt.current.quantity * position.activeReceipt.unitPurchasePrice;
 								}, 0);
 
 								await Stock.findByIdAndUpdate(

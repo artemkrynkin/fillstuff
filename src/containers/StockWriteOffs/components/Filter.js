@@ -118,10 +118,7 @@ class Filter extends Component {
 
 		Object.keys(queryParams).forEach(key => (queryParams[key] === '' || queryParams[key] === 'all') && delete queryParams[key]);
 
-		if (
-			momentDate.startOf('isoWeek').isSame(queryParams.dateStart, 'day') &&
-			momentDate.endOf('isoWeek').isSame(queryParams.dateEnd, 'day')
-		) {
+		if (momentDate.startOf('month').isSame(queryParams.dateStart, 'day') && momentDate.endOf('month').isSame(queryParams.dateEnd, 'day')) {
 			delete queryParams.dateStart;
 			delete queryParams.dateEnd;
 		}

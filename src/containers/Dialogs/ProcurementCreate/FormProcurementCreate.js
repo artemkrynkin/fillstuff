@@ -15,6 +15,8 @@ import Typography from '@material-ui/core/Typography';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { DatePicker } from '@material-ui/pickers';
 
+import { declensionNumber } from 'src/helpers/utils';
+
 import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
 import { PDDialogActions } from 'src/components/Dialog';
 import NumberFormat, { currencyFormatInputProps } from 'src/components/NumberFormat';
@@ -57,7 +59,8 @@ const FormProcurementCreate = props => {
 						</Typography>
 						{sellingPositionCount ? (
 							<Typography variant="body1" align="center">
-								Для {sellingPositionCount} позиций цена продажи сформирована автоматически.
+								Для {declensionNumber(sellingPositionCount, ['позиции', 'позиций', 'позиций'], true)} цена продажи сформирована
+								автоматически.
 								<br />
 								При необходимости отредактируйте цену продажи в ручную.
 							</Typography>

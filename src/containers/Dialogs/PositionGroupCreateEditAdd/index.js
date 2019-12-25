@@ -96,7 +96,7 @@ class DialogPositionGroupCreateEditAdd extends Component {
 		return (
 			<PDDialog open={dialogOpen} onClose={onCloseDialog} onExited={this.onExitedDialog} maxWidth="md" scroll="body" stickyActions>
 				<PDDialogTitle theme="primary" onClose={onCloseDialog}>
-					{type === 'create' ? 'Создание новой группы' : type === 'edit' ? 'Редактирование группы' : 'Добавление позиций в группу'}
+					{type === 'create' ? 'Создание группы' : type === 'edit' ? 'Редактирование группы' : 'Добавление позиций в группу'}
 				</PDDialogTitle>
 				<Formik
 					initialValues={initialValues}
@@ -141,7 +141,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	};
 };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(DialogPositionGroupCreateEditAdd);
+export default connect(mapStateToProps, mapDispatchToProps)(DialogPositionGroupCreateEditAdd);

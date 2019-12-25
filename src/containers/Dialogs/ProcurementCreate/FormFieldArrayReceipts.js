@@ -91,9 +91,7 @@ const FormFieldArrayReceipts = props => {
 								menuPosition="fixed"
 								placeholder="Выберите позицию"
 								noOptionsMessage={() =>
-									positionsAvailable.length === 0
-										? 'Нет позиций для выбора. Создайте новую позицию'
-										: 'Среди позиций совпадений не найдено.'
+									positionsAvailable.length === 0 ? 'Нет позиций для выбора. Создайте позицию' : 'Среди позиций совпадений не найдено.'
 								}
 								options={positionsAvailable}
 								isDisabled={isSubmitting || !formEditable}
@@ -107,6 +105,7 @@ const FormFieldArrayReceipts = props => {
 								variant="outlined"
 								color="primary"
 								startIcon={<FontAwesomeIcon icon={['far', 'plus']} fixedWidth />}
+								disabled={isSubmitting}
 								fullWidth
 							>
 								Создать позицию

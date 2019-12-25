@@ -87,12 +87,10 @@ class ProcurementCreate extends Component {
 							Проверьте правильность внесённых данных.
 						</span>
 					),
-					receipts: procurement.receipts.map(receipt => {
-						return {
-							[receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce' ? 'quantityPackages' : 'quantity']: true,
-							purchasePrice: true,
-						};
-					}),
+					receipts: procurement.receipts.map(receipt => ({
+						[receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce' ? 'quantityPackages' : 'quantity']: true,
+						purchasePrice: true,
+					})),
 				});
 
 				actions.setSubmitting(false);
@@ -106,9 +104,6 @@ class ProcurementCreate extends Component {
 			}
 
 			actions.setFieldValue('pricePositions', indicators.pricePositions);
-			if (procurement.totalPrice === indicators.pricePositions) {
-				actions.setFieldValue('totalPrice', indicators.pricePositions + procurement.costDelivery);
-			}
 
 			// Если есть позиции для продажи и стоимость доставки компенсируется за счет позиций для продажи
 			if (indicators.selling.positionsCount && procurement.compensateCostDelivery) {
@@ -207,6 +202,10 @@ class ProcurementCreate extends Component {
 
 			actions.setSubmitting(false);
 		} else {
+			if (procurement.totalPrice === procurement.pricePositions) {
+				procurement.totalPrice = formatToCurrency(procurement.pricePositions + procurement.costDelivery);
+			}
+
 			procurement.receipts = procurement.receipts.map(receipt => {
 				const { position, quantity, quantityPackages, ...remainingValues } = receipt;
 
@@ -264,7 +263,7 @@ class ProcurementCreate extends Component {
 				stickyActions
 			>
 				<PDDialogTitle theme="primary" onClose={onCloseDialog}>
-					Создание новой закупки
+					Создание закупки
 				</PDDialogTitle>
 				<Formik
 					initialValues={initialValues}

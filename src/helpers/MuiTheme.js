@@ -467,6 +467,11 @@ export const BliksideTheme = createMuiTheme({
 				'&:hover': {
 					backgroundColor: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg300)}, 0.08)`,
 				},
+				'&$disabled': {
+					border: null,
+					color: null,
+					opacity: 0.7,
+				},
 			},
 			outlinedPrimary: {
 				color: `rgba(${ColorConvert.hex.rgb(theme.teal.cT100)}, 0.8)`,

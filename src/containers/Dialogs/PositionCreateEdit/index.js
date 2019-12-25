@@ -145,7 +145,7 @@ class DialogPositionCreateEdit extends Component {
 				stickyActions
 			>
 				<PDDialogTitle theme="primary" onClose={onCloseDialog}>
-					{type === 'create' ? 'Создание новой позиции' : 'Редактирование позиции'}
+					{type === 'create' ? 'Создание позиции' : 'Редактирование позиции'}
 				</PDDialogTitle>
 				<Formik
 					initialValues={initialValues}
@@ -190,7 +190,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	};
 };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(DialogPositionCreateEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(DialogPositionCreateEdit);

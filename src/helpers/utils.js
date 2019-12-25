@@ -39,10 +39,12 @@ export const truncate = (str, maxlength) => {
 	return str.length > maxlength ? str.slice(0, maxlength - 3) + '..' : str;
 };
 
-export const declensionNumber = (number, titles) => {
+export const declensionNumber = (number, titles, showNumber = false) => {
 	const cases = [2, 0, 1, 1, 1, 2];
 
-	return titles[number % 100 > 4 && number % 100 < 20 ? 2 : cases[number % 10 < 5 ? number % 10 : 5]];
+	const declensionTitles = titles[number % 100 > 4 && number % 100 < 20 ? 2 : cases[number % 10 < 5 ? number % 10 : 5]];
+
+	return showNumber ? `${number} ${declensionTitles}` : declensionTitles;
 };
 
 export const calculateColor = text => {

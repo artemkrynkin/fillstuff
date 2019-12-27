@@ -7,7 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import { checkQueryParamsInFilter } from 'src/components/Pagination/utils';
 
 import Filter from './Filter';
-import WriteOffsDays from './WriteOffsDays';
+import WriteOffsMonths from './WriteOffsMonths';
 
 const momentDate = moment();
 const dateStart = momentDate.startOf('month').valueOf();
@@ -43,7 +43,7 @@ const Index = props => {
 							onChangeLoadedDocs,
 						}}
 					/>
-					<WriteOffsDays
+					<WriteOffsMonths
 						currentStockId={currentStock._id}
 						filterParams={filterParams}
 						paging={{

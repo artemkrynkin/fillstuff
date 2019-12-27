@@ -15,6 +15,12 @@ const WriteOff = props => {
 	const TableRowHighlightClasses = TableRowHighlight();
 	const TableCellHighlightClasses = TableCellHighlight();
 
+	const createdAtMoment = moment(writeOff.createdAt);
+	const isCurrentHour = moment()
+		.subtract({ hour: 1 })
+		.isBefore(writeOff.createdAt);
+	const isNow = moment().isSame(writeOff.createdAt, 'minute');
+
 	return (
 		<TableRow classes={positionSameFilter ? { root: TableRowHighlightClasses.root } : {}}>
 			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}}>
@@ -40,12 +46,8 @@ const WriteOff = props => {
 			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="right" width={125}>
 				{writeOff.quantity} {writeOff.position.unitIssue === 'pce' ? 'шт.' : 'уп.'}
 			</TableCell>
-			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="right" width={135}>
-				{moment()
-					.subtract({ hour: 1 })
-					.isBefore(writeOff.createdAt)
-					? moment(writeOff.createdAt).fromNow()
-					: moment(writeOff.createdAt).format('в HH:mm')}
+			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="right" width={150}>
+				{!isCurrentHour ? createdAtMoment.format('HH:mm') : !isNow ? createdAtMoment.fromNow() : 'только что'}
 			</TableCell>
 		</TableRow>
 	);

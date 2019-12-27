@@ -2,6 +2,8 @@ import { Router } from 'express';
 import moment from 'moment';
 import _ from 'lodash';
 
+import { formatToCurrency } from 'shared/utils';
+
 import { isAuthedResolver, hasPermissionsInStock } from 'api/utils/permissions';
 
 import Stock from 'api/models/stock';
@@ -84,7 +86,32 @@ writeOffsRouter.get(
 				break;
 		}
 
-		writeOffs.data = _.chain(writeOffs.data)
+		const indicatorsCount = items => {
+			return items.reduce(
+				(indicators, item) => {
+					indicators.total += formatToCurrency(item.quantity * item.receipt.unitPurchasePrice);
+
+					if (!item.position.isFree) {
+						indicators.sellingPositions += formatToCurrency(item.quantity * item.receipt.unitPurchasePrice);
+					} else {
+						indicators.freePositions += formatToCurrency(item.quantity * item.receipt.unitPurchasePrice);
+					}
+
+					return indicators;
+				},
+				{
+					total: 0,
+					sellingPositions: 0,
+					freePositions: 0,
+				}
+			);
+		};
+
+		// Считаем данные для индикатора за выбранный период
+		const indicators = indicatorsCount(writeOffs.data);
+
+		// Группируем списания по дню
+		const writeOffsPerDay = _.chain(writeOffs.data)
 			.groupBy(writeOff => {
 				return moment(writeOff.createdAt)
 					.set({
@@ -95,52 +122,40 @@ writeOffsRouter.get(
 					})
 					.format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
 			})
-			.map((items, date) => {
-				const indicators = {
-					total: 0,
-					sellingPositions: 0,
-					freePositions: 0,
-				};
-
-				items.forEach(item => {
-					indicators.total += item.quantity * item.receipt.unitPurchasePrice;
-					if (!item.position.isFree) indicators.sellingPositions += item.quantity * item.receipt.unitPurchasePrice;
-					else indicators.freePositions += item.quantity * item.receipt.unitPurchasePrice;
-
-					item.depopulate('stock');
-					item.depopulate('receipt');
-				});
-
-				indicators.total = Number(indicators.total.toFixed(2));
-				indicators.sellingPositions = Number(indicators.sellingPositions.toFixed(2));
-				indicators.freePositions = Number(indicators.freePositions.toFixed(2));
-
-				return {
-					date,
-					indicators,
-					items,
-				};
-			})
+			.map((items, date) => ({
+				date,
+				// Считаем данные для индикатора за день
+				indicators: indicatorsCount(items),
+				items,
+			}))
 			.value();
 
-		const indicators = {
-			total: 0,
-			sellingPositions: 0,
-			freePositions: 0,
-		};
+		// Группируем списания по месяцу
+		const writeOffsPerMonth = _.chain(writeOffsPerDay)
+			.groupBy(writeOffsPerDay => {
+				return moment(writeOffsPerDay.date)
+					.set({
+						day: 0,
+						hour: 0,
+						minute: 0,
+						second: 0,
+						millisecond: 0,
+					})
+					.format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
+			})
+			.map((items, date) => ({
+				date,
+				items,
+			}))
+			.value();
 
-		writeOffs.data.forEach(writeOffsDay => {
-			indicators.total += writeOffsDay.indicators.total;
-			indicators.sellingPositions += writeOffsDay.indicators.sellingPositions;
-			indicators.freePositions += writeOffsDay.indicators.freePositions;
+		writeOffs.data.forEach(writeOff => {
+			writeOff.depopulate('stock');
+			writeOff.depopulate('receipt');
 		});
 
-		indicators.total = Number(indicators.total.toFixed(2));
-		indicators.sellingPositions = Number(indicators.sellingPositions.toFixed(2));
-		indicators.freePositions = Number(indicators.freePositions.toFixed(2));
-
 		res.json({
-			data: writeOffs.data,
+			data: writeOffsPerMonth,
 			indicators,
 			paging: {
 				totalCount: writeOffsCount,

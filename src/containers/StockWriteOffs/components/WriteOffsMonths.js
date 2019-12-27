@@ -16,32 +16,23 @@ import { getWriteOffs } from 'src/actions/writeOffs';
 import PeriodIndicators from './PeriodIndicators';
 import WriteOffDay from './WriteOffDay';
 
-import styles from './WriteOffsDays.module.css';
+import styles from './WriteOffsMonths.module.css';
 
-const calendarFormat = {
-	sameDay: 'Сегодня',
-	nextDay: 'Завтра',
-	nextWeek: function(now) {
-		return this.isSame(now, 'year') ? 'D MMMM, dddd' : 'D MMMM YYYY';
-	},
-	lastDay: 'Вчера',
-	lastWeek: function(now) {
-		return this.isSame(now, 'year') ? 'D MMMM, dddd' : 'D MMMM YYYY';
-	},
-	sameElse: function(now) {
-		return this.isSame(now, 'year') ? 'D MMMM, dddd' : 'D MMMM YYYY';
-	},
+const generatePaginate = (loadedDocs, data) => {
+	const WriteOffsMonths = data.slice();
+
+	WriteOffsMonths.length = loadedDocs < data.length ? loadedDocs : data.length;
+
+	return WriteOffsMonths;
 };
 
-const generateWriteOffsDays = (loadedDocs, data) => {
-	const writeOffsDays = data.slice();
+const MonthDateTitle = ({ date }) => {
+	const isCurrentYear = moment().isSame(date, 'year');
 
-	writeOffsDays.length = loadedDocs < data.length ? loadedDocs : data.length;
-
-	return writeOffsDays;
+	return <div className={styles.dateTitle}>{moment(date).format(isCurrentYear ? 'MMMM' : 'MMMM YYYY')}</div>;
 };
 
-class WriteOffsDays extends Component {
+class WriteOffsMonths extends Component {
 	static propTypes = {
 		currentStockId: PropTypes.string.isRequired,
 		filterParams: PropTypes.object.isRequired,
@@ -96,10 +87,12 @@ class WriteOffsDays extends Component {
 					writeOffsData.data.length && writeOffsData.paging.totalCount ? (
 						<div>
 							<PeriodIndicators indicators={writeOffsData.indicators} />
-							{generateWriteOffsDays(paging.loadedDocs, writeOffsData.data).map((writeOffsDay, index) => (
+							{generatePaginate(paging.loadedDocs, writeOffsData.data).map((writeOffsMonth, index) => (
 								<div className={styles.date} key={index}>
-									<div className={styles.dateTitle}>{moment(writeOffsDay.date).calendar(null, calendarFormat)}</div>
-									<WriteOffDay key={index} date={writeOffsDay.date} indicators={writeOffsDay.indicators} writeOffs={writeOffsDay.items} />
+									<MonthDateTitle date={writeOffsMonth.date} />
+									{writeOffsMonth.items.map((writeOffsDay, index) => (
+										<WriteOffDay key={index} date={writeOffsDay.date} indicators={writeOffsDay.indicators} writeOffs={writeOffsDay.items} />
+									))}
 								</div>
 							))}
 						</div>
@@ -146,4 +139,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(WriteOffsDays);
+export default connect(mapStateToProps, mapDispatchToProps)(WriteOffsMonths);

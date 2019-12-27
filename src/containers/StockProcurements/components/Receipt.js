@@ -35,7 +35,7 @@ const Receipt = props => {
 				/>
 			</TableCell>
 			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="right" width={160}>
-				{formatToCurrency(receipt.unitPurchasePrice, true)} ₽
+				{formatToCurrency(receipt.unitPurchasePrice, { toString: true })} ₽
 			</TableCell>
 			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="right" width={160}>
 				{!receipt.position.isFree ? (
@@ -82,7 +82,7 @@ const Receipt = props => {
 							</div>
 						}
 					>
-						<span>{formatToCurrency(receipt.unitSellingPrice, true)} ₽</span>
+						<span>{formatToCurrency(receipt.unitSellingPrice, { toString: true })} ₽</span>
 					</Tooltip>
 				) : (
 					'Бесплатно'

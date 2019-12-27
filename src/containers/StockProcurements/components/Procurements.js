@@ -33,7 +33,7 @@ const calendarFormat = {
 	},
 };
 
-const generateProcurementGrouped = (loadedDocs, data) => {
+const generatePaginate = (loadedDocs, data) => {
 	const procurements = data.slice();
 
 	procurements.length = loadedDocs < data.length ? loadedDocs : data.length;
@@ -109,7 +109,7 @@ class Procurements extends Component {
 				{!isLoadingProcurements && procurementData ? (
 					procurementData.data.length && procurementData.paging.totalCount ? (
 						<div>
-							{generateProcurementGrouped(paging.loadedDocs, procurementData.data).map((procurementDates, index) => (
+							{generatePaginate(paging.loadedDocs, procurementData.data).map((procurementDates, index) => (
 								<div className={styles.date} key={index}>
 									<div className={styles.dateTitle}>{moment(procurementDates.date).calendar(null, calendarFormat)}</div>
 									{procurementDates.items.map((procurement, index) => (

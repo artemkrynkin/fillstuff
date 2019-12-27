@@ -84,7 +84,7 @@ const WriteOffDay = props => {
 									<TableCell align="right" width={125}>
 										Количество
 									</TableCell>
-									<TableCell align="right" width={135}>
+									<TableCell align="right" width={150}>
 										Время
 									</TableCell>
 								</TableRow>

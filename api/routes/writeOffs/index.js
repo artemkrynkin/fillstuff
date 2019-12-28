@@ -87,7 +87,7 @@ writeOffsRouter.get(
 		}
 
 		// Группируем списания по дню
-		const writeOffsPerDay = _.chain(writeOffs.data)
+		const writeOffsByDay = _.chain(writeOffs.data)
 			.groupBy(writeOff => {
 				return moment(writeOff.createdAt)
 					.set({
@@ -132,32 +132,13 @@ writeOffsRouter.get(
 			})
 			.value();
 
-		// Группируем списания по месяцу
-		const writeOffsPerMonth = _.chain(writeOffsPerDay)
-			.groupBy(writeOffsPerDay => {
-				return moment(writeOffsPerDay.date)
-					.set({
-						day: 0,
-						hour: 0,
-						minute: 0,
-						second: 0,
-						millisecond: 0,
-					})
-					.format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
-			})
-			.map((items, date) => ({
-				date,
-				items,
-			}))
-			.value();
-
 		writeOffs.data.forEach(writeOff => {
 			writeOff.depopulate('stock');
 			writeOff.depopulate('receipt');
 		});
 
 		res.json({
-			data: writeOffsPerMonth,
+			data: writeOffsByDay,
 			paging: {
 				totalCount: writeOffsCount,
 			},

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import moment from 'moment';
 import queryString from 'query-string';
 
@@ -22,7 +23,27 @@ const generatePaginate = (loadedDocs, data) => {
 
 	WriteOffs.length = loadedDocs < data.length ? loadedDocs : data.length;
 
-	return WriteOffs;
+	// Группируем списания по месяцу
+	const fsdfdsf = _.chain(WriteOffs)
+		.groupBy(writeOffsPerDay => {
+			return moment(writeOffsPerDay.date)
+				.set({
+					date: 1,
+					hour: 0,
+					minute: 0,
+					second: 0,
+					millisecond: 0,
+				})
+				.format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
+		})
+		.map((items, date) => ({
+			date,
+			items,
+		}))
+		.value();
+	console.log(fsdfdsf);
+
+	return fsdfdsf;
 };
 
 const momentDate = moment();

@@ -98,7 +98,7 @@
 
 .userPhoto {
   background-color: var(--c-hex-br-5);
-  box-shadow: 2px 0 2px 0 rgba(var(--c-rgb-bg-900), 0.4);
+  box-shadow: 3px 0 3px 0 rgba(var(--c-rgb-bg-900), 0.3);
   height: 28px;
   transition: box-shadow 150ms ease-out;
   width: 28px;
@@ -109,7 +109,7 @@
 }
 
 .user:hover .userPhoto {
-  box-shadow: 0 0 5px 0 rgba(var(--c-rgb-bg-900), 0.6);
+  box-shadow: 0 0 5px 0 rgba(var(--c-rgb-bg-900), 0.5);
 }
 
 .userIcon {

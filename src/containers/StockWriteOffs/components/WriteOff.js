@@ -19,7 +19,9 @@ const WriteOff = props => {
 	const isCurrentHour = moment()
 		.subtract({ hour: 1 })
 		.isBefore(writeOff.createdAt);
-	const isNow = moment().isSame(writeOff.createdAt, 'minute');
+	const isNow = moment()
+		.subtract({ minute: 1 })
+		.isBefore(writeOff.createdAt);
 
 	return (
 		<TableRow classes={positionSameFilter ? { root: TableRowHighlightClasses.root } : {}}>

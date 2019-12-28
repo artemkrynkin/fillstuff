@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import i18n from 'i18n';
 
 import { unitTypes } from 'shared/checkPositionAndReceipt';
-import { numberToFixedDouble } from '../utils';
+import { formatNumber } from 'shared/utils';
 
 const Schema = mongoose.Schema;
 
@@ -74,7 +74,7 @@ let Position = new Schema({
 		type: Number,
 		default: 0,
 		min: [0, 'Не может быть меньше 0'],
-		set: value => numberToFixedDouble(value, 0),
+		set: value => formatNumber(value, { fractionDigits: 0 }),
 	},
 	// Название магазина
 	shopName: {

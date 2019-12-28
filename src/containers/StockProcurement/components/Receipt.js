@@ -3,7 +3,7 @@ import React from 'react';
 import TableRow from '@material-ui/core/TableRow';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { formatToCurrency } from 'shared/utils';
+import { formatNumber } from 'shared/utils';
 
 import NumberFormat, { currencyFormatProps } from 'src/components/NumberFormat';
 import QuantityIndicator from 'src/components/QuantityIndicator';
@@ -33,7 +33,7 @@ const Receipt = props => {
 				/>
 			</TableCell>
 			<TableCell align="right" width={160}>
-				{formatToCurrency(receipt.unitPurchasePrice, { toString: true })} ₽
+				{formatNumber(receipt.unitPurchasePrice, { toString: true })} ₽
 			</TableCell>
 			<TableCell align="right" width={160}>
 				{!receipt.position.isFree ? (
@@ -80,7 +80,7 @@ const Receipt = props => {
 							</div>
 						}
 					>
-						<span>{formatToCurrency(receipt.unitSellingPrice, { toString: true })} ₽</span>
+						<span>{formatNumber(receipt.unitSellingPrice, { toString: true })} ₽</span>
 					</Tooltip>
 				) : (
 					'Бесплатно'

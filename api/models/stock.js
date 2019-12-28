@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import i18n from 'i18n';
 import momentTz from 'moment-timezone';
 
-import { numberToFixedDouble } from 'api/utils';
+import { formatNumber } from 'shared/utils';
 
 const Schema = mongoose.Schema;
 
@@ -34,12 +34,12 @@ let Stock = new Schema({
 		numberPositions: {
 			type: Number,
 			default: 0,
+			set: value => formatNumber(value, { fractionDigits: 0 }),
 		},
 		stockPrice: {
 			type: Number,
 			default: 0,
-			// get: value => numberToFixedDouble(value),
-			set: value => numberToFixedDouble(value),
+			set: value => formatNumber(value),
 		},
 	},
 	members: [

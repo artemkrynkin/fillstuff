@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Formik } from 'formik';
 
 import { UnitCostDelivery, receiptCalc } from 'shared/checkPositionAndReceipt';
-import { sleep, formatToCurrency } from 'shared/utils';
+import { sleep, formatNumber } from 'shared/utils';
 
 import { observeActions, PDDialogFR, PDDialogTitle } from 'src/components/Dialog';
 
@@ -131,7 +131,7 @@ class ProcurementCreate extends Component {
 
 						receipt.unitCostDelivery =
 							receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce'
-								? formatToCurrency(receipt.costDelivery / receipt.quantityInUnit)
+								? formatNumber(receipt.costDelivery / receipt.quantityInUnit)
 								: receipt.costDelivery;
 					}
 
@@ -171,7 +171,7 @@ class ProcurementCreate extends Component {
 
 							receipt.unitCostDelivery =
 								receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce'
-									? formatToCurrency(receipt.costDelivery / receipt.quantityInUnit)
+									? formatNumber(receipt.costDelivery / receipt.quantityInUnit)
 									: receipt.costDelivery;
 						}
 					});
@@ -203,7 +203,7 @@ class ProcurementCreate extends Component {
 			actions.setSubmitting(false);
 		} else {
 			if (procurement.totalPrice === procurement.pricePositions) {
-				procurement.totalPrice = formatToCurrency(procurement.pricePositions + procurement.costDelivery);
+				procurement.totalPrice = formatNumber(procurement.pricePositions + procurement.costDelivery);
 			}
 
 			procurement.receipts = procurement.receipts.map(receipt => {

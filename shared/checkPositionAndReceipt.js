@@ -1,4 +1,4 @@
-import { formatToCurrency, percentOfNumber } from 'shared/utils';
+import { formatNumber, percentOfNumber } from 'shared/utils';
 
 export const unitTypes = ['pce', 'nmp'];
 
@@ -99,7 +99,7 @@ export const UnitCostDelivery = {
 
 				const unitCostDelivery = (costDelivery / 100) * unitCostDeliveryPercent;
 
-				return formatToCurrency(unitCostDelivery);
+				return formatNumber(unitCostDelivery);
 			},
 			/**
 			 * Расчет стоимости доставки единицы позиции для продажи с нулевой ценой покупки в смешанной закупке
@@ -117,7 +117,7 @@ export const UnitCostDelivery = {
 
 				const unitCostDelivery = (costDelivery - costDeliveryPaidPositionsSum) / unitsZeroPositionsCount;
 
-				return formatToCurrency(unitCostDelivery);
+				return formatNumber(unitCostDelivery);
 			},
 		},
 		/**
@@ -134,7 +134,7 @@ export const UnitCostDelivery = {
 
 			const unitCostDelivery = (costDelivery / 100) * unitCostDeliveryPercent;
 
-			return formatToCurrency(unitCostDelivery);
+			return formatNumber(unitCostDelivery);
 		},
 		/**
 		 * Расчет стоимости доставки единицы позиции для продажи с нулевым итогом в закупке
@@ -147,7 +147,7 @@ export const UnitCostDelivery = {
 		zeroTotalPrice: ({ costDelivery, unitsPositionsCount }) => {
 			const unitCostDelivery = costDelivery / unitsPositionsCount;
 
-			return formatToCurrency(unitCostDelivery);
+			return formatNumber(unitCostDelivery);
 		},
 	},
 };
@@ -164,21 +164,19 @@ export const receiptCalc = {
 	},
 	unitPurchasePrice: (receipt, { unitReceipt, unitIssue }) => {
 		receipt.unitPurchasePrice =
-			unitReceipt === 'nmp' && unitIssue === 'pce'
-				? formatToCurrency(receipt.purchasePrice / receipt.quantityInUnit)
-				: receipt.purchasePrice;
+			unitReceipt === 'nmp' && unitIssue === 'pce' ? formatNumber(receipt.purchasePrice / receipt.quantityInUnit) : receipt.purchasePrice;
 	},
 	sellingPrice: (receipt, { isFree, extraCharge }) => {
-		receipt.sellingPrice = receipt.purchasePrice;
-		receipt.unitSellingPrice = receipt.unitPurchasePrice;
+		receipt.sellingPrice = 0;
+		receipt.unitSellingPrice = 0;
 
 		if (isFree) return;
 
-		receipt.extraCharge = formatToCurrency(percentOfNumber(receipt.purchasePrice, extraCharge));
-		receipt.unitExtraCharge = formatToCurrency(percentOfNumber(receipt.unitPurchasePrice, extraCharge));
+		receipt.extraCharge = formatNumber(percentOfNumber(receipt.purchasePrice, extraCharge));
+		receipt.unitExtraCharge = formatNumber(percentOfNumber(receipt.unitPurchasePrice, extraCharge));
 
-		receipt.sellingPrice = formatToCurrency(receipt.purchasePrice + receipt.costDelivery + receipt.extraCharge);
-		receipt.unitSellingPrice = formatToCurrency(receipt.unitPurchasePrice + receipt.unitCostDelivery + receipt.unitExtraCharge);
+		receipt.sellingPrice = formatNumber(receipt.purchasePrice + receipt.costDelivery + receipt.extraCharge);
+		receipt.unitSellingPrice = formatNumber(receipt.unitPurchasePrice + receipt.unitCostDelivery + receipt.unitExtraCharge);
 	},
 	manualExtraCharge: (receipt, { isFree, unitReceipt, unitIssue }) => {
 		receipt.manualExtraCharge = 0;
@@ -187,27 +185,27 @@ export const receiptCalc = {
 		if (isFree) return;
 
 		if (unitReceipt === 'nmp' && unitIssue === 'pce') {
-			const autoGenUnitSellingPrice = formatToCurrency(receipt.unitPurchasePrice + receipt.unitCostDelivery + receipt.unitExtraCharge);
+			const autoGenUnitSellingPrice = formatNumber(receipt.unitPurchasePrice + receipt.unitCostDelivery + receipt.unitExtraCharge);
 
 			if (receipt.unitSellingPrice <= autoGenUnitSellingPrice) return;
 
-			receipt.unitSellingPrice = formatToCurrency(receipt.unitSellingPrice);
+			receipt.unitSellingPrice = formatNumber(receipt.unitSellingPrice);
 
-			receipt.unitManualExtraCharge = formatToCurrency(receipt.unitSellingPrice - autoGenUnitSellingPrice);
-			receipt.manualExtraCharge = formatToCurrency(receipt.unitManualExtraCharge * receipt.quantityInUnit);
+			receipt.unitManualExtraCharge = formatNumber(receipt.unitSellingPrice - autoGenUnitSellingPrice);
+			receipt.manualExtraCharge = formatNumber(receipt.unitManualExtraCharge * receipt.quantityInUnit);
 
-			receipt.sellingPrice = formatToCurrency(autoGenUnitSellingPrice * receipt.quantityInUnit + receipt.manualExtraCharge);
+			receipt.sellingPrice = formatNumber(autoGenUnitSellingPrice * receipt.quantityInUnit + receipt.manualExtraCharge);
 		} else {
-			const autoGenSellingPrice = formatToCurrency(receipt.purchasePrice + receipt.costDelivery + receipt.extraCharge);
+			const autoGenSellingPrice = formatNumber(receipt.purchasePrice + receipt.costDelivery + receipt.extraCharge);
 
 			if (receipt.sellingPrice <= autoGenSellingPrice) return;
 
-			receipt.sellingPrice = formatToCurrency(receipt.sellingPrice);
+			receipt.sellingPrice = formatNumber(receipt.sellingPrice);
 
-			receipt.manualExtraCharge = formatToCurrency(receipt.sellingPrice - autoGenSellingPrice);
+			receipt.manualExtraCharge = formatNumber(receipt.sellingPrice - autoGenSellingPrice);
 			receipt.unitManualExtraCharge = receipt.manualExtraCharge;
 
-			receipt.unitSellingPrice = formatToCurrency(autoGenSellingPrice + receipt.unitManualExtraCharge);
+			receipt.unitSellingPrice = formatNumber(autoGenSellingPrice + receipt.unitManualExtraCharge);
 		}
 	},
 };

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import i18n from 'i18n';
-import { numberToFixedDouble } from '../utils';
+import { formatNumber } from 'shared/utils';
 // import validator from 'validator';
 
 const Schema = mongoose.Schema;
@@ -32,6 +32,19 @@ let WriteOff = new Schema({
 		ref: 'Receipt',
 		required: [true, i18n.__('Обязательное поле')],
 	},
+	isFree: {
+		type: Boolean,
+		default: false,
+	},
+	paymentDate: Date,
+	paymentStatus: {
+		type: String,
+		enum: ['paid', 'unpaid'],
+	},
+	merchant: {
+		type: Schema.Types.ObjectId,
+		ref: 'User',
+	},
 	quantity: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
@@ -40,22 +53,26 @@ let WriteOff = new Schema({
 	cost: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
-		set: value => numberToFixedDouble(value),
+		default: 0,
+		set: value => formatNumber(value),
 	},
 	unitSellingPrice: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
-		set: value => numberToFixedDouble(value),
+		default: 0,
+		set: value => formatNumber(value),
 	},
-	unitCostDelivery: {
+	unitExtraCharge: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
-		set: value => numberToFixedDouble(value),
+		default: 0,
+		set: value => formatNumber(value),
 	},
-	extraCharge: {
+	unitManualExtraCharge: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
-		set: value => numberToFixedDouble(value, 0),
+		default: 0,
+		set: value => formatNumber(value),
 	},
 	comment: {
 		type: String,

@@ -2,7 +2,7 @@ import { Router } from 'express';
 import moment from 'moment';
 import _ from 'lodash';
 
-import { formatToCurrency } from 'shared/utils';
+import { formatNumber } from 'shared/utils';
 
 import { isAuthedResolver, hasPermissionsInStock } from 'api/utils/permissions';
 
@@ -102,12 +102,12 @@ writeOffsRouter.get(
 				// Считаем данные для индикатора за день
 				const indicators = items.reduce(
 					(indicators, writeOff) => {
-						indicators.total += formatToCurrency(writeOff.quantity * writeOff.receipt.unitPurchasePrice);
+						indicators.total += formatNumber(writeOff.quantity * writeOff.receipt.unitPurchasePrice);
 
 						if (!writeOff.position.isFree) {
-							indicators.sellingPositions += formatToCurrency(writeOff.quantity * writeOff.receipt.unitPurchasePrice);
+							indicators.sellingPositions += formatNumber(writeOff.quantity * writeOff.receipt.unitPurchasePrice);
 						} else {
-							indicators.freePositions += formatToCurrency(writeOff.quantity * writeOff.receipt.unitPurchasePrice);
+							indicators.freePositions += formatNumber(writeOff.quantity * writeOff.receipt.unitPurchasePrice);
 						}
 
 						if (!indicators.users.some(user => String(user._id) === String(writeOff.user._id))) {
@@ -216,14 +216,19 @@ writeOffsRouter.post(
 					user: userId,
 					position: position._id,
 					receipt: receipt._id,
+					isFree: position.isFree,
 					quantity: currentWriteOffQuantity,
 					cost: !position.isFree ? receipt.unitSellingPrice : 0,
 					unitSellingPrice: receipt.unitSellingPrice,
 					unitCostDelivery: receipt.unitCostDelivery,
-					unitExtraCharge: position.unitExtraCharge,
-					unitManualExtraCharge: receipt.manualExtraCharge,
+					unitExtraCharge: receipt.unitExtraCharge,
+					unitManualExtraCharge: receipt.unitManualExtraCharge,
 					comment: comment,
 				});
+
+				if (!position.isFree) {
+					newWriteOff.paymentStatus = 'unpaid';
+				}
 
 				const newWriteOffErr = newWriteOff.validateSync();
 

@@ -10,7 +10,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import { receiptCalc } from 'shared/checkPositionAndReceipt';
-import { formatToCurrency } from 'shared/utils';
+import { formatNumber } from 'shared/utils';
 
 import { formError } from 'src/helpers/utils';
 
@@ -35,11 +35,11 @@ const FormFieldArrayReceipt = props => {
 
 	const autoGenUnitSellingPrice =
 		!formEditable && !receipt.position.isFree
-			? formatToCurrency(receipt.unitPurchasePrice + receipt.unitCostDelivery + receipt.unitExtraCharge)
+			? formatNumber(receipt.unitPurchasePrice + receipt.unitCostDelivery + receipt.unitExtraCharge)
 			: null;
 
 	useEffect(() => {
-		if (!formEditable && sellingPriceFieldRef && sellingPriceEditable) sellingPriceFieldRef.current.querySelector('input').focus();
+		if (sellingPriceFieldRef && !formEditable && sellingPriceEditable) sellingPriceFieldRef.current.querySelector('input').focus();
 	}, [formEditable, sellingPriceEditable]);
 
 	return (

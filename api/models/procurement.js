@@ -3,7 +3,7 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 import i18n from 'i18n';
 // import validator from 'validator';
 
-import { numberToFixedDouble } from 'api/utils';
+import { formatNumber } from 'shared/utils';
 
 const Schema = mongoose.Schema;
 
@@ -33,19 +33,19 @@ let Procurement = new Schema({
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,
-		set: value => numberToFixedDouble(value, 0),
+		set: value => formatNumber(value),
 	},
 	pricePositions: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,
-		set: value => numberToFixedDouble(value, 0),
+		set: value => formatNumber(value),
 	},
 	totalPrice: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,
-		set: value => numberToFixedDouble(value, 0),
+		set: value => formatNumber(value),
 	},
 	compensateCostDelivery: {
 		type: Boolean,

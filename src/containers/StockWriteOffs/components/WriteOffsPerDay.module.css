@@ -56,21 +56,21 @@
   font-weight: 700;
 }
 
-.usersWhoMadeWriteOffs {
+.usersPerDayWrapper {
   display: inline-flex;
 }
 
 .user {
   margin-right: -7px;
-  transition: margin 150ms ease, padding 150ms ease, transform 150ms ease;
+  transition: margin 150ms ease-out, padding 150ms ease-out, transform 150ms ease-out;
 }
 
-.usersWhoMadeWriteOffs:hover .user {
+.usersPerDayWrapper:hover .user {
   transform: scale(0.9);
 }
 
-.user:hover {
-  transform: scale(1.1) !important;
+.usersPerDayWrapper:hover .user:hover {
+  transform: scale(1.1);
 }
 
 .user:first-child {
@@ -100,7 +100,7 @@
   background-color: var(--c-hex-br-5);
   box-shadow: 2px 0 2px 0 rgba(var(--c-rgb-bg-900), 0.2);
   height: 28px;
-  transition: box-shadow 150ms ease-in;
+  transition: box-shadow 150ms ease-out;
   width: 28px;
 }
 

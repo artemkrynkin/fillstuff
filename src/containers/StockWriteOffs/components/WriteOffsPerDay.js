@@ -37,7 +37,7 @@ const WriteOffsPerDay = props => {
 	const [expanded, setExpanded] = useState(moment(date).isSame(new Date(), 'day'));
 
 	const onHandleExpand = event => {
-		if (!event.target.closest(`.${styles.usersWhoMadeWriteOffs}`)) setExpanded(!expanded);
+		if (!event.target.closest(`.${styles.usersPerDayWrapper}`)) setExpanded(!expanded);
 	};
 
 	return (
@@ -48,7 +48,7 @@ const WriteOffsPerDay = props => {
 						<Grid xs={6} item>
 							<div className={styles.title}>{moment(date).calendar(null, calendarFormat)}</div>
 							<div>
-								<div className={styles.usersWhoMadeWriteOffs}>
+								<div className={styles.usersPerDayWrapper}>
 									{indicators.users.map((user, index) => (
 										<Tooltip key={index} title={user.name} placement="top" arrow={false}>
 											<div

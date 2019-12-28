@@ -86,30 +86,6 @@ writeOffsRouter.get(
 				break;
 		}
 
-		const indicatorsCount = items => {
-			return items.reduce(
-				(indicators, item) => {
-					indicators.total += formatToCurrency(item.quantity * item.receipt.unitPurchasePrice);
-
-					if (!item.position.isFree) {
-						indicators.sellingPositions += formatToCurrency(item.quantity * item.receipt.unitPurchasePrice);
-					} else {
-						indicators.freePositions += formatToCurrency(item.quantity * item.receipt.unitPurchasePrice);
-					}
-
-					return indicators;
-				},
-				{
-					total: 0,
-					sellingPositions: 0,
-					freePositions: 0,
-				}
-			);
-		};
-
-		// Считаем данные для индикатора за выбранный период
-		const indicators = indicatorsCount(writeOffs.data);
-
 		// Группируем списания по дню
 		const writeOffsPerDay = _.chain(writeOffs.data)
 			.groupBy(writeOff => {
@@ -122,12 +98,38 @@ writeOffsRouter.get(
 					})
 					.format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
 			})
-			.map((items, date) => ({
-				date,
+			.map((items, date) => {
 				// Считаем данные для индикатора за день
-				indicators: indicatorsCount(items),
-				items,
-			}))
+				const indicators = items.reduce(
+					(indicators, writeOff) => {
+						indicators.total += formatToCurrency(writeOff.quantity * writeOff.receipt.unitPurchasePrice);
+
+						if (!writeOff.position.isFree) {
+							indicators.sellingPositions += formatToCurrency(writeOff.quantity * writeOff.receipt.unitPurchasePrice);
+						} else {
+							indicators.freePositions += formatToCurrency(writeOff.quantity * writeOff.receipt.unitPurchasePrice);
+						}
+
+						if (!indicators.users.some(user => String(user._id) === String(writeOff.user._id))) {
+							indicators.users.push(writeOff.user);
+						}
+
+						return indicators;
+					},
+					{
+						total: 0,
+						sellingPositions: 0,
+						freePositions: 0,
+						users: [],
+					}
+				);
+
+				return {
+					date,
+					indicators,
+					items,
+				};
+			})
 			.value();
 
 		// Группируем списания по месяцу
@@ -156,7 +158,6 @@ writeOffsRouter.get(
 
 		res.json({
 			data: writeOffsPerMonth,
-			indicators,
 			paging: {
 				totalCount: writeOffsCount,
 			},

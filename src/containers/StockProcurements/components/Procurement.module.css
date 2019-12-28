@@ -88,7 +88,7 @@
 }
 
 .userName {
-  color: var(--c-hex-bg-600);
+  color: var(--c-hex-bg-500);
   font-size: 13px;
   font-weight: 600;
   max-width: 100%;
@@ -115,13 +115,13 @@
 
 .detailsButton svg {
   font-size: 18px;
-  transform: rotate(0deg);
+  transform: rotateX(0deg);
   transition: color 150ms ease-out, transform 150ms ease-out;
   width: 18px !important;
 }
 
 .detailsButton svg:global(.open) {
-  transform: rotate(180deg);
+  transform: rotateX(180deg);
 }
 
 .receipts {

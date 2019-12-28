@@ -330,10 +330,8 @@ class PositionScanningScreen extends Component {
 															<Text style={styles.sellingPrice}>
 																Цена продажи {position.unitIssue === 'pce' ? 'шт.' : 'уп.'}:{' '}
 																<Text style={styles.sellingPriceBold}>
-																	{position.activeReceipt.unitSellingPrice +
-																		position.activeReceipt.unitCostDelivery +
-																		percentOfNumber(position.activeReceipt.unitSellingPrice, position.extraCharge)}{' '}
-																	₽
+																	{position.activeReceipt.unitSellingPrice}
+																	{' ₽'}
 																</Text>
 															</Text>
 															<Text style={styles.sellingPriceSubtitle}>
@@ -592,7 +590,4 @@ const mapDispatchToProps = dispatch => {
 	};
 };
 
-export default connect(
-	null,
-	mapDispatchToProps
-)(PositionScanningScreen);
+export default connect(null, mapDispatchToProps)(PositionScanningScreen);

@@ -11,7 +11,7 @@
 }
 
 .title {
-  color: var(--c-hex-bg-600);
+  color: var(--c-hex-bg-500);
   display: inline-block;
   font-size: 16px;
   font-weight: 600;
@@ -87,7 +87,7 @@
 }
 
 .userName {
-  color: var(--c-hex-bg-600);
+  color: var(--c-hex-bg-500);
   font-size: 13px;
   font-weight: 600;
   max-width: 100%;

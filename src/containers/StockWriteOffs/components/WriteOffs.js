@@ -13,26 +13,27 @@ import LoadMoreButton from 'src/components/Pagination/LoadMoreButton';
 
 import { getWriteOffs } from 'src/actions/writeOffs';
 
-import PeriodIndicators from './PeriodIndicators';
-import WriteOffDay from './WriteOffDay';
+import WriteOffsPerDay from './WriteOffsPerDay';
 
-import styles from './WriteOffsMonths.module.css';
+import styles from './WriteOffs.module.css';
 
 const generatePaginate = (loadedDocs, data) => {
-	const WriteOffsMonths = data.slice();
+	const WriteOffs = data.slice();
 
-	WriteOffsMonths.length = loadedDocs < data.length ? loadedDocs : data.length;
+	WriteOffs.length = loadedDocs < data.length ? loadedDocs : data.length;
 
-	return WriteOffsMonths;
+	return WriteOffs;
 };
 
+const momentDate = moment();
+
 const MonthDateTitle = ({ date }) => {
-	const isCurrentYear = moment().isSame(date, 'year');
+	const isCurrentYear = momentDate.isSame(date, 'year');
 
 	return <div className={styles.dateTitle}>{moment(date).format(isCurrentYear ? 'MMMM' : 'MMMM YYYY')}</div>;
 };
 
-class WriteOffsMonths extends Component {
+class WriteOffs extends Component {
 	static propTypes = {
 		currentStockId: PropTypes.string.isRequired,
 		filterParams: PropTypes.object.isRequired,
@@ -85,17 +86,14 @@ class WriteOffsMonths extends Component {
 			<div className={styles.container}>
 				{!isLoadingWriteOffs && writeOffsData ? (
 					writeOffsData.data.length && writeOffsData.paging.totalCount ? (
-						<div>
-							<PeriodIndicators indicators={writeOffsData.indicators} />
-							{generatePaginate(paging.loadedDocs, writeOffsData.data).map((writeOffsMonth, index) => (
-								<div className={styles.date} key={index}>
-									<MonthDateTitle date={writeOffsMonth.date} />
-									{writeOffsMonth.items.map((writeOffsDay, index) => (
-										<WriteOffDay key={index} date={writeOffsDay.date} indicators={writeOffsDay.indicators} writeOffs={writeOffsDay.items} />
-									))}
-								</div>
-							))}
-						</div>
+						generatePaginate(paging.loadedDocs, writeOffsData.data).map((writeOffsPerMonth, index) => (
+							<div className={styles.date} key={index}>
+								<MonthDateTitle date={writeOffsPerMonth.date} />
+								{writeOffsPerMonth.items.map((writeOffsPerDay, index) => (
+									<WriteOffsPerDay key={index} writeOffsPerDay={writeOffsPerDay} />
+								))}
+							</div>
+						))
 					) : !writeOffsData.data.length && writeOffsData.paging.totalCount ? (
 						<div className={styles.none}>
 							Среди списаний не найдено совпадений за выбранный период.
@@ -139,4 +137,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(WriteOffsMonths);
+export default connect(mapStateToProps, mapDispatchToProps)(WriteOffs);

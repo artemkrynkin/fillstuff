@@ -10,6 +10,8 @@ import TableBody from '@material-ui/core/TableBody';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Collapse from '@material-ui/core/Collapse';
+import Avatar from '@material-ui/core/Avatar';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import NumberFormat, { currencyFormatProps } from 'src/components/NumberFormat';
 import CardPaper from 'src/components/CardPaper';
@@ -17,14 +19,25 @@ import CardPaper from 'src/components/CardPaper';
 import WriteOff from './WriteOff';
 
 import { TableCell } from './styles';
-import styles from './WriteOffDay.module.css';
+import styles from './WriteOffsPerDay.module.css';
 
-const WriteOffDay = props => {
-	const { date, indicators, writeOffs } = props;
+const calendarFormat = {
+	sameDay: 'Сегодня',
+	nextDay: 'Завтра',
+	lastDay: 'Вчера',
+	sameElse: 'DD MMMM, dddd',
+	nextWeek: 'DD MMMM, dddd',
+	lastWeek: 'DD MMMM, dddd',
+};
+
+const WriteOffsPerDay = props => {
+	const {
+		writeOffsPerDay: { date, indicators, items: writeOffs },
+	} = props;
 	const [expanded, setExpanded] = useState(moment(date).isSame(new Date(), 'day'));
 
 	const onHandleExpand = event => {
-		if (event.target.className !== styles.title) setExpanded(!expanded);
+		if (!event.target.closest(`.${styles.usersWhoMadeWriteOffs}`)) setExpanded(!expanded);
 	};
 
 	return (
@@ -32,14 +45,38 @@ const WriteOffDay = props => {
 			<div className={styles.wrapper}>
 				<div className={styles.header} onClick={onHandleExpand}>
 					<Grid container>
-						<Grid xs={6} item />
+						<Grid xs={6} item>
+							<div className={styles.title}>{moment(date).calendar(null, calendarFormat)}</div>
+							<div>
+								<div className={styles.usersWhoMadeWriteOffs}>
+									{indicators.users.map((user, index) => (
+										<Tooltip key={index} title={user.name} placement="top" arrow={false}>
+											<div
+												className={ClassNames({
+													[styles.user]: true,
+													[styles.userSingle]: indicators.users.length === 1,
+												})}
+												style={{ zIndex: indicators.users.length - index }}
+											>
+												<Avatar
+													className={styles.userPhoto}
+													src={user.profilePhoto}
+													alt={user.name}
+													children={<div className={styles.userIcon} children={<FontAwesomeIcon icon={['fas', 'user-alt']} />} />}
+												/>
+											</div>
+										</Tooltip>
+									))}
+								</div>
+							</div>
+						</Grid>
 						<Grid xs={6} item>
 							<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
 								<NumberFormat
 									value={indicators.total}
 									renderText={value => (
-										<div className={styles.totalPurchasePrice}>
-											Всего: <span>{value}</span>
+										<div className={styles.total}>
+											Итого: <span>{value}</span>
 										</div>
 									)}
 									displayType="text"
@@ -49,8 +86,8 @@ const WriteOffDay = props => {
 								<NumberFormat
 									value={indicators.sellingPositions}
 									renderText={value => (
-										<div className={styles.purchasePrice}>
-											По позициям для продажи: <span>{value}</span>
+										<div className={styles.sellingPositions}>
+											Позиции для продажи: <span>{value}</span>
 										</div>
 									)}
 									displayType="text"
@@ -60,8 +97,8 @@ const WriteOffDay = props => {
 								<NumberFormat
 									value={indicators.freePositions}
 									renderText={value => (
-										<div className={styles.costDelivery}>
-											По бесплатным позициям: <span>{value}</span>
+										<div className={styles.freePositions}>
+											Бесплатные позиции: <span>{value}</span>
 										</div>
 									)}
 									displayType="text"
@@ -112,4 +149,4 @@ const WriteOffDay = props => {
 	);
 };
 
-export default WriteOffDay;
+export default WriteOffsPerDay;

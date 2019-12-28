@@ -21,14 +21,14 @@ import styles from './Procurements.module.css';
 const calendarFormat = {
 	sameDay: 'Сегодня',
 	nextDay: 'Завтра',
+	lastDay: 'Вчера',
+	sameElse: function(now) {
+		return this.isSame(now, 'year') ? 'D MMMM, dddd' : 'D MMMM YYYY';
+	},
 	nextWeek: function(now) {
 		return this.isSame(now, 'year') ? 'D MMMM, dddd' : 'D MMMM YYYY';
 	},
-	lastDay: 'Вчера',
 	lastWeek: function(now) {
-		return this.isSame(now, 'year') ? 'D MMMM, dddd' : 'D MMMM YYYY';
-	},
-	sameElse: function(now) {
 		return this.isSame(now, 'year') ? 'D MMMM, dddd' : 'D MMMM YYYY';
 	},
 };
@@ -108,16 +108,14 @@ class Procurements extends Component {
 			<div className={styles.container}>
 				{!isLoadingProcurements && procurementData ? (
 					procurementData.data.length && procurementData.paging.totalCount ? (
-						<div>
-							{generatePaginate(paging.loadedDocs, procurementData.data).map((procurementDates, index) => (
-								<div className={styles.date} key={index}>
-									<div className={styles.dateTitle}>{moment(procurementDates.date).calendar(null, calendarFormat)}</div>
-									{procurementDates.items.map((procurement, index) => (
-										<Procurement key={index} procurement={procurement} currentUser={currentUser} filterParams={filterParams} />
-									))}
-								</div>
-							))}
-						</div>
+						generatePaginate(paging.loadedDocs, procurementData.data).map((procurementDates, index) => (
+							<div className={styles.date} key={index}>
+								<div className={styles.dateTitle}>{moment(procurementDates.date).calendar(null, calendarFormat)}</div>
+								{procurementDates.items.map((procurement, index) => (
+									<Procurement key={index} procurement={procurement} currentUser={currentUser} filterParams={filterParams} />
+								))}
+							</div>
+						))
 					) : !procurementData.data.length && procurementData.paging.totalCount ? (
 						<div className={styles.none}>
 							Среди закупок не найдено совпадений за выбранный период.

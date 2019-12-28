@@ -65,7 +65,7 @@ class Procurement extends Component {
 											{procurement.number} от {moment(procurement.date).format('DD.MM.YYYY')}
 										</div>
 									) : (
-										<div>Закупка от {moment(procurement.createdAt).format('DD.MM.YYYY')}</div>
+										'Чек/накладная отсутствует'
 									)}
 								</div>
 								<div className={styles.user}>

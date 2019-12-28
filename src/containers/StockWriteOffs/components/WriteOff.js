@@ -6,7 +6,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import TableRow from '@material-ui/core/TableRow';
 
-import styles from './WriteOffDay.module.css';
+import styles from './WriteOff.module.css';
 
 import { TableCell, TableCellHighlight, TableRowHighlight } from './styles';
 

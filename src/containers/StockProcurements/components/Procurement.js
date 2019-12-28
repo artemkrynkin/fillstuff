@@ -26,7 +26,7 @@ const Procurement = props => {
 	const [expanded, setExpanded] = useState(filterParams.position !== 'all');
 
 	const onHandleExpand = event => {
-		if (event.target.className !== styles.title) setExpanded(!expanded);
+		if (!event.target.classList.contains(styles.title)) setExpanded(!expanded);
 	};
 
 	return (
@@ -42,7 +42,7 @@ const Procurement = props => {
 										{procurement.number} от {moment(procurement.date).format('DD.MM.YYYY')}
 									</div>
 								) : (
-									<div>Закупка от {moment(procurement.createdAt).format('DD.MM.YYYY')}</div>
+									'Чек/накладная отсутствует'
 								)}
 							</Link>
 							<div className={styles.user}>

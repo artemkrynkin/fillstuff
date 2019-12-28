@@ -12,58 +12,104 @@
   padding: 20px 15px 0;
 }
 
-.title,
-.totalPurchasePrice {
+.title {
+  color: var(--c-hex-bg-500);
+  display: inline-block;
   font-size: 16px;
   font-weight: 600;
 }
 
 .title {
-  color: var(--c-hex-t-500);
-  display: inline-block;
   margin-bottom: 10px;
 }
 
-.title:hover {
-  color: var(--c-hex-t-400);
+.title span {
+  font-size: 14px;
+  margin-right: 2px;
 }
 
-.totalPurchasePrice,
-.purchasePrice,
-.costDelivery {
+.total,
+.sellingPositions,
+.freePositions {
   color: var(--c-hex-bg-500);
 }
 
-.totalPurchasePrice {
+.total {
+  font-size: 16px;
+  font-weight: 600;
   margin-bottom: 10px;
 }
 
-.purchasePrice {
+.sellingPositions {
   margin-bottom: 5px;
 }
 
-.purchasePrice,
-.costDelivery {
+.sellingPositions,
+.freePositions {
   font-size: 12px;
 }
 
-.totalPurchasePrice span,
-.purchasePrice span,
-.costDelivery span {
+.total span,
+.sellingPositions span,
+.freePositions span {
   color: var(--c-hex-bg-700);
   font-weight: 700;
 }
 
+.usersWhoMadeWriteOffs {
+  display: inline-flex;
+}
+
 .user {
-  align-items: center;
-  display: flex;
+  margin-right: -7px;
+  transition: margin 150ms ease, padding 150ms ease, transform 150ms ease;
+}
+
+.usersWhoMadeWriteOffs:hover .user {
+  transform: scale(0.9);
+}
+
+.user:hover {
+  transform: scale(1.1) !important;
+}
+
+.user:first-child {
+  padding-left: 0;
+}
+
+.user:last-child {
+  padding-right: 0;
+}
+
+.user:first-child:hover {
+  margin-right: 0;
+  padding-right: 5px;
+}
+
+.user:last-child:hover:not(.userSingle) {
+  margin-left: 8px;
+  padding-left: 5px;
+}
+
+.user:not(:first-child):not(:last-child):hover {
+  margin: 0 0 0 8px;
+  padding: 0 5px;
 }
 
 .userPhoto {
   background-color: var(--c-hex-br-5);
+  box-shadow: 2px 0 2px 0 rgba(var(--c-rgb-bg-900), 0.2);
   height: 28px;
-  margin-right: 10px;
+  transition: box-shadow 150ms ease-in;
   width: 28px;
+}
+
+.user:last-child .userPhoto {
+  box-shadow: none;
+}
+
+.user:hover .userPhoto {
+  box-shadow: 0 0 5px 0 rgba(var(--c-rgb-bg-900), 0.3);
 }
 
 .userIcon {
@@ -80,16 +126,6 @@
 .userPhoto svg {
   color: rgba(255, 255, 255, 0.9);
   font-size: 20px;
-}
-
-.userName {
-  color: var(--c-hex-bg-600);
-  font-size: 13px;
-  font-weight: 600;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .detailsButton {
@@ -110,23 +146,16 @@
 
 .detailsButton svg {
   font-size: 18px;
-  transform: rotate(0deg);
+  transform: rotateX(0deg);
   transition: color 150ms ease-out, transform 150ms ease-out;
   width: 18px !important;
 }
 
 .detailsButton svg:global(.open) {
-  transform: rotate(180deg);
+  transform: rotateX(180deg);
 }
 
 .receipts {
   border-top: 1px solid var(--c-hex-br-5);
   margin-top: 20px;
-}
-
-.isArchived {
-  color: var(--c-hex-o-15);
-  font-size: 11px;
-  font-weight: 600;
-  margin-left: 5px;
 }

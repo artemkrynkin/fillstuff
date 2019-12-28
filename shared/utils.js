@@ -4,7 +4,7 @@ export const percentOfNumber = (number, percent) => number * (percent / 100);
 
 export const formatNumber = (
 	value,
-	{ toString, fractionDigits } = {
+	{ toString = false, fractionDigits = 2 } = {
 		toString: false,
 		fractionDigits: 2,
 	}

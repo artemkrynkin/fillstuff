@@ -25,9 +25,9 @@ const calendarFormat = {
 	sameDay: 'Сегодня',
 	nextDay: 'Завтра',
 	lastDay: 'Вчера',
-	sameElse: 'DD MMMM, dddd',
-	nextWeek: 'DD MMMM, dddd',
-	lastWeek: 'DD MMMM, dddd',
+	sameElse: 'D MMMM, dddd',
+	nextWeek: 'D MMMM, dddd',
+	lastWeek: 'D MMMM, dddd',
 };
 
 const WriteOffsPerDay = props => {

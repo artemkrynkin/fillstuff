@@ -24,7 +24,7 @@ const generatePaginate = (loadedDocs, data) => {
 	WriteOffs.length = loadedDocs < data.length ? loadedDocs : data.length;
 
 	// Группируем списания по месяцу
-	const writeOffsByMonth = _.chain(WriteOffs)
+	return _.chain(WriteOffs)
 		.groupBy(writeOffsPerDay => {
 			return moment(writeOffsPerDay.date)
 				.set({
@@ -41,8 +41,6 @@ const generatePaginate = (loadedDocs, data) => {
 			items,
 		}))
 		.value();
-
-	return writeOffsByMonth;
 };
 
 const momentDate = moment();

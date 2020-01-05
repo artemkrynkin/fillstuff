@@ -88,11 +88,9 @@
   "scripts": {
     "dev:web": "cross-env NODE_PATH=./ react-scripts start",
     "dev:api": "cross-env NODE_PATH=./ cross-env NODE_ENV=development cross-env DEBUG=build*,api*,shared:middlewares*,shared:mongodb cross-env DIR=api backpack",
-    "dev:mobile": "(cd mobile && yarn run start)",
     "build:web": "cross-env NODE_PATH=./ react-scripts build",
     "build:api": "cross-env NODE_PATH=./ cross-env DIR=api backpack build",
     "test": "react-scripts test",
-    "test:mobile": "(cd mobile && jest --watchAll)",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

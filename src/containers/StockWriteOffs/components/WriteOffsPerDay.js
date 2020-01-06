@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ClassNames from 'classnames';
 import moment from 'moment';
+import loadable from '@loadable/component';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ButtonBase from '@material-ui/core/ButtonBase';
@@ -21,6 +22,10 @@ import WriteOff from './WriteOff';
 import { TableCell } from './styles';
 import styles from './WriteOffsPerDay.module.css';
 
+const DialogWriteOffCancel = loadable(() =>
+	import('src/containers/Dialogs/WriteOffCancel' /* webpackChunkName: "Dialog_WriteOffCancel" */)
+);
+
 const calendarFormat = {
 	sameDay: 'Сегодня',
 	nextDay: 'Завтра',
@@ -32,13 +37,30 @@ const calendarFormat = {
 
 const WriteOffsPerDay = props => {
 	const {
+		currentStockId,
 		writeOffsPerDay: { date, indicators, items: writeOffs },
 	} = props;
+	const [writeOff, setWriteOff] = useState(null);
+	const [dialogWriteOffCancel, setDialogWriteOffCancel] = useState(false);
 	const [expanded, setExpanded] = useState(moment(date).isSame(new Date(), 'day'));
+
+	const onWriteOffDrop = () => {
+		setWriteOff(null);
+	};
+
+	const onHandleDialogWriteOffCancel = (value, writeOff) => {
+		if (value) setWriteOff(writeOff);
+
+		setDialogWriteOffCancel(value);
+	};
 
 	const onHandleExpand = event => {
 		if (!event.target.closest(`.${styles.usersPerDayWrapper}`)) setExpanded(!expanded);
 	};
+
+	const isCurrentDay = moment()
+		.subtract({ day: 1 })
+		.isBefore(writeOffs[writeOffs.length - 1].createdAt);
 
 	return (
 		<CardPaper className={styles.container} header={false}>
@@ -124,11 +146,17 @@ const WriteOffsPerDay = props => {
 									<TableCell align="right" width={150}>
 										Время
 									</TableCell>
+									{isCurrentDay ? <TableCell width={50} /> : null}
 								</TableRow>
 							</TableHead>
 							<TableBody>
 								{writeOffs.map((writeOff, index) => (
-									<WriteOff key={index} writeOff={writeOff} />
+									<WriteOff
+										key={index}
+										writeOff={writeOff}
+										isCurrentDay={isCurrentDay}
+										onOpenDialogWriteOffCancel={() => onHandleDialogWriteOffCancel(true, writeOff)}
+									/>
 								))}
 							</TableBody>
 						</Table>
@@ -145,6 +173,14 @@ const WriteOffsPerDay = props => {
 					<FontAwesomeIcon icon={['far', 'angle-down']} className={expanded ? 'open' : ''} />
 				</ButtonBase>
 			</div>
+
+			<DialogWriteOffCancel
+				dialogOpen={dialogWriteOffCancel}
+				onCloseDialog={() => onHandleDialogWriteOffCancel(false)}
+				onExitedDialog={onWriteOffDrop}
+				currentStockId={currentStockId}
+				selectedWriteOff={writeOff}
+			/>
 		</CardPaper>
 	);
 };

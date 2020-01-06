@@ -8,12 +8,11 @@ import TableRow from '@material-ui/core/TableRow';
 
 import styles from './WriteOff.module.css';
 
-import { TableCell, TableCellHighlight, TableRowHighlight } from './styles';
+import { TableCell } from './styles';
+import IconButton from '@material-ui/core/IconButton';
 
 const WriteOff = props => {
-	const { writeOff, positionSameFilter } = props;
-	const TableRowHighlightClasses = TableRowHighlight();
-	const TableCellHighlightClasses = TableCellHighlight();
+	const { writeOff, isCurrentDay, onOpenDialogWriteOffCancel } = props;
 
 	const createdAtMoment = moment(writeOff.createdAt);
 	const isCurrentHour = moment()
@@ -24,15 +23,16 @@ const WriteOff = props => {
 		.isBefore(writeOff.createdAt);
 
 	return (
-		<TableRow classes={positionSameFilter ? { root: TableRowHighlightClasses.root } : {}}>
-			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}}>
+		<TableRow className={styles.writeOff}>
+			<TableCell>
 				{writeOff.position.characteristics.reduce(
 					(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
 					writeOff.position.name
 				)}
 				{writeOff.position.isArchived ? <span className={`${styles.caption} ${styles.orange}`}>В архиве</span> : null}
+				{writeOff.canceled ? <span className={`${styles.caption} ${styles.red}`}>Отменено</span> : null}
 			</TableCell>
-			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="left" width={180}>
+			<TableCell align="left" width={180}>
 				<div className={styles.user}>
 					<Avatar
 						className={styles.userPhoto}
@@ -45,12 +45,21 @@ const WriteOff = props => {
 					</Grid>
 				</div>
 			</TableCell>
-			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="right" width={125}>
+			<TableCell align="right" width={125}>
 				{writeOff.quantity} {writeOff.position.unitIssue === 'pce' ? 'шт.' : 'уп.'}
 			</TableCell>
-			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="right" width={150}>
+			<TableCell align="right" width={150}>
 				{!isCurrentHour ? createdAtMoment.format('HH:mm') : !isNow ? createdAtMoment.fromNow() : 'только что'}
 			</TableCell>
+			{isCurrentDay ? (
+				<TableCell align="right" width={50} style={{ padding: '0 7px' }}>
+					{!writeOff.canceled ? (
+						<IconButton className={styles.cancelWriteOffButton} onClick={onOpenDialogWriteOffCancel} size="small">
+							<FontAwesomeIcon icon={['fal', 'times']} />
+						</IconButton>
+					) : null}
+				</TableCell>
+			) : null}
 		</TableRow>
 	);
 };

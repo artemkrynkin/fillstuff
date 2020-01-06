@@ -65,23 +65,30 @@ export const createWriteOff = (stockId, userId, positionId, values) => {
 	};
 };
 
-export const deleteWriteOff = (stockId, writeOffId) => {
+export const cancelWriteOff = (stockId, writeOffId) => {
 	return async dispatch => {
 		return await axios
-			.delete(`/api/write-offs/${writeOffId}`, {
+			.get(`/api/write-offs/cancel/${writeOffId}`, {
 				params: {
 					stockId,
 				},
 			})
 			.then(response => {
-				dispatch({
-					type: 'DELETE_WRITE_OFF',
-					payload: {
-						writeOffId,
-					},
-				});
+				if (!response.data.code) {
+					const writeOff = response.data;
 
-				return Promise.resolve({ status: 'success' });
+					dispatch({
+						type: 'CANCEL_WRITE_OFF',
+						payload: {
+							writeOffId,
+							writeOff,
+						},
+					});
+
+					return Promise.resolve({ status: 'success' });
+				} else {
+					return Promise.resolve({ status: 'error', message: response.data.message });
+				}
 			})
 			.catch(error => {
 				if (error.response) {

@@ -28,10 +28,10 @@ const products = (
 				isFetching: false,
 			};
 		}
-		case 'DELETE_WRITE_OFF': {
-			const writeOffIndex = state.data.findIndex(writeOff => writeOff._id === action.payload.writeOffId);
+		case 'CANCEL_WRITE_OFF': {
+			const writeOffIndex = state.data.data.findIndex(writeOff => writeOff._id === action.payload.writeOffId);
 
-			state.data.splice(writeOffIndex, 1);
+			state.data.data[writeOffIndex] = action.payload.writeOff;
 
 			return {
 				...state,

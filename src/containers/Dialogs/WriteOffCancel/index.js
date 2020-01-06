@@ -8,15 +8,15 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import { Dialog, PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
 
 import { getStockStatus } from 'src/actions/stocks';
-import { deleteWriteOff } from 'src/actions/writeOffs';
+import { cancelWriteOff } from 'src/actions/writeOffs';
 
-const DialogWriteOffDelete = props => {
+const DialogWriteOffCancel = props => {
 	const { dialogOpen, onCloseDialog, onExitedDialog, selectedWriteOff } = props;
 
 	if (!selectedWriteOff) return null;
 
 	const onSubmit = () => {
-		props.deleteWriteOff(selectedWriteOff._id).then(response => {
+		props.cancelWriteOff(selectedWriteOff._id).then(response => {
 			onCloseDialog();
 
 			if (response.status === 'success') props.getStockStatus();
@@ -61,7 +61,7 @@ const DialogWriteOffDelete = props => {
 	);
 };
 
-DialogWriteOffDelete.propTypes = {
+DialogWriteOffCancel.propTypes = {
 	dialogOpen: PropTypes.bool.isRequired,
 	onCloseDialog: PropTypes.func.isRequired,
 	onExitedDialog: PropTypes.func,
@@ -74,8 +74,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 	return {
 		getStockStatus: () => dispatch(getStockStatus(currentStockId)),
-		deleteWriteOff: writeOffId => dispatch(deleteWriteOff(currentStockId, writeOffId)),
+		cancelWriteOff: writeOffId => dispatch(cancelWriteOff(currentStockId, writeOffId)),
 	};
 };
 
-export default connect(null, mapDispatchToProps)(DialogWriteOffDelete);
+export default connect(null, mapDispatchToProps)(DialogWriteOffCancel);

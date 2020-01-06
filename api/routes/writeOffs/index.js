@@ -1,8 +1,5 @@
 import { Router } from 'express';
 import moment from 'moment';
-import _ from 'lodash';
-
-import { formatNumber } from 'shared/utils';
 
 import { isAuthedResolver, hasPermissionsInStock } from 'api/utils/permissions';
 
@@ -46,14 +43,14 @@ writeOffsRouter.get(
 					populate: {
 						path: 'characteristics',
 					},
-					select: 'name unitIssue isFree characteristics',
+					select: 'name unitIssue characteristics',
 				},
 				{
 					path: 'receipt',
 					select: 'unitPurchasePrice',
 				},
 				{
-					path: 'user',
+					path: 'user requestCancellationUser',
 					select: 'profilePhoto name email',
 				},
 			],
@@ -86,59 +83,10 @@ writeOffsRouter.get(
 				break;
 		}
 
-		// Группируем списания по дню
-		const writeOffsByDay = _.chain(writeOffs.data)
-			.groupBy(writeOff => {
-				return moment(writeOff.createdAt)
-					.set({
-						hour: 0,
-						minute: 0,
-						second: 0,
-						millisecond: 0,
-					})
-					.format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
-			})
-			.map((items, date) => {
-				// Считаем данные для индикатора за день
-				const indicators = items.reduce(
-					(indicators, writeOff) => {
-						indicators.total += formatNumber(writeOff.quantity * writeOff.receipt.unitPurchasePrice);
-
-						if (!writeOff.position.isFree) {
-							indicators.sellingPositions += formatNumber(writeOff.quantity * writeOff.receipt.unitPurchasePrice);
-						} else {
-							indicators.freePositions += formatNumber(writeOff.quantity * writeOff.receipt.unitPurchasePrice);
-						}
-
-						if (!indicators.users.some(user => String(user._id) === String(writeOff.user._id))) {
-							indicators.users.push(writeOff.user);
-						}
-
-						return indicators;
-					},
-					{
-						total: 0,
-						sellingPositions: 0,
-						freePositions: 0,
-						users: [],
-					}
-				);
-
-				return {
-					date,
-					indicators,
-					items,
-				};
-			})
-			.value();
-
-		writeOffs.data.forEach(writeOff => {
-			writeOff.depopulate('stock');
-			writeOff.depopulate('receipt');
-		});
+		writeOffs.data.forEach(writeOff => writeOff.depopulate('stock'));
 
 		res.json({
-			data: writeOffsByDay,
+			data: writeOffs.data,
 			paging: {
 				totalCount: writeOffsCount,
 			},
@@ -283,32 +231,72 @@ writeOffsRouter.post(
 	}
 );
 
-writeOffsRouter.delete(
-	'/write-offs/:writeOffId',
+writeOffsRouter.get(
+	'/write-offs/cancel/:writeOffId',
 	isAuthedResolver,
 	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
 	async (req, res, next) => {
+		const { requestCancellationUser = req.user._id } = req.query;
+
 		const writeOff = await WriteOff.findById(req.params.writeOffId)
 			.populate({ path: 'stock', select: 'status' })
 			.populate('position receipt')
 			.catch(err => next({ code: 2, err }));
+
+		if (
+			!moment()
+				.subtract({ day: 1 })
+				.isBefore(writeOff.createdAt)
+		) {
+			return res.json({
+				code: 7,
+				message: 'Отмену можно произвести только в течении 24 часов после списания',
+			});
+		}
+
+		const awaitingPromises = [];
 
 		const {
 			stock: { status: statusOld },
 			receipt,
 		} = writeOff;
 
-		const activeReceiptCurrentSet = {
+		awaitingPromises.push(
+			WriteOff.findByIdAndUpdate(writeOff._id, { $set: { canceled: true, canceledDate: Date.now(), requestCancellationUser } }).catch(err =>
+				next({ code: 2, err })
+			)
+		);
+
+		const receiptCurrentSet = {
 			quantity: receipt.current.quantity + writeOff.quantity,
 		};
+		const receiptSet = {};
 
 		if (writeOff.position.unitReceipt === 'nmp' && writeOff.position.unitIssue === 'pce') {
-			activeReceiptCurrentSet.quantityPackages = (receipt.current.quantity + writeOff.quantity) / receipt.quantityInUnit;
+			receiptCurrentSet.quantityPackages = (receipt.current.quantity + writeOff.quantity) / receipt.quantityInUnit;
 		}
 
-		Receipt.findByIdAndUpdate(receipt._id, { $set: { current: activeReceiptCurrentSet } }, { runValidators: true }).catch(err =>
-			next({ code: 2, err })
+		receiptSet.current = receiptCurrentSet;
+
+		if (receipt.status === 'closed') {
+			receiptSet.status = 'active';
+			awaitingPromises.push(
+				Receipt.findByIdAndUpdate(writeOff.position.activeReceipt, { $set: { status: 'received' } }, { runValidators: true }).catch(err =>
+					next({ code: 2, err })
+				)
+			);
+			awaitingPromises.push(
+				Position.findByIdAndUpdate(writeOff.position._id, { $set: { activeReceipt: receipt._id } }, { runValidators: true }).catch(err =>
+					next({ code: 2, err })
+				)
+			);
+		}
+
+		awaitingPromises.push(
+			Receipt.findByIdAndUpdate(receipt._id, { $set: receiptSet }, { runValidators: true }).catch(err => next({ code: 2, err }))
 		);
+
+		await Promise.all(awaitingPromises);
 
 		Stock.findByIdAndUpdate(
 			writeOff.stock,
@@ -320,9 +308,25 @@ writeOffsRouter.delete(
 			{ runValidators: true }
 		).catch(err => next({ code: 2, err }));
 
-		WriteOff.findByIdAndRemove(writeOff._id).catch(err => next({ code: 2, err }));
+		const updatedWriteOff = await WriteOff.findById(writeOff._id)
+			.populate({
+				path: 'position',
+				populate: {
+					path: 'characteristics',
+				},
+				select: 'name unitIssue characteristics',
+			})
+			.populate({
+				path: 'receipt',
+				select: 'unitPurchasePrice',
+			})
+			.populate({
+				path: 'user requestCancellationUser',
+				select: 'profilePhoto name email',
+			})
+			.catch(err => next({ code: 2, err }));
 
-		res.json();
+		res.json(updatedWriteOff);
 	}
 );
 

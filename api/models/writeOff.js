@@ -32,9 +32,18 @@ let WriteOff = new Schema({
 		ref: 'Receipt',
 		required: [true, i18n.__('Обязательное поле')],
 	},
+	canceled: {
+		type: Boolean,
+		default: false,
+	},
+	canceledDate: Date,
 	isFree: {
 		type: Boolean,
 		default: false,
+	},
+	requestCancellationUser: {
+		type: Schema.Types.ObjectId,
+		ref: 'User',
 	},
 	paymentDate: Date,
 	paymentStatus: {

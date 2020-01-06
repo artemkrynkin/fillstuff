@@ -7,6 +7,8 @@ import queryString from 'query-string';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+import { formatNumber } from 'shared/utils';
+
 import { history } from 'src/helpers/history';
 
 import { getFollowingDates } from 'src/components/Pagination/utils';
@@ -19,12 +21,12 @@ import WriteOffsPerDay from './WriteOffsPerDay';
 import styles from './WriteOffs.module.css';
 
 const generatePaginate = (loadedDocs, data) => {
-	const WriteOffs = data.slice();
+	const writeOffs = data.slice();
 
-	WriteOffs.length = loadedDocs < data.length ? loadedDocs : data.length;
+	writeOffs.length = loadedDocs < data.length ? loadedDocs : data.length;
 
 	// Группируем списания по месяцу
-	return _.chain(WriteOffs)
+	return _.chain(writeOffs)
 		.groupBy(writeOffsPerDay => {
 			return moment(writeOffsPerDay.date)
 				.set({
@@ -91,6 +93,7 @@ class WriteOffs extends Component {
 
 	render() {
 		const {
+			currentStockId,
 			filterParams,
 			paging,
 			writeOffs: {
@@ -108,7 +111,7 @@ class WriteOffs extends Component {
 							<div className={styles.date} key={index}>
 								<MonthDateTitle date={writeOffsPerMonth.date} />
 								{writeOffsPerMonth.items.map((writeOffsPerDay, index) => (
-									<WriteOffsPerDay key={index} writeOffsPerDay={writeOffsPerDay} />
+									<WriteOffsPerDay key={index} currentStockId={currentStockId} writeOffsPerDay={writeOffsPerDay} />
 								))}
 							</div>
 						))
@@ -142,8 +145,74 @@ class WriteOffs extends Component {
 }
 
 const mapStateToProps = state => {
+	const {
+		writeOffs: {
+			data: writeOffs,
+			isFetching: isLoadingWriteOffs,
+			// error: errorPositions
+		},
+	} = state;
+
+	const writeOffsByDay = {
+		data: null,
+		isFetching: isLoadingWriteOffs,
+	};
+
+	if (!isLoadingWriteOffs && writeOffs) {
+		// Группируем списания по дню
+		const writeOffsByDayData = _.chain(writeOffs.data)
+			.groupBy(writeOff => {
+				return moment(writeOff.createdAt)
+					.set({
+						hour: 0,
+						minute: 0,
+						second: 0,
+						millisecond: 0,
+					})
+					.format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
+			})
+			.map((items, date) => {
+				// Считаем данные для индикатора за день
+				const indicators = items.reduce(
+					(indicators, writeOff) => {
+						indicators.total += formatNumber(writeOff.quantity * writeOff.receipt.unitPurchasePrice);
+
+						if (!writeOff.isFree) {
+							indicators.sellingPositions += formatNumber(writeOff.quantity * writeOff.receipt.unitPurchasePrice);
+						} else {
+							indicators.freePositions += formatNumber(writeOff.quantity * writeOff.receipt.unitPurchasePrice);
+						}
+
+						if (!indicators.users.some(user => String(user._id) === String(writeOff.user._id))) {
+							indicators.users.push(writeOff.user);
+						}
+
+						return indicators;
+					},
+					{
+						total: 0,
+						sellingPositions: 0,
+						freePositions: 0,
+						users: [],
+					}
+				);
+
+				return {
+					date,
+					indicators,
+					items,
+				};
+			})
+			.value();
+
+		writeOffsByDay.data = {
+			data: writeOffsByDayData,
+			paging: writeOffs.paging,
+		};
+	}
+
 	return {
-		writeOffs: state.writeOffs,
+		writeOffs: writeOffsByDay,
 	};
 };
 

@@ -175,6 +175,8 @@ const mapStateToProps = state => {
 				// Считаем данные для индикатора за день
 				const indicators = items.reduce(
 					(indicators, writeOff) => {
+						if (writeOff.canceled) return indicators;
+
 						indicators.total += formatNumber(writeOff.quantity * writeOff.receipt.unitPurchasePrice);
 
 						if (!writeOff.isFree) {

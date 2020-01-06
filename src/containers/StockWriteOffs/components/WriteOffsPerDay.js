@@ -60,7 +60,7 @@ const WriteOffsPerDay = props => {
 
 	const isCurrentDay = moment()
 		.subtract({ day: 1 })
-		.isBefore(writeOffs[writeOffs.length - 1].createdAt);
+		.isBefore(writeOffs[0].createdAt);
 
 	return (
 		<CardPaper className={styles.container} header={false}>

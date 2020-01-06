@@ -15,6 +15,9 @@ const WriteOff = props => {
 	const { writeOff, isCurrentDay, onOpenDialogWriteOffCancel } = props;
 
 	const createdAtMoment = moment(writeOff.createdAt);
+	const isCurrentDayWriteOff = moment()
+		.subtract({ day: 1 })
+		.isBefore(writeOff.createdAt);
 	const isCurrentHour = moment()
 		.subtract({ hour: 1 })
 		.isBefore(writeOff.createdAt);
@@ -53,7 +56,7 @@ const WriteOff = props => {
 			</TableCell>
 			{isCurrentDay ? (
 				<TableCell align="right" width={50} style={{ padding: '0 7px' }}>
-					{!writeOff.canceled ? (
+					{isCurrentDayWriteOff && !writeOff.canceled ? (
 						<IconButton className={styles.cancelWriteOffButton} onClick={onOpenDialogWriteOffCancel} size="small">
 							<FontAwesomeIcon icon={['fal', 'times']} />
 						</IconButton>

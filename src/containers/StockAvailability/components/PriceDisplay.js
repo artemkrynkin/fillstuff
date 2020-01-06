@@ -43,7 +43,8 @@ const PriceDisplay = props => {
 				</div>
 			</Tooltip>
 		);
-	else return !isFree ? `${price} ₽` : 'Бесплатно';
+	else if (!isFree) return `${price} ₽`;
+	else return <span className={styles.caption}>Бесплатно</span>;
 };
 
 PriceDisplay.propTypes = {

@@ -15,6 +15,14 @@ const DialogWriteOffDelete = props => {
 
 	if (!selectedWriteOff) return null;
 
+	const onSubmit = () => {
+		props.deleteWriteOff(selectedWriteOff._id).then(response => {
+			onCloseDialog();
+
+			if (response.status === 'success') props.getStockStatus();
+		});
+	};
+
 	return (
 		<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog}>
 			<PDDialogTitle theme="primary" onClose={onCloseDialog}>
@@ -25,10 +33,10 @@ const DialogWriteOffDelete = props => {
 					Вы действительно хотите отменить списание позиции{' '}
 					<span>
 						<b>
-							{selectedWriteOff.position.name}
-							{selectedWriteOff.position.characteristics.reduce((fullCharacteristics, characteristic) => {
-								return ` ${fullCharacteristics} ${characteristic.label}`;
-							}, '')}
+							{selectedWriteOff.position.characteristics.reduce(
+								(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
+								selectedWriteOff.position.name
+							)}
 						</b>
 						?
 					</span>
@@ -44,12 +52,7 @@ const DialogWriteOffDelete = props => {
 				rightHandleProps={{
 					handleProps: {
 						autoFocus: true,
-						onClick: () =>
-							props.deleteWriteOff(selectedWriteOff._id).then(response => {
-								onCloseDialog();
-
-								if (response.status === 'success') props.getStockStatus();
-							}),
+						onClick: onSubmit,
 					},
 					text: 'Отменить',
 				}}
@@ -75,7 +78,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	};
 };
 
-export default connect(
-	null,
-	mapDispatchToProps
-)(DialogWriteOffDelete);
+export default connect(null, mapDispatchToProps)(DialogWriteOffDelete);

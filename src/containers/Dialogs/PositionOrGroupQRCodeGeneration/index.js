@@ -8,7 +8,6 @@ import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import QRCode from 'qrcode';
 
-import CircularProgress from '@material-ui/core/CircularProgress';
 import { DialogContent } from '@material-ui/core';
 import Slider from '@material-ui/core/Slider';
 import Grid from '@material-ui/core/Grid';
@@ -87,8 +86,6 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 	};
 
 	onGenerateAndSavePDF = async (actions, values) => {
-		await sleep(500);
-
 		const { type, selectedPositionOrGroup } = this.props;
 		const { QRCodeDataUrl, QRCodeSize } = this.state;
 		const QRSettings = marks[QRCodeSize - 1].settings;
@@ -168,12 +165,6 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 							alignment: 'center',
 						});
 
-						// contentColumn.push({
-						// 	text: type === 'positionGroup' ? 'ГРУППА' : 'ПОЗИЦИЯ',
-						// 	fontSize: 5,
-						// 	margin: [0, 5, 0, 0],
-						// });
-
 						generatedQRs += 1;
 					} else {
 						contentColumn = { text: '', border: [false, false, false, false] };
@@ -195,7 +186,9 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 			},
 		};
 
-		pdfMake.createPdf(docDefinition).download(PDF_DOC_NAME, () => {
+		await sleep(300);
+
+		pdfMake.createPdf(docDefinition).download(PDF_DOC_NAME, async () => {
 			actions.setSubmitting(false);
 		});
 	};
@@ -318,7 +311,8 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 										type: 'submit',
 										disabled: isSubmitting,
 									},
-									text: isSubmitting ? <CircularProgress size={20} /> : 'Скачать PDF',
+									text: 'Скачать PDF',
+									isLoading: isSubmitting,
 								}}
 							/>
 						</Form>

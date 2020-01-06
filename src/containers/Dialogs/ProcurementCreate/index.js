@@ -66,13 +66,15 @@ class ProcurementCreate extends Component {
 
 	onHandleEditFormProcurement = value => this.setState({ formEditable: value });
 
-	onSubmit = (values, actions) => {
+	onSubmit = async (values, actions) => {
 		const { onCloseDialog } = this.props;
 		const { formEditable } = this.state;
 		const procurement = procurementSchema.cast(values);
 
 		if (formEditable) {
 			const indicators = UnitCostDelivery.indicators(procurement.receipts);
+
+			await sleep(300);
 
 			if (
 				procurement.totalPrice !== indicators.pricePositions &&
@@ -224,8 +226,9 @@ class ProcurementCreate extends Component {
 			this.props.createProcurement(procurement).then(response => {
 				if (response.status === 'success') {
 					this.props.getStockStatus();
+					actions.setSubmitting(false);
 					onCloseDialog();
-				} else actions.setSubmitting(false);
+				}
 			});
 		}
 	};
@@ -270,10 +273,7 @@ class ProcurementCreate extends Component {
 					validationSchema={procurementSchema}
 					validateOnBlur={!formEditable}
 					validateOnChange={false}
-					onSubmit={async (values, actions) => {
-						await sleep(500);
-						this.onSubmit(values, actions);
-					}}
+					onSubmit={(values, actions) => this.onSubmit(values, actions)}
 				>
 					{props => (
 						<FormProcurementCreate

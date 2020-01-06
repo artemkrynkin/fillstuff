@@ -11,6 +11,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from '@material-ui/core/IconButton';
 
 import styles from './index.module.css';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 export const Dialog = props => {
 	return <MuiDialog transitionDuration={200} children={props.children} {...props} />;
@@ -162,19 +163,17 @@ export const PDDialogActions = props => {
 			<div className={styles.actionsWrap}>
 				{leftHandleProps && leftHandleProps.handleProps && leftHandleProps.text ? (
 					<Button className={styles.actionsLeftHandle} {...leftHandleProps.handleProps}>
-						<div className={styles.actionsHandleTextWrap}>
-							{leftHandleProps.iconLeft ? leftHandleProps.iconLeft : null}
-							<div className={styles.actionsHandleText}>{leftHandleProps.text}</div>
-							{leftHandleProps.iconRight ? leftHandleProps.iconRight : null}
+						{leftHandleProps.isLoading ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
+						<div className={styles.actionsHandleText} style={{ opacity: Number(!leftHandleProps.isLoading) }}>
+							{leftHandleProps.text}
 						</div>
 					</Button>
 				) : null}
 				{rightHandleProps && rightHandleProps.handleProps && rightHandleProps.text ? (
 					<Button className={styles.actionsRightHandle} variant="contained" color="primary" {...rightHandleProps.handleProps}>
-						<div className={styles.actionsHandleTextWrap}>
-							{rightHandleProps.iconLeft ? rightHandleProps.iconLeft : null}
-							<div className={styles.actionsHandleText}>{rightHandleProps.text}</div>
-							{rightHandleProps.iconRight ? rightHandleProps.iconRight : null}
+						{rightHandleProps.isLoading ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
+						<div className={styles.actionsHandleText} style={{ opacity: Number(!rightHandleProps.isLoading) }}>
+							{rightHandleProps.text}
 						</div>
 					</Button>
 				) : null}
@@ -192,13 +191,11 @@ PDDialogActions.propTypes = {
 	leftHandleProps: PropTypes.shape({
 		handleProps: PropTypes.object,
 		text: PropTypes.node,
-		iconLeft: PropTypes.oneOfType([PropTypes.node, PropTypes.element]),
-		iconRight: PropTypes.oneOfType([PropTypes.node, PropTypes.element]),
+		isLoading: PropTypes.bool,
 	}),
 	rightHandleProps: PropTypes.shape({
 		handleProps: PropTypes.object,
 		text: PropTypes.node.isRequired,
-		iconLeft: PropTypes.oneOfType([PropTypes.node, PropTypes.element]),
-		iconRight: PropTypes.oneOfType([PropTypes.node, PropTypes.element]),
+		isLoading: PropTypes.bool,
 	}),
 };

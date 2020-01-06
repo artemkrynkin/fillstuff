@@ -4,7 +4,6 @@ import validator from 'validator';
 import { Form, Field, FieldArray } from 'formik';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
 import FormControl from '@material-ui/core/FormControl';
@@ -365,7 +364,8 @@ const FormPositionCreateEdit = props => {
 						type: 'submit',
 						disabled: isSubmitting,
 					},
-					text: isSubmitting ? <CircularProgress size={20} /> : type === 'create' ? 'Создать' : 'Сохранить',
+					text: type === 'create' ? 'Создать' : 'Сохранить',
+					isLoading: isSubmitting,
 				}}
 			/>
 		</Form>

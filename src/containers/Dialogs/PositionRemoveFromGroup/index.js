@@ -25,10 +25,10 @@ const DialogPositionRemoveFromGroup = props => {
 					Вы действительно хотите открепить позицию{' '}
 					<span>
 						<b>
-							{selectedPosition.name}
-							{selectedPosition.characteristics.reduce((fullCharacteristics, characteristic) => {
-								return ` ${fullCharacteristics} ${characteristic.label}`;
-							}, '')}
+							{selectedPosition.characteristics.reduce(
+								(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
+								selectedPosition.name
+							)}
 						</b>{' '}
 						от группы?
 					</span>
@@ -70,7 +70,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	};
 };
 
-export default connect(
-	null,
-	mapDispatchToProps
-)(DialogPositionRemoveFromGroup);
+export default connect(null, mapDispatchToProps)(DialogPositionRemoveFromGroup);

@@ -162,10 +162,9 @@ const FormPositionGroupCreateEditAdd = props => {
 														<FontAwesomeIcon icon={['far', 'check']} />
 													</div>
 													<div>
-														{position.name}{' '}
 														{position.characteristics.reduce(
 															(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
-															''
+															position.name
 														)}
 													</div>
 												</div>
@@ -188,10 +187,9 @@ const FormPositionGroupCreateEditAdd = props => {
 											chips={values.positions}
 											onRenderChipLabel={position => (
 												<span>
-													{position.name}{' '}
 													{position.characteristics.reduce(
 														(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
-														''
+														position.name
 													)}
 												</span>
 											)}
@@ -216,7 +214,8 @@ const FormPositionGroupCreateEditAdd = props => {
 						type: 'submit',
 						disabled: isSubmitting,
 					},
-					text: isSubmitting ? <CircularProgress size={20} /> : type === 'create' ? 'Создать' : type === 'edit' ? 'Сохранить' : 'Добавить',
+					text: type === 'create' ? 'Создать' : type === 'edit' ? 'Сохранить' : 'Добавить',
+					isLoading: isSubmitting,
 				}}
 			/>
 		</Form>

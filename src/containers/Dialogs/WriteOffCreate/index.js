@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
-import CircularProgress from '@material-ui/core/CircularProgress';
 import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField/TextField';
@@ -38,8 +37,7 @@ class DialogWriteOffCreate extends Component {
 
 		this.props.createWriteOff(currentUser._id, selectedPosition._id, values).then(response => {
 			if (response.status === 'success') this.props.getStockStatus();
-			else actions.setSubmitting(false);
-
+			actions.setSubmitting(false);
 			onCloseDialog();
 		});
 	};
@@ -118,7 +116,8 @@ class DialogWriteOffCreate extends Component {
 										type: 'submit',
 										disabled: isSubmitting,
 									},
-									text: isSubmitting ? <CircularProgress size={20} /> : 'Списать',
+									text: 'Списать',
+									isLoading: isSubmitting,
 								}}
 							/>
 						</Form>
@@ -144,7 +143,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	};
 };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(DialogWriteOffCreate);
+export default connect(mapStateToProps, mapDispatchToProps)(DialogWriteOffCreate);

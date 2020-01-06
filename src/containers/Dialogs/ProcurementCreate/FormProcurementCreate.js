@@ -4,7 +4,6 @@ import moment from 'moment';
 import MomentUtils from '@date-io/moment';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -243,7 +242,8 @@ const FormProcurementCreate = props => {
 						onClick: () => submitForm(),
 						disabled: isSubmitting,
 					},
-					text: isSubmitting ? <CircularProgress size={20} /> : !formEditable ? 'Занести на склад' : 'Проверить данные',
+					text: !formEditable ? 'Занести на склад' : 'Проверить данные',
+					isLoading: isSubmitting,
 				}}
 			/>
 		</Form>

@@ -15,6 +15,14 @@ const DialogPositionArchive = props => {
 
 	if (!selectedPosition) return null;
 
+	const onSubmit = () => {
+		props.archivePositionInGroup(selectedPosition._id, selectedPosition.positionGroup).then(response => {
+			onCloseDialog();
+
+			if (response.status === 'success') props.getStockStatus();
+		});
+	};
+
 	return (
 		<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog}>
 			<PDDialogTitle theme="primary" onClose={onCloseDialog}>
@@ -25,10 +33,10 @@ const DialogPositionArchive = props => {
 					Вы действительно хотите архивировать позицию{' '}
 					<span>
 						<b>
-							{selectedPosition.name}
-							{selectedPosition.characteristics.reduce((fullCharacteristics, characteristic) => {
-								return ` ${fullCharacteristics} ${characteristic.label}`;
-							}, '')}
+							{selectedPosition.characteristics.reduce(
+								(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
+								selectedPosition.name
+							)}
 						</b>
 						?
 					</span>
@@ -44,12 +52,7 @@ const DialogPositionArchive = props => {
 				rightHandleProps={{
 					handleProps: {
 						autoFocus: true,
-						onClick: () =>
-							props.archivePositionInGroup(selectedPosition._id, selectedPosition.positionGroup).then(response => {
-								onCloseDialog();
-
-								if (response.status === 'success') props.getStockStatus();
-							}),
+						onClick: onSubmit,
 					},
 					text: 'Архивировать',
 				}}
@@ -75,7 +78,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	};
 };
 
-export default connect(
-	null,
-	mapDispatchToProps
-)(DialogPositionArchive);
+export default connect(null, mapDispatchToProps)(DialogPositionArchive);

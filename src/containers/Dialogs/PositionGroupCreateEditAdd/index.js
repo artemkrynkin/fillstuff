@@ -1,7 +1,6 @@
 import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
 import { Formik } from 'formik';
 
 import { PDDialog, PDDialogTitle } from 'src/components/Dialog';
@@ -37,25 +36,31 @@ class DialogPositionGroupCreateEditAdd extends Component {
 		this.searchInputRef.current.focus();
 	};
 
-	onPositionGroupSubmit = (values, actions) => {
+	onSubmit = (values, actions) => {
 		const { type, onCloseDialog, positionGroup = positionGroupSchema(type, true).cast(values) } = this.props;
 
 		switch (type) {
 			case 'add':
 				return this.props.addPositionInGroup(positionGroup._id, positionGroup).then(response => {
-					if (response.status === 'success') onCloseDialog();
-					else actions.setSubmitting(false);
+					if (response.status === 'success') {
+						actions.setSubmitting(false);
+						onCloseDialog();
+					}
 				});
 			case 'edit':
 				return this.props.editPositionGroup(positionGroup._id, positionGroup).then(response => {
-					if (response.status === 'success') onCloseDialog();
-					else actions.setSubmitting(false);
+					if (response.status === 'success') {
+						actions.setSubmitting(false);
+						onCloseDialog();
+					}
 				});
 			case 'create':
 			default:
 				return this.props.createPositionGroup(positionGroup).then(response => {
-					if (response.status === 'success') onCloseDialog();
-					else actions.setSubmitting(false);
+					if (response.status === 'success') {
+						actions.setSubmitting(false);
+						onCloseDialog();
+					}
 				});
 		}
 	};
@@ -103,7 +108,7 @@ class DialogPositionGroupCreateEditAdd extends Component {
 					validationSchema={() => positionGroupSchema(type)}
 					validateOnBlur={false}
 					validateOnChange={false}
-					onSubmit={(values, actions) => this.onPositionGroupSubmit(values, actions)}
+					onSubmit={(values, actions) => this.onSubmit(values, actions)}
 				>
 					{props => (
 						<FormPositionGroupCreateEditAdd

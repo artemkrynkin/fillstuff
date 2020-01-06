@@ -60,7 +60,7 @@ const PositionGroup = props => {
 									<TableCell width={36} style={{ paddingLeft: 5, paddingRight: 0 }} />
 									<TableCell style={{ paddingLeft: 5 }}>
 										<span className={styles.positionGroupName}>{positionGroup.name}</span>
-										<span className={styles.positionsCount}>
+										<span className={styles.caption}>
 											{positionGroup.positions.length +
 												' ' +
 												declensionNumber(positionGroup.positions.length, ['позиция', 'позиции', 'позиций'])}
@@ -87,16 +87,14 @@ const PositionGroup = props => {
 						<ExpansionPanelDetails>
 							<Table>
 								<TableBody>
-									{positionGroup.positions.sort().map(position => {
-										return (
-											<Position
-												key={position._id}
-												currentStockId={currentStockId}
-												position={position}
-												onOpenDialogPosition={onOpenDialogPosition}
-											/>
-										);
-									})}
+									{positionGroup.positions.sort().map(position => (
+										<Position
+											key={position._id}
+											currentStockId={currentStockId}
+											position={position}
+											onOpenDialogPosition={onOpenDialogPosition}
+										/>
+									))}
 								</TableBody>
 							</Table>
 						</ExpansionPanelDetails>

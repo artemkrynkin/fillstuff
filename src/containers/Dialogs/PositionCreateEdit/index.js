@@ -60,7 +60,7 @@ class DialogPositionCreateEdit extends Component {
 		});
 	};
 
-	onPositionCreateEdit = (values, actions) => {
+	onSubmit = (values, actions) => {
 		const { type, onCloseDialog, onCallback, position = positionSchema(true).cast(values) } = this.props;
 
 		if (type === 'create') {
@@ -69,8 +69,9 @@ class DialogPositionCreateEdit extends Component {
 
 				if (response.status === 'success') {
 					this.props.getStockStatus();
+					actions.setSubmitting(false);
 					onCloseDialog();
-				} else actions.setSubmitting(false);
+				}
 			});
 		} else {
 			this.props.editPosition(position._id, position).then(response => {
@@ -78,8 +79,9 @@ class DialogPositionCreateEdit extends Component {
 
 				if (response.status === 'success') {
 					this.props.getStockStatus();
+					actions.setSubmitting(false);
 					onCloseDialog();
-				} else actions.setSubmitting(false);
+				}
 			});
 		}
 	};
@@ -152,7 +154,7 @@ class DialogPositionCreateEdit extends Component {
 					validationSchema={() => positionSchema()}
 					validateOnBlur={false}
 					validateOnChange={false}
-					onSubmit={(values, actions) => this.onPositionCreateEdit(values, actions)}
+					onSubmit={(values, actions) => this.onSubmit(values, actions)}
 				>
 					{props => (
 						<FormPositionCreateEdit

@@ -39,57 +39,71 @@ const Position = props => {
 	return (
 		<TableRow className={styles.position}>
 			<TableCell style={position.positionGroup ? { paddingLeft: 41 } : {}}>
-				{position.name}{' '}
-				{position.characteristics.reduce((fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`, '')}
-				{!position.receipts.length ? <span className={styles.noReceipts}>Нет поступлений</span> : null}
-			</TableCell>
-			<TableCell align="right" width={160}>
-				<QuantityIndicator
-					type="position"
-					unitReceipt={position.unitReceipt}
-					unitIssue={position.unitIssue}
-					divided={position.divided}
-					minimumBalance={position.minimumBalance}
-					receipts={position.receipts.map(receipt => ({ ...receipt.current }))}
-				/>
-			</TableCell>
-			<TableCell align="right" width={130}>
-				{position.divided ? position.minimumBalance : null}
-			</TableCell>
-			<TableCell align="right" width={140}>
-				{position.activeReceipt ? (
-					<PriceDisplay
-						unitReceipt={position.unitReceipt}
-						unitIssue={position.unitIssue}
-						quantity={position.activeReceipt.current.quantity}
-						isFree={false}
-						price={Number(position.activeReceipt.unitPurchasePrice.toFixed(2))}
-						receiptsReceived={receiptsReceived}
-						receiptNearestPrice={receiptsReceived.length ? Number(receiptsReceived[0].unitPurchasePrice.toFixed(2)) : undefined}
-						priceChangeIsGood={false}
-						title="цена покупки"
-					/>
-				) : (
-					'-'
+				{position.characteristics.reduce(
+					(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
+					position.name
 				)}
 			</TableCell>
-			<TableCell align="right" width={140}>
-				{position.activeReceipt ? (
-					<PriceDisplay
+			{position.receipts.length ? (
+				<TableCell align="right" width={160}>
+					<QuantityIndicator
+						type="position"
 						unitReceipt={position.unitReceipt}
 						unitIssue={position.unitIssue}
-						quantity={position.activeReceipt.current.quantity}
-						isFree={position.isFree}
-						price={Number(position.activeReceipt.unitSellingPrice.toFixed(2))}
-						receiptsReceived={receiptsReceived}
-						receiptNearestPrice={receiptsReceived.length ? Number(receiptsReceived[0].unitSellingPrice.toFixed(2)) : undefined}
-						priceChangeIsGood={true}
-						title="цена продажи"
+						divided={position.divided}
+						minimumBalance={position.minimumBalance}
+						receipts={position.receipts.map(receipt => ({ ...receipt.current }))}
 					/>
-				) : (
-					'-'
-				)}
-			</TableCell>
+				</TableCell>
+			) : null}
+			{position.receipts.length ? (
+				<TableCell align="right" width={130}>
+					{position.divided ? position.minimumBalance : null}
+				</TableCell>
+			) : null}
+			{position.receipts.length ? (
+				<TableCell align="right" width={140}>
+					{position.activeReceipt ? (
+						<PriceDisplay
+							unitReceipt={position.unitReceipt}
+							unitIssue={position.unitIssue}
+							quantity={position.activeReceipt.current.quantity}
+							isFree={false}
+							price={Number(position.activeReceipt.unitPurchasePrice.toFixed(2))}
+							receiptsReceived={receiptsReceived}
+							receiptNearestPrice={receiptsReceived.length ? Number(receiptsReceived[0].unitPurchasePrice.toFixed(2)) : undefined}
+							priceChangeIsGood={false}
+							title="цена покупки"
+						/>
+					) : (
+						'-'
+					)}
+				</TableCell>
+			) : null}
+			{position.receipts.length ? (
+				<TableCell align="right" width={140}>
+					{position.activeReceipt ? (
+						<PriceDisplay
+							unitReceipt={position.unitReceipt}
+							unitIssue={position.unitIssue}
+							quantity={position.activeReceipt.current.quantity}
+							isFree={position.isFree}
+							price={Number(position.activeReceipt.unitSellingPrice.toFixed(2))}
+							receiptsReceived={receiptsReceived}
+							receiptNearestPrice={receiptsReceived.length ? Number(receiptsReceived[0].unitSellingPrice.toFixed(2)) : undefined}
+							priceChangeIsGood={true}
+							title="цена продажи"
+						/>
+					) : (
+						'-'
+					)}
+				</TableCell>
+			) : null}
+			{!position.receipts.length ? (
+				<TableCell align="center" colSpan={4}>
+					<span className={styles.caption}>Нет поступлений</span>
+				</TableCell>
+			) : null}
 			<TableCell align="right" width={50} style={{ padding: '0 7px' }}>
 				<div>
 					<IconButton

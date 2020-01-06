@@ -29,26 +29,16 @@ class StockWriteOffs extends Component {
 			},
 		});
 
-		const {
-			currentUser,
-			currentStock,
-			match: {
-				params: { selectedUserId },
-			},
-		} = this.props;
-
-		const pageParams = {
-			selectedUserId,
-		};
+		const { currentUser, currentStock } = this.props;
 
 		return (
 			<div className={stylesPage.pageWrap}>
 				<Head title={title} description={description} />
 
-				<Header pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} pageParams={pageParams} />
+				<Header pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
 				<div className={`${stylesPage.pageContent} ${styles.container}`}>
 					<div className={styles.wrapper}>
-						<Index currentUser={currentUser} currentStock={currentStock} selectedUserId={selectedUserId} />
+						<Index currentUser={currentUser} currentStock={currentStock} />
 					</div>
 				</div>
 			</div>

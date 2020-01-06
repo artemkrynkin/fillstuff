@@ -33,11 +33,20 @@ import UserSettings from 'src/containers/UserSettings';
 
 import stylesPage from 'src/styles/page.module.css';
 
-const LoginFallback = signedOutFallback(() => <Redirect to="/stocks" />, () => <Layout children={<Login />} />);
+const LoginFallback = signedOutFallback(
+	() => <Redirect to="/stocks" />,
+	() => <Layout children={<Login />} />
+);
 
-const RegistrationFallback = signedOutFallback(() => <Redirect to="/stocks" />, () => <Layout children={<Registration />} />);
+const RegistrationFallback = signedOutFallback(
+	() => <Redirect to="/stocks" />,
+	() => <Layout children={<Registration />} />
+);
 
-const PasswordRecoveryFallback = signedOutFallback(() => <Redirect to="/stocks" />, () => <Layout children={<PasswordRecovery />} />);
+const PasswordRecoveryFallback = signedOutFallback(
+	() => <Redirect to="/stocks" />,
+	() => <Layout children={<PasswordRecovery />} />
+);
 
 const StockNotFoundFallback = signedOutFallback(
 	props => (
@@ -177,9 +186,8 @@ class Routes extends Component {
 						<Route path="/registration" component={RegistrationFallback} exact strict sensitive />
 						<Route path="/password-recovery" component={PasswordRecoveryFallback} exact strict sensitive />
 
-						<Route
-							path={['/stocks', '/stocks/:stockId']}
-							render={props => {
+						<Route path={['/stocks', '/stocks/:stockId']} exact strict sensitive>
+							{props => {
 								const { match } = props;
 
 								if (Array.isArray(stocks) && stocks.some(stock => stock._id === match.params.stockId)) {
@@ -190,59 +198,28 @@ class Routes extends Component {
 
 								return <StockNotFoundFallback {...props} currentStock={findCurrentStock(props.match)} />;
 							}}
-							exact
-							strict
-							sensitive
-						/>
-						<Route
-							path="/stocks/:stockId/dashboard"
-							render={props => <StockDashboardFallback {...props} currentStock={findCurrentStock(props.match)} />}
-							exact
-							strict
-							sensitive
-						/>
-						<Route
-							path="/stocks/:stockId/availability"
-							render={props => <StockAvailabilityFallback {...props} currentStock={findCurrentStock(props.match)} />}
-							exact
-							strict
-							sensitive
-						/>
-						<Route
-							path={['/stocks/:stockId/write-offs', '/stocks/:stockId/write-offs/:selectedUserId']}
-							render={props => <StockWriteOffsFallback {...props} currentStock={findCurrentStock(props.match)} />}
-							exact
-							strict
-							sensitive
-						/>
-						<Route
-							path={'/stocks/:stockId/procurements'}
-							render={props => <StockProcurementsFallback {...props} currentStock={findCurrentStock(props.match)} />}
-							exact
-							strict
-							sensitive
-						/>
-						<Route
-							path={'/stocks/:stockId/procurements/:procurementId'}
-							render={props => <StockProcurementFallback {...props} currentStock={findCurrentStock(props.match)} />}
-							exact
-							strict
-							sensitive
-						/>
-						<Route
-							path="/stocks/:stockId/statistics"
-							render={props => <StockStatisticsFallback {...props} currentStock={findCurrentStock(props.match)} />}
-							exact
-							strict
-							sensitive
-						/>
-						<Route
-							path="/stocks/:stockId/settings"
-							render={props => <StockSettingsFallback {...props} currentStock={findCurrentStock(props.match)} />}
-							exact
-							strict
-							sensitive
-						/>
+						</Route>
+						<Route path="/stocks/:stockId/dashboard" exact strict sensitive>
+							{props => <StockDashboardFallback {...props} currentStock={findCurrentStock(props.match)} />}
+						</Route>
+						<Route path="/stocks/:stockId/availability" exact strict sensitive>
+							{props => <StockAvailabilityFallback {...props} currentStock={findCurrentStock(props.match)} />}
+						</Route>
+						<Route path="/stocks/:stockId/write-offs" exact strict sensitive>
+							{props => <StockWriteOffsFallback {...props} currentStock={findCurrentStock(props.match)} />}
+						</Route>
+						<Route path={'/stocks/:stockId/procurements'} exact strict sensitive>
+							{props => <StockProcurementsFallback {...props} currentStock={findCurrentStock(props.match)} />}
+						</Route>
+						<Route path={'/stocks/:stockId/procurements/:procurementId'} exact strict sensitive>
+							{props => <StockProcurementFallback {...props} currentStock={findCurrentStock(props.match)} />}
+						</Route>
+						<Route path="/stocks/:stockId/statistics" exact strict sensitive>
+							{props => <StockStatisticsFallback {...props} currentStock={findCurrentStock(props.match)} />}
+						</Route>
+						<Route path="/stocks/:stockId/settings" exact strict sensitive>
+							{props => <StockSettingsFallback {...props} currentStock={findCurrentStock(props.match)} />}
+						</Route>
 
 						<Route path="/settings" component={UserSettingsFallback} exact strict sensitive />
 

@@ -5,6 +5,8 @@ import ClassNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Tooltip from '@material-ui/core/Tooltip';
 
+import { formatNumber } from 'shared/utils';
+
 import styles from './Positions.module.css';
 
 const priceDisplayChangeIconClasses = priceChangeIsGood =>
@@ -24,13 +26,13 @@ const PriceDisplay = props => {
 					<div style={{ textAlign: 'center' }}>
 						После списания {quantity} {unitReceipt === 'pce' ? 'шт.' : unitIssue === 'pce' ? 'шт.' : 'уп.'}
 						<br />
-						{title} {receiptNearestPrice > price ? 'повысится' : 'снизится'} до {receiptNearestPrice} ₽
+						{title} {receiptNearestPrice > price ? 'повысится' : 'снизится'} до {formatNumber(receiptNearestPrice, { toString: true })} ₽
 					</div>
 				}
 				interactive
 			>
 				<div style={{ display: 'inline-block' }}>
-					{price} ₽
+					{formatNumber(price, { toString: true })} ₽
 					{receiptNearestPrice > price ? (
 						<span className={priceDisplayChangeIconClasses(priceChangeIsGood)}>
 							<FontAwesomeIcon icon={['far', 'chevron-up']} />
@@ -43,7 +45,7 @@ const PriceDisplay = props => {
 				</div>
 			</Tooltip>
 		);
-	else if (!isFree) return `${price} ₽`;
+	else if (!isFree) return `${formatNumber(price, { toString: true })} ₽`;
 	else return <span className={styles.caption}>Бесплатно</span>;
 };
 

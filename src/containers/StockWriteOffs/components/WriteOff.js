@@ -26,11 +26,11 @@ const WriteOff = props => {
 	return (
 		<TableRow classes={positionSameFilter ? { root: TableRowHighlightClasses.root } : {}}>
 			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}}>
-				{writeOff.position.name}{' '}
-				{writeOff.position.characteristics.reduce((fullCharacteristics, characteristic) => {
-					return `${fullCharacteristics} ${characteristic.label}`;
-				}, '')}
-				{writeOff.position.isArchived ? <span className={styles.isArchived}>В архиве</span> : null}
+				{writeOff.position.characteristics.reduce(
+					(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
+					writeOff.position.name
+				)}
+				{writeOff.position.isArchived ? <span className={`${styles.caption} ${styles.orange}`}>В архиве</span> : null}
 			</TableCell>
 			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="left" width={180}>
 				<div className={styles.user}>

@@ -48,8 +48,6 @@ const FormProcurementCreate = props => {
 
 	const sellingPositionCount = !formEditable ? values.receipts.reduce((sum, receipt) => sum + (!receipt.position.isFree ? 1 : 0), 0) : 0;
 
-	console.log(touched.date, errors.date);
-
 	return (
 		<Form>
 			<DialogContent style={{ overflow: 'initial' }}>

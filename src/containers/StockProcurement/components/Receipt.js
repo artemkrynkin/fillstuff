@@ -18,11 +18,11 @@ const Receipt = props => {
 	return (
 		<TableRow>
 			<TableCell>
-				{receipt.position.name}{' '}
-				{receipt.position.characteristics.reduce((fullCharacteristics, characteristic) => {
-					return `${fullCharacteristics} ${characteristic.label}`;
-				}, '')}
-				{receipt.position.isArchived ? <span className={styles.isArchived}>В архиве</span> : null}
+				{receipt.position.characteristics.reduce(
+					(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
+					receipt.position.name
+				)}
+				{receipt.position.isArchived ? <span className={`${styles.caption} ${styles.orange}`}>В архиве</span> : null}
 			</TableCell>
 			<TableCell align="right" width={160}>
 				<QuantityIndicator
@@ -41,7 +41,7 @@ const Receipt = props => {
 						title={
 							<div>
 								<NumberFormat
-									value={receipt.unitPurchasePrice}
+									value={formatNumber(receipt.unitPurchasePrice, { toString: true })}
 									renderText={value => `Цена покупки: ${value}`}
 									displayType="text"
 									onValueChange={() => {}}
@@ -50,7 +50,7 @@ const Receipt = props => {
 								{receipt.unitCostDelivery > 0 ? <br /> : null}
 								{receipt.unitCostDelivery > 0 ? (
 									<NumberFormat
-										value={receipt.unitCostDelivery}
+										value={formatNumber(receipt.unitCostDelivery, { toString: true })}
 										renderText={value => `Стоимость доставки: ${value}`}
 										displayType="text"
 										onValueChange={() => {}}
@@ -60,7 +60,7 @@ const Receipt = props => {
 								{receipt.unitExtraCharge > 0 ? <br /> : null}
 								{receipt.unitExtraCharge > 0 ? (
 									<NumberFormat
-										value={receipt.unitExtraCharge}
+										value={formatNumber(receipt.unitExtraCharge, { toString: true })}
 										renderText={value => `Процент студии: ${value}`}
 										displayType="text"
 										onValueChange={() => {}}
@@ -70,7 +70,7 @@ const Receipt = props => {
 								{receipt.unitManualExtraCharge > 0 ? <br /> : null}
 								{receipt.unitManualExtraCharge > 0 ? (
 									<NumberFormat
-										value={receipt.unitManualExtraCharge}
+										value={formatNumber(receipt.unitManualExtraCharge, { toString: true })}
 										renderText={value => `Ручная наценка: ${value}`}
 										displayType="text"
 										onValueChange={() => {}}
@@ -83,7 +83,7 @@ const Receipt = props => {
 						<span>{formatNumber(receipt.unitSellingPrice, { toString: true })} ₽</span>
 					</Tooltip>
 				) : (
-					'Бесплатно'
+					<span className={styles.caption}>Бесплатно</span>
 				)}
 			</TableCell>
 		</TableRow>

@@ -40,7 +40,7 @@ const FormFieldArrayReceipt = props => {
 			: null;
 
 	useEffect(() => {
-		if (sellingPriceFieldRef && !formEditable && sellingPriceEditable) sellingPriceFieldRef.current.querySelector('input').focus();
+		if (!formEditable && sellingPriceFieldRef && sellingPriceEditable) sellingPriceFieldRef.current.querySelector('input').focus();
 	}, [formEditable, sellingPriceEditable]);
 
 	return (

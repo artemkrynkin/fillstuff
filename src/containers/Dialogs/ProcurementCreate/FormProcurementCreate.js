@@ -48,6 +48,8 @@ const FormProcurementCreate = props => {
 
 	const sellingPositionCount = !formEditable ? values.receipts.reduce((sum, receipt) => sum + (!receipt.position.isFree ? 1 : 0), 0) : 0;
 
+	console.log(touched.date, errors.date);
+
 	return (
 		<Form>
 			<DialogContent style={{ overflow: 'initial' }}>
@@ -72,8 +74,8 @@ const FormProcurementCreate = props => {
 							name="number"
 							placeholder={values.noInvoice ? '-' : ''}
 							label="Номер чека/накладной:"
-							error={Boolean(touched.number && errors.number)}
-							helperText={typeof errors.totalPrice === 'string' && touched.totalPrice ? errors.totalPrice : null}
+							error={Boolean(errors.number && touched.number)}
+							helperText={typeof errors.number === 'string' && touched.number ? errors.number : null}
 							as={TextField}
 							disabled={isSubmitting || !formEditable || values.noInvoice}
 							autoFocus
@@ -89,28 +91,22 @@ const FormProcurementCreate = props => {
 									setFieldValue('noInvoice', checked);
 
 									if (checked && values.number) setFieldValue('number', '');
-									if (checked && values.date) setFieldValue('date', undefined);
+									if (checked && values.date) setFieldValue('date', '');
 								}}
 								disabled={isSubmitting || !formEditable}
 							/>
 						) : null}
 					</Grid>
 					<Grid xs={2} item>
-						<Grid
-							className={stylesGlobal.formLabelControl}
-							wrap="nowrap"
-							alignItems={Boolean(touched.date && errors.date) ? 'center' : 'flex-end'}
-							style={{ marginBottom: 0 }}
-							container
-						>
-							<InputLabel style={{ margin: '0 8px 0 -8px' }}>от</InputLabel>
+						<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" style={{ marginBottom: 0 }} container>
+							<InputLabel style={{ margin: '20px 8px 0 -8px' }}>от</InputLabel>
 							<TextField
-								ref={refDropdownDate}
+								innerRef={refDropdownDate}
 								name="date"
 								placeholder={values.noInvoice ? '-' : ''}
 								label="Дата:"
-								error={Boolean(touched.date && errors.date)}
-								helperText={typeof errors.totalPrice === 'string' && touched.totalPrice ? errors.totalPrice : null}
+								error={Boolean(errors.date && touched.date)}
+								helperText={typeof errors.date === 'string' && touched.date ? errors.date : null}
 								disabled={isSubmitting || !formEditable || values.noInvoice}
 								value={values.date ? moment(values.date).format('DD.MM.YYYY') : ''}
 								onFocus={() => onHandleDropdownDate(true)}
@@ -150,7 +146,7 @@ const FormProcurementCreate = props => {
 							name="totalPrice"
 							placeholder="0"
 							label="Итого по чеку/накладной:"
-							error={Boolean(touched.totalPrice && errors.totalPrice)}
+							error={Boolean(errors.totalPrice && touched.totalPrice)}
 							helperText={typeof errors.totalPrice === 'string' && touched.totalPrice ? errors.totalPrice : null}
 							as={TextField}
 							InputProps={{

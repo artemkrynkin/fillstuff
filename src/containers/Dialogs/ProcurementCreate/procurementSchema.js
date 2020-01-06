@@ -3,16 +3,15 @@ import moment from 'moment';
 
 const procurementSchema = Yup.object().shape({
 	number: Yup.string().when('noInvoice', (noInvoice, schema) => {
-		return !noInvoice ? schema.required() : schema.notRequired();
+		return !noInvoice ? schema.required() : schema.required(false);
 	}),
-	date: Yup.mixed().when('noInvoice', {
-		is: false,
-		then: Yup.date()
-			.required()
-			.transform(function(value, originalValue) {
-				if (moment(value).isValid()) return value;
-			}),
-		otherwise: Yup.mixed().notRequired(),
+	date: Yup.mixed().when('noInvoice', (noInvoice, schema) => {
+		return !noInvoice
+			? schema.required().transform(function(value, originalValue) {
+					if (moment(value).isValid()) return value;
+					else return originalValue;
+			  })
+			: schema.required(false);
 	}),
 	costDelivery: Yup.number()
 		.transform(value => (isNaN(value) ? 0 : value))

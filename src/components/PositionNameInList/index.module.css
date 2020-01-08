@@ -1,0 +1,51 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 32px;
+}
+
+.topContainer {
+  align-items: center;
+  display: flex;
+}
+
+.name,
+.characteristics {
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.name {
+  color: var(--c-hex-bg-700);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.symbols {
+  align-items: center;
+  display: flex;
+}
+
+.archive,
+.writeOffUndo {
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+.archive {
+  color: var(--c-hex-o-15);
+}
+
+.writeOffUndo {
+  color: var(--c-hex-o-1);
+}
+
+.characteristics {
+  color: var(--c-hex-bg-300);
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 4px;
+}

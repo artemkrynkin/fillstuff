@@ -8,7 +8,6 @@ import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from '@material-ui/core/IconButton';
 
 import styles from './index.module.css';
-import DialogSticky from './DialogSticky';
 
 export const DialogTitle = props => {
 	const { theme, titlePositionCenter, leftHandleProps, onClose, children } = props;

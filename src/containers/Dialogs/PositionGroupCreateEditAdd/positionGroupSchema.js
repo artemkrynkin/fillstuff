@@ -6,7 +6,7 @@ const positionGroupSchema = (type, depopulate = false) => {
 			return type !== 'add'
 				? schema
 						.min(2)
-						.max(100)
+						.max(60)
 						.required()
 				: schema;
 		}),

@@ -24,6 +24,7 @@ let Characteristic = new Schema({
 	},
 	label: {
 		type: String,
+		maxlength: [60, i18n.__('Не может превышать 60 символов')],
 		required: [true, i18n.__('Обязательное поле')],
 		trim: true,
 	},

@@ -5,11 +5,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import TableRow from '@material-ui/core/TableRow';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
+
+import PositionNameInList from 'src/components/PositionNameInList';
 
 import styles from './WriteOff.module.css';
 
 import { TableCell } from './styles';
-import IconButton from '@material-ui/core/IconButton';
 
 const WriteOff = props => {
 	const { writeOff, isCurrentDay, onOpenDialogWriteOffCancel } = props;
@@ -28,12 +31,12 @@ const WriteOff = props => {
 	return (
 		<TableRow className={styles.writeOff}>
 			<TableCell>
-				{writeOff.position.characteristics.reduce(
-					(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
-					writeOff.position.name
-				)}
-				{writeOff.position.isArchived ? <span className={`${styles.caption} ${styles.orange}`}>В архиве</span> : null}
-				{writeOff.canceled ? <span className={`${styles.caption} ${styles.red}`}>Отменено</span> : null}
+				<PositionNameInList
+					name={writeOff.position.name}
+					characteristics={writeOff.position.characteristics}
+					isArchived={writeOff.position.isArchived}
+					canceled={writeOff.canceled}
+				/>
 			</TableCell>
 			<TableCell align="left" width={180}>
 				<div className={styles.user}>
@@ -57,9 +60,11 @@ const WriteOff = props => {
 			{isCurrentDay ? (
 				<TableCell align="right" width={50} style={{ padding: '0 7px' }}>
 					{isCurrentDayWriteOff && !writeOff.canceled ? (
-						<IconButton className={styles.cancelWriteOffButton} onClick={onOpenDialogWriteOffCancel} size="small">
-							<FontAwesomeIcon icon={['fal', 'times']} />
-						</IconButton>
+						<Tooltip title="Отменить списание" placement="top">
+							<IconButton className={styles.cancelWriteOffButton} onClick={onOpenDialogWriteOffCancel} size="small">
+								<FontAwesomeIcon icon={['far', 'undo']} />
+							</IconButton>
+						</Tooltip>
 					) : null}
 				</TableCell>
 			) : null}

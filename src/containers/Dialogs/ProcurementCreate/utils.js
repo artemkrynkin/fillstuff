@@ -4,8 +4,8 @@ export const positionTransform = position => ({
 	unitReceipt: position.unitReceipt,
 	isFree: position.isFree,
 	extraCharge: position.extraCharge,
-	label:
-		position.name +
-		position.characteristics.reduce((fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`, ''),
+	name: position.name,
+	characteristics: position.characteristics,
+	label: position.characteristics.reduce((fullName, characteristic) => `${fullName} ${characteristic.label}`, position.name),
 	value: position._id,
 });

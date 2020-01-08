@@ -64,6 +64,7 @@ import {
 	faShoppingCart as falShoppingCart,
 	faBagsShopping as falBagsShopping,
 	faExternalLinkSquare as falExternalLinkSquare,
+	faUndo as falUndo,
 } from '@fortawesome/pro-light-svg-icons';
 
 library.add(
@@ -131,5 +132,6 @@ library.add(
 	falShippingTimed,
 	falShoppingCart,
 	falBagsShopping,
-	falExternalLinkSquare
+	falExternalLinkSquare,
+	falUndo
 );

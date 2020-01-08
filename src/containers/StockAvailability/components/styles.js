@@ -90,9 +90,19 @@ export const ExpansionPanelDetails = withStyles({
 	},
 })(MuiExpansionPanelDetails);
 
+export const TableCellExpansionPanel = withStyles({
+	root: {
+		padding: '16px 15px',
+	},
+	body: {
+		borderTop: `1px solid ${theme.brightness.cBr4}`,
+		borderBottom: 'none',
+	},
+})(MuiTableCell);
+
 export const TableCell = withStyles({
 	root: {
-		padding: '14px 15px',
+		padding: '9px 15px',
 	},
 	head: {
 		paddingTop: 18,

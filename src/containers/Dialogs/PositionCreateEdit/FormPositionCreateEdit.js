@@ -54,6 +54,9 @@ const FormPositionCreateEdit = props => {
 						error={Boolean(touched.name && errors.name)}
 						helperText={(touched.name && errors.name) || ''}
 						as={TextField}
+						inputProps={{
+							maxLength: 60,
+						}}
 						autoFocus
 						fullWidth
 					/>

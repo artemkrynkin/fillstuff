@@ -23,6 +23,16 @@ class SliderScroller extends Component {
 		shadows: false,
 	};
 
+	static propTypes = {
+		shadows: PropTypes.bool,
+		offsetLeft: PropTypes.number,
+		offsetRight: PropTypes.number,
+	};
+
+	state = {
+		animationProgress: 0,
+	};
+
 	sliderScrollRef = element => {
 		if (!element) return;
 		this.sliderScroller = element;
@@ -73,6 +83,31 @@ class SliderScroller extends Component {
 
 	onScroll = () => this.setClasses();
 
+	handleClickArrow = (event, direction) => {
+		const { animationProgress } = this.state;
+
+		const sliderScrollerWrap = event.currentTarget.parentElement.querySelector(`.${styles.wrapScroll}`),
+			shiftValue = Math.round(sliderScrollerWrap.clientWidth / 2);
+
+		if (animationProgress !== 100) anime.remove(sliderScrollerWrap);
+
+		anime({
+			targets: sliderScrollerWrap,
+			scrollLeft: {
+				value:
+					direction === 'left'
+						? Math.max(sliderScrollerWrap.scrollLeft - shiftValue, 0)
+						: direction === 'right'
+						? Math.min(sliderScrollerWrap.scrollLeft + shiftValue, sliderScrollerWrap.scrollWidth - sliderScrollerWrap.clientWidth)
+						: 0,
+				duration: 300,
+				easing: 'easeInOutQuad',
+				delay: 0,
+			},
+			update: anim => this.setState({ animationProgress: anim.progress }),
+		});
+	};
+
 	componentDidMount = () => {
 		this.setClasses();
 
@@ -81,64 +116,34 @@ class SliderScroller extends Component {
 	};
 
 	render() {
-		const { children, className, shadows } = this.props;
+		const { className, children, shadows } = this.props;
 
-		let componentClasses = ClassNames({
-			[className]: !!className,
+		const classes = ClassNames({
+			...Object.fromEntries(
+				className
+					.split(' ')
+					.filter(val => val)
+					.map(key => [key, true])
+			),
 			[styles.container]: true,
 		});
 
-		let animationProgress = 0;
-
-		const handleClickArrowLeft = event => {
-			const sliderScrollerWrap = event.currentTarget.parentElement.querySelector(`.${styles.wrapScroll}`),
-				shiftValue = Math.round(sliderScrollerWrap.clientWidth / 2);
-
-			if (animationProgress !== 100) anime.remove(sliderScrollerWrap);
-
-			anime({
-				targets: sliderScrollerWrap,
-				scrollLeft: {
-					value: Math.max(sliderScrollerWrap.scrollLeft - shiftValue, 0),
-					duration: 300,
-					easing: 'easeInOutQuad',
-					delay: 0,
-				},
-				update: anim => (animationProgress = anim.progress),
-			});
-		};
-		const handleClickArrowRight = event => {
-			const sliderScrollerWrap = event.currentTarget.parentElement.querySelector(`.${styles.wrapScroll}`),
-				shiftValue = Math.round(sliderScrollerWrap.clientWidth / 2);
-
-			if (animationProgress !== 100) anime.remove(sliderScrollerWrap);
-
-			anime({
-				targets: sliderScrollerWrap,
-				scrollLeft: {
-					value: Math.min(sliderScrollerWrap.scrollLeft + shiftValue, sliderScrollerWrap.scrollWidth - sliderScrollerWrap.clientWidth),
-					duration: 300,
-					easing: 'easeInOutQuad',
-					delay: 0,
-				},
-				update: anim => (animationProgress = anim.progress),
-			});
-		};
-
 		return (
-			<div ref={this.sliderScrollRef} className={componentClasses}>
+			<div ref={this.sliderScrollRef} className={classes}>
 				<div className={styles.wrapOverflow}>
 					<div className={styles.wrapScroll} onScroll={this.onScroll}>
-						<div className={styles.wrap} children={<div className={styles.wrapContent}>{children}</div>} />
+						<div className={styles.wrap}>
+							<div className={styles.content}>{children}</div>
+						</div>
 					</div>
 				</div>
 
-				<span className={`${styles.arrow} ${styles.arrow_left}`} onClick={handleClickArrowLeft}>
+				<span className={`${styles.arrow} ${styles.arrow_left}`} onClick={event => this.handleClickArrow(event, 'left')}>
 					<FontAwesomeIcon icon={['fal', 'angle-left']} />
 				</span>
 				{shadows ? <div className={`${styles.arrowShadow} ${styles.arrowShadow_directionLeft}`} /> : null}
 
-				<span className={`${styles.arrow} ${styles.arrow_right}`} onClick={handleClickArrowRight}>
+				<span className={`${styles.arrow} ${styles.arrow_right}`} onClick={event => this.handleClickArrow(event, 'right')}>
 					<FontAwesomeIcon icon={['fal', 'angle-right']} />
 				</span>
 				{shadows ? <div className={`${styles.arrowShadow} ${styles.arrowShadow_directionRight}`} /> : null}
@@ -146,12 +151,5 @@ class SliderScroller extends Component {
 		);
 	}
 }
-
-SliderScroller.propTypes = {
-	className: PropTypes.string,
-	shadows: PropTypes.bool,
-	offsetLeft: PropTypes.number,
-	offsetRight: PropTypes.number,
-};
 
 export default SliderScroller;

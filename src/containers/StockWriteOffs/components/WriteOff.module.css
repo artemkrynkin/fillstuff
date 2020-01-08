@@ -43,18 +43,23 @@
   margin-left: 5px;
 }
 
-.caption.orange {
+.archive,
+.writeOffUndo {
+  font-size: 12px;
+  margin-left: 5px;
+}
+
+.archive {
   color: var(--c-hex-o-15);
 }
 
-.caption.red {
+.writeOffUndo {
   color: var(--c-hex-o-1);
 }
 
 .cancelWriteOffButton {
   color: var(--c-hex-bg-200);
-  padding: 8px;
-  width: 36px;
+  padding: 10px;
 }
 
 .cancelWriteOffButton:hover {
@@ -62,7 +67,7 @@
 }
 
 .cancelWriteOffButton svg {
-  font-size: 20px;
+  font-size: 16px;
 }
 
 .cancelWriteOffButton {

@@ -3,7 +3,6 @@ import { FastField, Field } from 'formik';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Grid from '@material-ui/core/Grid';
-import InputLabel from '@material-ui/core/InputLabel';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -17,6 +16,7 @@ import { formError } from 'src/helpers/utils';
 import NumberFormat, { currencyFormatInputProps, currencyFormatProps } from 'src/components/NumberFormat';
 
 import styles from './index.module.css';
+import PositionNameInList from '../../../components/PositionNameInList';
 
 const FormFieldArrayReceipt = props => {
 	const {
@@ -46,8 +46,7 @@ const FormFieldArrayReceipt = props => {
 	return (
 		<Grid className={styles.receiptItem} alignItems="flex-start" spacing={2} container>
 			<Grid style={{ width: 190 }} item>
-				<InputLabel>&nbsp;</InputLabel>
-				<div className={styles.positionName}>{receipt.position.label}</div>
+				<PositionNameInList name={receipt.position.name} characteristics={receipt.position.characteristics} style={{ marginTop: 23 }} />
 			</Grid>
 
 			<Grid style={{ width: 180 }} item>

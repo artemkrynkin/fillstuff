@@ -5,7 +5,7 @@ import theme from 'shared/theme';
 
 export const TableCell = withStyles({
 	root: {
-		padding: '14px 15px',
+		padding: '9px 15px',
 	},
 	head: {
 		paddingTop: 18,

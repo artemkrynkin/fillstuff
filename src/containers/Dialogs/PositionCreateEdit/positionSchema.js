@@ -4,7 +4,7 @@ const positionSchema = (depopulate = false) => {
 	return Yup.object().shape({
 		name: Yup.string()
 			.min(2)
-			.max(100)
+			.max(60)
 			.required(),
 		unitReceipt: Yup.string()
 			.oneOf(['pce', 'nmp'])

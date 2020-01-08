@@ -43,7 +43,7 @@ writeOffsRouter.get(
 					populate: {
 						path: 'characteristics',
 					},
-					select: 'name unitIssue characteristics',
+					select: 'isArchived name unitIssue characteristics',
 				},
 				{
 					path: 'receipt',
@@ -314,7 +314,7 @@ writeOffsRouter.get(
 				populate: {
 					path: 'characteristics',
 				},
-				select: 'name unitIssue characteristics',
+				select: 'isArchived name unitIssue characteristics',
 			})
 			.populate({
 				path: 'receipt',

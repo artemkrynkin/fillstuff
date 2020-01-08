@@ -8,7 +8,7 @@ let PositionGroup = new Schema({
 	name: {
 		type: String,
 		minlength: [2, i18n.__('Не может быть короче 2 символов')],
-		maxlength: [100, i18n.__('Не может превышать 100 символов')],
+		maxlength: [60, i18n.__('Не может превышать 60 символов')],
 		required: [true, i18n.__('Обязательное поле')],
 		trim: true,
 	},

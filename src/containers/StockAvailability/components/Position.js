@@ -9,6 +9,7 @@ import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
 
+import PositionNameInList from 'src/components/PositionNameInList';
 import QuantityIndicator from 'src/components/QuantityIndicator';
 import Dropdown from 'src/components/Dropdown';
 
@@ -38,11 +39,8 @@ const Position = props => {
 
 	return (
 		<TableRow className={styles.position}>
-			<TableCell style={position.positionGroup ? { paddingLeft: 41 } : {}}>
-				{position.characteristics.reduce(
-					(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
-					position.name
-				)}
+			<TableCell style={position.positionGroup ? { maxWidth: 0, paddingLeft: 41 } : {}}>
+				<PositionNameInList name={position.name} characteristics={position.characteristics} />
 			</TableCell>
 			{position.receipts.length ? (
 				<TableCell align="right" width={160}>

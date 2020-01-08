@@ -6,6 +6,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { formatNumber } from 'shared/utils';
 
 import NumberFormat, { currencyFormatProps } from 'src/components/NumberFormat';
+import PositionNameInList from 'src/components/PositionNameInList';
 import QuantityIndicator from 'src/components/QuantityIndicator';
 
 import styles from './Procurement.module.css';
@@ -20,11 +21,11 @@ const Receipt = props => {
 	return (
 		<TableRow classes={positionSameFilter ? { root: TableRowHighlightClasses.root } : {}}>
 			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}}>
-				{receipt.position.characteristics.reduce(
-					(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
-					receipt.position.name
-				)}
-				{receipt.position.isArchived ? <span className={`${styles.caption} ${styles.orange}`}>В архиве</span> : null}
+				<PositionNameInList
+					name={receipt.position.name}
+					characteristics={receipt.position.characteristics}
+					isArchived={receipt.position.isArchived}
+				/>
 			</TableCell>
 			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="right" width={160}>
 				<QuantityIndicator

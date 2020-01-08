@@ -16,7 +16,7 @@ import { declensionNumber } from 'src/helpers/utils';
 import QuantityIndicator from 'src/components/QuantityIndicator';
 import Dropdown from 'src/components/Dropdown';
 
-import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, TableCell } from './styles';
+import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, TableCellExpansionPanel } from './styles';
 import styles from './Positions.module.css';
 
 import Position from './Position';
@@ -57,27 +57,25 @@ const PositionGroup = props => {
 						<Table>
 							<TableBody>
 								<TableRow>
-									<TableCell width={36} style={{ paddingLeft: 5, paddingRight: 0 }} />
-									<TableCell style={{ paddingLeft: 5 }}>
+									<TableCellExpansionPanel width={36} style={{ paddingLeft: 5, paddingRight: 0 }} />
+									<TableCellExpansionPanel style={{ paddingLeft: 5 }}>
 										<span className={styles.positionGroupName}>{positionGroup.name}</span>
 										<span className={styles.caption}>
-											{positionGroup.positions.length +
-												' ' +
-												declensionNumber(positionGroup.positions.length, ['позиция', 'позиции', 'позиций'])}
+											{declensionNumber(positionGroup.positions.length, ['позиция', 'позиции', 'позиций'], true)}
 										</span>
-									</TableCell>
-									<TableCell align="right" width={160}>
+									</TableCellExpansionPanel>
+									<TableCellExpansionPanel align="right" width={160}>
 										<QuantityIndicator
 											type="positionGroup"
 											dividedPositions={positionGroup.dividedPositions}
 											minimumBalance={positionGroup.minimumBalance}
 											positions={positionGroup.positions.filter(position => position.activeReceipt && position.receipts.length)}
 										/>
-									</TableCell>
-									<TableCell align="right" width={130}>
+									</TableCellExpansionPanel>
+									<TableCellExpansionPanel align="right" width={130}>
 										{positionGroup.positions.length ? positionGroup.minimumBalance : null}
-									</TableCell>
-									<TableCell width={280 + 50} />
+									</TableCellExpansionPanel>
+									<TableCellExpansionPanel width={280 + 50} />
 								</TableRow>
 							</TableBody>
 						</Table>

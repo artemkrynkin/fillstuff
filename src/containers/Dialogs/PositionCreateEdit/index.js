@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import validator from 'validator';
 import { Formik } from 'formik';
 
-import { PDDialog, PDDialogTitle } from 'src/components/Dialog';
+import { DialogSticky, DialogTitle } from 'src/components/Dialog';
 
 import { getStockStatus } from 'src/actions/stocks';
 import { createCharacteristic } from 'src/actions/characteristics';
@@ -137,7 +137,7 @@ class DialogPositionCreateEdit extends Component {
 				  };
 
 		return (
-			<PDDialog
+			<DialogSticky
 				open={dialogOpen}
 				onEnter={this.onEnterDialog}
 				onClose={onCloseDialog}
@@ -146,9 +146,7 @@ class DialogPositionCreateEdit extends Component {
 				scroll="body"
 				stickyActions
 			>
-				<PDDialogTitle theme="primary" onClose={onCloseDialog}>
-					{type === 'create' ? 'Создание позиции' : 'Редактирование позиции'}
-				</PDDialogTitle>
+				<DialogTitle onClose={onCloseDialog}>{type === 'create' ? 'Создание позиции' : 'Редактирование позиции'}</DialogTitle>
 				<Formik
 					initialValues={initialValues}
 					validationSchema={() => positionSchema()}
@@ -170,7 +168,7 @@ class DialogPositionCreateEdit extends Component {
 						/>
 					)}
 				</Formik>
-			</PDDialog>
+			</DialogSticky>
 		);
 	}
 }

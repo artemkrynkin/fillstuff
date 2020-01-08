@@ -7,7 +7,7 @@ import styles from './index.module.css';
 
 class Layout extends Component {
 	render() {
-		const { children, authed = false, theme = 'default' } = this.props;
+		const { authed, theme, children } = this.props;
 
 		return (
 			<div className={stylesPage.pageLayout}>
@@ -39,7 +39,14 @@ class Layout extends Component {
 	}
 }
 
+Layout.defaultProps = {
+	authed: false,
+	theme: 'default',
+};
+
 Layout.propTypes = {
+	authed: PropTypes.bool.isRequired,
+	theme: PropTypes.string.isRequired,
 	children: PropTypes.node,
 };
 

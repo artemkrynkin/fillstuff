@@ -15,16 +15,27 @@ const characteristics = (
 		case 'RECEIVE_SPECIFICATIONS': {
 			return {
 				...state,
-				data: action.payload,
 				isFetching: false,
+				data: action.payload,
 			};
 		}
 		case 'CREATE_SPECIFICATION': {
-			state.data.push(action.payload);
+			let stateData = { ...state }.data;
+
+			stateData.push(action.payload);
 
 			return {
 				...state,
 				isFetching: false,
+				data: stateData,
+			};
+		}
+		case 'UNAUTHORIZED_USER': {
+			return {
+				...state,
+				isFetching: false,
+				error: 'unauthorized',
+				data: action.payload,
 			};
 		}
 		default:

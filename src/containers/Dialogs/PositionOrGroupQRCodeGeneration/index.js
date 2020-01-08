@@ -18,7 +18,7 @@ import FormControl from '@material-ui/core/FormControl';
 import theme from 'shared/theme';
 import { sleep } from 'shared/utils';
 
-import { PDDialog, PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
+import { DialogSticky, DialogActions, DialogTitle } from 'src/components/Dialog';
 
 import marks from './marks';
 
@@ -218,7 +218,7 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 		const QRWidth = QRCodeSize * pixelsPerCentimeter;
 
 		return (
-			<PDDialog
+			<DialogSticky
 				open={dialogOpen}
 				onEnter={this.onEnter}
 				onClose={onCloseDialog}
@@ -227,9 +227,7 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 				scroll="body"
 				stickyActions
 			>
-				<PDDialogTitle theme="primary" onClose={onCloseDialog}>
-					Генерация QR-кода
-				</PDDialogTitle>
+				<DialogTitle onClose={onCloseDialog}>Генерация QR-кода</DialogTitle>
 				<Formik
 					initialValues={{ quantity: '' }}
 					validationSchema={QRCodeGenerationSchema}
@@ -299,7 +297,7 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 									<img className={styles.qrCode} src={QRCodeDataUrl} width={QRWidth} height={QRWidth} alt="" />
 								</div>
 							</DialogContent>
-							<PDDialogActions
+							<DialogActions
 								leftHandleProps={{
 									handleProps: {
 										onClick: onCloseDialog,
@@ -318,7 +316,7 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 						</Form>
 					)}
 				</Formik>
-			</PDDialog>
+			</DialogSticky>
 		);
 	}
 }

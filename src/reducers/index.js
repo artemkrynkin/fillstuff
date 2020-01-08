@@ -6,7 +6,6 @@ import positionsInGroups from './positionsInGroups';
 import positions from './positions';
 import characteristics from './characteristics';
 import writeOffs from './writeOffs';
-import purchases from './purchases';
 import procurements from './procurements';
 
 const getReducers = () => {
@@ -17,7 +16,6 @@ const getReducers = () => {
 		positions,
 		characteristics,
 		writeOffs,
-		purchases,
 		procurements,
 	});
 };

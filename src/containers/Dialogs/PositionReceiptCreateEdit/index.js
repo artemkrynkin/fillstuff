@@ -5,7 +5,7 @@ import validator from 'validator';
 
 import { Formik } from 'formik';
 
-import { PDDialog, PDDialogTitle } from 'src/components/Dialog';
+import { DialogSticky, DialogTitle } from 'src/components/Dialog';
 
 import { getStockStatus } from 'src/actions/stocks';
 import { createCharacteristic } from 'src/actions/characteristics';
@@ -177,7 +177,7 @@ class DialogPositionReceiptCreateEdit extends Component {
 				  };
 
 		return (
-			<PDDialog
+			<DialogSticky
 				open={dialogOpen}
 				onEnter={this.onEnterDialog}
 				onClose={onCloseDialog}
@@ -186,9 +186,7 @@ class DialogPositionReceiptCreateEdit extends Component {
 				scroll="body"
 				stickyActions
 			>
-				<PDDialogTitle theme="primary" onClose={onCloseDialog}>
-					{type === 'create' ? 'Создание позиции' : 'Редактирование позиции'}
-				</PDDialogTitle>
+				<DialogTitle onClose={onCloseDialog}>{type === 'create' ? 'Создание позиции' : 'Редактирование позиции'}</DialogTitle>
 				<Formik
 					initialValues={initialValues}
 					validationSchema={() => positionSchema(type)}
@@ -212,7 +210,7 @@ class DialogPositionReceiptCreateEdit extends Component {
 						/>
 					)}
 				</Formik>
-			</PDDialog>
+			</DialogSticky>
 		);
 	}
 }

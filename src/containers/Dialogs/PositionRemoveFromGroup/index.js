@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 
-import { Dialog, PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
+import { Dialog, DialogActions, DialogTitle } from 'src/components/Dialog';
 
 import { getStockStatus } from 'src/actions/stocks';
 import { removePositionFromGroup } from 'src/actions/positionsInGroups';
@@ -17,9 +17,7 @@ const DialogPositionRemoveFromGroup = props => {
 
 	return (
 		<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog}>
-			<PDDialogTitle theme="primary" onClose={onCloseDialog}>
-				Открепление позиции от группы
-			</PDDialogTitle>
+			<DialogTitle onClose={onCloseDialog}>Открепление позиции от группы</DialogTitle>
 			<DialogContent>
 				<DialogContentText>
 					Вы действительно хотите открепить позицию{' '}
@@ -34,7 +32,7 @@ const DialogPositionRemoveFromGroup = props => {
 					</span>
 				</DialogContentText>
 			</DialogContent>
-			<PDDialogActions
+			<DialogActions
 				leftHandleProps={{
 					handleProps: {
 						onClick: onCloseDialog,

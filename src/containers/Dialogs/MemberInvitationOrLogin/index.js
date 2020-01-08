@@ -7,7 +7,7 @@ import QRCode from 'qrcode';
 import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
 
-import { Dialog, PDDialogTitle } from 'src/components/Dialog';
+import { Dialog, DialogTitle } from 'src/components/Dialog';
 import { memberInvitation } from 'src/actions/stocks';
 import { LoadingComponent } from 'src/components/Loading';
 
@@ -67,9 +67,7 @@ class MemberEdit extends Component {
 
 		return (
 			<Dialog open={dialogOpen} onEnter={this.onEnterDialog} onClose={onCloseDialog} onExited={this.onExitedDialog} maxWidth="md">
-				<PDDialogTitle theme="primary" onClose={this.onCloseDialog}>
-					QR-код для входа
-				</PDDialogTitle>
+				<DialogTitle onClose={this.onCloseDialog}>QR-код для входа</DialogTitle>
 				<DialogContent>
 					{QRCode ? (
 						<div style={{ textAlign: 'center' }}>
@@ -107,7 +105,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	};
 };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(MemberEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(MemberEdit);

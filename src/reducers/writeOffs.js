@@ -15,58 +15,40 @@ const products = (
 		case 'RECEIVE_WRITE_OFFS': {
 			return {
 				...state,
-				data: action.payload,
 				isFetching: false,
+				data: action.payload,
 			};
 		}
 		case 'CREATE_WRITE_OFF': {
-			state.data.unshift(action.payload);
-			state.data.paging.totalCount += 1;
+			let stateData = { ...state }.data;
+
+			stateData.unshift(action.payload);
+			stateData.paging.totalCount += 1;
 
 			return {
 				...state,
 				isFetching: false,
+				data: stateData,
 			};
 		}
 		case 'CANCEL_WRITE_OFF': {
-			const writeOffIndex = state.data.data.findIndex(writeOff => writeOff._id === action.payload.writeOffId);
+			let stateData = { ...state }.data;
+			const writeOffIndex = stateData.data.findIndex(writeOff => writeOff._id === action.payload.writeOffId);
 
-			state.data.data[writeOffIndex] = action.payload.writeOff;
+			stateData.data[writeOffIndex] = action.payload.writeOff;
 
 			return {
 				...state,
 				isFetching: false,
+				data: stateData,
 			};
 		}
-		// case 'EDIT_PRODUCT': {
-		// 	const productIndex = state.data.findIndex(product => product._id === action.payload.productId);
-		//
-		// 	state.data[productIndex] = {
-		// 		...state.data[productIndex],
-		// 		...action.payload.newValues,
-		// 	};
-		//
-		// 	return {
-		// 		...state,
-		// 		isFetching: false,
-		// 	};
-		// }
-		// case 'DELETE_PRODUCT': {
-		// 	const productIndex = state.data.findIndex(product => product._id === action.payload.productId);
-		//
-		// 	state.data.splice(productIndex, 1);
-		//
-		// 	return {
-		// 		...state,
-		// 		isFetching: false,
-		// 	};
-		// }
 		case 'UNAUTHORIZED_USER': {
 			return {
 				...state,
-				data: action.payload,
 				isFetching: false,
 				error: 'unauthorized',
+				data: action.payload,
 			};
 		}
 		default:

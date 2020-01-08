@@ -17,70 +17,81 @@ const positions = (
 		case 'RECEIVE_POSITIONS': {
 			return {
 				...state,
-				data: action.payload,
 				isFetching: false,
+				data: action.payload,
 			};
 		}
 		case 'CREATE_POSITION': {
-			state.data.push(action.payload);
+			let stateData = { ...state }.data;
+
+			stateData.push(action.payload);
 
 			return {
 				...state,
 				isFetching: false,
+				data: stateData,
 			};
 		}
 		case 'EDIT_POSITION': {
-			const positionIndex = state.data.findIndex(position => position._id === action.payload.positionId);
+			let stateData = { ...state }.data;
+			const positionIndex = stateData.findIndex(position => position._id === action.payload.positionId);
 
-			state.data[positionIndex] = action.payload.position;
+			stateData[positionIndex] = action.payload.position;
 
 			return {
 				...state,
 				isFetching: false,
+				data: stateData,
 			};
 		}
 		case 'ARCHIVE_POSITION': {
-			const positionIndex = state.data.findIndex(position => position._id === action.payload.positionId);
+			let stateData = { ...state }.data;
+			const positionIndex = stateData.findIndex(position => position._id === action.payload.positionId);
 
-			state.data.splice(positionIndex, 1);
+			stateData.splice(positionIndex, 1);
 
 			return {
 				...state,
 				isFetching: false,
+				data: stateData,
 			};
 		}
 		case 'CREATE_POSITION_GROUP': {
-			state.data = state.data.map(position => {
+			let stateData = { ...state }.data;
+
+			stateData.forEach(position => {
 				if (action.payload.positions.some(positionInGroup => position._id === positionInGroup._id)) {
 					position.positionGroup = action.payload._id;
 					position.divided = action.payload.divided;
 				}
-
-				return position;
 			});
 
 			return {
 				...state,
 				isFetching: false,
+				data: stateData,
 			};
 		}
 		case 'ADD_POSITION_IN_GROUP': {
-			state.data = state.data.map(position => {
+			let stateData = { ...state }.data;
+
+			stateData.forEach(position => {
 				if (action.payload.positionsAdded.some(positionAddedId => position._id === positionAddedId)) {
 					position.positionGroup = action.payload.positionGroupId;
 					position.divided = action.payload.positionGroup.divided;
 				}
-
-				return position;
 			});
 
 			return {
 				...state,
 				isFetching: false,
+				data: stateData,
 			};
 		}
 		case 'REMOVE_POSITION_FROM_GROUP': {
-			state.data = state.data.map(position => {
+			let stateData = { ...state }.data;
+
+			stateData.forEach(position => {
 				if (
 					position._id === action.payload.positionId ||
 					(action.payload.remainingPositionId && position._id === action.payload.remainingPositionId)
@@ -88,21 +99,20 @@ const positions = (
 					position.divided = true;
 					delete position.positionGroup;
 				}
-
-				return position;
 			});
 
 			return {
 				...state,
 				isFetching: false,
+				data: stateData,
 			};
 		}
 		case 'UNAUTHORIZED_USER': {
 			return {
 				...state,
-				data: action.payload,
 				isFetching: false,
 				error: 'unauthorized',
+				data: action.payload,
 			};
 		}
 		default:

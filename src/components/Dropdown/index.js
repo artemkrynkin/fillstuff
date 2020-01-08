@@ -71,27 +71,20 @@ const useStylesArrow = makeStyles(() => ({
 }));
 
 const Dropdown = props => {
-	const { anchor, open, onClose, arrow = true, offset, children, innerContentStyle, ...remainingProps } = props;
+	const { anchor, open, onClose, arrow, children, style, innerContentStyle, ...remainingProps } = props;
 	const { arrow: arrowClasses, popper } = useStylesArrow();
 	const [arrowRef, setArrowRef] = useState(null);
 
-	function handleClose(event) {
+	const handleClose = event => {
 		if (anchor.current && anchor.current.contains(event.target)) return;
 
 		onClose();
-	}
+	};
 
 	const popperStyle = {
 		zIndex: 1300,
+		...style,
 	};
-
-	if (~!remainingProps.placement.search('top') || ~!remainingProps.placement.search('bottom')) {
-		popperStyle.marginTop = offset;
-		popperStyle.marginBottom = offset;
-	} else if (~!remainingProps.placement.search('left') || ~!remainingProps.placement.search('right')) {
-		popperStyle.marginLeft = offset;
-		popperStyle.marginRight = offset;
-	}
 
 	return (
 		<Popper
@@ -127,6 +120,10 @@ const Dropdown = props => {
 			)}
 		</Popper>
 	);
+};
+
+Dropdown.defaultProps = {
+	arrow: true,
 };
 
 Dropdown.propTypes = {

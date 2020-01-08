@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
-import { PDDialog, PDDialogTitle } from 'src/components/Dialog';
+import { DialogSticky, DialogTitle } from 'src/components/Dialog';
 
 import { editMember } from 'src/actions/stocks';
 
@@ -32,10 +32,8 @@ const MemberEdit = props => {
 	if (!selectedMember) return null;
 	else
 		return (
-			<PDDialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth="md" scroll="body" stickyActions>
-				<PDDialogTitle theme="primary" onClose={onCloseDialog}>
-					Изменение роли участника
-				</PDDialogTitle>
+			<DialogSticky open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth="md" scroll="body" stickyActions>
+				<DialogTitle onClose={onCloseDialog}>Изменение роли участника</DialogTitle>
 				<Formik
 					initialValues={selectedMember}
 					validationSchema={memberInvitationOrEditSchema}
@@ -57,7 +55,7 @@ const MemberEdit = props => {
 						/>
 					)}
 				</Formik>
-			</PDDialog>
+			</DialogSticky>
 		);
 };
 
@@ -83,7 +81,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	};
 };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(MemberEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(MemberEdit);

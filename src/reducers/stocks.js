@@ -18,68 +18,78 @@ const stocks = (
 		case 'RECEIVE_STOCKS': {
 			return {
 				...state,
-				data: action.payload,
 				isFetching: false,
+				data: action.payload,
 			};
 		}
 		case 'GET_STOCK_STATUS': {
-			const stockIndex = state.data.findIndex(stock => stock._id === action.payload.stockId);
+			let stateData = { ...state }.data;
 
-			state.data[stockIndex] = {
-				...state.data[stockIndex],
+			const stockIndex = stateData.findIndex(stock => stock._id === action.payload.stockId);
+
+			stateData[stockIndex] = {
+				...stateData[stockIndex],
 				status: action.payload.status,
 			};
 
 			return {
 				...state,
 				isFetching: false,
+				data: stateData,
 			};
 		}
 		case 'EDIT_STOCK': {
-			const stockIndex = state.data.findIndex(stock => stock._id === action.payload.stockId);
+			let stateData = { ...state }.data;
 
-			state.data[stockIndex] = {
-				...state.data[stockIndex],
+			const stockIndex = stateData.findIndex(stock => stock._id === action.payload.stockId);
+
+			stateData[stockIndex] = {
+				...stateData[stockIndex],
 				...action.payload.newValues,
 			};
 
 			return {
 				...state,
 				isFetching: false,
+				data: stateData,
 			};
 		}
 		case 'EDIT_MEMBER': {
-			const stockIndex = state.data.findIndex(stock => stock._id === action.payload.stockId);
-			const memberIndex = state.data[stockIndex].members.findIndex(member => member._id === action.payload.memberId);
+			let stateData = { ...state }.data;
 
-			state.data[stockIndex].members[memberIndex].role = action.payload.newValues.role;
-			state.data[stockIndex].members[memberIndex].user.name = action.payload.newValues.user.name;
-			state.data[stockIndex].members[memberIndex].user.email = action.payload.newValues.user.email;
-			state.data[stockIndex].members = cloneDeep(state.data[stockIndex].members);
+			const stockIndex = stateData.findIndex(stock => stock._id === action.payload.stockId);
+			const memberIndex = stateData[stockIndex].members.findIndex(member => member._id === action.payload.memberId);
+
+			stateData[stockIndex].members[memberIndex] = action.payload.newValues;
+			stateData[stockIndex].members = cloneDeep(stateData[stockIndex].members);
 
 			return {
 				...state,
 				isFetching: false,
+				data: stateData,
 			};
 		}
 		case 'DELETE_MEMBER': {
-			const stockIndex = state.data.findIndex(stock => stock._id === action.payload.stockId);
-			const memberIndex = state.data[stockIndex].members.findIndex(member => member._id === action.payload.memberId);
+			let stateData = { ...state }.data;
 
-			state.data[stockIndex].members.splice(memberIndex, 1);
-			state.data[stockIndex].members = cloneDeep(state.data[stockIndex].members);
+			const stockIndex = stateData.findIndex(stock => stock._id === action.payload.stockId);
+			const memberIndex = stateData[stockIndex].members.findIndex(member => member._id === action.payload.memberId);
+
+			stateData[stockIndex].members.splice(memberIndex, 1);
+			stateData[stockIndex].members = cloneDeep(stateData[stockIndex].members);
 
 			return {
 				...state,
 				isFetching: false,
+				data: stateData,
 			};
 		}
 		case 'UNAUTHORIZED_USER': {
 			return {
 				...state,
-				data: action.payload,
 				isFetching: false,
 				error: 'unauthorized',
+				data: action.payload,
 			};
 		}
 		default:

@@ -8,7 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 
-import { Dialog, PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
+import { Dialog, DialogTitle, DialogActions } from 'src/components/Dialog';
 
 import { deleteMember } from 'src/actions/stocks';
 
@@ -37,9 +37,9 @@ class MemberDelete extends Component {
 		else
 			return (
 				<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog}>
-					<PDDialogTitle theme="primary" onClose={onCloseDialog}>
+					<DialogTitle onClose={onCloseDialog}>
 						{selectedMember.user._id !== currentUser._id ? 'Удаление участника' : 'Выход из команды'}
-					</PDDialogTitle>
+					</DialogTitle>
 					<DialogContent>
 						<Grid alignItems="flex-start" wrap="nowrap" container>
 							<div className={photoImgClasses(selectedMember, true)}>
@@ -60,7 +60,7 @@ class MemberDelete extends Component {
 							</div>
 						</Grid>
 					</DialogContent>
-					<PDDialogActions
+					<DialogActions
 						leftHandleProps={{
 							handleProps: {
 								onClick: onCloseDialog,
@@ -96,7 +96,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	};
 };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(MemberDelete);
+export default connect(mapStateToProps, mapDispatchToProps)(MemberDelete);

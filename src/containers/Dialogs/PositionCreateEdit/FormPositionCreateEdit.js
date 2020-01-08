@@ -20,7 +20,7 @@ import { unitTypes, unitTypeTransform, characteristicTypeTransform } from 'share
 import { onAddCharacteristicInPosition, checkCharacteristicsOnAbsenceInPosition } from 'src/helpers/positionUtils';
 
 import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
-import { PDDialogActions } from 'src/components/Dialog';
+import { DialogActions } from 'src/components/Dialog';
 import NumberFormat from 'src/components/NumberFormat';
 import { SelectAutocompleteCreate } from 'src/components/selectAutocomplete';
 import Chips from 'src/components/Chips';
@@ -352,7 +352,7 @@ const FormPositionCreateEdit = props => {
 					)}
 				/>
 			</DialogContent>
-			<PDDialogActions
+			<DialogActions
 				leftHandleProps={{
 					handleProps: {
 						onClick: onCloseDialog,

@@ -13,7 +13,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 
-import { PDDialogActions } from 'src/components/Dialog';
+import { DialogActions } from 'src/components/Dialog';
 import NumberFormat from 'src/components/NumberFormat';
 import Chips from 'src/components/Chips';
 import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
@@ -202,7 +202,7 @@ const FormPositionGroupCreateEditAdd = props => {
 					</Grid>
 				) : null}
 			</DialogContent>
-			<PDDialogActions
+			<DialogActions
 				leftHandleProps={{
 					handleProps: {
 						onClick: onCloseDialog,

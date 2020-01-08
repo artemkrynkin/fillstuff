@@ -17,7 +17,7 @@ import { DatePicker } from '@material-ui/pickers';
 import { declensionNumber } from 'src/helpers/utils';
 
 import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
-import { PDDialogActions } from 'src/components/Dialog';
+import { DialogActions } from 'src/components/Dialog';
 import NumberFormat, { currencyFormatInputProps } from 'src/components/NumberFormat';
 import Dropdown from 'src/components/Dropdown';
 
@@ -218,7 +218,7 @@ const FormProcurementCreate = props => {
 					)}
 				</FieldArray>
 			</DialogContent>
-			<PDDialogActions
+			<DialogActions
 				leftHandleProps={
 					!formEditable
 						? {

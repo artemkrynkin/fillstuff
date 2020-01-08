@@ -15,134 +15,155 @@ const positionsInGroups = (
 		case 'RECEIVE_POSITIONS_IN_GROUPS': {
 			return {
 				...state,
-				data: action.payload,
 				isFetching: false,
+				data: action.payload,
 			};
 		}
 		case 'CREATE_POSITION': {
-			state.data.push(action.payload);
+			let stateData = { ...state }.data;
+
+			stateData.push(action.payload);
 
 			return {
 				...state,
 				isFetching: false,
+				data: stateData,
 			};
 		}
 		case 'EDIT_POSITION': {
+			let stateData = { ...state }.data;
+
 			if (!action.payload.position.positionGroup) {
-				const positionIndex = state.data.findIndex(position => position._id === action.payload.positionId);
+				const positionIndex = stateData.findIndex(position => position._id === action.payload.positionId);
 
-				state.data[positionIndex] = action.payload.position;
+				stateData[positionIndex] = action.payload.position;
 			} else {
-				const positionGroupIndex = state.data.findIndex(positionGroup => positionGroup._id === action.payload.position.positionGroup);
-				const positionIndex = state.data[positionGroupIndex].positions.findIndex(position => position._id === action.payload.positionId);
+				const positionGroupIndex = stateData.findIndex(positionGroup => positionGroup._id === action.payload.position.positionGroup);
+				const positionIndex = stateData[positionGroupIndex].positions.findIndex(position => position._id === action.payload.positionId);
 
-				state.data[positionGroupIndex].positions[positionIndex] = action.payload.position;
+				stateData[positionGroupIndex].positions[positionIndex] = action.payload.position;
 			}
 
 			return {
 				...state,
 				isFetching: false,
+				data: stateData,
 			};
 		}
 		case 'ARCHIVE_POSITION': {
+			let stateData = { ...state }.data;
+
 			if (action.payload.positionGroupId) {
-				const positionGroupIndex = state.data.findIndex(positionGroup => positionGroup._id === action.payload.positionGroupId);
+				const positionGroupIndex = stateData.findIndex(positionGroup => positionGroup._id === action.payload.positionGroupId);
 
-				if (state.data[positionGroupIndex].positions.length > 2) {
-					const positionIndex = state.data[positionGroupIndex].positions.findIndex(position => position._id === action.payload.positionId);
+				if (stateData[positionGroupIndex].positions.length > 2) {
+					const positionIndex = stateData[positionGroupIndex].positions.findIndex(position => position._id === action.payload.positionId);
 
-					state.data[positionGroupIndex].positions.splice(positionIndex, 1);
+					stateData[positionGroupIndex].positions.splice(positionIndex, 1);
 				} else {
-					const remainingPosition = state.data[positionGroupIndex].positions.find(
+					const remainingPosition = stateData[positionGroupIndex].positions.find(
 						positionInGroup => positionInGroup._id !== action.payload.positionId
 					);
 
 					remainingPosition.divided = true;
 					delete remainingPosition.positionGroup;
 
-					state.data.splice(positionGroupIndex, 1);
-					state.data.push(remainingPosition);
+					stateData.splice(positionGroupIndex, 1);
+					stateData.push(remainingPosition);
 				}
 			} else {
-				const positionIndex = state.data.findIndex(position => position._id === action.payload.positionId);
+				const positionIndex = stateData.findIndex(position => position._id === action.payload.positionId);
 
-				state.data.splice(positionIndex, 1);
+				stateData.splice(positionIndex, 1);
 			}
 
 			return {
 				...state,
 				isFetching: false,
+				data: stateData,
 			};
 		}
 		case 'CREATE_POSITION_GROUP': {
-			state.data = state.data.filter(position => !action.payload.positions.some(positionInGroup => position._id === positionInGroup._id));
+			let stateData = { ...state }.data;
 
-			state.data.push(action.payload);
+			stateData = stateData.filter(position => !action.payload.positions.some(positionInGroup => position._id === positionInGroup._id));
+
+			stateData.push(action.payload);
 
 			return {
 				...state,
 				isFetching: false,
+				data: stateData,
 			};
 		}
 		case 'EDIT_POSITION_GROUP': {
-			const positionGroupIndex = state.data.findIndex(positionGroup => positionGroup._id === action.payload.positionGroupId);
+			let stateData = { ...state }.data;
 
-			state.data[positionGroupIndex] = action.payload.positionGroup;
+			const positionGroupIndex = stateData.findIndex(positionGroup => positionGroup._id === action.payload.positionGroupId);
+
+			stateData[positionGroupIndex] = action.payload.positionGroup;
 
 			return {
 				...state,
 				isFetching: false,
+				data: stateData,
 			};
 		}
 		case 'ADD_POSITION_IN_GROUP': {
-			state.data = state.data.filter(position => !action.payload.positionsAdded.some(positionAddedId => position._id === positionAddedId));
+			let stateData = { ...state }.data;
 
-			const positionGroupIndex = state.data.findIndex(positionGroup => positionGroup._id === action.payload.positionGroupId);
+			stateData = stateData.filter(position => !action.payload.positionsAdded.some(positionAddedId => position._id === positionAddedId));
 
-			state.data[positionGroupIndex] = action.payload.positionGroup;
+			const positionGroupIndex = stateData.findIndex(positionGroup => positionGroup._id === action.payload.positionGroupId);
+
+			stateData[positionGroupIndex] = action.payload.positionGroup;
 
 			return {
 				...state,
 				isFetching: false,
+				data: stateData,
 			};
 		}
 		case 'REMOVE_POSITION_FROM_GROUP': {
-			const positionGroupIndex = state.data.findIndex(positionGroup => positionGroup._id === action.payload.positionGroupId);
+			let stateData = { ...state }.data;
 
-			const position = state.data[positionGroupIndex].positions.find(position => position._id === action.payload.positionId);
+			const positionGroupIndex = stateData.findIndex(positionGroup => positionGroup._id === action.payload.positionGroupId);
+
+			const position = stateData[positionGroupIndex].positions.find(position => position._id === action.payload.positionId);
 
 			position.divided = true;
 			delete position.positionGroup;
 
-			state.data.push(position);
+			stateData.push(position);
 
-			if (state.data[positionGroupIndex].positions.length > 2) {
-				const positionIndex = state.data[positionGroupIndex].positions.findIndex(position => position._id === action.payload.positionId);
+			if (stateData[positionGroupIndex].positions.length > 2) {
+				const positionIndex = stateData[positionGroupIndex].positions.findIndex(position => position._id === action.payload.positionId);
 
-				state.data[positionGroupIndex].positions.splice(positionIndex, 1);
+				stateData[positionGroupIndex].positions.splice(positionIndex, 1);
 			} else {
-				const remainingPosition = state.data[positionGroupIndex].positions.find(
+				const remainingPosition = stateData[positionGroupIndex].positions.find(
 					positionInGroup => positionInGroup._id === action.payload.remainingPositionId
 				);
 
 				remainingPosition.divided = true;
 				delete remainingPosition.positionGroup;
 
-				state.data.splice(positionGroupIndex, 1);
-				state.data.push(remainingPosition);
+				stateData.splice(positionGroupIndex, 1);
+				stateData.push(remainingPosition);
 			}
 
 			return {
 				...state,
 				isFetching: false,
+				data: stateData,
 			};
 		}
 		case 'UNAUTHORIZED_USER': {
 			return {
 				...state,
-				data: action.payload,
 				isFetching: false,
 				error: 'unauthorized',
+				data: action.payload,
 			};
 		}
 		default:

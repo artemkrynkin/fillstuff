@@ -7,12 +7,12 @@ import { Formik } from 'formik';
 import { UnitCostDelivery, receiptCalc } from 'shared/checkPositionAndReceipt';
 import { sleep, formatNumber } from 'shared/utils';
 
-import { observeActions, PDDialogFR, PDDialogTitle } from 'src/components/Dialog';
+import { DialogStickyFR, DialogTitle } from 'src/components/Dialog';
 
 import { getStockStatus } from 'src/actions/stocks';
 import { createProcurement } from 'src/actions/procurements';
 
-import { positionTransform } from './helpers';
+import { positionTransform } from './utils';
 import FormProcurementCreate from './FormProcurementCreate';
 import procurementSchema from './procurementSchema';
 
@@ -233,10 +233,6 @@ class ProcurementCreate extends Component {
 		}
 	};
 
-	onEnterDialog = element => {
-		observeActions(element, styles.addPositionContainer, 'top', 'AddPositionContainer');
-	};
-
 	onExitedDialog = () => {
 		const { onExitedDialog } = this.props;
 
@@ -254,20 +250,23 @@ class ProcurementCreate extends Component {
 		}
 
 		return (
-			<PDDialogFR
+			<DialogStickyFR
 				ref={this.dialogRef}
 				open={dialogOpen}
-				onEnter={this.onEnterDialog}
 				onClose={onCloseDialog}
 				onExited={this.onExitedDialog}
 				maxWidth="xl"
 				scroll="body"
-				stickyAnyone
+				stickyAnyone={[
+					{
+						stickySelector: styles.addPositionContainer,
+						position: 'top',
+						sentinelAdditionalText: 'AddPositionContainer',
+					},
+				]}
 				stickyActions
 			>
-				<PDDialogTitle theme="primary" onClose={onCloseDialog}>
-					Создание закупки
-				</PDDialogTitle>
+				<DialogTitle onClose={onCloseDialog}>Создание закупки</DialogTitle>
 				<Formik
 					initialValues={initialValues}
 					validationSchema={procurementSchema}
@@ -287,7 +286,7 @@ class ProcurementCreate extends Component {
 						/>
 					)}
 				</Formik>
-			</PDDialogFR>
+			</DialogStickyFR>
 		);
 	}
 }

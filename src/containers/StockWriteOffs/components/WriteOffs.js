@@ -108,10 +108,10 @@ class WriteOffs extends Component {
 				{!isLoadingWriteOffs && writeOffsData ? (
 					writeOffsData.data.length && writeOffsData.paging.totalCount ? (
 						generatePaginate(paging.loadedDocs, writeOffsData.data).map((writeOffsPerMonth, index) => (
-							<div className={styles.date} key={index}>
+							<div className={styles.date} key={writeOffsPerMonth.date}>
 								<MonthDateTitle date={writeOffsPerMonth.date} />
-								{writeOffsPerMonth.items.map((writeOffsPerDay, index) => (
-									<WriteOffsPerDay key={index} currentStockId={currentStockId} writeOffsPerDay={writeOffsPerDay} />
+								{writeOffsPerMonth.items.map(writeOffsPerDay => (
+									<WriteOffsPerDay key={writeOffsPerDay.date} currentStockId={currentStockId} writeOffsPerDay={writeOffsPerDay} />
 								))}
 							</div>
 						))
@@ -177,17 +177,14 @@ const mapStateToProps = state => {
 					(indicators, writeOff) => {
 						if (writeOff.canceled) return indicators;
 
-						indicators.total += formatNumber(writeOff.quantity * writeOff.receipt.unitPurchasePrice);
+						const purchasePrice = formatNumber(writeOff.quantity * writeOff.receipt.unitPurchasePrice);
 
-						if (!writeOff.isFree) {
-							indicators.sellingPositions += formatNumber(writeOff.quantity * writeOff.receipt.unitPurchasePrice);
-						} else {
-							indicators.freePositions += formatNumber(writeOff.quantity * writeOff.receipt.unitPurchasePrice);
-						}
+						indicators.total += purchasePrice;
 
-						if (!indicators.users.some(user => String(user._id) === String(writeOff.user._id))) {
-							indicators.users.push(writeOff.user);
-						}
+						if (!writeOff.isFree) indicators.sellingPositions += purchasePrice;
+						else indicators.freePositions += purchasePrice;
+
+						if (!indicators.users.some(user => user._id === writeOff.user._id)) indicators.users.push(writeOff.user);
 
 						return indicators;
 					},

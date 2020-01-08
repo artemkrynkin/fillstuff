@@ -10,44 +10,56 @@ const renderChipLabel = chip => chip;
 
 const removeChip = (chips, index) => chips.splice(index, 1);
 
-const Chips = props => {
-	const { className, chips, onRenderChipLabel = renderChipLabel, onRemoveChip = removeChip } = props;
-
-	let chipsClassesObj = {
-		[styles.container]: true,
-	};
-
-	if (className)
-		chipsClassesObj = {
-			...Object.fromEntries(
-				className
-					.split(' ')
-					.filter(val => val)
-					.map(key => [key, true])
-			),
-			...chipsClassesObj,
-		};
-
-	const chipsClasses = ClassNames(chipsClassesObj);
+const Chip = props => {
+	const { chipLabel, onRemoveChip } = props;
 
 	return (
-		<div className={chipsClasses}>
+		<div className={styles.item}>
+			<div className={styles.label}>{chipLabel}</div>
+			<div className={styles.remove} onClick={onRemoveChip}>
+				<FontAwesomeIcon icon={['far', 'times']} />
+			</div>
+		</div>
+	);
+};
+
+Chip.propTypes = {
+	chipLabel: PropTypes.node.isRequired,
+	onRemoveChip: PropTypes.func.isRequired,
+};
+
+const Chips = props => {
+	const { className, chips, onRenderChipLabel, onRemoveChip } = props;
+
+	const classes = ClassNames({
+		...Object.fromEntries(
+			className
+				.split(' ')
+				.filter(val => val)
+				.map(key => [key, true])
+		),
+		[styles.container]: true,
+	});
+
+	return (
+		<div className={classes}>
 			{chips.map((chip, index) => (
-				<div className={styles.item} key={index}>
-					<div className={styles.label} children={onRenderChipLabel(chip)} />
-					<div className={styles.remove} onClick={() => onRemoveChip(chips, index)}>
-						<FontAwesomeIcon icon={['far', 'times']} />
-					</div>
-				</div>
+				<Chip key={index} chipLabel={onRenderChipLabel(chip)} onRemoveChip={() => onRemoveChip(chips, index)} />
 			))}
 		</div>
 	);
 };
 
+Chips.defaultProps = {
+	className: '',
+	onRenderChipLabel: renderChipLabel,
+	onRemoveChip: removeChip,
+};
+
 Chips.propTypes = {
 	chips: PropTypes.array.isRequired,
-	onRenderChipLabel: PropTypes.func,
-	onRemoveChip: PropTypes.func,
+	onRenderChipLabel: PropTypes.func.isRequired,
+	onRemoveChip: PropTypes.func.isRequired,
 };
 
 export default Chips;

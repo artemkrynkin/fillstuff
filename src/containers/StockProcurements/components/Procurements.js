@@ -109,10 +109,10 @@ class Procurements extends Component {
 				{!isLoadingProcurements && procurementData ? (
 					procurementData.data.length && procurementData.paging.totalCount ? (
 						generatePaginate(paging.loadedDocs, procurementData.data).map((procurementDates, index) => (
-							<div className={styles.date} key={index}>
+							<div className={styles.date} key={procurementDates.date}>
 								<div className={styles.dateTitle}>{moment(procurementDates.date).calendar(null, calendarFormat)}</div>
-								{procurementDates.items.map((procurement, index) => (
-									<Procurement key={index} procurement={procurement} currentUser={currentUser} filterParams={filterParams} />
+								{procurementDates.items.map(procurement => (
+									<Procurement key={procurement._id} procurement={procurement} currentUser={currentUser} filterParams={filterParams} />
 								))}
 							</div>
 						))

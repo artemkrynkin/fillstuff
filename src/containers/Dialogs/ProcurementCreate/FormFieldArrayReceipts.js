@@ -13,7 +13,7 @@ import { SelectAutocomplete } from 'src/components/selectAutocomplete';
 
 import { getCharacteristics } from 'src/actions/characteristics';
 
-import { positionTransform } from './helpers';
+import { positionTransform } from './utils';
 import FormFieldArrayReceipt from './FormFieldArrayReceipt';
 
 import styles from './index.module.css';

@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 
-import { Dialog, PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
+import { Dialog, DialogActions, DialogTitle } from 'src/components/Dialog';
 
 import { getStockStatus } from 'src/actions/stocks';
 import { archivePositionInGroup } from 'src/actions/positionsInGroups';
@@ -25,9 +25,7 @@ const DialogPositionArchive = props => {
 
 	return (
 		<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog}>
-			<PDDialogTitle theme="primary" onClose={onCloseDialog}>
-				Архивирование позиции
-			</PDDialogTitle>
+			<DialogTitle onClose={onCloseDialog}>Архивирование позиции</DialogTitle>
 			<DialogContent>
 				<DialogContentText>
 					Вы действительно хотите архивировать позицию{' '}
@@ -42,7 +40,7 @@ const DialogPositionArchive = props => {
 					</span>
 				</DialogContentText>
 			</DialogContent>
-			<PDDialogActions
+			<DialogActions
 				leftHandleProps={{
 					handleProps: {
 						onClick: onCloseDialog,

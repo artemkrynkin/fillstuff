@@ -15,7 +15,7 @@ import TextField from '@material-ui/core/TextField';
 
 import { checkPermissions } from 'shared/roles-access-rights';
 
-import { PDDialogActions } from 'src/components/Dialog';
+import { DialogActions } from 'src/components/Dialog';
 
 import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
@@ -146,7 +146,7 @@ const FormMemberEdit = props => {
 					{errors.role ? <FormHelperText error>{errors.role}</FormHelperText> : null}
 				</Grid>
 			</DialogContent>
-			<PDDialogActions
+			<DialogActions
 				leftHandleProps={{
 					handleProps: {
 						onClick: onCloseDialog,

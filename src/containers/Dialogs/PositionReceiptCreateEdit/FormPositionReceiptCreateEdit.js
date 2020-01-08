@@ -21,7 +21,7 @@ import { unitTypes, unitTypeTransform, characteristicTypeTransform } from 'share
 
 import { onAddCharacteristicInPosition, checkCharacteristicsOnAbsenceInPosition, onUnitSellingPriceCalc } from 'src/helpers/positionUtils';
 
-import { PDDialogActions } from 'src/components/Dialog';
+import { DialogActions } from 'src/components/Dialog';
 import NumberFormat, { currencyFormatInputProps } from 'src/components/NumberFormat';
 import { SelectAutocompleteCreate } from 'src/components/selectAutocomplete';
 import Chips from 'src/components/Chips';
@@ -532,7 +532,7 @@ const FormPositionReceiptCreateEdit = props => {
 					)}
 				/>
 			</DialogContent>
-			<PDDialogActions
+			<DialogActions
 				leftHandleProps={{
 					handleProps: {
 						onClick: onCloseDialog,

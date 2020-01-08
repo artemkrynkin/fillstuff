@@ -150,9 +150,9 @@ const WriteOffsPerDay = props => {
 								</TableRow>
 							</TableHead>
 							<TableBody>
-								{writeOffs.map((writeOff, index) => (
+								{writeOffs.map(writeOff => (
 									<WriteOff
-										key={index}
+										key={writeOff._id}
 										writeOff={writeOff}
 										isCurrentDay={isCurrentDay}
 										onOpenDialogWriteOffCancel={() => onHandleDialogWriteOffCancel(true, writeOff)}

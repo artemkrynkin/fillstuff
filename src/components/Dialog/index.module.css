@@ -71,10 +71,6 @@
   font-size: 30px;
 }
 
-.headerActionLeftHandle_iconLeft svg {
-  order: -1;
-}
-
 .headerActionLeftHandleText {
   font-size: 16px;
   font-weight: 500;

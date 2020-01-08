@@ -8,7 +8,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField/TextField';
 
-import { Dialog, PDDialogActions, PDDialogTitle } from 'src/components/Dialog';
+import { Dialog, DialogActions, DialogTitle } from 'src/components/Dialog';
 import NumberFormat from 'src/components/NumberFormat';
 
 import { getStockStatus } from 'src/actions/stocks';
@@ -49,9 +49,7 @@ class DialogWriteOffCreate extends Component {
 
 		return (
 			<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth="md" scroll="body">
-				<PDDialogTitle theme="primary" onClose={onCloseDialog}>
-					Списание количества
-				</PDDialogTitle>
+				<DialogTitle onClose={onCloseDialog}>Списание количества</DialogTitle>
 				<Formik
 					initialValues={{ quantity: '', comment: '' }}
 					validationSchema={writeOffSchema}
@@ -104,7 +102,7 @@ class DialogWriteOffCreate extends Component {
 									/>
 								</Grid>
 							</DialogContent>
-							<PDDialogActions
+							<DialogActions
 								leftHandleProps={{
 									handleProps: {
 										onClick: onCloseDialog,

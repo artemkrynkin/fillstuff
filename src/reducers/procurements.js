@@ -17,37 +17,28 @@ const positions = (
 		case 'RECEIVE_PROCUREMENTS': {
 			return {
 				...state,
-				data: action.payload,
 				isFetching: false,
+				data: action.payload,
 			};
 		}
 		case 'CREATE_PROCUREMENT': {
-			state.data.data.unshift(action.payload);
-			state.data.paging.totalCount += 1;
+			let stateData = { ...state }.data;
+
+			stateData.data.unshift(action.payload);
+			stateData.paging.totalCount += 1;
 
 			return {
 				...state,
 				isFetching: false,
-			};
-		}
-		case 'EDIT_PROCUREMENT': {
-			if (state.data) {
-				const procurementIndex = state.data.data.findIndex(procurement => procurement._id === action.payload.procurementId);
-
-				if (!!~procurementIndex) state.data.data[procurementIndex] = action.payload.procurement;
-			}
-
-			return {
-				...state,
-				isFetching: false,
+				data: stateData,
 			};
 		}
 		case 'UNAUTHORIZED_USER': {
 			return {
 				...state,
-				data: action.payload,
 				isFetching: false,
 				error: 'unauthorized',
+				data: action.payload,
 			};
 		}
 		default:

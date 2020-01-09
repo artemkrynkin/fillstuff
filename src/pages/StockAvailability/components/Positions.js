@@ -21,7 +21,7 @@ import PositionGroup from './PositionGroup';
 import styles from './Positions.module.css';
 
 const DialogPositionGroupCreateEditAdd = loadable(() =>
-	import('src/containers/Dialogs/PositionGroupCreateEditAdd' /* webpackChunkName: "Dialog_PositionGroupCreateEditAdd" */)
+	import('src/pages/Dialogs/PositionGroupCreateEditAdd' /* webpackChunkName: "Dialog_PositionGroupCreateEditAdd" */)
 );
 
 const DialogPositionGroupEdit = DialogPositionGroupCreateEditAdd;
@@ -29,36 +29,32 @@ const DialogPositionGroupEdit = DialogPositionGroupCreateEditAdd;
 const DialogPositionGroupAdd = DialogPositionGroupCreateEditAdd;
 
 const DialogPositionReceiptEdit = loadable(() =>
-	import('src/containers/Dialogs/PositionReceiptCreateEdit' /* webpackChunkName: "Dialog_PositionReceiptCreateEdit" */)
+	import('src/pages/Dialogs/PositionReceiptCreateEdit' /* webpackChunkName: "Dialog_PositionReceiptCreateEdit" */)
 );
 
 const DialogPositionEdit = loadable(() =>
-	import('src/containers/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateEdit" */)
+	import('src/pages/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateEdit" */)
 );
 
 const DialogPositionAddQuantity = loadable(() =>
-	import('src/containers/Dialogs/PositionAddQuantity' /* webpackChunkName: "Dialog_PositionAddQuantity" */)
+	import('src/pages/Dialogs/PositionAddQuantity' /* webpackChunkName: "Dialog_PositionAddQuantity" */)
 );
 
 const DialogPositionRemoveFromGroup = loadable(() =>
-	import('src/containers/Dialogs/PositionRemoveFromGroup' /* webpackChunkName: "Dialog_PositionRemoveFromGroup" */)
+	import('src/pages/Dialogs/PositionRemoveFromGroup' /* webpackChunkName: "Dialog_PositionRemoveFromGroup" */)
 );
 
-const DialogPositionArchive = loadable(() =>
-	import('src/containers/Dialogs/PositionArchive' /* webpackChunkName: "Dialog_PositionArchive" */)
-);
+const DialogPositionArchive = loadable(() => import('src/pages/Dialogs/PositionArchive' /* webpackChunkName: "Dialog_PositionArchive" */));
 
 const DialogPositionOrGroupQRCodeGeneration = loadable(() =>
-	import('src/containers/Dialogs/PositionOrGroupQRCodeGeneration' /* webpackChunkName: "Dialog_PositionOrGroupQRCodeGeneration" */)
+	import('src/pages/Dialogs/PositionOrGroupQRCodeGeneration' /* webpackChunkName: "Dialog_PositionOrGroupQRCodeGeneration" */)
 );
 
 const DialogPositionGroupQRCodeGeneration = DialogPositionOrGroupQRCodeGeneration;
 
 const DialogPositionQRCodeGeneration = DialogPositionOrGroupQRCodeGeneration;
 
-const DialogWriteOffCreate = loadable(() =>
-	import('src/containers/Dialogs/WriteOffCreate' /* webpackChunkName: "Dialog_WriteOffCreate" */)
-);
+const DialogWriteOffCreate = loadable(() => import('src/pages/Dialogs/WriteOffCreate' /* webpackChunkName: "Dialog_WriteOffCreate" */));
 
 const compareByName = (a, b) => {
 	if (a.name > b.name) return 1;

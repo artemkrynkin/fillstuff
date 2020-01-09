@@ -23,6 +23,16 @@ stocksRouter.get('/', isAuthedResolver, async (req, res, next) => {
 	res.json(stocks);
 });
 
+stocksRouter.get('/:stockId', isAuthedResolver, async (req, res, next) => {
+	const stock = await Stock.findById(req.params.stockId)
+		.populate('members.user', 'profilePhoto name email')
+		.catch(err => next(err));
+
+	stock.members = stock.members.filter(member => !member.isWaiting && member.role.match(/owner|admin|user/));
+
+	res.json(stock);
+});
+
 stocksRouter.get('/:stockId/status', isAuthedResolver, (req, res, next) => {
 	Stock.findById(req.params.stockId)
 		.then(stock => res.json(stock.status))

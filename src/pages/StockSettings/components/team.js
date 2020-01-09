@@ -16,12 +16,12 @@ import Popover from 'src/components/Popover';
 import styles from './team.module.css';
 
 const MemberInvitationOrLogin = loadable(() =>
-	import('src/containers/Dialogs/MemberInvitationOrLogin' /* webpackChunkName: "Dialog_MemberInvitationOrLogin" */)
+	import('src/pages/Dialogs/MemberInvitationOrLogin' /* webpackChunkName: "Dialog_MemberInvitationOrLogin" */)
 );
 
-const DialogMemberEdit = loadable(() => import('src/containers/Dialogs/MemberEdit' /* webpackChunkName: "Dialog_MemberEdit" */));
+const DialogMemberEdit = loadable(() => import('src/pages/Dialogs/MemberEdit' /* webpackChunkName: "Dialog_MemberEdit" */));
 
-const DialogMemberDelete = loadable(() => import('src/containers/Dialogs/MemberDelete' /* webpackChunkName: "Dialog_MemberDelete" */));
+const DialogMemberDelete = loadable(() => import('src/pages/Dialogs/MemberDelete' /* webpackChunkName: "Dialog_MemberDelete" */));
 
 const photoImgClasses = member => {
 	return ClassNames({

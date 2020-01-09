@@ -8,8 +8,7 @@ const stocks = (
 	action
 ) => {
 	switch (action.type) {
-		case 'REQUEST_STOCKS':
-		case 'REQUEST_MEMBERS': {
+		case 'REQUEST_STOCKS': {
 			return {
 				...state,
 				isFetching: true,
@@ -54,36 +53,36 @@ const stocks = (
 				data: stateData,
 			};
 		}
-		case 'EDIT_MEMBER': {
-			let stateData = { ...state }.data;
-
-			const stockIndex = stateData.findIndex(stock => stock._id === action.payload.stockId);
-			const memberIndex = stateData[stockIndex].members.findIndex(member => member._id === action.payload.memberId);
-
-			stateData[stockIndex].members[memberIndex] = action.payload.newValues;
-			stateData[stockIndex].members = cloneDeep(stateData[stockIndex].members);
-
-			return {
-				...state,
-				isFetching: false,
-				data: stateData,
-			};
-		}
-		case 'DELETE_MEMBER': {
-			let stateData = { ...state }.data;
-
-			const stockIndex = stateData.findIndex(stock => stock._id === action.payload.stockId);
-			const memberIndex = stateData[stockIndex].members.findIndex(member => member._id === action.payload.memberId);
-
-			stateData[stockIndex].members.splice(memberIndex, 1);
-			stateData[stockIndex].members = cloneDeep(stateData[stockIndex].members);
-
-			return {
-				...state,
-				isFetching: false,
-				data: stateData,
-			};
-		}
+		// case 'EDIT_MEMBER': {
+		// 	let stateData = { ...state }.data;
+		//
+		// 	const stockIndex = stateData.findIndex(stock => stock._id === action.payload.stockId);
+		// 	const memberIndex = stateData[stockIndex].members.findIndex(member => member._id === action.payload.memberId);
+		//
+		// 	stateData[stockIndex].members[memberIndex] = action.payload.newValues;
+		// 	stateData[stockIndex].members = cloneDeep(stateData[stockIndex].members);
+		//
+		// 	return {
+		// 		...state,
+		// 		isFetching: false,
+		// 		data: stateData,
+		// 	};
+		// }
+		// case 'DELETE_MEMBER': {
+		// 	let stateData = { ...state }.data;
+		//
+		// 	const stockIndex = stateData.findIndex(stock => stock._id === action.payload.stockId);
+		// 	const memberIndex = stateData[stockIndex].members.findIndex(member => member._id === action.payload.memberId);
+		//
+		// 	stateData[stockIndex].members.splice(memberIndex, 1);
+		// 	stateData[stockIndex].members = cloneDeep(stateData[stockIndex].members);
+		//
+		// 	return {
+		// 		...state,
+		// 		isFetching: false,
+		// 		data: stateData,
+		// 	};
+		// }
 		case 'UNAUTHORIZED_USER': {
 			return {
 				...state,

@@ -4,7 +4,7 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 
 import GeneralSettings from './generalSettings';
-import Team from './team';
+// import Team from './team';
 
 const Index = props => {
 	const { currentUser, currentStock } = props;
@@ -15,9 +15,9 @@ const Index = props => {
 				<Grid xs={7} item>
 					<GeneralSettings currentUser={currentUser} currentStock={currentStock} />
 				</Grid>
-				<Grid xs={5} item>
-					<Team currentUser={currentUser} currentStock={currentStock} />
-				</Grid>
+				{/*<Grid xs={5} item>*/}
+				{/*	<Team currentUser={currentUser} currentStock={currentStock} />*/}
+				{/*</Grid>*/}
 			</Grid>
 		</Container>
 	);

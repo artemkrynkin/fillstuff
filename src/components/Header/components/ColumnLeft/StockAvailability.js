@@ -12,11 +12,11 @@ import { getCharacteristics } from 'src/actions/characteristics';
 import styles from 'src/components/Header/index.module.css';
 
 const DialogPositionReceiptCreate = loadable(() =>
-	import('src/containers/Dialogs/PositionReceiptCreateEdit' /* webpackChunkName: "Dialog_PositionReceiptCreateEdit" */)
+	import('src/pages/Dialogs/PositionReceiptCreateEdit' /* webpackChunkName: "Dialog_PositionReceiptCreateEdit" */)
 );
 
 const DialogPositionGroupCreate = loadable(() =>
-	import('src/containers/Dialogs/PositionGroupCreateEditAdd' /* webpackChunkName: "Dialog_PositionGroupCreateEditAdd" */)
+	import('src/pages/Dialogs/PositionGroupCreateEditAdd' /* webpackChunkName: "Dialog_PositionGroupCreateEditAdd" */)
 );
 
 const StockAvailability = props => {
@@ -87,7 +87,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	};
 };
 
-export default connect(
-	null,
-	mapDispatchToProps
-)(StockAvailability);
+export default connect(null, mapDispatchToProps)(StockAvailability);

@@ -105,7 +105,4 @@ const mapDispatchToProps = () => {
 	};
 };
 
-export default connect(
-	null,
-	mapDispatchToProps
-)(Registration);
+export default connect(null, mapDispatchToProps)(Registration);

@@ -19,7 +19,7 @@ import FormFieldArrayReceipt from './FormFieldArrayReceipt';
 import styles from './index.module.css';
 
 const DialogPositionCreate = loadable(() =>
-	import('src/containers/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateEdit" */)
+	import('src/pages/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateEdit" */)
 );
 
 const addPositionContainerClasses = formEditable =>

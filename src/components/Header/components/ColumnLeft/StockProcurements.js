@@ -13,7 +13,7 @@ import TitlePageOrLogo from './TitlePageOrLogo';
 import styles from 'src/components/Header/index.module.css';
 
 const DialogProcurementCreate = loadable(() =>
-	import('src/containers/Dialogs/ProcurementCreate' /* webpackChunkName: "Dialog_ProcurementCreate" */)
+	import('src/pages/Dialogs/ProcurementCreate' /* webpackChunkName: "Dialog_ProcurementCreate" */)
 );
 
 const StockProcurements = props => {

@@ -17,19 +17,19 @@ import Layout from 'src/components/Layout';
 import Sidebar from './components/Sidebar';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 
-import Login from 'src/containers/Login';
-import PageNotFound from 'src/containers/PageNotFound';
-import PasswordRecovery from 'src/containers/PasswordRecovery';
-import StockNotFound from 'src/containers/StockNotFound';
-import StockDashboard from 'src/containers/StockDashboard';
-import StockAvailability from 'src/containers/StockAvailability';
-import StockWriteOffs from 'src/containers/StockWriteOffs';
-import StockProcurements from 'src/containers/StockProcurements';
-import StockProcurement from 'src/containers/StockProcurement';
-import StockStatistics from 'src/containers/StockStatistics';
-import StockSettings from 'src/containers/StockSettings';
-import Registration from 'src/containers/Registration';
-import UserSettings from 'src/containers/UserSettings';
+import Login from 'src/pages/Login';
+import PageNotFound from 'src/pages/PageNotFound';
+import PasswordRecovery from 'src/pages/PasswordRecovery';
+import StockNotFound from 'src/pages/StockNotFound';
+import StockDashboard from 'src/pages/StockDashboard';
+import StockAvailability from 'src/pages/StockAvailability';
+import StockWriteOffs from 'src/pages/StockWriteOffs';
+import StockProcurements from 'src/pages/StockProcurements';
+import StockProcurement from 'src/pages/StockProcurement';
+import StockStatistics from 'src/pages/StockStatistics';
+import StockSettings from 'src/pages/StockSettings';
+import Registration from 'src/pages/Registration';
+import UserSettings from 'src/pages/UserSettings';
 
 import stylesPage from 'src/styles/page.module.css';
 
@@ -90,7 +90,7 @@ const StockProcurementsFallback = signedOutFallback(
 			<StockProcurements currentStock={props.currentStock} match={props.match} />
 		</StockPageFallback>
 	),
-	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/purchases`} />} />
+	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/procurements`} />} />
 );
 
 const StockProcurementFallback = signedOutFallback(
@@ -99,7 +99,9 @@ const StockProcurementFallback = signedOutFallback(
 			<StockProcurement currentStock={props.currentStock} match={props.match} />
 		</StockPageFallback>
 	),
-	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/purchases`} />} />
+	({ match }) => (
+		<Layout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/procurements/${match.props.procurementId}`} />} />
+	)
 );
 
 const StockStatisticsFallback = signedOutFallback(

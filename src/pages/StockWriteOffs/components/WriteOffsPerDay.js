@@ -22,9 +22,7 @@ import WriteOff from './WriteOff';
 import { TableCell } from './styles';
 import styles from './WriteOffsPerDay.module.css';
 
-const DialogWriteOffCancel = loadable(() =>
-	import('src/containers/Dialogs/WriteOffCancel' /* webpackChunkName: "Dialog_WriteOffCancel" */)
-);
+const DialogWriteOffCancel = loadable(() => import('src/pages/Dialogs/WriteOffCancel' /* webpackChunkName: "Dialog_WriteOffCancel" */));
 
 const calendarFormat = {
 	sameDay: 'Сегодня',

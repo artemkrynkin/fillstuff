@@ -43,7 +43,7 @@ class Sidebar extends Component {
 								<div className={styles.menuItem}>
 									<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to={`/stocks/${activeStockId}/dashboard`}>
 										<div className={styles.menuIcon}>
-											<FontAwesomeIcon icon={['far', 'tachometer']} />
+											<FontAwesomeIcon icon={['fal', 'tachometer']} />
 										</div>
 										Монитор
 									</NavLink>
@@ -73,7 +73,7 @@ class Sidebar extends Component {
 												to={`/stocks/${activeStockId}/availability`}
 											>
 												<div className={styles.menuIcon}>
-													<FontAwesomeIcon icon={['far', 'inventory']} />
+													<FontAwesomeIcon icon={['fal', 'inventory']} />
 												</div>
 												В наличии
 											</NavLink>
@@ -101,7 +101,7 @@ class Sidebar extends Component {
 										to={`/stocks/${activeStockId}/procurements`}
 									>
 										<div className={styles.menuIcon}>
-											<FontAwesomeIcon icon={['fal', 'shipping-timed']} />
+											<FontAwesomeIcon icon={['fal', 'shopping-basket']} />
 										</div>
 										Закупки
 									</NavLink>
@@ -110,9 +110,18 @@ class Sidebar extends Component {
 								<div className={styles.menuItem}>
 									<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to={`/stocks/${activeStockId}/statistics`}>
 										<div className={styles.menuIcon}>
-											<FontAwesomeIcon icon={['far', 'chart-bar']} />
+											<FontAwesomeIcon icon={['fal', 'analytics']} />
 										</div>
 										Статистика
+									</NavLink>
+								</div>
+
+								<div className={styles.menuItem}>
+									<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to={`/stocks/${activeStockId}/users`}>
+										<div className={styles.menuIcon}>
+											<FontAwesomeIcon icon={['fal', 'users']} />
+										</div>
+										Команда
 									</NavLink>
 								</div>
 

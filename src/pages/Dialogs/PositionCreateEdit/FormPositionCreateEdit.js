@@ -47,7 +47,7 @@ const FormPositionCreateEdit = props => {
 			<DialogContent>
 				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 					<InputLabel error={Boolean(touched.name && errors.name)} style={{ minWidth: 146 }}>
-						Наименование:
+						Наименование
 					</InputLabel>
 					<Field
 						name="name"
@@ -64,7 +64,7 @@ const FormPositionCreateEdit = props => {
 
 				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 					<InputLabel error={Boolean(touched.unitReceipt && errors.unitReceipt)} style={{ minWidth: 146 }}>
-						Единица поступления:
+						Единица поступления
 					</InputLabel>
 					<FormControl fullWidth>
 						<Field
@@ -94,7 +94,7 @@ const FormPositionCreateEdit = props => {
 
 				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 					<InputLabel error={Boolean(touched.unitIssue && errors.unitIssue)} style={{ minWidth: 146 }}>
-						Единица отпуска:
+						Единица отпуска
 					</InputLabel>
 					<Grid>
 						<FormControl fullWidth>
@@ -129,7 +129,7 @@ const FormPositionCreateEdit = props => {
 					<InputLabel error={Boolean(touched.minimumBalance && errors.minimumBalance)} style={{ minWidth: 146 }}>
 						Мин. остаток
 						<br />
-						{`в ${values.unitReceipt === 'nmp' && values.unitIssue !== 'pce' ? 'упаковках' : 'штуках'}:`}
+						{`в ${values.unitReceipt === 'nmp' && values.unitIssue !== 'pce' ? 'упаковках' : 'штуках'}`}
 					</InputLabel>
 					<Field
 						name="minimumBalance"
@@ -150,7 +150,7 @@ const FormPositionCreateEdit = props => {
 				{!values.isFree ? (
 					<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 						<InputLabel error={Boolean(touched.extraCharge && errors.extraCharge)} style={{ minWidth: 146 }}>
-							Процент студии:
+							Процент студии
 						</InputLabel>
 						<Field
 							name="extraCharge"
@@ -185,7 +185,7 @@ const FormPositionCreateEdit = props => {
 				>
 					<Grid className={stylesGlobal.formLabelControl} xs={shopLinkVisible ? 6 : 12} style={{ marginBottom: 0 }} item>
 						<InputLabel error={Boolean(touched.shopName && errors.shopName)} style={{ display: 'inline-flex', minWidth: 146 }}>
-							Магазин / Ссылка:
+							Магазин / Ссылка
 						</InputLabel>
 						<Field
 							name="shopName"
@@ -242,7 +242,7 @@ const FormPositionCreateEdit = props => {
 									alignItems="flex-start"
 									container
 								>
-									<InputLabel style={{ display: 'inline-flex', minWidth: 146 }}>Характеристики:</InputLabel>
+									<InputLabel style={{ display: 'inline-flex', minWidth: 146 }}>Характеристики</InputLabel>
 									<Grid style={{ marginTop: 7, width: 'calc(100% - 120px)' }} container>
 										<Chips
 											chips={values.characteristics}
@@ -261,7 +261,7 @@ const FormPositionCreateEdit = props => {
 								<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" spacing={2} container>
 									<Grid className={stylesGlobal.formLabelControl} xs={6} style={{ marginBottom: 0 }} item>
 										{!values.characteristics.length ? (
-											<InputLabel style={{ display: 'inline-flex', minWidth: 146 }}>Характеристики:</InputLabel>
+											<InputLabel style={{ display: 'inline-flex', minWidth: 146 }}>Характеристики</InputLabel>
 										) : (
 											<InputLabel style={{ display: 'inline-flex', minWidth: 146 }} />
 										)}

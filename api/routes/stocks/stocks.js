@@ -17,7 +17,9 @@ stocksRouter.get('/', isAuthedResolver, async (req, res, next) => {
 		.catch(err => next(err));
 
 	stocks.forEach(stock => {
-		stock.members = stock.members.filter(member => !member.isWaiting && member.role.match(/owner|admin|user/));
+		stock.members = stock.members.filter(
+			member => member.confirmed && !member.deactivated && member.role.match(/owner|admin|admin-user|user/)
+		);
 	});
 
 	res.json(stocks);
@@ -28,7 +30,9 @@ stocksRouter.get('/:stockId', isAuthedResolver, async (req, res, next) => {
 		.populate('members.user', 'profilePhoto name email')
 		.catch(err => next(err));
 
-	stock.members = stock.members.filter(member => !member.isWaiting && member.role.match(/owner|admin|user/));
+	stock.members = stock.members.filter(
+		member => member.confirmed && !member.deactivated && member.role.match(/owner|admin|admin-user|user/)
+	);
 
 	res.json(stock);
 });

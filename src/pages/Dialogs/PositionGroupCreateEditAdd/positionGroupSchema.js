@@ -20,7 +20,7 @@ const positionGroupSchema = (type, depopulate = false) => {
 			.min(
 				type !== 'add' ? 2 : 1,
 				// eslint-disable-next-line
-				type !== 'add' ? 'для создания группы необходимо выбрать минимум ${min} позиции' : 'необходимо выбрать минимум ${min} позицию'
+				type !== 'add' ? 'Для создания группы необходимо выбрать минимум ${min} позиции' : 'Необходимо выбрать минимум ${min} позицию'
 			)
 			.when('empty', (empty, schema) => (depopulate ? schema.of(Yup.string()) : schema))
 			.transform((currentValue, originalValue) => {

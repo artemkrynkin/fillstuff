@@ -134,7 +134,7 @@ const WriteOffsPerDay = props => {
 						<Table>
 							<TableHead>
 								<TableRow>
-									<TableCell>Наименование</TableCell>
+									<TableCell>Позиция</TableCell>
 									<TableCell align="left" width={180}>
 										Участник
 									</TableCell>

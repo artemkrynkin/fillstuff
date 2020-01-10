@@ -101,7 +101,7 @@ const Procurement = props => {
 						<Table>
 							<TableHead>
 								<TableRow>
-									<TableCell>Наименование</TableCell>
+									<TableCell>Позиция</TableCell>
 									<TableCell align="right" width={160}>
 										Количество
 									</TableCell>

@@ -49,7 +49,7 @@ const FormPositionReceiptCreateEdit = props => {
 			<DialogContent>
 				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 					<InputLabel error={Boolean(touched.name && errors.name)} style={{ minWidth: 146 }}>
-						Наименование:
+						Наименование
 					</InputLabel>
 					<Field
 						name="name"
@@ -66,7 +66,7 @@ const FormPositionReceiptCreateEdit = props => {
 
 				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 					<InputLabel error={Boolean(touched.unitReceipt && errors.unitReceipt)} style={{ minWidth: 146 }}>
-						Единица поступления:
+						Единица поступления
 					</InputLabel>
 					{type === 'create' ? (
 						<FormControl fullWidth>
@@ -100,7 +100,7 @@ const FormPositionReceiptCreateEdit = props => {
 
 				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 					<InputLabel error={Boolean(touched.unitIssue && errors.unitIssue)} style={{ minWidth: 146 }}>
-						Единица отпуска:
+						Единица отпуска
 					</InputLabel>
 					{type === 'create' ? (
 						<FormControl fullWidth>
@@ -138,7 +138,7 @@ const FormPositionReceiptCreateEdit = props => {
 							{type === 'create' ? (
 								<Field
 									name="quantity"
-									label={`Количество ${values.unitReceipt === 'nmp' && values.unitIssue !== 'pce' ? 'упаковок' : 'штук'}:`}
+									label={`Количество ${values.unitReceipt === 'nmp' && values.unitIssue !== 'pce' ? 'упаковок' : 'штук'}`}
 									placeholder="0"
 									error={Boolean(touched.quantity && errors.quantity)}
 									helperText={(touched.quantity && errors.quantity) || ''}
@@ -153,7 +153,7 @@ const FormPositionReceiptCreateEdit = props => {
 								/>
 							) : (
 								<TextField
-									label={`Количество ${values.unitReceipt === 'nmp' && values.unitIssue !== 'pce' ? 'упаковок' : 'штук'}:`}
+									label={`Количество ${values.unitReceipt === 'nmp' && values.unitIssue !== 'pce' ? 'упаковок' : 'штук'}`}
 									defaultValue={values.activeReceipt.current.quantity}
 									disabled
 									fullWidth
@@ -165,7 +165,7 @@ const FormPositionReceiptCreateEdit = props => {
 							{type === 'create' ? (
 								<Field
 									name="quantityPackages"
-									label="Количество упаковок:"
+									label="Количество упаковок"
 									placeholder="0"
 									error={Boolean(touched.quantityPackages && errors.quantityPackages)}
 									helperText={(touched.quantityPackages && errors.quantityPackages) || ''}
@@ -180,7 +180,7 @@ const FormPositionReceiptCreateEdit = props => {
 								/>
 							) : (
 								<TextField
-									label="Количество упаковок:"
+									label="Количество упаковок"
 									defaultValue={Math.ceil(values.activeReceipt.current.quantityPackages)}
 									disabled
 									fullWidth
@@ -193,7 +193,7 @@ const FormPositionReceiptCreateEdit = props => {
 						<Grid xs={4} item>
 							<Field
 								name="quantityInUnit"
-								label="Штук в упаковке:"
+								label="Штук в упаковке"
 								placeholder="0"
 								error={Boolean(touched.quantityInUnit && errors.quantityInUnit)}
 								helperText={(touched.quantityInUnit && errors.quantityInUnit) || ''}
@@ -217,7 +217,7 @@ const FormPositionReceiptCreateEdit = props => {
 						{values.divided ? (
 							<Field
 								name="minimumBalance"
-								label={`Мин. остаток в ${values.unitReceipt === 'nmp' && values.unitIssue !== 'pce' ? 'упаковках' : 'штуках'}:`}
+								label={`Мин. остаток в ${values.unitReceipt === 'nmp' && values.unitIssue !== 'pce' ? 'упаковках' : 'штуках'}`}
 								placeholder="0"
 								error={Boolean(touched.minimumBalance && errors.minimumBalance)}
 								helperText={(touched.minimumBalance && errors.minimumBalance) || ''}
@@ -251,7 +251,7 @@ const FormPositionReceiptCreateEdit = props => {
 						{type === 'create' ? (
 							<Field
 								name="purchasePrice"
-								label={`Цена покупки${values.unitReceipt === 'nmp' && values.unitIssue === 'pce' ? ' упаковки' : ''}:`}
+								label={`Цена покупки${values.unitReceipt === 'nmp' && values.unitIssue === 'pce' ? ' упаковки' : ''}`}
 								placeholder="0"
 								error={Boolean(touched.purchasePrice && errors.purchasePrice)}
 								helperText={(touched.purchasePrice && errors.purchasePrice) || ''}
@@ -275,7 +275,7 @@ const FormPositionReceiptCreateEdit = props => {
 							/>
 						) : (
 							<TextField
-								label={`Цена покупки${values.unitReceipt === 'nmp' && values.unitIssue === 'pce' ? ' упаковки' : ''}:`}
+								label={`Цена покупки${values.unitReceipt === 'nmp' && values.unitIssue === 'pce' ? ' упаковки' : ''}`}
 								defaultValue={values.activeReceipt.purchasePrice}
 								disabled
 								fullWidth
@@ -288,7 +288,7 @@ const FormPositionReceiptCreateEdit = props => {
 							values.unitReceipt === 'nmp' && values.unitIssue === 'pce' ? (
 								<Field
 									name="unitSellingPrice"
-									label="Цена продажи штуки:"
+									label="Цена продажи штуки"
 									placeholder="0"
 									error={Boolean(touched.unitSellingPrice && errors.unitSellingPrice)}
 									helperText={(touched.unitSellingPrice && errors.unitSellingPrice) || ''}
@@ -305,7 +305,7 @@ const FormPositionReceiptCreateEdit = props => {
 							) : (
 								<Field
 									name="sellingPrice"
-									label="Цена продажи:"
+									label="Цена продажи"
 									placeholder="0"
 									error={Boolean(touched.sellingPrice && errors.sellingPrice)}
 									helperText={(touched.sellingPrice && errors.sellingPrice) || ''}
@@ -329,7 +329,7 @@ const FormPositionReceiptCreateEdit = props => {
 				{!values.isFree ? (
 					<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 						<InputLabel error={Boolean(touched.extraCharge && errors.extraCharge)} style={{ minWidth: 146 }}>
-							Процент студии:
+							Процент студии
 						</InputLabel>
 						<Field
 							name="extraCharge"
@@ -364,7 +364,7 @@ const FormPositionReceiptCreateEdit = props => {
 				>
 					<Grid className={stylesGlobal.formLabelControl} xs={shopLinkVisible ? 6 : 12} style={{ marginBottom: 0 }} item>
 						<InputLabel error={Boolean(touched.shopName && errors.shopName)} style={{ display: 'inline-flex', minWidth: 146 }}>
-							Магазин / Ссылка:
+							Магазин / Ссылка
 						</InputLabel>
 						<Field
 							name="shopName"
@@ -422,7 +422,7 @@ const FormPositionReceiptCreateEdit = props => {
 									alignItems="flex-start"
 									container
 								>
-									<InputLabel style={{ display: 'inline-flex', minWidth: 146 }}>Характеристики:</InputLabel>
+									<InputLabel style={{ display: 'inline-flex', minWidth: 146 }}>Характеристики</InputLabel>
 									<Grid style={{ marginTop: 7, width: 'calc(100% - 120px)' }} container>
 										<Chips
 											chips={values.characteristics}
@@ -441,7 +441,7 @@ const FormPositionReceiptCreateEdit = props => {
 								<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" spacing={2} container>
 									<Grid className={stylesGlobal.formLabelControl} xs={6} style={{ marginBottom: 0 }} item>
 										{!values.characteristics.length ? (
-											<InputLabel style={{ display: 'inline-flex', minWidth: 146 }}>Характеристики:</InputLabel>
+											<InputLabel style={{ display: 'inline-flex', minWidth: 146 }}>Характеристики</InputLabel>
 										) : (
 											<InputLabel style={{ display: 'inline-flex', minWidth: 146 }} />
 										)}

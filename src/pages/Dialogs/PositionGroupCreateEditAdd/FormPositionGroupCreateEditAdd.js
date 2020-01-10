@@ -75,7 +75,7 @@ const FormPositionGroupCreateEditAdd = props => {
 					<div>
 						<Grid className={stylesGlobal.formLabelControl} style={{ marginBottom: 12 }} wrap="nowrap" alignItems="flex-start" container>
 							<InputLabel error={Boolean(touched.name && errors.name)} style={{ minWidth: 100 }}>
-								Наименование:
+								Наименование
 							</InputLabel>
 							<Field
 								name="name"
@@ -97,7 +97,7 @@ const FormPositionGroupCreateEditAdd = props => {
 						{!values.dividedPositions ? (
 							<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 								<InputLabel error={Boolean(touched.minimumBalance && errors.minimumBalance)} style={{ minWidth: 100 }}>
-									Мин. остаток:
+									Мин. остаток
 								</InputLabel>
 								<FormControl fullWidth>
 									<Field
@@ -123,7 +123,7 @@ const FormPositionGroupCreateEditAdd = props => {
 				{type === 'create' || type === 'add' ? (
 					<Grid className={styles.selectPositions} direction="column" wrap="nowrap" container>
 						<InputLabel error={typeof errors.positions === 'string'} style={{ minWidth: 151 }}>
-							Выберите позиции: {typeof errors.positions === 'string' ? errors.positions : null}
+							{typeof errors.positions === 'string' ? errors.positions : 'Выберите позиции'}
 						</InputLabel>
 						<div className={styles.textFieldSearchContainer}>
 							<SearchTextField

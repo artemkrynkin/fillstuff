@@ -78,9 +78,6 @@ const QuantityIndicator = props => {
 		return receipts.length ? (
 			<div>
 				{quantity + ' ' + unitIssueTransform}
-				{unitReceipt === 'nmp' && unitIssue === 'pce' ? (
-					<span className={styles.caption}>{Math.ceil(quantityPackages) + ' уп.'}</span>
-				) : null}
 				{divided && type === 'position' ? <span className={qiCircleClasses(quantity, minimumBalance)} /> : null}
 			</div>
 		) : (

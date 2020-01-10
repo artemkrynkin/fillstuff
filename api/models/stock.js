@@ -50,13 +50,27 @@ let Stock = new Schema({
 			},
 			role: {
 				type: String,
-				enum: ['owner', 'admin', 'user', 'fired'],
+				enum: ['owner', 'admin', 'user', 'admin-user'],
 				default: 'user',
 			},
-			isWaiting: Boolean,
-			createdAt: {
+			confirmed: {
+				type: Boolean,
+				default: false,
+			},
+			deactivated: {
+				type: Boolean,
+				default: true,
+			},
+			invitationDate: {
 				type: Date,
 				default: Date.now,
+			},
+			guest: {
+				type: Boolean,
+				default: false,
+			},
+			invitationExpiresIn: {
+				type: Date,
 			},
 		},
 	],

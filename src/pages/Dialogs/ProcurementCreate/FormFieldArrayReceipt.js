@@ -53,7 +53,7 @@ const FormFieldArrayReceipt = props => {
 				{receipt.position.unitReceipt === 'pce' || receipt.position.unitIssue === 'nmp' ? (
 					<FastField
 						name={`receipts.${index}.quantity`}
-						label={isNmpNmp ? 'Количество уп.:' : 'Количество шт.:'}
+						label={isNmpNmp ? 'Количество уп.' : 'Количество шт.'}
 						placeholder="0"
 						error={Boolean(formError(touched, errors, `receipts.${index}.quantity`))}
 						helperText={typeof formError(touched, errors, `receipts.${index}.quantity`) === 'string' || null}
@@ -70,7 +70,7 @@ const FormFieldArrayReceipt = props => {
 				) : (
 					<Field
 						name={`receipts.${index}.quantityPackages`}
-						label="Количество уп.:"
+						label="Количество уп."
 						placeholder="0"
 						error={Boolean(formError(touched, errors, `receipts.${index}.quantityPackages`))}
 						helperText={typeof formError(touched, errors, `receipts.${index}.quantityPackages`) === 'string' || null}
@@ -91,7 +91,7 @@ const FormFieldArrayReceipt = props => {
 				<Grid style={{ width: 180 }} item>
 					<Field
 						name={`receipts.${index}.quantityInUnit`}
-						label="Штук в упаковке:"
+						label="Штук в упаковке"
 						placeholder="0"
 						as={TextField}
 						error={Boolean(formError(touched, errors, `receipts.${index}.quantityInUnit`))}
@@ -112,7 +112,7 @@ const FormFieldArrayReceipt = props => {
 				{formEditable ? (
 					<Field
 						name={`receipts.${index}.purchasePrice`}
-						label={receipt.position.unitReceipt === 'nmp' ? 'Цена покупки уп.:' : 'Цена покупки шт.:'}
+						label={receipt.position.unitReceipt === 'nmp' ? 'Цена покупки уп.' : 'Цена покупки шт.'}
 						placeholder="0"
 						as={TextField}
 						error={Boolean(formError(touched, errors, `receipts.${index}.purchasePrice`))}
@@ -129,7 +129,7 @@ const FormFieldArrayReceipt = props => {
 					/>
 				) : (
 					<TextField
-						label={receipt.position.unitReceipt === 'nmp' ? 'Цена покупки уп.:' : 'Цена покупки шт.:'}
+						label={receipt.position.unitReceipt === 'nmp' ? 'Цена покупки уп.' : 'Цена покупки шт.'}
 						defaultValue={receipt.purchasePrice}
 						InputProps={{
 							endAdornment: <InputAdornment position="end">₽</InputAdornment>,
@@ -195,7 +195,7 @@ const FormFieldArrayReceipt = props => {
 								<Field
 									innerRef={sellingPriceFieldRef}
 									name={isNmpPce ? `receipts.${index}.unitSellingPrice` : `receipts.${index}.sellingPrice`}
-									label={isNmpNmp ? 'Цена продажи уп.:' : 'Цена продажи шт.:'}
+									label={isNmpNmp ? 'Цена продажи уп.' : 'Цена продажи шт.'}
 									placeholder="0"
 									as={TextField}
 									error={Boolean(
@@ -247,7 +247,7 @@ const FormFieldArrayReceipt = props => {
 					) : (
 						<TextField
 							className="none-padding"
-							label={isNmpNmp ? 'Цена продажи уп.:' : 'Цена продажи шт.:'}
+							label={isNmpNmp ? 'Цена продажи уп.' : 'Цена продажи шт.'}
 							defaultValue="Бесплатно"
 							inputProps={{
 								readOnly: true,

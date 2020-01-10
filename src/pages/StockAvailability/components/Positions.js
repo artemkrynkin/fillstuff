@@ -128,7 +128,7 @@ class Positions extends Component {
 				<Table>
 					<TableHead className={styles.tableHeaderSticky}>
 						<TableRow>
-							<TableCell>Наименование</TableCell>
+							<TableCell>Позиция</TableCell>
 							<TableCell align="right" width={160}>
 								Количество
 							</TableCell>

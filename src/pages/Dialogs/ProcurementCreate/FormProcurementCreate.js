@@ -71,7 +71,7 @@ const FormProcurementCreate = props => {
 						<FastField
 							name="number"
 							placeholder={values.noInvoice ? '-' : ''}
-							label="Номер чека/накладной:"
+							label="Номер чека/накладной"
 							error={Boolean(errors.number && touched.number)}
 							helperText={typeof errors.number === 'string' && touched.number ? errors.number : null}
 							as={TextField}
@@ -102,7 +102,7 @@ const FormProcurementCreate = props => {
 								innerRef={refDropdownDate}
 								name="date"
 								placeholder={values.noInvoice ? '-' : ''}
-								label="Дата:"
+								label="Дата"
 								error={Boolean(errors.date && touched.date)}
 								helperText={typeof errors.date === 'string' && touched.date ? errors.date : null}
 								disabled={isSubmitting || !formEditable || values.noInvoice}
@@ -143,7 +143,7 @@ const FormProcurementCreate = props => {
 						<FastField
 							name="totalPrice"
 							placeholder="0"
-							label="Итого по чеку/накладной:"
+							label="Итого по чеку/накладной"
 							error={Boolean(errors.totalPrice && touched.totalPrice)}
 							helperText={typeof errors.totalPrice === 'string' && touched.totalPrice ? errors.totalPrice : null}
 							as={TextField}
@@ -162,7 +162,7 @@ const FormProcurementCreate = props => {
 						<Field
 							name="costDelivery"
 							placeholder="0"
-							label="Стоимость доставки:"
+							label="Стоимость доставки"
 							as={TextField}
 							InputProps={{
 								endAdornment: <InputAdornment position="end">₽</InputAdornment>,

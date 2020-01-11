@@ -131,15 +131,16 @@ const WriteOffsPerDay = props => {
 				</div>
 				<Collapse in={expanded} timeout={300} unmountOnExit>
 					<div className={styles.receipts}>
-						<Table>
+						<Table style={{ tableLayout: 'fixed' }}>
 							<TableHead>
 								<TableRow>
-									<TableCell>Позиция</TableCell>
-									<TableCell align="left" width={180}>
-										Участник
-									</TableCell>
+									<TableCell>Участник</TableCell>
+									<TableCell width={280}>Позиция</TableCell>
 									<TableCell align="right" width={125}>
 										Количество
+									</TableCell>
+									<TableCell align="right" width={125}>
+										Сумма
 									</TableCell>
 									<TableCell align="right" width={150}>
 										Время

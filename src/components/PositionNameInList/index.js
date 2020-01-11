@@ -11,30 +11,30 @@ const PositionNameInList = props => {
 
 	return (
 		<div className={styles.container} style={style}>
-			<div className={styles.topContainer}>
+			<div className={styles.names}>
 				<div className={styles.name}>{name}</div>
-				{isArchived || canceled ? (
-					<div className={styles.symbols}>
-						{canceled ? (
-							<Tooltip title="Списание отменено" placement="top">
-								<div className={styles.writeOffUndo}>
-									<FontAwesomeIcon icon={['far', 'undo']} />
-								</div>
-							</Tooltip>
-						) : null}
-						{isArchived ? (
-							<Tooltip title="Позиция архивирована" placement="top">
-								<div className={styles.archive}>
-									<FontAwesomeIcon icon={['far', 'trash-alt']} />
-								</div>
-							</Tooltip>
-						) : null}
+				{characteristics.length ? (
+					<div className={styles.characteristics}>
+						{characteristics.reduce((characteristics, characteristic) => `${characteristics}${characteristic.label} `, '').trim()}
 					</div>
 				) : null}
 			</div>
-			{characteristics.length ? (
-				<div className={styles.characteristics}>
-					{characteristics.reduce((characteristics, characteristic) => `${characteristics}${characteristic.label} `, '').trim()}
+			{isArchived || canceled ? (
+				<div className={styles.symbols}>
+					{canceled ? (
+						<Tooltip title="Списание отменено" placement="top">
+							<div className={styles.writeOffUndo}>
+								<FontAwesomeIcon icon={['far', 'undo']} />
+							</div>
+						</Tooltip>
+					) : null}
+					{isArchived ? (
+						<Tooltip title="Позиция архивирована" placement="top">
+							<div className={styles.archive}>
+								<FontAwesomeIcon icon={['far', 'archive']} />
+							</div>
+						</Tooltip>
+					) : null}
 				</div>
 			) : null}
 		</div>

@@ -147,7 +147,10 @@ writeOffsRouter.post(
 					receipt: receipt._id,
 					isFree: position.isFree,
 					quantity: currentWriteOffQuantity,
-					cost: !position.isFree ? receipt.unitSellingPrice : 0,
+					totalPurchasePrice: currentWriteOffQuantity * receipt.unitPurchasePrice,
+					totalSalePrice: !position.isFree ? currentWriteOffQuantity * receipt.unitSellingPrice : 0,
+					unitSalePrice: !position.isFree ? receipt.unitSellingPrice : 0,
+					unitPurchasePrice: receipt.unitPurchasePrice,
 					unitSellingPrice: receipt.unitSellingPrice,
 					unitCostDelivery: receipt.unitCostDelivery,
 					unitExtraCharge: receipt.unitExtraCharge,
@@ -179,7 +182,7 @@ writeOffsRouter.post(
 				}
 
 				remainingQuantity = remainingQuantity > receipt.current.quantity ? Math.abs(receipt.current.quantity - remainingQuantity) : 0;
-				stockPrice += currentWriteOffQuantity * receipt.unitPurchasePrice;
+				stockPrice += newWriteOff.totalPurchasePrice;
 
 				const activeReceiptId =
 					receipts[index + 1] !== undefined && currentReceiptSet.current.quantity === 0 ? receipts[index + 1]._id : receipt._id;

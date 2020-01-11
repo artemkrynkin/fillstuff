@@ -18,13 +18,14 @@ const Receipt = props => {
 
 	return (
 		<TableRow>
-			<TableCell>
+			<TableCell width={280}>
 				<PositionNameInList
 					name={receipt.position.name}
 					characteristics={receipt.position.characteristics}
 					isArchived={receipt.position.isArchived}
 				/>
 			</TableCell>
+			<TableCell />
 			<TableCell align="right" width={160}>
 				<QuantityIndicator
 					type="receipt"
@@ -33,10 +34,10 @@ const Receipt = props => {
 					receipts={[{ ...receipt.initial }]}
 				/>
 			</TableCell>
-			<TableCell align="right" width={160}>
+			<TableCell align="right" width={140}>
 				{formatNumber(receipt.unitPurchasePrice, { toString: true })} ₽
 			</TableCell>
-			<TableCell align="right" width={160}>
+			<TableCell align="right" width={140}>
 				{!receipt.position.isFree ? (
 					<Tooltip
 						title={

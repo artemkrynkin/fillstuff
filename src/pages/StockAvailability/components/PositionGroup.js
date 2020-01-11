@@ -83,7 +83,7 @@ const PositionGroup = props => {
 
 					{positionGroup.positions.length ? (
 						<ExpansionPanelDetails>
-							<Table>
+							<Table style={{ tableLayout: 'fixed' }}>
 								<TableBody>
 									{positionGroup.positions.sort().map(position => (
 										<Position

@@ -1,13 +1,13 @@
 .container {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  align-items: center;
   min-height: 32px;
 }
 
-.topContainer {
-  align-items: center;
+.names {
   display: flex;
+  flex-direction: column;
+  max-width: calc(100% - 32px);
 }
 
 .name,
@@ -27,6 +27,12 @@
 .symbols {
   align-items: center;
   display: flex;
+  margin-left: auto;
+  max-width: 32px;
+}
+
+.symbols > div:first-child {
+  margin-left: 0;
 }
 
 .archive,

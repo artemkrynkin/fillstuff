@@ -25,7 +25,8 @@ const compareQuantity = (a, b) => {
 
 const QuantityIndicator = props => {
 	const { type, dividedPositions, divided, unitReceipt, unitIssue, minimumBalance, receipts, positions } = props;
-	let quantity, quantityPackages;
+
+	let quantity;
 
 	if (type === 'positionGroup' && !positions.length) return null;
 
@@ -35,16 +36,6 @@ const QuantityIndicator = props => {
 		}, 0);
 	} else {
 		quantity = receipts.reduce((sum, receipt) => sum + receipt.quantity, 0);
-	}
-
-	if (unitReceipt === 'nmp' && unitIssue === 'pce') {
-		if (type === 'positionGroup') {
-			quantityPackages = positions.reduce((sum, position) => {
-				return sum + position.receipts.reduce((sum, receipt) => sum + receipt.current.quantityPackages, 0);
-			}, 0);
-		} else {
-			quantityPackages = receipts.reduce((sum, receipt) => sum + receipt.quantityPackages, 0);
-		}
 	}
 
 	if (type === 'positionGroup') {

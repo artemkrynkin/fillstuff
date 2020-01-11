@@ -125,15 +125,15 @@ class Positions extends Component {
 
 		return (
 			<Paper>
-				<Table>
+				<Table style={{ tableLayout: 'fixed' }}>
 					<TableHead className={styles.tableHeaderSticky}>
 						<TableRow>
 							<TableCell>Позиция</TableCell>
+							<TableCell align="right" width={125}>
+								Мин. остаток
+							</TableCell>
 							<TableCell align="right" width={160}>
 								Количество
-							</TableCell>
-							<TableCell align="right" width={130}>
-								Мин. остаток
 							</TableCell>
 							<TableCell align="right" width={140}>
 								Цена покупки

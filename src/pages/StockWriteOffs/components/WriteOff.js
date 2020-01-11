@@ -8,6 +8,8 @@ import TableRow from '@material-ui/core/TableRow';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 
+import { formatNumber } from 'shared/utils';
+
 import PositionNameInList from 'src/components/PositionNameInList';
 
 import styles from './WriteOff.module.css';
@@ -31,14 +33,6 @@ const WriteOff = props => {
 	return (
 		<TableRow className={styles.writeOff}>
 			<TableCell>
-				<PositionNameInList
-					name={writeOff.position.name}
-					characteristics={writeOff.position.characteristics}
-					isArchived={writeOff.position.isArchived}
-					canceled={writeOff.canceled}
-				/>
-			</TableCell>
-			<TableCell align="left" width={180}>
 				<div className={styles.user}>
 					<Avatar
 						className={styles.userPhoto}
@@ -46,13 +40,23 @@ const WriteOff = props => {
 						alt={writeOff.user.name}
 						children={<div className={styles.userIcon} children={<FontAwesomeIcon icon={['fas', 'user-alt']} />} />}
 					/>
-					<Grid style={{ maxWidth: 112 }} alignItems="flex-end" container>
+					<Grid className={styles.userDetails} alignItems="flex-end" container>
 						<div className={styles.userName}>{writeOff.user.name}</div>
 					</Grid>
 				</div>
 			</TableCell>
+			<TableCell width={280}>
+				<PositionNameInList
+					name={writeOff.position.name}
+					characteristics={writeOff.position.characteristics}
+					canceled={writeOff.canceled}
+				/>
+			</TableCell>
 			<TableCell align="right" width={125}>
 				{writeOff.quantity} {writeOff.position.unitIssue === 'pce' ? 'шт.' : 'уп.'}
+			</TableCell>
+			<TableCell align="right" width={125}>
+				{formatNumber(writeOff.totalPurchasePrice, { toString: true })} ₽
 			</TableCell>
 			<TableCell align="right" width={150}>
 				{!isCurrentHour ? createdAtMoment.format('HH:mm') : !isNow ? createdAtMoment.fromNow() : 'только что'}

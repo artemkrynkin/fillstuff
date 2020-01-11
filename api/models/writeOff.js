@@ -59,7 +59,25 @@ let WriteOff = new Schema({
 		min: [0, 'Не может быть меньше 0'],
 		required: [true, i18n.__('Обязательное поле')],
 	},
-	cost: {
+	totalPurchasePrice: {
+		type: Number,
+		min: [0, 'Не может быть меньше 0'],
+		default: 0,
+		set: value => formatNumber(value),
+	},
+	totalSalePrice: {
+		type: Number,
+		min: [0, 'Не может быть меньше 0'],
+		default: 0,
+		set: value => formatNumber(value),
+	},
+	unitSalePrice: {
+		type: Number,
+		min: [0, 'Не может быть меньше 0'],
+		default: 0,
+		set: value => formatNumber(value),
+	},
+	unitPurchasePrice: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,

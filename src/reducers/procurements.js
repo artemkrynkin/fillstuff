@@ -1,5 +1,3 @@
-// import { cloneDeep } from 'lodash';
-
 const positions = (
 	state = {
 		isFetching: false,

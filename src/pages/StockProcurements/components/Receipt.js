@@ -20,13 +20,14 @@ const Receipt = props => {
 
 	return (
 		<TableRow classes={positionSameFilter ? { root: TableRowHighlightClasses.root } : {}}>
-			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}}>
+			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} width={280}>
 				<PositionNameInList
 					name={receipt.position.name}
 					characteristics={receipt.position.characteristics}
 					isArchived={receipt.position.isArchived}
 				/>
 			</TableCell>
+			<TableCell />
 			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="right" width={160}>
 				<QuantityIndicator
 					type="receipt"
@@ -35,10 +36,10 @@ const Receipt = props => {
 					receipts={[{ ...receipt.initial }]}
 				/>
 			</TableCell>
-			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="right" width={160}>
+			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="right" width={140}>
 				{formatNumber(receipt.unitPurchasePrice, { toString: true })} ₽
 			</TableCell>
-			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="right" width={160}>
+			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="right" width={140}>
 				{!receipt.position.isFree ? (
 					<Tooltip
 						title={

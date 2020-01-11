@@ -26,6 +26,10 @@
   font-size: 20px;
 }
 
+.userDetails {
+  max-width: calc(100% - 38px);
+}
+
 .userName {
   color: var(--c-hex-bg-500);
   font-size: 13px;

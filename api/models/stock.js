@@ -30,7 +30,7 @@ let Stock = new Schema({
 		type: Date,
 		default: Date.now,
 	},
-	status: {
+	indicators: {
 		numberPositions: {
 			type: Number,
 			default: 0,
@@ -44,34 +44,8 @@ let Stock = new Schema({
 	},
 	members: [
 		{
-			user: {
-				type: Schema.Types.ObjectId,
-				ref: 'User',
-			},
-			role: {
-				type: String,
-				enum: ['owner', 'admin', 'user', 'admin-user'],
-				default: 'user',
-			},
-			confirmed: {
-				type: Boolean,
-				default: false,
-			},
-			deactivated: {
-				type: Boolean,
-				default: true,
-			},
-			invitationDate: {
-				type: Date,
-				default: Date.now,
-			},
-			guest: {
-				type: Boolean,
-				default: false,
-			},
-			invitationExpiresIn: {
-				type: Date,
-			},
+			type: Schema.Types.ObjectId,
+			ref: 'Member',
 		},
 	],
 	__v: {

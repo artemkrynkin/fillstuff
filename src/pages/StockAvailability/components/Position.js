@@ -39,9 +39,14 @@ const Position = props => {
 
 	return (
 		<TableRow className={styles.position}>
-			<TableCell style={position.positionGroup ? { maxWidth: 0, paddingLeft: 41 } : {}}>
+			<TableCell style={position.positionGroup ? { paddingLeft: 41 } : {}}>
 				<PositionNameInList name={position.name} characteristics={position.characteristics} />
 			</TableCell>
+			{position.receipts.length ? (
+				<TableCell align="right" width={125}>
+					{position.divided ? position.minimumBalance : null}
+				</TableCell>
+			) : null}
 			{position.receipts.length ? (
 				<TableCell align="right" width={160}>
 					<QuantityIndicator
@@ -52,11 +57,6 @@ const Position = props => {
 						minimumBalance={position.minimumBalance}
 						receipts={position.receipts.map(receipt => ({ ...receipt.current }))}
 					/>
-				</TableCell>
-			) : null}
-			{position.receipts.length ? (
-				<TableCell align="right" width={130}>
-					{position.divided ? position.minimumBalance : null}
 				</TableCell>
 			) : null}
 			{position.receipts.length ? (

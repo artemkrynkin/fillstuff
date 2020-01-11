@@ -98,17 +98,18 @@ const Procurement = props => {
 				</div>
 				<Collapse in={expanded} timeout={300} unmountOnExit>
 					<div className={styles.receipts}>
-						<Table>
+						<Table style={{ tableLayout: 'fixed' }}>
 							<TableHead>
 								<TableRow>
-									<TableCell>Позиция</TableCell>
+									<TableCell width={280}>Позиция</TableCell>
+									<TableCell />
 									<TableCell align="right" width={160}>
 										Количество
 									</TableCell>
-									<TableCell align="right" width={160}>
+									<TableCell align="right" width={140}>
 										Цена покупки
 									</TableCell>
-									<TableCell align="right" width={160}>
+									<TableCell align="right" width={140}>
 										Цена продажи
 									</TableCell>
 								</TableRow>

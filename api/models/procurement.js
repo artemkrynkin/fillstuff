@@ -23,7 +23,10 @@ let Procurement = new Schema({
 		ref: 'User',
 		required: [true, i18n.__('Обязательное поле')],
 	},
-	number: String,
+	number: {
+		type: String,
+		trim: true,
+	},
 	date: Date,
 	noInvoice: {
 		type: Boolean,

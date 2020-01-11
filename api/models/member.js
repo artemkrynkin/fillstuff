@@ -12,6 +12,7 @@ const Member = new Schema({
 	stock: {
 		type: Schema.Types.ObjectId,
 		ref: 'Stock',
+		select: false,
 	},
 	role: {
 		type: String,

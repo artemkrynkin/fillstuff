@@ -11,7 +11,7 @@ import TextField from '@material-ui/core/TextField/TextField';
 import { Dialog, DialogActions, DialogTitle } from 'src/components/Dialog';
 import NumberFormat from 'src/components/NumberFormat';
 
-import { getStockStatus } from 'src/actions/stocks';
+import { getStudioStock } from 'src/actions/studio';
 import { createWriteOff } from 'src/actions/writeOffs';
 
 import stylesGlobal from 'src/styles/globals.module.css';
@@ -20,7 +20,6 @@ const writeOffSchema = Yup.object().shape({
 	quantity: Yup.number()
 		.min(1)
 		.required(),
-	comment: Yup.string().required(),
 });
 
 class DialogWriteOffCreate extends Component {
@@ -28,15 +27,15 @@ class DialogWriteOffCreate extends Component {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
 		onExitedDialog: PropTypes.func,
-		currentStockId: PropTypes.string.isRequired,
+		currentStudioId: PropTypes.string.isRequired,
 		selectedPosition: PropTypes.object,
 	};
 
 	onSubmit = (values, actions) => {
-		const { onCloseDialog, currentUser, selectedPosition } = this.props;
+		const { onCloseDialog, selectedPosition } = this.props;
 
-		this.props.createWriteOff(currentUser._id, selectedPosition._id, values).then(response => {
-			if (response.status === 'success') this.props.getStockStatus();
+		this.props.createWriteOff(selectedPosition._id, values).then(response => {
+			if (response.status === 'success') this.props.getStudioStock();
 			actions.setSubmitting(false);
 			onCloseDialog();
 		});
@@ -51,7 +50,7 @@ class DialogWriteOffCreate extends Component {
 			<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth="md" scroll="body">
 				<DialogTitle onClose={onCloseDialog}>Списание количества</DialogTitle>
 				<Formik
-					initialValues={{ quantity: '', comment: '' }}
+					initialValues={{ quantity: '' }}
 					validationSchema={writeOffSchema}
 					validateOnBlur={false}
 					validateOnChange={false}
@@ -88,19 +87,6 @@ class DialogWriteOffCreate extends Component {
 										autoFocus
 									/>
 								</Grid>
-								<Grid className={stylesGlobal.formLabelControl}>
-									<Field
-										name="comment"
-										label="Комментарий"
-										error={Boolean(touched.comment && errors.comment)}
-										helperText={(touched.comment && errors.comment) || ''}
-										as={TextField}
-										rows={2}
-										rowsMax={4}
-										multiline
-										fullWidth
-									/>
-								</Grid>
 							</DialogContent>
 							<DialogActions
 								leftHandleProps={{
@@ -132,12 +118,10 @@ const mapStateToProps = state => {
 	};
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentStockId } = ownProps;
-
+const mapDispatchToProps = dispatch => {
 	return {
-		getStockStatus: () => dispatch(getStockStatus(currentStockId)),
-		createWriteOff: (userId, positionId, values) => dispatch(createWriteOff(currentStockId, userId, positionId, values)),
+		getStudioStock: () => dispatch(getStudioStock()),
+		createWriteOff: (positionId, data) => dispatch(createWriteOff({ params: { positionId }, data })),
 	};
 };
 

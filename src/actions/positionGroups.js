@@ -1,19 +1,20 @@
 import axios from 'axios';
 
-export const createPositionGroup = (stockId, positionGroup) => {
-	return async dispatch => {
+export const createPositionGroup = ({ data }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+
 		return await axios
-			.post('/api/position-groups', positionGroup, {
-				params: {
-					stockId,
-				},
+			.post('/api/createPositionGroup', {
+				studioId,
+				memberId,
+				data,
 			})
 			.then(async response => {
-				const { data: positionGroup } = response;
-
 				await dispatch({
 					type: 'CREATE_POSITION_GROUP',
-					payload: positionGroup,
+					payload: response.data,
 				});
 
 				return Promise.resolve({ status: 'success' });
@@ -30,18 +31,25 @@ export const createPositionGroup = (stockId, positionGroup) => {
 	};
 };
 
-export const editPositionGroup = (positionGroupId, newValues) => {
-	return async dispatch => {
-		return await axios
-			.put(`/api/position-groups/${positionGroupId}`, newValues)
-			.then(response => {
-				const positionGroup = response.data;
+export const editPositionGroup = ({ params, data }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+		const { positionGroupId } = params;
 
+		return await axios
+			.post('/api/editPositionGroup', {
+				studioId,
+				memberId,
+				params,
+				data,
+			})
+			.then(response => {
 				dispatch({
 					type: 'EDIT_POSITION_GROUP',
 					payload: {
 						positionGroupId,
-						positionGroup,
+						positionGroup: response.data,
 					},
 				});
 
@@ -59,19 +67,26 @@ export const editPositionGroup = (positionGroupId, newValues) => {
 	};
 };
 
-export const addPositionInGroup = (positionGroupId, newValues) => {
-	return async dispatch => {
-		return await axios
-			.post(`/api/position-groups/${positionGroupId}/add-positions`, newValues)
-			.then(response => {
-				const positionGroup = response.data;
+export const addPositionInGroup = ({ params, data }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+		const { positionGroupId } = params;
 
+		return await axios
+			.post('/api/addPositionInGroup', {
+				studioId,
+				memberId,
+				params,
+				data,
+			})
+			.then(response => {
 				dispatch({
 					type: 'ADD_POSITION_IN_GROUP',
 					payload: {
 						positionGroupId,
-						positionGroup,
-						positionsAdded: newValues.positions,
+						positionGroup: response.data,
+						positionsAdded: data.positions,
 					},
 				});
 

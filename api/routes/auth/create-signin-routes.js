@@ -14,7 +14,7 @@ import { sleep } from 'shared/utils';
 const debug = require('debug')('shared:middlewares:logging');
 
 const IS_PROD = process.env.NODE_ENV === 'production';
-const FALLBACK_URL = IS_PROD ? 'https://blikside.com/stocks' : 'http://localhost:3000/stocks';
+const FALLBACK_URL = IS_PROD ? 'https://blikside.com/' : 'http://localhost:3000/';
 
 // Strategy: 'local' | 'vk'
 export const createSigninRoutes = (strategy, strategyOptions) => {

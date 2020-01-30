@@ -75,10 +75,10 @@
   width: 200px;
 }
 
-.stock-btn svg {
-  margin-left: 10px;
-  transform: rotate(0deg);
-}
+/*.stock-btn svg {*/
+/*  margin-left: 10px;*/
+/*  transform: rotate(0deg);*/
+/*}*/
 
 .profile {
   align-items: center;
@@ -115,7 +115,7 @@
   text-shadow: 0 0 10px var(--c-hex-t-500);
 }
 
-.profilePhoto {
+.avatar {
   align-items: flex-end;
   border: 2px solid var(--c-hex-t-400);
   border-radius: 50%;
@@ -127,15 +127,15 @@
   width: 40px;
 }
 
-.profilePhoto svg {
+.avatar svg {
   font-size: 30px;
 }
 
-.profilePhoto img {
+.avatar img {
   height: 100%;
   width: 100%;
 }
 
-.container_themeBg .profileName + .profilePhoto {
+.container_themeBg .profileName + .avatar {
   border-color: rgba(var(--c-rgb-sg-2), 0.3);
 }

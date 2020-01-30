@@ -1,15 +1,25 @@
 import axios from 'axios';
+/**
+ *
+ * @param params
+ * @param query
+ * @param data
+ * @param showRequest
+ * @returns {function(*, *): {status: string} | {status: string}}
+ */
 
-export const getProcurements = (stockId, params = {}, showRequest = true) => {
-	return async dispatch => {
+export const getProcurements = ({ query, showRequest } = { showRequest: true }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+
 		if (showRequest) dispatch({ type: 'REQUEST_PROCUREMENTS' });
 
 		return await axios
-			.get('/api/procurements', {
-				params: {
-					stockId,
-					...params,
-				},
+			.post('/api/getProcurements', {
+				studioId,
+				memberId,
+				query,
 			})
 			.then(response => {
 				dispatch({
@@ -27,13 +37,16 @@ export const getProcurements = (stockId, params = {}, showRequest = true) => {
 	};
 };
 
-export const getProcurement = (stockId, procurementId) => {
-	return async dispatch => {
+export const getProcurement = ({ params }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+
 		return await axios
-			.get(`/api/procurements/${procurementId}`, {
-				params: {
-					stockId,
-				},
+			.post('/api/getProcurement', {
+				studioId,
+				memberId,
+				params,
 			})
 			.then(response => {
 				const { data: procurement } = response;
@@ -48,20 +61,17 @@ export const getProcurement = (stockId, procurementId) => {
 	};
 };
 
-export const createProcurement = (stockId, procurement) => {
-	return async dispatch => {
+export const createProcurement = ({ data }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+
 		return await axios
-			.post(
-				'/api/procurements',
-				{
-					procurement,
-				},
-				{
-					params: {
-						stockId,
-					},
-				}
-			)
+			.post('/api/createProcurement', {
+				studioId,
+				memberId,
+				data,
+			})
 			.then(response => {
 				const { data: procurement } = response;
 

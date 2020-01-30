@@ -6,7 +6,7 @@ import { Formik } from 'formik';
 
 import { DialogSticky, DialogTitle } from 'src/components/Dialog';
 
-import { getStockStatus } from 'src/actions/stocks';
+import { getStudioStock } from 'src/actions/studio';
 import { createCharacteristic } from 'src/actions/characteristics';
 import { createPosition, editPosition } from 'src/actions/positions';
 
@@ -22,7 +22,7 @@ class DialogPositionCreateEdit extends Component {
 		onCloseDialog: PropTypes.func.isRequired,
 		onExitedDialog: PropTypes.func,
 		onCallback: PropTypes.func,
-		currentStockId: PropTypes.string.isRequired,
+		currentStudioId: PropTypes.string.isRequired,
 		selectedPosition: PropTypes.object,
 	};
 
@@ -48,9 +48,9 @@ class DialogPositionCreateEdit extends Component {
 		}, 300);
 	};
 
-	onCreateCharacteristic = (values, setFieldValue) => {
+	onCreateCharacteristic = (characteristic, setFieldValue) => {
 		this.setState({ isLoadingCharacteristics: true }, () => {
-			this.props.createCharacteristic(values).then(response => {
+			this.props.createCharacteristic(characteristic).then(response => {
 				const characteristic = response.data;
 
 				this.setState({ isLoadingCharacteristics: false });
@@ -68,7 +68,7 @@ class DialogPositionCreateEdit extends Component {
 				if (onCallback !== undefined) onCallback(response);
 
 				if (response.status === 'success') {
-					this.props.getStockStatus();
+					this.props.getStudioStock();
 					actions.setSubmitting(false);
 					onCloseDialog();
 				}
@@ -78,7 +78,7 @@ class DialogPositionCreateEdit extends Component {
 				if (onCallback !== undefined) onCallback(response);
 
 				if (response.status === 'success') {
-					this.props.getStockStatus();
+					this.props.getStudioStock();
 					actions.setSubmitting(false);
 					onCloseDialog();
 				}
@@ -103,7 +103,7 @@ class DialogPositionCreateEdit extends Component {
 	};
 
 	render() {
-		const { type, dialogOpen, onCloseDialog, currentStockId, characteristics, selectedPosition } = this.props;
+		const { type, dialogOpen, onCloseDialog, currentStudioId, characteristics, selectedPosition } = this.props;
 		const { shopLinkVisible, isLoadingCharacteristics } = this.state;
 
 		if (type === 'edit' && !selectedPosition) return null;
@@ -159,7 +159,7 @@ class DialogPositionCreateEdit extends Component {
 							onCloseDialog={onCloseDialog}
 							onChangeShopFields={this.onChangeShopFields}
 							onCreateCharacteristic={this.onCreateCharacteristic}
-							currentStockId={currentStockId}
+							currentStudioId={currentStudioId}
 							characteristics={characteristics}
 							type={type}
 							shopLinkVisible={shopLinkVisible}
@@ -179,14 +179,12 @@ const mapStateToProps = state => {
 	};
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentStockId } = ownProps;
-
+const mapDispatchToProps = dispatch => {
 	return {
-		getStockStatus: () => dispatch(getStockStatus(currentStockId)),
-		createCharacteristic: values => dispatch(createCharacteristic(values)),
-		createPosition: position => dispatch(createPosition(currentStockId, position)),
-		editPosition: (positionId, position) => dispatch(editPosition(positionId, position)),
+		getStudioStock: () => dispatch(getStudioStock()),
+		createCharacteristic: characteristic => dispatch(createCharacteristic({ data: { characteristic } })),
+		createPosition: position => dispatch(createPosition({ data: { position } })),
+		editPosition: (positionId, position) => dispatch(editPosition({ params: { positionId }, data: { position } })),
 	};
 };
 

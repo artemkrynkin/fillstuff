@@ -37,7 +37,7 @@ const FormPositionReceiptCreateEdit = props => {
 		onChangeShopFields,
 		onCreateCharacteristic,
 		type,
-		currentStockId,
+		currentStudioId,
 		characteristics,
 		shopLinkVisible,
 		isLoadingCharacteristics,
@@ -502,7 +502,7 @@ const FormPositionReceiptCreateEdit = props => {
 												onCreateOption={value =>
 													onCreateCharacteristic(
 														{
-															stock: currentStockId,
+															studio: currentStudioId,
 															type: values.characteristicTemp.type,
 															value: translitRu(value),
 															label: value,

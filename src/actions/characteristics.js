@@ -1,14 +1,16 @@
 import axios from 'axios';
 
-export const getCharacteristics = stockId => {
-	return async dispatch => {
+export const getCharacteristics = () => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+
 		dispatch({ type: 'REQUEST_SPECIFICATIONS' });
 
 		return await axios
-			.get('/api/characteristics', {
-				params: {
-					stockId,
-				},
+			.post('/api/getCharacteristics', {
+				studioId,
+				memberId,
 			})
 			.then(response => {
 				dispatch({
@@ -24,12 +26,19 @@ export const getCharacteristics = stockId => {
 	};
 };
 
-export const createCharacteristic = values => {
-	return async dispatch => {
+export const createCharacteristic = ({ data }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+
 		dispatch({ type: 'REQUEST_SPECIFICATIONS' });
 
 		return await axios
-			.post(`/api/characteristics`, values)
+			.post(`/api/createCharacteristics`, {
+				studioId,
+				memberId,
+				data,
+			})
 			.then(response => {
 				const characteristic = response.data;
 

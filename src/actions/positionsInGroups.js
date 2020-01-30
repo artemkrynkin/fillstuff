@@ -1,18 +1,20 @@
 import axios from 'axios';
 
-export const getPositionsInGroups = stockId => {
-	return async dispatch => {
-		dispatch({ type: 'REQUEST_POSITIONS_IN_GROUPS' });
+export const getPositionsAndGroups = () => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+
+		dispatch({ type: 'REQUEST_POSITIONS_AND_GROUPS' });
 
 		return await axios
-			.get('/api/positions/positions-in-groups', {
-				params: {
-					stockId,
-				},
+			.post('/api/getPositionsAndGroups', {
+				studioId,
+				memberId,
 			})
 			.then(response => {
 				dispatch({
-					type: 'RECEIVE_POSITIONS_IN_GROUPS',
+					type: 'RECEIVE_POSITIONS_AND_GROUPS',
 					payload: response.data,
 				});
 			})
@@ -24,24 +26,27 @@ export const getPositionsInGroups = stockId => {
 	};
 };
 
-export const removePositionFromGroup = (stockId, positionId, positionGroupId) => {
-	return async dispatch => {
+export const removePositionFromGroup = ({ params, data }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+		const { positionId } = params;
+		const { positionGroupId } = data;
+
 		return await axios
-			.get(`/api/positions/${positionId}/remove-from-group`, {
-				params: {
-					stockId,
-				},
+			.post('/api/removePositionFromGroup', {
+				studioId,
+				memberId,
+				params,
 			})
 			.then(response => {
 				if (!response.data.code) {
-					const remainingPositionId = response.data.remainingPositionId;
-
 					dispatch({
 						type: 'REMOVE_POSITION_FROM_GROUP',
 						payload: {
 							positionGroupId,
 							positionId,
-							remainingPositionId,
+							remainingPositionId: response.data,
 						},
 					});
 
@@ -58,13 +63,18 @@ export const removePositionFromGroup = (stockId, positionId, positionGroupId) =>
 	};
 };
 
-export const archivePositionInGroup = (stockId, positionId, positionGroupId) => {
-	return async dispatch => {
+export const archivePositionInGroup = ({ params, data }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+		const { positionId } = params;
+		const { positionGroupId } = data;
+
 		return await axios
-			.get(`/api/positions/${positionId}/archive`, {
-				params: {
-					stockId,
-				},
+			.post('/api/archivePosition', {
+				studioId,
+				memberId,
+				params,
 			})
 			.then(response => {
 				if (!response.data.code) {

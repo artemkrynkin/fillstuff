@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 
 import { DialogSticky, DialogTitle } from 'src/components/Dialog';
 
-import { editMember } from 'src/actions/stocks';
+import { editMember } from 'src/actions/studio';
 
 import FormMemberEdit from './FormMemberEdit';
 
@@ -63,7 +63,7 @@ MemberEdit.propTypes = {
 	dialogOpen: PropTypes.bool.isRequired,
 	onCloseDialog: PropTypes.func.isRequired,
 	onExitedDialog: PropTypes.func,
-	currentStock: PropTypes.object.isRequired,
+	currentStudio: PropTypes.object.isRequired,
 	selectedMember: PropTypes.object,
 };
 
@@ -74,10 +74,10 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentStock } = ownProps;
+	const { currentStudio } = ownProps;
 
 	return {
-		editMember: (memberId, values) => dispatch(editMember(currentStock._id, memberId, values)),
+		editMember: (memberId, values) => dispatch(editMember(currentStudio._id, memberId, values)),
 	};
 };
 

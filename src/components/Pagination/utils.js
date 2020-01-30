@@ -3,38 +3,34 @@ import queryString from 'query-string';
 
 import { history } from 'src/helpers/history';
 
-export const checkQueryParamsInFilter = initialQueryParams => {
-	const queryParams = queryString.parse(history.location.search);
+export const checkQueryInFilter = initialQuery => {
+	const query = queryString.parse(history.location.search);
 
-	if (queryParams.dateStart && queryParams.dateEnd) {
+	if (query.dateStart && query.dateEnd) {
 		const isValidDate = date => moment(date || new Date('')).isValid();
 
-		queryParams.dateStart = Number(queryParams.dateStart);
-		queryParams.dateEnd = Number(queryParams.dateEnd);
+		query.dateStart = Number(query.dateStart);
+		query.dateEnd = Number(query.dateEnd);
 
-		if (!isNaN(queryParams.dateStart) || !isNaN(queryParams.dateEnd)) {
-			if (!isValidDate(queryParams.dateStart) || !isValidDate(queryParams.dateEnd)) {
+		if (!isNaN(query.dateStart) || !isNaN(query.dateEnd)) {
+			if (!isValidDate(query.dateStart) || !isValidDate(query.dateEnd)) {
 				const momentDate = moment();
 
-				queryParams.dateStart = momentDate.startOf('month').valueOf();
-				queryParams.dateEnd = momentDate.endOf('month').valueOf();
-			} else if (
-				isValidDate(queryParams.dateStart) &&
-				isValidDate(queryParams.dateEnd) &&
-				moment(queryParams.dateStart).isAfter(queryParams.dateEnd)
-			) {
-				const dateStart = queryParams.dateStart;
+				query.dateStart = momentDate.startOf('month').valueOf();
+				query.dateEnd = momentDate.endOf('month').valueOf();
+			} else if (isValidDate(query.dateStart) && isValidDate(query.dateEnd) && moment(query.dateStart).isAfter(query.dateEnd)) {
+				const dateStart = query.dateStart;
 
-				queryParams.dateStart = queryParams.dateEnd;
-				queryParams.dateEnd = dateStart;
+				query.dateStart = query.dateEnd;
+				query.dateEnd = dateStart;
 			}
 		} else {
-			delete queryParams.dateStart;
-			delete queryParams.dateEnd;
+			delete query.dateStart;
+			delete query.dateEnd;
 		}
 	}
 
-	return Object.assign(initialQueryParams, queryParams);
+	return Object.assign(initialQuery, query);
 };
 
 export const weekActive = (dateStart, dateEnd, currentWeek = true) =>

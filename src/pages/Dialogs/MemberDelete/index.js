@@ -10,7 +10,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 
 import { Dialog, DialogTitle, DialogActions } from 'src/components/Dialog';
 
-import { deleteMember } from 'src/actions/stocks';
+import { deleteMember } from 'src/actions/studio';
 
 import styles from './index.module.css';
 
@@ -19,7 +19,7 @@ class MemberDelete extends Component {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
 		onExitedDialog: PropTypes.func,
-		currentStock: PropTypes.object.isRequired,
+		currentStudio: PropTypes.object.isRequired,
 		selectedMember: PropTypes.object,
 	};
 
@@ -29,7 +29,7 @@ class MemberDelete extends Component {
 		let photoImgClasses = (member, dialog) => {
 			return ClassNames({
 				[styles.photo]: dialog,
-				[styles.photoEmpty]: dialog ? member.isWaiting || !member.user.profilePhoto : false,
+				[styles.photoEmpty]: dialog ? member.isWaiting || !member.user.avatar : false,
 			});
 		};
 
@@ -43,8 +43,8 @@ class MemberDelete extends Component {
 					<DialogContent>
 						<Grid alignItems="flex-start" wrap="nowrap" container>
 							<div className={photoImgClasses(selectedMember, true)}>
-								{selectedMember.user.profilePhoto ? (
-									<img src={selectedMember.user.profilePhoto} alt="" />
+								{selectedMember.user.avatar ? (
+									<img src={selectedMember.user.avatar} alt="" />
 								) : (
 									<FontAwesomeIcon icon={['fas', 'user-alt']} />
 								)}
@@ -89,10 +89,10 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentUser, currentStock } = ownProps;
+	const { currentUser, currentStudio } = ownProps;
 
 	return {
-		deleteMember: member => dispatch(deleteMember(currentStock._id, member._id, member.user._id, currentUser._id)),
+		deleteMember: member => dispatch(deleteMember(currentStudio._id, member._id, member.user._id, currentUser._id)),
 	};
 };
 

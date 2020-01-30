@@ -36,7 +36,32 @@ const Login = props => {
 		r = searchObj.r;
 	}
 
-	const postAuthRedirectPath = redirectPath !== undefined || r !== undefined ? `${redirectPath || r}` : `${CLIENT_URL}/stocks`;
+	const postAuthRedirectPath = redirectPath !== undefined || r !== undefined ? `${redirectPath || r}` : `${CLIENT_URL}/dashboard`;
+
+	const onSubmit = (values, actions) => {
+		if (!values.email || !values.password) {
+			actions.setFieldError('unknown', 'Email or password is incorrect');
+			actions.setSubmitting(false);
+			return;
+		}
+
+		props
+			.login(values)
+			.then(response => {
+				if (actions) actions.setSubmitting(false);
+
+				window.location.href = postAuthRedirectPath || response.data;
+			})
+			.catch(error => {
+				let data = error.response.data;
+
+				data.formErrors.forEach(error => {
+					actions.setFieldError(error.field, error.message);
+				});
+
+				actions.setSubmitting(false);
+			});
+	};
 
 	return (
 		<div className={styles.wrapper}>
@@ -52,15 +77,7 @@ const Login = props => {
 						initialValues={{ email: '', password: '' }}
 						validateOnBlur={false}
 						validateOnChange={false}
-						onSubmit={(values, actions) => {
-							if (!values.email || !values.password) {
-								actions.setFieldError('unknown', 'Email or password is incorrect');
-								actions.setSubmitting(false);
-								return;
-							}
-
-							props.login(values, actions, postAuthRedirectPath);
-						}}
+						onSubmit={(values, actions) => onSubmit(values, actions)}
 					>
 						{({ errors, isSubmitting, touched }) => {
 							return (
@@ -119,7 +136,7 @@ const Login = props => {
 
 const mapDispatchToProps = () => {
 	return {
-		login: (values, actions, redirect) => login(values, actions, redirect),
+		login: data => login({ data }),
 	};
 };
 

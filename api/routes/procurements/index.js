@@ -1,29 +1,31 @@
 import { Router } from 'express';
+import i18n from 'i18n';
 
 import { receiptCalc } from 'shared/checkPositionAndReceipt';
 
-import { isAuthedResolver, hasPermissionsInStock } from 'api/utils/permissions';
+import { isAuthedResolver, hasPermissionsInStudio } from 'api/utils/permissions';
 
-import Stock from 'api/models/stock';
+import Studio from 'api/models/studio';
 import Position from 'api/models/position';
 import Receipt from 'api/models/receipt';
 import Procurement from 'api/models/procurement';
-import validator from 'validator';
-import i18n from 'i18n';
 
 const procurementsRouter = Router();
 
 // const debug = require('debug')('api:products');
 
-procurementsRouter.get(
-	'/procurements',
+procurementsRouter.post(
+	'/getProcurements',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
 	async (req, res, next) => {
-		const { stockId, number, dateStart, dateEnd, position, role } = req.query;
+		const {
+			studioId,
+			query: { number, dateStart, dateEnd, position, role },
+		} = req.body;
 
 		let conditions = {
-			stock: stockId,
+			studio: studioId,
 		};
 
 		if (number) conditions.number = { $regex: number, $options: 'i' };
@@ -38,12 +40,11 @@ procurementsRouter.get(
 			sort: { createdAt: -1 },
 			populate: [
 				{
-					path: 'stock',
-					select: 'members',
-				},
-				{
-					path: 'user',
-					select: 'profilePhoto name email',
+					path: 'member',
+					populate: {
+						path: 'user',
+						select: 'avatar name email',
+					},
 				},
 				{
 					path: 'receipts',
@@ -74,23 +75,17 @@ procurementsRouter.get(
 
 		switch (role) {
 			case 'owners':
-				procurements.data = procurements.data.filter(procurement => {
-					return procurement.stock.members.some(member => String(member.user) === String(procurement.user._id) && member.role === 'owner');
-				});
+				procurements.data = procurements.data.filter(procurement => procurement.member.role === 'owner');
 				break;
 			case 'admins':
-				procurements.data = procurements.data.filter(procurement => {
-					return procurement.stock.members.some(member => String(member.user) === String(procurement.user._id) && member.role === 'admin');
-				});
+				procurements.data = procurements.data.filter(procurement => procurement.member.role === 'admin');
 				break;
 			default:
 				if (role && role !== 'all') {
-					procurements.data = procurements.data.filter(procurement => String(procurement.user._id) === role);
+					procurements.data = procurements.data.filter(procurement => String(procurement.member._id) === role);
 				}
 				break;
 		}
-
-		procurements.data.forEach(procurement => procurement.depopulate('stock'));
 
 		res.json({
 			data: procurements.data,
@@ -101,13 +96,23 @@ procurementsRouter.get(
 	}
 );
 
-procurementsRouter.get(
-	'/procurements/:procurementId',
+procurementsRouter.post(
+	'/getProcurement',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
 	async (req, res, next) => {
-		Procurement.findById(req.params.procurementId)
-			.populate('user', 'profilePhoto name email')
+		const {
+			params: { procurementId },
+		} = req.body;
+
+		Procurement.findById(procurementId)
+			.populate({
+				path: 'member',
+				populate: {
+					path: 'user',
+					select: 'avatar name email',
+				},
+			})
 			.populate({
 				path: 'receipts',
 				populate: {
@@ -123,12 +128,15 @@ procurementsRouter.get(
 );
 
 procurementsRouter.post(
-	'/procurements',
+	'/createProcurement',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
 	async (req, res, next) => {
-		const { stockId } = req.query;
-		const { procurement: newProcurementValues } = req.body;
+		const {
+			studioId,
+			memberId,
+			data: { procurement: newProcurementValues },
+		} = req.body;
 
 		if (!newProcurementValues.noInvoice && (!newProcurementValues.number || !newProcurementValues.date)) {
 			const customErr = [];
@@ -151,14 +159,20 @@ procurementsRouter.post(
 
 		const updatePositionsAndActiveReceipt = [];
 
-		newProcurementValues.receipts = newProcurementValues.receipts.map(receipt => {
+		const newProcurement = new Procurement({
+			...newProcurementValues,
+			studio: studioId,
+			member: memberId,
+		});
+
+		newProcurement.receipts = newProcurementValues.receipts.map(receipt => {
 			const position = positions.find(position => String(position._id) === receipt.position);
 
 			const newReceipt = new Receipt({
 				...receipt,
+				procurement: newProcurement._id,
 				position: position,
-				stock: stockId,
-				user: req.user._id,
+				studio: studioId,
 				status: position.activeReceipt && position.activeReceipt.current.quantity !== 0 ? 'received' : 'active',
 			});
 
@@ -190,23 +204,14 @@ procurementsRouter.post(
 			return newReceipt;
 		});
 
-		const newProcurement = new Procurement({
-			...newProcurementValues,
-			stock: stockId,
-			user: req.user._id,
-		});
-
 		const newProcurementErr = newProcurement.validateSync();
 
 		if (newProcurementErr) return next({ code: newProcurementErr.errors ? 5 : 2, err: newProcurementErr });
 
-		await Promise.all([newProcurement.save(), ...updatePositionsAndActiveReceipt]);
-
-		await Receipt.insertMany(newProcurement.receipts).catch(err => next({ code: 2, err }));
+		await Promise.all([newProcurement.save(), ...updatePositionsAndActiveReceipt, Receipt.insertMany(newProcurement.receipts)]);
 
 		const procurement = await Procurement.findById(newProcurement._id)
-			.populate({ path: 'stock', select: 'status' })
-			.populate('user', 'profilePhoto name email')
+			.populate({ path: 'studio', select: 'stock' })
 			.populate({
 				path: 'receipts',
 				populate: {
@@ -216,24 +221,23 @@ procurementsRouter.post(
 			.catch(err => next({ code: 2, err }));
 
 		const {
-			stock: { status: statusOld },
+			studio: {
+				stock: { stockPrice: stockPriceOld },
+			},
 		} = procurement;
 
-		Stock.findByIdAndUpdate(
-			procurement.stock._id,
+		Studio.findByIdAndUpdate(
+			procurement.studio._id,
 			{
 				$set: {
-					'status.stockPrice':
-						statusOld.stockPrice +
-						procurement.receipts.reduce((sum, receipt) => {
-							return sum + receipt.initial.quantity * receipt.unitPurchasePrice;
-						}, 0),
+					'stock.stockPrice':
+						stockPriceOld + procurement.receipts.reduce((sum, receipt) => sum + receipt.initial.quantity * receipt.unitPurchasePrice, 0),
 				},
 			},
 			{ runValidators: true }
 		).catch(err => next({ code: 2, err }));
 
-		procurement.depopulate('stock');
+		procurement.depopulate('studio');
 
 		res.json(procurement);
 	}

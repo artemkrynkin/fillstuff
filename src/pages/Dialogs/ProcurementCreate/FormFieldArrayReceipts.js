@@ -31,7 +31,7 @@ const addPositionContainerClasses = formEditable =>
 const FormFieldArrayReceipts = props => {
 	const {
 		dialogRef,
-		currentStockId,
+		currentStudioId,
 		receiptInitialValues,
 		positions: {
 			data: positions,
@@ -155,17 +155,17 @@ const FormFieldArrayReceipts = props => {
 						}, 0);
 					}
 				}}
-				currentStockId={currentStockId}
+				currentStudioId={currentStudioId}
 			/>
 		</div>
 	);
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentStockId } = ownProps;
+	const { currentStudioId } = ownProps;
 
 	return {
-		getCharacteristics: () => dispatch(getCharacteristics(currentStockId)),
+		getCharacteristics: () => dispatch(getCharacteristics(currentStudioId)),
 	};
 };
 

@@ -6,35 +6,35 @@ import User, { UserSchema } from 'api/models/user';
 
 const { Strategy: LocalStrategy } = require('passport-local');
 
-const isSerializedJSON = str => str[0] === '{' && str[str.length - 1] === '}';
+// const isSerializedJSON = str => str[0] === '{' && str[str.length - 1] === '}';
 
 // const debug = require('debug')('api:auth');
 
 const init = () => {
 	// Setup use serialization
 	passport.serializeUser((user, done) => {
-		done(null, typeof user === 'string' ? user : JSON.stringify(user));
+		done(null, user._id);
 	});
 
 	// NOTE: `data` used to be just the userID, but is now the full user data
 	// to avoid having to go to the db on every single request.
-	passport.deserializeUser((data, done) => {
-		let user;
-
-		if (isSerializedJSON(data)) {
-			// Ignore errors if our isSerializedJSON heuristic is wrong and `data` isn't serialized JSON
-			try {
-				user = JSON.parse(data);
-			} catch (err) {}
-		}
-
-		// Fast path: we got the full user data in the cookie
-		if (user && user._id && user.createdAt) {
-			return done(null, user);
-		}
+	passport.deserializeUser((userId, done) => {
+		// let user;
+		//
+		// if (isSerializedJSON(data)) {
+		// 	// Ignore errors if our isSerializedJSON heuristic is wrong and `data` isn't serialized JSON
+		// 	try {
+		// 		user = JSON.parse(data);
+		// 	} catch (err) {}
+		// }
+		//
+		// // Fast path: we got the full user data in the cookie
+		// if (user && user._id && user.createdAt) {
+		// 	return done(null, user);
+		// }
 
 		// Slow path: data is just the userID (legacy), so we have to go to the db to get the full data
-		return User.findOne({ _id: user._id }, { salt: false, hashedPassword: false })
+		return User.findById(userId, { salt: false, hashedPassword: false })
 			.then(user => done(null, user))
 			.catch(err => done(err));
 	});

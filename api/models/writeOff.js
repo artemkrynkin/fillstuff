@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import i18n from 'i18n';
+
 import { formatNumber } from 'shared/utils';
-// import validator from 'validator';
 
 const Schema = mongoose.Schema;
 
@@ -11,16 +11,11 @@ let WriteOff = new Schema({
 		type: Date,
 		default: Date.now,
 	},
-	stock: {
+	studio: {
 		type: Schema.Types.ObjectId,
-		ref: 'Stock',
+		ref: 'Studio',
 		required: [true, i18n.__('Обязательное поле')],
 		select: false,
-	},
-	user: {
-		type: Schema.Types.ObjectId,
-		ref: 'User',
-		required: [true, i18n.__('Обязательное поле')],
 	},
 	position: {
 		type: Schema.Types.ObjectId,
@@ -32,78 +27,99 @@ let WriteOff = new Schema({
 		ref: 'Receipt',
 		required: [true, i18n.__('Обязательное поле')],
 	},
+	member: {
+		type: Schema.Types.ObjectId,
+		ref: 'Member',
+		required: [true, i18n.__('Обязательное поле')],
+	},
+	// списание за счет студии
+	purchaseExpenseStudio: {
+		type: Boolean,
+		default: false,
+	},
+	// если списание отменено, то true, иначе false
 	canceled: {
 		type: Boolean,
 		default: false,
 	},
+	// Дата отмены списания
 	canceledDate: Date,
+	// Запрос на отмену от
+	cancellationRequestBy: {
+		type: Schema.Types.ObjectId,
+		ref: 'Member',
+	},
+	// Если списание бесплатное, то true, иначе false
 	isFree: {
 		type: Boolean,
 		default: false,
 	},
-	requestCancellationUser: {
-		type: Schema.Types.ObjectId,
-		ref: 'User',
-	},
-	paymentDate: Date,
+	// Статус оплаты
 	paymentStatus: {
 		type: String,
 		enum: ['paid', 'unpaid'],
 	},
+	// Дата оплаты
+	paymentDate: Date,
+	// Участник с правами администратора принявший оплату за счет
 	merchant: {
 		type: Schema.Types.ObjectId,
-		ref: 'User',
+		ref: 'Member',
 	},
+	// Количество
 	quantity: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		required: [true, i18n.__('Обязательное поле')],
 	},
+	// Общая сумма покупки
 	totalPurchasePrice: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,
 		set: value => formatNumber(value),
 	},
-	totalSalePrice: {
+	// Общая итоговая цена продажи (со всеми накрутками)
+	totalPrice: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,
 		set: value => formatNumber(value),
 	},
-	unitSalePrice: {
+	// Итоговая цена продажи единицы (со всеми накрутками)
+	unitTotalPrice: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,
 		set: value => formatNumber(value),
 	},
+	// Цена покупки единицы
 	unitPurchasePrice: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,
 		set: value => formatNumber(value),
 	},
+	// Цена продажи единицы
 	unitSellingPrice: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,
 		set: value => formatNumber(value),
 	},
+	// Накрутка единицы
 	unitExtraCharge: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,
 		set: value => formatNumber(value),
 	},
+	// Ручная накрутка единицы
 	unitManualExtraCharge: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,
 		set: value => formatNumber(value),
-	},
-	comment: {
-		type: String,
-		trim: true,
 	},
 	__v: {
 		type: Number,

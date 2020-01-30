@@ -29,7 +29,7 @@ const errorsNested = (touched, errors, name, helperText = null) => {
 let photoImgClasses = (member, dialog) => {
 	return ClassNames({
 		[styles.photo]: dialog,
-		[styles.photoEmpty]: dialog ? member.isWaiting || !member.user.profilePhoto : false,
+		[styles.photoEmpty]: dialog ? member.isWaiting || !member.user.avatar : false,
 	});
 };
 
@@ -46,11 +46,7 @@ const FormMemberEdit = props => {
 			<DialogContent>
 				<Grid className={stylesGlobal.formLabelControl} direction="column" alignItems="center" container>
 					<div className={photoImgClasses(selectedMember, true)}>
-						{selectedMember.user.profilePhoto ? (
-							<img src={selectedMember.user.profilePhoto} alt="" />
-						) : (
-							<FontAwesomeIcon icon={['fas', 'user-alt']} />
-						)}
+						{selectedMember.user.avatar ? <img src={selectedMember.user.avatar} alt="" /> : <FontAwesomeIcon icon={['fas', 'user-alt']} />}
 					</div>
 				</Grid>
 				<Grid className={stylesGlobal.formLabelControl}>
@@ -122,7 +118,7 @@ const FormMemberEdit = props => {
 							}
 							disabled={isSubmitting}
 						/>
-						{checkPermissions(currentUserRole, ['stock.full_control']) ? (
+						{checkPermissions(currentUserRole, ['studio.full_control']) ? (
 							<FormControlLabel
 								className={stylesGlobal.formRadioTitleSubtitle}
 								value="owner"

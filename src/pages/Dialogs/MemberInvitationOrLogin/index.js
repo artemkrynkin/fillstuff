@@ -8,7 +8,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
 
 import { Dialog, DialogTitle } from 'src/components/Dialog';
-import { memberInvitation } from 'src/actions/stocks';
+import { memberInvitation } from 'src/actions/studio';
 import { LoadingComponent } from 'src/components/Loading';
 
 class MemberEdit extends Component {
@@ -16,7 +16,7 @@ class MemberEdit extends Component {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
 		onExitedDialog: PropTypes.func,
-		currentStock: PropTypes.object.isRequired,
+		currentStudio: PropTypes.object.isRequired,
 		selectedMember: PropTypes.object,
 	};
 
@@ -25,7 +25,7 @@ class MemberEdit extends Component {
 	};
 
 	onEnterDialog = () => {
-		const { currentStock, selectedMember } = this.props;
+		const { currentStudio, selectedMember } = this.props;
 
 		const QRCodeGenerate = memberData => {
 			return QRCode.toDataURL(JSON.stringify(memberData), {
@@ -47,7 +47,7 @@ class MemberEdit extends Component {
 			QRCodeGenerate({
 				type: 'login',
 				userId: selectedMember.user._id,
-				stockId: currentStock._id,
+				studioId: currentStudio._id,
 				role: selectedMember.role,
 			});
 		}
@@ -98,10 +98,10 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentStock } = ownProps;
+	const { currentStudio } = ownProps;
 
 	return {
-		memberInvitation: () => dispatch(memberInvitation(currentStock._id)),
+		memberInvitation: () => dispatch(memberInvitation(currentStudio._id)),
 	};
 };
 

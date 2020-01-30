@@ -9,7 +9,7 @@ import { sleep, formatNumber } from 'shared/utils';
 
 import { DialogStickyFR, DialogTitle } from 'src/components/Dialog';
 
-import { getStockStatus } from 'src/actions/stocks';
+import { getStudioStock } from 'src/actions/studio';
 import { createProcurement } from 'src/actions/procurements';
 
 import { positionTransform } from './utils';
@@ -53,7 +53,7 @@ class ProcurementCreate extends Component {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
 		onExitedDialog: PropTypes.func,
-		currentStock: PropTypes.object.isRequired,
+		currentStudio: PropTypes.object.isRequired,
 	};
 
 	initialState = {
@@ -225,7 +225,7 @@ class ProcurementCreate extends Component {
 
 			this.props.createProcurement(procurement).then(response => {
 				if (response.status === 'success') {
-					this.props.getStockStatus();
+					this.props.getStudioStock();
 					actions.setSubmitting(false);
 					onCloseDialog();
 				}
@@ -242,11 +242,11 @@ class ProcurementCreate extends Component {
 	};
 
 	render() {
-		const { dialogOpen, onCloseDialog, currentStock, positions } = this.props;
+		const { dialogOpen, onCloseDialog, currentStudio, positions } = this.props;
 		const { formEditable } = this.state;
 
-		if (currentStock.settings.procurements.compensateCostDelivery) {
-			initialValues.compensateCostDelivery = currentStock.settings.procurements.compensateCostDelivery;
+		if (currentStudio.settings.procurements.compensateCostDelivery) {
+			initialValues.compensateCostDelivery = currentStudio.settings.procurements.compensateCostDelivery;
 		}
 
 		return (
@@ -277,7 +277,7 @@ class ProcurementCreate extends Component {
 					{props => (
 						<FormProcurementCreate
 							dialogRef={this.dialogRef}
-							currentStockId={currentStock._id}
+							currentStudioId={currentStudio._id}
 							receiptInitialValues={receiptInitialValues}
 							onHandleEditFormProcurement={this.onHandleEditFormProcurement}
 							positions={positions}
@@ -303,12 +303,10 @@ const mapStateToProps = state => {
 	};
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentStock } = ownProps;
-
+const mapDispatchToProps = dispatch => {
 	return {
-		getStockStatus: () => dispatch(getStockStatus(currentStock._id)),
-		createProcurement: procurement => dispatch(createProcurement(currentStock._id, procurement)),
+		getStudioStock: () => dispatch(getStudioStock()),
+		createProcurement: procurement => dispatch(createProcurement({ data: { procurement } })),
 	};
 };
 

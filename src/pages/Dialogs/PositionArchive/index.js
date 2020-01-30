@@ -7,7 +7,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 
 import { Dialog, DialogActions, DialogTitle } from 'src/components/Dialog';
 
-import { getStockStatus } from 'src/actions/stocks';
+import { getStudioStock } from 'src/actions/studio';
 import { archivePositionInGroup } from 'src/actions/positionsInGroups';
 
 const DialogPositionArchive = props => {
@@ -19,7 +19,7 @@ const DialogPositionArchive = props => {
 		props.archivePositionInGroup(selectedPosition._id, selectedPosition.positionGroup).then(response => {
 			onCloseDialog();
 
-			if (response.status === 'success') props.getStockStatus();
+			if (response.status === 'success') props.getStudioStock();
 		});
 	};
 
@@ -63,16 +63,15 @@ DialogPositionArchive.propTypes = {
 	dialogOpen: PropTypes.bool.isRequired,
 	onCloseDialog: PropTypes.func.isRequired,
 	onExitedDialog: PropTypes.func,
-	currentStockId: PropTypes.string.isRequired,
+	currentStudioId: PropTypes.string.isRequired,
 	selectedPosition: PropTypes.object,
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentStockId } = ownProps;
-
+const mapDispatchToProps = dispatch => {
 	return {
-		getStockStatus: () => dispatch(getStockStatus(currentStockId)),
-		archivePositionInGroup: (positionId, positionGroupId) => dispatch(archivePositionInGroup(currentStockId, positionId, positionGroupId)),
+		getStudioStock: () => dispatch(getStudioStock()),
+		archivePositionInGroup: (positionId, positionGroupId) =>
+			dispatch(archivePositionInGroup({ params: { positionId }, data: { positionGroupId } })),
 	};
 };
 

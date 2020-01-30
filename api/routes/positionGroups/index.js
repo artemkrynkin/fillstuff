@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { isAuthedResolver, hasPermissionsInStock } from 'api/utils/permissions';
+import { isAuthedResolver, hasPermissionsInStudio } from 'api/utils/permissions';
 
 import Position from 'api/models/position';
 import PositionGroup from 'api/models/positionGroup';
@@ -9,12 +9,16 @@ const positionGroupsRouter = Router();
 
 // const debug = require('debug')('api:products');
 
-positionGroupsRouter.get(
-	'/position-groups/:positionGroupId',
+positionGroupsRouter.post(
+	'/getPositionGroup',
 	// isAuthedResolver,
-	// (req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
+	// (req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
 	(req, res, next) => {
-		PositionGroup.findById(req.params.positionGroupId)
+		const {
+			params: { positionGroupId },
+		} = req.body;
+
+		PositionGroup.findById(positionGroupId)
 			.populate({
 				path: 'positions',
 				populate: {
@@ -25,16 +29,17 @@ positionGroupsRouter.get(
 			.catch(err => next({ code: 2, err }));
 	}
 );
+
 positionGroupsRouter.post(
-	'/position-groups',
+	'/createPositionGroup',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
 	async (req, res, next) => {
-		const { stockId } = req.query;
+		const { studioId, data: newPositionGroupValues } = req.body;
 
 		const newPositionGroup = new PositionGroup({
-			...req.body,
-			stock: stockId,
+			...newPositionGroupValues,
+			studio: studioId,
 		});
 
 		const newPositionGroupErr = newPositionGroup.validateSync();
@@ -73,20 +78,23 @@ positionGroupsRouter.post(
 	}
 );
 
-positionGroupsRouter.put(
-	'/position-groups/:positionGroupId',
+positionGroupsRouter.post(
+	'/editPositionGroup',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
 	async (req, res, next) => {
-		const positionGroupUpdated = { ...req.body };
+		const {
+			params: { positionGroupId },
+			data: positionGroupEdited,
+		} = req.body;
 
-		const positionGroup = await PositionGroup.findById(req.params.positionGroupId)
+		const positionGroup = await PositionGroup.findById(positionGroupId)
 			.populate({ path: 'markers', match: { isArchived: false } })
 			.catch(err => next({ code: 2, err }));
 
-		positionGroup.name = positionGroupUpdated.name;
-		positionGroup.dividedPositions = positionGroupUpdated.dividedPositions;
-		positionGroup.minimumBalance = positionGroupUpdated.minimumBalance;
+		positionGroup.name = positionGroupEdited.name;
+		positionGroup.dividedPositions = positionGroupEdited.dividedPositions;
+		positionGroup.minimumBalance = positionGroupEdited.minimumBalance;
 
 		const positionGroupErr = positionGroup.validateSync();
 
@@ -124,14 +132,17 @@ positionGroupsRouter.put(
 );
 
 positionGroupsRouter.post(
-	'/position-groups/:positionGroupId/add-positions',
+	'/addPositionInGroup',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
 	async (req, res, next) => {
-		const { positions } = req.body;
+		const {
+			params: { positionGroupId },
+			data: positions,
+		} = req.body;
 
 		const positionGroup = await PositionGroup.findByIdAndUpdate(
-			req.params.positionGroupId,
+			positionGroupId,
 			{ $push: { positions: { $each: positions } } },
 			{ new: true }
 		).catch(err => next({ code: 2, err }));

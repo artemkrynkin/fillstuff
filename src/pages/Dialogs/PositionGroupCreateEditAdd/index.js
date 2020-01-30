@@ -16,7 +16,7 @@ class DialogPositionGroupCreateEditAdd extends Component {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
 		onExitedDialog: PropTypes.func,
-		currentStockId: PropTypes.string.isRequired,
+		currentStudioId: PropTypes.string.isRequired,
 		selectedPositionGroup: PropTypes.object,
 	};
 
@@ -136,13 +136,11 @@ const mapStateToProps = state => {
 	};
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentStockId } = ownProps;
-
+const mapDispatchToProps = dispatch => {
 	return {
-		createPositionGroup: positionGroup => dispatch(createPositionGroup(currentStockId, positionGroup)),
-		editPositionGroup: (positionGroupId, newValues) => dispatch(editPositionGroup(positionGroupId, newValues)),
-		addPositionInGroup: (positionGroupId, newValues) => dispatch(addPositionInGroup(positionGroupId, newValues)),
+		createPositionGroup: data => dispatch(createPositionGroup({ data })),
+		editPositionGroup: (positionGroupId, data) => dispatch(editPositionGroup({ params: { positionGroupId }, data })),
+		addPositionInGroup: (positionGroupId, data) => dispatch(addPositionInGroup({ params: { positionGroupId }, data })),
 	};
 };
 

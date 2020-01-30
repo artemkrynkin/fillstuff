@@ -1,0 +1,248 @@
+{
+  "lang": "ru",
+  "user": {
+    "status": "VALID",
+    "yandexuid": "844253871579206360",
+    "passportHost": "https://passport.yandex.ru",
+    "avatarHost": "https://avatars.mds.yandex.net",
+    "uid": "231996549",
+    "login": "pages.topll",
+    "lang": "ru",
+    "displayName": "Артём",
+    "avatarId": "20706/enc-cf1b78a95fa45a34ee3b27758fa3e734e0ce88243222f0bac1426bbb9ad280da",
+    "email": "pages.topll@yandex.ru",
+    "accounts": [
+      {
+        "uid": "231996549",
+        "login": "pages.topll",
+        "lang": "ru",
+        "displayName": "Артём",
+        "avatarId": "20706/enc-cf1b78a95fa45a34ee3b27758fa3e734e0ce88243222f0bac1426bbb9ad280da",
+        "avatarHost": "https://avatars.mds.yandex.net",
+        "status": "VALID",
+        "email": "pages.topll@yandex.ru"
+      },
+      {
+        "uid": "1130000036307235",
+        "login": "info@animaltattooer.com",
+        "lang": "ru",
+        "displayName": "Наташа ANIMAL",
+        "avatarId": "38135/lc2iNc4qxEbLq0GQmLBWImop8nA-1",
+        "avatarHost": "https://avatars.mds.yandex.net",
+        "status": "VALID",
+        "email": "info@animaltattooer.com"
+      }
+    ]
+  },
+  "userSettings": {
+    "cloudId": "b1g14658d6gfvdsstr7d",
+    "email": "pages.topll@yandex.ru",
+    "emailConfirmed": true,
+    "folderId": "b1gj85t4rd5pbe38mu1j",
+    "language": "ru",
+    "tableSettings": {
+      "iam-users-table": [
+        {
+          "id": "user",
+          "isSelected": true,
+          "title": "Пользователь"
+        },
+        {
+          "id": "id",
+          "isSelected": true,
+          "title": "ID"
+        },
+        {
+          "id": "federation",
+          "isSelected": false,
+          "title": "Федерация"
+        },
+        {
+          "id": "roles",
+          "isSelected": true,
+          "title": "Роли на выбранное облако"
+        }
+      ]
+    },
+    "theme": "light"
+  },
+  "csrfToken": "239abe0a393cb262939dd3ff6951a58bb82d138e:1579206497",
+  "clouds": [
+    {
+      "createdAt": "2018-12-20T11:45:10+00:00",
+      "description": "",
+      "id": "b1g14658d6gfvdsstr7d",
+      "name": "cloud-b1g14658d6gfvd",
+      "status": "ACTIVE",
+      "zone": {
+        "defaultZone": "ru-central1-c",
+        "effectiveZone": "ru-central1-c",
+        "zoneOverridden": false
+      },
+      "current": true
+    }
+  ],
+  "cloudTree": [
+    {
+      "createdAt": "2018-12-20T11:45:10+00:00",
+      "description": "",
+      "folders": [
+        {
+          "cloudId": "b1g14658d6gfvdsstr7d",
+          "createdAt": "2018-12-20T11:45:10+00:00",
+          "description": "",
+          "id": "b1gj85t4rd5pbe38mu1j",
+          "name": "blikside",
+          "status": "ACTIVE"
+        },
+        {
+          "cloudId": "b1g14658d6gfvdsstr7d",
+          "createdAt": "2019-01-11T11:44:25+00:00",
+          "description": "",
+          "id": "b1gqkm710qmvg0raorp4",
+          "name": "posterdate3",
+          "status": "ACTIVE"
+        },
+        {
+          "cloudId": "b1g14658d6gfvdsstr7d",
+          "createdAt": "2019-01-11T11:44:11+00:00",
+          "description": "",
+          "id": "b1goqssinitbrf4k9r2m",
+          "name": "poterdate2",
+          "status": "ACTIVE"
+        },
+        {
+          "cloudId": "b1g14658d6gfvdsstr7d",
+          "createdAt": "2019-01-10T18:02:56+00:00",
+          "description": "test",
+          "id": "b1grl5g0k9vuj8hba9c8",
+          "name": "tes1",
+          "status": "ACTIVE"
+        }
+      ],
+      "id": "b1g14658d6gfvdsstr7d",
+      "name": "cloud-b1g14658d6gfvd",
+      "status": "ACTIVE",
+      "zone": {
+        "defaultZone": "ru-central1-c",
+        "effectiveZone": "ru-central1-c",
+        "zoneOverridden": false
+      }
+    }
+  ],
+  "accounts": [
+    {
+      "availablePaymentTypes": [
+        "card"
+      ],
+      "balance": "-0.174802425",
+      "balanceClientId": "7235343",
+      "balanceContractId": "545152",
+      "billingThreshold": "2000",
+      "country": "Russia",
+      "countryCode": "RU",
+      "createdAt": 1545339842,
+      "currency": "RUB",
+      "displayStatus": "ACTIVE",
+      "id": "dn244moblm7lpt9fsfad",
+      "isSubaccount": false,
+      "isVar": false,
+      "name": "ArtemKrynkin",
+      "ownerId": "231996549",
+      "paymentMethodId": "card-x2386",
+      "paymentType": "card",
+      "personId": "6786348",
+      "personType": "individual",
+      "state": "active",
+      "updatedAt": 1579203962,
+      "usageStatus": "paid"
+    }
+  ],
+  "services": [
+    "iam",
+    "compute",
+    "storage",
+    "billing",
+    "marketplace",
+    "mdb",
+    "managed-postgresql",
+    "managed-clickhouse",
+    "managed-mongodb",
+    "managed-redis",
+    "managed-mysql",
+    "ydb",
+    "data-proc",
+    "message-queue",
+    "datalens",
+    "yql",
+    "instance-groups",
+    "container-registry",
+    "managed-kubernetes",
+    "serverless-functions",
+    "serverless-triggers",
+    "serial-console",
+    "support",
+    "messenger",
+    "iot-core",
+    "monitoring",
+    "log-events",
+    "log-groups",
+    "kms"
+  ],
+  "endpoints": {
+    "storage": {
+      "endpoint": "https://storage.yandexcloud.net",
+      "websiteSuffix": "website.yandexcloud.net"
+    },
+    "datalens": {
+      "endpoint": "https://control.datalens.yandex.net"
+    },
+    "serverless-functions": {
+      "functionsEndpoint": "functions.yandexcloud.net"
+    },
+    "serial-console": {
+      "endpoint": "serialws.cloud.yandex.ru"
+    },
+    "monitoring": {
+      "endpoint": "https://monitoring.cloud.yandex.ru"
+    }
+  },
+  "permissionStages": [
+    "GA"
+  ],
+  "zones": [
+    {
+      "id": "ru-central1-a",
+      "status": "UP"
+    },
+    {
+      "id": "ru-central1-b",
+      "status": "UP"
+    },
+    {
+      "id": "ru-central1-c",
+      "status": "UP"
+    }
+  ],
+  "experiments": {
+    "SERIAL_CONSOLE": true,
+    "NEW_CREATE_INSTANCE_FORM": true
+  },
+  "internal": false,
+  "metrikaCounters": [
+    {
+      "id": 48570998,
+      "name": "main"
+    },
+    {
+      "id": 51465824,
+      "name": "cross"
+    }
+  ],
+  "version": "879",
+  "env": "ext-prod",
+  "iam": {
+    "userId": "ajep4tkkhojn9084332p",
+    "userLogin": "pages.topll"
+  }
+}

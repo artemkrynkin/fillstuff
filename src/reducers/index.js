@@ -1,7 +1,9 @@
 import { combineReducers } from 'redux';
 
 import user from './user';
-import stocks from './stocks';
+import studio from './studio';
+import member from './member';
+import members from './members';
 import positionsInGroups from './positionsInGroups';
 import positions from './positions';
 import characteristics from './characteristics';
@@ -11,7 +13,9 @@ import procurements from './procurements';
 const getReducers = () => {
 	return combineReducers({
 		user,
-		stocks,
+		studio,
+		member,
+		members,
 		positionsInGroups,
 		positions,
 		characteristics,

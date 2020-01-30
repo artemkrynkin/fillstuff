@@ -34,7 +34,7 @@ const FormPositionCreateEdit = props => {
 		onCloseDialog,
 		onChangeShopFields,
 		onCreateCharacteristic,
-		currentStockId,
+		currentStudioId,
 		characteristics,
 		type,
 		shopLinkVisible,
@@ -322,7 +322,7 @@ const FormPositionCreateEdit = props => {
 												onCreateOption={value =>
 													onCreateCharacteristic(
 														{
-															stock: currentStockId,
+															studio: currentStudioId,
 															type: values.characteristicTemp.type,
 															value: translitRu(value),
 															label: value,

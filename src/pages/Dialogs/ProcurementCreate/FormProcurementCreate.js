@@ -29,7 +29,7 @@ import styles from './index.module.css';
 const FormProcurementCreate = props => {
 	const {
 		dialogRef,
-		currentStockId,
+		currentStudioId,
 		receiptInitialValues,
 		onHandleEditFormProcurement,
 		positions,
@@ -208,7 +208,7 @@ const FormProcurementCreate = props => {
 					{props => (
 						<FormFieldArrayReceipts
 							dialogRef={dialogRef}
-							currentStockId={currentStockId}
+							currentStudioId={currentStudioId}
 							receiptInitialValues={receiptInitialValues}
 							positions={positions}
 							formEditable={formEditable}

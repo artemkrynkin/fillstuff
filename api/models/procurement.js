@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import i18n from 'i18n';
-// import validator from 'validator';
 
 import { formatNumber } from 'shared/utils';
 
@@ -12,15 +11,15 @@ let Procurement = new Schema({
 		type: Date,
 		default: Date.now,
 	},
-	stock: {
+	studio: {
 		type: Schema.Types.ObjectId,
-		ref: 'Stock',
+		ref: 'Studio',
 		required: [true, i18n.__('Обязательное поле')],
 		select: false,
 	},
-	user: {
-		type: Schema.Types.ObjectId,
-		ref: 'User',
+	member: {
+		type: String,
+		ref: 'Member',
 		required: [true, i18n.__('Обязательное поле')],
 	},
 	number: {

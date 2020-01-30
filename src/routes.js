@@ -20,147 +20,109 @@ import { withCurrentUser } from 'src/components/withCurrentUser';
 import Login from 'src/pages/Login';
 import PageNotFound from 'src/pages/PageNotFound';
 import PasswordRecovery from 'src/pages/PasswordRecovery';
-import StockNotFound from 'src/pages/StockNotFound';
-import StockDashboard from 'src/pages/StockDashboard';
-import StockAvailability from 'src/pages/StockAvailability';
-import StockWriteOffs from 'src/pages/StockWriteOffs';
-import StockProcurements from 'src/pages/StockProcurements';
-import StockProcurement from 'src/pages/StockProcurement';
-import StockStatistics from 'src/pages/StockStatistics';
-import StockSettings from 'src/pages/StockSettings';
+import Dashboard from 'src/pages/Dashboard';
+import Availability from 'src/pages/Availability';
+import WriteOffs from 'src/pages/WriteOffs';
+import Procurements from 'src/pages/Procurements';
+import Procurement from 'src/pages/Procurement';
+import Statistics from 'src/pages/Statistics';
+import Settings from 'src/pages/Settings';
 import Registration from 'src/pages/Registration';
 import UserSettings from 'src/pages/UserSettings';
 
 import stylesPage from 'src/styles/page.module.css';
 
 const LoginFallback = signedOutFallback(
-	() => <Redirect to="/stocks" />,
+	() => <Redirect to="/dashboard" />,
 	() => <Layout children={<Login />} />
 );
 
 const RegistrationFallback = signedOutFallback(
-	() => <Redirect to="/stocks" />,
+	() => <Redirect to="/dashboard" />,
 	() => <Layout children={<Registration />} />
 );
 
 const PasswordRecoveryFallback = signedOutFallback(
-	() => <Redirect to="/stocks" />,
+	() => <Redirect to="/dashboard" />,
 	() => <Layout children={<PasswordRecovery />} />
 );
 
-const StockNotFoundFallback = signedOutFallback(
+const DashboardFallback = signedOutFallback(
 	props => (
-		<StockPageFallback {...props}>
-			<StockNotFound stocks={props.stocks} currentStock={props.currentStock} />
-		</StockPageFallback>
+		<PageFallback {...props}>
+			<Dashboard />
+		</PageFallback>
 	),
-	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/stocks`} />} />
+	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/dashboard`} />} />
 );
 
-const StockDashboardFallback = signedOutFallback(
+const AvailabilityFallback = signedOutFallback(
 	props => (
-		<StockPageFallback {...props}>
-			<StockDashboard currentStock={props.currentStock} />
-		</StockPageFallback>
+		<PageFallback {...props}>
+			<Availability match={props.match} />
+		</PageFallback>
 	),
-	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/dashboard`} />} />
+	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/availability`} />} />
 );
 
-const StockAvailabilityFallback = signedOutFallback(
+const WriteOffsFallback = signedOutFallback(
 	props => (
-		<StockPageFallback {...props}>
-			<StockAvailability currentStock={props.currentStock} match={props.match} />
-		</StockPageFallback>
+		<PageFallback {...props}>
+			<WriteOffs match={props.match} />
+		</PageFallback>
 	),
-	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/availability`} />} />
+	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/write-offs`} />} />
 );
 
-const StockWriteOffsFallback = signedOutFallback(
+const ProcurementsFallback = signedOutFallback(
 	props => (
-		<StockPageFallback {...props}>
-			<StockWriteOffs currentStock={props.currentStock} match={props.match} />
-		</StockPageFallback>
+		<PageFallback {...props}>
+			<Procurements match={props.match} />
+		</PageFallback>
 	),
-	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/write-offs`} />} />
+	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/procurements`} />} />
 );
 
-const StockProcurementsFallback = signedOutFallback(
+const ProcurementFallback = signedOutFallback(
 	props => (
-		<StockPageFallback {...props}>
-			<StockProcurements currentStock={props.currentStock} match={props.match} />
-		</StockPageFallback>
+		<PageFallback {...props}>
+			<Procurement match={props.match} />
+		</PageFallback>
 	),
-	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/procurements`} />} />
+	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/procurements/${match.props.procurementId}`} />} />
 );
 
-const StockProcurementFallback = signedOutFallback(
+const StatisticsFallback = signedOutFallback(
 	props => (
-		<StockPageFallback {...props}>
-			<StockProcurement currentStock={props.currentStock} match={props.match} />
-		</StockPageFallback>
+		<PageFallback {...props}>
+			<Statistics />
+		</PageFallback>
 	),
-	({ match }) => (
-		<Layout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/procurements/${match.props.procurementId}`} />} />
-	)
+	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/statistics`} />} />
 );
 
-const StockStatisticsFallback = signedOutFallback(
+const SettingsFallback = signedOutFallback(
 	props => (
-		<StockPageFallback {...props}>
-			<StockStatistics currentStock={props.currentStock} />
-		</StockPageFallback>
+		<PageFallback {...props}>
+			<Settings />
+		</PageFallback>
 	),
-	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/statistics`} />} />
-);
-
-const StockSettingsFallback = signedOutFallback(
-	props => (
-		<StockPageFallback {...props}>
-			<StockSettings currentStock={props.currentStock} />
-		</StockPageFallback>
-	),
-	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/stocks/${match.params.stockId}/settings`} />} />
+	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/settings`} />} />
 );
 
 const UserSettingsFallback = signedOutFallback(
 	() => <Layout children={<UserSettings />} authed />,
-	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/settings`} />} />
+	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/user-settings`} />} />
 );
 
-const StockPageFallback = props => {
-	const { match, currentUser, stocks, currentStock } = props;
-
-	if (Array.isArray(stocks) && !stocks.some(stock => stock._id === match.params.stockId)) {
-		if (!match.params.stockId && currentUser.activeStockId)
-			return <Redirect to={`/stocks/${match.params.stockId || currentUser.activeStockId}/dashboard`} />;
-
-		if (!currentStock && match.params.stockId) return <Redirect to="/stocks" />;
-
-		if (match.params.stockId || currentUser.activeStockId)
-			return <Layout children={<StockNotFound currentStock={currentStock} />} authed />;
-	}
-
+const PageFallback = props => {
 	return <Layout children={props.children} authed />;
 };
 
 class Routes extends Component {
 	render() {
-		const { currentUser, stocks } = this.props;
+		const { currentUser, currentStudio, currentMember } = this.props;
 		const { title, description } = generateMetaInfo();
-
-		const findCurrentStock = match => {
-			let currentStock = null;
-
-			if (Array.isArray(stocks) && stocks.length) {
-				currentStock = stocks[stocks.findIndex(stock => match.params.stockId === stock._id)];
-
-				currentStock = currentStock //!~stocks.findIndex(stock => match.params.stockId === stock._id)
-					? stocks[stocks.findIndex(stock => match.params.stockId === stock._id)]
-					: stocks[stocks.findIndex(stock => currentUser.activeStockId === stock._id)];
-			}
-
-			return currentStock;
-		};
 
 		return (
 			<ThemeProvider theme={BliksideTheme}>
@@ -175,7 +137,7 @@ class Routes extends Component {
            */}
 					<AuthViewHandler>{() => null}</AuthViewHandler>
 
-					{currentUser && stocks.length ? <Sidebar /> : null}
+					{currentUser && currentUser._id && currentStudio && currentStudio._id && currentMember && currentMember._id ? <Sidebar /> : null}
 
 					{/*
            Switch отображает только первое совпадение. Внутренняя маршрутизация происходит вниз по течению
@@ -184,46 +146,27 @@ class Routes extends Component {
 					<Switch>
 						{/* Публичные бизнес страницы */}
 						{/* Страницы приложения */}
+						<Route path="/" exact strict sensitive>
+							{() => {
+								if (currentUser && currentUser._id && currentStudio && currentStudio._id && currentMember && currentMember._id)
+									return <Redirect to="/dashboard" push />;
+								else return <Redirect to="/login" push />;
+							}}
+						</Route>
+
 						<Route path="/login" component={LoginFallback} exact strict sensitive />
 						<Route path="/registration" component={RegistrationFallback} exact strict sensitive />
 						<Route path="/password-recovery" component={PasswordRecoveryFallback} exact strict sensitive />
 
-						<Route path={['/stocks', '/stocks/:stockId']} exact strict sensitive>
-							{props => {
-								const { match } = props;
+						<Route path="/dashboard" component={DashboardFallback} exact strict sensitive />
+						<Route path="/availability" component={AvailabilityFallback} exact strict sensitive />
+						<Route path="/write-offs" component={WriteOffsFallback} exact strict sensitive />
+						<Route path="/procurements" component={ProcurementsFallback} exact strict sensitive />
+						<Route path="/procurements/:procurementId" component={ProcurementFallback} exact strict sensitive />
+						<Route path="/statistics" component={StatisticsFallback} exact strict sensitive />
+						<Route path="/settings" component={SettingsFallback} exact strict sensitive />
 
-								if (Array.isArray(stocks) && stocks.some(stock => stock._id === match.params.stockId)) {
-									if (match.params.stockId || currentUser.activeStockId) {
-										return <Redirect to={`/stocks/${match.params.stockId || currentUser.activeStockId}/dashboard`} />;
-									}
-								}
-
-								return <StockNotFoundFallback {...props} currentStock={findCurrentStock(props.match)} />;
-							}}
-						</Route>
-						<Route path="/stocks/:stockId/dashboard" exact strict sensitive>
-							{props => <StockDashboardFallback {...props} currentStock={findCurrentStock(props.match)} />}
-						</Route>
-						<Route path="/stocks/:stockId/availability" exact strict sensitive>
-							{props => <StockAvailabilityFallback {...props} currentStock={findCurrentStock(props.match)} />}
-						</Route>
-						<Route path="/stocks/:stockId/write-offs" exact strict sensitive>
-							{props => <StockWriteOffsFallback {...props} currentStock={findCurrentStock(props.match)} />}
-						</Route>
-						<Route path={'/stocks/:stockId/procurements'} exact strict sensitive>
-							{props => <StockProcurementsFallback {...props} currentStock={findCurrentStock(props.match)} />}
-						</Route>
-						<Route path={'/stocks/:stockId/procurements/:procurementId'} exact strict sensitive>
-							{props => <StockProcurementFallback {...props} currentStock={findCurrentStock(props.match)} />}
-						</Route>
-						<Route path="/stocks/:stockId/statistics" exact strict sensitive>
-							{props => <StockStatisticsFallback {...props} currentStock={findCurrentStock(props.match)} />}
-						</Route>
-						<Route path="/stocks/:stockId/settings" exact strict sensitive>
-							{props => <StockSettingsFallback {...props} currentStock={findCurrentStock(props.match)} />}
-						</Route>
-
-						<Route path="/settings" component={UserSettingsFallback} exact strict sensitive />
+						<Route path="/user-settings" component={UserSettingsFallback} exact strict sensitive />
 
 						<Route path="*" component={PageNotFound} />
 					</Switch>

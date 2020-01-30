@@ -7,11 +7,7 @@ import i18n from 'i18n';
 const Schema = mongoose.Schema;
 
 let User = new Schema({
-	activeStockId: {
-		type: Schema.Types.ObjectId,
-		ref: 'Stock',
-	},
-	profilePhoto: {
+	avatar: {
 		type: String,
 		default: null,
 	},
@@ -44,6 +40,14 @@ let User = new Schema({
 	modifiedAt: {
 		type: Date,
 		default: Date.now,
+	},
+	activeStudio: {
+		type: Schema.Types.ObjectId,
+		ref: 'Studio',
+	},
+	activeMember: {
+		type: Schema.Types.ObjectId,
+		ref: 'Member',
 	},
 	__v: {
 		type: Number,

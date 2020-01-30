@@ -1,7 +1,8 @@
 import authRoutes from './auth';
 import registration from './registration';
-import users from './users';
-import stocks from './stocks';
+import account from './account';
+import studio from './studio';
+import members from './members';
 import positions from './positions';
 import positionGroups from './positionGroups';
 import characteristics from './characteristics';
@@ -11,8 +12,9 @@ import procurements from './procurements';
 const router = app => {
 	app.use('/auth', authRoutes);
 	app.use('/api', registration);
-	app.use('/api', users);
-	app.use('/api', stocks);
+	app.use('/api', account);
+	app.use('/api', studio);
+	app.use('/api', members);
 	app.use('/api', positions);
 	app.use('/api', positionGroups);
 	app.use('/api', characteristics);

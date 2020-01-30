@@ -6,14 +6,11 @@ import { withRouter } from 'react-router';
 import { LoadingPage } from 'src/components/Loading';
 
 const AuthViewHandler = props => {
-	const { children, user, stocks, loading } = props;
+	const { children, user, studio, member, loading } = props;
 
-	if (user && user._id && stocks) return children(true);
+	if (user && user._id && studio && studio._id && member && member._id) return children(true);
 	if (loading) return <LoadingPage />;
 	return children(false);
 };
 
-export default compose(
-	connect(),
-	withRouter
-)(AuthViewHandler);
+export default compose(connect(), withRouter)(AuthViewHandler);

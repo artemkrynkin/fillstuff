@@ -6,13 +6,13 @@ const positionsInGroups = (
 	action
 ) => {
 	switch (action.type) {
-		case 'REQUEST_POSITIONS_IN_GROUPS': {
+		case 'REQUEST_POSITIONS_AND_GROUPS': {
 			return {
 				...state,
 				isFetching: true,
 			};
 		}
-		case 'RECEIVE_POSITIONS_IN_GROUPS': {
+		case 'RECEIVE_POSITIONS_AND_GROUPS': {
 			return {
 				...state,
 				isFetching: false,

@@ -2,9 +2,9 @@ import { Router } from 'express';
 
 import { receiptCalc } from 'shared/checkPositionAndReceipt';
 
-import { isAuthedResolver, hasPermissionsInStock } from 'api/utils/permissions';
+import { isAuthedResolver, hasPermissionsInStudio } from 'api/utils/permissions';
 
-import Stock from 'api/models/stock';
+import Studio from 'api/models/studio';
 import Position from 'api/models/position';
 import PositionGroup from 'api/models/positionGroup';
 import Receipt from 'api/models/receipt';
@@ -13,15 +13,15 @@ const positionsRouter = Router();
 
 // const debug = require('debug')('api:products');
 
-positionsRouter.get(
-	'/positions',
+positionsRouter.post(
+	'/getPositions',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
 	async (req, res, next) => {
-		const { stockId } = req.query;
+		const { studioId } = req.body;
 
 		const positionsPromise = Position.find({
-			stock: stockId,
+			studio: studioId,
 			isArchived: false,
 		})
 			.populate({
@@ -45,15 +45,15 @@ positionsRouter.get(
 	}
 );
 
-positionsRouter.get(
-	'/positions/positions-in-groups',
+positionsRouter.post(
+	'/getPositionsAndGroups',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
 	async (req, res, next) => {
-		const { stockId } = req.query;
+		const { studioId } = req.body;
 
 		const positionsPromise = Position.find({
-			stock: stockId,
+			studio: studioId,
 			isArchived: false,
 			positionGroup: { $exists: false },
 		})
@@ -67,7 +67,7 @@ positionsRouter.get(
 			.catch(err => next({ code: 2, err }));
 
 		const positionGroupsPromise = PositionGroup.find({
-			stock: stockId,
+			studio: studioId,
 		})
 			.populate({
 				path: 'positions',
@@ -98,12 +98,16 @@ positionsRouter.get(
 	}
 );
 
-positionsRouter.get(
-	'/positions/:positionId',
+positionsRouter.post(
+	'/getPosition',
 	// isAuthedResolver,
-	// (req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
+	// (req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
 	(req, res, next) => {
-		Position.findById(req.params.positionId)
+		const {
+			params: { positionId },
+		} = req.body;
+
+		Position.findById(positionId)
 			.populate('characteristics')
 			.populate('activeReceipt')
 			.then(position => res.json(position))
@@ -112,16 +116,18 @@ positionsRouter.get(
 );
 
 positionsRouter.post(
-	'/positions',
+	'/createPosition',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
 	async (req, res, next) => {
-		const { stockId } = req.query;
-		const { position: newPositionValues } = req.body;
+		const {
+			studioId,
+			data: { position: newPositionValues },
+		} = req.body;
 
 		const newPosition = new Position({
 			...newPositionValues,
-			stock: stockId,
+			studio: studioId,
 		});
 
 		const newPositionErr = newPosition.validateSync();
@@ -131,50 +137,53 @@ positionsRouter.post(
 		await Promise.all([newPosition.save()]);
 
 		const position = await Position.findById(newPosition._id)
-			.populate({ path: 'stock', select: 'status' })
+			.populate({ path: 'studio', select: 'numberPositions' })
 			.populate({
 				path: 'characteristics',
 			})
 			.catch(err => next({ code: 2, err }));
 
 		const {
-			stock: { status: statusOld },
+			studio: { numberPositions: numberPositionsOld },
 		} = position;
 
-		Stock.findByIdAndUpdate(
-			position.stock._id,
+		Studio.findByIdAndUpdate(
+			position.studio._id,
 			{
 				$set: {
-					'status.numberPositions': statusOld.numberPositions + 1,
+					numberPositions: numberPositionsOld + 1,
 				},
 			},
 			{ runValidators: true }
 		).catch(err => next({ code: 2, err }));
 
-		position.depopulate('stock');
+		position.depopulate('studio');
 
 		res.json(position);
 	}
 );
 
-positionsRouter.put(
-	'/positions/:positionId',
+positionsRouter.post(
+	'/editPosition',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
 	async (req, res, next) => {
-		const { position: positionUpdated } = req.body;
+		const {
+			params: { positionId },
+			data: { position: positionEdited },
+		} = req.body;
 
-		const position = await Position.findById(req.params.positionId).catch(err => next({ code: 2, err }));
+		const position = await Position.findById(positionId).catch(err => next({ code: 2, err }));
 
-		position.name = positionUpdated.name;
-		position.unitReceipt = positionUpdated.unitReceipt;
-		position.unitIssue = positionUpdated.unitIssue;
-		position.minimumBalance = positionUpdated.minimumBalance;
-		position.isFree = positionUpdated.isFree;
-		position.extraCharge = positionUpdated.extraCharge;
-		position.shopName = positionUpdated.shopName;
-		position.shopLink = positionUpdated.shopLink;
-		position.characteristics = positionUpdated.characteristics;
+		position.name = positionEdited.name;
+		position.unitReceipt = positionEdited.unitReceipt;
+		position.unitIssue = positionEdited.unitIssue;
+		position.minimumBalance = positionEdited.minimumBalance;
+		position.isFree = positionEdited.isFree;
+		position.extraCharge = positionEdited.extraCharge;
+		position.shopName = positionEdited.shopName;
+		position.shopLink = positionEdited.shopLink;
+		position.characteristics = positionEdited.characteristics;
 
 		const positionErr = position.validateSync();
 
@@ -192,24 +201,25 @@ positionsRouter.put(
 );
 
 positionsRouter.post(
-	'/positions/position-and-receipt',
+	'/createPositionWithReceipt',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
 	async (req, res, next) => {
-		const { stockId } = req.query;
-		const { position: newPositionValues, receipt: newReceiptValues } = req.body;
+		const {
+			studioId,
+			data: { position: newPositionValues, receipt: newReceiptValues },
+		} = req.body;
 
 		const newReceipt = new Receipt({
 			...newReceiptValues,
-			stock: stockId,
-			user: req.user._id,
+			studio: studioId,
 			status: 'active',
 			comment: 'Создание позиции',
 		});
 
 		const newPosition = new Position({
 			...newPositionValues,
-			stock: stockId,
+			studio: studioId,
 			activeReceipt: newReceipt._id,
 			receipts: [newReceipt],
 		});
@@ -243,7 +253,7 @@ positionsRouter.post(
 		await Promise.all([newReceipt.save(), newPosition.save()]);
 
 		const position = await Position.findById(newPosition._id)
-			.populate({ path: 'stock', select: 'status' })
+			.populate({ path: 'studio', select: 'stock' })
 			.populate({
 				path: 'activeReceipt characteristics',
 			})
@@ -254,49 +264,56 @@ positionsRouter.post(
 			.catch(err => next({ code: 2, err }));
 
 		const {
-			stock: { status: statusOld },
+			studio: {
+				stock: { numberPositions: numberPositionsOld, stockPrice: stockPriceOld },
+			},
 			activeReceipt,
 		} = position;
 
-		Stock.findByIdAndUpdate(
-			position.stock._id,
+		Studio.findByIdAndUpdate(
+			position.studio._id,
 			{
 				$set: {
-					'status.numberPositions': statusOld.numberPositions + 1,
-					'status.stockPrice': statusOld.stockPrice + activeReceipt.current.quantity * activeReceipt.unitPurchasePrice,
+					'stock.numberPositions': numberPositionsOld + 1,
+					'stock.stockPrice': stockPriceOld + activeReceipt.current.quantity * activeReceipt.unitPurchasePrice,
 				},
 			},
 			{ runValidators: true }
 		).catch(err => next({ code: 2, err }));
 
-		position.depopulate('stock');
+		position.depopulate('studio');
 
 		res.json(position);
 	}
 );
 
-positionsRouter.put(
-	'/positions/position-and-receipt/:positionId',
+positionsRouter.post(
+	'/editPositionWithReceipt',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
 	async (req, res, next) => {
-		const { position: positionUpdated, receipt: receiptUpdatedValues } = req.body;
+		const {
+			params: { positionId },
+			data: { position: positionEdited, receipt: receiptEdited },
+		} = req.body;
 
-		const position = await Position.findById(req.params.positionId)
-			.populate({ path: 'stock', select: 'status' })
+		const position = await Position.findById(positionId)
+			.populate({ path: 'studio', select: 'stock' })
 			.populate('activeReceipt')
 			.catch(err => next({ code: 2, err }));
 
 		const {
-			stock: { status: statusOld },
+			studio: {
+				stock: { stockPrice: stockPriceOld },
+			},
 			activeReceipt,
 		} = position;
 		const activeReceiptOld = position.activeReceipt.toObject();
 
-		if (receiptUpdatedValues.quantityInUnit) activeReceipt.quantityInUnit = receiptUpdatedValues.quantityInUnit;
-		if (receiptUpdatedValues.purchasePrice) activeReceipt.purchasePrice = receiptUpdatedValues.purchasePrice;
-		if (receiptUpdatedValues.sellingPrice) activeReceipt.sellingPrice = receiptUpdatedValues.sellingPrice;
-		if (receiptUpdatedValues.unitSellingPrice) activeReceipt.unitSellingPrice = receiptUpdatedValues.unitSellingPrice;
+		if (receiptEdited.quantityInUnit) activeReceipt.quantityInUnit = receiptEdited.quantityInUnit;
+		if (receiptEdited.purchasePrice) activeReceipt.purchasePrice = receiptEdited.purchasePrice;
+		if (receiptEdited.sellingPrice) activeReceipt.sellingPrice = receiptEdited.sellingPrice;
+		if (receiptEdited.unitSellingPrice) activeReceipt.unitSellingPrice = receiptEdited.unitSellingPrice;
 
 		receiptCalc.unitPurchasePrice(activeReceipt, {
 			unitReceipt: position.unitReceipt,
@@ -312,13 +329,13 @@ positionsRouter.put(
 			unitIssue: position.unitIssue,
 		});
 
-		position.name = positionUpdated.name;
-		position.minimumBalance = positionUpdated.minimumBalance;
-		position.isFree = positionUpdated.isFree;
-		position.extraCharge = positionUpdated.extraCharge;
-		position.shopName = positionUpdated.shopName;
-		position.shopLink = positionUpdated.shopLink;
-		position.characteristics = positionUpdated.characteristics;
+		position.name = positionEdited.name;
+		position.minimumBalance = positionEdited.minimumBalance;
+		position.isFree = positionEdited.isFree;
+		position.extraCharge = positionEdited.extraCharge;
+		position.shopName = positionEdited.shopName;
+		position.shopLink = positionEdited.shopLink;
+		position.characteristics = positionEdited.characteristics;
 
 		const activeReceiptErr = activeReceipt.validateSync();
 		const positionErr = position.validateSync();
@@ -328,12 +345,12 @@ positionsRouter.put(
 
 		await Promise.all([activeReceipt.save(), position.save()]);
 
-		Stock.findByIdAndUpdate(
-			position.stock,
+		Studio.findByIdAndUpdate(
+			position.studio._id,
 			{
 				$set: {
-					'status.stockPrice':
-						statusOld.stockPrice +
+					'stock.stockPrice':
+						stockPriceOld +
 						(activeReceipt.current.quantity * activeReceipt.unitPurchasePrice -
 							activeReceiptOld.current.quantity * activeReceiptOld.unitPurchasePrice),
 				},
@@ -355,20 +372,26 @@ positionsRouter.put(
 );
 
 positionsRouter.post(
-	'/positions/:positionId/add-quantity',
+	'/positionReceiptAddQuantity',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
 	async (req, res, next) => {
-		const { comment } = req.body;
-		const quantity = Number(req.body.quantity);
+		const {
+			params: { positionId },
+			data: { comment, quantity: quantityAdded },
+		} = req.body;
 
-		const position = await Position.findById(req.params.positionId)
-			.populate({ path: 'stock', select: 'status' })
+		const quantity = Number(quantityAdded);
+
+		const position = await Position.findById(positionId)
+			.populate({ path: 'studio', select: 'stock' })
 			.populate('activeReceipt')
 			.catch(err => next({ code: 2, err }));
 
 		const {
-			stock: { status: statusOld },
+			studio: {
+				stock: { stockPrice: stockPriceOld },
+			},
 			activeReceipt,
 		} = position;
 
@@ -388,7 +411,6 @@ positionsRouter.post(
 				},
 				$push: {
 					additions: {
-						user: req.user,
 						quantity,
 						comment,
 					},
@@ -397,11 +419,11 @@ positionsRouter.post(
 			{ runValidators: true }
 		).catch(err => next({ code: 2, err }));
 
-		Stock.findByIdAndUpdate(
-			position.stock,
+		Studio.findByIdAndUpdate(
+			position.studio._id,
 			{
 				$set: {
-					'status.stockPrice': statusOld.stockPrice + quantity * activeReceipt.unitPurchasePrice,
+					'stock.stockPrice': stockPriceOld + quantity * activeReceipt.unitPurchasePrice,
 				},
 			},
 			{ runValidators: true }
@@ -420,12 +442,16 @@ positionsRouter.post(
 	}
 );
 
-positionsRouter.get(
-	'/positions/:positionId/remove-from-group',
+positionsRouter.post(
+	'/removePositionFromGroup',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
 	async (req, res, next) => {
-		const position = await Position.findById(req.params.positionId)
+		const {
+			params: { positionId },
+		} = req.body;
+
+		const position = await Position.findById(positionId)
 			.populate('positionGroup')
 			.catch(err => next({ code: 2, err }));
 
@@ -451,23 +477,21 @@ positionsRouter.get(
 			PositionGroup.findByIdAndRemove(position.positionGroup._id).catch(err => next({ code: 2, err }));
 		}
 
-		res.json(
-			remainingPositionId
-				? {
-						remainingPositionId,
-				  }
-				: {}
-		);
+		res.json(remainingPositionId);
 	}
 );
 
-positionsRouter.get(
-	'/positions/:positionId/archive',
+positionsRouter.post(
+	'/archivePosition',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
 	async (req, res, next) => {
-		const position = await Position.findById(req.params.positionId)
-			.populate({ path: 'stock', select: 'status' })
+		const {
+			params: { positionId },
+		} = req.body;
+
+		const position = await Position.findById(positionId)
+			.populate({ path: 'studio', select: 'stock' })
 			.populate('positionGroup')
 			.populate({
 				path: 'receipts',
@@ -505,7 +529,9 @@ positionsRouter.get(
 		}
 
 		const {
-			stock: { status: statusOld },
+			studio: {
+				stock: { numberPositions: numberPositionsOld, stockPrice: stockPriceOld },
+			},
 			receipts,
 		} = position;
 
@@ -513,12 +539,12 @@ positionsRouter.get(
 			return sum + receipt.current.quantity * receipt.unitPurchasePrice;
 		}, 0);
 
-		Stock.findByIdAndUpdate(
-			position.stock,
+		Studio.findByIdAndUpdate(
+			position.studio._id,
 			{
 				$set: {
-					'status.numberPositions': statusOld.numberPositions - 1,
-					'status.stockPrice': statusOld.stockPrice - purchasePriceReceiptsPosition,
+					'stock.numberPositions': numberPositionsOld - 1,
+					'stock.stockPrice': stockPriceOld - purchasePriceReceiptsPosition,
 				},
 			},
 			{ runValidators: true }

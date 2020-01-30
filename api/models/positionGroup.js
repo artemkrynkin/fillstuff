@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-// import validator from 'validator';
 import i18n from 'i18n';
 
 const Schema = mongoose.Schema;
@@ -16,10 +15,10 @@ let PositionGroup = new Schema({
 		type: Date,
 		default: Date.now,
 	},
-	// Склад
-	stock: {
+	// Студия
+	studio: {
 		type: Schema.Types.ObjectId,
-		ref: 'Stock',
+		ref: 'Studio',
 		required: [true, i18n.__('Обязательное поле')],
 	},
 	dividedPositions: {

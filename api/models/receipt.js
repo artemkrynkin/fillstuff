@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-// import validator from 'validator';
 import i18n from 'i18n';
 
 import { formatNumber } from 'shared/utils';
@@ -11,22 +10,20 @@ let Receipt = new Schema({
 		type: Date,
 		default: Date.now,
 	},
-	stock: {
+	studio: {
 		type: Schema.Types.ObjectId,
-		ref: 'Stock',
+		ref: 'Studio',
 		required: [true, i18n.__('Обязательное поле')],
 		select: false,
+	},
+	procurement: {
+		type: Schema.Types.ObjectId,
+		ref: 'Procurement',
 	},
 	position: {
 		type: Schema.Types.ObjectId,
 		ref: 'Position',
 		required: [true, i18n.__('Обязательное поле')],
-	},
-	user: {
-		type: Schema.Types.ObjectId,
-		ref: 'User',
-		required: [true, i18n.__('Обязательное поле')],
-		select: false,
 	},
 	status: {
 		type: String,
@@ -68,11 +65,6 @@ let Receipt = new Schema({
 			createdAt: {
 				type: Date,
 				default: Date.now,
-			},
-			user: {
-				type: Schema.Types.ObjectId,
-				ref: 'User',
-				required: [true, i18n.__('Обязательное поле')],
 			},
 			quantity: {
 				type: Number,

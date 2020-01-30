@@ -31,7 +31,7 @@ class Header extends Component {
 	};
 
 	render() {
-		const { pageName, pageTitle, theme, position = 'sticky', currentUser, currentStock, pageParams } = this.props;
+		const { pageName, pageTitle, theme, position = 'sticky', currentUser, currentStudio, pageParams } = this.props;
 		const { dropdownProfile } = this.state;
 
 		let headerClasses = ClassNames({
@@ -46,15 +46,15 @@ class Header extends Component {
 					pageTitle={pageTitle}
 					theme={theme}
 					currentUser={currentUser}
-					currentStock={currentStock}
+					currentStudio={currentStudio}
 					pageParams={pageParams}
 				/>
 				<div className={styles.column_right}>
 					<div className={styles.columnGroup_right}>
 						<div className={styles.profile} ref={this.refDropdownProfile} onClick={this.onHandleDropdownProfile}>
 							<div className={styles.profileName}>{currentUser.name ? currentUser.name : currentUser.email}</div>
-							<div className={styles.profilePhoto}>
-								{currentUser.profilePhoto ? <img src={currentUser.profilePhoto} alt="" /> : <FontAwesomeIcon icon={['fas', 'user-alt']} />}
+							<div className={styles.avatar}>
+								{currentUser.avatar ? <img src={currentUser.avatar} alt="" /> : <FontAwesomeIcon icon={['fas', 'user-alt']} />}
 							</div>
 							<FontAwesomeIcon icon={['fas', 'angle-down']} className={dropdownProfile ? 'open' : ''} />
 						</div>
@@ -64,7 +64,7 @@ class Header extends Component {
 				<Dropdown anchor={this.refDropdownProfile} open={dropdownProfile} onClose={this.onHandleDropdownProfile} placement="bottom-end">
 					<MenuList>
 						<MenuItem
-							to={'/settings'}
+							to={'/user-settings'}
 							component={React.forwardRef((props, ref) => (
 								<Link innerRef={ref} {...props} />
 							))}
@@ -85,12 +85,9 @@ class Header extends Component {
 }
 
 const mapStateToProps = state => {
-	const stockIndex = state.stocks.data.findIndex(stock => stock._id === state.user.data.activeStockId);
-
 	return {
 		currentUser: state.user.data,
-		currentStock: state.user.data.activeStockId ? state.stocks.data[stockIndex] : null,
-		stocks: state.stocks.data,
+		currentStudio: state.studio.data,
 	};
 };
 
@@ -100,7 +97,4 @@ const mapDispatchToProps = () => {
 	};
 };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(Header);
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

@@ -4,7 +4,8 @@ import i18n from 'i18n';
 // import customPassword from 'shared/passwordGenerate';
 
 import User from 'api/models/user';
-import Stock from 'api/models/stock';
+import Studio from 'api/models/studio';
+import Member from 'api/models/member';
 
 const router = express.Router();
 
@@ -24,40 +25,45 @@ router.post('/registration', function(req, res, next) {
 				});
 			}
 
-			if (customErr.length)
+			if (customErr.length) {
 				return next({
 					code: 5,
 					customErr,
 				});
+			}
 
-			let user = new User({ email, password });
-			let stock = new Stock({
+			const newUser = new User({ email, password });
+			const newStudio = new Studio({
 				name: 'Склад #1',
-				members: [
-					{
-						user: user._id,
-						role: 'owner',
-					},
-				],
+				users: [],
+				members: [],
+			});
+			const newMember = new Member({
+				role: 'owner',
+				confirmed: true,
+				deactivated: false,
 			});
 
-			user.activeStockId = stock;
+			newUser.activeStudio = newStudio._id;
+			newUser.activeMember = newMember._id;
 
-			await user.save().catch(err =>
-				next({
-					code: err.errors ? 5 : 2,
-					err,
-				})
-			);
+			newStudio.users.push(newUser._id);
+			newStudio.members.push(newMember._id);
 
-			await stock.save().catch(err =>
-				next({
-					code: err.errors ? 5 : 2,
-					err,
-				})
-			);
+			newMember.user = newUser._id;
+			newMember.studio = newStudio._id;
 
-			User.findOne({ _id: user._id }, { salt: false, hashedPassword: false })
+			const newUserErr = newUser.validateSync();
+			const newStudioErr = newStudio.validateSync();
+			const newMemberErr = newMember.validateSync();
+
+			if (newUserErr) return next({ code: newUserErr.errors ? 5 : 2, err: newUserErr });
+			if (newStudioErr) return next({ code: newStudioErr.errors ? 5 : 2, err: newStudioErr });
+			if (newMemberErr) return next({ code: newMemberErr.errors ? 5 : 2, err: newMemberErr });
+
+			await Promise.all([newUser.save(), newStudio.save(), newMember.save()]);
+
+			User.findById(newUser._id, { salt: false, hashedPassword: false })
 				.then(user => {
 					req.login(user, () => res.json('success'));
 				})

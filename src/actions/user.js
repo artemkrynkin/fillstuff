@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-export const getUser = () => {
+export const getMyAccount = () => {
 	return async dispatch => {
 		dispatch({ type: 'REQUEST_USER' });
 
 		return await axios
-			.get('/api/users/me')
+			.post('/api/getMyAccount')
 			.then(response => {
 				dispatch({
 					type: 'RECEIVE_USER',
@@ -29,12 +29,14 @@ export const getUser = () => {
 	};
 };
 
-export const editUser = values => {
+export const editMyAccount = ({ data }) => {
 	return async dispatch => {
 		dispatch({ type: 'REQUEST_USER' });
 
 		return await axios
-			.put('/api/users/me', values)
+			.post('/api/editMyAccount', {
+				data,
+			})
 			.then(response => {
 				dispatch({
 					type: 'RECEIVE_USER',
@@ -55,26 +57,32 @@ export const editUser = values => {
 	};
 };
 
-export const changeActiveStock = stockId => {
+export const getMyAccountMember = (userId, memberId) => {
 	return async dispatch => {
-		dispatch({ type: 'REQUEST_USER_ACTIVE_STOCK' });
+		dispatch({ type: 'REQUEST_MEMBER' });
 
 		return await axios
-			.put('/api/users/me/active-stock', {
-				activeStockId: stockId,
+			.post('/api/getMyAccountMember', {
+				userId,
+				memberId,
 			})
-			.then(() => {
+			.then(response => {
 				dispatch({
-					type: 'RECEIVE_USER_ACTIVE_STOCK',
-					payload: {
-						stockId,
-					},
+					type: 'RECEIVE_MEMBER',
+					payload: response.data,
 				});
 
-				return Promise.resolve();
+				return Promise.resolve({ status: 'success' });
 			})
 			.catch(error => {
-				console.error(error);
+				if (error.response && error.response.status === 401) {
+					dispatch({
+						type: 'UNAUTHORIZED_USER',
+						payload: error.response.data,
+					});
+				} else {
+					console.error(error.response);
+				}
 
 				return Promise.resolve({ status: 'error' });
 			});

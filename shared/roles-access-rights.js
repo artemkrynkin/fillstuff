@@ -1,6 +1,6 @@
 /**
- * (stock.control) (256) добавление и удаление аккаунтов соцсетей; приглашение участников в команду; изменение ролей и удаление участников команды
- * (stock.full_control) (512) полный контроль доступа к проекту (имеет только владелец)
+ * (studio.control) (256) добавление и удаление аккаунтов соцсетей; приглашение участников в команду; изменение ролей и удаление участников команды
+ * (studio.full_control) (512) полный контроль доступа к проекту (имеет только владелец)
  *
  * (publications.view) (4) просмотр публикаций
  * (publications.control) (128) создание, редактирование и удаление публикаций
@@ -19,9 +19,9 @@ export const accessRightInBitmask = accessRightList => {
 	return accessRightList
 		.map(accessRight => {
 			switch (accessRight) {
-				case 'stock.control':
+				case 'studio.control':
 					return 256;
-				case 'stock.full_control':
+				case 'studio.full_control':
 					return 512;
 
 				case 'products.control':
@@ -41,9 +41,9 @@ export const memberRoleTransform = (role, bitmask = false) => {
 		case 'owner':
 			return !bitmask
 				? 'Владелец'
-				: accessRightInBitmask(['stock.control', 'stock.full_control', 'products.control', 'products.scanning']);
+				: accessRightInBitmask(['studio.control', 'studio.full_control', 'products.control', 'products.scanning']);
 		case 'admin':
-			return !bitmask ? 'Администратор' : accessRightInBitmask(['stock.control', 'products.control', 'products.scanning']);
+			return !bitmask ? 'Администратор' : accessRightInBitmask(['studio.control', 'products.control', 'products.scanning']);
 		case 'user':
 			return !bitmask ? 'Сотрудник' : accessRightInBitmask(['products.scanning']);
 		default:
@@ -51,11 +51,4 @@ export const memberRoleTransform = (role, bitmask = false) => {
 	}
 };
 
-export const findMemberInStock = (userId, stock) => {
-	userId = String(userId);
-
-	return stock.members[stock.members.findIndex(member => member.user && String(member.user._id) === userId)];
-};
-
-export const checkPermissions = (role, accessRightList) =>
-	memberRoleTransform(role, true) & accessRightInBitmask(accessRightList);
+export const checkPermissions = (role, accessRightList) => memberRoleTransform(role, true) & accessRightInBitmask(accessRightList);

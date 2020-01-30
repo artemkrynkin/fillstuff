@@ -20,7 +20,7 @@ import { sleep } from 'shared/utils';
 
 import CardPaper from 'src/components/CardPaper';
 
-import { editUser } from 'src/actions/user';
+import { editMyAccount } from 'src/actions/user';
 
 import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './ProfileSettings.module.css';
@@ -59,7 +59,7 @@ class ProfileSettings extends Component {
 	state = {
 		visibleEmailFields: false,
 		visiblePasswordFields: false,
-		newProfilePhoto: {
+		newAvatar: {
 			file: null,
 			base64: null,
 		},
@@ -81,13 +81,13 @@ class ProfileSettings extends Component {
 		if (this.state.visibleEmailFields) this.onToggleEmailFields();
 	};
 
-	onChangeProfilePhoto = event => {
+	onChangeAvatar = event => {
 		const file = event.target.files[0];
 		const Reader = new FileReader();
 
 		Reader.onload = item => {
 			this.setState({
-				newProfilePhoto: {
+				newAvatar: {
 					file: file,
 					base64: item.target.result,
 				},
@@ -97,9 +97,9 @@ class ProfileSettings extends Component {
 		if (file) Reader.readAsDataURL(file);
 	};
 
-	onResetNewProfilePhoto = () => {
+	onResetNewAvatar = () => {
 		this.setState({
-			newProfilePhoto: {
+			newAvatar: {
 				file: null,
 				base64: null,
 			},
@@ -108,11 +108,11 @@ class ProfileSettings extends Component {
 
 	render() {
 		const { user } = this.props;
-		const { visibleEmailFields, visiblePasswordFields, newProfilePhoto } = this.state;
+		const { visibleEmailFields, visiblePasswordFields, newAvatar } = this.state;
 
 		let photoImgClasses = ClassNames({
 			[styles.photoImg]: true,
-			[styles.photoImg_null]: !user.profilePhoto,
+			[styles.photoImg_null]: !user.avatar,
 		});
 
 		let labelStyles = { minWidth: 52 };
@@ -122,16 +122,16 @@ class ProfileSettings extends Component {
 				<Grid direction="row" alignItems="flex-start" spacing={3} container>
 					<Grid className={styles.photo} item>
 						<div className={photoImgClasses}>
-							{newProfilePhoto.base64 || user.profilePhoto ? (
-								<img src={newProfilePhoto.base64 || user.profilePhoto} alt="" />
+							{newAvatar.base64 || user.avatar ? (
+								<img src={newAvatar.base64 || user.avatar} alt="" />
 							) : (
 								<FontAwesomeIcon icon={['fas', 'user-alt']} />
 							)}
 						</div>
-						<input id="profile-photo" type="file" accept="image/*" onChange={this.onChangeProfilePhoto} style={{ display: 'none' }} />
+						<input id="profile-photo" type="file" accept="image/*" onChange={this.onChangeAvatar} style={{ display: 'none' }} />
 						<label htmlFor="profile-photo">
 							<ButtonBase className={styles.buttonLink} component="span" disableRipple>
-								{user.profilePhoto ? 'Изменить' : 'Загрузить'} фотографию
+								{user.avatar ? 'Изменить' : 'Загрузить'} фотографию
 							</ButtonBase>
 						</label>
 					</Grid>
@@ -147,19 +147,19 @@ class ProfileSettings extends Component {
 
 								let valuesFormData;
 
-								if (newProfilePhoto.file && newProfilePhoto.base64) {
+								if (newAvatar.file && newAvatar.base64) {
 									valuesFormData = new FormData();
 
-									valuesFormData.append('profilePhoto', newProfilePhoto.file);
+									valuesFormData.append('avatar', newAvatar.file);
 
 									Object.keys(values).forEach(key => {
 										valuesFormData.append(key, values[key]);
 									});
 								}
 
-								this.props.editUser(values).then(response => {
+								this.props.editMyAccount(valuesFormData || values).then(response => {
 									if (response.status === 'success') {
-										this.onResetNewProfilePhoto();
+										this.onResetNewAvatar();
 									} else {
 										if (response.data.formErrors) {
 											response.data.formErrors.forEach(error => {
@@ -207,7 +207,7 @@ class ProfileSettings extends Component {
 										onSubmit={async (values, actions) => {
 											await sleep(500);
 
-											this.props.editUser(values).then(response => {
+											this.props.editMyAccount(values).then(response => {
 												if (response.status === 'success') {
 													actions.resetForm();
 													this.onToggleEmailFields();
@@ -299,7 +299,7 @@ class ProfileSettings extends Component {
 													delete newValues.confirmPassword;
 												}
 
-												this.props.editUser(newValues).then(response => {
+												this.props.editMyAccount(newValues).then(response => {
 													if (response.status === 'success') {
 														actions.resetForm();
 														this.onTogglePasswordFields();
@@ -398,7 +398,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		editUser: values => dispatch(editUser(values)),
+		editMyAccount: data => dispatch(editMyAccount({ data })),
 	};
 };
 

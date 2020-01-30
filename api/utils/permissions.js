@@ -1,31 +1,26 @@
-import { findMemberInStock, checkPermissions } from 'shared/roles-access-rights';
+import { checkPermissions } from 'shared/roles-access-rights';
 
-import Stock from 'api/models/stock';
+import Member from 'api/models/member';
 
 export const isAuthedResolver = (req, res, next) => {
-	if (!req.user) {
-		return next({ code: 3 });
-	}
+	if (!req.user) return next({ code: 3 });
 
 	next();
 };
 
-export const hasPermissionsInStock = async (req, res, next, accessRightList, skipCheck) => {
+export const hasPermissionsInStudio = async (req, res, next, accessRightList, skipCheck = false) => {
 	if (!skipCheck) {
-		const stockId =
-			req.params.stock || req.body.stock || req.query.stock || (req.params.stockId || req.body.stockId || req.query.stockId);
+		const memberId = req.params.memberId || req.body.memberId || req.query.memberId;
 
-		if (!stockId)
+		if (!memberId)
 			return next({
 				code: 6,
-				message: 'missing "stock" parameter',
+				message: 'missing "memberId" parameter',
 			});
 
-		await Stock.findOne({ _id: stockId, 'members.user': req.user._id })
-			.then(stock => {
-				const currentUserRole = findMemberInStock(req.user._id, stock).role;
-
-				if (!checkPermissions(currentUserRole, accessRightList)) return next({ code: 4 });
+		await Member.findById(memberId)
+			.then(member => {
+				if (!checkPermissions(member.role, accessRightList)) return next({ code: 4 });
 			})
 			.catch(err => next({ code: 2, err }));
 	}

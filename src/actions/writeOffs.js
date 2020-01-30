@@ -1,15 +1,17 @@
 import axios from 'axios';
 
-export const getWriteOffs = (stockId, params = {}, showRequest = true) => {
-	return async dispatch => {
+export const getWriteOffs = ({ query, showRequest } = { showRequest: true }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+
 		if (showRequest) dispatch({ type: 'REQUEST_WRITE_OFFS' });
 
 		return await axios
-			.get('/api/write-offs', {
-				params: {
-					stockId,
-					...params,
-				},
+			.post('/api/getWriteOffs', {
+				studioId,
+				memberId,
+				query,
 			})
 			.then(response => {
 				dispatch({
@@ -27,24 +29,26 @@ export const getWriteOffs = (stockId, params = {}, showRequest = true) => {
 	};
 };
 
-export const createWriteOff = (stockId, userId, positionId, values) => {
-	return async dispatch => {
+export const createWriteOff = ({ params, data }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+		const { positionId } = params;
+
 		return await axios
-			.post('/api/write-offs', {
-				stockId,
-				userId,
-				positionId,
-				...values,
+			.post('/api/createWriteOff', {
+				studioId,
+				memberId,
+				params,
+				data,
 			})
 			.then(response => {
 				if (!response.data.code) {
-					const position = response.data;
-
 					dispatch({
 						type: 'EDIT_POSITION',
 						payload: {
 							positionId,
-							position,
+							position: response.data,
 						},
 					});
 
@@ -65,23 +69,25 @@ export const createWriteOff = (stockId, userId, positionId, values) => {
 	};
 };
 
-export const cancelWriteOff = (stockId, writeOffId) => {
-	return async dispatch => {
+export const cancelWriteOff = ({ params }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+		const { writeOffId } = params;
+
 		return await axios
-			.get(`/api/write-offs/cancel/${writeOffId}`, {
-				params: {
-					stockId,
-				},
+			.get('/api/cancelWriteOff', {
+				studioId,
+				memberId,
+				params,
 			})
 			.then(response => {
 				if (!response.data.code) {
-					const writeOff = response.data;
-
 					dispatch({
 						type: 'CANCEL_WRITE_OFF',
 						payload: {
 							writeOffId,
-							writeOff,
+							writeOff: response.data,
 						},
 					});
 

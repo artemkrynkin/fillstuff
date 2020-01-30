@@ -1,32 +1,36 @@
 import { Router } from 'express';
 
-import { isAuthedResolver, hasPermissionsInStock } from 'api/utils/permissions';
+import { isAuthedResolver, hasPermissionsInStudio } from 'api/utils/permissions';
 
 import Characteristic from 'api/models/characteristic';
 
 const characteristicsRouter = Router();
 
-// const debug = require('debug')('api:stocks');
+// const debug = require('debug')('api:studio');
 
-characteristicsRouter.get(
-	'/characteristics',
+characteristicsRouter.post(
+	'/getCharacteristics',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
 	(req, res, next) => {
-		const { stockId } = req.query;
+		const { studioId } = req.body;
 
-		Characteristic.find({ stock: stockId })
+		Characteristic.find({ studio: studioId })
 			.then(characteristics => res.json(characteristics))
 			.catch(err => next(err));
 	}
 );
 
 characteristicsRouter.post(
-	'/characteristics',
+	'/createCharacteristics',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
 	(req, res, next) => {
-		const characteristic = new Characteristic(req.body);
+		const {
+			data: { characteristic: newCharacteristic },
+		} = req.body;
+
+		const characteristic = new Characteristic(newCharacteristic);
 
 		return characteristic
 			.save()

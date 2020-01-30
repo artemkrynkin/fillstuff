@@ -47,6 +47,7 @@
     "hpp": "^0.2.2",
     "hsts": "^2.2.0",
     "i18n": "0.8.4",
+    "jsdom": "^16.0.1",
     "jsonwebtoken": "^8.5.1",
     "jss": "10.0.0",
     "keygrip": "^1.1.0",
@@ -78,6 +79,7 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "request": "^2.88.0",
+    "serialize-javascript": "^2.1.2",
     "sharp": "0.23.4",
     "striptags": "^3.1.1",
     "toobusy-js": "^0.5.1",
@@ -88,8 +90,10 @@
   "scripts": {
     "dev:web": "cross-env NODE_PATH=./ react-scripts start",
     "dev:api": "cross-env NODE_PATH=./ cross-env NODE_ENV=development cross-env DEBUG=build*,api*,shared:middlewares*,shared:mongodb cross-env DIR=api backpack",
+    "dev:render": "cross-env NODE_PATH=./ cross-env NODE_ENV=development cross-env DEBUG=build*,render*,-render:resolvers cross-env DIR=render backpack",
     "build:web": "cross-env NODE_PATH=./ react-scripts build",
     "build:api": "cross-env NODE_PATH=./ cross-env DIR=api backpack build",
+    "build:render": "cross-env NODE_PATH=./ cross-env DIR=render backpack build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

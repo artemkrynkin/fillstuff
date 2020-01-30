@@ -6,9 +6,9 @@ import { characteristicsTypes } from 'shared/checkPositionAndReceipt';
 const Schema = mongoose.Schema;
 
 let Characteristic = new Schema({
-	stock: {
+	studio: {
 		type: Schema.Types.ObjectId,
-		ref: 'Stock',
+		ref: 'Studio',
 		required: [true, i18n.__('Обязательное поле')],
 		select: false,
 	},

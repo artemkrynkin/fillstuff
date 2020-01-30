@@ -12,7 +12,7 @@ import TextField from '@material-ui/core/TextField/TextField';
 import { Dialog, DialogActions, DialogTitle } from 'src/components/Dialog';
 import NumberFormat from 'src/components/NumberFormat';
 
-import { getStockStatus } from 'src/actions/stocks';
+import { getStudioStock } from 'src/actions/studio';
 import { addQuantityInPosition } from 'src/actions/positions';
 
 import stylesGlobal from 'src/styles/globals.module.css';
@@ -29,7 +29,7 @@ class DialogPositionAddQuantity extends Component {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
 		onExitedDialog: PropTypes.func,
-		currentStockId: PropTypes.string.isRequired,
+		currentStudioId: PropTypes.string.isRequired,
 		selectedPosition: PropTypes.object,
 	};
 
@@ -38,7 +38,7 @@ class DialogPositionAddQuantity extends Component {
 
 		this.props.addQuantityInPosition(selectedPosition._id, values).then(response => {
 			if (response.status === 'success') {
-				this.props.getStockStatus();
+				this.props.getStudioStock();
 				onCloseDialog();
 			} else actions.setSubmitting(false);
 		});
@@ -127,12 +127,10 @@ class DialogPositionAddQuantity extends Component {
 	}
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentStockId } = ownProps;
-
+const mapDispatchToProps = dispatch => {
 	return {
-		getStockStatus: () => dispatch(getStockStatus(currentStockId)),
-		addQuantityInPosition: (positionId, values) => dispatch(addQuantityInPosition(currentStockId, positionId, values)),
+		getStudioStock: () => dispatch(getStudioStock()),
+		addQuantityInPosition: (positionId, data) => dispatch(addQuantityInPosition({ params: { positionId }, data })),
 	};
 };
 

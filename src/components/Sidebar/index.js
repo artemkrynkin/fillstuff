@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { Link, NavLink } from 'react-router-dom';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -12,129 +11,112 @@ import styles from './index.module.css';
 
 class Sidebar extends Component {
 	state = {
-		activePage: history.location.pathname.split('/')[3],
+		activePage: history.location.pathname.split('/')[1],
 	};
 
-	onChangeUrl = pageName => (event, newExpanded) => {
+	onChangeUrl = pageName => {
 		history.push({
-			pathname: `/stocks/${this.props.currentUser.activeStockId}/${pageName}`,
+			pathname: `/${pageName}`,
 		});
 	};
 
 	componentDidMount = () => {
 		history.listen((location, action) => {
-			const pathnameArray = location.pathname.split('/');
+			const pathnameArray = location.pathname.split('/')[1];
 
-			this.setState({ activePage: pathnameArray[3] });
+			this.setState({ activePage: pathnameArray });
 		});
 	};
 
 	render() {
-		const { currentUser, activeStockId = currentUser.activeStockId } = this.props;
 		const { activePage } = this.state;
 
 		return (
 			<aside className={styles.container}>
 				<div className={styles.wrapper}>
-					<Link className={styles.logo} to={`/stocks/${activeStockId}/dashboard`} />
+					<Link className={styles.logo} to="/" />
 					<div className={styles.menu}>
-						{activeStockId ? (
-							<div>
-								<div className={styles.menuItem}>
-									<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to={`/stocks/${activeStockId}/dashboard`}>
-										<div className={styles.menuIcon}>
-											<FontAwesomeIcon icon={['fal', 'tachometer']} />
-										</div>
-										Монитор
-									</NavLink>
+						<div className={styles.menuItem}>
+							<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to="/dashboard">
+								<div className={styles.menuIcon}>
+									<FontAwesomeIcon icon={['fal', 'tachometer']} />
 								</div>
+								Монитор
+							</NavLink>
+						</div>
 
-								<ExpansionPanel
-									TransitionProps={{
-										timeout: 300,
-									}}
-									className={styles.menuExpansion}
-									expanded={activePage === 'availability' || activePage === 'write-offs'}
-									onChange={this.onChangeUrl('availability')}
-								>
-									<ExpansionPanelSummary className={styles.menuExpansionSummary}>
-										<div className={styles.menuExpansionTitle}>
-											<div className={styles.menuExpansionTitleIcon}>
-												<FontAwesomeIcon icon={['fal', 'warehouse']} />
-											</div>
-											Склад
-										</div>
-									</ExpansionPanelSummary>
-									<div className={styles.menuExpansionDetails}>
-										<div className={styles.menuItem}>
-											<NavLink
-												className={styles.menuLink}
-												activeClassName={styles.menuLink_activeExpansion}
-												to={`/stocks/${activeStockId}/availability`}
-											>
-												<div className={styles.menuIcon}>
-													<FontAwesomeIcon icon={['fal', 'inventory']} />
-												</div>
-												В наличии
-											</NavLink>
-										</div>
-
-										<div className={styles.menuItem}>
-											<NavLink
-												className={styles.menuLink}
-												activeClassName={styles.menuLink_activeExpansion}
-												to={`/stocks/${activeStockId}/write-offs`}
-											>
-												<div className={styles.menuIcon}>
-													<FontAwesomeIcon icon={['fal', 'clipboard-check']} />
-												</div>
-												Списания
-											</NavLink>
-										</div>
+						<ExpansionPanel
+							TransitionProps={{
+								timeout: 300,
+							}}
+							className={styles.menuExpansion}
+							expanded={activePage === 'availability' || activePage === 'write-offs'}
+							onChange={() => this.onChangeUrl('availability')}
+						>
+							<ExpansionPanelSummary className={styles.menuExpansionSummary}>
+								<div className={styles.menuExpansionTitle}>
+									<div className={styles.menuExpansionTitleIcon}>
+										<FontAwesomeIcon icon={['fal', 'warehouse']} />
 									</div>
-								</ExpansionPanel>
-
+									Склад
+								</div>
+							</ExpansionPanelSummary>
+							<div className={styles.menuExpansionDetails}>
 								<div className={styles.menuItem}>
-									<NavLink
-										className={styles.menuLink}
-										activeClassName={styles.menuLink_active}
-										to={`/stocks/${activeStockId}/procurements`}
-									>
+									<NavLink className={styles.menuLink} activeClassName={styles.menuLink_activeExpansion} to="/availability">
 										<div className={styles.menuIcon}>
-											<FontAwesomeIcon icon={['fal', 'shopping-basket']} />
+											<FontAwesomeIcon icon={['fal', 'inventory']} />
 										</div>
-										Закупки
+										В наличии
 									</NavLink>
 								</div>
 
 								<div className={styles.menuItem}>
-									<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to={`/stocks/${activeStockId}/statistics`}>
+									<NavLink className={styles.menuLink} activeClassName={styles.menuLink_activeExpansion} to="/write-offs">
 										<div className={styles.menuIcon}>
-											<FontAwesomeIcon icon={['fal', 'analytics']} />
+											<FontAwesomeIcon icon={['fal', 'clipboard-check']} />
 										</div>
-										Статистика
-									</NavLink>
-								</div>
-
-								<div className={styles.menuItem}>
-									<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to={`/stocks/${activeStockId}/users`}>
-										<div className={styles.menuIcon}>
-											<FontAwesomeIcon icon={['fal', 'users']} />
-										</div>
-										Команда
-									</NavLink>
-								</div>
-
-								<div className={styles.menuItem}>
-									<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to={`/stocks/${activeStockId}/settings`}>
-										<div className={styles.menuIcon}>
-											<FontAwesomeIcon icon={['fal', 'cog']} />
-										</div>
-										Настройки
+										Списания
 									</NavLink>
 								</div>
 							</div>
-						) : null}
+						</ExpansionPanel>
+
+						<div className={styles.menuItem}>
+							<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to="/procurements">
+								<div className={styles.menuIcon}>
+									<FontAwesomeIcon icon={['fal', 'shopping-basket']} />
+								</div>
+								Закупки
+							</NavLink>
+						</div>
+
+						<div className={styles.menuItem}>
+							<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to="/statistics">
+								<div className={styles.menuIcon}>
+									<FontAwesomeIcon icon={['fal', 'analytics']} />
+								</div>
+								Статистика
+							</NavLink>
+						</div>
+
+						<div className={styles.menuItem}>
+							<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to="/team">
+								<div className={styles.menuIcon}>
+									<FontAwesomeIcon icon={['fal', 'users']} />
+								</div>
+								Команда
+							</NavLink>
+						</div>
+
+						<div className={styles.menuItem}>
+							<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to="/settings">
+								<div className={styles.menuIcon}>
+									<FontAwesomeIcon icon={['fal', 'cog']} />
+								</div>
+								Настройки
+							</NavLink>
+						</div>
 						{/*<div className={`${styles.menuItem} ${styles.menuItem_down}`}>*/}
 						{/*	<NavLink*/}
 						{/*    className={styles.menuLink}*/}
@@ -154,10 +136,4 @@ class Sidebar extends Component {
 	}
 }
 
-const mapStateToProps = state => {
-	return {
-		currentUser: state.user.data,
-	};
-};
-
-export default connect(mapStateToProps)(Sidebar);
+export default Sidebar;

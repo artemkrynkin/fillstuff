@@ -57,15 +57,14 @@ function generateMetaInfo(input) {
 		case 'login':
 		case 'registration':
 		case 'password-recovery':
-		case 'stock-dashboard':
-		case 'stock-availability':
-		case 'stock-write-offs':
-		case 'stock-orders':
-		case 'stock-procurements':
-		case 'stock-procurement':
-		case 'stock-statistics':
-		case 'stock-settings':
-		case 'stock-notfound':
+		case 'dashboard':
+		case 'availability':
+		case 'write-offs':
+		case 'procurements':
+		case 'procurement':
+		case 'statistics':
+		case 'settings':
+		case 'notfound':
 		case 'user-settings':
 			return setDefault({
 				title: data && data.title,

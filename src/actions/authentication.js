@@ -2,25 +2,19 @@ import axios from 'axios';
 
 import { SERVER_URL } from 'src/api/constants';
 
-export const login = (values, actions, redirect) => {
-	axios
-		.post('/auth/local', values)
+export const login = async ({ data }) => {
+	return await axios
+		.post('/auth/local', data)
 		.then(response => {
-			if (actions) actions.setSubmitting(false);
-
-			window.location.href = redirect || response.data;
+			return Promise.resolve({ status: 'success', data: response.data });
 		})
 		.catch(error => {
-			if (error.response && actions) {
-				let data = error.response.data;
-
-				data.formErrors.forEach(error => {
-					actions.setFieldError(error.field, error.message);
-				});
-
-				actions.setSubmitting(false);
+			if (error.response) {
+				return Promise.resolve({ status: 'error', data: error.response.data });
 			} else {
 				console.error(error);
+
+				return Promise.resolve({ status: 'error' });
 			}
 		});
 };

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import i18n from 'i18n';
 
 import { formatNumber } from 'shared/utils';
 
@@ -8,10 +9,12 @@ const Member = new Schema({
 	user: {
 		type: Schema.Types.ObjectId,
 		ref: 'User',
+		required: [true, i18n.__('Обязательное поле')],
 	},
-	stock: {
+	studio: {
 		type: Schema.Types.ObjectId,
-		ref: 'Stock',
+		ref: 'Studio',
+		required: [true, i18n.__('Обязательное поле')],
 		select: false,
 	},
 	role: {
@@ -27,30 +30,33 @@ const Member = new Schema({
 		type: Boolean,
 		default: true,
 	},
-	createdAt: {
+	guest: {
+		type: Boolean,
+	},
+	invitationDate: {
 		type: Date,
 		default: Date.now,
 	},
-	invitationExpires: {
+	accessExpires: {
 		type: Date,
 	},
-	guest: {
+	purchaseExpenseStudio: {
 		type: Boolean,
 		default: false,
 	},
-	billingPeriod: {
-		type: String,
-		enum: [1, 7, 30],
-	},
-	prevPaymentDate: {
-		type: Date,
-	},
-	nextPaymentDate: {
-		type: Date,
-	},
-	currentCredit: {
+	billingFrequency: {
 		type: Number,
-		default: 0,
+		enum: [1, 7, 30],
+		default: 7,
+	},
+	lastBillingDate: {
+		type: Date,
+	},
+	nextBillingDate: {
+		type: Date,
+	},
+	billingDebt: {
+		type: Number,
 		set: value => formatNumber(value),
 	},
 	__v: {

@@ -40,7 +40,7 @@ const PasswordRecovery = () => {
 								<FormControl margin="normal" fullWidth>
 									<Field name="email" placeholder="Email" as={TextField} autoFocus />
 								</FormControl>
-								<Button type="submit" disabled={isSubmitting} className={styles.loginBtn} variant="contained" color="primary">
+								<Button type="submit" disabled={isSubmitting} variant="contained" color="primary" fullWidth>
 									{isSubmitting ? <CircularProgress size={20} /> : 'Восстановить пароль'}
 								</Button>
 							</Form>

@@ -1,7 +1,7 @@
 import React from 'react';
 
-import StockAvailability from './StockAvailability';
-import StockProcurements from './StockProcurements';
+import Availability from './Availability';
+import Procurements from './Procurements';
 import TitlePageOrLogo from './TitlePageOrLogo';
 
 import styles from 'src/components/Header/index.module.css';
@@ -10,10 +10,10 @@ const ColumnLeft = props => {
 	const { pageName } = props;
 
 	switch (pageName) {
-		case 'stock-availability':
-			return <StockAvailability {...props} />;
-		case 'stock-procurements':
-			return <StockProcurements {...props} />;
+		case 'availability':
+			return <Availability {...props} />;
+		case 'procurements':
+			return <Procurements {...props} />;
 		default:
 			return (
 				<div className={styles.column_left}>

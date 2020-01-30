@@ -1,26 +1,18 @@
 import axios from 'axios';
 
-import { CLIENT_URL } from 'src/api/constants';
-
-export const registration = (values, actions) => {
-	axios
-		.post('/api/registration', values)
+export const registration = async ({ data }) => {
+	return await axios
+		.post('/api/registration', data)
 		.then(() => {
-			if (actions) actions.setSubmitting(false);
-
-			window.location.href = `${CLIENT_URL}/stocks`;
+			return Promise.resolve({ status: 'success' });
 		})
 		.catch(error => {
-			if (error.response && actions) {
-				let data = error.response.data;
-
-				data.formErrors.forEach(error => {
-					actions.setFieldError(error.field, error.message);
-				});
-
-				actions.setSubmitting(false);
+			if (error.response) {
+				return Promise.resolve({ status: 'error', data: error.response.data });
 			} else {
 				console.error(error);
+
+				return Promise.resolve({ status: 'error' });
 			}
 		});
 };

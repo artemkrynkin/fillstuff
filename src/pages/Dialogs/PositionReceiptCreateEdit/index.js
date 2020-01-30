@@ -7,7 +7,7 @@ import { Formik } from 'formik';
 
 import { DialogSticky, DialogTitle } from 'src/components/Dialog';
 
-import { getStockStatus } from 'src/actions/stocks';
+import { getStudioStock } from 'src/actions/studio';
 import { createCharacteristic } from 'src/actions/characteristics';
 import { createPositionReceipt, editPositionReceipt } from 'src/actions/positions';
 
@@ -22,7 +22,7 @@ class DialogPositionReceiptCreateEdit extends Component {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
 		onExitedDialog: PropTypes.func,
-		currentStockId: PropTypes.string.isRequired,
+		currentStudioId: PropTypes.string.isRequired,
 		selectedPosition: PropTypes.object,
 	};
 
@@ -48,9 +48,9 @@ class DialogPositionReceiptCreateEdit extends Component {
 		}, 300);
 	};
 
-	onCreateCharacteristic = (values, setFieldValue) => {
+	onCreateCharacteristic = (characteristic, setFieldValue) => {
 		this.setState({ isLoadingCharacteristics: true }, () => {
-			this.props.createCharacteristic(values).then(response => {
+			this.props.createCharacteristic(characteristic).then(response => {
 				const characteristic = response.data;
 
 				this.setState({ isLoadingCharacteristics: false });
@@ -78,7 +78,7 @@ class DialogPositionReceiptCreateEdit extends Component {
 
 		this.props.createPositionReceipt(position, receipt).then(response => {
 			if (response.status === 'success') {
-				this.props.getStockStatus();
+				this.props.getStudioStock();
 				onCloseDialog();
 			} else actions.setSubmitting(false);
 		});
@@ -110,7 +110,7 @@ class DialogPositionReceiptCreateEdit extends Component {
 
 		this.props.editPositionReceipt(position._id, position, receipt).then(response => {
 			if (response.status === 'success') {
-				this.props.getStockStatus();
+				this.props.getStudioStock();
 				onCloseDialog();
 			} else actions.setSubmitting(false);
 		});
@@ -133,7 +133,7 @@ class DialogPositionReceiptCreateEdit extends Component {
 	};
 
 	render() {
-		const { type, dialogOpen, onCloseDialog, currentStockId, characteristics, selectedPosition } = this.props;
+		const { type, dialogOpen, onCloseDialog, currentStudioId, characteristics, selectedPosition } = this.props;
 		const { shopLinkVisible, isLoadingCharacteristics } = this.state;
 
 		if (type === 'edit' && !selectedPosition) return null;
@@ -202,7 +202,7 @@ class DialogPositionReceiptCreateEdit extends Component {
 							onChangeShopFields={this.onChangeShopFields}
 							onCreateCharacteristic={this.onCreateCharacteristic}
 							type={type}
-							currentStockId={currentStockId}
+							currentStudioId={currentStudioId}
 							characteristics={characteristics}
 							shopLinkVisible={shopLinkVisible}
 							isLoadingCharacteristics={isLoadingCharacteristics}
@@ -221,14 +221,13 @@ const mapStateToProps = state => {
 	};
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentStockId } = ownProps;
-
+const mapDispatchToProps = dispatch => {
 	return {
-		getStockStatus: () => dispatch(getStockStatus(currentStockId)),
-		createCharacteristic: values => dispatch(createCharacteristic(values)),
-		createPositionReceipt: (position, receipt) => dispatch(createPositionReceipt(currentStockId, position, receipt)),
-		editPositionReceipt: (positionId, position, receipt) => dispatch(editPositionReceipt(positionId, position, receipt)),
+		getStudioStock: () => dispatch(getStudioStock()),
+		createCharacteristic: characteristic => dispatch(createCharacteristic({ data: { characteristic } })),
+		createPositionReceipt: (position, receipt) => dispatch(createPositionReceipt({ data: { position, receipt } })),
+		editPositionReceipt: (positionId, position, receipt) =>
+			dispatch(editPositionReceipt({ params: { positionId }, data: { position, receipt } })),
 	};
 };
 

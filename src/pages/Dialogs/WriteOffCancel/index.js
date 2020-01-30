@@ -7,7 +7,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 
 import { Dialog, DialogActions, DialogTitle } from 'src/components/Dialog';
 
-import { getStockStatus } from 'src/actions/stocks';
+import { getStudioStock } from 'src/actions/studio';
 import { cancelWriteOff } from 'src/actions/writeOffs';
 
 const DialogWriteOffCancel = props => {
@@ -19,7 +19,7 @@ const DialogWriteOffCancel = props => {
 		props.cancelWriteOff(selectedWriteOff._id).then(response => {
 			onCloseDialog();
 
-			if (response.status === 'success') props.getStockStatus();
+			if (response.status === 'success') props.getStudioStock();
 		});
 	};
 
@@ -63,16 +63,14 @@ DialogWriteOffCancel.propTypes = {
 	dialogOpen: PropTypes.bool.isRequired,
 	onCloseDialog: PropTypes.func.isRequired,
 	onExitedDialog: PropTypes.func,
-	currentStockId: PropTypes.string.isRequired,
+	currentStudioId: PropTypes.string.isRequired,
 	selectedWriteOff: PropTypes.object,
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentStockId } = ownProps;
-
+const mapDispatchToProps = dispatch => {
 	return {
-		getStockStatus: () => dispatch(getStockStatus(currentStockId)),
-		cancelWriteOff: writeOffId => dispatch(cancelWriteOff(currentStockId, writeOffId)),
+		getStudioStock: () => dispatch(getStudioStock()),
+		cancelWriteOff: writeOffId => dispatch(cancelWriteOff({ params: { writeOffId } })),
 	};
 };
 

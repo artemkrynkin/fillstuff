@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-// import validator from 'validator';
 import i18n from 'i18n';
 
 import { unitTypes } from 'shared/checkPositionAndReceipt';
@@ -24,10 +23,10 @@ let Position = new Schema({
 		type: Boolean,
 		default: false,
 	},
-	// Склад
-	stock: {
+	// Студия
+	studio: {
 		type: Schema.Types.ObjectId,
-		ref: 'Stock',
+		ref: 'Studio',
 		required: [true, i18n.__('Обязательное поле')],
 	},
 	// Группа

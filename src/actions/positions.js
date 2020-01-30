@@ -1,14 +1,16 @@
 import axios from 'axios';
 
-export const getPositions = (stockId, showRequest = true) => {
-	return async dispatch => {
+export const getPositions = ({ showRequest } = { showRequest: true }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+
 		if (showRequest) dispatch({ type: 'REQUEST_POSITIONS' });
 
 		return await axios
-			.get('/api/positions', {
-				params: {
-					stockId,
-				},
+			.post('/api/getPositions', {
+				studioId,
+				memberId,
 			})
 			.then(response => {
 				dispatch({
@@ -24,29 +26,24 @@ export const getPositions = (stockId, showRequest = true) => {
 	};
 };
 
-export const createPosition = (stockId, position) => {
-	return async dispatch => {
-		return await axios
-			.post(
-				`/api/positions`,
-				{
-					position,
-				},
-				{
-					params: {
-						stockId,
-					},
-				}
-			)
-			.then(response => {
-				const { data: position } = response;
+export const createPosition = ({ data }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
 
+		return await axios
+			.post('/api/createPosition', {
+				studioId,
+				memberId,
+				data,
+			})
+			.then(response => {
 				dispatch({
 					type: 'CREATE_POSITION',
-					payload: position,
+					payload: response.data,
 				});
 
-				return Promise.resolve({ status: 'success', data: position });
+				return Promise.resolve({ status: 'success', data: response.data });
 			})
 			.catch(error => {
 				if (error.response) {
@@ -60,27 +57,21 @@ export const createPosition = (stockId, position) => {
 	};
 };
 
-export const createPositionReceipt = (stockId, position, receipt) => {
-	return async dispatch => {
-		return await axios
-			.post(
-				`/api/positions/position-and-receipt`,
-				{
-					position,
-					receipt,
-				},
-				{
-					params: {
-						stockId,
-					},
-				}
-			)
-			.then(response => {
-				const { data: position } = response;
+export const createPositionReceipt = ({ data }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
 
+		return await axios
+			.post('/api/createPositionWithReceipt', {
+				studioId,
+				memberId,
+				data,
+			})
+			.then(response => {
 				dispatch({
 					type: 'CREATE_POSITION',
-					payload: position,
+					payload: response.data,
 				});
 
 				return Promise.resolve({ status: 'success' });
@@ -97,21 +88,25 @@ export const createPositionReceipt = (stockId, position, receipt) => {
 	};
 };
 
-export const editPosition = (positionId, position) => {
-	return async dispatch => {
+export const editPosition = ({ params, data }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+		const { positionId } = params;
+
 		return await axios
-			.put(`/api/positions/${positionId}`, {
-				stock: position.stock,
-				position,
+			.post('/api/editPosition', {
+				studioId,
+				memberId,
+				params,
+				data,
 			})
 			.then(response => {
-				const position = response.data;
-
 				dispatch({
 					type: 'EDIT_POSITION',
 					payload: {
 						positionId,
-						position,
+						position: response.data,
 					},
 				});
 
@@ -129,22 +124,25 @@ export const editPosition = (positionId, position) => {
 	};
 };
 
-export const editPositionReceipt = (positionId, position, receipt) => {
-	return async dispatch => {
+export const editPositionReceipt = ({ params, data }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+		const { positionId } = params;
+
 		return await axios
-			.put(`/api/positions/position-and-receipt/${positionId}`, {
-				stock: position.stock,
-				position,
-				receipt,
+			.post('/api/editPositionWithReceipt', {
+				studioId,
+				memberId,
+				params,
+				data,
 			})
 			.then(response => {
-				const position = response.data;
-
 				dispatch({
 					type: 'EDIT_POSITION',
 					payload: {
 						positionId,
-						position,
+						position: response.data,
 					},
 				});
 
@@ -162,22 +160,25 @@ export const editPositionReceipt = (positionId, position, receipt) => {
 	};
 };
 
-export const addQuantityInPosition = (stockId, positionId, addition) => {
-	return async dispatch => {
+export const addQuantityInPosition = ({ params, data }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+		const { positionId } = params;
+
 		return await axios
-			.post(`/api/positions/${positionId}/add-quantity`, addition, {
-				params: {
-					stockId,
-				},
+			.post('/api/positionReceiptAddQuantity', {
+				studioId,
+				memberId,
+				params,
+				data,
 			})
 			.then(response => {
-				const position = response.data;
-
 				dispatch({
 					type: 'EDIT_POSITION',
 					payload: {
 						positionId,
-						position,
+						position: response.data,
 					},
 				});
 

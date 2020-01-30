@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import moment from 'moment';
 
-import { isAuthedResolver, hasPermissionsInStock } from 'api/utils/permissions';
+import { isAuthedResolver, hasPermissionsInStudio } from 'api/utils/permissions';
 
-import Stock from 'api/models/stock';
+import Studio from 'api/models/studio';
 import Position from 'api/models/position';
 import WriteOff from 'api/models/writeOff';
 import Receipt from 'api/models/receipt';
@@ -12,15 +12,18 @@ const writeOffsRouter = Router();
 
 // const debug = require('debug')('api:writeOffs');
 
-writeOffsRouter.get(
-	'/write-offs',
+writeOffsRouter.post(
+	'/getWriteOffs',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
 	async (req, res, next) => {
-		const { stockId, dateStart, dateEnd, position, role } = req.query;
+		const {
+			studioId,
+			query: { dateStart, dateEnd, position, role },
+		} = req.body;
 
 		const conditions = {
-			stock: stockId,
+			studio: studioId,
 		};
 
 		if (dateStart && dateEnd) {
@@ -29,14 +32,18 @@ writeOffsRouter.get(
 				$lte: new Date(Number(dateEnd)),
 			};
 		}
+
 		if (position && position !== 'all') conditions.position = position;
 
 		const writeOffsPromise = WriteOff.paginate(conditions, {
 			sort: { createdAt: -1 },
 			populate: [
 				{
-					path: 'stock',
-					select: 'members',
+					path: 'member',
+					populate: {
+						path: 'user',
+						select: 'avatar name email',
+					},
 				},
 				{
 					path: 'position',
@@ -48,10 +55,6 @@ writeOffsRouter.get(
 				{
 					path: 'receipt',
 					select: 'unitPurchasePrice',
-				},
-				{
-					path: 'user requestCancellationUser',
-					select: 'profilePhoto name email',
 				},
 			],
 			pagination: false,
@@ -67,23 +70,17 @@ writeOffsRouter.get(
 
 		switch (role) {
 			case 'owners':
-				writeOffs.data = writeOffs.data.filter(writeOff => {
-					return writeOff.stock.members.some(member => String(member.user) === String(writeOff.user._id) && member.role === 'owner');
-				});
+				writeOffs.data = writeOffs.data.filter(procurement => procurement.member.role === 'owner');
 				break;
 			case 'admins':
-				writeOffs.data = writeOffs.data.filter(writeOff => {
-					return writeOff.stock.members.some(member => String(member.user) === String(writeOff.user._id) && member.role === 'admin');
-				});
+				writeOffs.data = writeOffs.data.filter(procurement => procurement.member.role === 'admin');
 				break;
 			default:
 				if (role && role !== 'all') {
-					writeOffs.data = writeOffs.data.filter(writeOff => String(writeOff.user._id) === role);
+					writeOffs.data = writeOffs.data.filter(procurement => String(procurement.member._id) === role);
 				}
 				break;
 		}
-
-		writeOffs.data.forEach(writeOff => writeOff.depopulate('stock'));
 
 		res.json({
 			data: writeOffs.data,
@@ -95,15 +92,21 @@ writeOffsRouter.get(
 );
 
 writeOffsRouter.post(
-	'/write-offs',
+	'/createWriteOff',
 	// isAuthedResolver,
-	// (req, res, next) => hasPermissionsInStock(req, res, next, ['products.scanning']),
+	// (req, res, next) => hasPermissionsInStudio(req, res, next, ['products.scanning']),
 	async (req, res, next) => {
-		let { stockId, userId, positionId, comment } = req.body;
-		const quantity = Number(req.body.quantity) || 1;
+		let {
+			studioId,
+			memberId,
+			params: { positionId },
+			data: { quantity: quantityWriteOff },
+		} = req.body;
+
+		const quantity = Number(quantityWriteOff);
 
 		const position = await Position.findById(positionId)
-			.populate({ path: 'stock', select: 'status' })
+			.populate({ path: 'studio', select: 'stock' })
 			.populate('activeReceipt')
 			.populate({
 				path: 'receipts',
@@ -112,7 +115,9 @@ writeOffsRouter.post(
 			.catch(err => next({ code: 2, err }));
 
 		const {
-			stock: { status: statusOld },
+			studio: {
+				stock: { stockPrice: stockPriceOld },
+			},
 			receipts = position.receipts.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)),
 		} = position;
 
@@ -130,9 +135,8 @@ writeOffsRouter.post(
 			});
 		}
 
-		const newWriteOffs = [];
+		const awaitingPromises = [];
 		const newWriteOffsErr = [];
-		const updateReceipts = [];
 		let remainingQuantity = quantity;
 		let stockPrice = 0;
 
@@ -141,8 +145,8 @@ writeOffsRouter.post(
 				const currentWriteOffQuantity = remainingQuantity > receipt.current.quantity ? receipt.current.quantity : remainingQuantity;
 
 				const newWriteOff = new WriteOff({
-					stock: stockId,
-					user: userId,
+					studio: studioId,
+					member: memberId,
 					position: position._id,
 					receipt: receipt._id,
 					isFree: position.isFree,
@@ -155,7 +159,6 @@ writeOffsRouter.post(
 					unitCostDelivery: receipt.unitCostDelivery,
 					unitExtraCharge: receipt.unitExtraCharge,
 					unitManualExtraCharge: receipt.unitManualExtraCharge,
-					comment: comment,
 				});
 
 				if (!position.isFree) {
@@ -164,8 +167,9 @@ writeOffsRouter.post(
 
 				const newWriteOffErr = newWriteOff.validateSync();
 
-				newWriteOffs.push(newWriteOff.save());
 				if (newWriteOffErr) newWriteOffsErr.push(newWriteOffErr);
+
+				awaitingPromises.push(newWriteOff.save());
 
 				const currentReceiptSet = {
 					current: {
@@ -191,7 +195,7 @@ writeOffsRouter.post(
 					remainingQuantity === 0 &&
 					(currentReceiptSet.current.quantity === 0 || (index !== 0 && currentReceiptSet.current.quantity !== 0))
 				) {
-					updateReceipts.push(
+					awaitingPromises.push(
 						Receipt.findByIdAndUpdate(activeReceiptId, { $set: { status: 'active' } }, { runValidators: true }).catch(err =>
 							next({ code: 2, err })
 						),
@@ -201,7 +205,7 @@ writeOffsRouter.post(
 					);
 				}
 
-				updateReceipts.push(
+				awaitingPromises.push(
 					Receipt.findByIdAndUpdate(receipt._id, { $set: currentReceiptSet }, { runValidators: true }).catch(err => next({ code: 2, err }))
 				);
 			}
@@ -209,13 +213,13 @@ writeOffsRouter.post(
 
 		if (newWriteOffsErr.length) return next({ code: 2 });
 
-		await Promise.all([...newWriteOffs, ...updateReceipts]);
+		await Promise.all([...awaitingPromises]);
 
-		Stock.findByIdAndUpdate(
-			stockId,
+		Studio.findByIdAndUpdate(
+			studioId,
 			{
 				$set: {
-					'status.stockPrice': statusOld.stockPrice - stockPrice,
+					'stock.stockPrice': stockPriceOld - stockPrice,
 				},
 			},
 			{ runValidators: true }
@@ -234,15 +238,18 @@ writeOffsRouter.post(
 	}
 );
 
-writeOffsRouter.get(
-	'/write-offs/cancel/:writeOffId',
+writeOffsRouter.post(
+	'/cancelWriteOff',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStock(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
 	async (req, res, next) => {
-		const { requestCancellationUser = req.user._id } = req.query;
+		const {
+			params: { writeOffId },
+			data: { cancellationMember },
+		} = req.body;
 
-		const writeOff = await WriteOff.findById(req.params.writeOffId)
-			.populate({ path: 'stock', select: 'status' })
+		const writeOff = await WriteOff.findById(writeOffId)
+			.populate({ path: 'studio', select: 'stock' })
 			.populate('position receipt')
 			.catch(err => next({ code: 2, err }));
 
@@ -260,12 +267,14 @@ writeOffsRouter.get(
 		const awaitingPromises = [];
 
 		const {
-			stock: { status: statusOld },
+			studio: {
+				stock: { stockPrice: stockPriceOld },
+			},
 			receipt,
 		} = writeOff;
 
 		awaitingPromises.push(
-			WriteOff.findByIdAndUpdate(writeOff._id, { $set: { canceled: true, canceledDate: Date.now(), requestCancellationUser } }).catch(err =>
+			WriteOff.findByIdAndUpdate(writeOff._id, { $set: { canceled: true, canceledDate: Date.now(), cancellationMember } }).catch(err =>
 				next({ code: 2, err })
 			)
 		);
@@ -301,11 +310,11 @@ writeOffsRouter.get(
 
 		await Promise.all(awaitingPromises);
 
-		Stock.findByIdAndUpdate(
-			writeOff.stock,
+		Studio.findByIdAndUpdate(
+			writeOff.studio._id,
 			{
 				$set: {
-					'status.stockPrice': statusOld.stockPrice + writeOff.quantity * receipt.unitPurchasePrice,
+					'stock.stockPrice': stockPriceOld + writeOff.quantity * receipt.unitPurchasePrice,
 				},
 			},
 			{ runValidators: true }
@@ -322,10 +331,6 @@ writeOffsRouter.get(
 			.populate({
 				path: 'receipt',
 				select: 'unitPurchasePrice',
-			})
-			.populate({
-				path: 'user requestCancellationUser',
-				select: 'profilePhoto name email',
 			})
 			.catch(err => next({ code: 2, err }));
 

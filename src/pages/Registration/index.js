@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
@@ -10,6 +10,8 @@ import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 
 import generateMetaInfo from 'shared/generate-meta-info';
+
+import { CLIENT_URL } from 'src/api/constants';
 
 import Head from 'src/components/head';
 
@@ -24,84 +26,97 @@ const RegistrationSchema = Yup.object().shape({
 	password: Yup.string().required('Обязательное поле'),
 });
 
-const initialValues = {
-	email: '',
-	password: '',
-};
+const Registration = props => {
+	const [rememberRegData, setRememberRegData] = useState(null);
 
-class Registration extends Component {
-	setRememberRegData = data => {
-		this.setState({ rememberRegData: data });
+	console.log(rememberRegData);
+
+	const { title: pageTitle, description: pageDescription } = generateMetaInfo({
+		type: 'registration',
+		data: {
+			title: 'Регистрация',
+		},
+	});
+
+	const onSubmit = (values, actions) => {
+		setRememberRegData(values);
+		this.props
+			.registration(values, actions)
+			.then(() => {
+				actions.setSubmitting(false);
+				window.location.href = `${CLIENT_URL}/dashboard`;
+			})
+			.catch(error => {
+				let data = error.response.data;
+
+				data.formErrors.forEach(error => {
+					actions.setFieldError(error.field, error.message);
+				});
+
+				actions.setSubmitting(false);
+			});
 	};
 
-	render() {
-		const { title: pageTitle, description: pageDescription } = generateMetaInfo({
-			type: 'registration',
-			data: {
-				title: 'Регистрация',
-			},
-		});
+	return (
+		<div className={styles.wrapper}>
+			<Head title={pageTitle} description={pageDescription} />
 
-		return (
-			<div className={styles.wrapper}>
-				<Head title={pageTitle} description={pageDescription} />
-
-				<div className={styles.form}>
-					<h2>Регистрация</h2>
-					<div className={styles.formFields}>
-						<Formik
-							initialValues={initialValues}
-							validationSchema={RegistrationSchema}
-							validateOnBlur={false}
-							validateOnChange={false}
-							onSubmit={(values, actions) => {
-								this.setRememberRegData(values);
-								this.props.registration(values, actions);
-							}}
-						>
-							{({ errors, isSubmitting, touched }) => {
-								return (
-									<Form>
-										<FormControl margin="normal" fullWidth>
-											<Field
-												name="email"
-												placeholder="Email"
-												error={Boolean(touched.email && errors.email)}
-												helperText={(touched.email && errors.email) || ''}
-												as={TextField}
-												autoFocus
-											/>
-										</FormControl>
-										<FormControl margin="normal" fullWidth>
-											<Field
-												type="password"
-												name="password"
-												placeholder="Пароль"
-												error={Boolean(touched.password && errors.password)}
-												helperText={(touched.password && errors.password) || ''}
-												as={TextField}
-											/>
-										</FormControl>
-										<Button type="submit" disabled={isSubmitting} className={styles.loginBtn} variant="contained" color="primary">
-											{isSubmitting ? <CircularProgress size={20} /> : 'Зарегистрироваться'}
-										</Button>
-									</Form>
-								);
-							}}
-						</Formik>
-					</div>
-				</div>
-				<div className={styles.bottomInfo}>
-					Уже есть аккаунт? <Link to="/login">Войти</Link>
+			<div className={styles.form}>
+				<h2>Регистрация</h2>
+				<div className={styles.formFields}>
+					<Formik
+						initialValues={{
+							email: '',
+							password: '',
+						}}
+						validationSchema={RegistrationSchema}
+						validateOnBlur={false}
+						validateOnChange={false}
+						onSubmit={(values, actions) => onSubmit(values, actions)}
+					>
+						{({ errors, isSubmitting, touched }) => (
+							<Form>
+								<FormControl margin="normal" fullWidth>
+									<Field
+										name="email"
+										placeholder="Email"
+										error={Boolean(touched.email && errors.email)}
+										helperText={(touched.email && errors.email) || ''}
+										as={TextField}
+										autoFocus
+									/>
+								</FormControl>
+								<FormControl margin="normal" fullWidth>
+									<Field
+										type="password"
+										name="password"
+										placeholder="Пароль"
+										error={Boolean(touched.password && errors.password)}
+										helperText={(touched.password && errors.password) || ''}
+										as={TextField}
+									/>
+								</FormControl>
+								<Button type="submit" disabled={isSubmitting} variant="contained" color="primary" fullWidth>
+									{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
+									<span className="loading-button-label" style={{ opacity: Number(!isSubmitting) }}>
+										Зарегистрироваться
+									</span>
+								</Button>
+							</Form>
+						)}
+					</Formik>
 				</div>
 			</div>
-		);
-	}
-}
+			<div className={styles.bottomInfo}>
+				Уже есть аккаунт? <Link to="/login">Войти</Link>
+			</div>
+		</div>
+	);
+};
 
 const mapDispatchToProps = () => {
 	return {
-		registration: (values, actions) => registration(values, actions),
+		registration: data => registration({ data }),
 	};
 };
 

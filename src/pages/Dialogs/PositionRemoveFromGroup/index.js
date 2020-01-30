@@ -7,7 +7,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 
 import { Dialog, DialogActions, DialogTitle } from 'src/components/Dialog';
 
-import { getStockStatus } from 'src/actions/stocks';
+import { getStudioStock } from 'src/actions/studio';
 import { removePositionFromGroup } from 'src/actions/positionsInGroups';
 
 const DialogPositionRemoveFromGroup = props => {
@@ -54,17 +54,15 @@ DialogPositionRemoveFromGroup.propTypes = {
 	dialogOpen: PropTypes.bool.isRequired,
 	onCloseDialog: PropTypes.func.isRequired,
 	onExitedDialog: PropTypes.func,
-	currentStockId: PropTypes.string.isRequired,
+	currentStudioId: PropTypes.string.isRequired,
 	selectedPosition: PropTypes.object,
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentStockId } = ownProps;
-
+const mapDispatchToProps = dispatch => {
 	return {
-		getStockStatus: () => dispatch(getStockStatus(currentStockId)),
+		getStudioStock: () => dispatch(getStudioStock()),
 		removePositionFromGroup: (positionId, positionGroupId) =>
-			dispatch(removePositionFromGroup(currentStockId, positionId, positionGroupId)),
+			dispatch(removePositionFromGroup({ params: { positionId }, data: { positionGroupId } })),
 	};
 };
 

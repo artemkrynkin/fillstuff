@@ -7,14 +7,14 @@ const debug = require('debug')('api:multerUpload');
 
 const rootFolder = process.env.NODE_ENV === 'production' ? 'build' : 'public';
 
-const uploadProfilePhotoDS = multer.diskStorage({
+const uploadAvatarDS = multer.diskStorage({
 	destination: (req, file, cb) => {
 		let path = `${rootFolder}/uploads/u${String(req.user._id)}`;
 
 		fs.mkdir(path, { recursive: true }, err => {
 			if (err) {
-				debug('upload error (uploadProfilePhoto)');
-				logger.warn('upload error (uploadProfilePhoto)');
+				debug('upload error (uploadAvatar)');
+				logger.warn('upload error (uploadAvatar)');
 				throw err;
 			}
 
@@ -22,8 +22,8 @@ const uploadProfilePhotoDS = multer.diskStorage({
 		});
 	},
 });
-export const uploadProfilePhoto = multer({
-	storage: uploadProfilePhotoDS,
+export const uploadAvatar = multer({
+	storage: uploadAvatarDS,
 	limits: {
 		fileSize: 10 * 1024 * 1024, //10mb
 		files: 1,

@@ -55,13 +55,13 @@ export const calculateColor = text => {
 	return theme.calculateColors[sum % theme.calculateColors.length];
 };
 
-export const changeStockCurrentUrl = stockId => {
+export const changeStudioCurrentUrl = studioId => {
 	let location = history.location,
 		pathnameArray = location.pathname.split('/');
 
-	if (pathnameArray[1] === 'stocks') {
-		if (stockId) {
-			pathnameArray[2] = stockId;
+	if (pathnameArray[1] === 'studios') {
+		if (studioId) {
+			pathnameArray[2] = studioId;
 
 			switch (pathnameArray[3]) {
 				case 'dashboard':

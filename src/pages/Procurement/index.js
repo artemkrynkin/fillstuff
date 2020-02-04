@@ -29,8 +29,6 @@ const Procurement = props => {
 	});
 
 	const {
-		currentUser,
-		currentStudio,
 		match: {
 			params: { procurementId },
 		},
@@ -47,7 +45,7 @@ const Procurement = props => {
 			<Header pageName={metaInfo.pageName} pageTitle="Закупки" pageParams={pageParams} />
 			<div className={`${stylesPage.pageContent} ${styles.container}`}>
 				<div className={styles.wrapper}>
-					<Index currentUser={currentUser} currentStudio={currentStudio} procurementId={procurementId} />
+					<Index procurementId={procurementId} />
 				</div>
 			</div>
 		</div>

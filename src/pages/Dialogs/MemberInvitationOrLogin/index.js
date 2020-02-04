@@ -8,10 +8,11 @@ import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
 
 import { Dialog, DialogTitle } from 'src/components/Dialog';
-import { memberInvitation } from 'src/actions/studio';
 import { LoadingComponent } from 'src/components/Loading';
 
-class MemberEdit extends Component {
+import { invitationMember } from 'src/actions/members';
+
+class MemberInvitationOrLogin extends Component {
 	static propTypes = {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
@@ -20,9 +21,11 @@ class MemberEdit extends Component {
 		selectedMember: PropTypes.object,
 	};
 
-	state = {
+	initialState = {
 		QRCode: null,
 	};
+
+	state = this.initialState;
 
 	onEnterDialog = () => {
 		const { currentStudio, selectedMember } = this.props;
@@ -37,18 +40,22 @@ class MemberEdit extends Component {
 		};
 
 		if (!selectedMember) {
-			this.props.memberInvitation().then(response => {
+			this.props.invitationMember().then(response => {
+				const member = response.data;
+
 				QRCodeGenerate({
-					type: 'member-invitation',
-					memberId: response.data._id,
+					type: 'invitation-member',
+					studioId: member.studio,
+					memberId: member._id,
 				});
 			});
 		} else {
 			QRCodeGenerate({
 				type: 'login',
-				userId: selectedMember.user._id,
-				studioId: currentStudio._id,
-				role: selectedMember.role,
+				member: selectedMember._id,
+				studio: currentStudio._id,
+				user: selectedMember.user._id,
+				roles: selectedMember.roles,
 			});
 		}
 	};
@@ -56,9 +63,9 @@ class MemberEdit extends Component {
 	onExitedDialog = () => {
 		const { onExitedDialog } = this.props;
 
-		this.setState({ QRCode: null });
-
-		onExitedDialog();
+		this.setState(this.initialState, () => {
+			if (onExitedDialog) onExitedDialog();
+		});
 	};
 
 	render() {
@@ -67,7 +74,7 @@ class MemberEdit extends Component {
 
 		return (
 			<Dialog open={dialogOpen} onEnter={this.onEnterDialog} onClose={onCloseDialog} onExited={this.onExitedDialog} maxWidth="md">
-				<DialogTitle onClose={this.onCloseDialog}>QR-код для входа</DialogTitle>
+				<DialogTitle onClose={onCloseDialog}>QR-код для входа</DialogTitle>
 				<DialogContent>
 					{QRCode ? (
 						<div style={{ textAlign: 'center' }}>
@@ -92,17 +99,13 @@ class MemberEdit extends Component {
 }
 
 const mapStateToProps = state => {
+	return {};
+};
+
+const mapDispatchToProps = dispatch => {
 	return {
-		currentUser: state.user.data,
+		invitationMember: () => dispatch(invitationMember()),
 	};
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentStudio } = ownProps;
-
-	return {
-		memberInvitation: () => dispatch(memberInvitation(currentStudio._id)),
-	};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(MemberEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(MemberInvitationOrLogin);

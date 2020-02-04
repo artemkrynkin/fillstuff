@@ -25,7 +25,11 @@ import Availability from 'src/pages/Availability';
 import WriteOffs from 'src/pages/WriteOffs';
 import Procurements from 'src/pages/Procurements';
 import Procurement from 'src/pages/Procurement';
+import Invoices from 'src/pages/Invoices';
+import Invoice from 'src/pages/Invoice';
 import Statistics from 'src/pages/Statistics';
+import Members from 'src/pages/Members';
+import Member from 'src/pages/Member';
 import Settings from 'src/pages/Settings';
 import Registration from 'src/pages/Registration';
 import UserSettings from 'src/pages/UserSettings';
@@ -90,6 +94,42 @@ const ProcurementFallback = signedOutFallback(
 		</PageFallback>
 	),
 	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/procurements/${match.props.procurementId}`} />} />
+);
+
+const InvoicesFallback = signedOutFallback(
+	props => (
+		<PageFallback {...props}>
+			<Invoices match={props.match} />
+		</PageFallback>
+	),
+	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/invoices`} />} />
+);
+
+const InvoiceFallback = signedOutFallback(
+	props => (
+		<PageFallback {...props}>
+			<Invoice match={props.match} />
+		</PageFallback>
+	),
+	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/invoices/${match.props.invoiceId}`} />} />
+);
+
+const MembersFallback = signedOutFallback(
+	props => (
+		<PageFallback {...props}>
+			<Members match={props.match} />
+		</PageFallback>
+	),
+	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/members`} />} />
+);
+
+const MemberFallback = signedOutFallback(
+	props => (
+		<PageFallback {...props}>
+			<Member match={props.match} />
+		</PageFallback>
+	),
+	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/member/${match.props.memberId}`} />} />
 );
 
 const StatisticsFallback = signedOutFallback(
@@ -163,6 +203,10 @@ class Routes extends Component {
 						<Route path="/write-offs" component={WriteOffsFallback} exact strict sensitive />
 						<Route path="/procurements" component={ProcurementsFallback} exact strict sensitive />
 						<Route path="/procurements/:procurementId" component={ProcurementFallback} exact strict sensitive />
+						<Route path="/invoices" component={InvoicesFallback} exact strict sensitive />
+						<Route path="/invoices/:invoiceId" component={InvoiceFallback} exact strict sensitive />
+						<Route path={['/members', '/members/guests']} component={MembersFallback} exact strict sensitive />
+						<Route path="/members/:memberId" component={MemberFallback} exact strict sensitive />
 						<Route path="/statistics" component={StatisticsFallback} exact strict sensitive />
 						<Route path="/settings" component={SettingsFallback} exact strict sensitive />
 

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { isAuthedResolver, hasPermissionsInStudio } from 'api/utils/permissions';
+import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
 import Position from 'api/models/position';
 import PositionGroup from 'api/models/positionGroup';
@@ -12,7 +12,7 @@ const positionGroupsRouter = Router();
 positionGroupsRouter.post(
 	'/getPositionGroup',
 	// isAuthedResolver,
-	// (req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
+	// (req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	(req, res, next) => {
 		const {
 			params: { positionGroupId },
@@ -33,7 +33,7 @@ positionGroupsRouter.post(
 positionGroupsRouter.post(
 	'/createPositionGroup',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const { studioId, data: newPositionGroupValues } = req.body;
 
@@ -81,7 +81,7 @@ positionGroupsRouter.post(
 positionGroupsRouter.post(
 	'/editPositionGroup',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
 			params: { positionGroupId },
@@ -134,7 +134,7 @@ positionGroupsRouter.post(
 positionGroupsRouter.post(
 	'/addPositionInGroup',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
 			params: { positionGroupId },

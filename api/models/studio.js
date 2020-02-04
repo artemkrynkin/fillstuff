@@ -29,30 +29,32 @@ let Studio = new Schema({
 	settings: {
 		type: {
 			procurements: {
-				compensateCostDelivery: {
-					type: Boolean,
-					default: true,
-				},
+				compensateCostDelivery: Boolean,
+			},
+		},
+		default: {
+			procurements: {
+				compensateCostDelivery: true,
 			},
 		},
 	},
 	stock: {
 		// если есть платные позиции, то true, иначе false
 		type: {
-			store: {
-				type: Boolean,
-				default: false,
-			},
+			store: Boolean,
 			numberPositions: {
 				type: Number,
-				default: 0,
 				set: value => formatNumber(value, { fractionDigits: 0 }),
 			},
 			stockPrice: {
 				type: Number,
-				default: 0,
 				set: value => formatNumber(value),
 			},
+		},
+		default: {
+			store: false,
+			numberPositions: 0,
+			stockPrice: 0,
 		},
 	},
 	users: {

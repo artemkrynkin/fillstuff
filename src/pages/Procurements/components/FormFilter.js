@@ -26,9 +26,24 @@ import { SearchTextField } from './Filter.styles';
 
 import styles from './Filter.module.css';
 
-const roles = ['all', 'owners', 'admins'];
+const FilterPositionTransform = (positionSelected, positions, loading) => {
+	if (positionSelected === 'all') {
+		return 'Все позиции';
+	} else {
+		if (loading) return <CircularProgress size={13} />;
 
-const filterRoleTransform = (roleSelected, members) => {
+		if (positions && positions.length) {
+			const position = positions.find(position => position._id === positionSelected);
+
+			return position ? position.name : null;
+		} else {
+			return 'Не найдено';
+		}
+	}
+};
+
+const roles = ['all', 'owners', 'admins'];
+const FilterRoleTransform = (roleSelected, members, loading) => {
 	switch (roleSelected) {
 		case 'all':
 			return 'Все участники';
@@ -37,9 +52,15 @@ const filterRoleTransform = (roleSelected, members) => {
 		case 'admins':
 			return 'Только администраторы';
 		default:
-			const member = members.find(member => member._id === roleSelected);
+			if (loading) return <CircularProgress size={13} />;
 
-			return member ? member.user.name : 'Не выбрано';
+			if (members && members.length) {
+				const member = members.find(member => member._id === roleSelected);
+
+				return member ? member.user.name : null;
+			} else {
+				return 'Не найдено';
+			}
 	}
 };
 
@@ -102,11 +123,6 @@ const FormFilter = props => {
 			submitForm,
 		},
 	} = props;
-
-	const positionByFiltered =
-		!isLoadingPositions && positions && positions.length && values.position !== 'all'
-			? positions.find(position => position._id === values.position)
-			: null;
 
 	const isWeekActive = currentWeek => weekActive(values.dateStartView, values.dateEndView, currentWeek);
 	const isMonthActive = currentMonth => monthActive(values.dateStartView, values.dateEndView, currentMonth);
@@ -275,24 +291,7 @@ const FormFilter = props => {
 						onClick={() => handlerDropdown('dropdownPosition')}
 						disableRipple
 					>
-						{values.position !== 'all' ? (
-							positionByFiltered ? (
-								<span>
-									{positionByFiltered.name}{' '}
-									{positionByFiltered.characteristics.reduce(
-										(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
-										''
-									)}
-									{positionByFiltered.isArchived ? <span className={styles.isArchived}>В архиве</span> : null}
-								</span>
-							) : isLoadingPositions ? (
-								<CircularProgress size={13} />
-							) : (
-								'Не выбрано'
-							)
-						) : (
-							<span>Все позиции</span>
-						)}
+						<span>{FilterPositionTransform(values.position, positions, isLoadingPositions)}</span>
 						<FontAwesomeIcon icon={['far', 'angle-down']} />
 					</ButtonBase>
 
@@ -352,11 +351,7 @@ const FormFilter = props => {
 						onClick={() => handlerDropdown('dropdownRole')}
 						disableRipple
 					>
-						{!isLoadingMembers && members && members.length ? (
-							<span>{filterRoleTransform(values.role, members)}</span>
-						) : (
-							<CircularProgress size={13} />
-						)}
+						<span>{FilterRoleTransform(values.role, members, isLoadingMembers)}</span>
 						<FontAwesomeIcon icon={['far', 'angle-down']} />
 					</ButtonBase>
 
@@ -378,7 +373,7 @@ const FormFilter = props => {
 										component={MenuItem}
 										button
 									>
-										{filterRoleTransform(role)}
+										{FilterRoleTransform(role)}
 									</ListItem>
 								))}
 								{members.map((member, index) => (
@@ -399,7 +394,7 @@ const FormFilter = props => {
 											/>
 											<Grid direction="column" container>
 												<div className={styles.userTitle}>{member.user.name}</div>
-												<div className={styles.userCaption}>{memberRoleTransform(member.role)}</div>
+												<div className={styles.userCaption}>{memberRoleTransform(member.roles).join(', ')}</div>
 											</Grid>
 										</div>
 									</ListItem>
@@ -408,7 +403,7 @@ const FormFilter = props => {
 						) : (
 							<div style={{ textAlign: 'center', padding: 10 }}>
 								{members && !members.length ? (
-									<Typography variant="caption">В команде нет учатников.</Typography>
+									<Typography variant="caption">В команде нет участников.</Typography>
 								) : (
 									<CircularProgress size={20} />
 								)}

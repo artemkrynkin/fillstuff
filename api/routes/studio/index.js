@@ -2,7 +2,7 @@ import { Router } from 'express';
 import mongoose from 'mongoose';
 // import i18n from 'i18n';
 
-import { isAuthedResolver, hasPermissionsInStudio } from 'api/utils/permissions';
+import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
 import Studio from 'api/models/studio';
 
@@ -29,7 +29,7 @@ studioRouter.post('/getStudioStock', isAuthedResolver, (req, res, next) => {
 studioRouter.post(
 	'/editStudio',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStudio(req, res, next, ['studio.control']),
+	(req, res, next) => hasPermissions(req, res, next, ['studio.control']),
 	(req, res, next) => {
 		const { studioId, data: studioEdited } = req.body;
 

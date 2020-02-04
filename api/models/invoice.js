@@ -7,10 +7,6 @@ import { formatNumber } from 'shared/utils';
 const Schema = mongoose.Schema;
 
 const Invoice = new Schema({
-	createdAt: {
-		type: Date,
-		default: Date.now,
-	},
 	studio: {
 		type: Schema.Types.ObjectId,
 		ref: 'Studio',
@@ -20,6 +16,18 @@ const Invoice = new Schema({
 	member: {
 		type: Schema.Types.ObjectId,
 		ref: 'Member',
+		required: [true, i18n.__('Обязательное поле')],
+	},
+	createdAt: {
+		type: Date,
+		default: Date.now,
+	},
+	fromDate: {
+		type: Date,
+		required: [true, i18n.__('Обязательное поле')],
+	},
+	toDate: {
+		type: Date,
 		required: [true, i18n.__('Обязательное поле')],
 	},
 	status: {
@@ -39,8 +47,19 @@ const Invoice = new Schema({
 				default: 0,
 				set: value => formatNumber(value),
 			},
+			// Участник принявший оплату за счет
+			merchant: {
+				type: Schema.Types.ObjectId,
+				ref: 'Member',
+			},
 		},
 	],
+	paymentAmountDue: {
+		type: Number,
+		min: [0, 'Не может быть меньше 0'],
+		default: 0,
+		set: value => formatNumber(value),
+	},
 	amount: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],

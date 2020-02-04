@@ -54,7 +54,6 @@ DialogPositionRemoveFromGroup.propTypes = {
 	dialogOpen: PropTypes.bool.isRequired,
 	onCloseDialog: PropTypes.func.isRequired,
 	onExitedDialog: PropTypes.func,
-	currentStudioId: PropTypes.string.isRequired,
 	selectedPosition: PropTypes.object,
 };
 

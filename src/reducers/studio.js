@@ -33,7 +33,10 @@ const studio = (
 		case 'EDIT_STUDIO': {
 			let stateData = { ...state }.data;
 
-			stateData = action.payload;
+			stateData = {
+				...stateData,
+				...action.payload,
+			};
 
 			return {
 				...state,

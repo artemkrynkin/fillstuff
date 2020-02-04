@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const getWriteOffs = ({ query, showRequest } = { showRequest: true }) => {
+export const getWriteOffs = ({ query, showRequest = true } = { showRequest: true }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
@@ -74,12 +74,14 @@ export const cancelWriteOff = ({ params }) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
 		const { writeOffId } = params;
+		const data = { cancellationRequestBy: memberId };
 
 		return await axios
-			.get('/api/cancelWriteOff', {
+			.post('/api/cancelWriteOff', {
 				studioId,
 				memberId,
 				params,
+				data,
 			})
 			.then(response => {
 				if (!response.data.code) {

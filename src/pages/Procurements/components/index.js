@@ -13,8 +13,7 @@ const momentDate = moment();
 const dateStart = momentDate.startOf('month').valueOf();
 const dateEnd = momentDate.endOf('month').valueOf();
 
-const Index = props => {
-	const { currentUser, currentStudio, currentMember } = props;
+const Index = () => {
 	const [loadedDocs, setLoadedDocs] = useState(10);
 	const perPage = 10;
 
@@ -36,8 +35,6 @@ const Index = props => {
 			<Grid container direction="row" justify="center" alignItems="flex-start" spacing={2}>
 				<Grid item xs={12}>
 					<Filter
-						currentStudio={currentStudio}
-						currentMember={currentMember}
 						filterParams={filterParams}
 						paging={{
 							loadedDocs,
@@ -46,9 +43,6 @@ const Index = props => {
 						}}
 					/>
 					<Procurements
-						currentUser={currentUser}
-						currentStudioId={currentStudio._id}
-						currentMemberId={currentMember._id}
 						filterParams={filterParams}
 						paging={{
 							loadedDocs,

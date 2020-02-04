@@ -1,4 +1,4 @@
-const products = (
+const writeOffs = (
 	state = {
 		isFetching: false,
 		data: null,
@@ -56,4 +56,4 @@ const products = (
 	}
 };
 
-export default products;
+export default writeOffs;

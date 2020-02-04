@@ -9,7 +9,6 @@ const Member = new Schema({
 	user: {
 		type: Schema.Types.ObjectId,
 		ref: 'User',
-		required: [true, i18n.__('Обязательное поле')],
 	},
 	studio: {
 		type: Schema.Types.ObjectId,
@@ -17,11 +16,12 @@ const Member = new Schema({
 		required: [true, i18n.__('Обязательное поле')],
 		select: false,
 	},
-	role: {
-		type: String,
-		enum: ['owner', 'admin', 'user', 'admin-user'],
-		default: 'user',
-	},
+	roles: [
+		{
+			type: String,
+			enum: ['owner', 'admin', 'artist'],
+		},
+	],
 	confirmed: {
 		type: Boolean,
 		default: false,
@@ -57,7 +57,18 @@ const Member = new Schema({
 	},
 	billingDebt: {
 		type: Number,
+		min: [0, 'Не может быть меньше 0'],
+		default: 0,
 		set: value => formatNumber(value),
+	},
+	billingPeriodWriteOffs: {
+		type: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: 'WriteOff',
+			},
+		],
+		select: false,
 	},
 	__v: {
 		type: Number,

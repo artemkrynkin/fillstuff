@@ -211,7 +211,6 @@ const Position = props => {
 };
 
 Position.propTypes = {
-	currentStudioId: PropTypes.string.isRequired,
 	position: PropTypes.object.isRequired,
 };
 

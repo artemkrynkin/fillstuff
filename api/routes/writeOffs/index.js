@@ -1,8 +1,10 @@
 import { Router } from 'express';
 import moment from 'moment';
 
-import { isAuthedResolver, hasPermissionsInStudio } from 'api/utils/permissions';
+import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
+import mongoose from 'mongoose';
+import Member from 'api/models/member';
 import Studio from 'api/models/studio';
 import Position from 'api/models/position';
 import WriteOff from 'api/models/writeOff';
@@ -15,7 +17,7 @@ const writeOffsRouter = Router();
 writeOffsRouter.post(
 	'/getWriteOffs',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
 			studioId,
@@ -34,6 +36,8 @@ writeOffsRouter.post(
 		}
 
 		if (position && position !== 'all') conditions.position = position;
+
+		if (role && !/all|owners|admins|artists/.test(role)) conditions.member = mongoose.Types.ObjectId(role);
 
 		const writeOffsPromise = WriteOff.paginate(conditions, {
 			sort: { createdAt: -1 },
@@ -68,18 +72,10 @@ writeOffsRouter.post(
 		const writeOffs = await writeOffsPromise;
 		const writeOffsCount = await writeOffCountPromise;
 
-		switch (role) {
-			case 'owners':
-				writeOffs.data = writeOffs.data.filter(procurement => procurement.member.role === 'owner');
-				break;
-			case 'admins':
-				writeOffs.data = writeOffs.data.filter(procurement => procurement.member.role === 'admin');
-				break;
-			default:
-				if (role && role !== 'all') {
-					writeOffs.data = writeOffs.data.filter(procurement => String(procurement.member._id) === role);
-				}
-				break;
+		if (role && /owners|admins|artists/.test(role)) {
+			const roleFilter = role.slice(0, -1);
+
+			writeOffs.data = writeOffs.data.filter(writeOff => writeOff.member.roles.some(role => role.includes(roleFilter)));
 		}
 
 		res.json({
@@ -94,9 +90,9 @@ writeOffsRouter.post(
 writeOffsRouter.post(
 	'/createWriteOff',
 	// isAuthedResolver,
-	// (req, res, next) => hasPermissionsInStudio(req, res, next, ['products.scanning']),
+	// (req, res, next) => hasPermissions(req, res, next, ['products.scanning']),
 	async (req, res, next) => {
-		let {
+		const {
 			studioId,
 			memberId,
 			params: { positionId },
@@ -105,7 +101,7 @@ writeOffsRouter.post(
 
 		const quantity = Number(quantityWriteOff);
 
-		const position = await Position.findById(positionId)
+		const positionPromise = Position.findById(positionId)
 			.populate({ path: 'studio', select: 'stock' })
 			.populate('activeReceipt')
 			.populate({
@@ -113,6 +109,11 @@ writeOffsRouter.post(
 				match: { status: /received|active/ },
 			})
 			.catch(err => next({ code: 2, err }));
+
+		const memberPromise = Member.findById(memberId).catch(err => next({ code: 2, err }));
+
+		const position = await positionPromise;
+		const member = await memberPromise;
 
 		const {
 			studio: {
@@ -137,8 +138,10 @@ writeOffsRouter.post(
 
 		const awaitingPromises = [];
 		const newWriteOffsErr = [];
+		const writeOffsIds = [];
 		let remainingQuantity = quantity;
-		let stockPrice = 0;
+		let totalPurchasePrice = 0;
+		let totalSellingPrice = 0;
 
 		receipts.forEach((receipt, index) => {
 			if (remainingQuantity !== 0) {
@@ -146,30 +149,27 @@ writeOffsRouter.post(
 
 				const newWriteOff = new WriteOff({
 					studio: studioId,
-					member: memberId,
 					position: position._id,
 					receipt: receipt._id,
+					member: memberId,
 					isFree: position.isFree,
 					quantity: currentWriteOffQuantity,
-					totalPurchasePrice: currentWriteOffQuantity * receipt.unitPurchasePrice,
-					totalSalePrice: !position.isFree ? currentWriteOffQuantity * receipt.unitSellingPrice : 0,
-					unitSalePrice: !position.isFree ? receipt.unitSellingPrice : 0,
+					purchasePrice: currentWriteOffQuantity * receipt.unitPurchasePrice,
 					unitPurchasePrice: receipt.unitPurchasePrice,
-					unitSellingPrice: receipt.unitSellingPrice,
+					sellingPrice: !position.isFree ? currentWriteOffQuantity * receipt.unitSellingPrice : 0,
+					unitSellingPrice: !position.isFree ? receipt.unitSellingPrice : 0,
 					unitCostDelivery: receipt.unitCostDelivery,
 					unitExtraCharge: receipt.unitExtraCharge,
 					unitManualExtraCharge: receipt.unitManualExtraCharge,
 				});
-
-				if (!position.isFree) {
-					newWriteOff.paymentStatus = 'unpaid';
-				}
 
 				const newWriteOffErr = newWriteOff.validateSync();
 
 				if (newWriteOffErr) newWriteOffsErr.push(newWriteOffErr);
 
 				awaitingPromises.push(newWriteOff.save());
+
+				if (!position.isFree) writeOffsIds.push(newWriteOff._id);
 
 				const currentReceiptSet = {
 					current: {
@@ -186,7 +186,8 @@ writeOffsRouter.post(
 				}
 
 				remainingQuantity = remainingQuantity > receipt.current.quantity ? Math.abs(receipt.current.quantity - remainingQuantity) : 0;
-				stockPrice += newWriteOff.totalPurchasePrice;
+				totalPurchasePrice += newWriteOff.purchasePrice;
+				if (!position.isFree) totalSellingPrice += newWriteOff.sellingPrice;
 
 				const activeReceiptId =
 					receipts[index + 1] !== undefined && currentReceiptSet.current.quantity === 0 ? receipts[index + 1]._id : receipt._id;
@@ -215,11 +216,24 @@ writeOffsRouter.post(
 
 		await Promise.all([...awaitingPromises]);
 
+		Member.findByIdAndUpdate(
+			memberId,
+			{
+				$set: {
+					billingDebt: member.billingDebt + totalSellingPrice,
+				},
+				$push: {
+					billingPeriodWriteOffs: writeOffsIds,
+				},
+			},
+			{ runValidators: true }
+		).catch(err => next({ code: 2, err }));
+
 		Studio.findByIdAndUpdate(
 			studioId,
 			{
 				$set: {
-					'stock.stockPrice': stockPriceOld - stockPrice,
+					'stock.stockPrice': stockPriceOld - totalPurchasePrice,
 				},
 			},
 			{ runValidators: true }
@@ -241,17 +255,23 @@ writeOffsRouter.post(
 writeOffsRouter.post(
 	'/cancelWriteOff',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
+			memberId,
 			params: { writeOffId },
-			data: { cancellationMember },
+			data: { cancellationRequestBy },
 		} = req.body;
 
-		const writeOff = await WriteOff.findById(writeOffId)
+		const writeOffPromise = WriteOff.findById(writeOffId)
 			.populate({ path: 'studio', select: 'stock' })
 			.populate('position receipt')
 			.catch(err => next({ code: 2, err }));
+
+		const memberPromise = Member.findById(memberId).catch(err => next({ code: 2, err }));
+
+		const writeOff = await writeOffPromise;
+		const member = await memberPromise;
 
 		if (
 			!moment()
@@ -274,9 +294,14 @@ writeOffsRouter.post(
 		} = writeOff;
 
 		awaitingPromises.push(
-			WriteOff.findByIdAndUpdate(writeOff._id, { $set: { canceled: true, canceledDate: Date.now(), cancellationMember } }).catch(err =>
-				next({ code: 2, err })
-			)
+			WriteOff.findByIdAndUpdate(writeOff._id, {
+				$set: {
+					canceled: true,
+					canceledDate: Date.now(),
+					cancellationRequestBy,
+					cancellationConfirmedBy: memberId,
+				},
+			}).catch(err => next({ code: 2, err }))
 		);
 
 		const receiptCurrentSet = {
@@ -310,17 +335,37 @@ writeOffsRouter.post(
 
 		await Promise.all(awaitingPromises);
 
+		Member.findByIdAndUpdate(
+			memberId,
+			{
+				$set: {
+					billingDebt: member.billingDebt - writeOff.sellingPrice,
+				},
+				$pull: {
+					billingPeriodWriteOffs: { _id: writeOff._id },
+				},
+			},
+			{ runValidators: true }
+		).catch(err => next({ code: 2, err }));
+
 		Studio.findByIdAndUpdate(
 			writeOff.studio._id,
 			{
 				$set: {
-					'stock.stockPrice': stockPriceOld + writeOff.quantity * receipt.unitPurchasePrice,
+					'stock.stockPrice': stockPriceOld + writeOff.purchasePrice,
 				},
 			},
 			{ runValidators: true }
 		).catch(err => next({ code: 2, err }));
 
 		const updatedWriteOff = await WriteOff.findById(writeOff._id)
+			.populate({
+				path: 'member',
+				populate: {
+					path: 'user',
+					select: 'avatar name email',
+				},
+			})
 			.populate({
 				path: 'position',
 				populate: {

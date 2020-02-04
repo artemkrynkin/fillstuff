@@ -92,20 +92,29 @@ class Sidebar extends Component {
 						</div>
 
 						<div className={styles.menuItem}>
+							<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to="/invoices">
+								<div className={styles.menuIcon}>
+									<FontAwesomeIcon icon={['fal', 'receipt']} />
+								</div>
+								Счета
+							</NavLink>
+						</div>
+
+						<div className={styles.menuItem}>
+							<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to="/members">
+								<div className={styles.menuIcon}>
+									<FontAwesomeIcon icon={['fal', 'users']} />
+								</div>
+								Команда
+							</NavLink>
+						</div>
+
+						<div className={styles.menuItem}>
 							<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to="/statistics">
 								<div className={styles.menuIcon}>
 									<FontAwesomeIcon icon={['fal', 'analytics']} />
 								</div>
 								Статистика
-							</NavLink>
-						</div>
-
-						<div className={styles.menuItem}>
-							<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to="/team">
-								<div className={styles.menuIcon}>
-									<FontAwesomeIcon icon={['fal', 'users']} />
-								</div>
-								Команда
 							</NavLink>
 						</div>
 

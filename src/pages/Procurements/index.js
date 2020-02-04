@@ -16,7 +16,7 @@ const Index = loadable(() => import('./components/index' /* webpackChunkName: "P
 	fallback: <LoadingComponent />,
 });
 
-const Procurements = props => {
+const Procurements = () => {
 	const metaInfo = {
 		pageName: 'procurements',
 		pageTitle: 'Закупки',
@@ -28,8 +28,6 @@ const Procurements = props => {
 		},
 	});
 
-	const { currentUser, currentStudio, currentMember } = props;
-
 	return (
 		<div className={stylesPage.pageWrap}>
 			<Head title={title} description={description} />
@@ -37,7 +35,7 @@ const Procurements = props => {
 			<Header pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
 			<div className={`${stylesPage.pageContent} ${styles.container}`}>
 				<div className={styles.wrapper}>
-					<Index currentUser={currentUser} currentStudio={currentStudio} currentMember={currentMember} />
+					<Index />
 				</div>
 			</div>
 		</div>

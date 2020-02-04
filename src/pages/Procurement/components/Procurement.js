@@ -31,10 +31,7 @@ class Procurement extends Component {
 	componentDidMount() {
 		this.props.getProcurement().then(response => {
 			if (response.status === 'success') {
-				this.setState({
-					procurementData: response,
-					newComment: response.data.comment,
-				});
+				this.setState({ procurementData: response });
 			} else {
 				history.push({
 					pathname: '/procurements',
@@ -46,103 +43,102 @@ class Procurement extends Component {
 	render() {
 		const { procurementData } = this.state;
 
-		if (!procurementData) return <div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />;
+		if (!procurementData || !procurementData.data) return <div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />;
 
 		const { data: procurement } = procurementData;
 
-		if (procurementData)
-			return (
-				<CardPaper className={styles.container} header={false}>
-					<div className={styles.wrapper}>
-						<Grid className={styles.header} container>
-							<Grid xs={6} item>
-								<div className={styles.title}>
-									{!procurement.noInvoice ? (
-										<div>
-											<span>№</span>
-											{procurement.number} от {moment(procurement.date).format('DD.MM.YYYY')}
-										</div>
-									) : (
-										'Чек/накладная отсутствует'
-									)}
-								</div>
-								<div className={styles.user}>
-									<Avatar
-										className={styles.userPhoto}
-										src={procurement.member.user.avatar}
-										alt={procurement.member.user.name}
-										children={<div className={styles.userIcon} children={<FontAwesomeIcon icon={['fas', 'user-alt']} />} />}
-									/>
-									<Grid alignItems="flex-end" container>
-										<div className={styles.userName}>{procurement.member.user.name}</div>
-									</Grid>
-								</div>
-							</Grid>
-							<Grid xs={6} item>
-								<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
-									<NumberFormat
-										value={procurement.totalPrice}
-										renderText={value => (
-											<div className={styles.totalPrice}>
-												Итого: <span>{value}</span>
-											</div>
-										)}
-										displayType="text"
-										onValueChange={() => {}}
-										{...currencyFormatProps}
-									/>
-									<NumberFormat
-										value={procurement.pricePositions}
-										renderText={value => (
-											<div className={styles.pricePositions}>
-												Стоимость позиций: <span>{value}</span>
-											</div>
-										)}
-										displayType="text"
-										onValueChange={() => {}}
-										{...currencyFormatProps}
-									/>
-									<NumberFormat
-										value={procurement.costDelivery}
-										renderText={value => (
-											<div className={styles.costDelivery}>
-												Стоимость доставки: <span>{value}</span>
-											</div>
-										)}
-										displayType="text"
-										onValueChange={() => {}}
-										{...currencyFormatProps}
-									/>
+		return (
+			<CardPaper className={styles.container} header={false}>
+				<div className={styles.wrapper}>
+					<Grid className={styles.header} container>
+						<Grid xs={6} item>
+							<div className={styles.title}>
+								{!procurement.noInvoice ? (
+									<div>
+										<span>№</span>
+										{procurement.number} от {moment(procurement.date).format('DD.MM.YYYY')}
+									</div>
+								) : (
+									'Чек/накладная отсутствует'
+								)}
+							</div>
+							<div className={styles.user}>
+								<Avatar
+									className={styles.userPhoto}
+									src={procurement.member.user.avatar}
+									alt={procurement.member.user.name}
+									children={<div className={styles.userIcon} children={<FontAwesomeIcon icon={['fas', 'user-alt']} />} />}
+								/>
+								<Grid alignItems="flex-end" container>
+									<div className={styles.userName}>{procurement.member.user.name}</div>
 								</Grid>
+							</div>
+						</Grid>
+						<Grid xs={6} item>
+							<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
+								<NumberFormat
+									value={procurement.totalPrice}
+									renderText={value => (
+										<div className={styles.totalPrice}>
+											Итого: <span>{value}</span>
+										</div>
+									)}
+									displayType="text"
+									onValueChange={() => {}}
+									{...currencyFormatProps}
+								/>
+								<NumberFormat
+									value={procurement.pricePositions}
+									renderText={value => (
+										<div className={styles.pricePositions}>
+											Стоимость позиций: <span>{value}</span>
+										</div>
+									)}
+									displayType="text"
+									onValueChange={() => {}}
+									{...currencyFormatProps}
+								/>
+								<NumberFormat
+									value={procurement.costDelivery}
+									renderText={value => (
+										<div className={styles.costDelivery}>
+											Стоимость доставки: <span>{value}</span>
+										</div>
+									)}
+									displayType="text"
+									onValueChange={() => {}}
+									{...currencyFormatProps}
+								/>
 							</Grid>
 						</Grid>
-						<div className={styles.receipts}>
-							<Table style={{ tableLayout: 'fixed' }}>
-								<TableHead>
-									<TableRow>
-										<TableCell widh={280}>Позиция</TableCell>
-										<TableCell />
-										<TableCell align="right" width={160}>
-											Количество
-										</TableCell>
-										<TableCell align="right" width={140}>
-											Цена покупки
-										</TableCell>
-										<TableCell align="right" width={140}>
-											Цена продажи
-										</TableCell>
-									</TableRow>
-								</TableHead>
-								<TableBody>
-									{procurement.receipts.map((receipt, index) => (
-										<Receipt key={index} receipt={receipt} />
-									))}
-								</TableBody>
-							</Table>
-						</div>
+					</Grid>
+					<div className={styles.receipts}>
+						<Table style={{ tableLayout: 'fixed' }}>
+							<TableHead>
+								<TableRow>
+									<TableCell width={280}>Позиция</TableCell>
+									<TableCell />
+									<TableCell align="right" width={160}>
+										Количество
+									</TableCell>
+									<TableCell align="right" width={140}>
+										Цена покупки
+									</TableCell>
+									<TableCell align="right" width={140}>
+										Цена продажи
+									</TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								{procurement.receipts.map((receipt, index) => (
+									<Receipt key={index} receipt={receipt} />
+								))}
+							</TableBody>
+						</Table>
 					</div>
-				</CardPaper>
-			);
+				</div>
+			</CardPaper>
+		);
 	}
 }
 

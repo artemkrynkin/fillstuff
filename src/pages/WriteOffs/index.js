@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { compose } from 'redux';
 import loadable from '@loadable/component';
 
@@ -16,34 +16,30 @@ const Index = loadable(() => import('./components/index' /* webpackChunkName: "W
 	fallback: <LoadingComponent />,
 });
 
-class WriteOffs extends Component {
-	render() {
-		const metaInfo = {
-			pageName: 'write-offs',
-			pageTitle: 'Списания',
-		};
-		const { title, description } = generateMetaInfo({
-			type: metaInfo.pageName,
-			data: {
-				title: metaInfo.pageTitle,
-			},
-		});
+const WriteOffs = () => {
+	const metaInfo = {
+		pageName: 'write-offs',
+		pageTitle: 'Списания',
+	};
+	const { title, description } = generateMetaInfo({
+		type: metaInfo.pageName,
+		data: {
+			title: metaInfo.pageTitle,
+		},
+	});
 
-		const { currentUser, currentStudio } = this.props;
+	return (
+		<div className={stylesPage.pageWrap}>
+			<Head title={title} description={description} />
 
-		return (
-			<div className={stylesPage.pageWrap}>
-				<Head title={title} description={description} />
-
-				<Header pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
-				<div className={`${stylesPage.pageContent} ${styles.container}`}>
-					<div className={styles.wrapper}>
-						<Index currentUser={currentUser} currentStudio={currentStudio} />
-					</div>
+			<Header pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
+			<div className={`${stylesPage.pageContent} ${styles.container}`}>
+				<div className={styles.wrapper}>
+					<Index />
 				</div>
 			</div>
-		);
-	}
-}
+		</div>
+	);
+};
 
 export default compose(withCurrentUser)(WriteOffs);

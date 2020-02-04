@@ -49,22 +49,15 @@ let WriteOff = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'Member',
 	},
+	// Запрос на отмену подтвержден от
+	cancellationConfirmedBy: {
+		type: Schema.Types.ObjectId,
+		ref: 'Member',
+	},
 	// Если списание бесплатное, то true, иначе false
 	isFree: {
 		type: Boolean,
 		default: false,
-	},
-	// Статус оплаты
-	paymentStatus: {
-		type: String,
-		enum: ['paid', 'unpaid'],
-	},
-	// Дата оплаты
-	paymentDate: Date,
-	// Участник с правами администратора принявший оплату за счет
-	merchant: {
-		type: Schema.Types.ObjectId,
-		ref: 'Member',
 	},
 	// Количество
 	quantity: {
@@ -72,22 +65,8 @@ let WriteOff = new Schema({
 		min: [0, 'Не может быть меньше 0'],
 		required: [true, i18n.__('Обязательное поле')],
 	},
-	// Общая сумма покупки
-	totalPurchasePrice: {
-		type: Number,
-		min: [0, 'Не может быть меньше 0'],
-		default: 0,
-		set: value => formatNumber(value),
-	},
-	// Общая итоговая цена продажи (со всеми накрутками)
-	totalPrice: {
-		type: Number,
-		min: [0, 'Не может быть меньше 0'],
-		default: 0,
-		set: value => formatNumber(value),
-	},
-	// Итоговая цена продажи единицы (со всеми накрутками)
-	unitTotalPrice: {
+	// Общая цена покупки
+	purchasePrice: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,
@@ -100,8 +79,22 @@ let WriteOff = new Schema({
 		default: 0,
 		set: value => formatNumber(value),
 	},
+	// Общая цена продажи
+	sellingPrice: {
+		type: Number,
+		min: [0, 'Не может быть меньше 0'],
+		default: 0,
+		set: value => formatNumber(value),
+	},
 	// Цена продажи единицы
 	unitSellingPrice: {
+		type: Number,
+		min: [0, 'Не может быть меньше 0'],
+		default: 0,
+		set: value => formatNumber(value),
+	},
+	// Стоимость доставки единицы
+	unitCostDelivery: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,

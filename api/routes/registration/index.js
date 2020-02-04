@@ -32,16 +32,20 @@ router.post('/registration', function(req, res, next) {
 				});
 			}
 
-			const newUser = new User({ email, password });
+			const newUser = new User({
+				email,
+				password,
+			});
 			const newStudio = new Studio({
-				name: 'Склад #1',
+				name: 'Студия #1',
 				users: [],
 				members: [],
 			});
 			const newMember = new Member({
-				role: 'owner',
+				roles: ['owner'],
 				confirmed: true,
 				deactivated: false,
+				guest: false,
 			});
 
 			newUser.activeStudio = newStudio._id;

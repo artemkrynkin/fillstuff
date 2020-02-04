@@ -7,14 +7,14 @@ import Indicators from './Indicators';
 import Positions from './Positions';
 
 const Index = props => {
-	const { currentUser, currentStudio } = props;
+	const { currentStudio } = props;
 
 	return (
 		<Container maxWidth="md">
 			<Grid container direction="row" justify="center" alignItems="flex-start" spacing={2}>
 				<Grid item xs={12}>
-					<Indicators currentUser={currentUser} currentStudio={currentStudio} />
-					<Positions currentUser={currentUser} currentStudio={currentStudio} />
+					<Indicators currentStudio={currentStudio} />
+					<Positions currentStudio={currentStudio} />
 				</Grid>
 			</Grid>
 		</Container>

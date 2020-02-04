@@ -28,7 +28,7 @@ const positionGroupActionsButtonClasses = dropdownActions =>
 	});
 
 const PositionGroup = props => {
-	const { currentStudioId, positionGroup, onOpenDialogPositionGroup, onOpenDialogPosition } = props;
+	const { positionGroup, onOpenDialogPositionGroup, onOpenDialogPosition } = props;
 	const refDropdownActions = useRef(null);
 	const [dropdownActions, setDropdownActions] = useState(false);
 
@@ -86,12 +86,7 @@ const PositionGroup = props => {
 							<Table style={{ tableLayout: 'fixed' }}>
 								<TableBody>
 									{positionGroup.positions.sort().map(position => (
-										<Position
-											key={position._id}
-											currentStudioId={currentStudioId}
-											position={position}
-											onOpenDialogPosition={onOpenDialogPosition}
-										/>
+										<Position key={position._id} position={position} onOpenDialogPosition={onOpenDialogPosition} />
 									))}
 								</TableBody>
 							</Table>
@@ -152,7 +147,6 @@ const PositionGroup = props => {
 };
 
 PositionGroup.propTypes = {
-	currentStudioId: PropTypes.string.isRequired,
 	positionGroup: PropTypes.object.isRequired,
 };
 

@@ -11,13 +11,10 @@
 }
 
 .title {
-  color: var(--c-hex-bg-500);
+  color: var(--c-hex-bg-600);
   display: inline-block;
   font-size: 16px;
   font-weight: 600;
-}
-
-.title {
   margin-bottom: 10px;
 }
 

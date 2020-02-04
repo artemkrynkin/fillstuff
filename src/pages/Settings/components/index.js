@@ -12,7 +12,7 @@ const Index = props => {
 	return (
 		<Container maxWidth="md">
 			<Grid direction="row" justify="center" alignItems="flex-start" spacing={2} container>
-				<Grid xs={7} item>
+				<Grid xs={12} item>
 					<GeneralSettings currentUser={currentUser} currentStudio={currentStudio} />
 				</Grid>
 				{/*<Grid xs={5} item>*/}

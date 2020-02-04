@@ -170,6 +170,9 @@ export const BliksideTheme = createMuiTheme({
 			},
 		},
 		MuiPaper: {
+			root: {
+				color: theme.blueGrey.cBg700,
+			},
 			elevation1: {
 				boxShadow: `0 1px 3px 0 rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg600)}, 0.2),
 					0 1px 1px 0 rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg600)}, 0.14),
@@ -506,6 +509,7 @@ export const BliksideTheme = createMuiTheme({
 				},
 				'&$focused:not($error)': {
 					'& $input:not([readonly])': {
+						backgroundColor: '#ffffff',
 						boxShadow: `0 0 0 2px ${theme.teal.cT300} inset`,
 					},
 				},
@@ -644,6 +648,11 @@ export const BliksideTheme = createMuiTheme({
 				},
 			},
 		},
+		MuiBackdrop: {
+			root: {
+				backgroundColor: `rgba(${ColorConvert.hex.rgb(theme.slateGrey.cSg5)}, 0.6)`,
+			},
+		},
 		MuiDialog: {
 			scrollBody: {
 				overflowX: 'auto',
@@ -773,6 +782,44 @@ export const BliksideTheme = createMuiTheme({
 			},
 			dayDisabled: {
 				color: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg600)}, 0.2)`,
+			},
+		},
+		MuiTabs: {
+			root: {
+				minHeight: 44,
+			},
+			indicator: {
+				backgroundColor: theme.teal.cT300,
+				borderRadius: '4px 4px 0px 0',
+				height: 3,
+			},
+		},
+		MuiTab: {
+			root: {
+				fontSize: 14,
+				fontWeight: 600,
+				minHeight: 44,
+				margin: '0 15px',
+				padding: '6px 0',
+				textTransform: 'initial',
+				'@media (min-width: 600px)': {
+					fontSize: 14,
+					minWidth: 'auto',
+				},
+				'&:first-child': {
+					marginLeft: 0,
+				},
+				'&:last-child': {
+					marginRight: 0,
+				},
+			},
+			textColorInherit: {
+				color: theme.blueGrey.cBg500,
+				opacity: null,
+				'&$selected': {
+					color: theme.teal.cT300,
+					opacity: null,
+				},
 			},
 		},
 	},

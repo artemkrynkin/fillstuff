@@ -7,11 +7,11 @@ import { Formik } from 'formik';
 
 import Paper from '@material-ui/core/Paper';
 
-import { memberRoleTransform } from 'shared/roles-access-rights';
 import { sleep } from 'shared/utils';
 
 import { history } from 'src/helpers/history';
 
+import { getMembers } from 'src/actions/members';
 import { getPositions } from 'src/actions/positions';
 import { getWriteOffs } from 'src/actions/writeOffs';
 
@@ -19,11 +19,9 @@ import FormFilter from './FormFilter';
 import filterSchema from './filterSchema';
 
 import styles from './Filter.module.css';
-import { getMembers } from '../../../actions/members';
 
 class Filter extends Component {
 	static propTypes = {
-		currentStudio: PropTypes.object.isRequired,
 		filterParams: PropTypes.object.isRequired,
 		paging: PropTypes.object.isRequired,
 	};
@@ -212,33 +210,12 @@ class Filter extends Component {
 
 const mapStateToProps = state => {
 	const {
-		members: {
-			data: membersData,
-			isFetching: isLoadingMembers,
-			// error: errorPositions
-		},
 		positions: {
 			data: positionsData,
 			isFetching: isLoadingPositions,
 			// error: errorPositions
 		},
 	} = state;
-
-	const members = {
-		data: null,
-		isFetching: isLoadingMembers,
-	};
-
-	if (!isLoadingMembers && membersData) {
-		members.data = membersData
-			.map(member => {
-				return {
-					...member,
-					roleBitMask: memberRoleTransform(member.role, true),
-				};
-			})
-			.sort((memberA, memberB) => (memberA.roleBitMask > memberB.roleBitMask ? -1 : 1));
-	}
 
 	const positions = {
 		data: null,
@@ -250,7 +227,7 @@ const mapStateToProps = state => {
 	}
 
 	return {
-		members: members,
+		members: state.members,
 		positions: positions,
 	};
 };

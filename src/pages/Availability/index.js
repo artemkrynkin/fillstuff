@@ -28,7 +28,7 @@ const Availability = props => {
 		},
 	});
 
-	const { currentUser, currentStudio } = props;
+	const { currentStudio } = props;
 
 	return (
 		<div className={stylesPage.pageWrap}>
@@ -37,7 +37,7 @@ const Availability = props => {
 			<Header pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
 			<div className={`${stylesPage.pageContent} ${styles.container}`}>
 				<div className={styles.wrapper}>
-					<Index currentUser={currentUser} currentStudio={currentStudio} />
+					<Index currentStudio={currentStudio} />
 				</div>
 			</div>
 		</div>

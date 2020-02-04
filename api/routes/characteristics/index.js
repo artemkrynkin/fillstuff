@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { isAuthedResolver, hasPermissionsInStudio } from 'api/utils/permissions';
+import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
 import Characteristic from 'api/models/characteristic';
 
@@ -11,7 +11,7 @@ const characteristicsRouter = Router();
 characteristicsRouter.post(
 	'/getCharacteristics',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	(req, res, next) => {
 		const { studioId } = req.body;
 
@@ -24,7 +24,7 @@ characteristicsRouter.post(
 characteristicsRouter.post(
 	'/createCharacteristics',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	(req, res, next) => {
 		const {
 			data: { characteristic: newCharacteristic },

@@ -16,7 +16,6 @@ class DialogPositionGroupCreateEditAdd extends Component {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
 		onExitedDialog: PropTypes.func,
-		currentStudioId: PropTypes.string.isRequired,
 		selectedPositionGroup: PropTypes.object,
 	};
 

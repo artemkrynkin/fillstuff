@@ -1,4 +1,4 @@
-const positions = (
+const procurements = (
 	state = {
 		isFetching: false,
 		data: null,
@@ -44,4 +44,4 @@ const positions = (
 	}
 };
 
-export default positions;
+export default procurements;

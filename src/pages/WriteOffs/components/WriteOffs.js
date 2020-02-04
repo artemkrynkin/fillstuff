@@ -55,7 +55,6 @@ const MonthDateTitle = ({ date }) => {
 
 class WriteOffs extends Component {
 	static propTypes = {
-		currentStudioId: PropTypes.string.isRequired,
 		filterParams: PropTypes.object.isRequired,
 		paging: PropTypes.object.isRequired,
 	};
@@ -93,13 +92,12 @@ class WriteOffs extends Component {
 
 	render() {
 		const {
-			currentStudioId,
 			filterParams,
 			paging,
 			writeOffs: {
 				data: writeOffsData,
 				isFetching: isLoadingWriteOffs,
-				// error: errorProcurementsDates
+				// error: errorWriteOffs
 			},
 		} = this.props;
 
@@ -111,7 +109,7 @@ class WriteOffs extends Component {
 							<div className={styles.date} key={writeOffsPerMonth.date}>
 								<MonthDateTitle date={writeOffsPerMonth.date} />
 								{writeOffsPerMonth.items.map(writeOffsPerDay => (
-									<WriteOffsPerDay key={writeOffsPerDay.date} currentStudioId={currentStudioId} writeOffsPerDay={writeOffsPerDay} />
+									<WriteOffsPerDay key={writeOffsPerDay.date} filterParams={filterParams} writeOffsPerDay={writeOffsPerDay} />
 								))}
 							</div>
 						))

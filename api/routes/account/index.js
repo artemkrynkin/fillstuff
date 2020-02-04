@@ -36,9 +36,7 @@ accountRouter.post(
 		});
 	},
 	async (req, res, next) => {
-		const {
-			data: { newEmail, oldPassword, newPassword, confirmPassword },
-		} = req.body;
+		const { newEmail, oldPassword, newPassword, confirmPassword } = req.body;
 
 		if (newEmail) {
 			User.findOne({ email: newEmail })
@@ -133,7 +131,7 @@ accountRouter.post(
 				})
 				.catch(err => next(err));
 		} else {
-			let { data: dataEdited } = req.body;
+			const dataEdited = req.body;
 
 			if (req.file) {
 				await sharp(req.file.path)

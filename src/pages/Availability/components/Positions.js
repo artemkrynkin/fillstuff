@@ -149,16 +149,10 @@ class Positions extends Component {
 							positionsInGroups && positionsInGroups.length ? (
 								positionsInGroups.map(positionOrGroup =>
 									!positionOrGroup.positions ? (
-										<Position
-											key={positionOrGroup._id}
-											currentStudioId={currentStudio._id}
-											position={positionOrGroup}
-											onOpenDialogPosition={this.onOpenDialogByName}
-										/>
+										<Position key={positionOrGroup._id} position={positionOrGroup} onOpenDialogPosition={this.onOpenDialogByName} />
 									) : (
 										<PositionGroup
 											key={positionOrGroup._id}
-											currentStudioId={currentStudio._id}
 											positionGroup={positionOrGroup}
 											onOpenDialogPositionGroup={this.onOpenDialogByName}
 											onOpenDialogPosition={this.onOpenDialogByName}
@@ -190,7 +184,6 @@ class Positions extends Component {
 					dialogOpen={dialogPositionGroupEdit}
 					onCloseDialog={() => this.onCloseDialogByName('dialogPositionGroupEdit')}
 					onExitedDialog={this.onPositionGroupDrop}
-					currentStudioId={currentStudio._id}
 					selectedPositionGroup={dialogOpenedName === 'dialogPositionGroupEdit' ? positionGroup : null}
 				/>
 
@@ -199,7 +192,6 @@ class Positions extends Component {
 					dialogOpen={dialogPositionGroupAdd}
 					onCloseDialog={() => this.onCloseDialogByName('dialogPositionGroupAdd')}
 					onExitedDialog={this.onPositionGroupDrop}
-					currentStudioId={currentStudio._id}
 					selectedPositionGroup={dialogOpenedName === 'dialogPositionGroupAdd' ? positionGroup : null}
 				/>
 
@@ -207,7 +199,6 @@ class Positions extends Component {
 					dialogOpen={dialogPositionGroupQRCodeGeneration}
 					onCloseDialog={() => this.onCloseDialogByName('dialogPositionGroupQRCodeGeneration')}
 					onExitedDialog={this.onPositionGroupDrop}
-					currentStudioId={currentStudio._id}
 					type="positionGroup"
 					selectedPositionOrGroup={dialogOpenedName === 'dialogPositionGroupQRCodeGeneration' ? positionGroup : null}
 				/>
@@ -235,7 +226,6 @@ class Positions extends Component {
 					dialogOpen={dialogPositionRemoveFromGroup}
 					onCloseDialog={() => this.onCloseDialogByName('dialogPositionRemoveFromGroup')}
 					onExitedDialog={this.onPositionDrop}
-					currentStudioId={currentStudio._id}
 					selectedPosition={dialogOpenedName === 'dialogPositionRemoveFromGroup' ? position : null}
 				/>
 
@@ -243,7 +233,6 @@ class Positions extends Component {
 					dialogOpen={dialogPositionArchive}
 					onCloseDialog={() => this.onCloseDialogByName('dialogPositionArchive')}
 					onExitedDialog={this.onPositionDrop}
-					currentStudioId={currentStudio._id}
 					selectedPosition={dialogOpenedName === 'dialogPositionArchive' ? position : null}
 				/>
 
@@ -251,7 +240,6 @@ class Positions extends Component {
 					dialogOpen={dialogPositionQRCodeGeneration}
 					onCloseDialog={() => this.onCloseDialogByName('dialogPositionQRCodeGeneration')}
 					onExitedDialog={this.onPositionDrop}
-					currentStudioId={currentStudio._id}
 					type="position"
 					selectedPositionOrGroup={dialogOpenedName === 'dialogPositionQRCodeGeneration' ? position : null}
 				/>
@@ -260,7 +248,6 @@ class Positions extends Component {
 					dialogOpen={dialogPositionAddQuantity}
 					onCloseDialog={() => this.onCloseDialogByName('dialogPositionAddQuantity')}
 					onExitedDialog={this.onPositionDrop}
-					currentStudioId={currentStudio._id}
 					selectedPosition={dialogOpenedName === 'dialogPositionAddQuantity' ? position : null}
 				/>
 
@@ -268,7 +255,6 @@ class Positions extends Component {
 					dialogOpen={dialogWriteOffCreate}
 					onCloseDialog={() => this.onCloseDialogByName('dialogWriteOffCreate')}
 					onExitedDialog={this.onPositionDrop}
-					currentStudioId={currentStudio._id}
 					selectedPosition={dialogOpenedName === 'dialogWriteOffCreate' ? position : null}
 				/>
 			</Paper>
@@ -299,11 +285,9 @@ const mapStateToProps = state => {
 	};
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentStudio } = ownProps;
-
+const mapDispatchToProps = dispatch => {
 	return {
-		getCharacteristics: () => dispatch(getCharacteristics(currentStudio._id)),
+		getCharacteristics: () => dispatch(getCharacteristics()),
 		getPositionsAndGroups: () => dispatch(getPositionsAndGroups()),
 		getPositions: () => dispatch(getPositions()),
 	};

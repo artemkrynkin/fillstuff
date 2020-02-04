@@ -14,6 +14,8 @@ import Collapse from '@material-ui/core/Collapse';
 import Avatar from '@material-ui/core/Avatar';
 import Tooltip from '@material-ui/core/Tooltip';
 
+import { history } from 'src/helpers/history';
+
 import NumberFormat, { currencyFormatProps } from 'src/components/NumberFormat';
 import CardPaper from 'src/components/CardPaper';
 
@@ -21,6 +23,7 @@ import WriteOff from './WriteOff';
 
 import { TableCell } from './styles';
 import styles from './WriteOffsPerDay.module.css';
+import queryString from 'query-string';
 
 const DialogWriteOffCancel = loadable(() => import('src/pages/Dialogs/WriteOffCancel' /* webpackChunkName: "Dialog_WriteOffCancel" */));
 
@@ -35,7 +38,6 @@ const calendarFormat = {
 
 const WriteOffsPerDay = props => {
 	const {
-		currentStudioId,
 		writeOffsPerDay: { date, indicators, items: writeOffs },
 	} = props;
 	const [writeOff, setWriteOff] = useState(null);
@@ -54,6 +56,27 @@ const WriteOffsPerDay = props => {
 
 	const onHandleExpand = event => {
 		if (!event.target.closest(`.${styles.usersPerDayWrapper}`)) setExpanded(!expanded);
+	};
+
+	const onChangeFilterRole = role => {
+		const { filterParams } = props;
+
+		const momentDate = moment();
+
+		const query = { ...filterParams };
+
+		query.role = role;
+
+		Object.keys(query).forEach(key => (query[key] === '' || query[key] === 'all') && delete query[key]);
+
+		if (momentDate.startOf('month').isSame(query.dateStart, 'day') && momentDate.endOf('month').isSame(query.dateEnd, 'day')) {
+			delete query.dateStart;
+			delete query.dateEnd;
+		}
+
+		history.replace({
+			search: queryString.stringify(query),
+		});
 	};
 
 	const isCurrentDay = moment()
@@ -77,6 +100,7 @@ const WriteOffsPerDay = props => {
 													[styles.userSingle]: indicators.members.length === 1,
 												})}
 												style={{ zIndex: indicators.members.length - index }}
+												onClick={() => onChangeFilterRole(member._id)}
 											>
 												<Avatar
 													className={styles.userPhoto}
@@ -177,7 +201,6 @@ const WriteOffsPerDay = props => {
 				dialogOpen={dialogWriteOffCancel}
 				onCloseDialog={() => onHandleDialogWriteOffCancel(false)}
 				onExitedDialog={onWriteOffDrop}
-				currentStudioId={currentStudioId}
 				selectedWriteOff={writeOff}
 			/>
 		</CardPaper>

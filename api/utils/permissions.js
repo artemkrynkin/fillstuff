@@ -8,9 +8,9 @@ export const isAuthedResolver = (req, res, next) => {
 	next();
 };
 
-export const hasPermissionsInStudio = async (req, res, next, accessRightList, skipCheck = false) => {
+export const hasPermissions = async (req, res, next, accessRightList, skipCheck = false) => {
 	if (!skipCheck) {
-		const memberId = req.params.memberId || req.body.memberId || req.query.memberId;
+		const { memberId } = req.body;
 
 		if (!memberId)
 			return next({
@@ -20,7 +20,7 @@ export const hasPermissionsInStudio = async (req, res, next, accessRightList, sk
 
 		await Member.findById(memberId)
 			.then(member => {
-				if (!checkPermissions(member.role, accessRightList)) return next({ code: 4 });
+				if (!checkPermissions(member.roles, accessRightList)) return next({ code: 4 });
 			})
 			.catch(err => next({ code: 2, err }));
 	}

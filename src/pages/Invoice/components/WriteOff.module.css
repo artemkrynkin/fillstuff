@@ -1,0 +1,35 @@
+.archive,
+.writeOffUndo {
+  font-size: 12px;
+  margin-left: 5px;
+}
+
+.archive {
+  color: var(--c-hex-o-15);
+}
+
+.writeOffUndo {
+  color: var(--c-hex-o-1);
+}
+
+.cancelWriteOffButton {
+  color: var(--c-hex-bg-200);
+  padding: 10px;
+}
+
+.cancelWriteOffButton:hover {
+  background-color: rgba(var(--c-rgb-bg-100), 0.2);
+}
+
+.cancelWriteOffButton svg {
+  font-size: 16px;
+}
+
+.cancelWriteOffButton {
+  opacity: 0;
+  transition: color 150ms ease-out, opacity 150ms ease-out;
+}
+
+.writeOff:hover .cancelWriteOffButton {
+  opacity: 1;
+}

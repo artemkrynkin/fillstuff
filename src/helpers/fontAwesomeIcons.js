@@ -68,6 +68,7 @@ import {
 	faAnalytics as falAnalytics,
 	faShoppingBasket as falShoppingBasket,
 	faCog as falCog,
+	faReceipt as falReceipt,
 } from '@fortawesome/pro-light-svg-icons';
 
 library.add(
@@ -139,5 +140,6 @@ library.add(
 	falShoppingBasket,
 	falAnalytics,
 	falUsers,
-	falCog
+	falCog,
+	falReceipt
 );

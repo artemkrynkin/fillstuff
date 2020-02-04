@@ -55,8 +55,6 @@ const generatePaginate = (loadedDocs, data) => {
 
 class Procurements extends Component {
 	static propTypes = {
-		currentUser: PropTypes.object.isRequired,
-		currentStudioId: PropTypes.string.isRequired,
 		filterParams: PropTypes.object.isRequired,
 		paging: PropTypes.object.isRequired,
 	};

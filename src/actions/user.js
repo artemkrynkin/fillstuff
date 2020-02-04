@@ -34,9 +34,7 @@ export const editMyAccount = ({ data }) => {
 		dispatch({ type: 'REQUEST_USER' });
 
 		return await axios
-			.post('/api/editMyAccount', {
-				data,
-			})
+			.post('/api/editMyAccount', data)
 			.then(response => {
 				dispatch({
 					type: 'RECEIVE_USER',

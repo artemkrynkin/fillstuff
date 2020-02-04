@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 import { receiptCalc } from 'shared/checkPositionAndReceipt';
 
-import { isAuthedResolver, hasPermissionsInStudio } from 'api/utils/permissions';
+import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
 import Studio from 'api/models/studio';
 import Position from 'api/models/position';
@@ -16,7 +16,7 @@ const positionsRouter = Router();
 positionsRouter.post(
 	'/getPositions',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const { studioId } = req.body;
 
@@ -48,7 +48,7 @@ positionsRouter.post(
 positionsRouter.post(
 	'/getPositionsAndGroups',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const { studioId } = req.body;
 
@@ -101,7 +101,7 @@ positionsRouter.post(
 positionsRouter.post(
 	'/getPosition',
 	// isAuthedResolver,
-	// (req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
+	// (req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	(req, res, next) => {
 		const {
 			params: { positionId },
@@ -118,7 +118,7 @@ positionsRouter.post(
 positionsRouter.post(
 	'/createPosition',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
 			studioId,
@@ -166,7 +166,7 @@ positionsRouter.post(
 positionsRouter.post(
 	'/editPosition',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
 			params: { positionId },
@@ -203,7 +203,7 @@ positionsRouter.post(
 positionsRouter.post(
 	'/createPositionWithReceipt',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
 			studioId,
@@ -290,7 +290,7 @@ positionsRouter.post(
 positionsRouter.post(
 	'/editPositionWithReceipt',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
 			params: { positionId },
@@ -374,7 +374,7 @@ positionsRouter.post(
 positionsRouter.post(
 	'/positionReceiptAddQuantity',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
 			params: { positionId },
@@ -445,7 +445,7 @@ positionsRouter.post(
 positionsRouter.post(
 	'/removePositionFromGroup',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
 			params: { positionId },
@@ -484,7 +484,7 @@ positionsRouter.post(
 positionsRouter.post(
 	'/archivePosition',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
 			params: { positionId },

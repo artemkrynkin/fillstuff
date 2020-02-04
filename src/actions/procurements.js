@@ -8,7 +8,7 @@ import axios from 'axios';
  * @returns {function(*, *): {status: string} | {status: string}}
  */
 
-export const getProcurements = ({ query, showRequest } = { showRequest: true }) => {
+export const getProcurements = ({ query, showRequest = true } = { showRequest: true }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;

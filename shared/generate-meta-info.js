@@ -62,6 +62,10 @@ function generateMetaInfo(input) {
 		case 'write-offs':
 		case 'procurements':
 		case 'procurement':
+		case 'invoices':
+		case 'invoice':
+		case 'members':
+		case 'member':
 		case 'statistics':
 		case 'settings':
 		case 'notfound':

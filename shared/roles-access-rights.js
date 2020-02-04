@@ -1,23 +1,13 @@
 /**
- * (studio.control) (256) добавление и удаление аккаунтов соцсетей; приглашение участников в команду; изменение ролей и удаление участников команды
- * (studio.full_control) (512) полный контроль доступа к проекту (имеет только владелец)
+ * (studio.control) (256) функции администратора
+ * (studio.full_control) (512) функции владельца
  *
- * (publications.view) (4) просмотр публикаций
- * (publications.control) (128) создание, редактирование и удаление публикаций
- *
- * (events.view) (2) просмотр событий в контент-плане
- * (events.control) (64) создание, редактирование и удаление событий
- *
- * (drafts.view) (1) просмотр черновиков
- * (drafts.commenting) (8) комментирование черновиков
- * (drafts.own_control) (16) создание черновиков; редактирование и удаление только своих черновиков
- * (drafts.control) (32) создание черновиков; редактирование и удаление всех черновиков
- *
- * INFO: перевод черновиков в публикации - возможность появляется при наличии права доступа к созданию публикаций и к редактированию черновиков
  */
-export const accessRightInBitmask = accessRightList => {
-	return accessRightList
-		.map(accessRight => {
+export const accessRightListToBitmask = accessRightList => {
+	if (!accessRightList.length) return 0;
+
+	return accessRightList.reduce((sumBitmasks, accessRight) => {
+		const accessRightToBitmask = () => {
 			switch (accessRight) {
 				case 'studio.control':
 					return 256;
@@ -30,25 +20,40 @@ export const accessRightInBitmask = accessRightList => {
 					return 8;
 
 				default:
-					return console.error(`Право доступа ${accessRight} указано с ошибкой или не существует`);
+					console.error(`Право доступа ${accessRight} указано с ошибкой или не существует`);
+
+					return 0;
 			}
-		})
-		.reduce((sumBitmasks, currentBitmask) => sumBitmasks + currentBitmask);
+		};
+
+		return sumBitmasks + accessRightToBitmask();
+	}, 0);
 };
 
-export const memberRoleTransform = (role, bitmask = false) => {
-	switch (role) {
-		case 'owner':
-			return !bitmask
-				? 'Владелец'
-				: accessRightInBitmask(['studio.control', 'studio.full_control', 'products.control', 'products.scanning']);
-		case 'admin':
-			return !bitmask ? 'Администратор' : accessRightInBitmask(['studio.control', 'products.control', 'products.scanning']);
-		case 'user':
-			return !bitmask ? 'Сотрудник' : accessRightInBitmask(['products.scanning']);
-		default:
-			return console.error(`Роль ${role} указана с ошибкой или не существует`);
-	}
+export const memberRoleTransform = (roles, bitmask = false) => {
+	const accessRights = [];
+	const rolesTransform = [];
+
+	roles.forEach(role => {
+		switch (role) {
+			case 'owner':
+				return bitmask
+					? accessRights.push('studio.full_control', 'studio.control', 'products.control', 'products.scanning')
+					: rolesTransform.push('Владелец');
+			case 'admin':
+				return bitmask
+					? accessRights.push('studio.control', 'products.control', 'products.scanning')
+					: rolesTransform.push('Администратор');
+			case 'artist':
+				return bitmask ? accessRights.push('products.scanning') : rolesTransform.push('Мастер');
+			case '':
+				return;
+			default:
+				return console.error(`Роль ${role} указана с ошибкой или не существует`);
+		}
+	});
+
+	return bitmask ? accessRightListToBitmask(Array.from(new Set(accessRights))) : rolesTransform;
 };
 
-export const checkPermissions = (role, accessRightList) => memberRoleTransform(role, true) & accessRightInBitmask(accessRightList);
+export const checkPermissions = (roles, accessRightList) => memberRoleTransform(roles, true) & accessRightListToBitmask(accessRightList);

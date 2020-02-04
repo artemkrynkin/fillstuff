@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
@@ -27,9 +27,7 @@ const RegistrationSchema = Yup.object().shape({
 });
 
 const Registration = props => {
-	const [rememberRegData, setRememberRegData] = useState(null);
-
-	console.log(rememberRegData);
+	// const [rememberRegData, setRememberRegData] = useState(null);
 
 	const { title: pageTitle, description: pageDescription } = generateMetaInfo({
 		type: 'registration',
@@ -39,8 +37,8 @@ const Registration = props => {
 	});
 
 	const onSubmit = (values, actions) => {
-		setRememberRegData(values);
-		this.props
+		// setRememberRegData(values);
+		props
 			.registration(values, actions)
 			.then(() => {
 				actions.setSubmitting(false);

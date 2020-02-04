@@ -3,8 +3,9 @@ import i18n from 'i18n';
 
 import { receiptCalc } from 'shared/checkPositionAndReceipt';
 
-import { isAuthedResolver, hasPermissionsInStudio } from 'api/utils/permissions';
+import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
+import mongoose from 'mongoose';
 import Studio from 'api/models/studio';
 import Position from 'api/models/position';
 import Receipt from 'api/models/receipt';
@@ -17,7 +18,7 @@ const procurementsRouter = Router();
 procurementsRouter.post(
 	'/getProcurements',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
 			studioId,
@@ -29,12 +30,14 @@ procurementsRouter.post(
 		};
 
 		if (number) conditions.number = { $regex: number, $options: 'i' };
-		if (dateStart && dateEnd) {
+
+		if (dateStart && dateEnd)
 			conditions.createdAt = {
 				$gte: new Date(Number(dateStart)),
 				$lte: new Date(Number(dateEnd)),
 			};
-		}
+
+		if (role && !/all|owners|admins|artists/.test(role)) conditions.member = mongoose.Types.ObjectId(role);
 
 		const procurementsPromise = Procurement.paginate(conditions, {
 			sort: { createdAt: -1 },
@@ -73,18 +76,10 @@ procurementsRouter.post(
 			);
 		}
 
-		switch (role) {
-			case 'owners':
-				procurements.data = procurements.data.filter(procurement => procurement.member.role === 'owner');
-				break;
-			case 'admins':
-				procurements.data = procurements.data.filter(procurement => procurement.member.role === 'admin');
-				break;
-			default:
-				if (role && role !== 'all') {
-					procurements.data = procurements.data.filter(procurement => String(procurement.member._id) === role);
-				}
-				break;
+		if (role && /owners|admins|artists/.test(role)) {
+			const roleFilter = role.slice(0, -1);
+
+			procurements.data = procurements.data.filter(procurement => procurement.member.roles.some(role => role.includes(roleFilter)));
 		}
 
 		res.json({
@@ -99,7 +94,7 @@ procurementsRouter.post(
 procurementsRouter.post(
 	'/getProcurement',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
 			params: { procurementId },
@@ -130,7 +125,7 @@ procurementsRouter.post(
 procurementsRouter.post(
 	'/createProcurement',
 	isAuthedResolver,
-	(req, res, next) => hasPermissionsInStudio(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
 			studioId,
@@ -212,6 +207,13 @@ procurementsRouter.post(
 
 		const procurement = await Procurement.findById(newProcurement._id)
 			.populate({ path: 'studio', select: 'stock' })
+			.populate({
+				path: 'member',
+				populate: {
+					path: 'user',
+					select: 'avatar name email',
+				},
+			})
 			.populate({
 				path: 'receipts',
 				populate: {

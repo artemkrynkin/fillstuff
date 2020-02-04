@@ -56,7 +56,7 @@ const WriteOff = props => {
 				{writeOff.quantity} {writeOff.position.unitIssue === 'pce' ? 'шт.' : 'уп.'}
 			</TableCell>
 			<TableCell align="right" width={125}>
-				{formatNumber(writeOff.totalPurchasePrice, { toString: true })} ₽
+				{formatNumber(writeOff.purchasePrice, { toString: true })} ₽
 			</TableCell>
 			<TableCell align="right" width={150}>
 				{!isCurrentHour ? createdAtMoment.format('HH:mm') : !isNow ? createdAtMoment.fromNow() : 'только что'}

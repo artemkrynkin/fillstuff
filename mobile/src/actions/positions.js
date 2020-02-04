@@ -1,10 +1,12 @@
 import axios from 'axios';
 
-export const getPosition = (stockId, positionId) => {
+export const getPosition = (studioId, positionId) => {
 	return async dispatch => {
 		return await axios
-			.get(`/positions/${positionId}`, {
-				stockId,
+			.post('/getPosition', {
+				params: {
+					positionId,
+				},
 			})
 			.then(response => {
 				const position = response.data;
@@ -20,11 +22,13 @@ export const getPosition = (stockId, positionId) => {
 	};
 };
 
-export const getPositionGroup = (stockId, positionGroupId) => {
+export const getPositionGroup = (studioId, positionGroupId) => {
 	return async dispatch => {
 		return await axios
-			.get(`/position-groups/${positionGroupId}`, {
-				stockId,
+			.post('/getPositionGroup', {
+				params: {
+					positionGroupId,
+				},
 			})
 			.then(response => {
 				const positionGroup = response.data;
@@ -40,14 +44,14 @@ export const getPositionGroup = (stockId, positionGroupId) => {
 	};
 };
 
-export const createWriteOff = (stockId, userId, positionId, quantity) => {
+export const createWriteOff = (studioId, memberId, positionId, quantity) => {
 	return async dispatch => {
 		return await axios
-			.post('/write-offs', {
-				stockId,
-				userId,
-				positionId,
-				quantity,
+			.post('/createWriteOff', {
+				studioId,
+				memberId,
+				params: { positionId },
+				data: { quantity },
 			})
 			.then(response => {
 				return Promise.resolve({ status: 'success', data: response.data });

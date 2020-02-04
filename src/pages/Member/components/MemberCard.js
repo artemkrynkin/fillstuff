@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
+import loadable from '@loadable/component';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Avatar from '@material-ui/core/Avatar';
@@ -14,8 +15,21 @@ import { createInvoice } from 'src/actions/invoices';
 
 import styles from './MemberCard.module.css';
 
+const DialogMemberInvitationOrLogin = loadable(() =>
+	import('src/pages/Dialogs/MemberInvitationOrLogin' /* webpackChunkName: "Dialog_MemberInvitationOrLogin" */)
+);
+
 const MemberCard = props => {
-	const { member, updateMember, getInvoices } = props;
+	const { currentStudio, member, updateMember, getInvoices } = props;
+	const [MemberInvitationOrLogin, setDialogMemberInvitationOrLogin] = useState(false);
+
+	const onOpenDialogMemberInvitationOrLogin = async () => {
+		// await props.getPositions();
+
+		setDialogMemberInvitationOrLogin(true);
+	};
+
+	const onCloseDialogMemberInvitationOrLogin = () => setDialogMemberInvitationOrLogin(false);
 
 	const createInvoice = () => {
 		props.createInvoice().then(response => {
@@ -44,12 +58,22 @@ const MemberCard = props => {
 					</div>
 				</Grid>
 				<Grid style={{ textAlign: 'right' }} xs={6} item>
+					<Button onClick={onOpenDialogMemberInvitationOrLogin} style={{ marginRight: 8 }}>
+						QR для входа
+					</Button>
 					<Button style={{ marginRight: 8 }}>Отвязать участника</Button>
 					<Button onClick={createInvoice} variant="outlined" color="primary">
 						Выставить счет
 					</Button>
 				</Grid>
 			</Grid>
+
+			<DialogMemberInvitationOrLogin
+				dialogOpen={MemberInvitationOrLogin}
+				onCloseDialog={onCloseDialogMemberInvitationOrLogin}
+				currentStudio={currentStudio}
+				selectedMember={member}
+			/>
 		</CardPaper>
 	);
 };

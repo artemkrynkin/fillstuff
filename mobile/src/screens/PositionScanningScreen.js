@@ -77,7 +77,7 @@ class PositionScanningScreen extends Component {
 		try {
 			const qrData = JSON.parse(data);
 
-			const stockId = await AsyncStorage.getItem('stockId');
+			const studioId = await AsyncStorage.getItem('studioId');
 
 			this.setState({ barCodeScanned: 'scanning' }, () => {
 				if (
@@ -90,7 +90,7 @@ class PositionScanningScreen extends Component {
 
 				switch (qrData.type) {
 					case 'positionGroup':
-						return this.props.getPositionGroup(stockId, qrData.id).then(response => {
+						return this.props.getPositionGroup(studioId, qrData.id).then(response => {
 							if (response.status === 'error') return this.onSetInitialRemainingState();
 
 							const positionGroup = response.data;
@@ -109,7 +109,7 @@ class PositionScanningScreen extends Component {
 							);
 						});
 					case 'position':
-						return this.props.getPosition(stockId, qrData.id).then(response => {
+						return this.props.getPosition(studioId, qrData.id).then(response => {
 							if (response.status === 'error') return this.onSetInitialRemainingState();
 
 							const position = response.data;
@@ -197,10 +197,10 @@ class PositionScanningScreen extends Component {
 	onChangeQuantity = value => this.setState({ quantity: value });
 
 	writeOffConfirm = async (positionId, quantity) => {
-		const stockId = await AsyncStorage.getItem('stockId');
-		const userId = await AsyncStorage.getItem('userId');
+		const studioId = await AsyncStorage.getItem('studioId');
+		const memberId = await AsyncStorage.getItem('memberId');
 
-		this.props.createWriteOff(stockId, userId, positionId, quantity).then(async response => {
+		this.props.createWriteOff(studioId, memberId, positionId, quantity).then(async response => {
 			if (response.data.code === 7) {
 				await Haptics.notificationAsync('error');
 
@@ -584,9 +584,9 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = dispatch => {
 	return {
-		getPosition: (stockId, positionId) => dispatch(getPosition(stockId, positionId)),
-		getPositionGroup: (stockId, positionGroupId) => dispatch(getPositionGroup(stockId, positionGroupId)),
-		createWriteOff: (stockId, userId, positionId, quantity) => dispatch(createWriteOff(stockId, userId, positionId, quantity)),
+		getPosition: (studioId, positionId) => dispatch(getPosition(studioId, positionId)),
+		getPositionGroup: (studioId, positionGroupId) => dispatch(getPositionGroup(studioId, positionGroupId)),
+		createWriteOff: (studioId, memberId, positionId, quantity) => dispatch(createWriteOff(studioId, memberId, positionId, quantity)),
 	};
 };
 

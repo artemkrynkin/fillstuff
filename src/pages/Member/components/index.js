@@ -8,7 +8,7 @@ import MemberCard from './MemberCard';
 import MemberDetails from './MemberDetails';
 
 const Index = props => {
-	const { memberData, invoicesData, updateMember, getInvoices } = props;
+	const { currentStudio, memberData, invoicesData, updateMember, getInvoices } = props;
 
 	if (!memberData || !memberData.data) return <div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />;
 
@@ -18,7 +18,7 @@ const Index = props => {
 		<Container maxWidth="md">
 			<Grid container direction="row" justify="center" alignItems="flex-start" spacing={2}>
 				<Grid item xs={12}>
-					<MemberCard member={member} updateMember={updateMember} getInvoices={getInvoices} />
+					<MemberCard currentStudio={currentStudio} member={member} updateMember={updateMember} getInvoices={getInvoices} />
 					<MemberDetails member={member} invoicesData={invoicesData} />
 				</Grid>
 			</Grid>

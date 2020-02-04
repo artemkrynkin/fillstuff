@@ -20,13 +20,12 @@ class LoginScreen extends Component {
 
 			this.setState({ scanned: true });
 
-			if (qrData.type === 'member-invitation') {
+			if (qrData.type === 'invitation-member') {
 				this.props.registrationViaInvitation(qrData.memberId).then(async response => {
 					if (response.status === 'success') {
 						await AsyncStorage.multiSet([
 							['authorized', 'true'],
-							['stockId', String(response.data.stockId)],
-							['userId', String(response.data.userId)],
+							['studioId', String(response.data.studioId)],
 							['role', String(response.data.role)],
 						]);
 
@@ -38,9 +37,9 @@ class LoginScreen extends Component {
 			} else if (qrData.type === 'login') {
 				await AsyncStorage.multiSet([
 					['authorized', 'true'],
-					['stockId', String(qrData.stockId)],
-					['userId', String(qrData.userId)],
-					['role', String(qrData.role)],
+					['studioId', String(qrData.studioId)],
+					['memberId', String(qrData.memberId)],
+					['roles', String(qrData.roles)],
 				]);
 
 				this.props.navigation.navigate('App');
@@ -126,7 +125,4 @@ const mapDispatchToProps = dispatch => {
 	};
 };
 
-export default connect(
-	null,
-	mapDispatchToProps
-)(LoginScreen);
+export default connect(null, mapDispatchToProps)(LoginScreen);

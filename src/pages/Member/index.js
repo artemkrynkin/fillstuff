@@ -57,6 +57,7 @@ class Members extends Component {
 	}
 
 	render() {
+		const { currentStudio } = this.props;
 		const { memberData, invoicesData } = this.state;
 
 		const metaInfo = {
@@ -81,7 +82,13 @@ class Members extends Component {
 				<Header pageName={metaInfo.pageName} pageTitle="Команда" pageParams={pageParams} />
 				<div className={`${stylesPage.pageContent} ${styles.container}`}>
 					<div className={styles.wrapper}>
-						<Index memberData={memberData} invoicesData={invoicesData} updateMember={this.updateMember} getInvoices={this.getInvoices} />
+						<Index
+							currentStudio={currentStudio}
+							memberData={memberData}
+							invoicesData={invoicesData}
+							updateMember={this.updateMember}
+							getInvoices={this.getInvoices}
+						/>
 					</div>
 				</div>
 			</div>

@@ -52,9 +52,9 @@ class MemberInvitationOrLogin extends Component {
 		} else {
 			QRCodeGenerate({
 				type: 'login',
-				member: selectedMember._id,
-				studio: currentStudio._id,
-				user: selectedMember.user._id,
+				userId: selectedMember.user._id,
+				studioId: currentStudio._id,
+				memberId: selectedMember._id,
 				roles: selectedMember.roles,
 			});
 		}

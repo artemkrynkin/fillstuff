@@ -8,10 +8,10 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import MenuItem from '@material-ui/core/MenuItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Typography from '@material-ui/core/Typography';
-import Avatar from '@material-ui/core/Avatar';
+// import Typography from '@material-ui/core/Typography';
+// import Avatar from '@material-ui/core/Avatar';
 
-import { memberRoleTransform } from 'shared/roles-access-rights';
+// import { memberRoleTransform } from 'shared/roles-access-rights';
 
 import Dropdown from 'src/components/Dropdown';
 

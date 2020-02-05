@@ -53,7 +53,9 @@ class Members extends Component {
 									<Grid spacing={2} container>
 										{members.deactivated.map(member => (
 											<Grid key={member._id} xs={4} item>
-												<Member member={member} />
+												<Link to={`/members/${member._id}`}>
+													<Member member={member} />
+												</Link>
 											</Grid>
 										))}
 									</Grid>

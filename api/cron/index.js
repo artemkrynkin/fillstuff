@@ -37,7 +37,7 @@ new CronJob(
 									studio._id,
 									{
 										$set: {
-											'indicators.stockPrice': stockPrice,
+											'stock.stockPrice': stockPrice,
 										},
 									},
 									{ runValidators: true }

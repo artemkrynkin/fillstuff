@@ -137,21 +137,23 @@ positionsRouter.post(
 		await Promise.all([newPosition.save()]);
 
 		const position = await Position.findById(newPosition._id)
-			.populate({ path: 'studio', select: 'numberPositions' })
+			.populate({ path: 'studio', select: 'stock' })
 			.populate({
 				path: 'characteristics',
 			})
 			.catch(err => next({ code: 2, err }));
 
 		const {
-			studio: { numberPositions: numberPositionsOld },
+			studio: {
+				stock: { numberPositions: numberPositionsOld },
+			},
 		} = position;
 
 		Studio.findByIdAndUpdate(
 			position.studio._id,
 			{
 				$set: {
-					numberPositions: numberPositionsOld + 1,
+					'stock.numberPositions': numberPositionsOld + 1,
 				},
 			},
 			{ runValidators: true }

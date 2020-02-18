@@ -39,7 +39,7 @@ const Member = props => {
 		>
 			<div>
 				<div className={styles.debt}>
-					<div className={styles.debtTitle}>Долг</div>
+					<div className={styles.debtTitle}>Задолженность</div>
 					<div className={styles.debtContent}>
 						<NumberFormat
 							value={member.billingDebt}

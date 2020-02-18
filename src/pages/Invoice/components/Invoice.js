@@ -82,8 +82,7 @@ class Invoice extends Component {
 					<Grid className={styles.header} container>
 						<Grid xs={6} item>
 							<div className={styles.title}>
-								Счет за {moment(invoice.fromDate).format('DD.MM.YYYY')} &ndash; {moment(invoice.toDate).format('DD.MM.YYYY')} от{' '}
-								{moment(invoice.createdAt).format('DD.MM.YYYY')}
+								Счет за {moment(invoice.fromDate).format('DD.MM.YYYY')} &ndash; {moment(invoice.toDate).format('DD.MM.YYYY')}
 							</div>
 							<div className={styles.user}>
 								<Avatar
@@ -102,7 +101,7 @@ class Invoice extends Component {
 								<NumberFormat
 									value={invoice.amount}
 									renderText={value => (
-										<div className={styles.totalPrice}>
+										<div className={styles.titleGrey}>
 											Сумма по счету: <span>{value}</span>
 										</div>
 									)}
@@ -114,7 +113,7 @@ class Invoice extends Component {
 									<NumberFormat
 										value={invoice.amount - invoice.paymentAmountDue}
 										renderText={value => (
-											<div className={styles.pricePositions}>
+											<div className={styles.smallText}>
 												Осталось оплатить: <span>{value}</span>
 											</div>
 										)}
@@ -125,23 +124,19 @@ class Invoice extends Component {
 								) : null}
 								{invoice.status !== 'paid' ? (
 									<Button
-										className={styles.acceptPayment}
 										onClick={() => this.onOpenDialogByName('dialogInvoicePaymentCreate', invoice)}
 										variant="outlined"
 										color="primary"
+										size="small"
 									>
-										Принять оплату
+										Погасить счет
 									</Button>
 								) : (
 									<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
-										<div className={styles.invoicePaid}>
-											<FontAwesomeIcon icon={['fal', 'check-circle']} className={styles.invoicePaidIcon} />
-											Счет оплачен
-										</div>
 										<NumberFormat
 											value={invoice.paymentAmountDue}
 											renderText={value => (
-												<div className={styles.pricePositions}>
+												<div className={styles.smallText}>
 													Сумма платежа: <span>{value}</span>
 												</div>
 											)}
@@ -149,6 +144,10 @@ class Invoice extends Component {
 											onValueChange={() => {}}
 											{...currencyFormatProps}
 										/>
+										<div className={styles.invoicePaid}>
+											<FontAwesomeIcon icon={['fal', 'check-circle']} />
+											Счет оплачен
+										</div>
 									</Grid>
 								)}
 							</Grid>
@@ -163,15 +162,15 @@ class Invoice extends Component {
 										Количество
 									</TableCell>
 									<TableCell align="right" width={125}>
-										Сумма
+										Цена продажи
 									</TableCell>
-									<TableCell align="right" width={150}>
-										Дата списания
+									<TableCell align="right" width={125}>
+										Сумма
 									</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableBody>
-								{invoice.writeOffs.map((writeOff, index) => (
+								{invoice.groupedWriteOffs.map((writeOff, index) => (
 									<WriteOff key={index} writeOff={writeOff} />
 								))}
 							</TableBody>

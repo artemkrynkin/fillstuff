@@ -27,34 +27,28 @@ let Studio = new Schema({
 		default: !!~require('shared/timezones').indexOf(momentTz.tz.guess()) ? momentTz.tz.guess() : '',
 	},
 	settings: {
-		type: {
-			procurements: {
-				compensateCostDelivery: Boolean,
-			},
-		},
-		default: {
-			procurements: {
-				compensateCostDelivery: true,
+		procurements: {
+			compensateCostDelivery: {
+				type: Boolean,
+				default: true,
 			},
 		},
 	},
 	stock: {
 		// если есть платные позиции, то true, иначе false
-		type: {
-			store: Boolean,
-			numberPositions: {
-				type: Number,
-				set: value => formatNumber(value, { fractionDigits: 0 }),
-			},
-			stockPrice: {
-				type: Number,
-				set: value => formatNumber(value),
-			},
+		store: {
+			type: Boolean,
+			default: false,
 		},
-		default: {
-			store: false,
-			numberPositions: 0,
-			stockPrice: 0,
+		numberPositions: {
+			type: Number,
+			set: value => formatNumber(value, { fractionDigits: 0 }),
+			default: 0,
+		},
+		stockPrice: {
+			type: Number,
+			set: value => formatNumber(value),
+			default: 0,
 		},
 	},
 	users: {

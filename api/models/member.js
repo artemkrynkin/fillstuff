@@ -61,6 +61,12 @@ const Member = new Schema({
 		default: 0,
 		set: value => formatNumber(value),
 	},
+	billingPeriodDebt: {
+		type: Number,
+		min: [0, 'Не может быть меньше 0'],
+		default: 0,
+		set: value => formatNumber(value),
+	},
 	billingPeriodWriteOffs: {
 		type: [
 			{

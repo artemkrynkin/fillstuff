@@ -1,13 +1,13 @@
 import { Router } from 'express';
+import _ from 'lodash';
 
 import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
+import { formatNumber } from 'shared/utils';
+
+import mongoose from 'mongoose';
 import Member from 'api/models/member';
 import Invoice from 'api/models/Invoice';
-import mongoose from 'mongoose';
-import Position from '../../models/position';
-import Procurement from '../../models/procurement';
-import procurementsRouter from '../procurements';
 
 const invoicesRouter = Router();
 
@@ -39,6 +39,7 @@ invoicesRouter.post(
 
 		const invoicesPromise = Invoice.paginate(conditions, {
 			sort: { createdAt: -1 },
+			lean: true,
 			populate: [
 				{
 					path: 'member',
@@ -67,6 +68,30 @@ invoicesRouter.post(
 
 		const invoices = await invoicesPromise;
 		const invoicesCount = await invoicesCountPromise;
+
+		invoices.data.forEach(invoice => {
+			invoice.groupedWriteOffs = _.chain(invoice.writeOffs)
+				.groupBy(writeOff => {
+					return String(writeOff.position._id) && writeOff.unitSellingPrice;
+				})
+				.map(writeOffs => ({
+					position: writeOffs[0].position,
+					quantity: writeOffs.reduce((sum, writeOff) => sum + writeOff.quantity, 0),
+					unitSellingPrice: writeOffs[0].unitSellingPrice,
+					sellingPrice: formatNumber(writeOffs.reduce((sum, writeOff) => sum + writeOff.sellingPrice, 0)),
+				}))
+				.value();
+
+			const compareByName = (a, b) => {
+				if (a.name > b.name) return 1;
+				else if (a.name < b.name) return -1;
+				else return 0;
+			};
+
+			invoice.groupedWriteOffs.sort(compareByName);
+
+			delete invoice.writeOffs;
+		});
 
 		res.json({
 			data: invoices.data,
@@ -103,7 +128,8 @@ invoicesRouter.post(
 			params: { invoiceId },
 		} = req.body;
 
-		Invoice.findById(invoiceId)
+		const invoice = await Invoice.findById(invoiceId)
+			.lean()
 			.populate({
 				path: 'member',
 				populate: {
@@ -120,8 +146,31 @@ invoicesRouter.post(
 					},
 				},
 			})
-			.then(invoice => res.json(invoice))
 			.catch(err => next({ code: 2, err }));
+
+		invoice.groupedWriteOffs = _.chain(invoice.writeOffs)
+			.groupBy(writeOff => {
+				return String(writeOff.position._id) && writeOff.unitSellingPrice;
+			})
+			.map(writeOffs => ({
+				position: writeOffs[0].position,
+				quantity: writeOffs.reduce((sum, writeOff) => sum + writeOff.quantity, 0),
+				unitSellingPrice: writeOffs[0].unitSellingPrice,
+				sellingPrice: formatNumber(writeOffs.reduce((sum, writeOff) => sum + writeOff.sellingPrice, 0)),
+			}))
+			.value();
+
+		const compareByName = (a, b) => {
+			if (a.name > b.name) return 1;
+			else if (a.name < b.name) return -1;
+			else return 0;
+		};
+
+		invoice.groupedWriteOffs.sort(compareByName);
+
+		delete invoice.writeOffs;
+
+		res.json(invoice);
 	}
 );
 
@@ -137,12 +186,12 @@ invoicesRouter.post(
 
 		const memberPromise = Member.findById(
 			memberId,
-			'billingFrequency lastBillingDate nextBillingDate billingDebt billingPeriodWriteOffs'
+			'billingFrequency lastBillingDate nextBillingDate billingDebt billingPeriodDebt billingPeriodWriteOffs'
 		).catch(err => next({ code: 2, err }));
 
 		const member = await memberPromise;
 
-		if (member.billingDebt === 0) {
+		if (member.billingPeriodDebt === 0) {
 			return res.json({
 				code: 7,
 				message: 'Выставить счёт можно только если есть списанные платные позиции',
@@ -154,7 +203,7 @@ invoicesRouter.post(
 			toDate: new Date(),
 			studio: studioId,
 			member: member._id,
-			amount: member.billingDebt,
+			amount: member.billingPeriodDebt,
 			writeOffs: member.billingPeriodWriteOffs,
 		});
 
@@ -169,11 +218,11 @@ invoicesRouter.post(
 			{
 				$set: {
 					lastBillingDate: newInvoice.toDate,
-					billingDebt: 0,
+					billingPeriodDebt: 0,
 					billingPeriodWriteOffs: [],
 				},
 			},
-			{ new: true, runValidators: true }
+			{ runValidators: true }
 		).catch(err => next({ code: 2, err }));
 
 		Member.findById(member._id)
@@ -195,6 +244,7 @@ invoicesRouter.post(
 		} = req.body;
 
 		const invoice = await Invoice.findById(invoiceId).catch(err => next({ code: 2, err }));
+		const member = await Member.findById(invoice.member).catch(err => next({ code: 2, err }));
 
 		if (invoice.status === 'paid') {
 			return res.json({
@@ -203,8 +253,12 @@ invoicesRouter.post(
 			});
 		}
 
+		const paymentAmountDueOld = invoice.paymentAmountDue;
+
 		invoice.paymentAmountDue += amount;
 		invoice.status = invoice.paymentAmountDue >= invoice.amount ? 'paid' : 'partially-paid';
+
+		const paymentAmount = invoice.status !== 'paid' ? amount : invoice.amount - paymentAmountDueOld;
 
 		invoice.payments.push({
 			amount: amount,
@@ -216,6 +270,18 @@ invoicesRouter.post(
 		if (invoiceErr) return next({ code: invoiceErr.errors ? 5 : 2, err: invoiceErr });
 
 		await Promise.all([invoice.save()]);
+
+		const { billingDebt: billingDebtOld } = member;
+
+		await Member.findByIdAndUpdate(
+			invoice.member,
+			{
+				$set: {
+					billingDebt: billingDebtOld - paymentAmount,
+				},
+			},
+			{ runValidators: true }
+		).catch(err => next({ code: 2, err }));
 
 		Invoice.findById(invoice._id)
 			.populate({

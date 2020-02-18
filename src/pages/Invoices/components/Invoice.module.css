@@ -12,15 +12,11 @@
   padding: 20px 15px 0;
 }
 
-.title,
-.totalPrice {
-  font-size: 16px;
-  font-weight: 600;
-}
-
 .title {
   color: var(--c-hex-t-500);
   display: inline-block;
+  font-size: 16px;
+  font-weight: 600;
   margin-bottom: 10px;
 }
 
@@ -33,31 +29,45 @@
   margin-right: 2px;
 }
 
-.totalPrice,
-.pricePositions,
-.costDelivery {
+.titleGrey {
   color: var(--c-hex-bg-500);
-}
-
-.totalPrice {
+  font-size: 16px;
+  font-weight: 600;
   margin-bottom: 10px;
 }
 
-.pricePositions {
-  margin-bottom: 5px;
-}
-
-.pricePositions,
-.costDelivery {
-  font-size: 12px;
-}
-
-.totalPrice span,
-.pricePositions span,
-.costDelivery span {
+.titleGrey span {
   color: var(--c-hex-bg-700);
   font-weight: 700;
 }
+
+.smallText {
+  color: var(--c-hex-bg-500);
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.smallText span {
+  color: var(--c-hex-bg-700);
+  font-weight: 700;
+}
+
+.invoicePaid {
+  align-items: center;
+  display: flex;
+  color: var(--c-hex-bg-500);
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.invoicePaid svg {
+  color: var(--c-hex-t-300);
+  font-size: 18px;
+  margin: 0 5px 0 0;
+}
+
+.acceptPayment {}
 
 .user {
   align-items: center;
@@ -127,34 +137,4 @@
 .writeOffs {
   border-top: 1px solid var(--c-hex-br-5);
   margin-top: 20px;
-}
-
-.caption {
-  color: var(--c-hex-bg-300);
-  font-size: 11px;
-  font-weight: 600;
-  margin-left: 5px;
-}
-
-.caption.orange {
-  color: var(--c-hex-o-15);
-}
-
-.acceptPayment {
-  margin-top: 5px;
-}
-
-.invoicePaid {
-  align-items: center;
-  display: flex;
-  color: var(--c-hex-bg-500);
-  font-size: 13px;
-  font-weight: 500;
-  margin-bottom: 5px;
-}
-
-.invoicePaidIcon {
-  color: var(--c-hex-t-300);
-  font-size: 18px;
-  margin: 0 5px 0 0;
 }

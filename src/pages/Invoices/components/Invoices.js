@@ -150,7 +150,7 @@ class Invoices extends Component {
 					<LoadMoreButton
 						loaded={paging.loadedDocs}
 						count={invoiceData.data.length}
-						textButton="Показать закупки за"
+						textButton="Показать счета за"
 						showDates={true}
 						dateStart={filterParams.dateStart}
 						dateEnd={filterParams.dateEnd}

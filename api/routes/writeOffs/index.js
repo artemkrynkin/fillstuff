@@ -221,6 +221,7 @@ writeOffsRouter.post(
 			{
 				$set: {
 					billingDebt: member.billingDebt + totalSellingPrice,
+					billingPeriodDebt: member.billingPeriodDebt + totalSellingPrice,
 				},
 				$push: {
 					billingPeriodWriteOffs: writeOffsIds,
@@ -233,7 +234,9 @@ writeOffsRouter.post(
 			studioId,
 			{
 				$set: {
-					'stock.stockPrice': stockPriceOld - totalPurchasePrice,
+					stock: {
+						stockPrice: stockPriceOld - totalPurchasePrice,
+					},
 				},
 			},
 			{ runValidators: true }
@@ -340,6 +343,7 @@ writeOffsRouter.post(
 			{
 				$set: {
 					billingDebt: member.billingDebt - writeOff.sellingPrice,
+					billingPeriodDebt: member.billingPeriodDebt - writeOff.sellingPrice,
 				},
 				$pull: {
 					billingPeriodWriteOffs: { _id: writeOff._id },

@@ -51,8 +51,7 @@ class DialogInvoicePaymentCreate extends Component {
 		return (
 			<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth="md" scroll="body">
 				<DialogTitle onClose={onCloseDialog}>
-					Счет за {moment(selectedInvoice.fromDate).format('DD.MM.YYYY')} &ndash; {moment(selectedInvoice.toDate).format('DD.MM.YYYY')} от{' '}
-					{moment(selectedInvoice.createdAt).format('DD.MM.YYYY')}
+					Счет за {moment(selectedInvoice.fromDate).format('DD.MM.YYYY')} &ndash; {moment(selectedInvoice.toDate).format('DD.MM.YYYY')}
 				</DialogTitle>
 				<Formik
 					initialValues={{ amount: '' }}

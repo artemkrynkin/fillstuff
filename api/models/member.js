@@ -44,6 +44,10 @@ const Member = new Schema({
 		type: Boolean,
 		default: false,
 	},
+	extraCharge: {
+		type: Boolean,
+		default: true,
+	},
 	billingFrequency: {
 		type: Number,
 		enum: [1, 7, 30],

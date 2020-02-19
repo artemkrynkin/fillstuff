@@ -577,36 +577,36 @@ export const BliksideTheme = createMuiTheme({
 				minHeight: 36,
 			},
 		},
-		MuiSwitch: {
-			root: {
-				width: 58,
-			},
-			switchBase: {
-				color: theme.brightness.cBr1,
-				height: 16,
-				width: 44,
-			},
-			bar: {
-				backgroundColor: theme.blueGrey.cBg500,
-				height: 10,
-				marginLeft: -15,
-				marginTop: -4,
-				opacity: 0.26,
-				width: 30,
-			},
-			icon: {
-				boxShadow: '0 0 1px 0 rgba(0, 0, 0, 0.12), 0 1px 1px 0 rgba(0, 0, 0, 0.24)',
-				height: 16,
-				width: 16,
-			},
-			iconChecked: {
-				boxShadow: [
-					`0 2px 5px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.25)`,
-					`0 2px 2px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.14)`,
-					`0 3px 1px -2px rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.12)`,
-				].join(),
-			},
-		},
+		// MuiSwitch: {
+		// 	root: {
+		// 		width: 58,
+		// 	},
+		// 	switchBase: {
+		// 		color: theme.brightness.cBr1,
+		// 		height: 16,
+		// 		width: 44,
+		// 	},
+		// 	bar: {
+		// 		backgroundColor: theme.blueGrey.cBg500,
+		// 		height: 10,
+		// 		marginLeft: -15,
+		// 		marginTop: -4,
+		// 		opacity: 0.26,
+		// 		width: 30,
+		// 	},
+		// 	icon: {
+		// 		boxShadow: '0 0 1px 0 rgba(0, 0, 0, 0.12), 0 1px 1px 0 rgba(0, 0, 0, 0.24)',
+		// 		height: 16,
+		// 		width: 16,
+		// 	},
+		// 	iconChecked: {
+		// 		boxShadow: [
+		// 			`0 2px 5px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.25)`,
+		// 			`0 2px 2px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.14)`,
+		// 			`0 3px 1px -2px rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.12)`,
+		// 		].join(),
+		// 	},
+		// },
 		MuiRadio: {
 			root: {
 				color: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg300)}, 0.5)`,

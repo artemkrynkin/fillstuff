@@ -162,7 +162,7 @@ class Invoice extends Component {
 										Количество
 									</TableCell>
 									<TableCell align="right" width={125}>
-										Цена продажи
+										Цена
 									</TableCell>
 									<TableCell align="right" width={125}>
 										Сумма

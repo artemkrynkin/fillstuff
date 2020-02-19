@@ -82,13 +82,7 @@ invoicesRouter.post(
 				}))
 				.value();
 
-			const compareByName = (a, b) => {
-				if (a.name > b.name) return 1;
-				else if (a.name < b.name) return -1;
-				else return 0;
-			};
-
-			invoice.groupedWriteOffs.sort(compareByName);
+			invoice.groupedWriteOffs.sort((a, b) => a.position.name.localeCompare(b.position.name) || +b.sellingPrice - +a.sellingPrice);
 
 			delete invoice.writeOffs;
 		});
@@ -160,13 +154,7 @@ invoicesRouter.post(
 			}))
 			.value();
 
-		const compareByName = (a, b) => {
-			if (a.name > b.name) return 1;
-			else if (a.name < b.name) return -1;
-			else return 0;
-		};
-
-		invoice.groupedWriteOffs.sort(compareByName);
+		invoice.groupedWriteOffs.sort((a, b) => a.position.name.localeCompare(b.position.name) || +b.sellingPrice - +a.sellingPrice);
 
 		delete invoice.writeOffs;
 

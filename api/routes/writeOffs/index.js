@@ -147,6 +147,10 @@ writeOffsRouter.post(
 			if (remainingQuantity !== 0) {
 				const currentWriteOffQuantity = remainingQuantity > receipt.current.quantity ? receipt.current.quantity : remainingQuantity;
 
+				const unitSellingPrice = member.extraCharge
+					? receipt.unitSellingPrice
+					: receipt.unitSellingPrice - (receipt.unitExtraCharge + receipt.unitManualExtraCharge);
+
 				const newWriteOff = new WriteOff({
 					studio: studioId,
 					position: position._id,
@@ -156,11 +160,11 @@ writeOffsRouter.post(
 					quantity: currentWriteOffQuantity,
 					purchasePrice: currentWriteOffQuantity * receipt.unitPurchasePrice,
 					unitPurchasePrice: receipt.unitPurchasePrice,
-					sellingPrice: !position.isFree ? currentWriteOffQuantity * receipt.unitSellingPrice : 0,
-					unitSellingPrice: !position.isFree ? receipt.unitSellingPrice : 0,
+					sellingPrice: !position.isFree ? currentWriteOffQuantity * unitSellingPrice : 0,
+					unitSellingPrice: !position.isFree ? unitSellingPrice : 0,
 					unitCostDelivery: receipt.unitCostDelivery,
-					unitExtraCharge: receipt.unitExtraCharge,
-					unitManualExtraCharge: receipt.unitManualExtraCharge,
+					unitExtraCharge: member.extraCharge ? receipt.unitExtraCharge : 0,
+					unitManualExtraCharge: member.extraCharge ? receipt.unitManualExtraCharge : 0,
 				});
 
 				const newWriteOffErr = newWriteOff.validateSync();

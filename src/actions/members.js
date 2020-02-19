@@ -87,8 +87,6 @@ export const editMember = ({ params, data }) => {
 		const memberId = getState().member.data._id;
 		const { memberId: memberIdEdited } = params;
 
-		dispatch({ type: 'REQUEST_MEMBERS' });
-
 		return await axios
 			.post('/api/editMember', {
 				studioId,

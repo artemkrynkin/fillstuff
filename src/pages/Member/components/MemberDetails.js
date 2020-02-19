@@ -6,6 +6,7 @@ import Tabs from '@material-ui/core/Tabs';
 import CardPaper from 'src/components/CardPaper';
 
 import Invoices from './Invoices';
+import Settings from './Settings';
 
 import styles from './MemberDetails.module.css';
 
@@ -30,7 +31,7 @@ const MemberDetails = props => {
 			{tabName === 'invoices' ? (
 				<Invoices member={member} invoicesData={invoicesData} />
 			) : tabName === 'settings' ? (
-				<div>Настройки</div>
+				<Settings member={member} />
 			) : null}
 		</CardPaper>
 	);

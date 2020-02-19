@@ -133,25 +133,11 @@ membersRouter.post(
 			data: { member: memberEdited },
 		} = req.body;
 
-		const member = await Member.findById(memberId).catch(err => next({ code: 2, err }));
-
-		member.roles = memberEdited.roles;
-		member.deactivated = memberEdited.deactivated;
-		member.guest = memberEdited.guest;
-		member.accessExpires = memberEdited.accessExpires;
-		member.purchaseExpenseStudio = memberEdited.purchaseExpenseStudio;
-		member.billingFrequency = memberEdited.billingFrequency;
-		member.nextBillingDate = memberEdited.nextBillingDate;
-
-		const memberErr = member.validateSync();
-
-		if (memberErr) return next({ code: memberErr.errors ? 5 : 2, err: memberErr });
-
-		await member.save();
-
-		Member.populate(member, { path: 'user', select: 'avatar name email' })
-			.then(member => res.json(member))
+		const member = await Member.findByIdAndUpdate(memberId, { $set: memberEdited }, { new: true, runValidators: true })
+			.populate('user', 'avatar name email')
 			.catch(err => next({ code: 2, err }));
+
+		res.json(member);
 	}
 );
 

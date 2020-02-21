@@ -623,10 +623,6 @@ export const BliksideTheme = createMuiTheme({
 				'& svg': {
 					width: '18px !important',
 				},
-				'& + span': {
-					alignSelf: 'flex-start',
-					paddingTop: 9,
-				},
 			},
 			colorPrimary: {
 				'&$disabled': {

@@ -17,7 +17,6 @@ import Button from '@material-ui/core/Button';
 
 import { formatNumber } from 'shared/utils';
 
-import NumberFormat, { currencyFormatProps } from 'src/components/NumberFormat';
 import Money from 'src/components/Money';
 
 import { createInvoice } from 'src/actions/invoices';

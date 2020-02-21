@@ -93,7 +93,7 @@ const ProcurementFallback = signedOutFallback(
 			<Procurement match={props.match} />
 		</PageFallback>
 	),
-	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/procurements/${match.props.procurementId}`} />} />
+	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/procurements/${match.params.procurementId}`} />} />
 );
 
 const InvoicesFallback = signedOutFallback(
@@ -111,7 +111,7 @@ const InvoiceFallback = signedOutFallback(
 			<Invoice match={props.match} />
 		</PageFallback>
 	),
-	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/invoices/${match.props.invoiceId}`} />} />
+	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/invoices/${match.params.invoiceId}`} />} />
 );
 
 const MembersFallback = signedOutFallback(
@@ -129,7 +129,7 @@ const MemberFallback = signedOutFallback(
 			<Member match={props.match} />
 		</PageFallback>
 	),
-	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/member/${match.props.memberId}`} />} />
+	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/member/${match.params.memberId}`} />} />
 );
 
 const StatisticsFallback = signedOutFallback(

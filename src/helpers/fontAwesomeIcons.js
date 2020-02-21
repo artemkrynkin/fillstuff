@@ -71,6 +71,8 @@ import {
 	faReceipt as falReceipt,
 } from '@fortawesome/pro-light-svg-icons';
 
+import { faExclamationCircle as fadExclamationCircle } from '@fortawesome/pro-duotone-svg-icons';
+
 library.add(
 	// Brands
 	faVk,
@@ -141,5 +143,8 @@ library.add(
 	falAnalytics,
 	falUsers,
 	falCog,
-	falReceipt
+	falReceipt,
+
+	// Duotone
+	fadExclamationCircle
 );

@@ -16,7 +16,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import { history } from 'src/helpers/history';
 
-import NumberFormat, { currencyFormatProps } from 'src/components/NumberFormat';
 import CardPaper from 'src/components/CardPaper';
 import Money from 'src/components/Money';
 

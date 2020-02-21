@@ -1,7 +1,8 @@
 import React, { useRef, useState } from 'react';
-import { Form, Field, FastField, FieldArray } from 'formik';
+import { Form, Field, FastField, FieldArray, ErrorMessage } from 'formik';
 import moment from 'moment';
 import MomentUtils from '@date-io/moment';
+import ClassNames from 'classnames';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -25,6 +26,7 @@ import FormFieldArrayReceipts from './FormFieldArrayReceipts';
 
 import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 const FormProcurementCreate = props => {
 	const {
@@ -51,24 +53,52 @@ const FormProcurementCreate = props => {
 	return (
 		<Form>
 			<DialogContent style={{ overflow: 'initial' }}>
-				{!formEditable ? (
-					<div className={styles.correctData}>
-						<Typography variant="h6" align="center">
-							Введенные данные верны!
-						</Typography>
-						{sellingPositionCount ? (
-							<Typography variant="body1" align="center">
+				{!formEditable && sellingPositionCount ? (
+					<div
+						className={ClassNames({
+							[styles.headerInfo]: true,
+							[styles.headerInfoBlueGrey]: true,
+						})}
+					>
+						<Grid justify="center" alignItems="center" container>
+							<FontAwesomeIcon
+								className={styles.headerInfoIcon}
+								icon={['fad', 'exclamation-circle']}
+								style={{ '--fa-primary-opacity': 0.9, '--fa-secondary-opacity': 0.2 }}
+							/>
+							<Typography className={styles.headerInfoText} variant="body1">
 								Для {declensionNumber(sellingPositionCount, ['позиции', 'позиций', 'позиций'], true)} цена продажи сформирована
 								автоматически.
 								<br />
 								При необходимости отредактируйте цену продажи в ручную.
 							</Typography>
-						) : null}
+						</Grid>
 					</div>
 				) : null}
-				<Grid style={{ marginBottom: 2 }} spacing={2} container>
+				<ErrorMessage name="pricePositions">
+					{message => (
+						<div
+							className={ClassNames({
+								[styles.headerInfo]: true,
+								[styles.headerInfoRed]: true,
+							})}
+						>
+							<Grid justify="center" alignItems="center" container>
+								<FontAwesomeIcon
+									className={styles.headerInfoIcon}
+									icon={['fad', 'exclamation-circle']}
+									style={{ '--fa-primary-opacity': 0.9, '--fa-secondary-opacity': 0.2 }}
+								/>
+								<Typography className={styles.headerInfoText} variant="body1">
+									{message}
+								</Typography>
+							</Grid>
+						</div>
+					)}
+				</ErrorMessage>
+				<Grid style={{ marginBottom: 12 }} spacing={2} container>
 					<Grid xs={4} item>
-						<FastField
+						<Field
 							name="number"
 							placeholder={values.noInvoice ? '-' : ''}
 							label="Номер чека/накладной"
@@ -175,31 +205,27 @@ const FormProcurementCreate = props => {
 							fullWidth
 						/>
 						{formEditable ? (
-							<Field
-								type="checkbox"
-								name="compensateCostDelivery"
-								Label={{
-									label: (
-										<div>
-											Компенсировать
-											<Tooltip
-												title={
-													<div style={{ maxWidth: 200 }}>
-														При наличии в закупке позиций для продажи, стоимость доставки будет включена в цену продажи этих позиций
-													</div>
-												}
-												placement="bottom-end"
-											>
-												<div className={styles.circleHelp}>
-													<FontAwesomeIcon icon={['fal', 'question-circle']} fixedWidth />
-												</div>
-											</Tooltip>
+							<Grid alignItems="center" container>
+								<Field
+									type="checkbox"
+									name="compensateCostDelivery"
+									Label={{ label: 'Компенсировать' }}
+									as={CheckboxWithLabel}
+									disabled={isSubmitting || !formEditable}
+								/>
+								<Tooltip
+									title={
+										<div style={{ maxWidth: 200 }}>
+											При наличии в закупке позиций для продажи, стоимость доставки будет включена в цену продажи этих позиций
 										</div>
-									),
-								}}
-								as={CheckboxWithLabel}
-								disabled={isSubmitting || !formEditable}
-							/>
+									}
+									placement="bottom-end"
+								>
+									<div className={styles.circleHelp}>
+										<FontAwesomeIcon icon={['fal', 'question-circle']} fixedWidth />
+									</div>
+								</Tooltip>
+							</Grid>
 						) : null}
 					</Grid>
 				</Grid>

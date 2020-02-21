@@ -112,13 +112,6 @@ const FormFieldArrayReceipts = props => {
 							</Button>
 						</Grid>
 					</Grid>
-					<ErrorMessage name="pricePositions">
-						{message => (
-							<Grid style={{ padding: '5px 0 10px' }} container>
-								<FormHelperText error>{message}</FormHelperText>
-							</Grid>
-						)}
-					</ErrorMessage>
 				</div>
 			</div>
 

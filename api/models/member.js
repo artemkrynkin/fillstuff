@@ -30,12 +30,12 @@ const Member = new Schema({
 		type: Boolean,
 		default: true,
 	},
+  invitationDate: {
+    type: Date,
+    default: Date.now,
+  },
 	guest: {
 		type: Boolean,
-	},
-	invitationDate: {
-		type: Date,
-		default: Date.now,
 	},
 	accessExpires: {
 		type: Date,

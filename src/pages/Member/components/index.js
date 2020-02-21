@@ -15,11 +15,11 @@ const Index = props => {
 	const { data: member } = memberData;
 
 	return (
-		<Container maxWidth="md">
+		<Container maxWidth="lg">
 			<Grid container direction="row" justify="center" alignItems="flex-start" spacing={2}>
 				<Grid item xs={12}>
-					<MemberCard currentStudio={currentStudio} member={member} updateMember={updateMember} getInvoices={getInvoices} />
-					<MemberDetails member={member} invoicesData={invoicesData} />
+					<MemberCard currentStudio={currentStudio} member={member} />
+					<MemberDetails member={member} invoicesData={invoicesData} updateMember={updateMember} getInvoices={getInvoices} />
 				</Grid>
 			</Grid>
 		</Container>

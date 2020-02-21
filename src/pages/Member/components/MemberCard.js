@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
 import loadable from '@loadable/component';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,8 +10,6 @@ import { memberRoleTransform } from 'shared/roles-access-rights';
 
 import CardPaper from 'src/components/CardPaper';
 
-import { createInvoice } from 'src/actions/invoices';
-
 import styles from './MemberCard.module.css';
 
 const DialogMemberInvitationOrLogin = loadable(() =>
@@ -20,7 +17,7 @@ const DialogMemberInvitationOrLogin = loadable(() =>
 );
 
 const MemberCard = props => {
-	const { currentStudio, member, updateMember, getInvoices } = props;
+	const { currentStudio, member } = props;
 	const [MemberInvitationOrLogin, setDialogMemberInvitationOrLogin] = useState(false);
 
 	const onOpenDialogMemberInvitationOrLogin = async () => {
@@ -30,15 +27,6 @@ const MemberCard = props => {
 	};
 
 	const onCloseDialogMemberInvitationOrLogin = () => setDialogMemberInvitationOrLogin(false);
-
-	const createInvoice = () => {
-		props.createInvoice().then(response => {
-			if (response.status === 'success') {
-				updateMember(response);
-				getInvoices();
-			}
-		});
-	};
 
 	return (
 		<CardPaper header={false}>
@@ -61,10 +49,7 @@ const MemberCard = props => {
 					<Button onClick={onOpenDialogMemberInvitationOrLogin} style={{ marginRight: 8 }}>
 						QR для входа
 					</Button>
-					<Button style={{ marginRight: 8 }}>Отвязать участника</Button>
-					<Button onClick={createInvoice} variant="outlined" color="primary">
-						Выставить счет
-					</Button>
+					<Button className={styles.deactivatedButton} variant="text">Отключить участника</Button>
 				</Grid>
 			</Grid>
 
@@ -78,12 +63,4 @@ const MemberCard = props => {
 	);
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-	const { member } = ownProps;
-
-	return {
-		createInvoice: () => dispatch(createInvoice({ params: { memberId: member._id } })),
-	};
-};
-
-export default connect(null, mapDispatchToProps)(MemberCard);
+export default MemberCard;

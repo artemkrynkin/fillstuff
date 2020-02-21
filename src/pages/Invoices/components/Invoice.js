@@ -14,8 +14,8 @@ import Collapse from '@material-ui/core/Collapse';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 
-import NumberFormat, { currencyFormatProps } from 'src/components/NumberFormat';
 import CardPaper from 'src/components/CardPaper';
+import Money from "src/components/Money";
 
 import WriteOff from './WriteOff';
 
@@ -61,29 +61,13 @@ const Invoice = props => {
 						</Grid>
 						<Grid xs={6} item>
 							<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
-								<NumberFormat
-									value={invoice.amount}
-									renderText={value => (
-										<div className={styles.titleGrey}>
-											Сумма по счету: <span>{value}</span>
-										</div>
-									)}
-									displayType="text"
-									onValueChange={() => {}}
-									{...currencyFormatProps}
-								/>
+                <div className={styles.titleGrey}>
+                  Сумма по счету: <Money value={invoice.amount} />
+                </div>
 								{invoice.status === 'partially-paid' ? (
-									<NumberFormat
-										value={invoice.amount - invoice.paymentAmountDue}
-										renderText={value => (
-											<div className={styles.smallText}>
-												Осталось оплатить: <span>{value}</span>
-											</div>
-										)}
-										displayType="text"
-										onValueChange={() => {}}
-										{...currencyFormatProps}
-									/>
+                  <div className={styles.smallText}>
+                    Осталось оплатить: <Money value={invoice.amount - invoice.paymentAmountDue} />
+                  </div>
 								) : null}
 								{invoice.status !== 'paid' ? (
 									<Button
@@ -97,17 +81,9 @@ const Invoice = props => {
 									</Button>
 								) : (
 									<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
-										<NumberFormat
-											value={invoice.paymentAmountDue}
-											renderText={value => (
-												<div className={styles.smallText}>
-													Сумма платежа: <span>{value}</span>
-												</div>
-											)}
-											displayType="text"
-											onValueChange={() => {}}
-											{...currencyFormatProps}
-										/>
+                    <div className={styles.smallText}>
+                      Сумма платежа: <Money value={invoice.paymentAmountDue} />
+                    </div>
 										<div className={styles.invoicePaid}>
 											<FontAwesomeIcon icon={['fal', 'check-circle']} />
 											Счет оплачен

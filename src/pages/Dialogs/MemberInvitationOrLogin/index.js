@@ -47,6 +47,7 @@ class MemberInvitationOrLogin extends Component {
 					type: 'invitation-member',
 					studioId: member.studio,
 					memberId: member._id,
+          roles: member.roles
 				});
 			});
 		} else {

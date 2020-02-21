@@ -13,8 +13,8 @@ import TableRow from '@material-ui/core/TableRow';
 import Collapse from '@material-ui/core/Collapse';
 import Avatar from '@material-ui/core/Avatar';
 
-import NumberFormat, { currencyFormatProps } from 'src/components/NumberFormat';
 import CardPaper from 'src/components/CardPaper';
+import Money from "src/components/Money";
 
 import Receipt from './Receipt';
 
@@ -59,39 +59,15 @@ const Procurement = props => {
 						</Grid>
 						<Grid xs={6} item>
 							<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
-								<NumberFormat
-									value={procurement.totalPrice}
-									renderText={value => (
-										<div className={styles.totalPrice}>
-											Итого: <span>{value}</span>
-										</div>
-									)}
-									displayType="text"
-									onValueChange={() => {}}
-									{...currencyFormatProps}
-								/>
-								<NumberFormat
-									value={procurement.pricePositions}
-									renderText={value => (
-										<div className={styles.pricePositions}>
-											Стоимость позиций: <span>{value}</span>
-										</div>
-									)}
-									displayType="text"
-									onValueChange={() => {}}
-									{...currencyFormatProps}
-								/>
-								<NumberFormat
-									value={procurement.costDelivery}
-									renderText={value => (
-										<div className={styles.costDelivery}>
-											Стоимость доставки: <span>{value}</span>
-										</div>
-									)}
-									displayType="text"
-									onValueChange={() => {}}
-									{...currencyFormatProps}
-								/>
+                <div className={styles.totalPrice}>
+                  Итого: <Money value={procurement.totalPrice} />
+                </div>
+                <div className={styles.pricePositions}>
+                  Стоимость позиций: <Money value={procurement.pricePositions} />
+                </div>
+                <div className={styles.costDelivery}>
+                  Стоимость доставки: <Money value={procurement.costDelivery} />
+                </div>
 							</Grid>
 						</Grid>
 					</Grid>

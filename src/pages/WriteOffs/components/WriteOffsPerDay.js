@@ -18,6 +18,7 @@ import { history } from 'src/helpers/history';
 
 import NumberFormat, { currencyFormatProps } from 'src/components/NumberFormat';
 import CardPaper from 'src/components/CardPaper';
+import Money from "src/components/Money";
 
 import WriteOff from './WriteOff';
 
@@ -116,39 +117,15 @@ const WriteOffsPerDay = props => {
 						</Grid>
 						<Grid xs={6} item>
 							<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
-								<NumberFormat
-									value={indicators.total}
-									renderText={value => (
-										<div className={styles.total}>
-											Итого: <span>{value}</span>
-										</div>
-									)}
-									displayType="text"
-									onValueChange={() => {}}
-									{...currencyFormatProps}
-								/>
-								<NumberFormat
-									value={indicators.sellingPositions}
-									renderText={value => (
-										<div className={styles.sellingPositions}>
-											Позиции для продажи: <span>{value}</span>
-										</div>
-									)}
-									displayType="text"
-									onValueChange={() => {}}
-									{...currencyFormatProps}
-								/>
-								<NumberFormat
-									value={indicators.freePositions}
-									renderText={value => (
-										<div className={styles.freePositions}>
-											Бесплатные позиции: <span>{value}</span>
-										</div>
-									)}
-									displayType="text"
-									onValueChange={() => {}}
-									{...currencyFormatProps}
-								/>
+                <div className={styles.total}>
+                  Итого: <Money value={indicators.total} />
+                </div>
+                <div className={styles.sellingPositions}>
+                  Позиции для продажи: <Money value={indicators.sellingPositions} />
+                </div>
+                <div className={styles.freePositions}>
+                  Бесплатные позиции: <Money value={indicators.freePositions} />
+                </div>
 							</Grid>
 						</Grid>
 					</Grid>

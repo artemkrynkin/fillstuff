@@ -27,7 +27,14 @@ NumberFormat.propTypes = {
 	onChange: PropTypes.func,
 };
 
+export const moneyFormatProps = {
+  decimalSeparator: ',',
+	thousandSeparator: ' ',
+	decimalScale: 2,
+};
+
 export const currencyFormatProps = {
+  decimalSeparator: ',',
 	thousandSeparator: ' ',
 	decimalScale: 2,
 	allowNegative: false,

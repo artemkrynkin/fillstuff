@@ -2,14 +2,15 @@
   color: var(--c-hex-bg-600);
   font-size: 16px;
   font-weight: 600;
+  margin-bottom: 20px;
 }
 
 .debt {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .debtTitle {
-  color: var(--c-hex-bg-500);
+  color: var(--c-hex-bg-300);
   font-size: 13px;
   font-weight: 600;
 }
@@ -44,7 +45,7 @@
 }
 
 .invoices {
-  margin-top: 10px;
+  margin-top: -12px;
 }
 
 .circle {

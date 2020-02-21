@@ -11,7 +11,7 @@ import Settings from './Settings';
 import styles from './MemberDetails.module.css';
 
 const MemberDetails = props => {
-	const { member, invoicesData } = props;
+	const { member, invoicesData, updateMember, getInvoices } = props;
 	const [tabName, setTabName] = useState('invoices');
 
 	const onChangeTab = (event, tabName) => {
@@ -29,9 +29,9 @@ const MemberDetails = props => {
 			style={{ marginTop: 16 }}
 		>
 			{tabName === 'invoices' ? (
-				<Invoices member={member} invoicesData={invoicesData} />
+				<Invoices member={member} invoicesData={invoicesData} updateMember={updateMember} getInvoices={getInvoices} />
 			) : tabName === 'settings' ? (
-				<Settings member={member} />
+				<Settings member={member} updateMember={updateMember} />
 			) : null}
 		</CardPaper>
 	);

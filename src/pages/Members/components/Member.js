@@ -7,8 +7,8 @@ import Grid from '@material-ui/core/Grid';
 
 import { memberRoleTransform } from 'shared/roles-access-rights';
 
-import NumberFormat, { currencyFormatProps } from 'src/components/NumberFormat';
 import CardPaper from 'src/components/CardPaper';
+import Money from 'src/components/Money';
 
 import styles from './Member.module.css';
 
@@ -41,13 +41,7 @@ const Member = props => {
 				<div className={styles.debt}>
 					<div className={styles.debtTitle}>Задолженность</div>
 					<div className={styles.debtContent}>
-						<NumberFormat
-							value={member.billingDebt}
-							renderText={value => value}
-							displayType="text"
-							onValueChange={() => {}}
-							{...currencyFormatProps}
-						/>
+            <Money value={member.billingDebt} />
 					</div>
 				</div>
 				{member.guest ? (

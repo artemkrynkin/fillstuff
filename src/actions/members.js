@@ -85,7 +85,6 @@ export const editMember = ({ params, data }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
-		const { memberId: memberIdEdited } = params;
 
 		return await axios
 			.post('/api/editMember', {
@@ -97,15 +96,7 @@ export const editMember = ({ params, data }) => {
 			.then(response => {
 				const { data: member } = response;
 
-				dispatch({
-					type: 'EDIT_MEMBER',
-					payload: {
-						memberIdEdited,
-						member,
-					},
-				});
-
-				return Promise.resolve({ status: 'success' });
+				return Promise.resolve({ status: 'success', data: member });
 			})
 			.catch(error => {
 				if (error.response) {

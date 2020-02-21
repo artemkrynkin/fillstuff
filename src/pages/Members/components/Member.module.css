@@ -51,7 +51,7 @@
 /*}*/
 
 .debtTitle {
-  color: var(--c-hex-bg-500);
+  color: var(--c-hex-bg-400);
   font-size: 13px;
   font-weight: 600;
 }

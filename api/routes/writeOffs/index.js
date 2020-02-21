@@ -96,7 +96,7 @@ writeOffsRouter.post(
 			studioId,
 			memberId,
 			params: { positionId },
-			data: { quantity: quantityWriteOff },
+			data: { quantity: quantityWriteOff, purchaseExpenseStudio },
 		} = req.body;
 
 		const quantity = Number(quantityWriteOff);
@@ -136,6 +136,10 @@ writeOffsRouter.post(
 			});
 		}
 
+		if (purchaseExpenseStudio && !member.purchaseExpenseStudio) {
+      return res.json({ code: 4 });
+    }
+
 		const awaitingPromises = [];
 		const newWriteOffsErr = [];
 		const writeOffsIds = [];
@@ -166,6 +170,10 @@ writeOffsRouter.post(
 					unitExtraCharge: member.extraCharge ? receipt.unitExtraCharge : 0,
 					unitManualExtraCharge: member.extraCharge ? receipt.unitManualExtraCharge : 0,
 				});
+
+				if (purchaseExpenseStudio && /artist/.test(member.roles)) {
+          newWriteOff.purchaseExpenseStudio = purchaseExpenseStudio;
+        }
 
 				const newWriteOffErr = newWriteOff.validateSync();
 

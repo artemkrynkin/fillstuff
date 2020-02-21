@@ -137,8 +137,8 @@ writeOffsRouter.post(
 		}
 
 		if (purchaseExpenseStudio && !member.purchaseExpenseStudio) {
-      return res.json({ code: 4 });
-    }
+			return res.json({ code: 4 });
+		}
 
 		const awaitingPromises = [];
 		const newWriteOffsErr = [];
@@ -172,8 +172,8 @@ writeOffsRouter.post(
 				});
 
 				if (purchaseExpenseStudio && /artist/.test(member.roles)) {
-          newWriteOff.purchaseExpenseStudio = purchaseExpenseStudio;
-        }
+					newWriteOff.purchaseExpenseStudio = purchaseExpenseStudio;
+				}
 
 				const newWriteOffErr = newWriteOff.validateSync();
 

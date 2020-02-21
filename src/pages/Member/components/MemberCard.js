@@ -49,7 +49,9 @@ const MemberCard = props => {
 					<Button onClick={onOpenDialogMemberInvitationOrLogin} style={{ marginRight: 8 }}>
 						QR для входа
 					</Button>
-					<Button className={styles.deactivatedButton} variant="text">Отключить участника</Button>
+					<Button className={styles.deactivatedButton} variant="text">
+						Отключить участника
+					</Button>
 				</Grid>
 			</Grid>
 

@@ -3,7 +3,7 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 
 import CardPaper from 'src/components/CardPaper';
-import Money from "src/components/Money";
+import Money from 'src/components/Money';
 
 import styles from './Indicators.module.css';
 
@@ -23,8 +23,8 @@ const Indicators = props => {
 					<Grid alignItems="flex-end" justify="flex-end" container>
 						<div className={styles.title}>Стоимость склада:</div>
 						<div className={styles.content}>
-              <Money value={currentStudio.stock.stockPrice} />
-            </div>
+							<Money value={currentStudio.stock.stockPrice} />
+						</div>
 					</Grid>
 				</Grid>
 			</Grid>

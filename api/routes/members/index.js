@@ -136,9 +136,9 @@ membersRouter.post(
 		let setMemberData = memberEdited;
 
 		if (/owner|admin/.test(setMemberData.roles) && !/artist/.test(setMemberData.roles)) {
-      setMemberData.purchaseExpenseStudio = true;
-      setMemberData.extraCharge = false;
-    }
+			setMemberData.purchaseExpenseStudio = true;
+			setMemberData.extraCharge = false;
+		}
 
 		const member = await Member.findByIdAndUpdate(memberId, { $set: setMemberData }, { new: true, runValidators: true })
 			.populate('user', 'avatar name email')

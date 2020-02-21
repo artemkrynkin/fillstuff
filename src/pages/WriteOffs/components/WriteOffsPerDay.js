@@ -18,7 +18,7 @@ import { history } from 'src/helpers/history';
 
 import NumberFormat, { currencyFormatProps } from 'src/components/NumberFormat';
 import CardPaper from 'src/components/CardPaper';
-import Money from "src/components/Money";
+import Money from 'src/components/Money';
 
 import WriteOff from './WriteOff';
 
@@ -117,15 +117,15 @@ const WriteOffsPerDay = props => {
 						</Grid>
 						<Grid xs={6} item>
 							<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
-                <div className={styles.total}>
-                  Итого: <Money value={indicators.total} />
-                </div>
-                <div className={styles.sellingPositions}>
-                  Позиции для продажи: <Money value={indicators.sellingPositions} />
-                </div>
-                <div className={styles.freePositions}>
-                  Бесплатные позиции: <Money value={indicators.freePositions} />
-                </div>
+								<div className={styles.total}>
+									Итого: <Money value={indicators.total} />
+								</div>
+								<div className={styles.sellingPositions}>
+									Позиции для продажи: <Money value={indicators.sellingPositions} />
+								</div>
+								<div className={styles.freePositions}>
+									Бесплатные позиции: <Money value={indicators.freePositions} />
+								</div>
 							</Grid>
 						</Grid>
 					</Grid>

@@ -15,7 +15,7 @@ import TableBody from '@material-ui/core/TableBody';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
-import { formatNumber } from "shared/utils";
+import { formatNumber } from 'shared/utils';
 
 import NumberFormat, { currencyFormatProps } from 'src/components/NumberFormat';
 import Money from 'src/components/Money';
@@ -52,14 +52,14 @@ const Invoices = props => {
 	const showInitialInvoices = 3;
 	const [showAllInvoices, setShowAllInvoices] = useState(false);
 
-  const createInvoice = () => {
-    props.createInvoice().then(response => {
-      if (response.status === 'success') {
-        updateMember(response);
-        getInvoices();
-      }
-    });
-  };
+	const createInvoice = () => {
+		props.createInvoice().then(response => {
+			if (response.status === 'success') {
+				updateMember(response);
+				getInvoices();
+			}
+		});
+	};
 
 	const nextBillingDateIsCurrentYear = momentDate.isSame(member.nextBillingDate, 'year');
 
@@ -67,35 +67,35 @@ const Invoices = props => {
 
 	return (
 		<div>
-      <div className={styles.title}>Задолженность</div>
-      <Grid className={styles.debt} container>
-        <Grid xs={2} item>
-          <div className={styles.debtTitle}>Общая</div>
-          <div className={styles.debtContent}>
-            <Money value={member.billingDebt} />
-          </div>
-        </Grid>
-        <Grid xs={2} item>
-          <div className={styles.debtTitle}>Текущая</div>
-          <div className={styles.debtContent}>
-            <Money value={member.billingPeriodDebt} />
-          </div>
-        </Grid>
-        <Grid xs={3} item>
-          <Button onClick={createInvoice} disabled={member.billingPeriodDebt === 0} variant="outlined" color="primary">
-            Выставить счет
-          </Button>
-        </Grid>
-      </Grid>
-      <Grid container>
-        <div className={styles.infoSmall}>
-          Счет будет выставлен {moment(member.nextBillingDate).format(nextBillingDateIsCurrentYear ? 'D MMMM' : 'D MMMM YYYY')}
-        </div>
-        <div className={styles.separator}>•</div>
-        <ButtonBase className={styles.buttonLink} component="span" disableRipple>
-          Изменить дату выставления счетов
-        </ButtonBase>
-      </Grid>
+			<div className={styles.title}>Задолженность</div>
+			<Grid className={styles.debt} container>
+				<Grid xs={2} item>
+					<div className={styles.debtTitle}>Общая</div>
+					<div className={styles.debtContent}>
+						<Money value={member.billingDebt} />
+					</div>
+				</Grid>
+				<Grid xs={2} item>
+					<div className={styles.debtTitle}>Текущая</div>
+					<div className={styles.debtContent}>
+						<Money value={member.billingPeriodDebt} />
+					</div>
+				</Grid>
+				<Grid xs={3} item>
+					<Button onClick={createInvoice} disabled={member.billingPeriodDebt === 0} variant="outlined" color="primary">
+						Выставить счет
+					</Button>
+				</Grid>
+			</Grid>
+			<Grid container>
+				<div className={styles.infoSmall}>
+					Счет будет выставлен {moment(member.nextBillingDate).format(nextBillingDateIsCurrentYear ? 'D MMMM' : 'D MMMM YYYY')}
+				</div>
+				<div className={styles.separator}>•</div>
+				<ButtonBase className={styles.buttonLink} component="span" disableRipple>
+					Изменить дату выставления счетов
+				</ButtonBase>
+			</Grid>
 
 			<Divider style={{ margin: '30px -15px' }} />
 
@@ -135,7 +135,7 @@ const Invoices = props => {
 												{statusTransform(invoice.status)}
 											</TableCell>
 											<TableCell align="right" width={140}>
-                        {formatNumber(invoice.amount, { toString: true })} ₽
+												{formatNumber(invoice.amount, { toString: true })} ₽
 											</TableCell>
 										</TableRow>
 									);
@@ -163,11 +163,11 @@ const Invoices = props => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const { member } = ownProps;
+	const { member } = ownProps;
 
-  return {
-    createInvoice: () => dispatch(createInvoice({ params: { memberId: member._id } })),
-  };
+	return {
+		createInvoice: () => dispatch(createInvoice({ params: { memberId: member._id } })),
+	};
 };
 
 export default connect(null, mapDispatchToProps)(Invoices);

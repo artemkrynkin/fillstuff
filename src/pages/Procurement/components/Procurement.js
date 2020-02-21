@@ -14,7 +14,7 @@ import Avatar from '@material-ui/core/Avatar';
 import { history } from 'src/helpers/history';
 
 import CardPaper from 'src/components/CardPaper';
-import Money from "src/components/Money";
+import Money from 'src/components/Money';
 
 import { getProcurement } from 'src/actions/procurements';
 
@@ -76,15 +76,15 @@ class Procurement extends Component {
 						</Grid>
 						<Grid xs={6} item>
 							<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
-                <div className={styles.totalPrice}>
-                  Итого: <Money value={procurement.totalPrice} />
-                </div>
-                <div className={styles.pricePositions}>
-                  Стоимость позиций: <Money value={procurement.pricePositions} />
-                </div>
-                <div className={styles.costDelivery}>
-                  Стоимость доставки: <Money value={procurement.costDelivery} />
-                </div>
+								<div className={styles.totalPrice}>
+									Итого: <Money value={procurement.totalPrice} />
+								</div>
+								<div className={styles.pricePositions}>
+									Стоимость позиций: <Money value={procurement.pricePositions} />
+								</div>
+								<div className={styles.costDelivery}>
+									Стоимость доставки: <Money value={procurement.costDelivery} />
+								</div>
 							</Grid>
 						</Grid>
 					</Grid>

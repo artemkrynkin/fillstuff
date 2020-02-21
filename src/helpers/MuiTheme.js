@@ -98,7 +98,7 @@ export const BliksideTheme = createMuiTheme({
 		body1: {
 			color: theme.blueGrey.cBg600,
 			fontSize: 14,
-      lineHeight: 1.3,
+			lineHeight: 1.3,
 		},
 		body2: {
 			color: theme.blueGrey.cBg600,
@@ -581,9 +581,9 @@ export const BliksideTheme = createMuiTheme({
 		MuiSwitch: {
 			switchBase: {
 				color: theme.brightness.cBr1,
-        '&:hover': {
-          backgroundColor: 'transparent !important',
-        }
+				'&:hover': {
+					backgroundColor: 'transparent !important',
+				},
 			},
 			track: {
 				backgroundColor: theme.blueGrey.cBg500,
@@ -591,20 +591,20 @@ export const BliksideTheme = createMuiTheme({
 			},
 			thumb: {
 				boxShadow: [
-          `0 2px 1px -1px rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg900)}, 0.2)`,
-          `0 1px 1px 0 rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg900)}, 0.14)`,
-          `0 1px 3px 0px rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg900)}, 0.12)`,
-        ].join(),
+					`0 2px 1px -1px rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg900)}, 0.2)`,
+					`0 1px 1px 0 rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg900)}, 0.14)`,
+					`0 1px 3px 0px rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg900)}, 0.12)`,
+				].join(),
 			},
-      colorPrimary: {
-			  '&$checked $thumb': {
-          boxShadow: [
-            `0 2px 5px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.25)`,
-            `0 2px 2px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.14)`,
-            `0 3px 1px -2px rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.12)`,
-          ].join(),
-        }
-      }
+			colorPrimary: {
+				'&$checked $thumb': {
+					boxShadow: [
+						`0 2px 5px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.25)`,
+						`0 2px 2px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.14)`,
+						`0 3px 1px -2px rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.12)`,
+					].join(),
+				},
+			},
 		},
 		MuiRadio: {
 			root: {

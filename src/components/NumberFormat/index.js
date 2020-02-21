@@ -28,13 +28,13 @@ NumberFormat.propTypes = {
 };
 
 export const moneyFormatProps = {
-  decimalSeparator: ',',
+	decimalSeparator: ',',
 	thousandSeparator: ' ',
 	decimalScale: 2,
 };
 
 export const currencyFormatProps = {
-  decimalSeparator: ',',
+	decimalSeparator: ',',
 	thousandSeparator: ' ',
 	decimalScale: 2,
 	allowNegative: false,

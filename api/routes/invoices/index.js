@@ -271,43 +271,43 @@ invoicesRouter.post(
 			{ runValidators: true }
 		).catch(err => next({ code: 2, err }));
 
-    const invoicePayable = await Invoice.findById(invoice._id)
-      .lean()
-      .populate({
-        path: 'member',
-        populate: {
-          path: 'user',
-          select: 'avatar name email',
-        },
-      })
-      .populate({
-        path: 'writeOffs',
-        populate: {
-          path: 'position',
-          populate: {
-            path: 'characteristics',
-          },
-        },
-      })
-      .catch(err => next({ code: 2, err }));
+		const invoicePayable = await Invoice.findById(invoice._id)
+			.lean()
+			.populate({
+				path: 'member',
+				populate: {
+					path: 'user',
+					select: 'avatar name email',
+				},
+			})
+			.populate({
+				path: 'writeOffs',
+				populate: {
+					path: 'position',
+					populate: {
+						path: 'characteristics',
+					},
+				},
+			})
+			.catch(err => next({ code: 2, err }));
 
-    invoicePayable.groupedWriteOffs = _.chain(invoicePayable.writeOffs)
-      .groupBy(writeOff => {
-        return String(writeOff.position._id) && writeOff.unitSellingPrice;
-      })
-      .map(writeOffs => ({
-        position: writeOffs[0].position,
-        quantity: writeOffs.reduce((sum, writeOff) => sum + writeOff.quantity, 0),
-        unitSellingPrice: writeOffs[0].unitSellingPrice,
-        sellingPrice: formatNumber(writeOffs.reduce((sum, writeOff) => sum + writeOff.sellingPrice, 0)),
-      }))
-      .value();
+		invoicePayable.groupedWriteOffs = _.chain(invoicePayable.writeOffs)
+			.groupBy(writeOff => {
+				return String(writeOff.position._id) && writeOff.unitSellingPrice;
+			})
+			.map(writeOffs => ({
+				position: writeOffs[0].position,
+				quantity: writeOffs.reduce((sum, writeOff) => sum + writeOff.quantity, 0),
+				unitSellingPrice: writeOffs[0].unitSellingPrice,
+				sellingPrice: formatNumber(writeOffs.reduce((sum, writeOff) => sum + writeOff.sellingPrice, 0)),
+			}))
+			.value();
 
-    invoicePayable.groupedWriteOffs.sort((a, b) => a.position.name.localeCompare(b.position.name) || +b.sellingPrice - +a.sellingPrice);
+		invoicePayable.groupedWriteOffs.sort((a, b) => a.position.name.localeCompare(b.position.name) || +b.sellingPrice - +a.sellingPrice);
 
-    delete invoicePayable.writeOffs;
+		delete invoicePayable.writeOffs;
 
-    res.json(invoicePayable);
+		res.json(invoicePayable);
 	}
 );
 

@@ -61,13 +61,34 @@ const Invoice = props => {
 						</Grid>
 						<Grid xs={6} item>
 							<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
-								<div className={styles.titleGrey}>
-									Сумма по счету: <Money value={invoice.amount} />
-								</div>
+								{invoice.status !== 'paid' ? (
+									<div className={styles.titleGrey}>
+										Сумма по счету: <Money value={invoice.amount} />
+									</div>
+								) : invoice.status === 'paid' ? (
+									<div
+										className={ClassNames({
+											[styles.titleGrey]: true,
+											[styles.invoicePaid]: true,
+										})}
+									>
+										<FontAwesomeIcon className={styles.invoicePaidIcon} icon={['fal', 'check-circle']} />
+										Счет оплачен
+									</div>
+								) : null}
 								{invoice.status === 'partially-paid' ? (
 									<div className={styles.smallText}>
 										Осталось оплатить: <Money value={invoice.amount - invoice.paymentAmountDue} />
 									</div>
+								) : invoice.status === 'paid' ? (
+									<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
+										<div className={styles.smallText}>
+											Сумма по счету: <Money value={invoice.amount} />
+										</div>
+										<div className={styles.smallText}>
+											Сумма платежа: <Money value={invoice.paymentAmountDue} />
+										</div>
+									</Grid>
 								) : null}
 								{invoice.status !== 'paid' ? (
 									<Button
@@ -79,17 +100,7 @@ const Invoice = props => {
 									>
 										Погасить счет
 									</Button>
-								) : (
-									<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
-										<div className={styles.smallText}>
-											Сумма платежа: <Money value={invoice.paymentAmountDue} />
-										</div>
-										<div className={styles.invoicePaid}>
-											<FontAwesomeIcon icon={['fal', 'check-circle']} />
-											Счет оплачен
-										</div>
-									</Grid>
-								)}
+								) : null}
 							</Grid>
 						</Grid>
 					</Grid>

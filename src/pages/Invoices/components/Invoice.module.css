@@ -41,30 +41,31 @@
   font-weight: 700;
 }
 
+.invoicePaid {
+  color: var(--c-hex-bg-700);
+  align-items: center;
+  display: flex;
+}
+
+.invoicePaidIcon {
+  color: var(--c-hex-t-300);
+  font-size: 20px;
+  margin-right: 5px;
+}
+
 .smallText {
   color: var(--c-hex-bg-500);
   font-size: 12px;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+.smallText:last-child {
+  margin-bottom: 0;
 }
 
 .smallText span {
   color: var(--c-hex-bg-700);
   font-weight: 700;
-}
-
-.invoicePaid {
-  align-items: center;
-  display: flex;
-  color: var(--c-hex-bg-500);
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 5px;
-}
-
-.invoicePaid svg {
-  color: var(--c-hex-t-300);
-  font-size: 18px;
-  margin: 0 5px 0 0;
 }
 
 .acceptPayment {}

@@ -10,8 +10,9 @@ const NumberFormat = props => {
 		<ReactNumberFormat
 			getInputRef={inputRef}
 			onValueChange={
-				props.displayType === 'input'
-					? values => {
+				props.displayType === 'text'
+					? () => {}
+					: values => {
 							onChange({
 								target: {
 									name: props.name,
@@ -19,7 +20,6 @@ const NumberFormat = props => {
 								},
 							});
 					  }
-					: () => {}
 			}
 			{...remainingProps}
 		/>

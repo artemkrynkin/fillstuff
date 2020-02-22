@@ -9,15 +9,15 @@ const Money = props => {
 
 	return (
 		<NumberFormat
-			value={value}
+			value={Number(value).toFixed(2)}
 			renderText={value => {
-				const moneyArray = value.split(',');
+				const moneyArray = value.split('.');
 
 				return (
 					<span className={styles.money}>
 						{moneyArray[0]}
 						<span className={styles.smalls}>
-							{moneyArray[1] !== undefined ? ',' + moneyArray[1] : null}
+							{moneyArray[1] !== undefined ? `,${moneyArray[1]}` : null}
 							&nbsp;₽
 						</span>
 					</span>

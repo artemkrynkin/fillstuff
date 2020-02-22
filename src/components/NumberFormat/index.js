@@ -32,7 +32,7 @@ NumberFormat.propTypes = {
 };
 
 export const moneyFormatProps = {
-	decimalSeparator: ',',
+	decimalSeparator: '.',
 	thousandSeparator: ' ',
 	decimalScale: 2,
 };

@@ -87,7 +87,6 @@ class DialogInvoicePaymentCreate extends Component {
 													</div>
 												)}
 												displayType="text"
-												onValueChange={() => {}}
 												{...currencyFormatProps}
 											/>
 										</Grid>

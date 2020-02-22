@@ -82,7 +82,10 @@ invoicesRouter.post(
 				}))
 				.value();
 
-			invoice.groupedWriteOffs.sort((a, b) => a.position.name.localeCompare(b.position.name) || +b.sellingPrice - +a.sellingPrice);
+			invoice.groupedWriteOffs.sort(
+				(writeOffsA, writeOffsB) =>
+					+writeOffsB.sellingPrice - +writeOffsA.sellingPrice || writeOffsA.position.name.localeCompare(writeOffsB.position.name)
+			);
 
 			delete invoice.writeOffs;
 		});

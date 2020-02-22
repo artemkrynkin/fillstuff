@@ -10,7 +10,7 @@ const Index = props => {
 	const { currentUser, currentStudio } = props;
 
 	return (
-		<Container maxWidth="md">
+		<Container maxWidth="lg">
 			<Grid direction="row" justify="center" alignItems="flex-start" spacing={2} container>
 				<Grid xs={12} item>
 					<GeneralSettings currentUser={currentUser} currentStudio={currentStudio} />

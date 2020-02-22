@@ -21,6 +21,7 @@ import { memberRoleTransform } from 'shared/roles-access-rights';
 
 import { weekActive, monthActive, paginationCalendarFormat } from 'src/components/Pagination/utils';
 import Dropdown from 'src/components/Dropdown';
+import PositionNameInList from 'src/components/PositionNameInList';
 
 import { SearchTextField } from './Filter.styles';
 
@@ -300,7 +301,7 @@ const FormFilter = props => {
 						open={dropdownPosition}
 						onClose={() => handlerDropdown('dropdownPosition')}
 						placement="bottom-start"
-						innerContentStyle={{ minWidth: 125, maxHeight: 300, overflow: 'auto' }}
+						innerContentStyle={{ minWidth: 125, maxWidth: 300, maxHeight: 300, overflow: 'auto' }}
 					>
 						{!isLoadingPositions && positions && positions.length ? (
 							<List component="nav">
@@ -322,12 +323,7 @@ const FormFilter = props => {
 										component={MenuItem}
 										button
 									>
-										{position.name}{' '}
-										{position.characteristics.reduce(
-											(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
-											''
-										)}
-										{position.isArchived ? <span className={styles.isArchived}>В архиве</span> : null}
+										<PositionNameInList className={styles.positionName} name={position.name} characteristics={position.characteristics} />
 									</ListItem>
 								))}
 							</List>

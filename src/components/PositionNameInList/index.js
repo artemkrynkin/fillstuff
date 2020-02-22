@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ClassNames from 'classnames';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -7,10 +8,20 @@ import Tooltip from '@material-ui/core/Tooltip';
 import styles from './index.module.css';
 
 const PositionNameInList = props => {
-	const { name, characteristics, isArchived, canceled, style } = props;
+	const { name, characteristics, isArchived, canceled, className, style } = props;
+
+	const classes = ClassNames({
+		...Object.fromEntries(
+			className
+				.split(' ')
+				.filter(val => val)
+				.map(key => [key, true])
+		),
+		[styles.container]: true,
+	});
 
 	return (
-		<div className={styles.container} style={style}>
+		<div className={classes} style={style}>
 			<div className={styles.names}>
 				<div className={styles.name}>{name}</div>
 				{characteristics.length ? (
@@ -42,6 +53,7 @@ const PositionNameInList = props => {
 };
 
 PositionNameInList.defaultProps = {
+	className: '',
 	isArchived: false,
 	canceled: false,
 };

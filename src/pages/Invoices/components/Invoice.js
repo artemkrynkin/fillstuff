@@ -104,7 +104,7 @@ const Invoice = props => {
 										Количество
 									</TableCell>
 									<TableCell align="right" width={125}>
-										Цена
+										Цена продажи
 									</TableCell>
 									<TableCell align="right" width={125}>
 										Сумма

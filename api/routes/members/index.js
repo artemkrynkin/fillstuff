@@ -42,7 +42,7 @@ membersRouter.post(
 				...member,
 				roleBitMask: memberRoleTransform(member.roles, true),
 			}))
-			.sort((memberA, memberB) => (memberA.roleBitMask > memberB.roleBitMask ? -1 : 1));
+			.sort((memberA, memberB) => +memberB.roleBitMask - +memberA.roleBitMask || memberA.user.name.localeCompare(memberB.user.name));
 
 		if (role && /owners|admins|artists/.test(role)) {
 			const roleFilter = role.slice(0, -1);

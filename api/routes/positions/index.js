@@ -24,6 +24,7 @@ positionsRouter.post(
 			studio: studioId,
 			isArchived: false,
 		})
+			.sort({ name: 1 })
 			.populate({
 				path: 'activeReceipt characteristics',
 			})
@@ -33,15 +34,9 @@ positionsRouter.post(
 			})
 			.catch(err => next({ code: 2, err }));
 
-		const compareByName = (a, b) => {
-			if (a.name > b.name) return 1;
-			else if (a.name < b.name) return -1;
-			else return 0;
-		};
-
 		const positions = await positionsPromise;
 
-		res.json(positions.sort(compareByName));
+		res.json(positions);
 	}
 );
 
@@ -57,6 +52,7 @@ positionsRouter.post(
 			isArchived: false,
 			positionGroup: { $exists: false },
 		})
+			.sort({ name: 1 })
 			.populate({
 				path: 'activeReceipt characteristics',
 			})
@@ -69,6 +65,7 @@ positionsRouter.post(
 		const positionGroupsPromise = PositionGroup.find({
 			studio: studioId,
 		})
+			.sort({ name: 1 })
 			.populate({
 				path: 'positions',
 				populate: {
@@ -86,15 +83,13 @@ positionsRouter.post(
 
 		const positions = await positionsPromise;
 		const positionGroups = await positionGroupsPromise;
-		const compareByName = (a, b) => {
-			if (a.name > b.name) return 1;
-			else if (a.name < b.name) return -1;
-			else return 0;
-		};
 
-		const positionsInGroups = [...positions, ...positionGroups].sort(compareByName);
+		// positions.sort((positionA, positionB) => positionA.name.localeCompare(positionB.name));
+		// positionGroups.sort((groupA, groupB) => groupA.name.localeCompare(groupB.name));
 
-		res.json(positionsInGroups);
+		const positionsAndGroups = [...positionGroups, ...positions];
+
+		res.json(positionsAndGroups);
 	}
 );
 
@@ -462,7 +457,7 @@ positionsRouter.post(
 			$unset: { positionGroup: 1 },
 		}).catch(err => next({ code: 2, err }));
 
-		let remainingPositionId = null;
+		let remainingPositionId = {};
 
 		if (position.positionGroup.positions.length > 2) {
 			PositionGroup.findByIdAndUpdate(position.positionGroup._id, { $pull: { positions: position._id } }).catch(err =>

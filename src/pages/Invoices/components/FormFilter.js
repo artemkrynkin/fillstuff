@@ -86,8 +86,8 @@ const FormFilter = props => {
 	const {
 		handlerDropdown,
 		onChangeFilterDate,
-		onChangeFilterMember,
 		onChangeFilterStatus,
+		onChangeFilterMember,
 		onResetAllFilters,
 		members: {
 			data: members,
@@ -96,8 +96,8 @@ const FormFilter = props => {
 		},
 		dropdownDate: { state: dropdownDate, ref: refDropdownDate },
 		dropdownDateRange: { state: dropdownDateRange, ref: refDropdownDateRange },
-		dropdownMember: { state: dropdownMember, ref: refDropdownMember },
 		dropdownStatus: { state: dropdownStatus, ref: refDropdownStatus },
+		dropdownMember: { state: dropdownMember, ref: refDropdownMember },
 		formikProps: {
 			// errors,
 			isSubmitting,
@@ -246,6 +246,42 @@ const FormFilter = props => {
 					</Dropdown>
 				</Grid>
 
+				{/* Filter Status */}
+				<Grid item>
+					<ButtonBase
+						ref={refDropdownStatus}
+						className={styles.filterButtonLink}
+						onClick={() => handlerDropdown('dropdownStatus')}
+						disableRipple
+					>
+						<span>{FilterStatusTransform(values.status)}</span>
+						<FontAwesomeIcon icon={['far', 'angle-down']} />
+					</ButtonBase>
+
+					<Dropdown
+						anchor={refDropdownStatus}
+						open={dropdownStatus}
+						onClose={() => handlerDropdown('dropdownStatus')}
+						placement="bottom-start"
+						innerContentStyle={{ maxHeight: 300, overflow: 'auto' }}
+					>
+						<List component="nav">
+							{statusList.map((status, index) => (
+								<ListItem
+									key={index}
+									disabled={isSubmitting}
+									selected={values.status === status}
+									onClick={() => onChangeFilterStatus(status, setFieldValue, submitForm)}
+									component={MenuItem}
+									button
+								>
+									{FilterStatusTransform(status)}
+								</ListItem>
+							))}
+						</List>
+					</Dropdown>
+				</Grid>
+
 				{/* Filter Member */}
 				<Grid item>
 					<ButtonBase
@@ -312,44 +348,8 @@ const FormFilter = props => {
 					</Dropdown>
 				</Grid>
 
-				{/* Filter Status */}
-				<Grid item>
-					<ButtonBase
-						ref={refDropdownStatus}
-						className={styles.filterButtonLink}
-						onClick={() => handlerDropdown('dropdownStatus')}
-						disableRipple
-					>
-						<span>{FilterStatusTransform(values.status)}</span>
-						<FontAwesomeIcon icon={['far', 'angle-down']} />
-					</ButtonBase>
-
-					<Dropdown
-						anchor={refDropdownStatus}
-						open={dropdownStatus}
-						onClose={() => handlerDropdown('dropdownStatus')}
-						placement="bottom-start"
-						innerContentStyle={{ maxHeight: 300, overflow: 'auto' }}
-					>
-						<List component="nav">
-							{statusList.map((status, index) => (
-								<ListItem
-									key={index}
-									disabled={isSubmitting}
-									selected={values.status === status}
-									onClick={() => onChangeFilterStatus(status, setFieldValue, submitForm)}
-									component={MenuItem}
-									button
-								>
-									{FilterStatusTransform(status)}
-								</ListItem>
-							))}
-						</List>
-					</Dropdown>
-				</Grid>
-
 				<Grid item style={{ marginLeft: 'auto' }}>
-					{!isMonthActive() || values.member !== 'all' || values.status !== 'all' ? (
+					{!isMonthActive() || values.status !== 'all' || values.member !== 'all' ? (
 						<ButtonBase onClick={() => onResetAllFilters(setFieldValue, submitForm)} className={styles.filterButtonLinkRed} disableRipple>
 							<span>Сбросить фильтры</span>
 						</ButtonBase>

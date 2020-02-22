@@ -46,7 +46,6 @@ const Receipt = props => {
 									value={formatNumber(receipt.unitPurchasePrice, { toString: true })}
 									renderText={value => `Цена покупки: ${value}`}
 									displayType="text"
-									onValueChange={() => {}}
 									{...currencyFormatProps}
 								/>
 								{receipt.unitCostDelivery > 0 ? <br /> : null}
@@ -55,7 +54,6 @@ const Receipt = props => {
 										value={formatNumber(receipt.unitCostDelivery, { toString: true })}
 										renderText={value => `Стоимость доставки: ${value}`}
 										displayType="text"
-										onValueChange={() => {}}
 										{...currencyFormatProps}
 									/>
 								) : null}
@@ -65,7 +63,6 @@ const Receipt = props => {
 										value={formatNumber(receipt.unitExtraCharge, { toString: true })}
 										renderText={value => `Процент студии: ${value}`}
 										displayType="text"
-										onValueChange={() => {}}
 										{...currencyFormatProps}
 									/>
 								) : null}
@@ -75,7 +72,6 @@ const Receipt = props => {
 										value={formatNumber(receipt.unitManualExtraCharge, { toString: true })}
 										renderText={value => `Ручная наценка: ${value}`}
 										displayType="text"
-										onValueChange={() => {}}
 										{...currencyFormatProps}
 									/>
 								) : null}

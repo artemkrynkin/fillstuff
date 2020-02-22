@@ -9,14 +9,18 @@ const NumberFormat = props => {
 	return (
 		<ReactNumberFormat
 			getInputRef={inputRef}
-			onValueChange={values => {
-				onChange({
-					target: {
-						name: props.name,
-						...values,
-					},
-				});
-			}}
+			onValueChange={
+				props.displayType === 'input'
+					? values => {
+							onChange({
+								target: {
+									name: props.name,
+									...values,
+								},
+							});
+					  }
+					: () => {}
+			}
 			{...remainingProps}
 		/>
 	);

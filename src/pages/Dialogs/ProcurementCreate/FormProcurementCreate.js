@@ -26,7 +26,6 @@ import FormFieldArrayReceipts from './FormFieldArrayReceipts';
 
 import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
-import FormHelperText from '@material-ui/core/FormHelperText';
 
 const FormProcurementCreate = props => {
 	const {

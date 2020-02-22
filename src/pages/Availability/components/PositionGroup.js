@@ -30,6 +30,7 @@ const positionGroupActionsButtonClasses = dropdownActions =>
 const PositionGroup = props => {
 	const { positionGroup, onOpenDialogPositionGroup, onOpenDialogPosition } = props;
 	const refDropdownActions = useRef(null);
+	const [defaultExpanded] = useState(positionGroup.positions.length !== 0 && positionGroup.dividedPositions);
 	const [dropdownActions, setDropdownActions] = useState(false);
 
 	function onHandleDropdownActions() {
@@ -44,7 +45,7 @@ const PositionGroup = props => {
 						timeout: 300,
 						unmountOnExit: true,
 					}}
-					defaultExpanded={positionGroup.positions.length !== 0 && positionGroup.dividedPositions}
+					defaultExpanded={defaultExpanded}
 					disabled={!positionGroup.positions.length}
 				>
 					<ExpansionPanelSummary
@@ -64,6 +65,9 @@ const PositionGroup = props => {
 											{declensionNumber(positionGroup.positions.length, ['позиция', 'позиции', 'позиций'], true)}
 										</span>
 									</TableCellExpansionPanel>
+									<TableCellExpansionPanel align="right" width={125}>
+										{positionGroup.positions.length ? positionGroup.minimumBalance : null}
+									</TableCellExpansionPanel>
 									<TableCellExpansionPanel align="right" width={160}>
 										<QuantityIndicator
 											type="positionGroup"
@@ -72,10 +76,8 @@ const PositionGroup = props => {
 											positions={positionGroup.positions.filter(position => position.activeReceipt && position.receipts.length)}
 										/>
 									</TableCellExpansionPanel>
-									<TableCellExpansionPanel align="right" width={130}>
-										{positionGroup.positions.length ? positionGroup.minimumBalance : null}
-									</TableCellExpansionPanel>
-									<TableCellExpansionPanel width={280 + 50} />
+									<TableCellExpansionPanel width={280} />
+									<TableCellExpansionPanel width={50} />
 								</TableRow>
 							</TableBody>
 						</Table>

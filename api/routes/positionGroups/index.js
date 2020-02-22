@@ -138,7 +138,7 @@ positionGroupsRouter.post(
 	async (req, res, next) => {
 		const {
 			params: { positionGroupId },
-			data: positions,
+			data: { positions },
 		} = req.body;
 
 		const positionGroup = await PositionGroup.findByIdAndUpdate(

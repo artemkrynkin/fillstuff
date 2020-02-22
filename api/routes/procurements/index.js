@@ -218,6 +218,9 @@ procurementsRouter.post(
 				path: 'receipts',
 				populate: {
 					path: 'position',
+					populate: {
+						path: 'characteristics',
+					},
 				},
 			})
 			.catch(err => next({ code: 2, err }));

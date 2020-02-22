@@ -154,7 +154,6 @@ const FormFieldArrayReceipt = props => {
 										value={receipt.unitPurchasePrice}
 										renderText={value => `Цена покупки: ${value}`}
 										displayType="text"
-										onValueChange={() => {}}
 										{...currencyFormatProps}
 									/>
 									{receipt.unitCostDelivery > 0 ? <br /> : null}
@@ -163,7 +162,6 @@ const FormFieldArrayReceipt = props => {
 											value={receipt.unitCostDelivery}
 											renderText={value => `Стоимость доставки: ${value}`}
 											displayType="text"
-											onValueChange={() => {}}
 											{...currencyFormatProps}
 										/>
 									) : null}
@@ -173,7 +171,6 @@ const FormFieldArrayReceipt = props => {
 											value={receipt.unitExtraCharge}
 											renderText={value => `Процент студии: ${value}`}
 											displayType="text"
-											onValueChange={() => {}}
 											{...currencyFormatProps}
 										/>
 									) : null}
@@ -183,7 +180,6 @@ const FormFieldArrayReceipt = props => {
 											value={receipt.unitManualExtraCharge}
 											renderText={value => `Ручная наценка: ${value}`}
 											displayType="text"
-											onValueChange={() => {}}
 											{...currencyFormatProps}
 										/>
 									) : null}

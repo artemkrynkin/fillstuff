@@ -17,6 +17,7 @@ import { DialogActions } from 'src/components/Dialog';
 import NumberFormat from 'src/components/NumberFormat';
 import Chips from 'src/components/Chips';
 import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
+import PositionNameInList from 'src/components/PositionNameInList';
 
 import { SearchTextField } from './styles';
 import stylesGlobal from 'src/styles/globals.module.css';
@@ -164,12 +165,11 @@ const FormPositionGroupCreateEditAdd = props => {
 													<div className={styles.selectPositionCheckbox}>
 														<FontAwesomeIcon icon={['far', 'check']} />
 													</div>
-													<div>
-														{position.characteristics.reduce(
-															(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
-															position.name
-														)}
-													</div>
+													<PositionNameInList
+														className={styles.positionName}
+														name={position.name}
+														characteristics={position.characteristics}
+													/>
 												</div>
 											))
 										) : !positions.length && searchString ? (

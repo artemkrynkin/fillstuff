@@ -80,3 +80,7 @@
 .selectPositionSelected .selectPositionCheckbox svg {
   color: white;
 }
+
+.positionName {
+  width: calc(100% - 34px);
+}

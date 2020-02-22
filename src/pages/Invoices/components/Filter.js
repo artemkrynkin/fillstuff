@@ -28,14 +28,14 @@ class Filter extends Component {
 	state = {
 		dropdownDate: false,
 		dropdownDateRange: false,
-		dropdownMember: false,
 		dropdownStatus: false,
+		dropdownMember: false,
 	};
 
 	refDropdownDate = createRef();
 	refDropdownDateRange = createRef();
-	refDropdownMember = createRef();
 	refDropdownStatus = createRef();
+	refDropdownMember = createRef();
 
 	handlerDropdown = (name, value) =>
 		this.setState({
@@ -69,17 +69,17 @@ class Filter extends Component {
 		submitForm();
 	};
 
-	onChangeFilterMember = (member, setFieldValue, submitForm) => {
-		this.handlerDropdown('dropdownMember');
-
-		setFieldValue('member', member, false);
-		submitForm();
-	};
-
 	onChangeFilterStatus = (status, setFieldValue, submitForm) => {
 		this.handlerDropdown('dropdownStatus');
 
 		setFieldValue('status', status, false);
+		submitForm();
+	};
+
+	onChangeFilterMember = (member, setFieldValue, submitForm) => {
+		this.handlerDropdown('dropdownMember');
+
+		setFieldValue('member', member, false);
 		submitForm();
 	};
 
@@ -92,8 +92,8 @@ class Filter extends Component {
 		setFieldValue('dateEnd', endMonth, false);
 		setFieldValue('dateStartView', startMonth, false);
 		setFieldValue('dateEndView', endMonth, false);
-		setFieldValue('member', 'all', false);
 		setFieldValue('status', 'all', false);
+		setFieldValue('member', 'all', false);
 		submitForm();
 	};
 
@@ -101,7 +101,7 @@ class Filter extends Component {
 		const { paging } = this.props;
 
 		const momentDate = moment();
-		const dropdownNameList = ['dropdownDate', 'dropdownDateRange', 'dropdownMember', 'dropdownStatus'];
+		const dropdownNameList = ['dropdownDate', 'dropdownDateRange', 'dropdownStatus', 'dropdownMember'];
 
 		paging.onChangeLoadedDocs(true);
 
@@ -138,8 +138,8 @@ class Filter extends Component {
 		if (
 			prevProps.filterParams.dateStart !== filterParams.dateStart ||
 			prevProps.filterParams.dateEnd !== filterParams.dateEnd ||
-			prevProps.filterParams.member !== filterParams.member ||
-			prevProps.filterParams.status !== filterParams.status
+			prevProps.filterParams.status !== filterParams.status ||
+			prevProps.filterParams.member !== filterParams.member
 		) {
 			const query = { ...filterParams };
 
@@ -155,7 +155,7 @@ class Filter extends Component {
 
 	render() {
 		const { members, filterParams } = this.props;
-		const { dropdownDate, dropdownDateRange, dropdownMember, dropdownStatus } = this.state;
+		const { dropdownDate, dropdownDateRange, dropdownStatus, dropdownMember } = this.state;
 
 		const initialValues = { ...filterParams };
 
@@ -176,8 +176,8 @@ class Filter extends Component {
 						<FormFilter
 							handlerDropdown={this.handlerDropdown}
 							onChangeFilterDate={this.onChangeFilterDate}
-							onChangeFilterMember={this.onChangeFilterMember}
 							onChangeFilterStatus={this.onChangeFilterStatus}
+							onChangeFilterMember={this.onChangeFilterMember}
 							onResetAllFilters={this.onResetAllFilters}
 							members={members}
 							dropdownDate={{
@@ -188,13 +188,13 @@ class Filter extends Component {
 								state: dropdownDateRange,
 								ref: this.refDropdownDateRange,
 							}}
-							dropdownMember={{
-								state: dropdownMember,
-								ref: this.refDropdownMember,
-							}}
 							dropdownStatus={{
 								state: dropdownStatus,
 								ref: this.refDropdownStatus,
+							}}
+							dropdownMember={{
+								state: dropdownMember,
+								ref: this.refDropdownMember,
 							}}
 							formikProps={props}
 						/>

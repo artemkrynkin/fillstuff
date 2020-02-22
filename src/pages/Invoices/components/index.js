@@ -25,8 +25,8 @@ const Index = () => {
 	const filterParams = checkQueryInFilter({
 		dateStart: dateStart,
 		dateEnd: dateEnd,
-		member: 'all',
 		status: 'all',
+		member: 'all',
 	});
 
 	return (

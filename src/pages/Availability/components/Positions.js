@@ -56,12 +56,6 @@ const DialogPositionQRCodeGeneration = DialogPositionOrGroupQRCodeGeneration;
 
 const DialogWriteOffCreate = loadable(() => import('src/pages/Dialogs/WriteOffCreate' /* webpackChunkName: "Dialog_WriteOffCreate" */));
 
-const compareByName = (a, b) => {
-	if (a.name > b.name) return 1;
-	else if (a.name < b.name) return -1;
-	else return 0;
-};
-
 class Positions extends Component {
 	state = {
 		positionGroup: null,
@@ -263,25 +257,8 @@ class Positions extends Component {
 }
 
 const mapStateToProps = state => {
-	const {
-		positionsInGroups: {
-			data: positionsInGroups,
-			isFetching: isLoadingPositionsInGroups,
-			// error: errorPositions
-		},
-	} = state;
-
-	let positionsInGroupsSort = {
-		data: null,
-		isFetching: isLoadingPositionsInGroups,
-	};
-
-	if (!isLoadingPositionsInGroups && positionsInGroups) {
-		positionsInGroupsSort.data = positionsInGroups.sort(compareByName);
-	}
-
 	return {
-		positionsInGroups: positionsInGroupsSort,
+		positionsInGroups: state.positionsInGroups,
 	};
 };
 

@@ -246,9 +246,7 @@ writeOffsRouter.post(
 			studioId,
 			{
 				$set: {
-					stock: {
-						stockPrice: stockPriceOld - totalPurchasePrice,
-					},
+					'stock.stockPrice': stockPriceOld - totalPurchasePrice,
 				},
 			},
 			{ runValidators: true }

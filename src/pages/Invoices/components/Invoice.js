@@ -72,7 +72,7 @@ const Invoice = props => {
 											[styles.invoicePaid]: true,
 										})}
 									>
-										<FontAwesomeIcon className={styles.invoicePaidIcon} icon={['fal', 'check-circle']} />
+										<FontAwesomeIcon icon={['fal', 'check-circle']} />
 										Счет оплачен
 									</div>
 								) : null}

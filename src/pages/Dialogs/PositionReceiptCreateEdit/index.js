@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import validator from 'validator';
+import { debounce } from 'lodash';
 
 import { Formik } from 'formik';
 
@@ -13,8 +14,6 @@ import { createPositionReceipt, editPositionReceipt } from 'src/actions/position
 
 import FormPositionReceiptCreateEdit from './FormPositionReceiptCreateEdit';
 import positionSchema from './positionSchema';
-
-let shopNameFieldTimer;
 
 class DialogPositionReceiptCreateEdit extends Component {
 	static propTypes = {
@@ -33,20 +32,16 @@ class DialogPositionReceiptCreateEdit extends Component {
 
 	state = this.initialState;
 
-	onChangeShopFields = (value, setFieldValue) => {
+	onChangeShopFields = debounce((value, setFieldValue) => {
 		setFieldValue('shopName', value);
 
-		clearTimeout(shopNameFieldTimer);
+		if (validator.isURL(value)) {
+			setFieldValue('shopName', '');
+			setFieldValue('shopLink', value);
 
-		shopNameFieldTimer = setTimeout(() => {
-			if (validator.isURL(value)) {
-				setFieldValue('shopName', '');
-				setFieldValue('shopLink', value);
-
-				this.setState({ shopLinkVisible: true });
-			}
-		}, 300);
-	};
+			this.setState({ shopLinkVisible: true });
+		}
+	}, 300);
 
 	onCreateCharacteristic = (characteristic, setFieldValue) => {
 		this.setState({ isLoadingCharacteristics: true }, () => {

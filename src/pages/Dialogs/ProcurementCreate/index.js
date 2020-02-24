@@ -107,7 +107,7 @@ class ProcurementCreate extends Component {
 
 			actions.setFieldValue('pricePositions', indicators.pricePositions);
 
-			// Если есть позиции для продажи и стоимость доставки компенсируется за счет позиций для продажи
+			// Если есть платные позиции и стоимость доставки компенсируется за счет платных позиций
 			if (indicators.selling.positionsCount && procurement.compensateCostDelivery) {
 				procurement.receipts.forEach(receipt => {
 					if (!receipt.position.isFree && receipt.purchasePrice) {

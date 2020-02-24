@@ -120,7 +120,7 @@ const WriteOffsPerDay = props => {
 									Итого: <Money value={indicators.total} />
 								</div>
 								<div className={styles.sellingPositions}>
-									Позиции для продажи: <Money value={indicators.sellingPositions} />
+									Платные позиции: <Money value={indicators.sellingPositions} />
 								</div>
 								<div className={styles.freePositions}>
 									Бесплатные позиции: <Money value={indicators.freePositions} />

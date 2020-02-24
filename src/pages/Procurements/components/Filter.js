@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import queryString from 'query-string';
 import { Formik } from 'formik';
+import { debounce } from 'lodash';
 
 import Paper from '@material-ui/core/Paper';
 
@@ -19,8 +20,6 @@ import FormFilter from './FormFilter';
 import filterSchema from './filterSchema';
 
 import styles from './Filter.module.css';
-
-let filterNumberFieldTimer;
 
 class Filter extends Component {
 	static propTypes = {
@@ -46,13 +45,10 @@ class Filter extends Component {
 			[name]: value === null || value === undefined ? !this.state[name] : value,
 		});
 
-	onChangeFilterNumber = ({ target: { value } }, setFieldValue, submitForm) => {
+	onChangeFilterNumber = debounce(({ target: { value } }, setFieldValue, submitForm) => {
 		setFieldValue('number', value);
-
-		clearTimeout(filterNumberFieldTimer);
-
-		filterNumberFieldTimer = setTimeout(() => submitForm(), 150);
-	};
+		submitForm();
+	}, 150);
 
 	onClearFilterNumber = (setFieldValue, submitForm) => {
 		setFieldValue('number', '', false);

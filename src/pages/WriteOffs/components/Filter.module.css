@@ -1,5 +1,5 @@
 .container {
-  background-color: var(--c-hex-br-4);
+  background-color: white;
 }
 
 .topContainer {
@@ -117,6 +117,10 @@
   height: 32px;
   margin-right: 10px;
   width: 32px;
+}
+
+.userInfo {
+  width: calc(100% - 42px);
 }
 
 .userIcon {

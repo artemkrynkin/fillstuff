@@ -454,7 +454,7 @@ const FormFilter = props => {
 												alt={member.user.name}
 												children={<div className={styles.userIcon} children={<FontAwesomeIcon icon={['fas', 'user-alt']} />} />}
 											/>
-											<Grid direction="column" container>
+											<Grid className={styles.userInfo} direction="column" container>
 												<div className={styles.userTitle}>{member.user.name}</div>
 												<div className={styles.userCaption}>{memberRoleTransform(member.roles).join(', ')}</div>
 											</Grid>

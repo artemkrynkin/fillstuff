@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Form, Field, FastField, FieldArray, ErrorMessage } from 'formik';
+import { Form, Field, FieldArray, ErrorMessage } from 'formik';
 import moment from 'moment';
 import MomentUtils from '@date-io/moment';
 import ClassNames from 'classnames';
@@ -169,7 +169,7 @@ const FormProcurementCreate = props => {
 						</Dropdown>
 					</Grid>
 					<Grid xs={3} item>
-						<FastField
+						<Field
 							name="totalPrice"
 							placeholder="0"
 							label="Итого по чеку/накладной"

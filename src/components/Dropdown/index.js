@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
@@ -74,12 +74,20 @@ const Dropdown = props => {
 	const { anchor, open, onClose, arrow, children, style, innerContentStyle, ...remainingProps } = props;
 	const { arrow: arrowClasses, popper } = useStylesArrow();
 	const [arrowRef, setArrowRef] = useState(null);
+	const [scrollTop, setScrollTop] = useState(0);
+	const scrollRef = useRef(null);
 
 	const handleClose = event => {
 		if (anchor.current && anchor.current.contains(event.target)) return;
 
 		onClose();
 	};
+
+	const handleScroll = event => {
+		setScrollTop(event.currentTarget.scrollTop);
+	};
+
+	if (scrollRef.current) scrollRef.current.scrollTop = scrollTop;
 
 	const popperStyle = {
 		zIndex: 1300,
@@ -90,9 +98,6 @@ const Dropdown = props => {
 		<Popper
 			anchorEl={anchor.current}
 			open={open}
-			style={popperStyle}
-			transition
-			disablePortal
 			modifiers={{
 				arrow: {
 					enabled: arrow,
@@ -100,6 +105,9 @@ const Dropdown = props => {
 				},
 			}}
 			className={popper}
+			style={popperStyle}
+			transition
+			disablePortal
 			{...remainingProps}
 		>
 			{({ TransitionProps, placement }) => (
@@ -113,7 +121,9 @@ const Dropdown = props => {
 					<Paper style={{ overflow: 'hidden' }} elevation={3}>
 						{arrow ? <span className={arrowClasses} ref={setArrowRef} /> : null}
 						<ClickAwayListener onClickAway={handleClose}>
-							<div style={innerContentStyle}>{children}</div>
+							<div ref={scrollRef} onScroll={handleScroll} style={innerContentStyle}>
+								{children}
+							</div>
 						</ClickAwayListener>
 					</Paper>
 				</Fade>

@@ -16,8 +16,9 @@ const Money = props => {
 				return (
 					<span className={styles.money}>
 						{moneyArray[0]}
+						{moneyArray[1] !== undefined ? ',' : null}
 						<span className={styles.smalls}>
-							{moneyArray[1] !== undefined ? `,${moneyArray[1]}` : null}
+							{moneyArray[1] !== undefined ? `${moneyArray[1]}` : null}
 							&nbsp;₽
 						</span>
 					</span>

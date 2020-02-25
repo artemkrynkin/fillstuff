@@ -5,12 +5,12 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
-
-import { editMember } from 'src/actions/members';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Grid from '@material-ui/core/Grid';
+
+import { editMember } from 'src/actions/members';
 
 import stylesGlobal from 'src/styles/globals.module.css';
 // import styles from './Settings.module.css';

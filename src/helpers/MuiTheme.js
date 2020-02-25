@@ -320,7 +320,7 @@ export const BliksideTheme = createMuiTheme({
 		MuiMenuItem: {
 			root: {
 				color: theme.blueGrey.cBg700,
-				fontSize: 14,
+				fontSize: 13,
 				minHeight: 34,
 				lineHeight: 1.6,
 			},

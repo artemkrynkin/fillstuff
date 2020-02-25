@@ -10,7 +10,7 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 
 import { Dialog, DialogActions, DialogTitle } from 'src/components/Dialog';
-import NumberFormat, { currencyFormatInputProps, currencyFormatProps } from 'src/components/NumberFormat';
+import NumberFormat, { moneyInputFormatProps, currencyMoneyFormatProps } from 'src/components/NumberFormat';
 
 import { createInvoicePayment } from 'src/actions/invoices';
 
@@ -87,7 +87,7 @@ class DialogInvoicePaymentCreate extends Component {
 													</div>
 												)}
 												displayType="text"
-												{...currencyFormatProps}
+												{...currencyMoneyFormatProps}
 											/>
 										</Grid>
 									</Grid>
@@ -102,7 +102,7 @@ class DialogInvoicePaymentCreate extends Component {
 										InputProps={{
 											inputComponent: NumberFormat,
 											inputProps: {
-												...currencyFormatInputProps,
+												...moneyInputFormatProps,
 											},
 										}}
 										fullWidth

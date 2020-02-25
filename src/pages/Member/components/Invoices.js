@@ -18,6 +18,7 @@ import Button from '@material-ui/core/Button';
 import { formatNumber } from 'shared/utils';
 
 import Money from 'src/components/Money';
+import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
 
 import { createInvoice } from 'src/actions/invoices';
 
@@ -134,7 +135,12 @@ const Invoices = props => {
 												{statusTransform(invoice.status)}
 											</TableCell>
 											<TableCell align="right" width={140}>
-												{formatNumber(invoice.amount, { toString: true })} ₽
+												<NumberFormat
+													value={formatNumber(invoice.amount, { toString: true })}
+													renderText={value => value}
+													displayType="text"
+													{...currencyMoneyFormatProps}
+												/>
 											</TableCell>
 										</TableRow>
 									);

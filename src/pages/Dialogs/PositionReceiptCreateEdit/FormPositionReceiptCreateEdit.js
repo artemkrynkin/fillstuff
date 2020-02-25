@@ -22,7 +22,7 @@ import { unitTypes, unitTypeTransform, characteristicTypeTransform } from 'share
 import { onAddCharacteristicInPosition, checkCharacteristicsOnAbsenceInPosition, onUnitSellingPriceCalc } from 'src/helpers/positionUtils';
 
 import { DialogActions } from 'src/components/Dialog';
-import NumberFormat, { currencyFormatInputProps } from 'src/components/NumberFormat';
+import NumberFormat, { moneyInputFormatProps } from 'src/components/NumberFormat';
 import { SelectAutocompleteCreate } from 'src/components/selectAutocomplete';
 import Chips from 'src/components/Chips';
 import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
@@ -260,7 +260,7 @@ const FormPositionReceiptCreateEdit = props => {
 									endAdornment: <InputAdornment position="end">₽</InputAdornment>,
 									inputComponent: NumberFormat,
 									inputProps: {
-										...currencyFormatInputProps,
+										...moneyInputFormatProps,
 									},
 									onChange: ({ target: { value } }) => {
 										if (values.unitReceipt === 'nmp' && values.unitIssue === 'pce') {
@@ -297,7 +297,7 @@ const FormPositionReceiptCreateEdit = props => {
 										endAdornment: <InputAdornment position="end">₽</InputAdornment>,
 										inputComponent: NumberFormat,
 										inputProps: {
-											...currencyFormatInputProps,
+											...moneyInputFormatProps,
 										},
 									}}
 									fullWidth
@@ -314,7 +314,7 @@ const FormPositionReceiptCreateEdit = props => {
 										endAdornment: <InputAdornment position="end">₽</InputAdornment>,
 										inputComponent: NumberFormat,
 										inputProps: {
-											...currencyFormatInputProps,
+											...moneyInputFormatProps,
 										},
 									}}
 									fullWidth

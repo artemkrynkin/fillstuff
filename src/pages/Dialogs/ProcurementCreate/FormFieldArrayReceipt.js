@@ -13,7 +13,7 @@ import { formatNumber } from 'shared/utils';
 
 import { formError } from 'src/helpers/utils';
 
-import NumberFormat, { currencyFormatInputProps, currencyFormatProps } from 'src/components/NumberFormat';
+import NumberFormat, { moneyInputFormatProps, currencyMoneyFormatProps } from 'src/components/NumberFormat';
 
 import styles from './index.module.css';
 import PositionNameInList from '../../../components/PositionNameInList';
@@ -121,7 +121,7 @@ const FormFieldArrayReceipt = props => {
 							endAdornment: <InputAdornment position="end">₽</InputAdornment>,
 							inputComponent: NumberFormat,
 							inputProps: {
-								...currencyFormatInputProps,
+								...moneyInputFormatProps,
 							},
 						}}
 						disabled={isSubmitting || !formEditable}
@@ -135,7 +135,7 @@ const FormFieldArrayReceipt = props => {
 							endAdornment: <InputAdornment position="end">₽</InputAdornment>,
 							inputComponent: NumberFormat,
 							inputProps: {
-								...currencyFormatInputProps,
+								...moneyInputFormatProps,
 							},
 						}}
 						disabled
@@ -154,7 +154,7 @@ const FormFieldArrayReceipt = props => {
 										value={receipt.unitPurchasePrice}
 										renderText={value => `Цена покупки: ${value}`}
 										displayType="text"
-										{...currencyFormatProps}
+										{...currencyMoneyFormatProps}
 									/>
 									{receipt.unitCostDelivery > 0 ? <br /> : null}
 									{receipt.unitCostDelivery > 0 ? (
@@ -162,7 +162,7 @@ const FormFieldArrayReceipt = props => {
 											value={receipt.unitCostDelivery}
 											renderText={value => `Стоимость доставки: ${value}`}
 											displayType="text"
-											{...currencyFormatProps}
+											{...currencyMoneyFormatProps}
 										/>
 									) : null}
 									{receipt.unitExtraCharge > 0 ? <br /> : null}
@@ -171,7 +171,7 @@ const FormFieldArrayReceipt = props => {
 											value={receipt.unitExtraCharge}
 											renderText={value => `Процент студии: ${value}`}
 											displayType="text"
-											{...currencyFormatProps}
+											{...currencyMoneyFormatProps}
 										/>
 									) : null}
 									{receipt.unitManualExtraCharge > 0 ? <br /> : null}
@@ -180,7 +180,7 @@ const FormFieldArrayReceipt = props => {
 											value={receipt.unitManualExtraCharge}
 											renderText={value => `Ручная наценка: ${value}`}
 											displayType="text"
-											{...currencyFormatProps}
+											{...currencyMoneyFormatProps}
 										/>
 									) : null}
 								</div>
@@ -206,7 +206,7 @@ const FormFieldArrayReceipt = props => {
 										endAdornment: <InputAdornment position="end">₽</InputAdornment>,
 										inputComponent: NumberFormat,
 										inputProps: {
-											...currencyFormatInputProps,
+											...moneyInputFormatProps,
 											onFocus: ({ target }) => (target.selectionStart = target.value.length),
 											onBlur: ({ target: { value } }) => {
 												if (value < autoGenUnitSellingPrice) {

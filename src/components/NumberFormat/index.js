@@ -37,15 +37,15 @@ export const moneyFormatProps = {
 	decimalScale: 2,
 };
 
-export const currencyFormatProps = {
-	decimalSeparator: ',',
+export const currencyMoneyFormatProps = {
+	decimalSeparator: '.',
 	thousandSeparator: ' ',
 	decimalScale: 2,
 	allowNegative: false,
 	suffix: ' ₽',
 };
 
-export const currencyFormatInputProps = {
+export const moneyInputFormatProps = {
 	// thousandSeparator: ' ',
 	decimalScale: 2,
 	allowNegative: false,

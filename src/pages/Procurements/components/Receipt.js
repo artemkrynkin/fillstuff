@@ -5,7 +5,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import { formatNumber } from 'shared/utils';
 
-import NumberFormat, { currencyFormatProps } from 'src/components/NumberFormat';
+import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
 import PositionNameInList from 'src/components/PositionNameInList';
 import QuantityIndicator from 'src/components/QuantityIndicator';
 
@@ -48,7 +48,7 @@ const Receipt = props => {
 									value={formatNumber(receipt.unitPurchasePrice, { toString: true })}
 									renderText={value => `Цена покупки: ${value}`}
 									displayType="text"
-									{...currencyFormatProps}
+									{...currencyMoneyFormatProps}
 								/>
 								{receipt.unitCostDelivery > 0 ? <br /> : null}
 								{receipt.unitCostDelivery > 0 ? (
@@ -56,7 +56,7 @@ const Receipt = props => {
 										value={formatNumber(receipt.unitCostDelivery, { toString: true })}
 										renderText={value => `Стоимость доставки: ${value}`}
 										displayType="text"
-										{...currencyFormatProps}
+										{...currencyMoneyFormatProps}
 									/>
 								) : null}
 								{receipt.unitExtraCharge > 0 ? <br /> : null}
@@ -65,7 +65,7 @@ const Receipt = props => {
 										value={formatNumber(receipt.unitExtraCharge, { toString: true })}
 										renderText={value => `Процент студии: ${value}`}
 										displayType="text"
-										{...currencyFormatProps}
+										{...currencyMoneyFormatProps}
 									/>
 								) : null}
 								{receipt.unitManualExtraCharge > 0 ? <br /> : null}
@@ -74,7 +74,7 @@ const Receipt = props => {
 										value={formatNumber(receipt.unitManualExtraCharge, { toString: true })}
 										renderText={value => `Ручная наценка: ${value}`}
 										displayType="text"
-										{...currencyFormatProps}
+										{...currencyMoneyFormatProps}
 									/>
 								) : null}
 							</div>

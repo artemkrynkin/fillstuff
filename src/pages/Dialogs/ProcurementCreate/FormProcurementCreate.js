@@ -19,7 +19,7 @@ import { declensionNumber } from 'src/helpers/utils';
 
 import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
 import { DialogActions } from 'src/components/Dialog';
-import NumberFormat, { currencyFormatInputProps } from 'src/components/NumberFormat';
+import NumberFormat, { moneyInputFormatProps } from 'src/components/NumberFormat';
 import Dropdown from 'src/components/Dropdown';
 
 import FormFieldArrayReceipts from './FormFieldArrayReceipts';
@@ -180,7 +180,7 @@ const FormProcurementCreate = props => {
 								endAdornment: <InputAdornment position="end">₽</InputAdornment>,
 								inputComponent: NumberFormat,
 								inputProps: {
-									...currencyFormatInputProps,
+									...moneyInputFormatProps,
 								},
 							}}
 							disabled={isSubmitting || !formEditable}
@@ -197,7 +197,7 @@ const FormProcurementCreate = props => {
 								endAdornment: <InputAdornment position="end">₽</InputAdornment>,
 								inputComponent: NumberFormat,
 								inputProps: {
-									...currencyFormatInputProps,
+									...moneyInputFormatProps,
 								},
 							}}
 							disabled={isSubmitting || !formEditable}

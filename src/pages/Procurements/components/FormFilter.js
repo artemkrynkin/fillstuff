@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import moment from 'moment';
 import MomentUtils from '@date-io/moment';
 import { Field, Form } from 'formik';
-import { debounce } from 'lodash';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Grid from '@material-ui/core/Grid';
@@ -24,25 +23,8 @@ import { weekActive, monthActive, paginationCalendarFormat } from 'src/component
 import Dropdown from 'src/components/Dropdown';
 import PositionNameInList from 'src/components/PositionNameInList';
 
-import { SearchTextField } from './Filter.styles';
-
+import { SearchTextField, FilterSearchTextField } from './Filter.styles';
 import styles from './Filter.module.css';
-
-const FilterPositionTransform = (positionSelected, positions, loading) => {
-	if (positionSelected === 'all') {
-		return 'Все позиции';
-	} else {
-		if (loading) return <CircularProgress size={13} />;
-
-		if (positions && positions.length) {
-			const position = positions.find(position => position._id === positionSelected);
-
-			return position ? position.name : null;
-		} else {
-			return 'Не найдено';
-		}
-	}
-};
 
 const roles = ['all', 'owners', 'admins'];
 const FilterRoleTransform = (roleSelected, members, loading) => {
@@ -64,6 +46,38 @@ const FilterRoleTransform = (roleSelected, members, loading) => {
 				return 'Не найдено';
 			}
 	}
+};
+const findMemberByName = (member, searchText) => {
+	const searchTextLowercase = String(searchText).toLowerCase();
+
+	const memberName = member.user.name.toLowerCase();
+
+	return memberName.indexOf(searchTextLowercase) !== -1;
+};
+
+const FilterPositionTransform = (positionSelected, positions, loading) => {
+	if (positionSelected === 'all') {
+		return 'Все позиции';
+	} else {
+		if (loading) return <CircularProgress size={13} />;
+
+		if (positions && positions.length) {
+			const position = positions.find(position => position._id === positionSelected);
+
+			return position ? position.name : null;
+		} else {
+			return 'Не найдено';
+		}
+	}
+};
+const findPositionByFullName = (position, searchText) => {
+	const searchTextLowercase = String(searchText).toLowerCase();
+
+	const positionName = position.characteristics
+		.reduce((fullName, characteristic) => `${fullName} ${characteristic.label}`, position.name)
+		.toLowerCase();
+
+	return positionName.indexOf(searchTextLowercase) !== -1;
 };
 
 const DropdownFooter = props => {
@@ -103,13 +117,13 @@ const FormFilter = props => {
 		onChangeFilterRole,
 		onResetAllFilters,
 		members: {
-			data: members,
-			isFetching: isLoadingMembers,
+			data: allMembers,
+			isFetching: isLoadingAllMembers,
 			// error: errorMembers
 		},
 		positions: {
-			data: positions,
-			isFetching: isLoadingPositions,
+			data: allPositions,
+			isFetching: isLoadingAllPositions,
 			// error: errorPositions
 		},
 		refFilterNumberInput,
@@ -125,6 +139,31 @@ const FormFilter = props => {
 			submitForm,
 		},
 	} = props;
+	const searchTextFieldMember = useRef(null);
+	const [searchTextMember, setSearchTextMember] = useState('');
+	const searchTextFieldPosition = useRef(null);
+	const [searchTextPosition, setSearchTextPosition] = useState('');
+
+	const onTypeSearchTextMember = ({ target: { value } }) => setSearchTextMember(value);
+
+	const onClearSearchTextMember = () => {
+		setSearchTextMember('');
+
+		searchTextFieldMember.current.focus();
+	};
+
+	const onTypeSearchTextPosition = ({ target: { value } }) => setSearchTextPosition(value);
+
+	const onClearSearchTextPosition = () => {
+		setSearchTextPosition('');
+
+		searchTextFieldPosition.current.focus();
+	};
+
+	const members = !isLoadingAllMembers && allMembers ? allMembers.filter(member => findMemberByName(member, searchTextMember)) : [];
+
+	const positions =
+		!isLoadingAllPositions && allPositions ? allPositions.filter(position => findPositionByFullName(position, searchTextPosition)) : [];
 
 	const isWeekActive = currentWeek => weekActive(values.dateStartView, values.dateEndView, currentWeek);
 	const isMonthActive = currentMonth => monthActive(values.dateStartView, values.dateEndView, currentMonth);
@@ -139,7 +178,6 @@ const FormFilter = props => {
 					inputProps={{
 						onChange: event => onChangeFilterNumber(event, setFieldValue, submitForm),
 					}}
-					disabled={false}
 					placeholder="Поиск по номеру чека или накладной"
 					fullWidth
 				/>
@@ -293,7 +331,7 @@ const FormFilter = props => {
 						onClick={() => handlerDropdown('dropdownPosition')}
 						disableRipple
 					>
-						<span>{FilterPositionTransform(values.position, positions, isLoadingPositions)}</span>
+						<span>{FilterPositionTransform(values.position, positions, isLoadingAllPositions)}</span>
 						<FontAwesomeIcon icon={['far', 'angle-down']} />
 					</ButtonBase>
 
@@ -302,36 +340,65 @@ const FormFilter = props => {
 						open={dropdownPosition}
 						onClose={() => handlerDropdown('dropdownPosition')}
 						placement="bottom-start"
-						innerContentStyle={{ minWidth: 125, maxWidth: 300, maxHeight: 300, overflow: 'auto' }}
+						headerElement={
+							<div className={styles.filterSearchTextFieldContainer}>
+								<FilterSearchTextField
+									inputRef={searchTextFieldPosition}
+									placeholder="Введите название позиции"
+									value={searchTextPosition}
+									onChange={onTypeSearchTextPosition}
+									fullWidth
+								/>
+								{searchTextPosition ? (
+									<ButtonBase onClick={onClearSearchTextPosition} className={styles.filterSearchTextFieldClear}>
+										<FontAwesomeIcon icon={['fal', 'times']} />
+									</ButtonBase>
+								) : null}
+							</div>
+						}
+						innerContentStyle={{ width: 250, maxHeight: 300, overflow: 'auto' }}
 					>
-						{!isLoadingPositions && positions && positions.length ? (
+						{!isLoadingAllPositions && positions && positions.length ? (
 							<List component="nav">
-								<ListItem
-									disabled={isSubmitting}
-									selected={values.position === 'all'}
-									onClick={() => onChangeFilterPosition('all', setFieldValue, submitForm)}
-									component={MenuItem}
-									button
-								>
-									Все позиции
-								</ListItem>
-								{positions.map((position, index) => (
+								{!searchTextPosition ? (
 									<ListItem
-										key={index}
 										disabled={isSubmitting}
-										selected={values.position === position._id}
-										onClick={() => onChangeFilterPosition(position._id, setFieldValue, submitForm)}
+										selected={values.position === 'all'}
+										onClick={() => onChangeFilterPosition('all', setFieldValue, submitForm)}
 										component={MenuItem}
 										button
 									>
-										<PositionNameInList className={styles.positionName} name={position.name} characteristics={position.characteristics} />
+										Все позиции
 									</ListItem>
-								))}
+								) : null}
+								{positions.map((position, index) => {
+									if (position.isArchived && !searchTextPosition) return null;
+
+									return (
+										<ListItem
+											key={index}
+											disabled={isSubmitting}
+											selected={values.position === position._id}
+											onClick={() => onChangeFilterPosition(position._id, setFieldValue, submitForm)}
+											component={MenuItem}
+											button
+										>
+											<PositionNameInList
+												className={styles.positionName}
+												name={position.name}
+												characteristics={position.characteristics}
+												isArchived={position.isArchived}
+											/>
+										</ListItem>
+									);
+								})}
 							</List>
 						) : (
-							<div style={{ textAlign: 'center', padding: 10 }}>
-								{positions && !positions.length ? (
-									<Typography variant="caption">Еще не создано ни одной позиции.</Typography>
+							<div style={{ textAlign: 'center', padding: 15 }}>
+								{positions && !positions.length && searchTextPosition ? (
+									<Typography variant="caption">Ничего не найдено</Typography>
+								) : positions && !positions.length ? (
+									<Typography variant="caption">Позиций не создано</Typography>
 								) : (
 									<CircularProgress size={20} />
 								)}
@@ -348,7 +415,7 @@ const FormFilter = props => {
 						onClick={() => handlerDropdown('dropdownRole')}
 						disableRipple
 					>
-						<span>{FilterRoleTransform(values.role, members, isLoadingMembers)}</span>
+						<span>{FilterRoleTransform(values.role, members, isLoadingAllMembers)}</span>
 						<FontAwesomeIcon icon={['far', 'angle-down']} />
 					</ButtonBase>
 
@@ -357,22 +424,40 @@ const FormFilter = props => {
 						open={dropdownRole}
 						onClose={() => handlerDropdown('dropdownRole')}
 						placement="bottom-start"
-						innerContentStyle={{ maxHeight: 300, overflow: 'auto' }}
+						headerElement={
+							<div className={styles.filterSearchTextFieldContainer}>
+								<FilterSearchTextField
+									inputRef={searchTextFieldMember}
+									placeholder="Введите имя"
+									value={searchTextMember}
+									onChange={onTypeSearchTextMember}
+									fullWidth
+								/>
+								{searchTextMember ? (
+									<ButtonBase onClick={onClearSearchTextMember} className={styles.filterSearchTextFieldClear}>
+										<FontAwesomeIcon icon={['fal', 'times']} />
+									</ButtonBase>
+								) : null}
+							</div>
+						}
+						innerContentStyle={{ width: 200, maxHeight: 300, overflow: 'auto' }}
 					>
-						{!isLoadingMembers && members && members.length ? (
+						{!isLoadingAllMembers && members && members.length ? (
 							<List component="nav">
-								{roles.map((role, index) => (
-									<ListItem
-										key={index}
-										disabled={isSubmitting}
-										selected={values.role === role}
-										onClick={() => onChangeFilterRole(role, setFieldValue, submitForm)}
-										component={MenuItem}
-										button
-									>
-										{FilterRoleTransform(role)}
-									</ListItem>
-								))}
+								{!searchTextMember
+									? roles.map((role, index) => (
+											<ListItem
+												key={index}
+												disabled={isSubmitting}
+												selected={values.role === role}
+												onClick={() => onChangeFilterRole(role, setFieldValue, submitForm)}
+												component={MenuItem}
+												button
+											>
+												{FilterRoleTransform(role)}
+											</ListItem>
+									  ))
+									: null}
 								{members.map((member, index) => (
 									<ListItem
 										key={index}
@@ -398,12 +483,8 @@ const FormFilter = props => {
 								))}
 							</List>
 						) : (
-							<div style={{ textAlign: 'center', padding: 10 }}>
-								{members && !members.length ? (
-									<Typography variant="caption">В команде нет участников.</Typography>
-								) : (
-									<CircularProgress size={20} />
-								)}
+							<div style={{ textAlign: 'center', padding: 15 }}>
+								{members && !members.length ? <Typography variant="caption">Ничего не найдено</Typography> : <CircularProgress size={20} />}
 							</div>
 						)}
 					</Dropdown>

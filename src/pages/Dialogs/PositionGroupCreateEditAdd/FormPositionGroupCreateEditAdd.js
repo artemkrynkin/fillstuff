@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import ClassNames from 'classnames';
 
 import { Form, Field, FieldArray } from 'formik';
@@ -30,44 +30,41 @@ const selectPositionsClasses = (selectedPositions, positionId) => {
 	});
 };
 
-const findOnlyPositionByName = (position, string) => {
+const findPositionByFullName = (position, searchText) => {
 	if (position.positionGroup) return false;
 
-	const searchString = String(string).toLowerCase();
-	const characteristics = position.characteristics.reduce(
-		(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
-		''
-	);
-	const positionName = String(position.name + ' ' + characteristics).toLowerCase();
+	const searchTextLowercase = String(searchText).toLowerCase();
 
-	return positionName.indexOf(searchString) !== -1;
-};
+	const positionName = position.characteristics
+		.reduce((fullName, characteristic) => `${fullName} ${characteristic.label}`, position.name)
+		.toLowerCase();
 
-const compareByName = (a, b) => {
-	if (a.name > b.name) return 1;
-	else if (a.name < b.name) return -1;
-	else return 0;
+	return positionName.indexOf(searchTextLowercase) !== -1;
 };
 
 const FormPositionGroupCreateEditAdd = props => {
 	const {
 		onCloseDialog,
-		onTypeSearch,
-		onClearSearch,
 		type,
 		positions: {
 			data: allPositions,
 			isFetching: isLoadingAllPositions,
 			// error: errorPositions
 		},
-		searchField: { searchString, searchInputRef },
 		formikProps: { errors, isSubmitting, touched, values },
 	} = props;
+	const searchTextFieldPosition = useRef(null);
+	const [searchTextPosition, setSearchTextPosition] = useState('');
+
+	const onTypeSearchTextPosition = ({ target: { value } }) => setSearchTextPosition(value);
+	const onClearSearchTextPosition = () => {
+		setSearchTextPosition('');
+
+		searchTextFieldPosition.current.focus();
+	};
 
 	const positions =
-		!isLoadingAllPositions && allPositions
-			? allPositions.filter(position => findOnlyPositionByName(position, searchString)).sort(compareByName)
-			: [];
+		!isLoadingAllPositions && allPositions ? allPositions.filter(position => findPositionByFullName(position, searchTextPosition)) : [];
 
 	return (
 		<Form>
@@ -126,16 +123,16 @@ const FormPositionGroupCreateEditAdd = props => {
 						<InputLabel error={typeof errors.positions === 'string'} style={{ minWidth: 151 }}>
 							{typeof errors.positions === 'string' ? errors.positions : 'Выберите позиции'}
 						</InputLabel>
-						<div className={styles.textFieldSearchContainer}>
+						<div className={styles.searchTextFieldContainer}>
 							<SearchTextField
-								inputRef={searchInputRef}
-								placeholder="Поиск позиций"
-								value={searchString}
-								onChange={onTypeSearch}
+								inputRef={searchTextFieldPosition}
+								placeholder="Введите название позиции"
+								value={searchTextPosition}
+								onChange={onTypeSearchTextPosition}
 								fullWidth
 							/>
-							{searchString ? (
-								<ButtonBase onClick={onClearSearch} className={styles.textFieldSearchClear}>
+							{searchTextPosition ? (
+								<ButtonBase onClick={onClearSearchTextPosition} className={styles.searchTextFieldClear}>
 									<FontAwesomeIcon icon={['fal', 'times']} />
 								</ButtonBase>
 							) : null}
@@ -156,7 +153,7 @@ const FormPositionGroupCreateEditAdd = props => {
 															selectedPosition => selectedPosition._id === position._id
 														);
 
-														searchInputRef.current.focus();
+														searchTextFieldPosition.current.focus();
 
 														if (!!~selectedPositionIndex) return arrayHelpers.remove(selectedPositionIndex);
 														else return arrayHelpers.push(position);
@@ -172,13 +169,13 @@ const FormPositionGroupCreateEditAdd = props => {
 													/>
 												</div>
 											))
-										) : !positions.length && searchString ? (
+										) : !positions.length && searchTextPosition ? (
 											<Typography variant="caption" align="center" display="block" style={{ marginTop: 20 }}>
-												Среди позиций совпадений не найдено.
+												Ничего не найдено
 											</Typography>
 										) : (
 											<Typography variant="caption" align="center" display="block" style={{ marginTop: 20 }}>
-												Нет позиций для группировки.
+												Нет позиций для группировки
 											</Typography>
 										)
 									) : (

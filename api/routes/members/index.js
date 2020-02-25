@@ -20,7 +20,7 @@ membersRouter.post(
 	async (req, res, next) => {
 		const {
 			studioId,
-			query: { role },
+			query: { name, role },
 		} = req.body;
 
 		let conditions = {
@@ -48,6 +48,10 @@ membersRouter.post(
 			const roleFilter = role.slice(0, -1);
 
 			membersTransform = membersTransform.filter(member => member.roles.some(role => role.includes(roleFilter)));
+		}
+
+		if (name) {
+			membersTransform = membersTransform.filter(member => member.user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1);
 		}
 
 		res.json(membersTransform);

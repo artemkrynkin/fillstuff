@@ -20,11 +20,8 @@ positionsRouter.post(
 	async (req, res, next) => {
 		const { studioId } = req.body;
 
-		const positionsPromise = Position.find({
-			studio: studioId,
-			isArchived: false,
-		})
-			.sort({ name: 1 })
+		const positionsPromise = Position.find({ studio: studioId })
+			.sort({ isArchived: 1, name: 1 })
 			.populate({
 				path: 'activeReceipt characteristics',
 			})

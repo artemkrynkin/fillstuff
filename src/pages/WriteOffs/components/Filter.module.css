@@ -57,6 +57,25 @@
   transition: color 150ms ease-out;
 }
 
+.filterSearchTextFieldContainer {
+  background-color: white;
+  position: sticky;
+  top: 0;
+}
+
+.filterSearchTextFieldClear {
+  color: var(--c-hex-bg-300);
+  font-size: 16px;
+  padding: 12px 10px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.filterSearchTextFieldClear:hover {
+  color: var(--c-hex-t-300);
+}
+
 .dropdownContent {
   padding: 15px;
 }
@@ -89,8 +108,8 @@
 }
 
 .user {
-  align-items: center;
   display: flex;
+  width: 100%;
 }
 
 .userPhoto {

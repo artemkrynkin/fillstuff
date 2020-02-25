@@ -1,14 +1,20 @@
 .container {
-  background-color: var(--c-hex-br-4);
+  background-color: white;
 }
 
 .tabs {
+  background-color: var(--c-hex-br-3);
   border-bottom: 1px solid var(--c-hex-br-5);
+  border-radius: 8px 8px 0 0;
   padding: 0 15px;
 }
 
 .topContainer {
   position: relative;
+}
+
+.bottomContainer {
+  border-top: 1px solid var(--c-hex-br-5);
 }
 
 .loadingForm {
@@ -17,6 +23,19 @@
   position: absolute;
   top: 0;
   right: 15px;
+}
+
+.textFieldFilterNameClear {
+  color: var(--c-hex-bg-300);
+  font-size: 16px;
+  padding: 12px 20px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.textFieldFilterNameClear:hover {
+  color: var(--c-hex-t-300);
 }
 
 .filterButtonLink,

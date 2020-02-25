@@ -1,4 +1,4 @@
-import React, { Component, createRef } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Formik } from 'formik';
@@ -9,6 +9,7 @@ import { createPositionGroup, editPositionGroup, addPositionInGroup } from 'src/
 
 import FormPositionGroupCreateEditAdd from './FormPositionGroupCreateEditAdd';
 import positionGroupSchema from './positionGroupSchema';
+import { positionTransform } from '../ProcurementCreate/utils';
 
 class DialogPositionGroupCreateEditAdd extends Component {
 	static propTypes = {
@@ -17,22 +18,6 @@ class DialogPositionGroupCreateEditAdd extends Component {
 		onCloseDialog: PropTypes.func.isRequired,
 		onExitedDialog: PropTypes.func,
 		selectedPositionGroup: PropTypes.object,
-	};
-
-	initialState = {
-		searchString: '',
-	};
-
-	state = this.initialState;
-
-	searchInputRef = createRef();
-
-	onTypeSearch = ({ target: { value } }) => this.setState({ searchString: value });
-
-	onClearSearch = () => {
-		this.setState({ searchString: '' });
-
-		this.searchInputRef.current.focus();
 	};
 
 	onSubmit = (values, actions) => {
@@ -67,14 +52,11 @@ class DialogPositionGroupCreateEditAdd extends Component {
 	onExitedDialog = () => {
 		const { onExitedDialog } = this.props;
 
-		this.setState(this.initialState, () => {
-			if (onExitedDialog) onExitedDialog();
-		});
+		if (onExitedDialog) onExitedDialog();
 	};
 
 	render() {
 		const { type, dialogOpen, onCloseDialog, positions, selectedPositionGroup } = this.props;
-		const { searchString } = this.state;
 
 		if ((type === 'edit' || type === 'add') && !selectedPositionGroup) return null;
 
@@ -109,20 +91,7 @@ class DialogPositionGroupCreateEditAdd extends Component {
 					validateOnChange={false}
 					onSubmit={(values, actions) => this.onSubmit(values, actions)}
 				>
-					{props => (
-						<FormPositionGroupCreateEditAdd
-							onCloseDialog={onCloseDialog}
-							onTypeSearch={this.onTypeSearch}
-							onClearSearch={this.onClearSearch}
-							type={type}
-							positions={positions}
-							searchField={{
-								searchString: searchString,
-								searchInputRef: this.searchInputRef,
-							}}
-							formikProps={props}
-						/>
-					)}
+					{props => <FormPositionGroupCreateEditAdd onCloseDialog={onCloseDialog} type={type} positions={positions} formikProps={props} />}
 				</Formik>
 			</DialogSticky>
 		);
@@ -130,8 +99,14 @@ class DialogPositionGroupCreateEditAdd extends Component {
 }
 
 const mapStateToProps = state => {
+	const positions = { ...state.positions };
+
+	if (positions.data && positions.data.length > 0) {
+		positions.data = positions.data.filter(position => !position.isArchived);
+	}
+
 	return {
-		positions: state.positions,
+		positions: positions,
 	};
 };
 

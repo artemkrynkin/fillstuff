@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import moment from 'moment';
 import MomentUtils from '@date-io/moment';
 import { Form } from 'formik';
@@ -22,6 +22,7 @@ import { memberRoleTransform } from 'shared/roles-access-rights';
 import { weekActive, monthActive, paginationCalendarFormat } from 'src/components/Pagination/utils';
 import Dropdown from 'src/components/Dropdown';
 
+import { FilterSearchTextField } from './Filter.styles';
 import styles from './Filter.module.css';
 
 const statusList = ['all', 'unpaid', 'partially-paid', 'paid'];
@@ -53,6 +54,13 @@ const FilterMemberTransform = (memberSelected, members, loading) => {
 	} else {
 		return 'Все участники';
 	}
+};
+const findMemberByName = (member, searchText) => {
+	const searchTextLowercase = String(searchText).toLowerCase();
+
+	const memberName = member.user.name.toLowerCase();
+
+	return memberName.indexOf(searchTextLowercase) !== -1;
 };
 
 const DropdownFooter = props => {
@@ -90,8 +98,8 @@ const FormFilter = props => {
 		onChangeFilterMember,
 		onResetAllFilters,
 		members: {
-			data: members,
-			isFetching: isLoadingMembers,
+			data: allMembers,
+			isFetching: isLoadingAllMembers,
 			// error: errorMembers
 		},
 		dropdownDate: { state: dropdownDate, ref: refDropdownDate },
@@ -106,6 +114,18 @@ const FormFilter = props => {
 			submitForm,
 		},
 	} = props;
+	const searchTextFieldMember = useRef(null);
+	const [searchTextMember, setSearchTextMember] = useState('');
+
+	const onTypeSearchTextMember = ({ target: { value } }) => setSearchTextMember(value);
+
+	const onClearSearchTextMember = () => {
+		setSearchTextMember('');
+
+		searchTextFieldMember.current.focus();
+	};
+
+	const members = !isLoadingAllMembers && allMembers ? allMembers.filter(member => findMemberByName(member, searchTextMember)) : [];
 
 	const isWeekActive = currentWeek => weekActive(values.dateStartView, values.dateEndView, currentWeek);
 	const isMonthActive = currentMonth => monthActive(values.dateStartView, values.dateEndView, currentMonth);
@@ -290,7 +310,7 @@ const FormFilter = props => {
 						onClick={() => handlerDropdown('dropdownMember')}
 						disableRipple
 					>
-						<span>{FilterMemberTransform(values.member, members, isLoadingMembers)}</span>
+						<span>{FilterMemberTransform(values.member, members, isLoadingAllMembers)}</span>
 						<FontAwesomeIcon icon={['far', 'angle-down']} />
 					</ButtonBase>
 
@@ -299,19 +319,37 @@ const FormFilter = props => {
 						open={dropdownMember}
 						onClose={() => handlerDropdown('dropdownMember')}
 						placement="bottom-start"
-						innerContentStyle={{ maxHeight: 300, overflow: 'auto' }}
+						headerElement={
+							<div className={styles.filterSearchTextFieldContainer}>
+								<FilterSearchTextField
+									inputRef={searchTextFieldMember}
+									placeholder="Введите имя"
+									value={searchTextMember}
+									onChange={onTypeSearchTextMember}
+									fullWidth
+								/>
+								{searchTextMember ? (
+									<ButtonBase onClick={onClearSearchTextMember} className={styles.filterSearchTextFieldClear}>
+										<FontAwesomeIcon icon={['fal', 'times']} />
+									</ButtonBase>
+								) : null}
+							</div>
+						}
+						innerContentStyle={{ width: 200, maxHeight: 300, overflow: 'auto' }}
 					>
-						{!isLoadingMembers && members && members.length ? (
+						{!isLoadingAllMembers && members && members.length ? (
 							<List component="nav">
-								<ListItem
-									disabled={isSubmitting}
-									selected={values.member === 'all'}
-									onClick={() => onChangeFilterMember('all', setFieldValue, submitForm)}
-									component={MenuItem}
-									button
-								>
-									Все участники
-								</ListItem>
+								{!searchTextMember ? (
+									<ListItem
+										disabled={isSubmitting}
+										selected={values.member === 'all'}
+										onClick={() => onChangeFilterMember('all', setFieldValue, submitForm)}
+										component={MenuItem}
+										button
+									>
+										Все участники
+									</ListItem>
+								) : null}
 								{members.map((member, index) => (
 									<ListItem
 										key={index}
@@ -337,12 +375,8 @@ const FormFilter = props => {
 								))}
 							</List>
 						) : (
-							<div style={{ textAlign: 'center', padding: 10 }}>
-								{members && !members.length ? (
-									<Typography variant="caption">В команде нет участников.</Typography>
-								) : (
-									<CircularProgress size={20} />
-								)}
+							<div style={{ textAlign: 'center', padding: 15 }}>
+								{members && !members.length ? <Typography variant="caption">Ничего не найдено</Typography> : <CircularProgress size={20} />}
 							</div>
 						)}
 					</Dropdown>

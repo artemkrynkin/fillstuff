@@ -1,10 +1,10 @@
-.textFieldSearchContainer {
+.searchTextFieldContainer {
   margin: 10px -25px 0;
   position: sticky;
   top: 0;
 }
 
-.textFieldSearchClear {
+.searchTextFieldClear {
   color: var(--c-hex-bg-300);
   font-size: 16px;
   padding: 14px 20px 12px 15px;
@@ -13,7 +13,7 @@
   top: 0;
 }
 
-.textFieldSearchClear:hover {
+.searchTextFieldClear:hover {
   color: var(--c-hex-t-300);
 }
 

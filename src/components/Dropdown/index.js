@@ -71,7 +71,7 @@ const useStylesArrow = makeStyles(() => ({
 }));
 
 const Dropdown = props => {
-	const { anchor, open, onClose, arrow, children, style, innerContentStyle, ...remainingProps } = props;
+	const { anchor, open, onClose, arrow, headerElement, children, style, innerContentStyle, ...remainingProps } = props;
 	const { arrow: arrowClasses, popper } = useStylesArrow();
 	const [arrowRef, setArrowRef] = useState(null);
 	const [scrollTop, setScrollTop] = useState(0);
@@ -121,8 +121,11 @@ const Dropdown = props => {
 					<Paper style={{ overflow: 'hidden' }} elevation={3}>
 						{arrow ? <span className={arrowClasses} ref={setArrowRef} /> : null}
 						<ClickAwayListener onClickAway={handleClose}>
-							<div ref={scrollRef} onScroll={handleScroll} style={innerContentStyle}>
-								{children}
+							<div>
+								{headerElement ? headerElement : null}
+								<div ref={scrollRef} onScroll={handleScroll} style={innerContentStyle}>
+									{children}
+								</div>
 							</div>
 						</ClickAwayListener>
 					</Paper>
@@ -140,6 +143,7 @@ Dropdown.propTypes = {
 	anchor: PropTypes.object.isRequired,
 	open: PropTypes.bool.isRequired,
 	onClose: PropTypes.func.isRequired,
+	headerElement: PropTypes.node,
 };
 
 export default Dropdown;

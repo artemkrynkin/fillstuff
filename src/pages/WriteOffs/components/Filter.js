@@ -113,7 +113,7 @@ class Filter extends Component {
 			this.handlerDropdown(dropdownNameList[i], false);
 		}
 
-		const query = filterSchema.cast(values);
+		const query = { ...filterSchema.cast(values) };
 
 		Object.keys(query).forEach(key => (query[key] === '' || query[key] === 'all') && delete query[key]);
 
@@ -209,26 +209,9 @@ class Filter extends Component {
 }
 
 const mapStateToProps = state => {
-	const {
-		positions: {
-			data: positionsData,
-			isFetching: isLoadingPositions,
-			// error: errorPositions
-		},
-	} = state;
-
-	const positions = {
-		data: null,
-		isFetching: isLoadingPositions,
-	};
-
-	if (!isLoadingPositions && positionsData) {
-		positions.data = positionsData.filter(position => position.receipts.length);
-	}
-
 	return {
 		members: state.members,
-		positions: positions,
+		positions: state.positions,
 	};
 };
 

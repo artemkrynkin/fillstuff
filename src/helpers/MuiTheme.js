@@ -323,6 +323,7 @@ export const BliksideTheme = createMuiTheme({
 				fontSize: 13,
 				minHeight: 34,
 				lineHeight: 1.6,
+				whiteSpace: null,
 			},
 			gutters: {
 				paddingLeft: 10,

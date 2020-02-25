@@ -14,6 +14,7 @@ import Members from './Members';
 const Index = () => {
 	const [tabName, setTabName] = useState(history.location.pathname.split('/')[2] || '');
 	const filterParams = checkQueryInFilter({
+		name: '',
 		role: 'all',
 	});
 

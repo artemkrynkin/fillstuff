@@ -129,7 +129,7 @@ class Filter extends Component {
 			this.handlerDropdown(dropdownNameList[i], false);
 		}
 
-		const query = filterSchema.cast(values);
+		const query = { ...filterSchema.cast(values) };
 
 		Object.keys(query).forEach(key => (query[key] === '' || query[key] === 'all') && delete query[key]);
 
@@ -230,25 +230,25 @@ class Filter extends Component {
 
 const mapStateToProps = state => {
 	const {
-		positions: {
-			data: positionsData,
-			isFetching: isLoadingPositions,
-			// error: errorPositions
+		members: {
+			data: membersData,
+			isFetching: isLoadingMembers,
+			// error: errorMembers
 		},
 	} = state;
 
-	const positions = {
+	const members = {
 		data: null,
-		isFetching: isLoadingPositions,
+		isFetching: isLoadingMembers,
 	};
 
-	if (!isLoadingPositions && positionsData) {
-		positions.data = positionsData.filter(position => position.receipts.length);
+	if (!isLoadingMembers && membersData) {
+		members.data = membersData.filter(member => member.roles.some(role => /owner|admin/.test(role)));
 	}
 
 	return {
-		members: state.members,
-		positions: positions,
+		members: members,
+		positions: state.positions,
 	};
 };
 

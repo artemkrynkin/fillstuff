@@ -84,7 +84,7 @@ invoicesRouter.post(
 
 			invoice.groupedWriteOffs.sort(
 				(writeOffsA, writeOffsB) =>
-					+writeOffsB.sellingPrice - +writeOffsA.sellingPrice || writeOffsA.position.name.localeCompare(writeOffsB.position.name)
+					writeOffsA.position.name.localeCompare(writeOffsB.position.name) || +writeOffsB.sellingPrice - +writeOffsA.sellingPrice
 			);
 
 			delete invoice.writeOffs;

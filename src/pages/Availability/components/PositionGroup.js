@@ -39,7 +39,7 @@ const PositionGroup = props => {
 
 	return (
 		<TableRow className={styles.positionGroup}>
-			<td colSpan={6} style={{ position: 'relative' }}>
+			<td colSpan={5} style={{ position: 'relative' }}>
 				<ExpansionPanel
 					TransitionProps={{
 						timeout: 300,
@@ -65,10 +65,10 @@ const PositionGroup = props => {
 											{declensionNumber(positionGroup.positions.length, ['позиция', 'позиции', 'позиций'], true)}
 										</span>
 									</TableCellExpansionPanel>
-									<TableCellExpansionPanel align="right" width={125}>
-										{positionGroup.positions.length ? positionGroup.minimumBalance : null}
-									</TableCellExpansionPanel>
-									<TableCellExpansionPanel align="right" width={160}>
+									{/*<TableCellExpansionPanel align="right" width={125}>*/}
+									{/*	{positionGroup.positions.length ? positionGroup.minimumBalance : null}*/}
+									{/*</TableCellExpansionPanel>*/}
+									<TableCellExpansionPanel align="right" width={240}>
 										<QuantityIndicator
 											type="positionGroup"
 											dividedPositions={positionGroup.dividedPositions}

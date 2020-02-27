@@ -355,7 +355,7 @@ export const BliksideTheme = createMuiTheme({
 			label: {
 				userSelect: 'none',
 				'&$disabled': {
-					color: theme.blueGrey.cBg400,
+					color: null,
 				},
 			},
 		},
@@ -604,6 +604,12 @@ export const BliksideTheme = createMuiTheme({
 						`0 2px 2px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.14)`,
 						`0 3px 1px -2px rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.12)`,
 					].join(),
+				},
+				'&$disabled': {
+					color: theme.blueGrey.cBg100,
+					'& + $track': {
+						backgroundColor: theme.blueGrey.cBg500,
+					},
 				},
 			},
 		},

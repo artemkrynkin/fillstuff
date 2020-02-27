@@ -53,7 +53,10 @@ const QuantityIndicator = props => {
 			<div className={qiClasses(dividedPositions)}>
 				{!dividedPositions ? (
 					<div>
-						{quantity + ' ' + unitIssueGroupTransform}
+						<span className={styles.quantity}>{quantity + ' ' + unitIssueGroupTransform}</span>
+						<span className={styles.minimumBalance} style={{ marginLeft: 5 }}>
+							{'/ ' + minimumBalance}
+						</span>
 						<span className={qiCircleClasses(quantity, minimumBalance)} />
 					</div>
 				) : (
@@ -68,7 +71,12 @@ const QuantityIndicator = props => {
 
 		return receipts.length ? (
 			<div>
-				{quantity + ' ' + unitIssueTransform}
+				<span className={styles.quantity}>{quantity + ' ' + unitIssueTransform}</span>
+				{divided ? (
+					<span className={styles.minimumBalance} style={{ marginLeft: 5 }}>
+						{'/ ' + minimumBalance}
+					</span>
+				) : null}
 				{divided && type === 'position' ? <span className={qiCircleClasses(quantity, minimumBalance)} /> : null}
 			</div>
 		) : (

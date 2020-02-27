@@ -81,6 +81,7 @@ const Settings = props => {
 									}
 									label="Включать в цену продажи позиций наценку"
 									labelPlacement="end"
+									disabled
 								/>
 							</FormGroup>
 						</FormControl>

@@ -42,11 +42,12 @@
 
 .totalPrice {
   color: var(--c-hex-bg-500);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
 }
 
 .totalPrice span {
   color: var(--c-hex-bg-700);
+  font-size: 16px;
   font-weight: 700;
 }

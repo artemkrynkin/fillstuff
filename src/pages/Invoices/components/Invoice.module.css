@@ -31,13 +31,14 @@
 
 .titleGrey {
   color: var(--c-hex-bg-500);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   margin-bottom: 10px;
 }
 
 .titleGrey span {
   color: var(--c-hex-bg-700);
+  font-size: 16px;
   font-weight: 700;
 }
 
@@ -53,6 +54,14 @@
   margin-right: 5px;
 }
 
+.containerSmallInfo {
+  margin-bottom: 10px;
+}
+
+.containerSmallInfo:last-child {
+  margin-bottom: 0;
+}
+
 .smallText {
   color: var(--c-hex-bg-500);
   font-size: 12px;
@@ -65,6 +74,7 @@
 
 .smallText span {
   color: var(--c-hex-bg-700);
+  font-size: 13px;
   font-weight: 700;
 }
 

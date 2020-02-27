@@ -123,10 +123,10 @@ class Positions extends Component {
 					<TableHead className={styles.tableHeaderSticky}>
 						<TableRow>
 							<TableCell>Позиция</TableCell>
-							<TableCell align="right" width={125}>
-								Мин. остаток
-							</TableCell>
-							<TableCell align="right" width={160}>
+							{/*<TableCell align="right" width={125}>*/}
+							{/*	Мин. остаток*/}
+							{/*</TableCell>*/}
+							<TableCell align="right" width={240}>
 								Количество
 							</TableCell>
 							<TableCell align="right" width={140}>
@@ -155,7 +155,7 @@ class Positions extends Component {
 								)
 							) : (
 								<TableRow>
-									<TableCell colSpan={6} style={{ borderBottom: 'none' }}>
+									<TableCell colSpan={5} style={{ borderBottom: 'none' }}>
 										<Typography variant="caption" align="center" component="div">
 											Еще не создано ни одной позиции.
 										</Typography>
@@ -164,7 +164,7 @@ class Positions extends Component {
 							)
 						) : (
 							<TableRow>
-								<TableCell colSpan={6} style={{ borderBottom: 'none', padding: 11 }}>
+								<TableCell colSpan={5} style={{ borderBottom: 'none', padding: 11 }}>
 									<div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />
 								</TableCell>
 							</TableRow>

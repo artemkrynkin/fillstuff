@@ -9,7 +9,6 @@ import { createPositionGroup, editPositionGroup, addPositionInGroup } from 'src/
 
 import FormPositionGroupCreateEditAdd from './FormPositionGroupCreateEditAdd';
 import positionGroupSchema from './positionGroupSchema';
-import { positionTransform } from '../ProcurementCreate/utils';
 
 class DialogPositionGroupCreateEditAdd extends Component {
 	static propTypes = {

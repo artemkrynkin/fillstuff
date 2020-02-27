@@ -48,22 +48,23 @@
   margin-top: -12px;
 }
 
-.circle {
-  border-radius: 100%;
-  display: inline-block;
-  height: 10px;
-  margin: 0 5px 0 0;
-  width: 10px;
+.invoices .buttonLink {
+  font-weight: 500;
 }
 
-.circleRed {
-  background-color: var(--c-hex-o-1);
+.status {
+  font-size: 13px;
+  font-weight: 600;
 }
 
-.circleYellow {
-  background-color: var(--c-hex-o-14);
+.statusRed {
+  color: var(--c-hex-o-1);
 }
 
-.circleGreen {
-  background-color: var(--c-hex-t-A700);
+.statusYellow {
+  color: var(--c-hex-o-15);
+}
+
+.statusGreen {
+  color: var(--c-hex-t-A700);
 }

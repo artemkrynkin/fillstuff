@@ -101,7 +101,7 @@ class Invoice extends Component {
 							<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
 								{invoice.status !== 'paid' ? (
 									<div className={styles.titleGrey}>
-										Сумма по счету: <Money value={invoice.amount} />
+										К оплате: <Money value={invoice.amount - invoice.paymentAmountDue} />
 									</div>
 								) : invoice.status === 'paid' ? (
 									<div
@@ -111,25 +111,24 @@ class Invoice extends Component {
 										})}
 									>
 										<FontAwesomeIcon icon={['fal', 'check-circle']} />
-										Счет оплачен
+										Счет оплачен {moment(invoice.datePayment).format('DD.MM.YYYY')}
 									</div>
 								) : null}
-								{invoice.status === 'partially-paid' ? (
-									<div className={styles.smallText}>
-										Осталось оплатить: <Money value={invoice.amount - invoice.paymentAmountDue} />
-									</div>
-								) : invoice.status === 'paid' ? (
-									<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
-										<div className={styles.smallText}>
-											Сумма по счету: <Money value={invoice.amount} />
-										</div>
+
+								{invoice.status !== 'unpaid' ? (
+									<Grid className={styles.containerSmallInfo} alignItems="flex-end" justify="flex-start" direction="column" container>
 										<div className={styles.smallText}>
 											Сумма платежа: <Money value={invoice.paymentAmountDue} />
 										</div>
+										<div className={styles.smallText}>
+											Сумма по счету: <Money value={invoice.amount} />
+										</div>
 									</Grid>
 								) : null}
+
 								{invoice.status !== 'paid' ? (
 									<Button
+										className={styles.acceptPayment}
 										onClick={() => this.onOpenDialogByName('dialogInvoicePaymentCreate', invoice)}
 										variant="outlined"
 										color="primary"

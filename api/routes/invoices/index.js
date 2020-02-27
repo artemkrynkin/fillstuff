@@ -251,7 +251,12 @@ invoicesRouter.post(
 
 		const paymentAmount = invoice.status !== 'paid' ? amount : invoice.amount - paymentAmountDueOld;
 
+		const datePayment = new Date();
+
+		if (invoice.status === 'paid') invoice.datePayment = datePayment;
+
 		invoice.payments.push({
+			date: datePayment,
 			amount: amount,
 			merchant: memberId,
 		});

@@ -35,11 +35,13 @@ const Invoice = new Schema({
 		enum: ['paid', 'partially-paid', 'unpaid'],
 		default: 'unpaid',
 	},
+	datePayment: {
+		type: Date,
+	},
 	payments: [
 		{
 			date: {
 				type: Date,
-				default: Date.now,
 			},
 			amount: {
 				type: Number,

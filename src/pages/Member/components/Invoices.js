@@ -39,12 +39,12 @@ const statusTransform = status => {
 	}
 };
 
-const statusCircleClasses = status =>
+const statusColorClasses = status =>
 	ClassNames({
-		[styles.circle]: true,
-		[styles.circleRed]: status === 'unpaid',
-		[styles.circleYellow]: status === 'partially-paid',
-		[styles.circleGreen]: status === 'paid',
+		[styles.status]: true,
+		[styles.statusRed]: status === 'unpaid',
+		[styles.statusYellow]: status === 'partially-paid',
+		[styles.statusGreen]: status === 'paid',
 	});
 
 const Invoices = props => {
@@ -126,13 +126,12 @@ const Invoices = props => {
 												{moment(invoice.createdAt).format(isCurrentYear ? 'D MMMM в HH:mm' : 'D MMMM YYYY')}
 											</TableCell>
 											<TableCell width={240}>
-												<Link className={styles.buttonLink} to={`/invoices/${invoice._id}`}>
+												<Link className={styles.buttonLink} to={`/invoices/${invoice._id}`} target="_blank" rel="noreferrer noopener">
 													{moment(invoice.fromDate).format('DD.MM.YYYY')} &ndash; {moment(invoice.toDate).format('DD.MM.YYYY')}
 												</Link>
 											</TableCell>
 											<TableCell width={140}>
-												<div className={statusCircleClasses(invoice.status)} />
-												{statusTransform(invoice.status)}
+												<span className={statusColorClasses(invoice.status)}>{statusTransform(invoice.status)}</span>
 											</TableCell>
 											<TableCell align="right" width={140}>
 												<NumberFormat

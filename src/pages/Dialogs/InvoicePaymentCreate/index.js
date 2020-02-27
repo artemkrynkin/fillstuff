@@ -5,19 +5,20 @@ import { Formik, Form, Field } from 'formik';
 import moment from 'moment';
 import * as Yup from 'yup';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Avatar from '@material-ui/core/Avatar';
 import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 
 import { Dialog, DialogActions, DialogTitle } from 'src/components/Dialog';
-import NumberFormat, { moneyInputFormatProps, currencyMoneyFormatProps } from 'src/components/NumberFormat';
+import NumberFormat, { moneyInputFormatProps } from 'src/components/NumberFormat';
+import Money from 'src/components/Money';
 
 import { createInvoicePayment } from 'src/actions/invoices';
 
 import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
-import Avatar from '@material-ui/core/Avatar';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const invoicePaymentSchema = Yup.object().shape({
 	amount: Yup.number()
@@ -79,16 +80,9 @@ class DialogInvoicePaymentCreate extends Component {
 									</Grid>
 									<Grid xs={6} item>
 										<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
-											<NumberFormat
-												value={selectedInvoice.amount}
-												renderText={value => (
-													<div className={styles.totalPrice}>
-														Сумма по счету: <span>{value}</span>
-													</div>
-												)}
-												displayType="text"
-												{...currencyMoneyFormatProps}
-											/>
+											<div className={styles.totalPrice}>
+												К оплате: <Money value={selectedInvoice.amount - selectedInvoice.paymentAmountDue} />
+											</div>
 										</Grid>
 									</Grid>
 								</Grid>

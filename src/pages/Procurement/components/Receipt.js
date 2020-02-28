@@ -78,7 +78,14 @@ const Receipt = props => {
 							</div>
 						}
 					>
-						<span>{formatNumber(receipt.unitSellingPrice, { toString: true })} ₽</span>
+						<span>
+							<NumberFormat
+								value={formatNumber(receipt.unitSellingPrice, { toString: true })}
+								renderText={value => value}
+								displayType="text"
+								{...currencyMoneyFormatProps}
+							/>
+						</span>
 					</Tooltip>
 				) : (
 					<span className={styles.caption}>Бесплатно</span>

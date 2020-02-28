@@ -52,7 +52,15 @@ const PriceDisplay = props => {
 				</div>
 			</Tooltip>
 		);
-	else if (!isFree) return `${formatNumber(price, { toString: true })} ₽`;
+	else if (!isFree)
+		return (
+			<NumberFormat
+				value={formatNumber(price, { toString: true })}
+				renderText={value => value}
+				displayType="text"
+				{...currencyMoneyFormatProps}
+			/>
+		);
 	else return <span className={styles.caption}>Бесплатно</span>;
 };
 

@@ -66,8 +66,22 @@ const Settings = props => {
 											disableRipple
 										/>
 									}
-									label="Совершать списания на счет студии"
+									label="Может делать списания за счёт студии"
 									labelPlacement="end"
+								/>
+								<FormControlLabel
+									control={
+										<Switch
+											checked={false}
+											// onChange={() => onToggleSettings('extraCharge')}
+											value="extraCharge"
+											color="primary"
+											disableRipple
+										/>
+									}
+									label="Платные позиции предоставляются бесплатно"
+									labelPlacement="end"
+									disabled
 								/>
 								<FormControlLabel
 									control={
@@ -79,7 +93,7 @@ const Settings = props => {
 											disableRipple
 										/>
 									}
-									label="Включать в цену продажи позиций наценку"
+									label="Включить наценку для платных позиций"
 									labelPlacement="end"
 									disabled
 								/>

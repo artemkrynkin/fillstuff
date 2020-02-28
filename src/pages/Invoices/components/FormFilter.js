@@ -310,7 +310,7 @@ const FormFilter = props => {
 						onClick={() => handlerDropdown('dropdownMember')}
 						disableRipple
 					>
-						<span>{FilterMemberTransform(values.member, members, isLoadingAllMembers)}</span>
+						<span>{FilterMemberTransform(values.member, allMembers, isLoadingAllMembers)}</span>
 						<FontAwesomeIcon icon={['far', 'angle-down']} />
 					</ButtonBase>
 

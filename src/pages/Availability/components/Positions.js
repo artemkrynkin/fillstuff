@@ -123,9 +123,6 @@ class Positions extends Component {
 					<TableHead className={styles.tableHeaderSticky}>
 						<TableRow>
 							<TableCell>Позиция</TableCell>
-							{/*<TableCell align="right" width={125}>*/}
-							{/*	Мин. остаток*/}
-							{/*</TableCell>*/}
 							<TableCell align="right" width={240}>
 								Количество
 							</TableCell>

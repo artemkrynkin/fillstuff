@@ -7,8 +7,6 @@ import queryString from 'query-string';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import { formatNumber } from 'shared/utils';
-
 import { history } from 'src/helpers/history';
 
 import { getFollowingDates } from 'src/components/Pagination/utils';
@@ -105,7 +103,7 @@ class WriteOffs extends Component {
 			<div className={styles.container}>
 				{!isLoadingWriteOffs && writeOffsData ? (
 					writeOffsData.data.length && writeOffsData.paging.totalCount ? (
-						generatePaginate(paging.loadedDocs, writeOffsData.data).map((writeOffsPerMonth, index) => (
+						generatePaginate(paging.loadedDocs, writeOffsData.data).map(writeOffsPerMonth => (
 							<div className={styles.date} key={writeOffsPerMonth.date}>
 								<MonthDateTitle date={writeOffsPerMonth.date} />
 								{writeOffsPerMonth.items.map(writeOffsPerDay => (
@@ -173,23 +171,23 @@ const mapStateToProps = state => {
 				// Считаем данные для индикатора за день
 				const indicators = items.reduce(
 					(indicators, writeOff) => {
+						if (!indicators.members.some(member => member._id === writeOff.member._id)) {
+							indicators.members.push(writeOff.member);
+						}
+
 						if (writeOff.canceled) return indicators;
 
-						const purchasePrice = formatNumber(writeOff.quantity * writeOff.receipt.unitPurchasePrice);
+						if (!writeOff.isFree) {
+							indicators.returned += writeOff.sellingPrice;
+						}
 
-						indicators.total += purchasePrice;
-
-						if (!writeOff.isFree) indicators.sellingPositions += purchasePrice;
-						else indicators.freePositions += purchasePrice;
-
-						if (!indicators.members.some(member => member._id === writeOff.member._id)) indicators.members.push(writeOff.member);
+						indicators.usedUp += writeOff.purchasePrice;
 
 						return indicators;
 					},
 					{
-						total: 0,
-						sellingPositions: 0,
-						freePositions: 0,
+						returned: 0,
+						usedUp: 0,
 						members: [],
 					}
 				);

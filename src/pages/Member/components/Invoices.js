@@ -108,7 +108,7 @@ const Invoices = props => {
 								<TableRow>
 									<TableCell width={200}>Дата выставления счета</TableCell>
 									<TableCell width={240}>Расчетный период</TableCell>
-									<TableCell width={140}>Статус оплаты</TableCell>
+									<TableCell width={140}>Статус</TableCell>
 									<TableCell align="right" width={140}>
 										Сумма
 									</TableCell>

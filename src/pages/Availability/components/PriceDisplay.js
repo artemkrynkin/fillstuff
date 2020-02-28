@@ -7,6 +7,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import { formatNumber } from 'shared/utils';
 
+import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
+
 import styles from './Positions.module.css';
 
 const priceDisplayChangeIconClasses = priceChangeIsGood =>
@@ -32,7 +34,12 @@ const PriceDisplay = props => {
 				interactive
 			>
 				<div style={{ display: 'inline-block' }}>
-					{formatNumber(price, { toString: true })} ₽
+					<NumberFormat
+						value={formatNumber(price, { toString: true })}
+						renderText={value => value}
+						displayType="text"
+						{...currencyMoneyFormatProps}
+					/>
 					{receiptNearestPrice > price ? (
 						<span className={priceDisplayChangeIconClasses(priceChangeIsGood)}>
 							<FontAwesomeIcon icon={['far', 'chevron-up']} />

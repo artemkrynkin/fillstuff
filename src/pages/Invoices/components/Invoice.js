@@ -13,11 +13,14 @@ import TableRow from '@material-ui/core/TableRow';
 import Collapse from '@material-ui/core/Collapse';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
+import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs';
 
 import CardPaper from 'src/components/CardPaper';
 import Money from 'src/components/Money';
 
 import WriteOff from './WriteOff';
+import Payment from './Payment';
 
 import { TableCell } from './styles';
 import styles from './Invoice.module.css';
@@ -25,6 +28,9 @@ import styles from './Invoice.module.css';
 const Invoice = props => {
 	const { invoice, onOpenDialogInvoice } = props;
 	const [expanded, setExpanded] = useState(false);
+	const [tabName, setTabName] = useState('writeOffs');
+
+	const onChangeTab = (event, tabName) => setTabName(tabName);
 
 	const onHandleExpand = event => {
 		if (
@@ -34,6 +40,8 @@ const Invoice = props => {
 				event.target.closest('.' + styles.acceptPayment).classList.contains(styles.acceptPayment))
 		)
 			return;
+
+		if (!expanded && tabName === 'payments') onChangeTab(null, 'writeOffs');
 
 		setExpanded(!expanded);
 	};
@@ -104,7 +112,11 @@ const Invoice = props => {
 					</Grid>
 				</div>
 				<Collapse in={expanded} timeout={300} unmountOnExit>
-					<div className={styles.writeOffs}>
+					<Tabs className={styles.tabs} value={tabName} onChange={onChangeTab}>
+						<Tab value="writeOffs" label="Списания" id="invoices" />
+						{invoice.payments.length ? <Tab value="payments" label="Платежи" id="settings" /> : null}
+					</Tabs>
+					{tabName === 'writeOffs' ? (
 						<Table style={{ tableLayout: 'fixed' }}>
 							<TableHead>
 								<TableRow>
@@ -113,7 +125,7 @@ const Invoice = props => {
 										Количество
 									</TableCell>
 									<TableCell align="right" width={125}>
-										Цена продажи
+										Цена
 									</TableCell>
 									<TableCell align="right" width={125}>
 										Сумма
@@ -126,7 +138,22 @@ const Invoice = props => {
 								))}
 							</TableBody>
 						</Table>
-					</div>
+					) : tabName === 'payments' ? (
+						<Table style={{ tableLayout: 'fixed' }}>
+							<TableHead>
+								<TableRow>
+									<TableCell>Участник</TableCell>
+									<TableCell align="right">Сумма</TableCell>
+									<TableCell align="right">Дата</TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								{invoice.payments.map((payment, index) => (
+									<Payment key={index} payment={payment} />
+								))}
+							</TableBody>
+						</Table>
+					) : null}
 				</Collapse>
 				<ButtonBase
 					className={ClassNames({

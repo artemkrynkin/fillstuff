@@ -107,7 +107,9 @@
   white-space: nowrap;
 }
 
-.writeOffs {
-  border-top: 1px solid var(--c-hex-br-5);
-  margin-top: 20px;
+.tabs {
+  background-color: var(--c-hex-br-3);
+  border-top: 1px solid var(--c-hex-br-4);
+  border-bottom: 1px solid var(--c-hex-br-4);
+  padding: 0 15px;
 }

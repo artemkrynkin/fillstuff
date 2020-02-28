@@ -10,6 +10,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import { formatNumber } from 'shared/utils';
 
+import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
 import PositionNameInList from 'src/components/PositionNameInList';
 
 import styles from './WriteOff.module.css';
@@ -32,7 +33,7 @@ const WriteOff = props => {
 
 	return (
 		<TableRow className={styles.writeOff}>
-			<TableCell>
+			<TableCell width={100}>
 				<div className={styles.user}>
 					<Avatar
 						className={styles.userPhoto}
@@ -45,20 +46,53 @@ const WriteOff = props => {
 					</Grid>
 				</div>
 			</TableCell>
-			<TableCell width={280}>
+			<TableCell>
 				<PositionNameInList
 					name={writeOff.position.name}
 					characteristics={writeOff.position.characteristics}
 					canceled={writeOff.canceled}
 				/>
 			</TableCell>
-			<TableCell align="right" width={125}>
+			<TableCell align="right" width={115}>
 				{writeOff.quantity} {writeOff.position.unitIssue === 'pce' ? 'шт.' : 'уп.'}
 			</TableCell>
-			<TableCell align="right" width={125}>
-				{formatNumber(writeOff.purchasePrice, { toString: true })} ₽
+			<TableCell align="right">
+				<div className={styles.moneyContainer}>
+					<NumberFormat
+						value={formatNumber(writeOff.purchasePrice, { toString: true })}
+						renderText={value => <span className={styles.moneyLarge}>{value}</span>}
+						displayType="text"
+						{...currencyMoneyFormatProps}
+					/>
+					<NumberFormat
+						value={formatNumber(writeOff.unitPurchasePrice, { toString: true })}
+						renderText={value => <span className={styles.moneySmall}>{value}</span>}
+						displayType="text"
+						{...currencyMoneyFormatProps}
+					/>
+				</div>
 			</TableCell>
-			<TableCell align="right" width={150}>
+			<TableCell align="right">
+				{!writeOff.isFree ? (
+					<div className={styles.moneyContainer}>
+						<NumberFormat
+							value={formatNumber(writeOff.sellingPrice, { toString: true })}
+							renderText={value => <span className={styles.moneyLarge}>{value}</span>}
+							displayType="text"
+							{...currencyMoneyFormatProps}
+						/>
+						<NumberFormat
+							value={formatNumber(writeOff.unitSellingPrice, { toString: true })}
+							renderText={value => <span className={styles.moneySmall}>{value}</span>}
+							displayType="text"
+							{...currencyMoneyFormatProps}
+						/>
+					</div>
+				) : (
+					<span className={styles.caption}>Бесплатно</span>
+				)}
+			</TableCell>
+			<TableCell align="right" width={140}>
 				{!isCurrentHour ? createdAtMoment.format('HH:mm') : !isNow ? createdAtMoment.fromNow() : 'только что'}
 			</TableCell>
 			{isCurrentDay ? (

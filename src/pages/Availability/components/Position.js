@@ -42,11 +42,6 @@ const Position = props => {
 			<TableCell style={position.positionGroup ? { paddingLeft: 41 } : {}}>
 				<PositionNameInList name={position.name} characteristics={position.characteristics} />
 			</TableCell>
-			{/*{position.receipts.length ? (*/}
-			{/*	<TableCell align="right" width={125}>*/}
-			{/*		{position.divided ? position.minimumBalance : null}*/}
-			{/*	</TableCell>*/}
-			{/*) : null}*/}
 			{position.receipts.length ? (
 				<TableCell align="right" width={240}>
 					<QuantityIndicator

@@ -115,16 +115,19 @@ const WriteOffsPerDay = props => {
 							</div>
 						</Grid>
 						<Grid xs={6} item>
-							<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
-								<div className={styles.total}>
-									Итого: <Money value={indicators.total} />
-								</div>
-								<div className={styles.sellingPositions}>
-									Платные позиции: <Money value={indicators.sellingPositions} />
-								</div>
-								<div className={styles.freePositions}>
-									Бесплатные позиции: <Money value={indicators.freePositions} />
-								</div>
+							<Grid className={styles.indicators} alignItems="center" container>
+								<Grid xs={6} item>
+									<div className={styles.indicatorsTitle}>
+										<Money value={indicators.returned} />
+									</div>
+									<div className={styles.indicatorsSubtitle}>Вернули</div>
+								</Grid>
+								<Grid xs={6} item>
+									<div className={styles.indicatorsTitle}>
+										<Money value={indicators.usedUp} />
+									</div>
+									<div className={styles.indicatorsSubtitle}>Израсходовали</div>
+								</Grid>
 							</Grid>
 						</Grid>
 					</Grid>
@@ -135,14 +138,13 @@ const WriteOffsPerDay = props => {
 							<TableHead>
 								<TableRow>
 									<TableCell>Участник</TableCell>
-									<TableCell width={280}>Позиция</TableCell>
-									<TableCell align="right" width={125}>
+									<TableCell>Позиция</TableCell>
+									<TableCell align="right" width={115}>
 										Количество
 									</TableCell>
-									<TableCell align="right" width={125}>
-										Сумма
-									</TableCell>
-									<TableCell align="right" width={150}>
+									<TableCell align="right">Цена покупки</TableCell>
+									<TableCell align="right">Цена продажи</TableCell>
+									<TableCell align="right" width={140}>
 										Время
 									</TableCell>
 									{isCurrentDay ? <TableCell width={50} /> : null}

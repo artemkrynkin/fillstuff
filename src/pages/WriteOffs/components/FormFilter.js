@@ -311,7 +311,7 @@ const FormFilter = props => {
 						onClick={() => handlerDropdown('dropdownPosition')}
 						disableRipple
 					>
-						<span>{FilterPositionTransform(values.position, positions, isLoadingAllPositions)}</span>
+						<span>{FilterPositionTransform(values.position, allPositions, isLoadingAllPositions)}</span>
 						<FontAwesomeIcon icon={['far', 'angle-down']} />
 					</ButtonBase>
 
@@ -395,7 +395,7 @@ const FormFilter = props => {
 						onClick={() => handlerDropdown('dropdownRole')}
 						disableRipple
 					>
-						<span>{FilterRoleTransform(values.role, members, isLoadingAllMembers)}</span>
+						<span>{FilterRoleTransform(values.role, allMembers, isLoadingAllMembers)}</span>
 						<FontAwesomeIcon icon={['far', 'angle-down']} />
 					</ButtonBase>
 

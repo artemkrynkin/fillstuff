@@ -5,6 +5,7 @@ import TableRow from '@material-ui/core/TableRow';
 import { formatNumber } from 'shared/utils';
 
 import PositionNameInList from 'src/components/PositionNameInList';
+import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
 
 import styles from './WriteOff.module.css';
 
@@ -22,10 +23,20 @@ const WriteOff = props => {
 				{writeOff.quantity} {writeOff.position.unitIssue === 'pce' ? 'шт.' : 'уп.'}
 			</TableCell>
 			<TableCell align="right" width={125}>
-				{formatNumber(writeOff.unitSellingPrice, { toString: true })} ₽
+				<NumberFormat
+					value={formatNumber(writeOff.unitSellingPrice, { toString: true })}
+					renderText={value => value}
+					displayType="text"
+					{...currencyMoneyFormatProps}
+				/>
 			</TableCell>
 			<TableCell align="right" width={125}>
-				{formatNumber(writeOff.sellingPrice, { toString: true })} ₽
+				<NumberFormat
+					value={formatNumber(writeOff.sellingPrice, { toString: true })}
+					renderText={value => value}
+					displayType="text"
+					{...currencyMoneyFormatProps}
+				/>
 			</TableCell>
 		</TableRow>
 	);

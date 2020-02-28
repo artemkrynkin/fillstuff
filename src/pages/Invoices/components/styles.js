@@ -4,15 +4,11 @@ import { withStyles } from '@material-ui/core';
 import theme from 'shared/theme';
 
 export const TableCell = withStyles({
-	root: {
-		padding: '9px 15px',
-	},
-	head: {
-		paddingTop: 18,
-		paddingBottom: 18,
-	},
+	root: {},
+	head: {},
 	body: {
 		borderTop: `1px solid ${theme.brightness.cBr4}`,
 		borderBottom: 'none',
+		padding: '9px 15px',
 	},
 })(MuiTableCell);

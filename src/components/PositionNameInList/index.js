@@ -22,12 +22,17 @@ const PositionNameInList = props => {
 
 	return (
 		<div className={classes} style={style}>
-			<div className={styles.names}>
-				<div className={styles.name}>{name}</div>
+			<div
+				className={ClassNames({
+					[styles.names]: true,
+					[styles.cutWidth]: isArchived || canceled,
+				})}
+			>
+				<span className={styles.name}>{name}</span>
 				{characteristics.length ? (
-					<div className={styles.characteristics}>
+					<span className={styles.characteristics}>
 						{characteristics.reduce((characteristics, characteristic) => `${characteristics}${characteristic.label} `, '').trim()}
-					</div>
+					</span>
 				) : null}
 			</div>
 			{isArchived || canceled ? (

@@ -28,32 +28,25 @@
   margin-right: 2px;
 }
 
-.total,
-.sellingPositions,
-.freePositions {
-  color: var(--c-hex-bg-500);
+.indicators {
+  height: 100%;
+  margin-left: auto;
+  width: 300px;
 }
 
-.total {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 10px;
-}
-
-.sellingPositions {
-  margin-bottom: 5px;
-}
-
-.sellingPositions,
-.freePositions {
-  font-size: 12px;
-}
-
-.total span,
-.sellingPositions span,
-.freePositions span {
+.indicatorsTitle {
   color: var(--c-hex-bg-700);
+  font-size: 18px;
   font-weight: 700;
+  text-align: right;
+}
+
+.indicatorsSubtitle {
+  color: var(--c-hex-bg-300);
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 5px;
+  text-align: right;
 }
 
 .usersPerDayWrapper {

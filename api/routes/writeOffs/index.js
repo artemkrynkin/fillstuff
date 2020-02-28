@@ -281,7 +281,9 @@ writeOffsRouter.post(
 			.populate('position receipt')
 			.catch(err => next({ code: 2, err }));
 
-		const memberPromise = Member.findById(memberId).catch(err => next({ code: 2, err }));
+		const memberPromise = Member.findById(memberId, 'billingDebt billingPeriodDebt billingPeriodWriteOffs').catch(err =>
+			next({ code: 2, err })
+		);
 
 		const writeOff = await writeOffPromise;
 		const member = await memberPromise;
@@ -294,6 +296,13 @@ writeOffsRouter.post(
 			return res.json({
 				code: 7,
 				message: 'Отмену можно произвести только в течении 24 часов после списания',
+			});
+		}
+
+		if (!writeOff.isFree && !member.billingPeriodWriteOffs.some(billingWriteOff => String(billingWriteOff._id) === String(writeOff._id))) {
+			return res.json({
+				code: 7,
+				message: 'Списание не может быть отменено, так как по нему уже был выставлен счет',
 			});
 		}
 
@@ -356,7 +365,7 @@ writeOffsRouter.post(
 					billingPeriodDebt: member.billingPeriodDebt - writeOff.sellingPrice,
 				},
 				$pull: {
-					billingPeriodWriteOffs: { _id: writeOff._id },
+					billingPeriodWriteOffs: writeOff._id,
 				},
 			},
 			{ runValidators: true }

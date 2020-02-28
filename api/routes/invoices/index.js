@@ -57,6 +57,14 @@ invoicesRouter.post(
 						},
 					},
 				},
+				{
+					path: 'payments.merchant',
+					select: 'user',
+					populate: {
+						path: 'user',
+						select: 'avatar name email',
+					},
+				},
 			],
 			pagination: false,
 			customLabels: {
@@ -70,6 +78,8 @@ invoicesRouter.post(
 		const invoicesCount = await invoicesCountPromise;
 
 		invoices.data.forEach(invoice => {
+			if (invoice.payments.length) invoice.payments.reverse();
+
 			invoice.groupedWriteOffs = _.chain(invoice.writeOffs)
 				.groupBy(writeOff => {
 					return String(writeOff.position._id) && writeOff.unitSellingPrice;
@@ -143,7 +153,17 @@ invoicesRouter.post(
 					},
 				},
 			})
+			.populate({
+				path: 'payments.merchant',
+				select: 'user',
+				populate: {
+					path: 'user',
+					select: 'avatar name email',
+				},
+			})
 			.catch(err => next({ code: 2, err }));
+
+		if (invoice.payments.length) invoice.payments.reverse();
 
 		invoice.groupedWriteOffs = _.chain(invoice.writeOffs)
 			.groupBy(writeOff => {
@@ -297,7 +317,17 @@ invoicesRouter.post(
 					},
 				},
 			})
+			.populate({
+				path: 'payments.merchant',
+				select: 'user',
+				populate: {
+					path: 'user',
+					select: 'avatar name email',
+				},
+			})
 			.catch(err => next({ code: 2, err }));
+
+		if (invoicePayable.payments.length) invoicePayable.payments.reverse();
 
 		invoicePayable.groupedWriteOffs = _.chain(invoicePayable.writeOffs)
 			.groupBy(writeOff => {

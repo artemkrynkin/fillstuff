@@ -14,14 +14,12 @@ const MemberDetails = props => {
 	const { member, invoicesData, updateMember, getInvoices } = props;
 	const [tabName, setTabName] = useState('invoices');
 
-	const onChangeTab = (event, tabName) => {
-		setTabName(tabName);
-	};
+	const onChangeTab = (event, tabName) => setTabName(tabName);
 
 	return (
 		<CardPaper
 			leftContent={
-				<Tabs className={styles.tabs} value={tabName} onChange={onChangeTab} aria-label="simple tabs example">
+				<Tabs className={styles.tabs} value={tabName} onChange={onChangeTab}>
 					<Tab value="invoices" label="Счета" id="invoices" />
 					<Tab value="settings" label="Настройки" id="settings" />
 				</Tabs>

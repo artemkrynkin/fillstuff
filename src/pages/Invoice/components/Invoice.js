@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import loadable from '@loadable/component';
+import ClassNames from 'classnames';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Grid from '@material-ui/core/Grid';
@@ -12,6 +13,8 @@ import TableRow from '@material-ui/core/TableRow';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
+import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs';
 
 import { history } from 'src/helpers/history';
 
@@ -21,10 +24,10 @@ import Money from 'src/components/Money';
 import { getInvoice } from 'src/actions/invoices';
 
 import WriteOff from './WriteOff';
+import Payment from './Payment';
 
 import { TableCell } from './styles';
 import styles from './Invoice.module.css';
-import ClassNames from 'classnames';
 
 const DialogInvoicePaymentCreate = loadable(() =>
 	import('src/pages/Dialogs/InvoicePaymentCreate' /* webpackChunkName: "Dialog_InvoicePaymentCreate" */)
@@ -35,6 +38,7 @@ class Invoice extends Component {
 		invoiceData: null,
 		dialogOpenedName: '',
 		dialogInvoicePaymentCreate: false,
+		tabName: 'writeOffs',
 	};
 
 	onOpenDialogByName = (dialogName, invoice) =>
@@ -58,6 +62,8 @@ class Invoice extends Component {
 		});
 	};
 
+	onChangeTab = (event, tabName) => this.setState({ tabName });
+
 	componentDidMount() {
 		this.props.getInvoice().then(response => {
 			if (response.status === 'success') {
@@ -71,7 +77,7 @@ class Invoice extends Component {
 	}
 
 	render() {
-		const { invoiceData, dialogOpenedName, dialogInvoicePaymentCreate } = this.state;
+		const { invoiceData, dialogOpenedName, dialogInvoicePaymentCreate, tabName } = this.state;
 
 		if (!invoiceData || !invoiceData.data) return <div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />;
 
@@ -140,7 +146,11 @@ class Invoice extends Component {
 							</Grid>
 						</Grid>
 					</Grid>
-					<div className={styles.writeOffs}>
+					<Tabs className={styles.tabs} value={tabName} onChange={this.onChangeTab}>
+						<Tab value="writeOffs" label="Списания" id="invoices" />
+						{invoice.payments.length ? <Tab value="payments" label="Платежи" id="settings" /> : null}
+					</Tabs>
+					{tabName === 'writeOffs' ? (
 						<Table style={{ tableLayout: 'fixed' }}>
 							<TableHead>
 								<TableRow>
@@ -162,7 +172,22 @@ class Invoice extends Component {
 								))}
 							</TableBody>
 						</Table>
-					</div>
+					) : tabName === 'payments' ? (
+						<Table style={{ tableLayout: 'fixed' }}>
+							<TableHead>
+								<TableRow>
+									<TableCell>Участник</TableCell>
+									<TableCell align="right">Сумма</TableCell>
+									<TableCell align="right">Дата</TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								{invoice.payments.map((payment, index) => (
+									<Payment key={index} payment={payment} />
+								))}
+							</TableBody>
+						</Table>
+					) : null}
 				</div>
 
 				<DialogInvoicePaymentCreate

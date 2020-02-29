@@ -88,12 +88,12 @@ const priceList = ['all', 'paid', 'free'];
 const FilterPriceTransform = statusSelected => {
 	switch (statusSelected) {
 		case 'free':
-			return 'Только бесплатные позиции';
+			return 'Только бесплатные';
 		case 'paid':
-			return 'Только платные позиции';
+			return 'Только платные';
 		case 'all':
 		default:
-			return 'Платные и бесплатные позиции';
+			return 'Платные и бесплатные';
 	}
 };
 
@@ -405,7 +405,7 @@ const FormFilter = props => {
 					</Dropdown>
 				</Grid>
 
-				{/* Filter Status */}
+				{/* Filter Price */}
 				<Grid item>
 					<ButtonBase
 						ref={refDropdownPrice}

@@ -1,10 +1,9 @@
-.user {
+.container {
   align-items: center;
   display: flex;
-  min-height: 32px;
 }
 
-.userPhoto {
+.image {
   background-color: var(--c-hex-br-5);
   height: 28px;
   margin-right: 10px;
@@ -22,16 +21,16 @@
   width: 100%;
 }
 
-.userPhoto svg {
+.image svg {
   color: rgba(255, 255, 255, 0.9);
   font-size: 20px;
 }
 
-.userDetails {
+.details {
   max-width: calc(100% - 38px);
 }
 
-.userName {
+.title {
   color: var(--c-hex-bg-500);
   font-size: 13px;
   font-weight: 600;

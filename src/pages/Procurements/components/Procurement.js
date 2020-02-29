@@ -11,10 +11,10 @@ import TableBody from '@material-ui/core/TableBody';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Collapse from '@material-ui/core/Collapse';
-import Avatar from '@material-ui/core/Avatar';
 
 import CardPaper from 'src/components/CardPaper';
 import Money from 'src/components/Money';
+import AvatarTitle from 'src/components/AvatarTitle';
 
 import Receipt from './Receipt';
 
@@ -45,17 +45,7 @@ const Procurement = props => {
 									'Чек/накладная отсутствует'
 								)}
 							</Link>
-							<div className={styles.user}>
-								<Avatar
-									className={styles.userPhoto}
-									src={procurement.member.user.avatar}
-									alt={procurement.member.user.name}
-									children={<div className={styles.userIcon} children={<FontAwesomeIcon icon={['fas', 'user-alt']} />} />}
-								/>
-								<Grid alignItems="flex-end" container>
-									<div className={styles.userName}>{procurement.member.user.name}</div>
-								</Grid>
-							</div>
+							<AvatarTitle imageSrc={procurement.member.user.avatar} title={procurement.member.user.name} />
 						</Grid>
 						<Grid xs={6} item>
 							<Grid alignItems="flex-end" justify="flex-start" direction="column" container>

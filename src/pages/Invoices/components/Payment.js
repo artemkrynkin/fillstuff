@@ -1,35 +1,22 @@
 import React from 'react';
 import moment from 'moment';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Avatar from '@material-ui/core/Avatar';
-import Grid from '@material-ui/core/Grid';
 import TableRow from '@material-ui/core/TableRow';
 
 import { formatNumber } from 'shared/utils';
 
 import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
+import AvatarTitle from 'src/components/AvatarTitle';
 
 import { TableCell } from './styles';
-import styles from './Payment.module.css';
 
 const Payment = props => {
 	const { payment } = props;
 
 	return (
-		<TableRow className={styles.payment}>
+		<TableRow>
 			<TableCell>
-				<div className={styles.user}>
-					<Avatar
-						className={styles.userPhoto}
-						src={payment.merchant.user.avatar}
-						alt={payment.merchant.user.name}
-						children={<div className={styles.userIcon} children={<FontAwesomeIcon icon={['fas', 'user-alt']} />} />}
-					/>
-					<Grid className={styles.userDetails} alignItems="flex-end" container>
-						<div className={styles.userName}>{payment.merchant.user.name}</div>
-					</Grid>
-				</div>
+				<AvatarTitle imageSrc={payment.merchant.user.avatar} title={payment.merchant.user.name} />
 			</TableCell>
 			<TableCell align="right">
 				<NumberFormat

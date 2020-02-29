@@ -5,8 +5,6 @@ import { Formik, Form, Field } from 'formik';
 import moment from 'moment';
 import * as Yup from 'yup';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Avatar from '@material-ui/core/Avatar';
 import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -14,6 +12,7 @@ import TextField from '@material-ui/core/TextField';
 import { Dialog, DialogActions, DialogTitle } from 'src/components/Dialog';
 import NumberFormat, { moneyInputFormatProps } from 'src/components/NumberFormat';
 import Money from 'src/components/Money';
+import AvatarTitle from 'src/components/AvatarTitle';
 
 import { createInvoicePayment } from 'src/actions/invoices';
 
@@ -66,17 +65,7 @@ class DialogInvoicePaymentCreate extends Component {
 							<DialogContent>
 								<Grid className={styles.header} alignItems="center" container>
 									<Grid xs={6} item>
-										<div className={styles.user}>
-											<Avatar
-												className={styles.userPhoto}
-												src={selectedInvoice.member.user.avatar}
-												alt={selectedInvoice.member.user.name}
-												children={<div className={styles.userIcon} children={<FontAwesomeIcon icon={['fas', 'user-alt']} />} />}
-											/>
-											<Grid alignItems="flex-end" container>
-												<div className={styles.userName}>{selectedInvoice.member.user.name}</div>
-											</Grid>
-										</div>
+										<AvatarTitle imageSrc={selectedInvoice.member.user.avatar} title={selectedInvoice.member.user.name} />
 									</Grid>
 									<Grid xs={6} item>
 										<Grid alignItems="flex-end" justify="flex-start" direction="column" container>

@@ -11,13 +11,13 @@ import TableBody from '@material-ui/core/TableBody';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Collapse from '@material-ui/core/Collapse';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 
 import CardPaper from 'src/components/CardPaper';
 import Money from 'src/components/Money';
+import AvatarTitle from 'src/components/AvatarTitle';
 
 import WriteOff from './WriteOff';
 import Payment from './Payment';
@@ -55,17 +55,7 @@ const Invoice = props => {
 							<Link className={styles.title} to={`/invoices/${invoice._id}`}>
 								Счет за {moment(invoice.fromDate).format('DD.MM.YYYY')} &ndash; {moment(invoice.toDate).format('DD.MM.YYYY')}
 							</Link>
-							<div className={styles.user}>
-								<Avatar
-									className={styles.userPhoto}
-									src={invoice.member.user.avatar}
-									alt={invoice.member.user.name}
-									children={<div className={styles.userIcon} children={<FontAwesomeIcon icon={['fas', 'user-alt']} />} />}
-								/>
-								<Grid alignItems="flex-end" container>
-									<div className={styles.userName}>{invoice.member.user.name}</div>
-								</Grid>
-							</div>
+							<AvatarTitle imageSrc={invoice.member.user.avatar} title={invoice.member.user.name} />
 						</Grid>
 						<Grid xs={6} item>
 							<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
@@ -143,8 +133,8 @@ const Invoice = props => {
 							<TableHead>
 								<TableRow>
 									<TableCell>Участник</TableCell>
-									<TableCell align="right">Сумма</TableCell>
-									<TableCell align="right">Дата</TableCell>
+									<TableCell align="right">Сумма платежа</TableCell>
+									<TableCell align="right">Дата платежа</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableBody>

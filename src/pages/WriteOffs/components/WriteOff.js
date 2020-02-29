@@ -2,8 +2,6 @@ import React from 'react';
 import moment from 'moment';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Avatar from '@material-ui/core/Avatar';
-import Grid from '@material-ui/core/Grid';
 import TableRow from '@material-ui/core/TableRow';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -12,6 +10,7 @@ import { formatNumber } from 'shared/utils';
 
 import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
 import PositionNameInList from 'src/components/PositionNameInList';
+import AvatarTitle from 'src/components/AvatarTitle';
 
 import styles from './WriteOff.module.css';
 
@@ -34,17 +33,7 @@ const WriteOff = props => {
 	return (
 		<TableRow className={styles.writeOff}>
 			<TableCell width={100}>
-				<div className={styles.user}>
-					<Avatar
-						className={styles.userPhoto}
-						src={writeOff.member.user.avatar}
-						alt={writeOff.member.user.name}
-						children={<div className={styles.userIcon} children={<FontAwesomeIcon icon={['fas', 'user-alt']} />} />}
-					/>
-					<Grid className={styles.userDetails} alignItems="flex-end" container>
-						<div className={styles.userName}>{writeOff.member.user.name}</div>
-					</Grid>
-				</div>
+				<AvatarTitle imageSrc={writeOff.member.user.avatar} title={writeOff.member.user.name} />
 			</TableCell>
 			<TableCell>
 				<PositionNameInList

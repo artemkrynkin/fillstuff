@@ -2,19 +2,18 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Grid from '@material-ui/core/Grid';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Avatar from '@material-ui/core/Avatar';
 
 import { history } from 'src/helpers/history';
 
 import CardPaper from 'src/components/CardPaper';
 import Money from 'src/components/Money';
+import AvatarTitle from 'src/components/AvatarTitle';
 
 import { getProcurement } from 'src/actions/procurements';
 
@@ -62,17 +61,7 @@ class Procurement extends Component {
 									'Чек/накладная отсутствует'
 								)}
 							</div>
-							<div className={styles.user}>
-								<Avatar
-									className={styles.userPhoto}
-									src={procurement.member.user.avatar}
-									alt={procurement.member.user.name}
-									children={<div className={styles.userIcon} children={<FontAwesomeIcon icon={['fas', 'user-alt']} />} />}
-								/>
-								<Grid alignItems="flex-end" container>
-									<div className={styles.userName}>{procurement.member.user.name}</div>
-								</Grid>
-							</div>
+							<AvatarTitle imageSrc={procurement.member.user.avatar} title={procurement.member.user.name} />
 						</Grid>
 						<Grid xs={6} item>
 							<Grid alignItems="flex-end" justify="flex-start" direction="column" container>

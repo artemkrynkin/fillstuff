@@ -37,7 +37,12 @@ const Receipt = props => {
 				/>
 			</TableCell>
 			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="right" width={140}>
-				{formatNumber(receipt.unitPurchasePrice, { toString: true })} ₽
+				<NumberFormat
+					value={formatNumber(receipt.unitPurchasePrice, { toString: true })}
+					renderText={value => value}
+					displayType="text"
+					{...currencyMoneyFormatProps}
+				/>
 			</TableCell>
 			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="right" width={140}>
 				{!receipt.position.isFree ? (

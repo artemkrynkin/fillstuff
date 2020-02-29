@@ -15,6 +15,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import Switch from '@material-ui/core/Switch';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { DatePicker } from '@material-ui/pickers';
 
 import { memberRoleTransform } from 'shared/roles-access-rights';
@@ -82,6 +84,19 @@ const findPositionByFullName = (position, searchText) => {
 	return positionName.indexOf(searchTextLowercase) !== -1;
 };
 
+const priceList = ['all', 'paid', 'free'];
+const FilterPriceTransform = statusSelected => {
+	switch (statusSelected) {
+		case 'free':
+			return 'Только бесплатные позиции';
+		case 'paid':
+			return 'Только платные позиции';
+		case 'all':
+		default:
+			return 'Платные и бесплатные позиции';
+	}
+};
+
 const DropdownFooter = props => {
 	const { onResetHandler, isSubmitting, disabledSubmit } = props;
 
@@ -114,7 +129,9 @@ const FormFilter = props => {
 		handlerDropdown,
 		onChangeFilterDate,
 		onChangeFilterPosition,
+		onChangeFilterPrice,
 		onChangeFilterRole,
+		onChangeFilterOnlyCanceled,
 		onResetAllFilters,
 		members: {
 			data: allMembers,
@@ -129,6 +146,7 @@ const FormFilter = props => {
 		dropdownDate: { state: dropdownDate, ref: refDropdownDate },
 		dropdownDateRange: { state: dropdownDateRange, ref: refDropdownDateRange },
 		dropdownPosition: { state: dropdownPosition, ref: refDropdownPosition },
+		dropdownPrice: { state: dropdownPrice, ref: refDropdownPrice },
 		dropdownRole: { state: dropdownRole, ref: refDropdownRole },
 		formikProps: {
 			// errors,
@@ -387,6 +405,42 @@ const FormFilter = props => {
 					</Dropdown>
 				</Grid>
 
+				{/* Filter Status */}
+				<Grid item>
+					<ButtonBase
+						ref={refDropdownPrice}
+						className={styles.filterButtonLink}
+						onClick={() => handlerDropdown('dropdownPrice')}
+						disableRipple
+					>
+						<span>{FilterPriceTransform(values.price)}</span>
+						<FontAwesomeIcon icon={['far', 'angle-down']} />
+					</ButtonBase>
+
+					<Dropdown
+						anchor={refDropdownPrice}
+						open={dropdownPrice}
+						onClose={() => handlerDropdown('dropdownPrice')}
+						placement="bottom"
+						innerContentStyle={{ maxHeight: 300, overflow: 'auto' }}
+					>
+						<List component="nav">
+							{priceList.map((price, index) => (
+								<ListItem
+									key={index}
+									disabled={isSubmitting}
+									selected={values.price === price}
+									onClick={() => onChangeFilterPrice(price, setFieldValue, submitForm)}
+									component={MenuItem}
+									button
+								>
+									{FilterPriceTransform(price)}
+								</ListItem>
+							))}
+						</List>
+					</Dropdown>
+				</Grid>
+
 				{/* Filter Role */}
 				<Grid item>
 					<ButtonBase
@@ -471,11 +525,33 @@ const FormFilter = props => {
 				</Grid>
 
 				<Grid item style={{ marginLeft: 'auto' }}>
-					{!isMonthActive() || values.position !== 'all' || values.role !== 'all' ? (
+					{!isMonthActive() ||
+					values.position !== 'all' ||
+					values.price !== 'all' ||
+					values.role !== 'all' ||
+					values.onlyCanceled !== false ? (
 						<ButtonBase onClick={() => onResetAllFilters(setFieldValue, submitForm)} className={styles.filterButtonLinkRed} disableRipple>
 							<span>Сбросить фильтры</span>
 						</ButtonBase>
 					) : null}
+				</Grid>
+			</Grid>
+			<Grid container>
+				{/* Filter Only canceled */}
+				<Grid style={{ paddingLeft: 15 }} item>
+					<FormControlLabel
+						control={
+							<Switch
+								checked={values.onlyCanceled}
+								onChange={() => onChangeFilterOnlyCanceled(!values.onlyCanceled, setFieldValue, submitForm)}
+								value="purchaseExpenseStudio"
+								color="primary"
+								disableRipple
+							/>
+						}
+						label="Только отменённые списания"
+						labelPlacement="end"
+					/>
 				</Grid>
 			</Grid>
 		</Form>

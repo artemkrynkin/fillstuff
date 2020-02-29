@@ -4,7 +4,7 @@ import queryString from 'query-string';
 import { history } from 'src/helpers/history';
 
 export const checkQueryInFilter = initialQuery => {
-	const query = queryString.parse(history.location.search);
+	const query = queryString.parse(history.location.search, { parseBooleans: true });
 
 	if (query.dateStart && query.dateEnd) {
 		const isValidDate = date => moment(date || new Date('')).isValid();

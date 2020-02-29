@@ -21,7 +21,7 @@ writeOffsRouter.post(
 	async (req, res, next) => {
 		const {
 			studioId,
-			query: { dateStart, dateEnd, position, role },
+			query: { dateStart, dateEnd, position, price, role, onlyCanceled },
 		} = req.body;
 
 		const conditions = {
@@ -37,7 +37,11 @@ writeOffsRouter.post(
 
 		if (position && position !== 'all') conditions.position = position;
 
+		if (price && price !== 'all') conditions.isFree = price !== 'paid';
+
 		if (role && !/all|owners|admins|artists/.test(role)) conditions.member = mongoose.Types.ObjectId(role);
+
+		if (onlyCanceled) conditions.canceled = onlyCanceled;
 
 		const writeOffsPromise = WriteOff.paginate(conditions, {
 			sort: { createdAt: -1 },

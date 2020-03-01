@@ -11,9 +11,9 @@ import TableBody from '@material-ui/core/TableBody';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Collapse from '@material-ui/core/Collapse';
-import Button from '@material-ui/core/Button';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import CardPaper from 'src/components/CardPaper';
 import Money from 'src/components/Money';
@@ -58,45 +58,38 @@ const Invoice = props => {
 							<AvatarTitle imageSrc={invoice.member.user.avatar} title={invoice.member.user.name} />
 						</Grid>
 						<Grid xs={6} item>
-							<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
-								{invoice.status !== 'paid' ? (
-									<div className={styles.titleGrey}>
-										К оплате: <Money value={invoice.amount - invoice.paymentAmountDue} />
-									</div>
-								) : invoice.status === 'paid' ? (
-									<div
-										className={ClassNames({
-											[styles.titleGrey]: true,
-											[styles.invoicePaid]: true,
-										})}
-									>
-										<FontAwesomeIcon icon={['fal', 'check-circle']} />
-										Счет оплачен {moment(invoice.datePayment).format('DD.MM.YYYY')}
-									</div>
-								) : null}
-
-								{invoice.status !== 'unpaid' ? (
-									<Grid className={styles.containerSmallInfo} alignItems="flex-end" justify="flex-start" direction="column" container>
-										<div className={styles.smallText}>
-											Сумма платежа: <Money value={invoice.paymentAmountDue} />
+							<Grid className={styles.indicators} alignItems="center" container>
+								<Grid xs={12} item>
+									{invoice.status !== 'paid' ? (
+										<div className={styles.indicatorsTitle}>
+											<Tooltip title="Погасить счет" placement="top" interactive>
+												<button onClick={() => onOpenDialogInvoice('dialogInvoicePaymentCreate', invoice)} className={styles.acceptPayment}>
+													<FontAwesomeIcon icon={['fas', 'wallet']} />
+												</button>
+											</Tooltip>
+											<Money value={invoice.amount - invoice.paymentAmountDue} />
 										</div>
-										<div className={styles.smallText}>
-											Сумма по счету: <Money value={invoice.amount} />
+									) : (
+										<div className={styles.indicatorsTitle2}>
+											<FontAwesomeIcon className={styles.invoicePaidIcon} icon={['fal', 'check-circle']} />
+											Счет оплачен
 										</div>
+									)}
+									<Grid justify="flex-end" container>
+										{invoice.status === 'unpaid' ? (
+											<div className={styles.indicatorsSubtitle}>К оплате</div>
+										) : (
+											<div className={styles.indicatorsSubtitle2}>
+												<Money value={invoice.paymentAmountDue} /> / <Money value={invoice.amount} />
+											</div>
+										)}
+										{invoice.status === 'paid' ? (
+											<div className={styles.indicatorsSubtitle2} style={{ marginLeft: 25 }}>
+												{moment(invoice.datePayment).format('D MMMM YYYY')}
+											</div>
+										) : null}
 									</Grid>
-								) : null}
-
-								{invoice.status !== 'paid' ? (
-									<Button
-										className={styles.acceptPayment}
-										onClick={() => onOpenDialogInvoice('dialogInvoicePaymentCreate', invoice)}
-										variant="outlined"
-										color="primary"
-										size="small"
-									>
-										Погасить счет
-									</Button>
-								) : null}
+								</Grid>
 							</Grid>
 						</Grid>
 					</Grid>

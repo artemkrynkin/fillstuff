@@ -29,93 +29,61 @@
   margin-right: 2px;
 }
 
-.titleGrey {
-  color: var(--c-hex-bg-500);
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 10px;
+.indicators {
+  height: 100%;
+  margin-left: auto;
 }
 
-.titleGrey span {
+.indicatorsTitle {
+  color: var(--c-hex-bg-700);
+  font-size: 18px;
+  font-weight: 700;
+  text-align: right;
+}
+
+.indicatorsTitle2 {
   color: var(--c-hex-bg-700);
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 600;
+  margin-bottom: 3px;
+  text-align: right;
 }
 
-.invoicePaid {
-  color: var(--c-hex-bg-700);
-  align-items: center;
-  display: flex;
+.indicatorsSubtitle {
+  color: var(--c-hex-bg-300);
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 10px;
+  text-align: right;
 }
 
-.invoicePaid svg {
-  color: var(--c-hex-t-300);
-  font-size: 20px;
-  margin-right: 5px;
-}
-
-.containerSmallInfo {
-  margin-bottom: 10px;
-}
-
-.containerSmallInfo:last-child {
-  margin-bottom: 0;
-}
-
-.smallText {
+.indicatorsSubtitle2 {
   color: var(--c-hex-bg-500);
   font-size: 12px;
-  margin-bottom: 5px;
-}
-
-.smallText:last-child {
-  margin-bottom: 0;
-}
-
-.smallText span {
-  color: var(--c-hex-bg-700);
-  font-size: 13px;
   font-weight: 700;
+  margin-top: 10px;
+  text-align: right;
 }
 
-.acceptPayment {}
-
-.user {
-  align-items: center;
-  display: flex;
-}
-
-.userPhoto {
-  background-color: var(--c-hex-br-5);
-  height: 28px;
+.acceptPayment {
+  background: none;
+  border: none;
+  color: var(--c-hex-t-300);
+  font-size: 18px;
   margin-right: 10px;
-  width: 28px;
+  transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
-.userIcon {
-  align-items: flex-end;
-  justify-content: center;
-  border: 2px solid var(--c-hex-bg-100);
-  border-radius: 50%;
-  display: flex;
-  height: 100%;
-  overflow: hidden;
-  width: 100%;
+.acceptPayment:hover {
+  color: var(--c-hex-t-400);
 }
 
-.userPhoto svg {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 20px;
-}
-
-.userName {
-  color: var(--c-hex-bg-500);
-  font-size: 13px;
-  font-weight: 600;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.invoicePaidIcon {
+  color: var(--c-hex-t-300);
+  font-size: 18px;
+  margin-right: 10px;
+  position: relative;
+  top: 1px;
 }
 
 .detailsButton {

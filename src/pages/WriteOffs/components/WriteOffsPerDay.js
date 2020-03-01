@@ -126,7 +126,7 @@ const WriteOffsPerDay = props => {
 									<div className={styles.indicatorsTitle}>
 										<Money value={indicators.usedUp} />
 									</div>
-									<div className={styles.indicatorsSubtitle}>Израсходовали</div>
+									<div className={styles.indicatorsSubtitle}>Потратили</div>
 								</Grid>
 							</Grid>
 						</Grid>

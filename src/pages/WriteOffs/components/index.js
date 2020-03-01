@@ -26,7 +26,6 @@ const Index = () => {
 		dateStart: dateStart,
 		dateEnd: dateEnd,
 		position: 'all',
-		price: 'all',
 		role: 'all',
 		onlyCanceled: false,
 	});

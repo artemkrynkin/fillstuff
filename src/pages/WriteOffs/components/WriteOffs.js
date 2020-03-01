@@ -64,6 +64,8 @@ class WriteOffs extends Component {
 
 		Object.keys(query).forEach(key => (query[key] === '' || query[key] === 'all') && delete query[key]);
 
+		if (!query.onlyCanceled) delete query.onlyCanceled;
+
 		const followingDates = getFollowingDates(query.dateStart, query.dateEnd);
 
 		query.dateStart = followingDates.dateStart.valueOf();
@@ -84,6 +86,8 @@ class WriteOffs extends Component {
 		const query = { ...filterParams };
 
 		Object.keys(query).forEach(key => (query[key] === '' || query[key] === 'all') && delete query[key]);
+
+		if (!query.onlyCanceled) delete query.onlyCanceled;
 
 		this.props.getWriteOffs(query);
 	}

@@ -30,14 +30,12 @@ class Filter extends Component {
 		dropdownDate: false,
 		dropdownDateRange: false,
 		dropdownPosition: false,
-		dropdownPrice: false,
 		dropdownRole: false,
 	};
 
 	refDropdownDate = createRef();
 	refDropdownDateRange = createRef();
 	refDropdownPosition = createRef();
-	refDropdownPrice = createRef();
 	refDropdownRole = createRef();
 
 	handlerDropdown = (name, value) =>
@@ -79,13 +77,6 @@ class Filter extends Component {
 		submitForm();
 	};
 
-	onChangeFilterPrice = (price, setFieldValue, submitForm) => {
-		this.handlerDropdown('dropdownPrice');
-
-		setFieldValue('price', price, false);
-		submitForm();
-	};
-
 	onChangeFilterRole = (role, setFieldValue, submitForm) => {
 		this.handlerDropdown('dropdownRole');
 
@@ -108,7 +99,6 @@ class Filter extends Component {
 		setFieldValue('dateStartView', startMonth, false);
 		setFieldValue('dateEndView', endMonth, false);
 		setFieldValue('position', 'all', false);
-		setFieldValue('price', 'all', false);
 		setFieldValue('role', 'all', false);
 		setFieldValue('onlyCanceled', false, false);
 		submitForm();
@@ -118,7 +108,7 @@ class Filter extends Component {
 		const { paging } = this.props;
 
 		const momentDate = moment();
-		const dropdownNameList = ['dropdownDate', 'dropdownDateRange', 'dropdownPosition', 'dropdownPrice', 'dropdownRole'];
+		const dropdownNameList = ['dropdownDate', 'dropdownDateRange', 'dropdownPosition', 'dropdownRole'];
 
 		paging.onChangeLoadedDocs(true);
 
@@ -138,7 +128,7 @@ class Filter extends Component {
 			delete query.dateEnd;
 		}
 
-		console.log(query);
+		if (!query.onlyCanceled) delete query.onlyCanceled;
 
 		history.replace({
 			search: queryString.stringify(query),
@@ -158,13 +148,14 @@ class Filter extends Component {
 			prevProps.filterParams.dateStart !== filterParams.dateStart ||
 			prevProps.filterParams.dateEnd !== filterParams.dateEnd ||
 			prevProps.filterParams.position !== filterParams.position ||
-			prevProps.filterParams.price !== filterParams.price ||
 			prevProps.filterParams.role !== filterParams.role ||
 			prevProps.filterParams.onlyCanceled !== filterParams.onlyCanceled
 		) {
 			const query = { ...filterParams };
 
 			Object.keys(query).forEach(key => (query[key] === '' || query[key] === 'all') && delete query[key]);
+
+			if (!query.onlyCanceled) delete query.onlyCanceled;
 
 			this.props.getWriteOffs(query);
 		}
@@ -177,7 +168,7 @@ class Filter extends Component {
 
 	render() {
 		const { members, positions, filterParams } = this.props;
-		const { dropdownDate, dropdownDateRange, dropdownPosition, dropdownPrice, dropdownRole } = this.state;
+		const { dropdownDate, dropdownDateRange, dropdownPosition, dropdownRole } = this.state;
 
 		const initialValues = { ...filterParams };
 
@@ -199,7 +190,6 @@ class Filter extends Component {
 							handlerDropdown={this.handlerDropdown}
 							onChangeFilterDate={this.onChangeFilterDate}
 							onChangeFilterPosition={this.onChangeFilterPosition}
-							onChangeFilterPrice={this.onChangeFilterPrice}
 							onChangeFilterRole={this.onChangeFilterRole}
 							onChangeFilterOnlyCanceled={this.onChangeFilterOnlyCanceled}
 							onResetAllFilters={this.onResetAllFilters}
@@ -216,10 +206,6 @@ class Filter extends Component {
 							dropdownPosition={{
 								state: dropdownPosition,
 								ref: this.refDropdownPosition,
-							}}
-							dropdownPrice={{
-								state: dropdownPrice,
-								ref: this.refDropdownPrice,
 							}}
 							dropdownRole={{
 								state: dropdownRole,

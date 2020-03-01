@@ -59,19 +59,25 @@ const findMemberByName = (member, searchText) => {
 	return memberName.indexOf(searchTextLowercase) !== -1;
 };
 
+const positionList = ['all', 'paid', 'free'];
 const FilterPositionTransform = (positionSelected, positions, loading) => {
-	if (positionSelected === 'all') {
-		return 'Все позиции';
-	} else {
-		if (loading) return <CircularProgress size={13} />;
+	switch (positionSelected) {
+		case 'all':
+			return 'Все позиции';
+		case 'paid':
+			return 'Только платные позиции';
+		case 'free':
+			return 'Только бесплатные позиции';
+		default:
+			if (loading) return <CircularProgress size={13} />;
 
-		if (positions && positions.length) {
-			const position = positions.find(position => position._id === positionSelected);
+			if (positions && positions.length) {
+				const position = positions.find(position => position._id === positionSelected);
 
-			return position ? position.name : null;
-		} else {
-			return 'Не найдено';
-		}
+				return position ? position.name : null;
+			} else {
+				return 'Не найдено';
+			}
 	}
 };
 const findPositionByFullName = (position, searchText) => {
@@ -82,19 +88,6 @@ const findPositionByFullName = (position, searchText) => {
 		.toLowerCase();
 
 	return positionName.indexOf(searchTextLowercase) !== -1;
-};
-
-const priceList = ['all', 'paid', 'free'];
-const FilterPriceTransform = statusSelected => {
-	switch (statusSelected) {
-		case 'free':
-			return 'Только бесплатные';
-		case 'paid':
-			return 'Только платные';
-		case 'all':
-		default:
-			return 'Платные и бесплатные';
-	}
 };
 
 const DropdownFooter = props => {
@@ -129,7 +122,6 @@ const FormFilter = props => {
 		handlerDropdown,
 		onChangeFilterDate,
 		onChangeFilterPosition,
-		onChangeFilterPrice,
 		onChangeFilterRole,
 		onChangeFilterOnlyCanceled,
 		onResetAllFilters,
@@ -146,7 +138,6 @@ const FormFilter = props => {
 		dropdownDate: { state: dropdownDate, ref: refDropdownDate },
 		dropdownDateRange: { state: dropdownDateRange, ref: refDropdownDateRange },
 		dropdownPosition: { state: dropdownPosition, ref: refDropdownPosition },
-		dropdownPrice: { state: dropdownPrice, ref: refDropdownPrice },
 		dropdownRole: { state: dropdownRole, ref: refDropdownRole },
 		formikProps: {
 			// errors,
@@ -358,17 +349,20 @@ const FormFilter = props => {
 					>
 						{!isLoadingAllPositions && positions && positions.length ? (
 							<List component="nav">
-								{!searchTextPosition ? (
-									<ListItem
-										disabled={isSubmitting}
-										selected={values.position === 'all'}
-										onClick={() => onChangeFilterPosition('all', setFieldValue, submitForm)}
-										component={MenuItem}
-										button
-									>
-										Все позиции
-									</ListItem>
-								) : null}
+								{!searchTextPosition
+									? positionList.map((position, index) => (
+											<ListItem
+												key={index}
+												disabled={isSubmitting}
+												selected={values.position === position}
+												onClick={() => onChangeFilterPosition(position, setFieldValue, submitForm)}
+												component={MenuItem}
+												button
+											>
+												{FilterPositionTransform(position)}
+											</ListItem>
+									  ))
+									: null}
 								{positions.map((position, index) => {
 									if (position.isArchived && !searchTextPosition) return null;
 
@@ -402,42 +396,6 @@ const FormFilter = props => {
 								)}
 							</div>
 						)}
-					</Dropdown>
-				</Grid>
-
-				{/* Filter Price */}
-				<Grid item>
-					<ButtonBase
-						ref={refDropdownPrice}
-						className={styles.filterButtonLink}
-						onClick={() => handlerDropdown('dropdownPrice')}
-						disableRipple
-					>
-						<span>{FilterPriceTransform(values.price)}</span>
-						<FontAwesomeIcon icon={['far', 'angle-down']} />
-					</ButtonBase>
-
-					<Dropdown
-						anchor={refDropdownPrice}
-						open={dropdownPrice}
-						onClose={() => handlerDropdown('dropdownPrice')}
-						placement="bottom"
-						innerContentStyle={{ maxHeight: 300, overflow: 'auto' }}
-					>
-						<List component="nav">
-							{priceList.map((price, index) => (
-								<ListItem
-									key={index}
-									disabled={isSubmitting}
-									selected={values.price === price}
-									onClick={() => onChangeFilterPrice(price, setFieldValue, submitForm)}
-									component={MenuItem}
-									button
-								>
-									{FilterPriceTransform(price)}
-								</ListItem>
-							))}
-						</List>
 					</Dropdown>
 				</Grid>
 
@@ -525,11 +483,7 @@ const FormFilter = props => {
 				</Grid>
 
 				<Grid item style={{ marginLeft: 'auto' }}>
-					{!isMonthActive() ||
-					values.position !== 'all' ||
-					values.price !== 'all' ||
-					values.role !== 'all' ||
-					values.onlyCanceled !== false ? (
+					{!isMonthActive() || values.position !== 'all' || values.role !== 'all' || values.onlyCanceled !== false ? (
 						<ButtonBase onClick={() => onResetAllFilters(setFieldValue, submitForm)} className={styles.filterButtonLinkRed} disableRipple>
 							<span>Сбросить фильтры</span>
 						</ButtonBase>

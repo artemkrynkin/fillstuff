@@ -71,23 +71,30 @@ const Invoice = props => {
 								) : (
 									<div className={styles.indicatorsTitle2}>
 										<FontAwesomeIcon className={styles.invoicePaidIcon} icon={['fal', 'check-circle']} />
-										Счет оплачен
+										Оплачен
 									</div>
 								)}
-								<Grid justify="flex-end" container>
-									{invoice.status === 'unpaid' ? (
-										<div className={styles.indicatorsSubtitle}>К оплате</div>
-									) : (
-										<div className={styles.indicatorsSubtitle2}>
-											<Money value={invoice.paymentAmountDue} /> / <Money value={invoice.amount} />
-										</div>
-									)}
-									{invoice.status === 'paid' ? (
-										<div className={styles.indicatorsSubtitle2} style={{ marginLeft: 25 }}>
-											{moment(invoice.datePayment).format('D MMMM YYYY')}
-										</div>
-									) : null}
-								</Grid>
+
+								{invoice.status === 'unpaid' ? (
+									<div className={styles.indicatorsSubtitle}>К оплате</div>
+								) : (
+									<Grid className={styles.indicatorsDetails} justify="flex-end" container>
+										<Grid justify="flex-end" container>
+											<div>
+												<div className={styles.indicatorsSubtitle2}>
+													<Money value={invoice.paymentAmountDue} />
+												</div>
+												<div className={styles.indicatorsSubtitle}>Уплачено</div>
+											</div>
+											<div style={{ marginLeft: 30 }}>
+												<div className={styles.indicatorsSubtitle2}>
+													<Money value={invoice.amount} />
+												</div>
+												<div className={styles.indicatorsSubtitle}>По счету</div>
+											</div>
+										</Grid>
+									</Grid>
+								)}
 							</Grid>
 						</Grid>
 					</Grid>

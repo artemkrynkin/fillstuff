@@ -46,37 +46,55 @@ const WriteOff = props => {
 				{writeOff.quantity} {writeOff.position.unitIssue === 'pce' ? 'шт.' : 'уп.'}
 			</TableCell>
 			<TableCell align="right">
-				<div className={styles.moneyContainer}>
+				{writeOff.quantity > 1 ? (
+					<div className={styles.moneyContainer}>
+						<NumberFormat
+							value={formatNumber(writeOff.purchasePrice, { toString: true })}
+							renderText={value => <span className={styles.moneyLarge}>{value}</span>}
+							displayType="text"
+							{...currencyMoneyFormatProps}
+						/>
+						<NumberFormat
+							value={formatNumber(writeOff.unitPurchasePrice, { toString: true })}
+							renderText={value => <span className={styles.moneySmall}>{value}</span>}
+							displayType="text"
+							{...currencyMoneyFormatProps}
+						/>
+					</div>
+				) : (
 					<NumberFormat
 						value={formatNumber(writeOff.purchasePrice, { toString: true })}
 						renderText={value => <span className={styles.moneyLarge}>{value}</span>}
 						displayType="text"
 						{...currencyMoneyFormatProps}
 					/>
-					<NumberFormat
-						value={formatNumber(writeOff.unitPurchasePrice, { toString: true })}
-						renderText={value => <span className={styles.moneySmall}>{value}</span>}
-						displayType="text"
-						{...currencyMoneyFormatProps}
-					/>
-				</div>
+				)}
 			</TableCell>
 			<TableCell align="right">
 				{!writeOff.isFree ? (
-					<div className={styles.moneyContainer}>
+					writeOff.quantity > 1 ? (
+						<div className={styles.moneyContainer}>
+							<NumberFormat
+								value={formatNumber(writeOff.sellingPrice, { toString: true })}
+								renderText={value => <span className={styles.moneyLarge}>{value}</span>}
+								displayType="text"
+								{...currencyMoneyFormatProps}
+							/>
+							<NumberFormat
+								value={formatNumber(writeOff.unitSellingPrice, { toString: true })}
+								renderText={value => <span className={styles.moneySmall}>{value}</span>}
+								displayType="text"
+								{...currencyMoneyFormatProps}
+							/>
+						</div>
+					) : (
 						<NumberFormat
 							value={formatNumber(writeOff.sellingPrice, { toString: true })}
 							renderText={value => <span className={styles.moneyLarge}>{value}</span>}
 							displayType="text"
 							{...currencyMoneyFormatProps}
 						/>
-						<NumberFormat
-							value={formatNumber(writeOff.unitSellingPrice, { toString: true })}
-							renderText={value => <span className={styles.moneySmall}>{value}</span>}
-							displayType="text"
-							{...currencyMoneyFormatProps}
-						/>
-					</div>
+					)
 				) : (
 					<span className={styles.caption}>Бесплатно</span>
 				)}

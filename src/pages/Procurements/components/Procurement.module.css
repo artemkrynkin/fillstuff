@@ -33,30 +33,32 @@
   margin-right: 2px;
 }
 
-.totalPrice,
-.pricePositions,
-.costDelivery {
-  color: var(--c-hex-bg-500);
+.indicators {
+  height: 100%;
+  margin-left: auto;
 }
 
-.totalPrice {
-  margin-bottom: 10px;
-}
-
-.pricePositions {
-  margin-bottom: 5px;
-}
-
-.pricePositions,
-.costDelivery {
-  font-size: 12px;
-}
-
-.totalPrice span,
-.pricePositions span,
-.costDelivery span {
+.indicatorsTitle {
   color: var(--c-hex-bg-700);
+  font-size: 18px;
   font-weight: 700;
+  margin-bottom: 15px;
+  text-align: right;
+}
+
+.indicatorsSubtitle {
+  color: var(--c-hex-bg-300);
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 5px;
+  text-align: right;
+}
+
+.indicatorsSubtitle2 {
+  color: var(--c-hex-bg-500);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: right;
 }
 
 .detailsButton {
@@ -89,15 +91,4 @@
 .receipts {
   border-top: 1px solid var(--c-hex-br-5);
   margin-top: 20px;
-}
-
-.caption {
-  color: var(--c-hex-bg-300);
-  font-size: 11px;
-  font-weight: 600;
-  margin-left: 5px;
-}
-
-.caption.orange {
-  color: var(--c-hex-o-15);
 }

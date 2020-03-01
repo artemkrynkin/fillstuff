@@ -33,11 +33,6 @@
   margin-right: 2px;
 }
 
-.indicators {
-  height: 100%;
-  margin-left: auto;
-}
-
 .indicatorsTitle {
   color: var(--c-hex-bg-700);
   font-size: 18px;

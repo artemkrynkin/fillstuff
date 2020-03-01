@@ -93,40 +93,38 @@ class Invoice extends Component {
 							<AvatarTitle imageSrc={invoice.member.user.avatar} title={invoice.member.user.name} />
 						</Grid>
 						<Grid xs={6} item>
-							<Grid className={styles.indicators} alignItems="center" container>
-								<Grid xs={12} item>
-									{invoice.status !== 'paid' ? (
-										<div className={styles.indicatorsTitle}>
-											<Tooltip title="Погасить счет" placement="top" interactive>
-												<button
-													onClick={() => this.onOpenDialogByName('dialogInvoicePaymentCreate', invoice)}
-													className={styles.acceptPayment}
-												>
-													<FontAwesomeIcon icon={['fas', 'wallet']} />
-												</button>
-											</Tooltip>
-											<Money value={invoice.amount - invoice.paymentAmountDue} />
-										</div>
+							<Grid className={styles.indicators} direction="column" justify="center" container>
+								{invoice.status !== 'paid' ? (
+									<div className={styles.indicatorsTitle}>
+										<Tooltip title="Погасить счет" placement="top" interactive>
+											<button
+												onClick={() => this.onOpenDialogByName('dialogInvoicePaymentCreate', invoice)}
+												className={styles.acceptPayment}
+											>
+												<FontAwesomeIcon icon={['fas', 'wallet']} />
+											</button>
+										</Tooltip>
+										<Money value={invoice.amount - invoice.paymentAmountDue} />
+									</div>
+								) : (
+									<div className={styles.indicatorsTitle2}>
+										<FontAwesomeIcon className={styles.invoicePaidIcon} icon={['fal', 'check-circle']} />
+										Счет оплачен
+									</div>
+								)}
+								<Grid justify="flex-end" container>
+									{invoice.status === 'unpaid' ? (
+										<div className={styles.indicatorsSubtitle}>К оплате</div>
 									) : (
-										<div className={styles.indicatorsTitle2}>
-											<FontAwesomeIcon className={styles.invoicePaidIcon} icon={['fal', 'check-circle']} />
-											Счет оплачен
+										<div className={styles.indicatorsSubtitle2}>
+											<Money value={invoice.paymentAmountDue} /> / <Money value={invoice.amount} />
 										</div>
 									)}
-									<Grid justify="flex-end" container>
-										{invoice.status === 'unpaid' ? (
-											<div className={styles.indicatorsSubtitle}>К оплате</div>
-										) : (
-											<div className={styles.indicatorsSubtitle2}>
-												<Money value={invoice.paymentAmountDue} /> / <Money value={invoice.amount} />
-											</div>
-										)}
-										{invoice.status === 'paid' ? (
-											<div className={styles.indicatorsSubtitle2} style={{ marginLeft: 25 }}>
-												{moment(invoice.datePayment).format('D MMMM YYYY')}
-											</div>
-										) : null}
-									</Grid>
+									{invoice.status === 'paid' ? (
+										<div className={styles.indicatorsSubtitle2} style={{ marginLeft: 25 }}>
+											{moment(invoice.datePayment).format('D MMMM YYYY')}
+										</div>
+									) : null}
 								</Grid>
 							</Grid>
 						</Grid>

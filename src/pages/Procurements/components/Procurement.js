@@ -20,7 +20,6 @@ import Receipt from './Receipt';
 
 import { TableCell } from './styles';
 import styles from './Procurement.module.css';
-import Tooltip from '@material-ui/core/Tooltip';
 
 const Procurement = props => {
 	const { procurement, filterParams } = props;
@@ -49,24 +48,22 @@ const Procurement = props => {
 							<AvatarTitle imageSrc={procurement.member.user.avatar} title={procurement.member.user.name} />
 						</Grid>
 						<Grid xs={6} item>
-							<Grid xs={12} item>
-								<div className={styles.indicatorsTitle}>
-									<Money value={procurement.totalPrice} />
+							<div className={styles.indicatorsTitle}>
+								<Money value={procurement.totalPrice} />
+							</div>
+							<Grid justify="flex-end" container>
+								<div>
+									<div className={styles.indicatorsSubtitle2}>
+										<Money value={procurement.costDelivery} />
+									</div>
+									<div className={styles.indicatorsSubtitle}>Доставка</div>
 								</div>
-								<Grid justify="flex-end" container>
-									<div>
-										<div className={styles.indicatorsSubtitle2}>
-											<Money value={procurement.costDelivery} />
-										</div>
-										<div className={styles.indicatorsSubtitle}>Стоимость доставки</div>
+								<div style={{ marginLeft: 30 }}>
+									<div className={styles.indicatorsSubtitle2}>
+										<Money value={procurement.pricePositions} />
 									</div>
-									<div style={{ marginLeft: 30 }}>
-										<div className={styles.indicatorsSubtitle2}>
-											<Money value={procurement.pricePositions} />
-										</div>
-										<div className={styles.indicatorsSubtitle}>Стоимость позиций</div>
-									</div>
-								</Grid>
+									<div className={styles.indicatorsSubtitle}>Позиции</div>
+								</div>
 							</Grid>
 						</Grid>
 					</Grid>

@@ -64,15 +64,21 @@ class Procurement extends Component {
 							<AvatarTitle imageSrc={procurement.member.user.avatar} title={procurement.member.user.name} />
 						</Grid>
 						<Grid xs={6} item>
-							<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
-								<div className={styles.totalPrice}>
-									Итого: <Money value={procurement.totalPrice} />
+							<div className={styles.indicatorsTitle}>
+								<Money value={procurement.totalPrice} />
+							</div>
+							<Grid justify="flex-end" container>
+								<div>
+									<div className={styles.indicatorsSubtitle2}>
+										<Money value={procurement.costDelivery} />
+									</div>
+									<div className={styles.indicatorsSubtitle}>Доставка</div>
 								</div>
-								<div className={styles.pricePositions}>
-									Стоимость позиций: <Money value={procurement.pricePositions} />
-								</div>
-								<div className={styles.costDelivery}>
-									Стоимость доставки: <Money value={procurement.costDelivery} />
+								<div style={{ marginLeft: 30 }}>
+									<div className={styles.indicatorsSubtitle2}>
+										<Money value={procurement.pricePositions} />
+									</div>
+									<div className={styles.indicatorsSubtitle}>Позиции</div>
 								</div>
 							</Grid>
 						</Grid>

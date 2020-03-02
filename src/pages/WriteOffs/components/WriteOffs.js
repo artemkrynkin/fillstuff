@@ -9,7 +9,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { history } from 'src/helpers/history';
 
-import { getFollowingDates } from 'src/components/Pagination/utils';
+import { getFollowingDates, deleteParamsCoincidence } from 'src/components/Pagination/utils';
 import LoadMoreButton from 'src/components/Pagination/LoadMoreButton';
 
 import { getWriteOffs } from 'src/actions/writeOffs';
@@ -18,10 +18,8 @@ import WriteOffsPerDay from './WriteOffsPerDay';
 
 import styles from './WriteOffs.module.css';
 
-const generatePaginate = (loadedDocs, data) => {
+const generatePaginate = data => {
 	const writeOffs = data.slice();
-
-	writeOffs.length = loadedDocs < data.length ? loadedDocs : data.length;
 
 	// Группируем списания по месяцу
 	return _.chain(writeOffs)
@@ -53,8 +51,7 @@ const MonthDateTitle = ({ date }) => {
 
 class WriteOffs extends Component {
 	static propTypes = {
-		filterParams: PropTypes.object.isRequired,
-		paging: PropTypes.object.isRequired,
+		filterOptions: PropTypes.object.isRequired,
 	};
 
 	onLoadOtherDates = () => {
@@ -80,12 +77,37 @@ class WriteOffs extends Component {
 		paging.onChangeLoadedDocs(true);
 	};
 
+	onLoadMore = () => {
+		const {
+			filterOptions: { params: filterParams, delete: filterDeleteParams },
+			paging,
+		} = this.props;
+
+		const query = deleteParamsCoincidence({ ...filterParams }, { type: 'server', ...filterDeleteParams });
+
+		if (!query.onlyCanceled) delete query.onlyCanceled;
+
+		const followingDates = getFollowingDates(paging.dateIntervalAllTime.dateStart, paging.dateIntervalAllTime.dateEnd);
+
+		query.dateStart = followingDates.dateStart.valueOf();
+		query.dateEnd = followingDates.dateEnd.valueOf();
+
+		console.log(moment(query.dateStart).format(), moment(query.dateEnd).format());
+
+		paging.setDateIntervalAllTime({
+			dateStart: query.dateStart,
+			dateEnd: query.dateEnd,
+		});
+
+		this.props.getWriteOffs(query, { showRequest: false, mergeData: true });
+	};
+
 	componentDidMount() {
-		const { filterParams } = this.props;
+		const {
+			filterOptions: { params: filterParams, delete: filterDeleteParams },
+		} = this.props;
 
-		const query = { ...filterParams };
-
-		Object.keys(query).forEach(key => (query[key] === '' || query[key] === 'all') && delete query[key]);
+		const query = deleteParamsCoincidence({ ...filterParams }, { type: 'server', ...filterDeleteParams });
 
 		if (!query.onlyCanceled) delete query.onlyCanceled;
 
@@ -95,7 +117,6 @@ class WriteOffs extends Component {
 	render() {
 		const {
 			filterParams,
-			paging,
 			writeOffs: {
 				data: writeOffsData,
 				isFetching: isLoadingWriteOffs,
@@ -106,36 +127,25 @@ class WriteOffs extends Component {
 		return (
 			<div className={styles.container}>
 				{!isLoadingWriteOffs && writeOffsData ? (
-					writeOffsData.data.length && writeOffsData.paging.totalCount ? (
-						generatePaginate(paging.loadedDocs, writeOffsData.data).map(writeOffsPerMonth => (
-							<div className={styles.date} key={writeOffsPerMonth.date}>
-								<MonthDateTitle date={writeOffsPerMonth.date} />
-								{writeOffsPerMonth.items.map(writeOffsPerDay => (
-									<WriteOffsPerDay key={writeOffsPerDay.date} filterParams={filterParams} writeOffsPerDay={writeOffsPerDay} />
-								))}
-							</div>
-						))
-					) : !writeOffsData.data.length && writeOffsData.paging.totalCount ? (
-						<div className={styles.none}>
-							Среди списаний не найдено совпадений за выбранный период.
-							<br />
-							Попробуйте изменить запрос.
+					writeOffsData.paging.totalCount && writeOffsData.data.length ? (
+						<div>
+							{generatePaginate(writeOffsData.data).map(writeOffsPerMonth => (
+								<div className={styles.date} key={writeOffsPerMonth.date}>
+									<MonthDateTitle date={writeOffsPerMonth.date} />
+									{writeOffsPerMonth.items.map(writeOffsPerDay => (
+										<WriteOffsPerDay key={writeOffsPerDay.date} filterParams={filterParams} writeOffsPerDay={writeOffsPerDay} />
+									))}
+								</div>
+							))}
+							{/*{writeOffsData.paging.hasNextPage ? (*/}
+							<LoadMoreButton onLoadMore={this.onLoadMore} filter />
+							{/*) : null}*/}
 						</div>
+					) : writeOffsData.paging.totalCount && !writeOffsData.data.length ? (
+						<div className={styles.none}>Ничего не найдено</div>
 					) : (
 						<div className={styles.none}>Еще не списано ни одной позиции.</div>
 					)
-				) : null}
-				{!isLoadingWriteOffs && writeOffsData && writeOffsData.paging.totalCount ? (
-					<LoadMoreButton
-						loaded={paging.loadedDocs}
-						count={writeOffsData.data.length}
-						textButton="Показать списания за"
-						showDates={true}
-						dateStart={filterParams.dateStart}
-						dateEnd={filterParams.dateEnd}
-						onLoadMore={() => paging.onChangeLoadedDocs()}
-						onLoadOtherDates={this.onLoadOtherDates}
-					/>
 				) : isLoadingWriteOffs ? (
 					<div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />
 				) : null}
@@ -217,7 +227,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		getWriteOffs: query => dispatch(getWriteOffs({ query })),
+		getWriteOffs: (query, params) => dispatch(getWriteOffs({ query, ...params })),
 	};
 };
 

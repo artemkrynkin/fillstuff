@@ -33,7 +33,7 @@
   color: var(--c-hex-bg-700);
   font-size: 16px;
   font-weight: 600;
-  margin-bottom: 3px;
+  margin-bottom: 1px;
   text-align: right;
 }
 
@@ -41,7 +41,7 @@
   color: var(--c-hex-bg-300);
   font-size: 12px;
   font-weight: 600;
-  margin-top: 10px;
+  margin-top: 5px;
   text-align: right;
 }
 
@@ -49,8 +49,11 @@
   color: var(--c-hex-bg-500);
   font-size: 12px;
   font-weight: 700;
-  margin-top: 10px;
   text-align: right;
+}
+
+.indicatorsDetails {
+  margin-top: 15px;
 }
 
 .acceptPayment {

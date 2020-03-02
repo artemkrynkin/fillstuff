@@ -144,10 +144,12 @@ const FormFilter = props => {
 						}}
 						disableRipple
 					>
-						{isWeekActive() ? (
-							<span>За текущую неделю</span>
+						{!values.dateStartView && !values.dateEndView ? (
+							<span>Всё время</span>
 						) : isMonthActive() ? (
-							<span>За текущий месяц</span>
+							<span>Текущий месяц</span>
+						) : isWeekActive() ? (
+							<span>Текущая неделя</span>
 						) : !isNaN(values.dateStartView) && !isNaN(values.dateEndView) ? (
 							<span>
 								{isMonthActive(false)
@@ -168,12 +170,12 @@ const FormFilter = props => {
 						<List component="nav">
 							<ListItem
 								disabled={isSubmitting}
-								selected={isWeekActive()}
-								onClick={() => onChangeFilterDate('currentWeek', setFieldValue, submitForm)}
+								selected={!values.dateStartView && !values.dateEndView}
+								onClick={() => onChangeFilterDate('allTime', setFieldValue, submitForm)}
 								component={MenuItem}
 								button
 							>
-								За текущую неделю
+								Всё время
 							</ListItem>
 							<ListItem
 								disabled={isSubmitting}
@@ -182,7 +184,16 @@ const FormFilter = props => {
 								component={MenuItem}
 								button
 							>
-								За текущий месяц
+								Текущий месяц
+							</ListItem>
+							<ListItem
+								disabled={isSubmitting}
+								selected={isWeekActive()}
+								onClick={() => onChangeFilterDate('currentWeek', setFieldValue, submitForm)}
+								component={MenuItem}
+								button
+							>
+								Текущая неделя
 							</ListItem>
 						</List>
 						<Divider />
@@ -212,7 +223,7 @@ const FormFilter = props => {
 							<MuiPickersUtilsProvider utils={MomentUtils}>
 								<Grid className={styles.dropdownContentColumn} style={{ width: 'auto' }} item>
 									<DatePicker
-										value={values.dateStart}
+										value={values.dateStart || new Date()}
 										onChange={date => {
 											setFieldValue('dateStart', date.valueOf(), false);
 
@@ -236,7 +247,7 @@ const FormFilter = props => {
 								</Grid>
 								<Grid className={styles.dropdownContentColumn} style={{ width: 'auto' }} item>
 									<DatePicker
-										value={values.dateEnd}
+										value={values.dateEnd || new Date()}
 										onChange={date => {
 											const dateEnd = date.set({ second: 59, millisecond: 999 });
 

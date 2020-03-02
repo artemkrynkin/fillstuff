@@ -3,14 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import moment from 'moment';
-import queryString from 'query-string';
 import loadable from '@loadable/component';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import { history } from 'src/helpers/history';
-
-import { getFollowingDates } from 'src/components/Pagination/utils';
+import { deleteParamsCoincidence } from 'src/components/Pagination/utils';
 import LoadMoreButton from 'src/components/Pagination/LoadMoreButton';
 
 import { getInvoices } from 'src/actions/invoices';
@@ -34,10 +31,8 @@ const calendarFormat = {
 	},
 };
 
-const generatePaginate = (loadedDocs, data) => {
+const generatePaginate = data => {
 	const invoices = data.slice();
-
-	invoices.length = loadedDocs < data.length ? loadedDocs : data.length;
 
 	return _.chain(invoices)
 		.groupBy(invoice => {
@@ -60,7 +55,7 @@ const DialogInvoicePaymentCreate = loadable(() =>
 
 class Invoices extends Component {
 	static propTypes = {
-		filterParams: PropTypes.object.isRequired,
+		filterOptions: PropTypes.object.isRequired,
 		paging: PropTypes.object.isRequired,
 	};
 
@@ -70,25 +65,14 @@ class Invoices extends Component {
 		dialogInvoicePaymentCreate: false,
 	};
 
-	onLoadOtherDates = () => {
-		const { filterParams, paging } = this.props;
+	onLoadMore = nextPage => {
+		const {
+			filterOptions: { params: filterParams, delete: filterDeleteParams },
+		} = this.props;
 
-		const query = { ...filterParams };
+		const query = deleteParamsCoincidence({ ...filterParams, page: nextPage }, { type: 'server', ...filterDeleteParams });
 
-		Object.keys(query).forEach(key => (query[key] === '' || query[key] === 'all') && delete query[key]);
-
-		const followingDates = getFollowingDates(query.dateStart, query.dateEnd);
-
-		query.dateStart = followingDates.dateStart.valueOf();
-		query.dateEnd = followingDates.dateEnd.valueOf();
-
-		history.replace({
-			search: queryString.stringify(query),
-		});
-
-		this.setState(this.initialState);
-
-		paging.onChangeLoadedDocs(true);
+		this.props.getInvoices(query, { showRequest: false, mergeData: true });
 	};
 
 	onInvoiceDrop = () => this.setState({ invoice: null, dialogOpenedName: '' });
@@ -103,18 +87,17 @@ class Invoices extends Component {
 	onCloseDialogByName = dialogName => this.setState({ [dialogName]: false });
 
 	componentDidMount() {
-		const { filterParams } = this.props;
+		const {
+			filterOptions: { params: filterParams, delete: filterDeleteParams },
+		} = this.props;
 
-		const query = { ...filterParams };
-
-		Object.keys(query).forEach(key => (query[key] === '' || query[key] === 'all') && delete query[key]);
+		const query = deleteParamsCoincidence({ ...filterParams }, { type: 'server', ...filterDeleteParams });
 
 		this.props.getInvoices(query);
 	}
 
 	render() {
 		const {
-			filterParams,
 			paging,
 			invoices: {
 				data: invoiceData,
@@ -127,36 +110,25 @@ class Invoices extends Component {
 		return (
 			<div className={styles.container}>
 				{!isLoadingInvoices && invoiceData ? (
-					invoiceData.data.length && invoiceData.paging.totalCount ? (
-						generatePaginate(paging.loadedDocs, invoiceData.data).map((invoiceDates, index) => (
-							<div className={styles.date} key={invoiceDates.date}>
-								<div className={styles.dateTitle}>{moment(invoiceDates.date).calendar(null, calendarFormat)}</div>
-								{invoiceDates.items.map(invoice => (
-									<Invoice key={invoice._id} invoice={invoice} onOpenDialogInvoice={this.onOpenDialogByName} />
-								))}
-							</div>
-						))
-					) : !invoiceData.data.length && invoiceData.paging.totalCount ? (
-						<div className={styles.none}>
-							Среди счетов не найдено совпадений за выбранный период.
-							<br />
-							Попробуйте изменить запрос.
+					invoiceData.paging.totalCount && invoiceData.paging.totalDocs ? (
+						<div>
+							{generatePaginate(invoiceData.data).map((invoiceDates, index) => (
+								<div className={styles.date} key={invoiceDates.date}>
+									<div className={styles.dateTitle}>{moment(invoiceDates.date).calendar(null, calendarFormat)}</div>
+									{invoiceDates.items.map(invoice => (
+										<Invoice key={invoice._id} invoice={invoice} onOpenDialogInvoice={this.onOpenDialogByName} />
+									))}
+								</div>
+							))}
+							{invoiceData.paging.hasNextPage ? (
+								<LoadMoreButton page={paging.page} setPage={paging.setPage} onLoadMore={this.onLoadMore} />
+							) : null}
 						</div>
+					) : invoiceData.paging.totalCount && !invoiceData.paging.totalDocs ? (
+						<div className={styles.none}>Ничего не найдено</div>
 					) : (
 						<div className={styles.none}>Еще не выставлено ни одного счета.</div>
 					)
-				) : null}
-				{!isLoadingInvoices && invoiceData && invoiceData.paging.totalCount ? (
-					<LoadMoreButton
-						loaded={paging.loadedDocs}
-						count={invoiceData.data.length}
-						textButton="Показать счета за"
-						showDates={true}
-						dateStart={filterParams.dateStart}
-						dateEnd={filterParams.dateEnd}
-						onLoadMore={paging.onChangeLoadedDocs}
-						onLoadOtherDates={this.onLoadOtherDates}
-					/>
 				) : isLoadingInvoices ? (
 					<div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />
 				) : null}
@@ -180,7 +152,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		getInvoices: query => dispatch(getInvoices({ query })),
+		getInvoices: (query, params) => dispatch(getInvoices({ query, ...params })),
 	};
 };
 

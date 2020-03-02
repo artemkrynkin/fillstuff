@@ -33,6 +33,26 @@ export const checkQueryInFilter = initialQuery => {
 	return Object.assign(initialQuery, query);
 };
 
+export const deleteParamsCoincidence = (
+	query,
+	{ type = '', searchByName = [], searchByValue = [], serverQueryByName = [], serverQueryByValue = [] }
+) => {
+	const queryCopy = { ...query };
+
+	Object.keys(queryCopy).forEach(key => {
+		if (type === 'search') {
+			return (searchByName.some(value => key === value) || searchByValue.some(value => queryCopy[key] === value)) && delete queryCopy[key];
+		} else if (type === 'server') {
+			return (
+				(serverQueryByName.some(value => key === value) || serverQueryByValue.some(value => queryCopy[key] === value)) &&
+				delete queryCopy[key]
+			);
+		}
+	});
+
+	return queryCopy;
+};
+
 export const weekActive = (dateStart, dateEnd, currentWeek = true) =>
 	moment(currentWeek ? new Date() : dateStart)
 		.startOf('isoWeek')

@@ -80,17 +80,23 @@ const Invoice = props => {
 								) : (
 									<Grid className={styles.indicatorsDetails} justify="flex-end" container>
 										<Grid justify="flex-end" container>
-											<div>
+											{invoice.status === 'paid' ? (
+												<div style={{ marginRight: 30 }}>
+													<div className={styles.indicatorsSubtitle2}>{moment(invoice.datePayment).format('DD.MM.YYYY')}</div>
+													<div className={styles.indicatorsSubtitle}>Дата оплаты</div>
+												</div>
+											) : null}
+											<div style={{ marginRight: 30 }}>
 												<div className={styles.indicatorsSubtitle2}>
 													<Money value={invoice.paymentAmountDue} />
 												</div>
-												<div className={styles.indicatorsSubtitle}>Уплачено</div>
+												<div className={styles.indicatorsSubtitle}>Оплачено</div>
 											</div>
-											<div style={{ marginLeft: 30 }}>
+											<div>
 												<div className={styles.indicatorsSubtitle2}>
 													<Money value={invoice.amount} />
 												</div>
-												<div className={styles.indicatorsSubtitle}>По счету</div>
+												<div className={styles.indicatorsSubtitle}>Выставлено</div>
 											</div>
 										</Grid>
 									</Grid>

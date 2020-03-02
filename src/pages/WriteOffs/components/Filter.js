@@ -11,6 +11,8 @@ import { sleep } from 'shared/utils';
 
 import { history } from 'src/helpers/history';
 
+import { deleteParamsCoincidence } from 'src/components/Pagination/utils';
+
 import { getMembers } from 'src/actions/members';
 import { getPositions } from 'src/actions/positions';
 import { getWriteOffs } from 'src/actions/writeOffs';
@@ -22,8 +24,7 @@ import styles from './Filter.module.css';
 
 class Filter extends Component {
 	static propTypes = {
-		filterParams: PropTypes.object.isRequired,
-		paging: PropTypes.object.isRequired,
+		filterOptions: PropTypes.object.isRequired,
 	};
 
 	state = {
@@ -49,6 +50,14 @@ class Filter extends Component {
 		this.handlerDropdown('dropdownDate');
 
 		switch (intervalDate) {
+			case 'currentMonth': {
+				const startMonth = momentDate.startOf('month').valueOf();
+				const endMonth = momentDate.endOf('month').valueOf();
+
+				setFieldValue('dateStart', startMonth, false);
+				setFieldValue('dateEnd', endMonth, false);
+				break;
+			}
 			case 'currentWeek': {
 				const startWeek = momentDate.startOf('isoWeek').valueOf();
 				const endWeek = momentDate.endOf('isoWeek').valueOf();
@@ -57,13 +66,10 @@ class Filter extends Component {
 				setFieldValue('dateEnd', endWeek, false);
 				break;
 			}
-			case 'currentMonth':
+			case 'allTime':
 			default: {
-				const startMonth = momentDate.startOf('month').valueOf();
-				const endMonth = momentDate.endOf('month').valueOf();
-
-				setFieldValue('dateStart', startMonth, false);
-				setFieldValue('dateEnd', endMonth, false);
+				setFieldValue('dateStart', null, false);
+				setFieldValue('dateEnd', null, false);
 				break;
 			}
 		}
@@ -105,12 +111,13 @@ class Filter extends Component {
 	};
 
 	onSubmit = async (values, actions) => {
-		const { paging } = this.props;
+		const {
+			filterOptions: { delete: filterDeleteParams },
+		} = this.props;
 
 		const momentDate = moment();
-		const dropdownNameList = ['dropdownDate', 'dropdownDateRange', 'dropdownPosition', 'dropdownRole'];
 
-		paging.onChangeLoadedDocs(true);
+		const dropdownNameList = ['dropdownDate', 'dropdownDateRange', 'dropdownPosition', 'dropdownRole'];
 
 		actions.setFieldValue('dateStartView', values.dateStart, false);
 		actions.setFieldValue('dateEndView', values.dateEnd, false);
@@ -119,9 +126,7 @@ class Filter extends Component {
 			this.handlerDropdown(dropdownNameList[i], false);
 		}
 
-		const query = { ...filterSchema.cast(values) };
-
-		Object.keys(query).forEach(key => (query[key] === '' || query[key] === 'all') && delete query[key]);
+		const query = deleteParamsCoincidence({ ...filterSchema.cast(values) }, { type: 'search', ...filterDeleteParams });
 
 		if (momentDate.startOf('month').isSame(query.dateStart, 'day') && momentDate.endOf('month').isSame(query.dateEnd, 'day')) {
 			delete query.dateStart;
@@ -141,19 +146,19 @@ class Filter extends Component {
 		actions.setSubmitting(false);
 	};
 
-	componentDidUpdate(prevProps, prevState) {
-		const { filterParams } = this.props;
+	componentDidUpdate({ filterOptions: { params: prevPropsFilterParams } }, prevState) {
+		const {
+			filterOptions: { params: filterParams, delete: filterDeleteParams },
+		} = this.props;
 
 		if (
-			prevProps.filterParams.dateStart !== filterParams.dateStart ||
-			prevProps.filterParams.dateEnd !== filterParams.dateEnd ||
-			prevProps.filterParams.position !== filterParams.position ||
-			prevProps.filterParams.role !== filterParams.role ||
-			prevProps.filterParams.onlyCanceled !== filterParams.onlyCanceled
+			prevPropsFilterParams.dateStart !== filterParams.dateStart ||
+			prevPropsFilterParams.dateEnd !== filterParams.dateEnd ||
+			prevPropsFilterParams.position !== filterParams.position ||
+			prevPropsFilterParams.role !== filterParams.role ||
+			prevPropsFilterParams.onlyCanceled !== filterParams.onlyCanceled
 		) {
-			const query = { ...filterParams };
-
-			Object.keys(query).forEach(key => (query[key] === '' || query[key] === 'all') && delete query[key]);
+			const query = deleteParamsCoincidence({ ...filterParams }, { type: 'server', ...filterDeleteParams });
 
 			if (!query.onlyCanceled) delete query.onlyCanceled;
 
@@ -167,7 +172,11 @@ class Filter extends Component {
 	}
 
 	render() {
-		const { members, positions, filterParams } = this.props;
+		const {
+			members,
+			positions,
+			filterOptions: { params: filterParams },
+		} = this.props;
 		const { dropdownDate, dropdownDateRange, dropdownPosition, dropdownRole } = this.state;
 
 		const initialValues = { ...filterParams };

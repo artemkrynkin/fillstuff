@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const getInvoices = ({ query, showRequest = true } = { showRequest: true }) => {
+export const getInvoices = ({ query, showRequest = true, mergeData = false } = { showRequest: true, mergeData: false }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
@@ -14,10 +14,17 @@ export const getInvoices = ({ query, showRequest = true } = { showRequest: true 
 				query,
 			})
 			.then(response => {
-				dispatch({
-					type: 'RECEIVE_INVOICES',
-					payload: response.data,
-				});
+				if (!mergeData) {
+					dispatch({
+						type: 'RECEIVE_INVOICES',
+						payload: response.data,
+					});
+				} else {
+					dispatch({
+						type: 'RECEIVE_MERGE_INVOICES',
+						payload: response.data,
+					});
+				}
 
 				return Promise.resolve({ status: 'success' });
 			})

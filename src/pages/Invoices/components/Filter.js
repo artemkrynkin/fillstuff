@@ -11,6 +11,8 @@ import { sleep } from 'shared/utils';
 
 import { history } from 'src/helpers/history';
 
+import { deleteParamsCoincidence } from 'src/components/Pagination/utils';
+
 import { getMembers } from 'src/actions/members';
 import { getInvoices } from 'src/actions/invoices';
 
@@ -21,7 +23,7 @@ import styles from './Filter.module.css';
 
 class Filter extends Component {
 	static propTypes = {
-		filterParams: PropTypes.object.isRequired,
+		filterOptions: PropTypes.object.isRequired,
 		paging: PropTypes.object.isRequired,
 	};
 
@@ -48,6 +50,14 @@ class Filter extends Component {
 		this.handlerDropdown('dropdownDate');
 
 		switch (intervalDate) {
+			case 'currentMonth': {
+				const startMonth = momentDate.startOf('month').valueOf();
+				const endMonth = momentDate.endOf('month').valueOf();
+
+				setFieldValue('dateStart', startMonth, false);
+				setFieldValue('dateEnd', endMonth, false);
+				break;
+			}
 			case 'currentWeek': {
 				const startWeek = momentDate.startOf('isoWeek').valueOf();
 				const endWeek = momentDate.endOf('isoWeek').valueOf();
@@ -56,13 +66,10 @@ class Filter extends Component {
 				setFieldValue('dateEnd', endWeek, false);
 				break;
 			}
-			case 'currentMonth':
+			case 'allTime':
 			default: {
-				const startMonth = momentDate.startOf('month').valueOf();
-				const endMonth = momentDate.endOf('month').valueOf();
-
-				setFieldValue('dateStart', startMonth, false);
-				setFieldValue('dateEnd', endMonth, false);
+				setFieldValue('dateStart', null, false);
+				setFieldValue('dateEnd', null, false);
 				break;
 			}
 		}
@@ -84,26 +91,21 @@ class Filter extends Component {
 	};
 
 	onResetAllFilters = (setFieldValue, submitForm) => {
-		const momentDate = moment();
-		const startMonth = momentDate.startOf('month').valueOf();
-		const endMonth = momentDate.endOf('month').valueOf();
-
-		setFieldValue('dateStart', startMonth, false);
-		setFieldValue('dateEnd', endMonth, false);
-		setFieldValue('dateStartView', startMonth, false);
-		setFieldValue('dateEndView', endMonth, false);
+		setFieldValue('dateStart', null, false);
+		setFieldValue('dateEnd', null, false);
+		setFieldValue('dateStartView', null, false);
+		setFieldValue('dateEndView', null, false);
 		setFieldValue('status', 'all', false);
 		setFieldValue('member', 'all', false);
 		submitForm();
 	};
 
 	onSubmit = async (values, actions) => {
-		const { paging } = this.props;
+		const {
+			filterOptions: { delete: filterDeleteParams },
+		} = this.props;
 
-		const momentDate = moment();
 		const dropdownNameList = ['dropdownDate', 'dropdownDateRange', 'dropdownStatus', 'dropdownMember'];
-
-		paging.onChangeLoadedDocs(true);
 
 		actions.setFieldValue('dateStartView', values.dateStart, false);
 		actions.setFieldValue('dateEndView', values.dateEnd, false);
@@ -112,14 +114,7 @@ class Filter extends Component {
 			this.handlerDropdown(dropdownNameList[i], false);
 		}
 
-		const query = { ...filterSchema.cast(values) };
-
-		Object.keys(query).forEach(key => (query[key] === '' || query[key] === 'all') && delete query[key]);
-
-		if (momentDate.startOf('month').isSame(query.dateStart, 'day') && momentDate.endOf('month').isSame(query.dateEnd, 'day')) {
-			delete query.dateStart;
-			delete query.dateEnd;
-		}
+		const query = deleteParamsCoincidence({ ...filterSchema.cast(values) }, { type: 'search', ...filterDeleteParams });
 
 		history.replace({
 			search: queryString.stringify(query),
@@ -132,18 +127,21 @@ class Filter extends Component {
 		actions.setSubmitting(false);
 	};
 
-	componentDidUpdate(prevProps, prevState) {
-		const { filterParams } = this.props;
+	componentDidUpdate({ filterOptions: { params: prevPropsFilterParams } }, prevState) {
+		const {
+			filterOptions: { params: filterParams, delete: filterDeleteParams },
+			paging,
+		} = this.props;
 
 		if (
-			prevProps.filterParams.dateStart !== filterParams.dateStart ||
-			prevProps.filterParams.dateEnd !== filterParams.dateEnd ||
-			prevProps.filterParams.status !== filterParams.status ||
-			prevProps.filterParams.member !== filterParams.member
+			prevPropsFilterParams.dateStart !== filterParams.dateStart ||
+			prevPropsFilterParams.dateEnd !== filterParams.dateEnd ||
+			prevPropsFilterParams.status !== filterParams.status ||
+			prevPropsFilterParams.member !== filterParams.member
 		) {
-			const query = { ...filterParams };
+			paging.setPage(1);
 
-			Object.keys(query).forEach(key => (query[key] === '' || query[key] === 'all') && delete query[key]);
+			const query = deleteParamsCoincidence({ ...filterParams, page: 1 }, { type: 'server', ...filterDeleteParams });
 
 			this.props.getInvoices(query);
 		}
@@ -154,7 +152,10 @@ class Filter extends Component {
 	}
 
 	render() {
-		const { members, filterParams } = this.props;
+		const {
+			members,
+			filterOptions: { params: filterParams },
+		} = this.props;
 		const { dropdownDate, dropdownDateRange, dropdownStatus, dropdownMember } = this.state;
 
 		const initialValues = { ...filterParams };

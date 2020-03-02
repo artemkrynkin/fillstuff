@@ -109,23 +109,36 @@ class Invoice extends Component {
 								) : (
 									<div className={styles.indicatorsTitle2}>
 										<FontAwesomeIcon className={styles.invoicePaidIcon} icon={['fal', 'check-circle']} />
-										Счет оплачен
+										Оплачен
 									</div>
 								)}
-								<Grid justify="flex-end" container>
-									{invoice.status === 'unpaid' ? (
-										<div className={styles.indicatorsSubtitle}>К оплате</div>
-									) : (
-										<div className={styles.indicatorsSubtitle2}>
-											<Money value={invoice.paymentAmountDue} /> / <Money value={invoice.amount} />
-										</div>
-									)}
-									{invoice.status === 'paid' ? (
-										<div className={styles.indicatorsSubtitle2} style={{ marginLeft: 25 }}>
-											{moment(invoice.datePayment).format('D MMMM YYYY')}
-										</div>
-									) : null}
-								</Grid>
+
+								{invoice.status === 'unpaid' ? (
+									<div className={styles.indicatorsSubtitle}>К оплате</div>
+								) : (
+									<Grid className={styles.indicatorsDetails} justify="flex-end" container>
+										<Grid justify="flex-end" container>
+											{invoice.status === 'paid' ? (
+												<div style={{ marginRight: 30 }}>
+													<div className={styles.indicatorsSubtitle2}>{moment(invoice.datePayment).format('DD.MM.YYYY')}</div>
+													<div className={styles.indicatorsSubtitle}>Дата оплаты</div>
+												</div>
+											) : null}
+											<div style={{ marginRight: 30 }}>
+												<div className={styles.indicatorsSubtitle2}>
+													<Money value={invoice.paymentAmountDue} />
+												</div>
+												<div className={styles.indicatorsSubtitle}>Оплачено</div>
+											</div>
+											<div>
+												<div className={styles.indicatorsSubtitle2}>
+													<Money value={invoice.amount} />
+												</div>
+												<div className={styles.indicatorsSubtitle}>Выставлено</div>
+											</div>
+										</Grid>
+									</Grid>
+								)}
 							</Grid>
 						</Grid>
 					</Grid>

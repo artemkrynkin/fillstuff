@@ -93,7 +93,7 @@ const Position = props => {
 				</TableCell>
 			) : null}
 			{!position.receipts.length ? (
-				<TableCell align="center" width={565} colSpan={4}>
+				<TableCell align="center" colSpan={3}>
 					<span className={styles.caption}>Нет поступлений</span>
 				</TableCell>
 			) : null}

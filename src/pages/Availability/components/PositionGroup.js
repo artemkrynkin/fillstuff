@@ -65,9 +65,6 @@ const PositionGroup = props => {
 											{declensionNumber(positionGroup.positions.length, ['позиция', 'позиции', 'позиций'], true)}
 										</span>
 									</TableCellExpansionPanel>
-									{/*<TableCellExpansionPanel align="right" width={125}>*/}
-									{/*	{positionGroup.positions.length ? positionGroup.minimumBalance : null}*/}
-									{/*</TableCellExpansionPanel>*/}
 									<TableCellExpansionPanel align="right" width={240}>
 										<QuantityIndicator
 											type="positionGroup"

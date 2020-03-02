@@ -20,7 +20,7 @@ invoicesRouter.post(
 	async (req, res, next) => {
 		const {
 			studioId,
-			query: { dateStart, dateEnd, member, status },
+			query: { page, limit, dateStart, dateEnd, member, status },
 		} = req.body;
 
 		let conditions = {
@@ -66,7 +66,8 @@ invoicesRouter.post(
 					},
 				},
 			],
-			pagination: false,
+			page,
+			limit,
 			customLabels: {
 				docs: 'data',
 				meta: 'paging',
@@ -103,6 +104,7 @@ invoicesRouter.post(
 		res.json({
 			data: invoices.data,
 			paging: {
+				...invoices.paging,
 				totalCount: invoicesCount,
 			},
 		});

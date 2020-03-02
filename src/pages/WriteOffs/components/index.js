@@ -9,45 +9,51 @@ import { checkQueryInFilter } from 'src/components/Pagination/utils';
 import Filter from './Filter';
 import WriteOffs from './WriteOffs';
 
-const momentDate = moment();
-const dateStart = momentDate.startOf('month').valueOf();
-const dateEnd = momentDate.endOf('month').valueOf();
+const dateStart = moment()
+	.subtract(2, 'days')
+	.startOf('day')
+	.valueOf();
+const dateEnd = moment()
+	.endOf('day')
+	.valueOf();
 
 const Index = () => {
-	const [loadedDocs, setLoadedDocs] = useState(10);
-	const perPage = 10;
-
-	const onChangeLoadedDocs = resetLoadedDocs => {
-		if (!resetLoadedDocs) setLoadedDocs(loadedDocs + perPage);
-		else setLoadedDocs(perPage);
-	};
-
-	const filterParams = checkQueryInFilter({
-		dateStart: dateStart,
-		dateEnd: dateEnd,
-		position: 'all',
-		role: 'all',
-		onlyCanceled: false,
+	const [dateIntervalAllTime, setDateIntervalAllTime] = useState({
+		dateStart,
+		dateEnd,
 	});
+
+	const filterOptions = {
+		params: checkQueryInFilter({
+			dateStart: dateStart,
+			dateEnd: dateEnd,
+			position: 'all',
+			role: 'all',
+			onlyCanceled: false,
+		}),
+		delete: {
+			searchByName: [],
+			searchByValue: [null, '', 'all'],
+			serverQueryByValue: [null, '', 'all'],
+		},
+	};
 
 	return (
 		<Container maxWidth="lg">
 			<Grid container direction="row" justify="center" alignItems="flex-start" spacing={2}>
 				<Grid item xs={12}>
 					<Filter
-						filterParams={filterParams}
+						filterOptions={filterOptions}
 						paging={{
-							loadedDocs,
-							perPage,
-							onChangeLoadedDocs,
+							dateIntervalAllTime,
+							setDateIntervalAllTime,
 						}}
 					/>
 					<WriteOffs
-						filterParams={filterParams}
+						filterOptions={filterOptions}
 						paging={{
-							loadedDocs,
-							perPage,
-							onChangeLoadedDocs,
+							dateIntervalAllTime,
+							setDateIntervalAllTime,
 						}}
 					/>
 				</Grid>

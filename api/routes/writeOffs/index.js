@@ -42,7 +42,7 @@ writeOffsRouter.post(
 
 		if (onlyCanceled) conditions.canceled = onlyCanceled;
 
-		const writeOffsPromise = WriteOff.paginate(conditions, {
+		const writeOffsPromise = WriteOff.aggregatePaginate(conditions, {
 			sort: { createdAt: -1 },
 			populate: [
 				{

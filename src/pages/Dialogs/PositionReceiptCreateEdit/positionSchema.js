@@ -9,26 +9,26 @@ const positionSchema = (type, depopulate = false) => {
 		unitReceipt: Yup.string()
 			.oneOf(['pce', 'nmp'])
 			.required(),
-		unitIssue: Yup.string()
+		unitRelease: Yup.string()
 			.oneOf(['pce', 'nmp'])
 			.required(),
 		quantity: Yup.number()
 			.nullable(true)
 			.transform(value => (isNaN(value) ? null : value))
-			.when(['unitReceipt', 'unitIssue'], (unitReceipt, unitIssue, schema) => {
-				return type === 'create' && (unitReceipt === 'pce' || unitIssue !== 'pce') ? schema.min(1).required() : schema.strip();
+			.when(['unitReceipt', 'unitRelease'], (unitReceipt, unitRelease, schema) => {
+				return type === 'create' && (unitReceipt === 'pce' || unitRelease !== 'pce') ? schema.min(1).required() : schema.strip();
 			}),
 		quantityPackages: Yup.number()
 			.nullable(true)
 			.transform(value => (isNaN(value) ? null : value))
-			.when(['unitReceipt', 'unitIssue'], (unitReceipt, unitIssue, schema) => {
-				return type === 'create' && unitReceipt === 'nmp' && unitIssue === 'pce' ? schema.min(1).required() : schema.strip();
+			.when(['unitReceipt', 'unitRelease'], (unitReceipt, unitRelease, schema) => {
+				return type === 'create' && unitReceipt === 'nmp' && unitRelease === 'pce' ? schema.min(1).required() : schema.strip();
 			}),
 		quantityInUnit: Yup.number()
 			.nullable(true)
 			.transform(value => (isNaN(value) ? null : value))
-			.when(['unitReceipt', 'unitIssue'], (unitReceipt, unitIssue, schema) => {
-				return unitReceipt === 'nmp' && unitIssue === 'pce' ? schema.min(1).required() : schema.strip();
+			.when(['unitReceipt', 'unitRelease'], (unitReceipt, unitRelease, schema) => {
+				return unitReceipt === 'nmp' && unitRelease === 'pce' ? schema.min(1).required() : schema.strip();
 			}),
 		minimumBalance: Yup.number()
 			.nullable(true)
@@ -44,14 +44,14 @@ const positionSchema = (type, depopulate = false) => {
 		sellingPrice: Yup.number()
 			.nullable(true)
 			.transform(value => (isNaN(value) ? null : value))
-			.when(['unitReceipt', 'unitIssue'], (unitReceipt, unitIssue, schema) => {
-				return unitReceipt === 'pce' || unitIssue !== 'pce' ? schema.min(0).required() : schema.strip();
+			.when(['unitReceipt', 'unitRelease'], (unitReceipt, unitRelease, schema) => {
+				return unitReceipt === 'pce' || unitRelease !== 'pce' ? schema.min(0).required() : schema.strip();
 			}),
 		unitSellingPrice: Yup.number()
 			.nullable(true)
 			.transform(value => (isNaN(value) ? null : value))
-			.when(['unitReceipt', 'unitIssue'], (unitReceipt, unitIssue, schema) => {
-				return unitReceipt === 'nmp' && unitIssue === 'pce' ? schema.min(0).required() : schema.strip();
+			.when(['unitReceipt', 'unitRelease'], (unitReceipt, unitRelease, schema) => {
+				return unitReceipt === 'nmp' && unitRelease === 'pce' ? schema.min(0).required() : schema.strip();
 			}),
 		extraCharge: Yup.number()
 			.min(0)

@@ -171,7 +171,7 @@ positionsRouter.post(
 
 		position.name = positionEdited.name;
 		position.unitReceipt = positionEdited.unitReceipt;
-		position.unitIssue = positionEdited.unitIssue;
+		position.unitRelease = positionEdited.unitRelease;
 		position.minimumBalance = positionEdited.minimumBalance;
 		position.isFree = positionEdited.isFree;
 		position.extraCharge = positionEdited.extraCharge;
@@ -187,7 +187,11 @@ positionsRouter.post(
 
 		Position.findById(position._id)
 			.populate({
-				path: 'characteristics',
+				path: 'activeReceipt characteristics',
+			})
+			.populate({
+				path: 'receipts',
+				match: { status: /received|active/ },
 			})
 			.then(position => res.json(position))
 			.catch(err => next({ code: 2, err }));
@@ -208,7 +212,6 @@ positionsRouter.post(
 			...newReceiptValues,
 			studio: studioId,
 			status: 'active',
-			comment: 'Создание позиции',
 		});
 
 		const newPosition = new Position({
@@ -222,11 +225,11 @@ positionsRouter.post(
 
 		receiptCalc.quantity(newReceipt, {
 			unitReceipt: newPosition.unitReceipt,
-			unitIssue: newPosition.unitIssue,
+			unitRelease: newPosition.unitRelease,
 		});
 		receiptCalc.unitPurchasePrice(newReceipt, {
 			unitReceipt: newPosition.unitReceipt,
-			unitIssue: newPosition.unitIssue,
+			unitRelease: newPosition.unitRelease,
 		});
 		receiptCalc.sellingPrice(newReceipt, {
 			isFree: newPosition.isFree,
@@ -235,7 +238,7 @@ positionsRouter.post(
 		receiptCalc.manualExtraCharge(newReceipt, {
 			isFree: newPosition.isFree,
 			unitReceipt: newPosition.unitReceipt,
-			unitIssue: newPosition.unitIssue,
+			unitRelease: newPosition.unitRelease,
 		});
 
 		const newReceiptErr = newReceipt.validateSync();
@@ -282,90 +285,6 @@ positionsRouter.post(
 );
 
 positionsRouter.post(
-	'/editPositionWithReceipt',
-	isAuthedResolver,
-	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
-	async (req, res, next) => {
-		const {
-			params: { positionId },
-			data: { position: positionEdited, receipt: receiptEdited },
-		} = req.body;
-
-		const position = await Position.findById(positionId)
-			.populate({ path: 'studio', select: 'stock' })
-			.populate('activeReceipt')
-			.catch(err => next({ code: 2, err }));
-
-		const {
-			studio: {
-				stock: { stockPrice: stockPriceOld },
-			},
-			activeReceipt,
-		} = position;
-		const activeReceiptOld = position.activeReceipt.toObject();
-
-		if (receiptEdited.quantityInUnit) activeReceipt.quantityInUnit = receiptEdited.quantityInUnit;
-		if (receiptEdited.purchasePrice) activeReceipt.purchasePrice = receiptEdited.purchasePrice;
-		if (receiptEdited.sellingPrice) activeReceipt.sellingPrice = receiptEdited.sellingPrice;
-		if (receiptEdited.unitSellingPrice) activeReceipt.unitSellingPrice = receiptEdited.unitSellingPrice;
-
-		receiptCalc.unitPurchasePrice(activeReceipt, {
-			unitReceipt: position.unitReceipt,
-			unitIssue: position.unitIssue,
-		});
-		receiptCalc.sellingPrice(activeReceipt, {
-			isFree: position.isFree,
-			extraCharge: position.extraCharge,
-		});
-		receiptCalc.manualExtraCharge(activeReceipt, {
-			isFree: position.isFree,
-			unitReceipt: position.unitReceipt,
-			unitIssue: position.unitIssue,
-		});
-
-		position.name = positionEdited.name;
-		position.minimumBalance = positionEdited.minimumBalance;
-		position.isFree = positionEdited.isFree;
-		position.extraCharge = positionEdited.extraCharge;
-		position.shopName = positionEdited.shopName;
-		position.shopLink = positionEdited.shopLink;
-		position.characteristics = positionEdited.characteristics;
-
-		const activeReceiptErr = activeReceipt.validateSync();
-		const positionErr = position.validateSync();
-
-		if (activeReceiptErr) return next({ code: activeReceiptErr.errors ? 5 : 2, err: activeReceiptErr });
-		if (positionErr) return next({ code: positionErr.errors ? 5 : 2, err: positionErr });
-
-		await Promise.all([activeReceipt.save(), position.save()]);
-
-		Studio.findByIdAndUpdate(
-			position.studio._id,
-			{
-				$set: {
-					'stock.stockPrice':
-						stockPriceOld +
-						(activeReceipt.current.quantity * activeReceipt.unitPurchasePrice -
-							activeReceiptOld.current.quantity * activeReceiptOld.unitPurchasePrice),
-				},
-			},
-			{ runValidators: true }
-		).catch(err => next({ code: 2, err }));
-
-		Position.findById(position._id)
-			.populate({
-				path: 'activeReceipt characteristics',
-			})
-			.populate({
-				path: 'receipts',
-				match: { status: /received|active/ },
-			})
-			.then(position => res.json(position))
-			.catch(err => next({ code: 2, err }));
-	}
-);
-
-positionsRouter.post(
 	'/positionReceiptAddQuantity',
 	isAuthedResolver,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -393,7 +312,7 @@ positionsRouter.post(
 			quantity: activeReceipt.current.quantity + quantity,
 		};
 
-		if (position.unitReceipt === 'nmp' && position.unitIssue === 'pce') {
+		if (position.unitReceipt === 'nmp' && position.unitRelease === 'pce') {
 			activeReceiptCurrentSet.quantityPackages = (activeReceipt.current.quantity + quantity) / activeReceipt.quantityInUnit;
 		}
 

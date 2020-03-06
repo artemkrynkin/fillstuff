@@ -49,7 +49,7 @@ let Position = new Schema({
 		required: [true, i18n.__('Обязательное поле')],
 	},
 	// Единица отпуска
-	unitIssue: {
+	unitRelease: {
 		type: String,
 		enum: unitTypes,
 		required: [true, i18n.__('Обязательное поле')],
@@ -67,13 +67,6 @@ let Position = new Schema({
 	isFree: {
 		type: Boolean,
 		default: false,
-	},
-	// Процент наценки
-	extraCharge: {
-		type: Number,
-		default: 0,
-		min: [0, 'Не может быть меньше 0'],
-		set: value => formatNumber(value, { fractionDigits: 0 }),
 	},
 	// Название магазина
 	shopName: {

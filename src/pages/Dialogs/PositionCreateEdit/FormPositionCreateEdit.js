@@ -74,7 +74,7 @@ const FormPositionCreateEdit = props => {
 								onChange: ({ target: { value } }) => {
 									setFieldValue('unitReceipt', value);
 
-									if (value === 'pce') setFieldValue('unitIssue', value);
+									if (value === 'pce') setFieldValue('unitRelease', value);
 								},
 							}}
 							error={Boolean(touched.unitReceipt && errors.unitReceipt)}
@@ -93,22 +93,22 @@ const FormPositionCreateEdit = props => {
 				</Grid>
 
 				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
-					<InputLabel error={Boolean(touched.unitIssue && errors.unitIssue)} style={{ minWidth: 146 }}>
+					<InputLabel error={Boolean(touched.unitRelease && errors.unitRelease)} style={{ minWidth: 146 }}>
 						Единица отпуска
 					</InputLabel>
 					<Grid>
 						<FormControl fullWidth>
 							<Field
-								name="unitIssue"
+								name="unitRelease"
 								as={Select}
 								inputProps={{
 									onChange: ({ target: { value } }) => {
-										setFieldValue('unitIssue', value);
+										setFieldValue('unitRelease', value);
 
 										if (value === 'nmp') setFieldValue('unitReceipt', value);
 									},
 								}}
-								error={Boolean(touched.unitIssue && errors.unitIssue)}
+								error={Boolean(touched.unitRelease && errors.unitRelease)}
 							>
 								<MenuItem value="" disabled>
 									Выберите
@@ -119,7 +119,7 @@ const FormPositionCreateEdit = props => {
 									</MenuItem>
 								))}
 							</Field>
-							{touched.unitIssue && errors.unitIssue ? <FormHelperText error>{errors.unitIssue}</FormHelperText> : null}
+							{touched.unitRelease && errors.unitRelease ? <FormHelperText error>{errors.unitRelease}</FormHelperText> : null}
 						</FormControl>
 						<Field type="checkbox" name="isFree" Label={{ label: 'Предоставляется студией бесплатно' }} as={CheckboxWithLabel} />
 					</Grid>
@@ -129,7 +129,7 @@ const FormPositionCreateEdit = props => {
 					<InputLabel error={Boolean(touched.minimumBalance && errors.minimumBalance)} style={{ minWidth: 146 }}>
 						Мин. остаток
 						<br />
-						{`в ${values.unitReceipt === 'nmp' && values.unitIssue !== 'pce' ? 'упаковках' : 'штуках'}`}
+						{`в ${values.unitReceipt === 'nmp' && values.unitRelease !== 'pce' ? 'упаковках' : 'штуках'}`}
 					</InputLabel>
 					<Field
 						name="minimumBalance"
@@ -192,7 +192,7 @@ const FormPositionCreateEdit = props => {
 							error={Boolean(touched.shopName && errors.shopName)}
 							helperText={(touched.shopName && errors.shopName) || ''}
 							as={TextField}
-							placeholder={shopLinkVisible ? 'Название' : 'Ссылка на товар или название магазина'}
+							placeholder={shopLinkVisible ? 'Название' : 'Название магазина или ссылка на товар'}
 							inputProps={{
 								onChange: ({ target: { value } }) => onChangeShopFields(value, setFieldValue),
 							}}

@@ -84,7 +84,7 @@ class ProcurementCreate extends Component {
 					totalPrice: true,
 					pricePositions: <span>Проверьте правильность внесённых данных в выделенных полях.</span>,
 					receipts: procurement.receipts.map(receipt => ({
-						[receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce' ? 'quantityPackages' : 'quantity']: true,
+						[receipt.position.unitReceipt === 'nmp' && receipt.position.unitRelease === 'pce' ? 'quantityPackages' : 'quantity']: true,
 						purchasePrice: true,
 					})),
 				});
@@ -126,7 +126,7 @@ class ProcurementCreate extends Component {
 						}
 
 						receipt.unitCostDelivery =
-							receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce'
+							receipt.position.unitReceipt === 'nmp' && receipt.position.unitRelease === 'pce'
 								? formatNumber(receipt.costDelivery / receipt.quantityInUnit)
 								: receipt.costDelivery;
 					}
@@ -166,7 +166,7 @@ class ProcurementCreate extends Component {
 							}
 
 							receipt.unitCostDelivery =
-								receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce'
+								receipt.position.unitReceipt === 'nmp' && receipt.position.unitRelease === 'pce'
 									? formatNumber(receipt.costDelivery / receipt.quantityInUnit)
 									: receipt.costDelivery;
 						}
@@ -183,7 +183,7 @@ class ProcurementCreate extends Component {
 			procurement.receipts.forEach(receipt => {
 				receiptCalc.unitPurchasePrice(receipt, {
 					unitReceipt: receipt.position.unitReceipt,
-					unitIssue: receipt.position.unitIssue,
+					unitRelease: receipt.position.unitRelease,
 				});
 
 				receiptCalc.sellingPrice(receipt, {

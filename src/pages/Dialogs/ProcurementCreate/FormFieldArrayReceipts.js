@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import ClassNames from 'classnames';
 import loadable from '@loadable/component';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -99,15 +98,8 @@ const FormFieldArrayReceipts = props => {
 							{typeof errors.receipts === 'string' ? <FormHelperText error>{errors.receipts}</FormHelperText> : null}
 						</Grid>
 						<Grid xs={3} item>
-							<Button
-								onClick={onOpenDialogPositionCreate}
-								variant="outlined"
-								color="primary"
-								startIcon={<FontAwesomeIcon icon={['far', 'plus']} fixedWidth />}
-								disabled={isSubmitting}
-								fullWidth
-							>
-								Создать позицию
+							<Button onClick={onOpenDialogPositionCreate} variant="outlined" color="primary" disabled={isSubmitting} fullWidth>
+								Новая позиция
 							</Button>
 						</Grid>
 					</Grid>

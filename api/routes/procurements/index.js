@@ -177,7 +177,7 @@ procurementsRouter.post(
 
 			receiptCalc.quantity(newReceipt, {
 				unitReceipt: position.unitReceipt,
-				unitIssue: position.unitIssue,
+				unitRelease: position.unitRelease,
 			});
 
 			updatePositionsAndActiveReceipt.push(

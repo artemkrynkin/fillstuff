@@ -63,13 +63,7 @@ class Header extends Component {
 
 				<Dropdown anchor={this.refDropdownProfile} open={dropdownProfile} onClose={this.onHandleDropdownProfile} placement="bottom-end">
 					<MenuList>
-						<MenuItem
-							to={'/user-settings'}
-							component={React.forwardRef((props, ref) => (
-								<Link innerRef={ref} {...props} />
-							))}
-							onClick={this.onHandleDropdownProfile}
-						>
+						<MenuItem onClick={this.onHandleDropdownProfile} to={'/user-settings'} component={Link}>
 							Настройки аккаунта
 						</MenuItem>
 						<MenuItem onClick={this.onHandleDropdownProfile}>Оплата</MenuItem>

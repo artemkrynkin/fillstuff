@@ -9,7 +9,7 @@ const positionSchema = (depopulate = false) => {
 		unitReceipt: Yup.string()
 			.oneOf(['pce', 'nmp'])
 			.required(),
-		unitIssue: Yup.string()
+		unitRelease: Yup.string()
 			.oneOf(['pce', 'nmp'])
 			.required(),
 		minimumBalance: Yup.number()

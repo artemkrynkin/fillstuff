@@ -24,7 +24,7 @@ const compareQuantity = (a, b) => {
 };
 
 const QuantityIndicator = props => {
-	const { type, dividedPositions, divided, unitReceipt, unitIssue, minimumBalance, receipts, positions } = props;
+	const { type, dividedPositions, divided, unitReceipt, unitRelease, minimumBalance, receipts, positions } = props;
 
 	let quantity;
 
@@ -39,10 +39,10 @@ const QuantityIndicator = props => {
 	}
 
 	if (type === 'positionGroup') {
-		const unitIssueGroup = positions.reduce((unitIssue, position) => {
-			return !unitIssue ? position.unitIssue : unitIssue !== position.unitIssue ? 'units' : unitIssue;
+		const unitReleaseGroup = positions.reduce((unitRelease, position) => {
+			return !unitRelease ? position.unitRelease : unitRelease !== position.unitRelease ? 'units' : unitRelease;
 		}, '');
-		const unitIssueGroupTransform = unitIssueGroup === 'pce' ? 'шт.' : unitIssueGroup === 'nmp' ? 'уп.' : 'ед.';
+		const unitReleaseGroupTransform = unitReleaseGroup === 'pce' ? 'шт.' : unitReleaseGroup === 'nmp' ? 'уп.' : 'ед.';
 
 		const positionExpiring = positions.length ? positions.slice(0).sort(compareQuantity)[0] : undefined;
 		const receiptExpiringQuantity = positionExpiring
@@ -53,7 +53,7 @@ const QuantityIndicator = props => {
 			<div className={qiClasses(dividedPositions)}>
 				{!dividedPositions ? (
 					<div>
-						<span className={styles.quantity}>{quantity + ' ' + unitIssueGroupTransform}</span>
+						<span className={styles.quantity}>{quantity + ' ' + unitReleaseGroupTransform}</span>
 						<span className={styles.minimumBalance} style={{ marginLeft: 5 }}>
 							{'/ ' + minimumBalance}
 						</span>
@@ -67,11 +67,11 @@ const QuantityIndicator = props => {
 	}
 
 	if (type === 'position' || type === 'receipt') {
-		const unitIssueTransform = unitReceipt === 'pce' ? 'шт.' : unitIssue === 'pce' ? 'шт.' : 'уп.';
+		const unitReleaseTransform = unitReceipt === 'pce' ? 'шт.' : unitRelease === 'pce' ? 'шт.' : 'уп.';
 
 		return receipts.length ? (
 			<div>
-				<span className={styles.quantity}>{quantity + ' ' + unitIssueTransform}</span>
+				<span className={styles.quantity}>{quantity + ' ' + unitReleaseTransform}</span>
 				{divided ? (
 					<span className={styles.minimumBalance} style={{ marginLeft: 5 }}>
 						{'/ ' + minimumBalance}
@@ -90,7 +90,7 @@ QuantityIndicator.propTypes = {
 	dividedPositions: PropTypes.bool,
 	type: PropTypes.oneOf(['positionGroup', 'position', 'receipt']).isRequired,
 	unitReceipt: PropTypes.oneOf(['pce', 'nmp']),
-	unitIssue: PropTypes.oneOf(['pce', 'nmp']),
+	unitRelease: PropTypes.oneOf(['pce', 'nmp']),
 	receipts: PropTypes.array,
 	minimumBalance: PropTypes.number,
 	positions: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),

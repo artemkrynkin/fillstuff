@@ -31,8 +31,8 @@ const FormFieldArrayReceipt = props => {
 
 	const onHandleSellingPriceEditable = value => setSellingPriceEditable(value);
 
-	const isNmpPce = receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce';
-	const isNmpNmp = receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'nmp';
+	const isNmpPce = receipt.position.unitReceipt === 'nmp' && receipt.position.unitRelease === 'pce';
+	const isNmpNmp = receipt.position.unitReceipt === 'nmp' && receipt.position.unitRelease === 'nmp';
 
 	const autoGenUnitSellingPrice =
 		!formEditable && !receipt.position.isFree
@@ -50,7 +50,7 @@ const FormFieldArrayReceipt = props => {
 			</Grid>
 
 			<Grid style={{ width: 180 }} item>
-				{receipt.position.unitReceipt === 'pce' || receipt.position.unitIssue === 'nmp' ? (
+				{receipt.position.unitReceipt === 'pce' || receipt.position.unitRelease === 'nmp' ? (
 					<Field
 						name={`receipts.${index}.quantity`}
 						label={isNmpNmp ? 'Количество уп.' : 'Количество шт.'}
@@ -221,7 +221,7 @@ const FormFieldArrayReceipt = props => {
 												receiptCalc.manualExtraCharge(receipt, {
 													isFree: receipt.position.isFree,
 													unitReceipt: receipt.position.unitReceipt,
-													unitIssue: receipt.position.unitIssue,
+													unitRelease: receipt.position.unitRelease,
 												});
 											},
 											onKeyDown: event => {

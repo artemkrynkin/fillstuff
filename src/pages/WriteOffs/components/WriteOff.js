@@ -43,7 +43,7 @@ const WriteOff = props => {
 				/>
 			</TableCell>
 			<TableCell align="right" width={115}>
-				{writeOff.quantity} {writeOff.position.unitIssue === 'pce' ? 'шт.' : 'уп.'}
+				{writeOff.quantity} {writeOff.position.unitRelease === 'pce' ? 'шт.' : 'уп.'}
 			</TableCell>
 			<TableCell align="right">
 				{writeOff.quantity > 1 ? (

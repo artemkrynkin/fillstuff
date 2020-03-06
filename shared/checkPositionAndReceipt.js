@@ -153,8 +153,8 @@ export const UnitCostDelivery = {
 };
 
 export const receiptCalc = {
-	quantity: (receipt, { unitReceipt, unitIssue }) => {
-		if (!isNaN(receipt.initial.quantityPackages) && !isNaN(receipt.quantityInUnit) && unitReceipt === 'nmp' && unitIssue === 'pce') {
+	quantity: (receipt, { unitReceipt, unitRelease }) => {
+		if (!isNaN(receipt.initial.quantityPackages) && !isNaN(receipt.quantityInUnit) && unitReceipt === 'nmp' && unitRelease === 'pce') {
 			receipt.initial.quantity = receipt.initial.quantityPackages * receipt.quantityInUnit;
 
 			receipt.current.quantityPackages = receipt.initial.quantityPackages;
@@ -162,9 +162,9 @@ export const receiptCalc = {
 
 		if (!isNaN(receipt.initial.quantity)) receipt.current.quantity = receipt.initial.quantity;
 	},
-	unitPurchasePrice: (receipt, { unitReceipt, unitIssue }) => {
+	unitPurchasePrice: (receipt, { unitReceipt, unitRelease }) => {
 		receipt.unitPurchasePrice =
-			unitReceipt === 'nmp' && unitIssue === 'pce' ? formatNumber(receipt.purchasePrice / receipt.quantityInUnit) : receipt.purchasePrice;
+			unitReceipt === 'nmp' && unitRelease === 'pce' ? formatNumber(receipt.purchasePrice / receipt.quantityInUnit) : receipt.purchasePrice;
 	},
 	sellingPrice: (receipt, { isFree, extraCharge }) => {
 		receipt.sellingPrice = 0;
@@ -178,13 +178,13 @@ export const receiptCalc = {
 		receipt.sellingPrice = formatNumber(receipt.purchasePrice + receipt.costDelivery + receipt.extraCharge);
 		receipt.unitSellingPrice = formatNumber(receipt.unitPurchasePrice + receipt.unitCostDelivery + receipt.unitExtraCharge);
 	},
-	manualExtraCharge: (receipt, { isFree, unitReceipt, unitIssue }) => {
+	manualExtraCharge: (receipt, { isFree, unitReceipt, unitRelease }) => {
 		receipt.manualExtraCharge = 0;
 		receipt.unitManualExtraCharge = 0;
 
 		if (isFree) return;
 
-		if (unitReceipt === 'nmp' && unitIssue === 'pce') {
+		if (unitReceipt === 'nmp' && unitRelease === 'pce') {
 			const autoGenUnitSellingPrice = formatNumber(receipt.unitPurchasePrice + receipt.unitCostDelivery + receipt.unitExtraCharge);
 
 			if (receipt.unitSellingPrice <= autoGenUnitSellingPrice) return;

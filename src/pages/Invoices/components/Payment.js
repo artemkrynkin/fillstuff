@@ -9,6 +9,7 @@ import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFor
 import AvatarTitle from 'src/components/AvatarTitle';
 
 import { TableCell } from './styles';
+import styles from './Payment.module.css';
 
 const Payment = props => {
 	const { payment } = props;
@@ -16,7 +17,7 @@ const Payment = props => {
 	return (
 		<TableRow>
 			<TableCell>
-				<AvatarTitle imageSrc={payment.merchant.user.avatar} title={payment.merchant.user.name} />
+				<AvatarTitle className={styles.avatar} imageSrc={payment.merchant.user.avatar} title={payment.merchant.user.name} />
 			</TableCell>
 			<TableCell align="right">
 				<NumberFormat

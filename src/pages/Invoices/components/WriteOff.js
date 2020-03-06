@@ -20,7 +20,7 @@ const WriteOff = props => {
 				<PositionNameInList name={writeOff.position.name} characteristics={writeOff.position.characteristics} />
 			</TableCell>
 			<TableCell align="right" width={125}>
-				{writeOff.quantity} {writeOff.position.unitIssue === 'pce' ? 'шт.' : 'уп.'}
+				{writeOff.quantity} {writeOff.position.unitRelease === 'pce' ? 'шт.' : 'уп.'}
 			</TableCell>
 			<TableCell align="right" width={125}>
 				<NumberFormat

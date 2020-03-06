@@ -19,14 +19,14 @@ const priceDisplayChangeIconClasses = priceChangeIsGood =>
 	});
 
 const PriceDisplay = props => {
-	const { receiptsReceived, receiptNearestPrice, unitReceipt, unitIssue, quantity, isFree, price, priceChangeIsGood, title } = props;
+	const { receiptsReceived, receiptNearestPrice, unitReceipt, unitRelease, quantity, isFree, price, priceChangeIsGood, title } = props;
 
 	if (!isFree && receiptsReceived.length && receiptNearestPrice !== price)
 		return (
 			<Tooltip
 				title={
 					<div style={{ textAlign: 'center' }}>
-						После списания {quantity} {unitReceipt === 'pce' ? 'шт.' : unitIssue === 'pce' ? 'шт.' : 'уп.'}
+						После списания {quantity} {unitReceipt === 'pce' ? 'шт.' : unitRelease === 'pce' ? 'шт.' : 'уп.'}
 						<br />
 						{title} {receiptNearestPrice > price ? 'повысится' : 'снизится'} до {formatNumber(receiptNearestPrice, { toString: true })} ₽
 					</div>
@@ -66,7 +66,7 @@ const PriceDisplay = props => {
 
 PriceDisplay.propTypes = {
 	unitReceipt: PropTypes.oneOf(['nmp', 'pce']),
-	unitIssue: PropTypes.oneOf(['nmp', 'pce']),
+	unitRelease: PropTypes.oneOf(['nmp', 'pce']),
 	quantity: PropTypes.number,
 	isFree: PropTypes.bool,
 	price: PropTypes.number,

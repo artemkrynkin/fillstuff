@@ -139,7 +139,7 @@ class DialogPositionReceiptCreateEdit extends Component {
 						name: '',
 						divided: true,
 						unitReceipt: '',
-						unitIssue: '',
+						unitRelease: '',
 						minimumBalance: '',
 						isFree: false,
 						extraCharge: '',

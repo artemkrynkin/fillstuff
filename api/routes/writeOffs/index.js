@@ -60,7 +60,7 @@ writeOffsRouter.post(
 					populate: {
 						path: 'characteristics',
 					},
-					select: 'isArchived name unitIssue characteristics',
+					select: 'isArchived name unitRelease characteristics',
 				},
 			],
 			pagination: false,
@@ -193,7 +193,7 @@ writeOffsRouter.post(
 					},
 				};
 
-				if (position.unitReceipt === 'nmp' && position.unitIssue === 'pce') {
+				if (position.unitReceipt === 'nmp' && position.unitRelease === 'pce') {
 					currentReceiptSet.current.quantityPackages = currentReceiptSet.current.quantity / receipt.quantityInUnit;
 				}
 
@@ -335,7 +335,7 @@ writeOffsRouter.post(
 		};
 		const receiptSet = {};
 
-		if (writeOff.position.unitReceipt === 'nmp' && writeOff.position.unitIssue === 'pce') {
+		if (writeOff.position.unitReceipt === 'nmp' && writeOff.position.unitRelease === 'pce') {
 			receiptCurrentSet.quantityPackages = (receipt.current.quantity + writeOff.quantity) / receipt.quantityInUnit;
 		}
 
@@ -398,7 +398,7 @@ writeOffsRouter.post(
 				populate: {
 					path: 'characteristics',
 				},
-				select: 'isArchived name unitIssue characteristics',
+				select: 'isArchived name unitRelease characteristics',
 			})
 			.populate({
 				path: 'receipt',

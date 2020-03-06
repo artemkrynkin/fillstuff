@@ -123,6 +123,13 @@ let Receipt = new Schema({
 		default: 0,
 		set: value => formatNumber(value),
 	},
+	// Наценка в процентах
+	extraChargePercent: {
+		type: Number,
+		min: [0, 'Не может быть меньше 0'],
+		default: 0,
+		set: value => formatNumber(value, { fractionDigits: 0 }),
+	},
 	// Наценка
 	extraCharge: {
 		type: Number,
@@ -148,10 +155,6 @@ let Receipt = new Schema({
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,
 		set: value => formatNumber(value),
-	},
-	comment: {
-		type: String,
-		trim: true,
 	},
 	__v: {
 		type: Number,

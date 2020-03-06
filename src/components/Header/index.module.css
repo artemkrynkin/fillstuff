@@ -12,14 +12,6 @@
   background-color: transparent;
 }
 
-.buttonColorTeal400 {
-  background-color: var(--c-hex-t-400);
-}
-
-.buttonColorTeal400:hover {
-  background-color: var(--c-hex-t-500);
-}
-
 .column_left,
 .column_right {
   align-items: center;
@@ -74,11 +66,6 @@
   margin: 0 auto 0;
   width: 200px;
 }
-
-/*.stock-btn svg {*/
-/*  margin-left: 10px;*/
-/*  transform: rotate(0deg);*/
-/*}*/
 
 .profile {
   align-items: center;

@@ -77,7 +77,7 @@ const FormPositionReceiptCreateEdit = props => {
 									onChange: ({ target: { value } }) => {
 										setFieldValue('unitReceipt', value);
 
-										if (value === 'pce') setFieldValue('unitIssue', value);
+										if (value === 'pce') setFieldValue('unitRelease', value);
 									},
 								}}
 								error={Boolean(touched.unitReceipt && errors.unitReceipt)}
@@ -99,22 +99,22 @@ const FormPositionReceiptCreateEdit = props => {
 				</Grid>
 
 				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
-					<InputLabel error={Boolean(touched.unitIssue && errors.unitIssue)} style={{ minWidth: 146 }}>
+					<InputLabel error={Boolean(touched.unitRelease && errors.unitRelease)} style={{ minWidth: 146 }}>
 						Единица отпуска
 					</InputLabel>
 					{type === 'create' ? (
 						<FormControl fullWidth>
 							<Field
-								name="unitIssue"
+								name="unitRelease"
 								as={Select}
 								inputProps={{
 									onChange: ({ target: { value } }) => {
-										setFieldValue('unitIssue', value);
+										setFieldValue('unitRelease', value);
 
 										if (value === 'nmp') setFieldValue('unitReceipt', value);
 									},
 								}}
-								error={Boolean(touched.unitIssue && errors.unitIssue)}
+								error={Boolean(touched.unitRelease && errors.unitRelease)}
 							>
 								<MenuItem value="" disabled>
 									Выберите
@@ -125,20 +125,20 @@ const FormPositionReceiptCreateEdit = props => {
 									</MenuItem>
 								))}
 							</Field>
-							{touched.unitIssue && errors.unitIssue ? <FormHelperText error>{errors.unitIssue}</FormHelperText> : null}
+							{touched.unitRelease && errors.unitRelease ? <FormHelperText error>{errors.unitRelease}</FormHelperText> : null}
 						</FormControl>
 					) : (
-						<TextField defaultValue={unitTypeTransform(values.unitIssue)} disabled fullWidth />
+						<TextField defaultValue={unitTypeTransform(values.unitRelease)} disabled fullWidth />
 					)}
 				</Grid>
 
 				<Grid className={stylesGlobal.formLabelControl} style={{ marginBottom: 12 }} container spacing={2}>
-					{values.unitReceipt === 'pce' || values.unitIssue !== 'pce' ? (
+					{values.unitReceipt === 'pce' || values.unitRelease !== 'pce' ? (
 						<Grid xs={6} item>
 							{type === 'create' ? (
 								<Field
 									name="quantity"
-									label={`Количество ${values.unitReceipt === 'nmp' && values.unitIssue !== 'pce' ? 'упаковок' : 'штук'}`}
+									label={`Количество ${values.unitReceipt === 'nmp' && values.unitRelease !== 'pce' ? 'упаковок' : 'штук'}`}
 									placeholder="0"
 									error={Boolean(touched.quantity && errors.quantity)}
 									helperText={(touched.quantity && errors.quantity) || ''}
@@ -153,7 +153,7 @@ const FormPositionReceiptCreateEdit = props => {
 								/>
 							) : (
 								<TextField
-									label={`Количество ${values.unitReceipt === 'nmp' && values.unitIssue !== 'pce' ? 'упаковок' : 'штук'}`}
+									label={`Количество ${values.unitReceipt === 'nmp' && values.unitRelease !== 'pce' ? 'упаковок' : 'штук'}`}
 									defaultValue={values.activeReceipt.current.quantity}
 									disabled
 									fullWidth
@@ -161,7 +161,7 @@ const FormPositionReceiptCreateEdit = props => {
 							)}
 						</Grid>
 					) : (
-						<Grid xs={values.unitReceipt === 'nmp' && values.unitIssue === 'pce' ? 4 : 6} item>
+						<Grid xs={values.unitReceipt === 'nmp' && values.unitRelease === 'pce' ? 4 : 6} item>
 							{type === 'create' ? (
 								<Field
 									name="quantityPackages"
@@ -189,7 +189,7 @@ const FormPositionReceiptCreateEdit = props => {
 						</Grid>
 					)}
 
-					{values.unitReceipt === 'nmp' && values.unitIssue === 'pce' ? (
+					{values.unitReceipt === 'nmp' && values.unitRelease === 'pce' ? (
 						<Grid xs={4} item>
 							<Field
 								name="quantityInUnit"
@@ -213,11 +213,11 @@ const FormPositionReceiptCreateEdit = props => {
 						</Grid>
 					) : null}
 
-					<Grid xs={values.unitReceipt === 'nmp' && values.unitIssue === 'pce' ? 4 : 6} item>
+					<Grid xs={values.unitReceipt === 'nmp' && values.unitRelease === 'pce' ? 4 : 6} item>
 						{values.divided ? (
 							<Field
 								name="minimumBalance"
-								label={`Мин. остаток в ${values.unitReceipt === 'nmp' && values.unitIssue !== 'pce' ? 'упаковках' : 'штуках'}`}
+								label={`Мин. остаток в ${values.unitReceipt === 'nmp' && values.unitRelease !== 'pce' ? 'упаковках' : 'штуках'}`}
 								placeholder="0"
 								error={Boolean(touched.minimumBalance && errors.minimumBalance)}
 								helperText={(touched.minimumBalance && errors.minimumBalance) || ''}
@@ -251,7 +251,7 @@ const FormPositionReceiptCreateEdit = props => {
 						{type === 'create' ? (
 							<Field
 								name="purchasePrice"
-								label={`Цена покупки${values.unitReceipt === 'nmp' && values.unitIssue === 'pce' ? ' упаковки' : ''}`}
+								label={`Цена покупки${values.unitReceipt === 'nmp' && values.unitRelease === 'pce' ? ' упаковки' : ''}`}
 								placeholder="0"
 								error={Boolean(touched.purchasePrice && errors.purchasePrice)}
 								helperText={(touched.purchasePrice && errors.purchasePrice) || ''}
@@ -263,7 +263,7 @@ const FormPositionReceiptCreateEdit = props => {
 										...moneyInputFormatProps,
 									},
 									onChange: ({ target: { value } }) => {
-										if (values.unitReceipt === 'nmp' && values.unitIssue === 'pce') {
+										if (values.unitReceipt === 'nmp' && values.unitRelease === 'pce') {
 											onUnitSellingPriceCalc(value, 'purchasePrice', values, setFieldValue);
 										} else {
 											setFieldValue('purchasePrice', value);
@@ -275,7 +275,7 @@ const FormPositionReceiptCreateEdit = props => {
 							/>
 						) : (
 							<TextField
-								label={`Цена покупки${values.unitReceipt === 'nmp' && values.unitIssue === 'pce' ? ' упаковки' : ''}`}
+								label={`Цена покупки${values.unitReceipt === 'nmp' && values.unitRelease === 'pce' ? ' упаковки' : ''}`}
 								defaultValue={values.activeReceipt.purchasePrice}
 								disabled
 								fullWidth
@@ -285,7 +285,7 @@ const FormPositionReceiptCreateEdit = props => {
 
 					<Grid xs={6} item>
 						{!values.isFree ? (
-							values.unitReceipt === 'nmp' && values.unitIssue === 'pce' ? (
+							values.unitReceipt === 'nmp' && values.unitRelease === 'pce' ? (
 								<Field
 									name="unitSellingPrice"
 									label="Цена продажи штуки"

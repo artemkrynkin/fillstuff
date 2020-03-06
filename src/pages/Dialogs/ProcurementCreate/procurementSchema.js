@@ -26,19 +26,19 @@ const procurementSchema = Yup.object().shape({
 				.nullable(true)
 				.transform(value => (isNaN(value) ? null : value))
 				.when('position', (position, schema) => {
-					return position.unitReceipt === 'pce' || position.unitIssue !== 'pce' ? schema.min(1).required() : schema.strip();
+					return position.unitReceipt === 'pce' || position.unitRelease !== 'pce' ? schema.min(1).required() : schema.strip();
 				}),
 			quantityPackages: Yup.number()
 				.nullable(true)
 				.transform(value => (isNaN(value) ? null : value))
 				.when('position', (position, schema) => {
-					return position.unitReceipt === 'nmp' && position.unitIssue === 'pce' ? schema.min(1).required() : schema.strip();
+					return position.unitReceipt === 'nmp' && position.unitRelease === 'pce' ? schema.min(1).required() : schema.strip();
 				}),
 			quantityInUnit: Yup.number()
 				.nullable(true)
 				.transform(value => (isNaN(value) ? null : value))
 				.when('position', (position, schema) => {
-					return position.unitReceipt === 'nmp' && position.unitIssue === 'pce' ? schema.min(1).required() : schema.strip();
+					return position.unitReceipt === 'nmp' && position.unitRelease === 'pce' ? schema.min(1).required() : schema.strip();
 				}),
 			purchasePrice: Yup.number()
 				.nullable(true)

@@ -32,7 +32,7 @@ const Receipt = props => {
 				<QuantityIndicator
 					type="receipt"
 					unitReceipt={receipt.position.unitReceipt}
-					unitIssue={receipt.position.unitIssue}
+					unitRelease={receipt.position.unitRelease}
 					receipts={[{ ...receipt.initial }]}
 				/>
 			</TableCell>

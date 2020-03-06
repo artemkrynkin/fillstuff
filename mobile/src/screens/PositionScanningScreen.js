@@ -328,7 +328,7 @@ class PositionScanningScreen extends Component {
 													{!position.isFree ? (
 														<View>
 															<Text style={styles.sellingPrice}>
-																Цена продажи {position.unitIssue === 'pce' ? 'шт.' : 'уп.'}:{' '}
+																Цена продажи {position.unitRelease === 'pce' ? 'шт.' : 'уп.'}:{' '}
 																<Text style={styles.sellingPriceBold}>
 																	{position.activeReceipt.unitSellingPrice}
 																	{' ₽'}
@@ -341,7 +341,7 @@ class PositionScanningScreen extends Component {
 														</View>
 													) : (
 														<Text style={styles.sellingPrice}>
-															Цена продажи {position.unitIssue === 'pce' ? 'шт.' : 'уп.'}:{' '}
+															Цена продажи {position.unitRelease === 'pce' ? 'шт.' : 'уп.'}:{' '}
 															<Text style={styles.sellingPriceBold}>Бесплатно</Text>
 														</Text>
 													)}
@@ -370,7 +370,7 @@ class PositionScanningScreen extends Component {
 																{Number(quantity) ? (
 																	<Text style={styles.buttonSubmitText}>
 																		Списать <Text style={{ fontWeight: '800' }}>{Number(quantity)}</Text>{' '}
-																		{position.unitIssue === 'pce' ? 'шт.' : 'уп.'}
+																		{position.unitRelease === 'pce' ? 'шт.' : 'уп.'}
 																	</Text>
 																) : (
 																	<Text style={{ ...styles.buttonSubmitText, ...styles.buttonSubmitTextDisabled }}>Списать</Text>

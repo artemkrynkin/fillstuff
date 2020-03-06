@@ -2,17 +2,15 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import loadable from '@loadable/component';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Button from '@material-ui/core/Button';
-
 import TitlePageOrLogo from './TitlePageOrLogo';
 
 import { getCharacteristics } from 'src/actions/characteristics';
 
+import { Button } from './styles';
 import styles from 'src/components/Header/index.module.css';
 
-const DialogPositionReceiptCreate = loadable(() =>
-	import('src/pages/Dialogs/PositionReceiptCreateEdit' /* webpackChunkName: "Dialog_PositionReceiptCreateEdit" */)
+const DialogPositionCreate = loadable(() =>
+	import('src/pages/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateEdit" */)
 );
 
 const DialogPositionGroupCreate = loadable(() =>
@@ -21,16 +19,16 @@ const DialogPositionGroupCreate = loadable(() =>
 
 const Availability = props => {
 	const { pageTitle, theme, currentStudio } = props;
-	const [dialogPositionReceiptCreate, setDialogPositionReceiptCreate] = useState(false);
+	const [dialogPositionCreate, setDialogPositionCreate] = useState(false);
 	const [dialogPositionGroupCreate, setDialogPositionGroupCreate] = useState(false);
 
-	const onOpenDialogPositionReceiptCreate = async () => {
+	const onOpenDialogPositionCreate = async () => {
 		await props.getCharacteristics();
 
-		setDialogPositionReceiptCreate(true);
+		setDialogPositionCreate(true);
 	};
 
-	const onCloseDialogPositionReceiptCreate = () => setDialogPositionReceiptCreate(false);
+	const onCloseDialogPositionCreate = () => setDialogPositionCreate(false);
 
 	const onOpenDialogPositionGroupCreate = () => setDialogPositionGroupCreate(true);
 
@@ -40,32 +38,18 @@ const Availability = props => {
 		<div className={styles.column_left}>
 			<TitlePageOrLogo pageTitle={pageTitle} theme={theme} />
 			<div className={styles.columnGroup_left}>
-				<Button
-					className={styles.buttonColorTeal400}
-					variant="contained"
-					color="primary"
-					style={{ marginRight: 8 }}
-					onClick={onOpenDialogPositionReceiptCreate}
-				>
-					<FontAwesomeIcon icon={['far', 'plus']} style={{ marginRight: 10 }} />
+				<Button onClick={onOpenDialogPositionCreate} variant="contained" color="primary" style={{ marginRight: 8 }}>
 					Создать позицию
 				</Button>
-				<Button
-					className={styles.buttonColorTeal400}
-					variant="contained"
-					color="primary"
-					style={{ marginRight: 8 }}
-					onClick={onOpenDialogPositionGroupCreate}
-				>
-					<FontAwesomeIcon icon={['far', 'plus']} style={{ marginRight: 10 }} />
+				<Button onClick={onOpenDialogPositionGroupCreate} variant="contained" color="primary">
 					Создать группу
 				</Button>
 			</div>
 
-			<DialogPositionReceiptCreate
+			<DialogPositionCreate
 				type="create"
-				dialogOpen={dialogPositionReceiptCreate}
-				onCloseDialog={onCloseDialogPositionReceiptCreate}
+				dialogOpen={dialogPositionCreate}
+				onCloseDialog={onCloseDialogPositionCreate}
 				currentStudioId={currentStudio._id}
 			/>
 

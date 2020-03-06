@@ -335,7 +335,7 @@ invoicesRouter.post(
 
 		if (invoicePayable.payments.length) invoicePayable.payments.reverse();
 
-		invoicePayable.groupedWriteOffs = _.chain(invoicePayable.writeOffs)
+		invoicePayable.positions = _.chain(invoicePayable.writeOffs)
 			.groupBy(writeOff => {
 				return String(writeOff.position._id) && writeOff.unitSellingPrice;
 			})
@@ -347,7 +347,7 @@ invoicesRouter.post(
 			}))
 			.value();
 
-		invoicePayable.groupedWriteOffs.sort((a, b) => a.position.name.localeCompare(b.position.name) || +b.sellingPrice - +a.sellingPrice);
+		invoicePayable.positions.sort((a, b) => a.position.name.localeCompare(b.position.name) || +b.sellingPrice - +a.sellingPrice);
 
 		delete invoicePayable.writeOffs;
 

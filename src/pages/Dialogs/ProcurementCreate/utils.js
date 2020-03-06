@@ -1,6 +1,6 @@
 export const positionTransform = position => ({
 	_id: position._id,
-	unitIssue: position.unitIssue,
+	unitRelease: position.unitRelease,
 	unitReceipt: position.unitReceipt,
 	isFree: position.isFree,
 	extraCharge: position.extraCharge,

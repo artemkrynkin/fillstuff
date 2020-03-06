@@ -130,8 +130,6 @@ const FormFilter = props => {
 	const isWeekActive = currentWeek => weekActive(values.dateStartView, values.dateEndView, currentWeek);
 	const isMonthActive = currentMonth => monthActive(values.dateStartView, values.dateEndView, currentMonth);
 
-	console.log(values);
-
 	return (
 		<Form>
 			<Grid container>

@@ -47,7 +47,7 @@ const Position = props => {
 					<QuantityIndicator
 						type="position"
 						unitReceipt={position.unitReceipt}
-						unitIssue={position.unitIssue}
+						unitRelease={position.unitRelease}
 						divided={position.divided}
 						minimumBalance={position.minimumBalance}
 						receipts={position.receipts.map(receipt => ({ ...receipt.current }))}
@@ -59,7 +59,7 @@ const Position = props => {
 					{position.activeReceipt ? (
 						<PriceDisplay
 							unitReceipt={position.unitReceipt}
-							unitIssue={position.unitIssue}
+							unitRelease={position.unitRelease}
 							quantity={position.activeReceipt.current.quantity}
 							isFree={false}
 							price={Number(position.activeReceipt.unitPurchasePrice.toFixed(2))}
@@ -78,7 +78,7 @@ const Position = props => {
 					{position.activeReceipt ? (
 						<PriceDisplay
 							unitReceipt={position.unitReceipt}
-							unitIssue={position.unitIssue}
+							unitRelease={position.unitRelease}
 							quantity={position.activeReceipt.current.quantity}
 							isFree={position.isFree}
 							price={Number(position.activeReceipt.unitSellingPrice.toFixed(2))}
@@ -137,24 +137,6 @@ const Position = props => {
 										Списать количество
 									</MenuItem>
 								) : null}
-								{position.receipts.length ? (
-									<MenuItem
-										onClick={() => {
-											onHandleDropdownActions();
-										}}
-									>
-										Статистика
-									</MenuItem>
-								) : null}
-								{position.receipts.length ? (
-									<MenuItem
-										onClick={() => {
-											onHandleDropdownActions();
-										}}
-									>
-										Поступления
-									</MenuItem>
-								) : null}
 								{position.positionGroup ? (
 									<MenuItem
 										onClick={() => {
@@ -177,14 +159,19 @@ const Position = props => {
 							>
 								Генерация QR-кода
 							</MenuItem>
+							{!position.activeReceipt && !position.receipts.length ? (
+								<MenuItem
+									onClick={() => {
+										onHandleDropdownActions();
+									}}
+								>
+									Добавить поступление
+								</MenuItem>
+							) : null}
 							<MenuItem
 								onClick={() => {
 									onHandleDropdownActions();
-									if (position.activeReceipt && position.receipts.length) {
-										onOpenDialogPosition('dialogPositionReceiptEdit', position);
-									} else {
-										onOpenDialogPosition('dialogPositionEdit', position);
-									}
+									onOpenDialogPosition('dialogPositionEdit', position);
 								}}
 							>
 								Редактировать

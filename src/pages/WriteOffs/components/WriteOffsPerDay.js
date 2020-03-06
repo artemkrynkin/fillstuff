@@ -38,7 +38,7 @@ const calendarFormat = {
 
 const WriteOffsPerDay = props => {
 	const {
-		writeOffsPerDay: { date, indicators, items: writeOffs },
+		writeOffsPerDay: { date, indicators, writeOffs },
 	} = props;
 	const [writeOff, setWriteOff] = useState(null);
 	const [dialogWriteOffCancel, setDialogWriteOffCancel] = useState(false);
@@ -118,15 +118,15 @@ const WriteOffsPerDay = props => {
 							<Grid className={styles.indicators} alignItems="center" container>
 								<Grid xs={6} item>
 									<div className={styles.indicatorsTitle}>
-										<Money value={indicators.returned} />
+										<Money value={indicators.turnover} />
 									</div>
-									<div className={styles.indicatorsSubtitle}>Вернули</div>
+									<div className={styles.indicatorsSubtitle}>Оборот</div>
 								</Grid>
 								<Grid xs={6} item>
 									<div className={styles.indicatorsTitle}>
-										<Money value={indicators.usedUp} />
+										<Money value={indicators.expenses} />
 									</div>
-									<div className={styles.indicatorsSubtitle}>Потратили</div>
+									<div className={styles.indicatorsSubtitle}>Расходы</div>
 								</Grid>
 							</Grid>
 						</Grid>

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import aggregatePaginate from 'mongoose-aggregate-paginate-v2';
+import mongoosePaginate from 'mongoose-paginate-v2';
 import i18n from 'i18n';
 
 import { formatNumber } from 'shared/utils';
@@ -120,6 +120,6 @@ let WriteOff = new Schema({
 	},
 });
 
-WriteOff.plugin(aggregatePaginate);
+WriteOff.plugin(mongoosePaginate);
 
 export default mongoose.model('WriteOff', WriteOff);

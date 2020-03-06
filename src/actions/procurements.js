@@ -1,14 +1,6 @@
 import axios from 'axios';
-/**
- *
- * @param params
- * @param query
- * @param data
- * @param showRequest
- * @returns {function(*, *): {status: string} | {status: string}}
- */
 
-export const getProcurements = ({ query, showRequest = true } = { showRequest: true }) => {
+export const getProcurements = ({ query, showRequest = true, mergeData = false } = { showRequest: true, mergeData: false }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
@@ -22,10 +14,17 @@ export const getProcurements = ({ query, showRequest = true } = { showRequest: t
 				query,
 			})
 			.then(response => {
-				dispatch({
-					type: 'RECEIVE_PROCUREMENTS',
-					payload: response.data,
-				});
+				if (!mergeData) {
+					dispatch({
+						type: 'RECEIVE_PROCUREMENTS',
+						payload: response.data,
+					});
+				} else {
+					dispatch({
+						type: 'RECEIVE_MERGE_PROCUREMENTS',
+						payload: response.data,
+					});
+				}
 
 				return Promise.resolve({ status: 'success' });
 			})

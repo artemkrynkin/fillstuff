@@ -3,13 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import moment from 'moment';
-import queryString from 'query-string';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import { history } from 'src/helpers/history';
-
-import { getFollowingDates } from 'src/components/Pagination/utils';
+import { deleteParamsCoincidence } from 'src/components/Pagination/utils';
 import LoadMoreButton from 'src/components/Pagination/LoadMoreButton';
 
 import { getProcurements } from 'src/actions/procurements';
@@ -33,10 +30,8 @@ const calendarFormat = {
 	},
 };
 
-const generatePaginate = (loadedDocs, data) => {
+const brokenDownByMonth = data => {
 	const procurements = data.slice();
-
-	procurements.length = loadedDocs < data.length ? loadedDocs : data.length;
 
 	return _.chain(procurements)
 		.groupBy(procurement => {
@@ -49,50 +44,39 @@ const generatePaginate = (loadedDocs, data) => {
 				})
 				.format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
 		})
-		.map((items, date) => ({ date, items }))
+		.map((procurements, date) => ({ date, procurements }))
 		.value();
 };
 
 class Procurements extends Component {
 	static propTypes = {
-		filterParams: PropTypes.object.isRequired,
+		filterOptions: PropTypes.object.isRequired,
 		paging: PropTypes.object.isRequired,
 	};
 
-	onLoadOtherDates = () => {
-		const { filterParams, paging } = this.props;
+	onLoadMore = nextPage => {
+		const {
+			filterOptions: { params: filterParams, delete: filterDeleteParams },
+		} = this.props;
 
-		const query = { ...filterParams };
+		const query = deleteParamsCoincidence({ ...filterParams, page: nextPage }, { type: 'server', ...filterDeleteParams });
 
-		Object.keys(query).forEach(key => (query[key] === '' || query[key] === 'all') && delete query[key]);
-
-		const followingDates = getFollowingDates(query.dateStart, query.dateEnd);
-
-		query.dateStart = followingDates.dateStart.valueOf();
-		query.dateEnd = followingDates.dateEnd.valueOf();
-
-		history.replace({
-			search: queryString.stringify(query),
-		});
-
-		this.setState(this.initialState);
-
-		paging.onChangeLoadedDocs(true);
+		this.props.getProcurements(query, { showRequest: false, mergeData: true });
 	};
 
 	componentDidMount() {
-		const { filterParams } = this.props;
+		const {
+			filterOptions: { params: filterParams, delete: filterDeleteParams },
+		} = this.props;
 
-		const query = { ...filterParams };
-
-		Object.keys(query).forEach(key => (query[key] === '' || query[key] === 'all') && delete query[key]);
+		const query = deleteParamsCoincidence({ ...filterParams }, { type: 'server', ...filterDeleteParams });
 
 		this.props.getProcurements(query);
 	}
 
 	render() {
 		const {
-			filterParams,
+			filterOptions: { params: filterParams },
 			paging,
 			procurements: {
 				data: procurementData,
@@ -104,36 +88,25 @@ class Procurements extends Component {
 		return (
 			<div className={styles.container}>
 				{!isLoadingProcurements && procurementData ? (
-					procurementData.data.length && procurementData.paging.totalCount ? (
-						generatePaginate(paging.loadedDocs, procurementData.data).map((procurementDates, index) => (
-							<div className={styles.date} key={procurementDates.date}>
-								<div className={styles.dateTitle}>{moment(procurementDates.date).calendar(null, calendarFormat)}</div>
-								{procurementDates.items.map(procurement => (
-									<Procurement key={procurement._id} procurement={procurement} filterParams={filterParams} />
-								))}
-							</div>
-						))
-					) : !procurementData.data.length && procurementData.paging.totalCount ? (
-						<div className={styles.none}>
-							Среди закупок не найдено совпадений за выбранный период.
-							<br />
-							Попробуйте изменить запрос.
+					procurementData.paging.totalCount && procurementData.paging.totalDocs ? (
+						<div>
+							{brokenDownByMonth(procurementData.data).map(month => (
+								<div className={styles.date} key={month.date}>
+									<div className={styles.dateTitle}>{moment(month.date).calendar(null, calendarFormat)}</div>
+									{month.procurements.map(procurement => (
+										<Procurement key={procurement._id} procurement={procurement} filterParams={filterParams} />
+									))}
+								</div>
+							))}
+							{procurementData.paging.hasNextPage ? (
+								<LoadMoreButton page={paging.page} setPage={paging.setPage} onLoadMore={this.onLoadMore} />
+							) : null}
 						</div>
+					) : procurementData.paging.totalCount && !procurementData.paging.totalDocs ? (
+						<div className={styles.none}>Ничего не найдено</div>
 					) : (
 						<div className={styles.none}>Еще не создано ни одной закупки.</div>
 					)
-				) : null}
-				{!isLoadingProcurements && procurementData && procurementData.paging.totalCount ? (
-					<LoadMoreButton
-						loaded={paging.loadedDocs}
-						count={procurementData.data.length}
-						textButton="Показать закупки за"
-						showDates={true}
-						dateStart={filterParams.dateStart}
-						dateEnd={filterParams.dateEnd}
-						onLoadMore={paging.onChangeLoadedDocs}
-						onLoadOtherDates={this.onLoadOtherDates}
-					/>
 				) : isLoadingProcurements ? (
 					<div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />
 				) : null}
@@ -150,7 +123,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		getProcurements: query => dispatch(getProcurements({ query })),
+		getProcurements: (query, params) => dispatch(getProcurements({ query, ...params })),
 	};
 };
 

@@ -31,7 +31,7 @@ const calendarFormat = {
 	},
 };
 
-const generatePaginate = data => {
+const brokenDownByMonth = data => {
 	const invoices = data.slice();
 
 	return _.chain(invoices)
@@ -45,7 +45,7 @@ const generatePaginate = data => {
 				})
 				.format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
 		})
-		.map((items, date) => ({ date, items }))
+		.map((invoices, date) => ({ date, invoices }))
 		.value();
 };
 
@@ -112,10 +112,10 @@ class Invoices extends Component {
 				{!isLoadingInvoices && invoiceData ? (
 					invoiceData.paging.totalCount && invoiceData.paging.totalDocs ? (
 						<div>
-							{generatePaginate(invoiceData.data).map((invoiceDates, index) => (
-								<div className={styles.date} key={invoiceDates.date}>
-									<div className={styles.dateTitle}>{moment(invoiceDates.date).calendar(null, calendarFormat)}</div>
-									{invoiceDates.items.map(invoice => (
+							{brokenDownByMonth(invoiceData.data).map(month => (
+								<div className={styles.date} key={month.date}>
+									<div className={styles.dateTitle}>{moment(month.date).calendar(null, calendarFormat)}</div>
+									{month.invoices.map(invoice => (
 										<Invoice key={invoice._id} invoice={invoice} onOpenDialogInvoice={this.onOpenDialogByName} />
 									))}
 								</div>

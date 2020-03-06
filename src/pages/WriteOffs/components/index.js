@@ -9,19 +9,18 @@ import { checkQueryInFilter } from 'src/components/Pagination/utils';
 import Filter from './Filter';
 import WriteOffs from './WriteOffs';
 
-const dateStart = moment()
-	.subtract(2, 'days')
-	.startOf('day')
-	.valueOf();
-const dateEnd = moment()
-	.endOf('day')
-	.valueOf();
+const momentDate = moment();
+const dateStart = momentDate.startOf('month').valueOf();
+const dateEnd = momentDate.endOf('month').valueOf();
 
 const Index = () => {
-	const [dateIntervalAllTime, setDateIntervalAllTime] = useState({
-		dateStart,
-		dateEnd,
-	});
+	const [loadedDocs, setLoadedDocs] = useState(10);
+	const perPage = 10;
+
+	const onChangeLoadedDocs = resetLoadedDocs => {
+		if (!resetLoadedDocs) setLoadedDocs(loadedDocs + perPage);
+		else setLoadedDocs(perPage);
+	};
 
 	const filterOptions = {
 		params: checkQueryInFilter({
@@ -45,15 +44,17 @@ const Index = () => {
 					<Filter
 						filterOptions={filterOptions}
 						paging={{
-							dateIntervalAllTime,
-							setDateIntervalAllTime,
+							loadedDocs,
+							perPage,
+							onChangeLoadedDocs,
 						}}
 					/>
 					<WriteOffs
 						filterOptions={filterOptions}
 						paging={{
-							dateIntervalAllTime,
-							setDateIntervalAllTime,
+							loadedDocs,
+							perPage,
+							onChangeLoadedDocs,
 						}}
 					/>
 				</Grid>

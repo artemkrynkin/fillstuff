@@ -82,9 +82,11 @@ const Invoices = props => {
 					</div>
 				</Grid>
 				<Grid xs={3} item>
-					<Button onClick={createInvoice} disabled={member.billingPeriodDebt === 0} variant="outlined" color="primary">
-						Выставить счет
-					</Button>
+					{member.billingPeriodDebt !== 0 ? (
+						<Button onClick={createInvoice} variant="outlined" color="primary">
+							Выставить счет
+						</Button>
+					) : null}
 				</Grid>
 			</Grid>
 			<Grid container>
@@ -146,7 +148,7 @@ const Invoices = props => {
 								})}
 							</TableBody>
 						</Table>
-						{!showAllInvoices && invoicesData.data.length >= showInitialInvoices ? (
+						{!showAllInvoices && invoicesData.data.length > showInitialInvoices ? (
 							<Grid justify="center" container>
 								<Button onClick={onShowAllInvoices} variant="outlined" style={{ marginTop: 25 }}>
 									Показать все счета

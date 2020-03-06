@@ -22,28 +22,33 @@ procurementsRouter.post(
 	async (req, res, next) => {
 		const {
 			studioId,
-			query: { number, dateStart, dateEnd, position, role },
+			query: { page, limit, dateStart, dateEnd, number, position, role },
 		} = req.body;
 
 		let conditions = {
 			studio: studioId,
 		};
 
-		if (number) conditions.number = { $regex: number, $options: 'i' };
-
-		if (dateStart && dateEnd)
+		if (dateStart && dateEnd) {
 			conditions.createdAt = {
 				$gte: new Date(Number(dateStart)),
 				$lte: new Date(Number(dateEnd)),
 			};
+		}
 
-		if (role && !/all|owners|admins|artists/.test(role)) conditions.member = mongoose.Types.ObjectId(role);
+		if (number) conditions.number = { $regex: number, $options: 'i' };
+
+		if (role && role !== 'all') conditions.member = mongoose.Types.ObjectId(role);
+
+		if (position && position !== 'all') conditions.positions = mongoose.Types.ObjectId(position);
 
 		const procurementsPromise = Procurement.paginate(conditions, {
 			sort: { createdAt: -1 },
+			lean: true,
 			populate: [
 				{
 					path: 'member',
+					select: 'user',
 					populate: {
 						path: 'user',
 						select: 'avatar name email',
@@ -59,32 +64,30 @@ procurementsRouter.post(
 					},
 				},
 			],
-			pagination: false,
+			page,
+			limit,
 			customLabels: {
 				docs: 'data',
 				meta: 'paging',
 			},
 		}).catch(err => next({ code: 2, err }));
-		const procurementsCountPromise = Procurement.estimatedDocumentCount();
+		const procurementsCountPromise = Procurement.countDocuments({ studio: studioId });
 
-		const procurements = await procurementsPromise;
+		const procurementsResult = await procurementsPromise;
 		const procurementsCount = await procurementsCountPromise;
 
-		if (position && position !== 'all') {
-			procurements.data = procurements.data.filter(procurement =>
-				procurement.receipts.some(receipt => String(receipt.position._id) === position)
-			);
-		}
+		let { data: procurements, paging } = procurementsResult;
 
-		if (role && /owners|admins|artists/.test(role)) {
-			const roleFilter = role.slice(0, -1);
-
-			procurements.data = procurements.data.filter(procurement => procurement.member.roles.some(role => role.includes(roleFilter)));
-		}
+		// if (position && position !== 'all') {
+		// 	procurements.data = procurements.data.filter(procurement =>
+		// 		procurement.receipts.some(receipt => String(receipt.position._id) === position)
+		// 	);
+		// }
 
 		res.json({
-			data: procurements.data,
+			data: procurements,
 			paging: {
+				...paging,
 				totalCount: procurementsCount,
 			},
 		});
@@ -156,6 +159,7 @@ procurementsRouter.post(
 
 		const newProcurement = new Procurement({
 			...newProcurementValues,
+			positions: [],
 			studio: studioId,
 			member: memberId,
 		});
@@ -195,6 +199,8 @@ procurementsRouter.post(
 					Receipt.findByIdAndUpdate(position.activeReceipt, { $set: { status: 'closed' } }).catch(err => next({ code: 2, err }))
 				);
 			}
+
+			newProcurement.positions.push(receipt.position);
 
 			return newReceipt;
 		});

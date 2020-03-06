@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import moment from 'moment';
+import _ from 'lodash';
 
 import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
@@ -36,17 +37,19 @@ writeOffsRouter.post(
 		}
 
 		if (position && !/all|paid|free/.test(position)) conditions.position = position;
+
 		if (position && /paid|free/.test(position)) conditions.isFree = position !== 'paid';
 
 		if (role && !/all|owners|admins|artists/.test(role)) conditions.member = mongoose.Types.ObjectId(role);
 
 		if (onlyCanceled) conditions.canceled = onlyCanceled;
 
-		const writeOffsPromise = WriteOff.aggregatePaginate(conditions, {
+		const writeOffPromise = WriteOff.paginate(conditions, {
 			sort: { createdAt: -1 },
 			populate: [
 				{
 					path: 'member',
+					select: 'roles user',
 					populate: {
 						path: 'user',
 						select: 'avatar name email',
@@ -59,10 +62,6 @@ writeOffsRouter.post(
 					},
 					select: 'isArchived name unitIssue characteristics',
 				},
-				{
-					path: 'receipt',
-					select: 'unitPurchasePrice',
-				},
 			],
 			pagination: false,
 			customLabels: {
@@ -70,19 +69,21 @@ writeOffsRouter.post(
 				meta: 'paging',
 			},
 		}).catch(err => next({ code: 2, err }));
-		const writeOffCountPromise = WriteOff.estimatedDocumentCount();
+		const writeOffCountPromise = WriteOff.countDocuments({ studio: studioId });
 
-		const writeOffs = await writeOffsPromise;
+		const writeOffsResult = await writeOffPromise;
 		const writeOffsCount = await writeOffCountPromise;
+
+		let { data: writeOffs } = writeOffsResult;
 
 		if (role && /owners|admins|artists/.test(role)) {
 			const roleFilter = role.slice(0, -1);
 
-			writeOffs.data = writeOffs.data.filter(writeOff => writeOff.member.roles.some(role => role.includes(roleFilter)));
+			writeOffs = writeOffs.filter(writeOff => writeOff.member.roles.some(role => role.includes(roleFilter)));
 		}
 
 		res.json({
-			data: writeOffs.data,
+			data: writeOffs,
 			paging: {
 				totalCount: writeOffsCount,
 			},

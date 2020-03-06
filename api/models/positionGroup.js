@@ -35,7 +35,6 @@ let PositionGroup = new Schema({
 		{
 			type: Schema.Types.ObjectId,
 			ref: 'Position',
-			required: [true, i18n.__('Обязательное поле')],
 		},
 	],
 	__v: {

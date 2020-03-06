@@ -21,3 +21,10 @@
   margin-bottom: 20px;
   text-transform: capitalize;
 }
+
+.daysWithoutWriteOffs {
+  color: var(--c-hex-bg-400);
+  font-size: 14px;
+  font-weight: 500;
+  margin: 16px 0;
+}

@@ -130,6 +130,8 @@ const FormFilter = props => {
 	const isWeekActive = currentWeek => weekActive(values.dateStartView, values.dateEndView, currentWeek);
 	const isMonthActive = currentMonth => monthActive(values.dateStartView, values.dateEndView, currentMonth);
 
+	console.log(values);
+
 	return (
 		<Form>
 			<Grid container>
@@ -394,7 +396,7 @@ const FormFilter = props => {
 				</Grid>
 
 				<Grid item style={{ marginLeft: 'auto' }}>
-					{!isMonthActive() || values.status !== 'all' || values.member !== 'all' ? (
+					{values.dateStartView || values.dateEndView || values.status !== 'all' || values.member !== 'all' ? (
 						<ButtonBase onClick={() => onResetAllFilters(setFieldValue, submitForm)} className={styles.filterButtonLinkRed} disableRipple>
 							<span>Сбросить фильтры</span>
 						</ButtonBase>

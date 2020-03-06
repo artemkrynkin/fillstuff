@@ -27,13 +27,14 @@ invoicesRouter.post(
 			studio: studioId,
 		};
 
-		if (dateStart && dateEnd)
+		if (dateStart && dateEnd) {
 			conditions.createdAt = {
 				$gte: new Date(Number(dateStart)),
 				$lte: new Date(Number(dateEnd)),
 			};
+		}
 
-		if (member && !/all/.test(member)) conditions.member = mongoose.Types.ObjectId(member);
+		if (member && member !== 'all') conditions.member = mongoose.Types.ObjectId(member);
 
 		if (status && status !== 'all') conditions.status = status;
 
@@ -43,6 +44,7 @@ invoicesRouter.post(
 			populate: [
 				{
 					path: 'member',
+					select: 'user',
 					populate: {
 						path: 'user',
 						select: 'avatar name email',
@@ -73,15 +75,17 @@ invoicesRouter.post(
 				meta: 'paging',
 			},
 		}).catch(err => next({ code: 2, err }));
-		const invoicesCountPromise = Invoice.estimatedDocumentCount();
+		const invoicesCountPromise = Invoice.countDocuments({ studio: studioId });
 
-		const invoices = await invoicesPromise;
+		const invoicesResult = await invoicesPromise;
 		const invoicesCount = await invoicesCountPromise;
 
-		invoices.data.forEach(invoice => {
+		let { data: invoices, paging } = invoicesResult;
+
+		invoices.forEach(invoice => {
 			if (invoice.payments.length) invoice.payments.reverse();
 
-			invoice.groupedWriteOffs = _.chain(invoice.writeOffs)
+			invoice.positions = _.chain(invoice.writeOffs)
 				.groupBy(writeOff => {
 					return String(writeOff.position._id) && writeOff.unitSellingPrice;
 				})
@@ -93,7 +97,7 @@ invoicesRouter.post(
 				}))
 				.value();
 
-			invoice.groupedWriteOffs.sort(
+			invoice.positions.sort(
 				(writeOffsA, writeOffsB) =>
 					writeOffsA.position.name.localeCompare(writeOffsB.position.name) || +writeOffsB.sellingPrice - +writeOffsA.sellingPrice
 			);
@@ -102,9 +106,9 @@ invoicesRouter.post(
 		});
 
 		res.json({
-			data: invoices.data,
+			data: invoices,
 			paging: {
-				...invoices.paging,
+				...paging,
 				totalCount: invoicesCount,
 			},
 		});
@@ -167,7 +171,7 @@ invoicesRouter.post(
 
 		if (invoice.payments.length) invoice.payments.reverse();
 
-		invoice.groupedWriteOffs = _.chain(invoice.writeOffs)
+		invoice.positions = _.chain(invoice.writeOffs)
 			.groupBy(writeOff => {
 				return String(writeOff.position._id) && writeOff.unitSellingPrice;
 			})
@@ -179,7 +183,7 @@ invoicesRouter.post(
 			}))
 			.value();
 
-		invoice.groupedWriteOffs.sort((a, b) => a.position.name.localeCompare(b.position.name) || +b.sellingPrice - +a.sellingPrice);
+		invoice.positions.sort((a, b) => a.position.name.localeCompare(b.position.name) || +b.sellingPrice - +a.sellingPrice);
 
 		delete invoice.writeOffs;
 

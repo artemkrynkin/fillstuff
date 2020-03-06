@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 import moment from 'moment';
 import queryString from 'query-string';
+import _ from 'lodash';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import { history } from 'src/helpers/history';
-
 import { getFollowingDates, deleteParamsCoincidence } from 'src/components/Pagination/utils';
-import LoadMoreButton from 'src/components/Pagination/LoadMoreButton';
+import LoadMoreButtonDates from 'src/components/Pagination/LoadMoreButtonDates';
+
+import { history } from 'src/helpers/history';
 
 import { getWriteOffs } from 'src/actions/writeOffs';
 
@@ -18,11 +18,13 @@ import WriteOffsPerDay from './WriteOffsPerDay';
 
 import styles from './WriteOffs.module.css';
 
-const generatePaginate = data => {
+const generatePaginate = (loadedDocs, data) => {
 	const writeOffs = data.slice();
 
+	writeOffs.length = loadedDocs < data.length ? loadedDocs : data.length;
+
 	// Группируем списания по месяцу
-	return _.chain(writeOffs)
+	const asdasdasd = _.chain(writeOffs)
 		.groupBy(writeOffsPerDay => {
 			return moment(writeOffsPerDay.date)
 				.set({
@@ -34,19 +36,24 @@ const generatePaginate = data => {
 				})
 				.format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
 		})
-		.map((items, date) => ({
+		.map((days, date) => ({
 			date,
-			items,
+			days,
 		}))
 		.value();
+
+	console.log(asdasdasd);
+
+	return asdasdasd;
 };
 
 const momentDate = moment();
 
 const MonthDateTitle = ({ date }) => {
 	const isCurrentYear = momentDate.isSame(date, 'year');
+	const dateFormat = moment(date).format(isCurrentYear ? 'MMMM' : 'MMMM YYYY');
 
-	return <div className={styles.dateTitle}>{moment(date).format(isCurrentYear ? 'MMMM' : 'MMMM YYYY')}</div>;
+	return <div className={styles.dateTitle}>{dateFormat}</div>;
 };
 
 class WriteOffs extends Component {
@@ -55,7 +62,10 @@ class WriteOffs extends Component {
 	};
 
 	onLoadOtherDates = () => {
-		const { filterParams, paging } = this.props;
+		const {
+			filterOptions: { params: filterParams },
+			paging,
+		} = this.props;
 
 		const query = { ...filterParams };
 
@@ -77,31 +87,6 @@ class WriteOffs extends Component {
 		paging.onChangeLoadedDocs(true);
 	};
 
-	onLoadMore = () => {
-		const {
-			filterOptions: { params: filterParams, delete: filterDeleteParams },
-			paging,
-		} = this.props;
-
-		const query = deleteParamsCoincidence({ ...filterParams }, { type: 'server', ...filterDeleteParams });
-
-		if (!query.onlyCanceled) delete query.onlyCanceled;
-
-		const followingDates = getFollowingDates(paging.dateIntervalAllTime.dateStart, paging.dateIntervalAllTime.dateEnd);
-
-		query.dateStart = followingDates.dateStart.valueOf();
-		query.dateEnd = followingDates.dateEnd.valueOf();
-
-		console.log(moment(query.dateStart).format(), moment(query.dateEnd).format());
-
-		paging.setDateIntervalAllTime({
-			dateStart: query.dateStart,
-			dateEnd: query.dateEnd,
-		});
-
-		this.props.getWriteOffs(query, { showRequest: false, mergeData: true });
-	};
-
 	componentDidMount() {
 		const {
 			filterOptions: { params: filterParams, delete: filterDeleteParams },
@@ -116,9 +101,10 @@ class WriteOffs extends Component {
 
 	render() {
 		const {
-			filterParams,
+			filterOptions: { params: filterParams },
+			paging,
 			writeOffs: {
-				data: writeOffsData,
+				data: writeOffs,
 				isFetching: isLoadingWriteOffs,
 				// error: errorWriteOffs
 			},
@@ -126,26 +112,36 @@ class WriteOffs extends Component {
 
 		return (
 			<div className={styles.container}>
-				{!isLoadingWriteOffs && writeOffsData ? (
-					writeOffsData.paging.totalCount && writeOffsData.data.length ? (
+				{!isLoadingWriteOffs && writeOffs ? (
+					writeOffs.paging.totalCount && writeOffs.data.length ? (
 						<div>
-							{generatePaginate(writeOffsData.data).map(writeOffsPerMonth => (
-								<div className={styles.date} key={writeOffsPerMonth.date}>
-									<MonthDateTitle date={writeOffsPerMonth.date} />
-									{writeOffsPerMonth.items.map(writeOffsPerDay => (
+							{generatePaginate(paging.loadedDocs, writeOffs.data).map(months => (
+								<div className={styles.date} key={months.date}>
+									<MonthDateTitle date={months.date} />
+									{months.days.map(writeOffsPerDay => (
 										<WriteOffsPerDay key={writeOffsPerDay.date} filterParams={filterParams} writeOffsPerDay={writeOffsPerDay} />
 									))}
 								</div>
 							))}
-							{/*{writeOffsData.paging.hasNextPage ? (*/}
-							<LoadMoreButton onLoadMore={this.onLoadMore} filter />
-							{/*) : null}*/}
 						</div>
-					) : writeOffsData.paging.totalCount && !writeOffsData.data.length ? (
+					) : writeOffs.paging.totalCount && !writeOffs.data.length ? (
 						<div className={styles.none}>Ничего не найдено</div>
 					) : (
 						<div className={styles.none}>Еще не списано ни одной позиции.</div>
 					)
+				) : null}
+
+				{!isLoadingWriteOffs && writeOffs && writeOffs.paging.totalCount ? (
+					<LoadMoreButtonDates
+						loaded={paging.loadedDocs}
+						count={writeOffs.data.length}
+						textButton="Показать списания за"
+						showDates={true}
+						dateStart={filterParams.dateStart}
+						dateEnd={filterParams.dateEnd}
+						onLoadMore={() => paging.onChangeLoadedDocs()}
+						onLoadOtherDates={this.onLoadOtherDates}
+					/>
 				) : isLoadingWriteOffs ? (
 					<div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />
 				) : null}
@@ -157,20 +153,20 @@ class WriteOffs extends Component {
 const mapStateToProps = state => {
 	const {
 		writeOffs: {
-			data: writeOffs,
+			data: writeOffsData,
 			isFetching: isLoadingWriteOffs,
 			// error: errorPositions
 		},
 	} = state;
 
-	const writeOffsByDay = {
+	const writeOffs = {
 		data: null,
 		isFetching: isLoadingWriteOffs,
 	};
 
-	if (!isLoadingWriteOffs && writeOffs) {
+	if (!isLoadingWriteOffs && writeOffsData) {
 		// Группируем списания по дню
-		const writeOffsByDayData = _.chain(writeOffs.data)
+		const writeOffsByDayData = _.chain(writeOffsData.data)
 			.groupBy(writeOff => {
 				return moment(writeOff.createdAt)
 					.set({
@@ -181,9 +177,9 @@ const mapStateToProps = state => {
 					})
 					.format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
 			})
-			.map((items, date) => {
+			.map((writeOffs, date) => {
 				// Считаем данные для индикатора за день
-				const indicators = items.reduce(
+				const indicators = writeOffs.reduce(
 					(indicators, writeOff) => {
 						if (!indicators.members.some(member => member._id === writeOff.member._id)) {
 							indicators.members.push(writeOff.member);
@@ -192,16 +188,16 @@ const mapStateToProps = state => {
 						if (writeOff.canceled) return indicators;
 
 						if (!writeOff.isFree) {
-							indicators.returned += writeOff.sellingPrice;
+							indicators.turnover += writeOff.sellingPrice;
 						}
 
-						indicators.usedUp += writeOff.purchasePrice;
+						indicators.expenses += writeOff.purchasePrice;
 
 						return indicators;
 					},
 					{
-						returned: 0,
-						usedUp: 0,
+						turnover: 0,
+						expenses: 0,
 						members: [],
 					}
 				);
@@ -209,19 +205,19 @@ const mapStateToProps = state => {
 				return {
 					date,
 					indicators,
-					items,
+					writeOffs,
 				};
 			})
 			.value();
 
-		writeOffsByDay.data = {
+		writeOffs.data = {
 			data: writeOffsByDayData,
-			paging: writeOffs.paging,
+			paging: writeOffsData.paging,
 		};
 	}
 
 	return {
-		writeOffs: writeOffsByDay,
+		writeOffs: writeOffs,
 	};
 };
 

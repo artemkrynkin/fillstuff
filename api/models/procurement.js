@@ -53,11 +53,16 @@ let Procurement = new Schema({
 		type: Boolean,
 		default: false,
 	},
+	positions: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: 'Position',
+		},
+	],
 	receipts: [
 		{
 			type: Schema.Types.ObjectId,
 			ref: 'Receipt',
-			required: [true, i18n.__('Обязательное поле')],
 		},
 	],
 	__v: {

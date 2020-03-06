@@ -107,7 +107,7 @@ const Invoice = props => {
 				</div>
 				<Collapse in={expanded} timeout={300} unmountOnExit>
 					<Tabs className={styles.tabs} value={tabName} onChange={onChangeTab}>
-						<Tab value="writeOffs" label="Списания" id="invoices" />
+						<Tab value="writeOffs" label="Позиции" id="invoices" />
 						{invoice.payments.length ? <Tab value="payments" label="Платежи" id="settings" /> : null}
 					</Tabs>
 					{tabName === 'writeOffs' ? (
@@ -127,7 +127,7 @@ const Invoice = props => {
 								</TableRow>
 							</TableHead>
 							<TableBody>
-								{invoice.groupedWriteOffs.map((writeOff, index) => (
+								{invoice.positions.map((writeOff, index) => (
 									<WriteOff key={index} writeOff={writeOff} />
 								))}
 							</TableBody>
@@ -136,9 +136,9 @@ const Invoice = props => {
 						<Table style={{ tableLayout: 'fixed' }}>
 							<TableHead>
 								<TableRow>
-									<TableCell>Участник</TableCell>
-									<TableCell align="right">Сумма платежа</TableCell>
-									<TableCell align="right">Дата платежа</TableCell>
+									<TableCell>Принял</TableCell>
+									<TableCell align="right">Сумма</TableCell>
+									<TableCell align="right">Дата</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableBody>

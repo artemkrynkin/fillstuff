@@ -143,7 +143,7 @@ class Invoice extends Component {
 						</Grid>
 					</Grid>
 					<Tabs className={styles.tabs} value={tabName} onChange={this.onChangeTab}>
-						<Tab value="writeOffs" label="Списания" id="invoices" />
+						<Tab value="writeOffs" label="Позиции" id="invoices" />
 						{invoice.payments.length ? <Tab value="payments" label="Платежи" id="settings" /> : null}
 					</Tabs>
 					{tabName === 'writeOffs' ? (
@@ -163,7 +163,7 @@ class Invoice extends Component {
 								</TableRow>
 							</TableHead>
 							<TableBody>
-								{invoice.groupedWriteOffs.map((writeOff, index) => (
+								{invoice.positions.map((writeOff, index) => (
 									<WriteOff key={index} writeOff={writeOff} />
 								))}
 							</TableBody>
@@ -172,9 +172,9 @@ class Invoice extends Component {
 						<Table style={{ tableLayout: 'fixed' }}>
 							<TableHead>
 								<TableRow>
-									<TableCell>Участник</TableCell>
-									<TableCell align="right">Сумма платежа</TableCell>
-									<TableCell align="right">Дата платежа</TableCell>
+									<TableCell>Принял</TableCell>
+									<TableCell align="right">Сумма</TableCell>
+									<TableCell align="right">Дата</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableBody>

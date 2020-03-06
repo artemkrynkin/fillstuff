@@ -66,10 +66,9 @@ const FormProcurementCreate = props => {
 								style={{ '--fa-primary-opacity': 0.9, '--fa-secondary-opacity': 0.2 }}
 							/>
 							<Typography className={styles.headerInfoText} variant="body1">
-								Для {declensionNumber(sellingPositionCount, ['позиции', 'позиций', 'позиций'], true)} цена продажи сформирована
-								автоматически.
+								Для {declensionNumber(sellingPositionCount, ['позиции', 'позиций', 'позиций'], true)} рассчитана цена продажи.
 								<br />
-								При необходимости отредактируйте цену продажи в ручную.
+								При необходимости измените её в ручную.
 							</Typography>
 						</Grid>
 					</div>

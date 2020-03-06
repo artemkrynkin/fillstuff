@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import moment from 'moment';
 
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
@@ -9,45 +8,42 @@ import { checkQueryInFilter } from 'src/components/Pagination/utils';
 import Filter from './Filter';
 import Procurements from './Procurements';
 
-const momentDate = moment();
-const dateStart = momentDate.startOf('month').valueOf();
-const dateEnd = momentDate.endOf('month').valueOf();
-
 const Index = () => {
-	const [loadedDocs, setLoadedDocs] = useState(10);
-	const perPage = 10;
+	const [page, setPage] = useState(1);
 
-	const onChangeLoadedDocs = resetLoadedDocs => {
-		if (!resetLoadedDocs) setLoadedDocs(loadedDocs + perPage);
-		else setLoadedDocs(perPage);
+	const filterOptions = {
+		params: checkQueryInFilter({
+			page,
+			limit: 10,
+			dateStart: null,
+			dateEnd: null,
+			number: '',
+			position: 'all',
+			member: 'all',
+		}),
+		delete: {
+			searchByName: ['page', 'limit'],
+			searchByValue: [null, '', 'all'],
+			serverQueryByValue: [null, '', 'all'],
+		},
 	};
-
-	const filterParams = checkQueryInFilter({
-		number: '',
-		dateStart: dateStart,
-		dateEnd: dateEnd,
-		position: 'all',
-		role: 'all',
-	});
 
 	return (
 		<Container maxWidth="lg">
 			<Grid container direction="row" justify="center" alignItems="flex-start" spacing={2}>
 				<Grid item xs={12}>
 					<Filter
-						filterParams={filterParams}
+						filterOptions={filterOptions}
 						paging={{
-							loadedDocs,
-							perPage,
-							onChangeLoadedDocs,
+							page,
+							setPage,
 						}}
 					/>
 					<Procurements
-						filterParams={filterParams}
+						filterOptions={filterOptions}
 						paging={{
-							loadedDocs,
-							perPage,
-							onChangeLoadedDocs,
+							page,
+							setPage,
 						}}
 					/>
 				</Grid>

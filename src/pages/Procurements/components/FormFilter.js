@@ -26,25 +26,19 @@ import PositionNameInList from 'src/components/PositionNameInList';
 import { SearchTextField, FilterSearchTextField } from './Filter.styles';
 import styles from './Filter.module.css';
 
-const roles = ['all', 'owners', 'admins'];
-const FilterRoleTransform = (roleSelected, members, loading) => {
-	switch (roleSelected) {
-		case 'all':
-			return 'Все участники';
-		case 'owners':
-			return 'Только владельцы';
-		case 'admins':
-			return 'Только администраторы';
-		default:
-			if (loading) return <CircularProgress size={13} />;
+const FilterMemberTransform = (memberSelected, members, loading) => {
+	if (memberSelected !== 'all') {
+		if (loading) return <CircularProgress size={13} />;
 
-			if (members && members.length) {
-				const member = members.find(member => member._id === roleSelected);
+		if (members && members.length) {
+			const member = members.find(member => member._id === memberSelected);
 
-				return member ? member.user.name : null;
-			} else {
-				return 'Не найдено';
-			}
+			return member ? member.user.name : null;
+		} else {
+			return 'Не найдено';
+		}
+	} else {
+		return 'Все участники';
 	}
 };
 const findMemberByName = (member, searchText) => {
@@ -114,7 +108,7 @@ const FormFilter = props => {
 		onClearFilterNumber,
 		onChangeFilterDate,
 		onChangeFilterPosition,
-		onChangeFilterRole,
+		onChangeFilterMember,
 		onResetAllFilters,
 		members: {
 			data: allMembers,
@@ -130,7 +124,7 @@ const FormFilter = props => {
 		dropdownDate: { state: dropdownDate, ref: refDropdownDate },
 		dropdownDateRange: { state: dropdownDateRange, ref: refDropdownDateRange },
 		dropdownPosition: { state: dropdownPosition, ref: refDropdownPosition },
-		dropdownRole: { state: dropdownRole, ref: refDropdownRole },
+		dropdownMember: { state: dropdownMember, ref: refDropdownMember },
 		formikProps: {
 			// errors,
 			isSubmitting,
@@ -201,10 +195,12 @@ const FormFilter = props => {
 						}}
 						disableRipple
 					>
-						{isWeekActive() ? (
-							<span>За текущую неделю</span>
+						{!values.dateStartView && !values.dateEndView ? (
+							<span>Всё время</span>
 						) : isMonthActive() ? (
-							<span>За текущий месяц</span>
+							<span>Текущий месяц</span>
+						) : isWeekActive() ? (
+							<span>Текущая неделя</span>
 						) : !isNaN(values.dateStartView) && !isNaN(values.dateEndView) ? (
 							<span>
 								{isMonthActive(false)
@@ -225,12 +221,12 @@ const FormFilter = props => {
 						<List component="nav">
 							<ListItem
 								disabled={isSubmitting}
-								selected={isWeekActive()}
-								onClick={() => onChangeFilterDate('currentWeek', setFieldValue, submitForm)}
+								selected={!values.dateStartView && !values.dateEndView}
+								onClick={() => onChangeFilterDate('allTime', setFieldValue, submitForm)}
 								component={MenuItem}
 								button
 							>
-								За текущую неделю
+								Всё время
 							</ListItem>
 							<ListItem
 								disabled={isSubmitting}
@@ -240,6 +236,15 @@ const FormFilter = props => {
 								button
 							>
 								За текущий месяц
+							</ListItem>
+							<ListItem
+								disabled={isSubmitting}
+								selected={isWeekActive()}
+								onClick={() => onChangeFilterDate('currentWeek', setFieldValue, submitForm)}
+								component={MenuItem}
+								button
+							>
+								За текущую неделю
 							</ListItem>
 						</List>
 						<Divider />
@@ -269,7 +274,7 @@ const FormFilter = props => {
 							<MuiPickersUtilsProvider utils={MomentUtils}>
 								<Grid className={styles.dropdownContentColumn} style={{ width: 'auto' }} item>
 									<DatePicker
-										value={values.dateStart}
+										value={values.dateStart || new Date()}
 										onChange={date => {
 											setFieldValue('dateStart', date.valueOf(), false);
 
@@ -293,7 +298,7 @@ const FormFilter = props => {
 								</Grid>
 								<Grid className={styles.dropdownContentColumn} style={{ width: 'auto' }} item>
 									<DatePicker
-										value={values.dateEnd}
+										value={values.dateEnd || new Date()}
 										onChange={date => {
 											const dateEnd = date.set({ second: 59, millisecond: 999 });
 
@@ -407,22 +412,22 @@ const FormFilter = props => {
 					</Dropdown>
 				</Grid>
 
-				{/* Filter Role */}
+				{/* Filter Member */}
 				<Grid item>
 					<ButtonBase
-						ref={refDropdownRole}
+						ref={refDropdownMember}
 						className={styles.filterButtonLink}
-						onClick={() => handlerDropdown('dropdownRole')}
+						onClick={() => handlerDropdown('dropdownMember')}
 						disableRipple
 					>
-						<span>{FilterRoleTransform(values.role, allMembers, isLoadingAllMembers)}</span>
+						<span>{FilterMemberTransform(values.member, allMembers, isLoadingAllMembers)}</span>
 						<FontAwesomeIcon icon={['far', 'angle-down']} />
 					</ButtonBase>
 
 					<Dropdown
-						anchor={refDropdownRole}
-						open={dropdownRole}
-						onClose={() => handlerDropdown('dropdownRole')}
+						anchor={refDropdownMember}
+						open={dropdownMember}
+						onClose={() => handlerDropdown('dropdownMember')}
 						placement="bottom-start"
 						headerElement={
 							<div className={styles.filterSearchTextFieldContainer}>
@@ -444,26 +449,23 @@ const FormFilter = props => {
 					>
 						{!isLoadingAllMembers && members && members.length ? (
 							<List component="nav">
-								{!searchTextMember
-									? roles.map((role, index) => (
-											<ListItem
-												key={index}
-												disabled={isSubmitting}
-												selected={values.role === role}
-												onClick={() => onChangeFilterRole(role, setFieldValue, submitForm)}
-												component={MenuItem}
-												button
-											>
-												{FilterRoleTransform(role)}
-											</ListItem>
-									  ))
-									: null}
+								{!searchTextMember ? (
+									<ListItem
+										disabled={isSubmitting}
+										selected={values.member === 'all'}
+										onClick={() => onChangeFilterMember('all', setFieldValue, submitForm)}
+										component={MenuItem}
+										button
+									>
+										Все участники
+									</ListItem>
+								) : null}
 								{members.map((member, index) => (
 									<ListItem
 										key={index}
 										disabled={isSubmitting}
-										selected={values.role === member._id}
-										onClick={() => onChangeFilterRole(member._id, setFieldValue, submitForm)}
+										selected={values.member === member._id}
+										onClick={() => onChangeFilterMember(member._id, setFieldValue, submitForm)}
 										component={MenuItem}
 										button
 									>
@@ -491,7 +493,7 @@ const FormFilter = props => {
 				</Grid>
 
 				<Grid item style={{ marginLeft: 'auto' }}>
-					{values.number || !isMonthActive() || values.position !== 'all' || values.role !== 'all' ? (
+					{values.dateStartView || values.dateEndView || values.number || values.position !== 'all' || values.member !== 'all' ? (
 						<ButtonBase onClick={() => onResetAllFilters(setFieldValue, submitForm)} className={styles.filterButtonLinkRed} disableRipple>
 							<span>Сбросить фильтры</span>
 						</ButtonBase>

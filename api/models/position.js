@@ -89,7 +89,6 @@ let Position = new Schema({
 		{
 			type: Schema.Types.ObjectId,
 			ref: 'Characteristic',
-			required: [true, i18n.__('Обязательное поле')],
 		},
 	],
 	// Поступления
@@ -97,7 +96,6 @@ let Position = new Schema({
 		{
 			type: Schema.Types.ObjectId,
 			ref: 'Receipt',
-			required: [true, i18n.__('Обязательное поле')],
 		},
 	],
 	__v: {

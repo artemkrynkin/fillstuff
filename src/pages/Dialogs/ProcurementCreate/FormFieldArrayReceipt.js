@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { FastField, Field } from 'formik';
+import { Field } from 'formik';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Grid from '@material-ui/core/Grid';
@@ -14,9 +14,9 @@ import { formatNumber } from 'shared/utils';
 import { formError } from 'src/helpers/utils';
 
 import NumberFormat, { moneyInputFormatProps, currencyMoneyFormatProps } from 'src/components/NumberFormat';
+import PositionNameInList from 'src/components/PositionNameInList';
 
 import styles from './index.module.css';
-import PositionNameInList from '../../../components/PositionNameInList';
 
 const FormFieldArrayReceipt = props => {
 	const {
@@ -51,7 +51,7 @@ const FormFieldArrayReceipt = props => {
 
 			<Grid style={{ width: 180 }} item>
 				{receipt.position.unitReceipt === 'pce' || receipt.position.unitIssue === 'nmp' ? (
-					<FastField
+					<Field
 						name={`receipts.${index}.quantity`}
 						label={isNmpNmp ? 'Количество уп.' : 'Количество шт.'}
 						placeholder="0"
@@ -233,7 +233,7 @@ const FormFieldArrayReceipt = props => {
 									disabled={isSubmitting || !sellingPriceEditable}
 									validate={value => {
 										if (value < autoGenUnitSellingPrice) {
-											return 'Не может быть меньше автоматически сформированной цены';
+											return 'Не может быть ниже рассчитанной цены';
 										}
 									}}
 									fullWidth

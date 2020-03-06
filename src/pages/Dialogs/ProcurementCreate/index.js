@@ -82,13 +82,7 @@ class ProcurementCreate extends Component {
 			) {
 				actions.setErrors({
 					totalPrice: true,
-					pricePositions: (
-						<span>
-							Стоимость позиций в закупке не соответствует полю <b>Итого</b>.
-							<br />
-							Проверьте правильность внесённых данных.
-						</span>
-					),
+					pricePositions: <span>Проверьте правильность внесённых данных в выделенных полях.</span>,
 					receipts: procurement.receipts.map(receipt => ({
 						[receipt.position.unitReceipt === 'nmp' && receipt.position.unitIssue === 'pce' ? 'quantityPackages' : 'quantity']: true,
 						purchasePrice: true,

@@ -190,12 +190,10 @@ const FormFilter = props => {
 						}}
 						disableRipple
 					>
-						{!values.dateStartView && !values.dateEndView ? (
-							<span>Всё время</span>
+						{isWeekActive() ? (
+							<span>За текущую неделю</span>
 						) : isMonthActive() ? (
-							<span>Текущий месяц</span>
-						) : isWeekActive() ? (
-							<span>Текущая неделя</span>
+							<span>За текущий месяц</span>
 						) : !isNaN(values.dateStartView) && !isNaN(values.dateEndView) ? (
 							<span>
 								{isMonthActive(false)
@@ -214,15 +212,6 @@ const FormFilter = props => {
 
 					<Dropdown anchor={refDropdownDate} open={dropdownDate} onClose={() => handlerDropdown('dropdownDate')} placement="bottom-start">
 						<List component="nav">
-							<ListItem
-								disabled={isSubmitting}
-								selected={!values.dateStartView && !values.dateEndView}
-								onClick={() => onChangeFilterDate('allTime', setFieldValue, submitForm)}
-								component={MenuItem}
-								button
-							>
-								Всё время
-							</ListItem>
 							<ListItem
 								disabled={isSubmitting}
 								selected={isMonthActive()}

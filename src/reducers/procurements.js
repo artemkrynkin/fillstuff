@@ -19,6 +19,18 @@ const procurements = (
 				data: action.payload,
 			};
 		}
+		case 'RECEIVE_MERGE_PROCUREMENTS': {
+			let stateData = { ...state }.data;
+
+			stateData.data = [...stateData.data, ...action.payload.data];
+			stateData.paging = action.payload.paging;
+
+			return {
+				...state,
+				isFetching: false,
+				data: stateData,
+			};
+		}
 		case 'CREATE_PROCUREMENT': {
 			let stateData = { ...state }.data;
 

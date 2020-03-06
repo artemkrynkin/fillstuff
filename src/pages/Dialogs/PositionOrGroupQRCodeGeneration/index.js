@@ -256,7 +256,7 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 									<FormControl fullWidth>
 										<Slider
 											disabled={isSubmitting}
-											defaultValue={QRCodeSize}
+											value={QRCodeSize}
 											getAriaValueText={value => `${value} см`}
 											onChange={this.setQRCodeSize}
 											aria-labelledby="discrete-slider-custom"

@@ -71,6 +71,7 @@ import {
 	faShoppingBasket as falShoppingBasket,
 	faCog as falCog,
 	faReceipt as falReceipt,
+	faInfoCircle as falInfoCircle,
 } from '@fortawesome/pro-light-svg-icons';
 
 import { faExclamationCircle as fadExclamationCircle } from '@fortawesome/pro-duotone-svg-icons';
@@ -148,6 +149,7 @@ library.add(
 	falUsers,
 	falCog,
 	falReceipt,
+	falInfoCircle,
 
 	// Duotone
 	fadExclamationCircle

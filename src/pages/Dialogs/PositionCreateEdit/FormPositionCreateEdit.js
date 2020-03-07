@@ -1,6 +1,4 @@
 import React from 'react';
-import validator from 'validator';
-
 import { Form, Field, FieldArray } from 'formik';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,7 +9,9 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
+import Tooltip from '@material-ui/core/Tooltip';
 import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
@@ -27,7 +27,6 @@ import Chips from 'src/components/Chips';
 
 import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
-import Tooltip from '@material-ui/core/Tooltip';
 
 const FormPositionCreateEdit = props => {
 	const {
@@ -80,7 +79,7 @@ const FormPositionCreateEdit = props => {
 							exclusive
 						>
 							{unitTypes.map(unitType => (
-								<ToggleButton key={unitType} value={unitType}>
+								<ToggleButton key={unitType} value={unitType} disabled={Boolean(type === 'edit' && values.activeReceipt)}>
 									{unitTypeTransform(unitType)}
 								</ToggleButton>
 							))}
@@ -108,7 +107,7 @@ const FormPositionCreateEdit = props => {
 							exclusive
 						>
 							{unitTypes.map(unitType => (
-								<ToggleButton key={unitType} value={unitType}>
+								<ToggleButton key={unitType} value={unitType} disabled={Boolean(type === 'edit' && values.activeReceipt)}>
 									{unitTypeTransform(unitType)}
 								</ToggleButton>
 							))}
@@ -116,8 +115,17 @@ const FormPositionCreateEdit = props => {
 					</Grid>
 				</Grid>
 
+				{Boolean(type === 'edit' && values.activeReceipt) ? (
+					<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" style={{ paddingLeft: 156 }} container>
+						<FontAwesomeIcon className={styles.infoIcon} icon={['fal', 'info-circle']} fixedWidth />
+						<Typography variant="caption">Единицу поступления/отпуска можно изменять до внесения первого поступления</Typography>
+					</Grid>
+				) : null}
+
 				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
-					<InputLabel style={{ minWidth: 146 }}>Отпуск позиции</InputLabel>
+					<InputLabel error={Boolean(touched.isFree && errors.isFree)} style={{ minWidth: 146 }}>
+						Отпуск позиции
+					</InputLabel>
 					<Grid>
 						<ToggleButtonGroup
 							value={values.isFree}
@@ -136,7 +144,7 @@ const FormPositionCreateEdit = props => {
 				</Grid>
 
 				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
-					<InputLabel error={Boolean(touched.minimumBalance && errors.minimumBalance)} style={{ minWidth: 146 }}>
+					<InputLabel error={Boolean(touched.minimumBalance && errors.minimumBalance)} style={{ width: 146 }}>
 						Минимальный остаток
 						<Tooltip title={<div style={{ maxWidth: 200 }}>текст который ничем не может помочь</div>} placement="bottom">
 							<div className={styles.helpIcon}>
@@ -144,20 +152,22 @@ const FormPositionCreateEdit = props => {
 							</div>
 						</Tooltip>
 					</InputLabel>
-					<Field
-						name="minimumBalance"
-						placeholder="0"
-						error={Boolean(touched.minimumBalance && errors.minimumBalance)}
-						helperText={(touched.minimumBalance && errors.minimumBalance) || ''}
-						as={TextField}
-						InputProps={{
-							inputComponent: NumberFormat,
-							inputProps: {
-								allowNegative: false,
-							},
-						}}
-						fullWidth
-					/>
+					<Grid>
+						<Field
+							name="minimumBalance"
+							placeholder="0"
+							error={Boolean(touched.minimumBalance && errors.minimumBalance)}
+							helperText={(touched.minimumBalance && errors.minimumBalance) || ''}
+							as={TextField}
+							InputProps={{
+								inputComponent: NumberFormat,
+								inputProps: {
+									allowNegative: false,
+								},
+							}}
+							style={{ width: 130 }}
+						/>
+					</Grid>
 				</Grid>
 
 				<Grid
@@ -168,7 +178,7 @@ const FormPositionCreateEdit = props => {
 					spacing={2}
 					container
 				>
-					<Grid className={stylesGlobal.formLabelControl} xs={shopLinkVisible ? 6 : 12} style={{ marginBottom: 0 }} item>
+					<Grid className={stylesGlobal.formLabelControl} xs={shopLinkVisible ? 7 : 12} style={{ marginBottom: 0 }} item>
 						<InputLabel error={Boolean(touched.shopName && errors.shopName)} style={{ display: 'inline-flex', minWidth: 146 }}>
 							Магазин / Ссылка
 						</InputLabel>
@@ -186,30 +196,8 @@ const FormPositionCreateEdit = props => {
 						/>
 					</Grid>
 					{shopLinkVisible ? (
-						<Grid className={stylesGlobal.formLabelControl} xs={6} style={{ marginBottom: 0 }} item>
-							<Field
-								name="shopLink"
-								as={TextField}
-								placeholder="Ссылка на товар"
-								autoFocus={type === 'create'}
-								style={{ width: 'calc(100% - 42px)' }}
-							/>
-							<div className={styles.externalLink}>
-								<IconButton size="small" disabled={!validator.isURL(values.shopLink)} disableRipple disableFocusRipple>
-									{validator.isURL(values.shopLink) ? (
-										<a
-											// eslint-disable-next-line
-											href={!~values.shopLink.search(/^http[s]?\:\/\//) ? `//${values.shopLink}` : `${values.shopLink}`}
-											target="_blank"
-											rel="noreferrer noopener"
-										>
-											<FontAwesomeIcon icon={['fal', 'external-link-square']} />
-										</a>
-									) : (
-										<FontAwesomeIcon icon={['fal', 'external-link-square']} />
-									)}
-								</IconButton>
-							</div>
+						<Grid className={stylesGlobal.formLabelControl} xs={5} style={{ marginBottom: 0 }} item>
+							<Field name="shopLink" as={TextField} placeholder="Ссылка на товар" autoFocus={type === 'create'} fullWidth />
 						</Grid>
 					) : null}
 				</Grid>

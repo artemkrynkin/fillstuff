@@ -12,6 +12,7 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { DialogActions } from 'src/components/Dialog';
 import NumberFormat from 'src/components/NumberFormat';
@@ -72,8 +73,8 @@ const FormPositionGroupCreateEditAdd = props => {
 				{type === 'create' || type === 'edit' ? (
 					<div>
 						<Grid className={stylesGlobal.formLabelControl} style={{ marginBottom: 12 }} wrap="nowrap" alignItems="flex-start" container>
-							<InputLabel error={Boolean(touched.name && errors.name)} style={{ minWidth: 100 }}>
-								Наименование
+							<InputLabel error={Boolean(touched.name && errors.name)} style={{ minWidth: 126 }}>
+								Название
 							</InputLabel>
 							<Field
 								name="name"
@@ -88,16 +89,21 @@ const FormPositionGroupCreateEditAdd = props => {
 							/>
 						</Grid>
 
-						<Grid className={stylesGlobal.formLabelControl} style={{ marginBottom: 12, paddingLeft: 110 }}>
+						<Grid className={stylesGlobal.formLabelControl} style={{ marginBottom: 12, paddingLeft: 138 }}>
 							<Field type="checkbox" name="dividedPositions" Label={{ label: 'Считать позиции раздельно' }} as={CheckboxWithLabel} />
 						</Grid>
 
 						{!values.dividedPositions ? (
 							<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
-								<InputLabel error={Boolean(touched.minimumBalance && errors.minimumBalance)} style={{ minWidth: 100 }}>
-									Мин. остаток
+								<InputLabel error={Boolean(touched.minimumBalance && errors.minimumBalance)} style={{ width: 126 }}>
+									Минимальный остаток
+									<Tooltip title={<div style={{ maxWidth: 200 }}>текст который ничем не может помочь</div>} placement="bottom">
+										<div className={styles.helpIcon}>
+											<FontAwesomeIcon icon={['fal', 'question-circle']} fixedWidth />
+										</div>
+									</Tooltip>
 								</InputLabel>
-								<FormControl fullWidth>
+								<FormControl>
 									<Field
 										name="minimumBalance"
 										placeholder="0"
@@ -110,7 +116,7 @@ const FormPositionGroupCreateEditAdd = props => {
 												allowNegative: false,
 											},
 										}}
-										fullWidth
+										style={{ width: 130 }}
 									/>
 								</FormControl>
 							</Grid>
@@ -120,7 +126,7 @@ const FormPositionGroupCreateEditAdd = props => {
 
 				{type === 'create' || type === 'add' ? (
 					<Grid className={styles.selectPositions} direction="column" wrap="nowrap" container>
-						<InputLabel error={typeof errors.positions === 'string'} style={{ minWidth: 151 }}>
+						<InputLabel error={typeof errors.positions === 'string'}>
 							{typeof errors.positions === 'string' ? errors.positions : 'Выберите позиции'}
 						</InputLabel>
 						<div className={styles.searchTextFieldContainer}>

@@ -170,14 +170,16 @@ positionsRouter.post(
 		const position = await Position.findById(positionId).catch(err => next({ code: 2, err }));
 
 		position.name = positionEdited.name;
-		position.unitReceipt = positionEdited.unitReceipt;
-		position.unitRelease = positionEdited.unitRelease;
 		position.minimumBalance = positionEdited.minimumBalance;
 		position.isFree = positionEdited.isFree;
-		position.extraCharge = positionEdited.extraCharge;
 		position.shopName = positionEdited.shopName;
 		position.shopLink = positionEdited.shopLink;
 		position.characteristics = positionEdited.characteristics;
+
+		if (!position.activeReceipt) {
+			position.unitReceipt = positionEdited.unitReceipt;
+			position.unitRelease = positionEdited.unitRelease;
+		}
 
 		const positionErr = position.validateSync();
 

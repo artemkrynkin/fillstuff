@@ -103,32 +103,24 @@ class DialogPositionCreateEdit extends Component {
 
 		if (type === 'edit' && !selectedPosition) return null;
 
-		let initialValues =
-			type === 'create'
-				? {
-						name: '',
-						divided: true,
-						unitReceipt: '',
-						unitRelease: '',
-						minimumBalance: '',
-						isFree: false,
-						shopName: '',
-						shopLink: '',
-						characteristics: [],
-						characteristicTemp: {
-							type: '',
-							value: '',
-							valueTemp: '',
-						},
-				  }
-				: {
-						characteristicTemp: {
-							type: '',
-							value: '',
-							valueTemp: '',
-						},
-						...selectedPosition,
-				  };
+		let initialValues = {
+			name: '',
+			divided: true,
+			unitReceipt: '',
+			unitRelease: '',
+			minimumBalance: '',
+			isFree: '',
+			shopName: '',
+			shopLink: '',
+			characteristics: [],
+			characteristicTemp: {
+				type: '',
+				value: '',
+				valueTemp: '',
+			},
+		};
+
+		if (selectedPosition) initialValues = { ...initialValues, ...selectedPosition };
 
 		return (
 			<DialogSticky

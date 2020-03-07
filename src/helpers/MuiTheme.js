@@ -534,6 +534,10 @@ export const BliksideTheme = createMuiTheme({
 						backgroundColor: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg300)}, 0.15)`,
 					},
 				},
+				'&$disabled': {
+					color: theme.blueGrey.cBg400,
+					borderColor: theme.blueGrey.cBg50,
+				},
 			},
 			sizeSmall: {
 				height: 36,

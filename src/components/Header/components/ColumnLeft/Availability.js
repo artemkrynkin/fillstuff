@@ -28,8 +28,6 @@ const Availability = props => {
 		setDialogPositionCreate(true);
 	};
 
-	onOpenDialogPositionCreate();
-
 	const onCloseDialogPositionCreate = () => setDialogPositionCreate(false);
 
 	const onOpenDialogPositionGroupCreate = () => setDialogPositionGroupCreate(true);

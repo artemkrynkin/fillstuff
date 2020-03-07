@@ -69,16 +69,17 @@ class DialogInvoicePaymentCreate extends Component {
 									</Grid>
 									<Grid xs={6} item>
 										<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
-											<div className={styles.totalPrice}>
-												К оплате: <Money value={selectedInvoice.amount - selectedInvoice.paymentAmountDue} />
+											<div className={styles.indicatorsTitle}>
+												<Money value={selectedInvoice.amount - selectedInvoice.paymentAmountDue} />
 											</div>
+											<div className={styles.indicatorsSubtitle}>К оплате</div>
 										</Grid>
 									</Grid>
 								</Grid>
 								<Grid className={stylesGlobal.formLabelControl}>
 									<Field
 										name="amount"
-										label="Сумма к оплате"
+										label="Сумма платежа"
 										error={Boolean(touched.amount && errors.amount)}
 										helperText={(touched.amount && errors.amount) || ''}
 										as={TextField}
@@ -86,6 +87,7 @@ class DialogInvoicePaymentCreate extends Component {
 											inputComponent: NumberFormat,
 											inputProps: {
 												...moneyInputFormatProps,
+												decimalScale: 0,
 											},
 										}}
 										fullWidth

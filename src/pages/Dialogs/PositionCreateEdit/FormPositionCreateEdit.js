@@ -7,19 +7,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
 import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
 import translitRu from 'shared/translit/ru';
 import { unitTypes, unitTypeTransform, characteristicTypeTransform } from 'shared/checkPositionAndReceipt';
 
 import { onAddCharacteristicInPosition, checkCharacteristicsOnAbsenceInPosition } from 'src/helpers/positionUtils';
 
-import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
 import { DialogActions } from 'src/components/Dialog';
 import NumberFormat from 'src/components/NumberFormat';
 import { SelectAutocompleteCreate } from 'src/components/selectAutocomplete';
@@ -27,7 +27,7 @@ import Chips from 'src/components/Chips';
 
 import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
-import InputAdornment from '@material-ui/core/InputAdornment';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const FormPositionCreateEdit = props => {
 	const {
@@ -63,33 +63,29 @@ const FormPositionCreateEdit = props => {
 				</Grid>
 
 				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
-					<InputLabel error={Boolean(touched.unitReceipt && errors.unitReceipt)} style={{ minWidth: 146 }}>
+					<InputLabel error={Boolean(touched.unitReceipt && errors.unitReceipt)} style={{ width: 146 }}>
 						Единица поступления
 					</InputLabel>
-					<FormControl fullWidth>
-						<Field
-							name="unitReceipt"
-							as={Select}
-							inputProps={{
-								onChange: ({ target: { value } }) => {
-									setFieldValue('unitReceipt', value);
+					<Grid>
+						<ToggleButtonGroup
+							value={values.unitReceipt}
+							onChange={(event, value) => {
+								if (value === null) return;
 
-									if (value === 'pce') setFieldValue('unitRelease', value);
-								},
+								setFieldValue('unitReceipt', value);
+
+								if (value === 'pce') setFieldValue('unitRelease', 'pce');
 							}}
-							error={Boolean(touched.unitReceipt && errors.unitReceipt)}
+							size="small"
+							exclusive
 						>
-							<MenuItem value="" disabled>
-								Выберите
-							</MenuItem>
-							{unitTypes.map((unitType, index) => (
-								<MenuItem key={index} value={unitType}>
+							{unitTypes.map(unitType => (
+								<ToggleButton key={unitType} value={unitType}>
 									{unitTypeTransform(unitType)}
-								</MenuItem>
+								</ToggleButton>
 							))}
-						</Field>
-						{touched.unitReceipt && errors.unitReceipt ? <FormHelperText error>{errors.unitReceipt}</FormHelperText> : null}
-					</FormControl>
+						</ToggleButtonGroup>
+					</Grid>
 				</Grid>
 
 				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
@@ -97,39 +93,56 @@ const FormPositionCreateEdit = props => {
 						Единица отпуска
 					</InputLabel>
 					<Grid>
-						<FormControl fullWidth>
-							<Field
-								name="unitRelease"
-								as={Select}
-								inputProps={{
-									onChange: ({ target: { value } }) => {
-										setFieldValue('unitRelease', value);
+						<ToggleButtonGroup
+							value={values.unitRelease}
+							onChange={(event, value) => {
+								if (value === null) return;
 
-										if (value === 'nmp') setFieldValue('unitReceipt', value);
-									},
-								}}
-								error={Boolean(touched.unitRelease && errors.unitRelease)}
-							>
-								<MenuItem value="" disabled>
-									Выберите
-								</MenuItem>
-								{unitTypes.map((unitType, index) => (
-									<MenuItem key={index} value={unitType}>
-										{unitTypeTransform(unitType)}
-									</MenuItem>
-								))}
-							</Field>
-							{touched.unitRelease && errors.unitRelease ? <FormHelperText error>{errors.unitRelease}</FormHelperText> : null}
-						</FormControl>
-						<Field type="checkbox" name="isFree" Label={{ label: 'Предоставляется студией бесплатно' }} as={CheckboxWithLabel} />
+								setFieldValue('unitRelease', value);
+
+								if (value === 'nmp') {
+									setFieldValue('unitReceipt', 'nmp');
+								}
+							}}
+							size="small"
+							exclusive
+						>
+							{unitTypes.map(unitType => (
+								<ToggleButton key={unitType} value={unitType}>
+									{unitTypeTransform(unitType)}
+								</ToggleButton>
+							))}
+						</ToggleButtonGroup>
+					</Grid>
+				</Grid>
+
+				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
+					<InputLabel style={{ minWidth: 146 }}>Отпуск позиции</InputLabel>
+					<Grid>
+						<ToggleButtonGroup
+							value={values.isFree}
+							onChange={(event, value) => {
+								if (value === null) return;
+
+								setFieldValue('isFree', value);
+							}}
+							size="small"
+							exclusive
+						>
+							<ToggleButton value={true}>Бесплатный</ToggleButton>
+							<ToggleButton value={false}>Платный</ToggleButton>
+						</ToggleButtonGroup>
 					</Grid>
 				</Grid>
 
 				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 					<InputLabel error={Boolean(touched.minimumBalance && errors.minimumBalance)} style={{ minWidth: 146 }}>
-						Мин. остаток
-						<br />
-						{`в ${values.unitReceipt === 'nmp' && values.unitRelease !== 'pce' ? 'упаковках' : 'штуках'}`}
+						Минимальный остаток
+						<Tooltip title={<div style={{ maxWidth: 200 }}>текст который ничем не может помочь</div>} placement="bottom">
+							<div className={styles.helpIcon}>
+								<FontAwesomeIcon icon={['fal', 'question-circle']} fixedWidth />
+							</div>
+						</Tooltip>
 					</InputLabel>
 					<Field
 						name="minimumBalance"
@@ -146,34 +159,6 @@ const FormPositionCreateEdit = props => {
 						fullWidth
 					/>
 				</Grid>
-
-				{!values.isFree ? (
-					<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
-						<InputLabel error={Boolean(touched.extraCharge && errors.extraCharge)} style={{ minWidth: 146 }}>
-							Процент студии
-						</InputLabel>
-						<Field
-							name="extraCharge"
-							placeholder="0"
-							error={Boolean(touched.extraCharge && errors.extraCharge)}
-							helperText={(touched.extraCharge && errors.extraCharge) || ''}
-							as={TextField}
-							InputProps={{
-								endAdornment: <InputAdornment position="end">%</InputAdornment>,
-								inputComponent: NumberFormat,
-								inputProps: {
-									decimalScale: 0,
-									allowNegative: false,
-									isAllowed: values => {
-										const { formattedValue, floatValue } = values;
-										return formattedValue === '' || floatValue <= 1000;
-									},
-								},
-							}}
-							fullWidth
-						/>
-					</Grid>
-				) : null}
 
 				<Grid
 					className={stylesGlobal.formLabelControl}
@@ -294,7 +279,7 @@ const FormPositionCreateEdit = props => {
 									</Grid>
 
 									<Grid xs={6} item>
-										<FormControl style={{ width: 'calc(100% - 42px)' }}>
+										<FormControl style={{ width: 'calc(100% - 42px)', zIndex: 1 }}>
 											<Field
 												name="characteristicTemp.value"
 												component={SelectAutocompleteCreate}
@@ -330,6 +315,13 @@ const FormPositionCreateEdit = props => {
 														setFieldValue
 													)
 												}
+												onKeyDown={event => {
+													if (event.keyCode === 13 && values.characteristicTemp.type && values.characteristicTemp.value) {
+														onAddCharacteristicInPosition(values, setFieldValue, arrayHelpersCharacteristics);
+													} else if (event.keyCode === 13 && !values.characteristicTemp.valueTemp) {
+														return event.preventDefault();
+													}
+												}}
 												menuPlacement="auto"
 												menuPosition="fixed"
 												placeholder="Выберите или создайте"

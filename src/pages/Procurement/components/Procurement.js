@@ -67,7 +67,7 @@ class Procurement extends Component {
 							<div className={styles.indicatorsTitle}>
 								<Money value={procurement.totalPrice} />
 							</div>
-							<Grid justify="flex-end" container>
+							<Grid className={styles.indicatorsDetails} justify="flex-end" container>
 								<div>
 									<div className={styles.indicatorsSubtitle2}>
 										<Money value={procurement.costDelivery} />

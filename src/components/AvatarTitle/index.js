@@ -42,7 +42,7 @@ AvatarTitle.defaultProps = {
 };
 
 AvatarTitle.propTypes = {
-	imageSrc: PropTypes.oneOf(PropTypes.string, PropTypes.object),
+	imageSrc: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
 	title: PropTypes.string,
 };
 

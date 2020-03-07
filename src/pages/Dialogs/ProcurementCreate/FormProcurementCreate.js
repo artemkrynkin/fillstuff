@@ -219,7 +219,7 @@ const FormProcurementCreate = props => {
 									}
 									placement="bottom-end"
 								>
-									<div className={styles.circleHelp}>
+									<div className={styles.helpIcon}>
 										<FontAwesomeIcon icon={['fal', 'question-circle']} fixedWidth />
 									</div>
 								</Tooltip>

@@ -35,7 +35,7 @@
   color: var(--c-hex-bg-300);
   font-size: 12px;
   font-weight: 600;
-  margin-top: 5px;
+  margin-top: 7px;
   text-align: right;
 }
 
@@ -44,6 +44,10 @@
   font-size: 12px;
   font-weight: 700;
   text-align: right;
+}
+
+.indicatorsDetails {
+  margin-top: 20px;
 }
 
 .receipts {

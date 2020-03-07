@@ -42,6 +42,9 @@ export const BliksideTheme = createMuiTheme({
 		MuiButtonGroup: {
 			disableRipple: true,
 		},
+		MuiToggleButton: {
+			disableRipple: true,
+		},
 		MuiTooltip: {
 			enterDelay: 50,
 			leaveDelay: 100,
@@ -472,6 +475,7 @@ export const BliksideTheme = createMuiTheme({
 			},
 			outlined: {
 				color: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg100)}, 0.8)`,
+				borderColor: theme.blueGrey.cBg100,
 				'&:hover': {
 					backgroundColor: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg300)}, 0.08)`,
 				},
@@ -511,6 +515,28 @@ export const BliksideTheme = createMuiTheme({
 						`0 1px 10px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.12)`,
 					].join(),
 				},
+			},
+		},
+		MuiToggleButton: {
+			root: {
+				color: theme.blueGrey.cBg400,
+				border: `1px solid ${theme.blueGrey.cBg100}`,
+				transition:
+					'background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+				textTransform: 'initial',
+				'&:hover': {
+					backgroundColor: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg300)}, 0.08)`,
+				},
+				'&$selected': {
+					color: theme.blueGrey.cBg500,
+					backgroundColor: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg300)}, 0.15)`,
+					'&:hover': {
+						backgroundColor: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg300)}, 0.15)`,
+					},
+				},
+			},
+			sizeSmall: {
+				height: 36,
 			},
 		},
 		MuiInput: {

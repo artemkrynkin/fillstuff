@@ -2,52 +2,17 @@
   margin-bottom: 20px;
 }
 
-.user {
-  align-items: center;
-  display: flex;
-}
-
-.userPhoto {
-  background-color: var(--c-hex-br-5);
-  height: 28px;
-  margin-right: 10px;
-  width: 28px;
-}
-
-.userIcon {
-  align-items: flex-end;
-  justify-content: center;
-  border: 2px solid var(--c-hex-bg-100);
-  border-radius: 50%;
-  display: flex;
-  height: 100%;
-  overflow: hidden;
-  width: 100%;
-}
-
-.userPhoto svg {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 20px;
-}
-
-.userName {
-  color: var(--c-hex-bg-500);
-  font-size: 13px;
-  font-weight: 600;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.totalPrice {
-  color: var(--c-hex-bg-500);
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.totalPrice span {
+.indicatorsTitle {
   color: var(--c-hex-bg-700);
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
+  text-align: right;
+}
+
+.indicatorsSubtitle {
+  color: var(--c-hex-bg-300);
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 7px;
+  text-align: right;
 }

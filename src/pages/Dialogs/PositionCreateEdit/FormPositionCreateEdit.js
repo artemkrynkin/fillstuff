@@ -11,6 +11,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
 import Tooltip from '@material-ui/core/Tooltip';
 import TextField from '@material-ui/core/TextField';
+import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
@@ -24,6 +25,7 @@ import { DialogActions } from 'src/components/Dialog';
 import NumberFormat from 'src/components/NumberFormat';
 import { SelectAutocompleteCreate } from 'src/components/selectAutocomplete';
 import Chips from 'src/components/Chips';
+import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
 
 import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
@@ -36,10 +38,13 @@ const FormPositionCreateEdit = props => {
 		currentStudioId,
 		characteristics,
 		type,
+		showCheckboxCreationReceipt,
 		shopLinkVisible,
 		isLoadingCharacteristics,
 		formikProps: { errors, isSubmitting, setFieldValue, touched, values },
 	} = props;
+
+	const isEditActiveReceipt = Boolean(type === 'edit' && values.activeReceipt);
 
 	return (
 		<Form>
@@ -53,6 +58,7 @@ const FormPositionCreateEdit = props => {
 						error={Boolean(touched.name && errors.name)}
 						helperText={(touched.name && errors.name) || ''}
 						as={TextField}
+						placeholder="Держатели одноразовые, перчатки, салфетки, ватные диски…"
 						inputProps={{
 							maxLength: 60,
 						}}
@@ -66,24 +72,43 @@ const FormPositionCreateEdit = props => {
 						Единица поступления
 					</InputLabel>
 					<Grid>
-						<ToggleButtonGroup
-							value={values.unitReceipt}
-							onChange={(event, value) => {
-								if (value === null) return;
+						<Grid alignItems="center" container>
+							{!isEditActiveReceipt ? (
+								<ToggleButtonGroup
+									value={values.unitReceipt}
+									onChange={(event, value) => {
+										if (value === null) return;
 
-								setFieldValue('unitReceipt', value);
+										setFieldValue('unitReceipt', value);
 
-								if (value === 'pce') setFieldValue('unitRelease', 'pce');
-							}}
-							size="small"
-							exclusive
-						>
-							{unitTypes.map(unitType => (
-								<ToggleButton key={unitType} value={unitType} disabled={Boolean(type === 'edit' && values.activeReceipt)}>
-									{unitTypeTransform(unitType)}
-								</ToggleButton>
-							))}
-						</ToggleButtonGroup>
+										if (value === 'pce') setFieldValue('unitRelease', 'pce');
+									}}
+									size="small"
+									exclusive
+								>
+									{unitTypes.map(unitType => (
+										<ToggleButton key={unitType} value={unitType} disabled={isEditActiveReceipt}>
+											{unitTypeTransform(unitType)}
+										</ToggleButton>
+									))}
+								</ToggleButtonGroup>
+							) : (
+								<Tooltip
+									title={
+										<div style={{ maxWidth: 200, textAlign: 'center' }}>Можно изменять только до&nbsp;внесения первого поступления</div>
+									}
+									placement="bottom"
+								>
+									<ToggleButtonGroup value={values.unitReceipt} size="small" exclusive>
+										{unitTypes.map(unitType => (
+											<ToggleButton key={unitType} value={unitType} disabled={true}>
+												{unitTypeTransform(unitType)}
+											</ToggleButton>
+										))}
+									</ToggleButtonGroup>
+								</Tooltip>
+							)}
+						</Grid>
 					</Grid>
 				</Grid>
 
@@ -92,83 +117,138 @@ const FormPositionCreateEdit = props => {
 						Единица отпуска
 					</InputLabel>
 					<Grid>
-						<ToggleButtonGroup
-							value={values.unitRelease}
-							onChange={(event, value) => {
-								if (value === null) return;
+						<Grid alignItems="center" container>
+							{!isEditActiveReceipt ? (
+								<ToggleButtonGroup
+									value={values.unitRelease}
+									onChange={(event, value) => {
+										if (value === null) return;
 
-								setFieldValue('unitRelease', value);
+										setFieldValue('unitRelease', value);
 
-								if (value === 'nmp') {
-									setFieldValue('unitReceipt', 'nmp');
-								}
-							}}
-							size="small"
-							exclusive
-						>
-							{unitTypes.map(unitType => (
-								<ToggleButton key={unitType} value={unitType} disabled={Boolean(type === 'edit' && values.activeReceipt)}>
-									{unitTypeTransform(unitType)}
-								</ToggleButton>
-							))}
-						</ToggleButtonGroup>
+										if (value === 'nmp') {
+											setFieldValue('unitReceipt', 'nmp');
+										}
+									}}
+									size="small"
+									exclusive
+								>
+									{unitTypes.map(unitType => (
+										<ToggleButton key={unitType} value={unitType}>
+											{unitTypeTransform(unitType)}
+										</ToggleButton>
+									))}
+								</ToggleButtonGroup>
+							) : (
+								<Tooltip
+									title={
+										<div style={{ maxWidth: 200, textAlign: 'center' }}>Можно изменять только до&nbsp;внесения первого поступления</div>
+									}
+									placement="bottom"
+								>
+									<ToggleButtonGroup value={values.unitRelease} size="small" exclusive>
+										{unitTypes.map(unitType => (
+											<ToggleButton key={unitType} value={unitType} disabled={true}>
+												{unitTypeTransform(unitType)}
+											</ToggleButton>
+										))}
+									</ToggleButtonGroup>
+								</Tooltip>
+							)}
+						</Grid>
 					</Grid>
 				</Grid>
 
-				{Boolean(type === 'edit' && values.activeReceipt) ? (
-					<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" style={{ paddingLeft: 156 }} container>
-						<FontAwesomeIcon className={styles.infoIcon} icon={['fal', 'info-circle']} fixedWidth />
-						<Typography variant="caption">Единицу поступления/отпуска можно изменять до внесения первого поступления</Typography>
-					</Grid>
-				) : null}
-
 				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 					<InputLabel error={Boolean(touched.isFree && errors.isFree)} style={{ minWidth: 146 }}>
-						Отпуск позиции
+						Вид реализации
 					</InputLabel>
 					<Grid>
-						<ToggleButtonGroup
-							value={values.isFree}
-							onChange={(event, value) => {
-								if (value === null) return;
+						<Grid alignItems="center" container>
+							{!isEditActiveReceipt ? (
+								<ToggleButtonGroup
+									value={values.isFree}
+									onChange={(event, value) => {
+										if (value === null) return;
 
-								setFieldValue('isFree', value);
-							}}
-							size="small"
-							exclusive
-						>
-							<ToggleButton value={true}>Бесплатный</ToggleButton>
-							<ToggleButton value={false}>Платный</ToggleButton>
-						</ToggleButtonGroup>
+										setFieldValue('isFree', value);
+									}}
+									size="small"
+									exclusive
+								>
+									<ToggleButton value={true}>Бесплатный</ToggleButton>
+									<ToggleButton value={false}>Платный</ToggleButton>
+								</ToggleButtonGroup>
+							) : (
+								<Tooltip
+									title={
+										<div style={{ maxWidth: 200, textAlign: 'center' }}>Можно изменять только до&nbsp;внесения первого поступления</div>
+									}
+									placement="bottom"
+								>
+									<ToggleButtonGroup value={values.isFree} size="small" exclusive>
+										<ToggleButton value={true} disabled={true}>
+											Бесплатный
+										</ToggleButton>
+										<ToggleButton value={false} disabled={true}>
+											Платный
+										</ToggleButton>
+									</ToggleButtonGroup>
+								</Tooltip>
+							)}
+						</Grid>
 					</Grid>
 				</Grid>
 
 				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 					<InputLabel error={Boolean(touched.minimumBalance && errors.minimumBalance)} style={{ width: 146 }}>
 						Минимальный остаток
+					</InputLabel>
+					<Grid>
+						<Grid alignItems="center" container>
+							<Field
+								name="minimumBalance"
+								placeholder="0"
+								error={Boolean(touched.minimumBalance && errors.minimumBalance)}
+								helperText={(touched.minimumBalance && errors.minimumBalance) || ''}
+								as={TextField}
+								InputProps={{
+									inputComponent: NumberFormat,
+									inputProps: {
+										allowNegative: false,
+									},
+								}}
+							/>
+							<Tooltip title={<div style={{ maxWidth: 200 }}>текст который ничем не может помочь</div>} placement="bottom">
+								<div className={styles.helpIcon} style={{ marginLeft: 10 }}>
+									<FontAwesomeIcon icon={['fal', 'question-circle']} fixedWidth />
+								</div>
+							</Tooltip>
+						</Grid>
+					</Grid>
+				</Grid>
+
+				{type === 'create' && showCheckboxCreationReceipt ? (
+					<Grid alignItems="center" style={{ margin: '-2px 0 0', paddingLeft: 157 }} container>
+						<Field
+							type="checkbox"
+							name="createReceiptAfterPositionCreate"
+							Label={{ label: 'Создать поступление после позиции' }}
+							as={CheckboxWithLabel}
+						/>
 						<Tooltip title={<div style={{ maxWidth: 200 }}>текст который ничем не может помочь</div>} placement="bottom">
-							<div className={styles.helpIcon}>
+							<div className={styles.helpIcon} style={{ marginLeft: 10 }}>
 								<FontAwesomeIcon icon={['fal', 'question-circle']} fixedWidth />
 							</div>
 						</Tooltip>
-					</InputLabel>
-					<Grid>
-						<Field
-							name="minimumBalance"
-							placeholder="0"
-							error={Boolean(touched.minimumBalance && errors.minimumBalance)}
-							helperText={(touched.minimumBalance && errors.minimumBalance) || ''}
-							as={TextField}
-							InputProps={{
-								inputComponent: NumberFormat,
-								inputProps: {
-									allowNegative: false,
-								},
-							}}
-							style={{ width: 130 }}
-						/>
 					</Grid>
-				</Grid>
+				) : null}
+
+				<Divider style={{ margin: '8px 0 20px' }} />
+
+				<Typography variant="h6" gutterBottom>
+					Информация для закупок
+				</Typography>
 
 				<Grid
 					className={stylesGlobal.formLabelControl}
@@ -179,13 +259,9 @@ const FormPositionCreateEdit = props => {
 					container
 				>
 					<Grid className={stylesGlobal.formLabelControl} xs={shopLinkVisible ? 7 : 12} style={{ marginBottom: 0 }} item>
-						<InputLabel error={Boolean(touched.shopName && errors.shopName)} style={{ display: 'inline-flex', minWidth: 146 }}>
-							Магазин / Ссылка
-						</InputLabel>
+						<InputLabel style={{ display: 'inline-flex', minWidth: 146 }}>Магазин / Ссылка</InputLabel>
 						<Field
 							name="shopName"
-							error={Boolean(touched.shopName && errors.shopName)}
-							helperText={(touched.shopName && errors.shopName) || ''}
 							as={TextField}
 							placeholder={shopLinkVisible ? 'Название' : 'Название магазина или ссылка на товар'}
 							inputProps={{
@@ -267,7 +343,7 @@ const FormPositionCreateEdit = props => {
 									</Grid>
 
 									<Grid xs={6} item>
-										<FormControl style={{ width: 'calc(100% - 42px)', zIndex: 1 }}>
+										<FormControl style={{ width: 'calc(100% - 42px)', zIndex: 'initial' }}>
 											<Field
 												name="characteristicTemp.value"
 												component={SelectAutocompleteCreate}

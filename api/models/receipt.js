@@ -124,33 +124,33 @@ let Receipt = new Schema({
 		set: value => formatNumber(value),
 	},
 	// Наценка в процентах
-	extraChargePercent: {
+	markupPercent: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,
 		set: value => formatNumber(value, { fractionDigits: 0 }),
 	},
 	// Наценка
-	extraCharge: {
+	markup: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,
 		set: value => formatNumber(value),
 	},
-	unitExtraCharge: {
+	unitMarkup: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,
 		set: value => formatNumber(value),
 	},
 	// Ручная наценка
-	manualExtraCharge: {
+	manualMarkup: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,
 		set: value => formatNumber(value),
 	},
-	unitManualExtraCharge: {
+	unitManualMarkup: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,

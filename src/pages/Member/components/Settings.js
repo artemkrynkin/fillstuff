@@ -73,8 +73,8 @@ const Settings = props => {
 									control={
 										<Switch
 											checked={false}
-											// onChange={() => onToggleSettings('extraCharge')}
-											value="extraCharge"
+											// onChange={() => onToggleSettings('123')}
+											value="123"
 											color="primary"
 											disableRipple
 										/>
@@ -86,9 +86,9 @@ const Settings = props => {
 								<FormControlLabel
 									control={
 										<Switch
-											checked={member.extraCharge}
-											onChange={() => onToggleSettings('extraCharge')}
-											value="extraCharge"
+											checked={member.markupPosition}
+											onChange={() => onToggleSettings('markupPosition')}
+											value="markupPosition"
 											color="primary"
 											disableRipple
 										/>

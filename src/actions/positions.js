@@ -26,6 +26,30 @@ export const getPositions = ({ showRequest } = { showRequest: true }) => {
 	};
 };
 
+export const getPosition = ({ params }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+
+		return await axios
+			.post('/api/getPosition', {
+				studioId,
+				memberId,
+				params,
+			})
+			.then(response => {
+				const { data: position } = response;
+
+				return Promise.resolve({ status: 'success', data: position });
+			})
+			.catch(error => {
+				console.error(error.response);
+
+				return Promise.resolve({ status: 'error' });
+			});
+	};
+};
+
 export const createPosition = ({ data }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
@@ -57,21 +81,28 @@ export const createPosition = ({ data }) => {
 	};
 };
 
-export const createPositionReceipt = ({ data }) => {
+export const editPosition = ({ params, data }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
+		const { positionId } = params;
 
 		return await axios
-			.post('/api/createPositionWithReceipt', {
+			.post('/api/editPosition', {
 				studioId,
 				memberId,
+				params,
 				data,
 			})
 			.then(response => {
+				const position = response.data;
+
 				dispatch({
-					type: 'CREATE_POSITION',
-					payload: response.data,
+					type: 'EDIT_POSITION',
+					payload: {
+						positionId,
+						position,
+					},
 				});
 
 				return Promise.resolve({ status: 'success' });
@@ -88,26 +119,21 @@ export const createPositionReceipt = ({ data }) => {
 	};
 };
 
-export const editPosition = ({ params, data }) => {
+export const createPositionReceipt = ({ data }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
-		const { positionId } = params;
 
 		return await axios
-			.post('/api/editPosition', {
+			.post('/api/createPositionWithReceipt', {
 				studioId,
 				memberId,
-				params,
 				data,
 			})
 			.then(response => {
 				dispatch({
-					type: 'EDIT_POSITION',
-					payload: {
-						positionId,
-						position: response.data,
-					},
+					type: 'CREATE_POSITION',
+					payload: response.data,
 				});
 
 				return Promise.resolve({ status: 'success' });
@@ -160,38 +186,41 @@ export const editPositionReceipt = ({ params, data }) => {
 	};
 };
 
-export const addQuantityInPosition = ({ params, data }) => {
+export const archivePosition = ({ params, data }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
 		const { positionId } = params;
+		const { positionGroupId } = data;
 
 		return await axios
-			.post('/api/positionReceiptAddQuantity', {
+			.post('/api/archivePosition', {
 				studioId,
 				memberId,
 				params,
-				data,
 			})
 			.then(response => {
-				dispatch({
-					type: 'EDIT_POSITION',
-					payload: {
-						positionId,
-						position: response.data,
-					},
-				});
+				if (!response.data.code) {
+					const { remainingPositionId } = response.data;
 
-				return Promise.resolve({ status: 'success' });
-			})
-			.catch(error => {
-				if (error.response) {
-					return Promise.resolve({ status: 'error', data: error.response.data });
+					dispatch({
+						type: 'ARCHIVE_POSITION',
+						payload: {
+							positionGroupId,
+							positionId,
+							remainingPositionId,
+						},
+					});
+
+					return Promise.resolve({ status: 'success' });
 				} else {
-					console.error(error);
-
 					return Promise.resolve({ status: 'error' });
 				}
+			})
+			.catch(error => {
+				console.error(error);
+
+				return Promise.resolve({ status: 'error' });
 			});
 	};
 };

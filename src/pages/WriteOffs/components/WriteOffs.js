@@ -123,7 +123,7 @@ class WriteOffs extends Component {
 					) : writeOffs.paging.totalCount && !writeOffs.data.length ? (
 						<div className={styles.none}>Ничего не найдено</div>
 					) : (
-						<div className={styles.none}>Еще не списано ни одной позиции.</div>
+						<div className={styles.none}>Еще не списано ни одной позиции</div>
 					)
 				) : null}
 

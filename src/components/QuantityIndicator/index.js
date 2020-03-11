@@ -2,12 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ClassNames from 'classnames';
 
+import { declensionNumber } from 'src/helpers/utils';
+
 import styles from './index.module.css';
 
 const qiClasses = dividedPositions =>
 	ClassNames({
 		[styles.disappearing]: dividedPositions,
 	});
+
+const qiTextClasses = ClassNames({
+	[styles.minimumBalance]: true,
+	[styles.circleText]: true,
+});
 
 const qiCircleClasses = (quantity, minimumBalance) =>
 	ClassNames({
@@ -45,9 +52,20 @@ const QuantityIndicator = props => {
 		const unitReleaseGroupTransform = unitReleaseGroup === 'pce' ? 'шт.' : unitReleaseGroup === 'nmp' ? 'уп.' : 'ед.';
 
 		const positionExpiring = positions.length ? positions.slice(0).sort(compareQuantity)[0] : undefined;
-		const receiptExpiringQuantity = positionExpiring
-			? positionExpiring.receipts.reduce((sum, receipt) => sum + receipt.current.quantity, 0)
-			: undefined;
+		const receiptExpiring =
+			positionExpiring &&
+			positionExpiring.receipts.reduce(
+				(indicators, receipt) => {
+					indicators.quantity += receipt.current.quantity;
+					indicators.positions += 1;
+
+					return indicators;
+				},
+				{
+					quantity: 0,
+					positions: 0,
+				}
+			);
 
 		return (
 			<div className={qiClasses(dividedPositions)}>
@@ -60,7 +78,19 @@ const QuantityIndicator = props => {
 						<span className={qiCircleClasses(quantity, minimumBalance)} />
 					</div>
 				) : (
-					<span className={qiCircleClasses(receiptExpiringQuantity, positionExpiring.minimumBalance)} />
+					<div>
+						{(receiptExpiring.quantity / positionExpiring.minimumBalance) * 100 > 100 &&
+						(receiptExpiring.quantity / positionExpiring.minimumBalance) * 100 <= 150 ? (
+							<span className={qiTextClasses} style={{ marginLeft: 5 }}>
+								{declensionNumber(
+									receiptExpiring.positions,
+									['Одна из позиций заканчивается', 'Две позиции заканчиваются', 'Несколько позиций заканчиваются'],
+									false
+								)}
+							</span>
+						) : null}
+						<span className={qiCircleClasses(receiptExpiring.quantity, positionExpiring.minimumBalance)} />
+					</div>
 				)}
 			</div>
 		);

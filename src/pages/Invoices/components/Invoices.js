@@ -127,7 +127,7 @@ class Invoices extends Component {
 					) : invoiceData.paging.totalCount && !invoiceData.paging.totalDocs ? (
 						<div className={styles.none}>Ничего не найдено</div>
 					) : (
-						<div className={styles.none}>Еще не выставлено ни одного счета.</div>
+						<div className={styles.none}>Еще не выставлено ни одного счета</div>
 					)
 				) : isLoadingInvoices ? (
 					<div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />

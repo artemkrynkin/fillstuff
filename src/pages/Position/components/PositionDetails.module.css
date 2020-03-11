@@ -1,0 +1,21 @@
+.actionsButton {
+  color: var(--c-hex-bg-200);
+  padding: 8px;
+  width: 36px;
+}
+
+.actionsButton:hover {
+  background-color: rgba(var(--c-rgb-bg-100), 0.2);
+}
+
+.actionsButton svg {
+  font-size: 20px;
+}
+
+.actionsButton {
+  transition: color 150ms ease-out;
+}
+
+.actionsButton_active {
+  color: var(--c-hex-bg-300);
+}

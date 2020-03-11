@@ -13,7 +13,7 @@ import { Dialog, DialogActions, DialogTitle } from 'src/components/Dialog';
 import NumberFormat from 'src/components/NumberFormat';
 
 import { getStudioStock } from 'src/actions/studio';
-import { addQuantityInPosition } from 'src/actions/positions';
+import { activeReceiptAddQuantity } from 'src/actions/receipts';
 
 import stylesGlobal from 'src/styles/globals.module.css';
 
@@ -24,7 +24,7 @@ const addQuantitySchema = Yup.object().shape({
 	comment: Yup.string().required(),
 });
 
-class DialogPositionAddQuantity extends Component {
+class DialogReceiptActiveAddQuantity extends Component {
 	static propTypes = {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
@@ -35,7 +35,7 @@ class DialogPositionAddQuantity extends Component {
 	onSubmit = (values, actions) => {
 		const { onCloseDialog, selectedPosition } = this.props;
 
-		this.props.addQuantityInPosition(selectedPosition._id, values).then(response => {
+		this.props.activeReceiptAddQuantity(selectedPosition._id, values).then(response => {
 			if (response.status === 'success') {
 				this.props.getStudioStock();
 				onCloseDialog();
@@ -129,8 +129,8 @@ class DialogPositionAddQuantity extends Component {
 const mapDispatchToProps = dispatch => {
 	return {
 		getStudioStock: () => dispatch(getStudioStock()),
-		addQuantityInPosition: (positionId, data) => dispatch(addQuantityInPosition({ params: { positionId }, data })),
+		activeReceiptAddQuantity: (positionId, data) => dispatch(activeReceiptAddQuantity({ params: { positionId }, data })),
 	};
 };
 
-export default connect(null, mapDispatchToProps)(DialogPositionAddQuantity);
+export default connect(null, mapDispatchToProps)(DialogReceiptActiveAddQuantity);

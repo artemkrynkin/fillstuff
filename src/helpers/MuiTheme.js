@@ -88,10 +88,12 @@ export const BliksideTheme = createMuiTheme({
 		h5: {
 			color: theme.blueGrey.cBg700,
 			fontSize: 20,
+			fontWeight: 500,
 		},
 		h6: {
 			color: theme.blueGrey.cBg600,
 			fontSize: 16,
+			fontWeight: 600,
 		},
 		subtitle1: {
 			color: theme.blueGrey.cBg700,
@@ -132,7 +134,7 @@ export const BliksideTheme = createMuiTheme({
 		},
 		MuiTypography: {
 			gutterBottom: {
-				marginBottom: 10,
+				marginBottom: 20,
 			},
 		},
 		MuiDivider: {
@@ -522,7 +524,7 @@ export const BliksideTheme = createMuiTheme({
 				color: theme.blueGrey.cBg400,
 				border: `1px solid ${theme.blueGrey.cBg100}`,
 				transition:
-					'background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+					'background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
 				textTransform: 'initial',
 				'&:hover': {
 					backgroundColor: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg300)}, 0.08)`,
@@ -537,6 +539,10 @@ export const BliksideTheme = createMuiTheme({
 				'&$disabled': {
 					color: theme.blueGrey.cBg400,
 					borderColor: theme.blueGrey.cBg50,
+				},
+				'&.Mui-focusVisible': {
+					boxShadow: `0 0 0 2px ${theme.teal.cT100}`,
+					zIndex: 1,
 				},
 			},
 			sizeSmall: {

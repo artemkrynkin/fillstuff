@@ -64,19 +64,19 @@ const Receipt = props => {
 										{...currencyMoneyFormatProps}
 									/>
 								) : null}
-								{receipt.unitExtraCharge > 0 ? <br /> : null}
-								{receipt.unitExtraCharge > 0 ? (
+								{receipt.unitMarkup > 0 ? <br /> : null}
+								{receipt.unitMarkup > 0 ? (
 									<NumberFormat
-										value={formatNumber(receipt.unitExtraCharge, { toString: true })}
-										renderText={value => `Процент студии: ${value}`}
+										value={formatNumber(receipt.unitMarkup, { toString: true })}
+										renderText={value => `Наценка: ${value}`}
 										displayType="text"
 										{...currencyMoneyFormatProps}
 									/>
 								) : null}
-								{receipt.unitManualExtraCharge > 0 ? <br /> : null}
-								{receipt.unitManualExtraCharge > 0 ? (
+								{receipt.unitManualMarkup > 0 ? <br /> : null}
+								{receipt.unitManualMarkup > 0 ? (
 									<NumberFormat
-										value={formatNumber(receipt.unitManualExtraCharge, { toString: true })}
+										value={formatNumber(receipt.unitManualMarkup, { toString: true })}
 										renderText={value => `Ручная наценка: ${value}`}
 										displayType="text"
 										{...currencyMoneyFormatProps}

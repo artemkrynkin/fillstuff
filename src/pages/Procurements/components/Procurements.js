@@ -105,7 +105,7 @@ class Procurements extends Component {
 					) : procurementData.paging.totalCount && !procurementData.paging.totalDocs ? (
 						<div className={styles.none}>Ничего не найдено</div>
 					) : (
-						<div className={styles.none}>Еще не создано ни одной закупки.</div>
+						<div className={styles.none}>Еще не создано ни одной закупки</div>
 					)
 				) : isLoadingProcurements ? (
 					<div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />

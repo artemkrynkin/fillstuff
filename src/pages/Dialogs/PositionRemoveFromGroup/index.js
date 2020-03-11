@@ -8,7 +8,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import { Dialog, DialogActions, DialogTitle } from 'src/components/Dialog';
 
 import { getStudioStock } from 'src/actions/studio';
-import { removePositionFromGroup } from 'src/actions/positionsInGroups';
+import { removePositionFromGroup } from 'src/actions/positionGroups';
 
 const DialogPositionRemoveFromGroup = props => {
 	const { dialogOpen, onCloseDialog, onExitedDialog, selectedPosition } = props;

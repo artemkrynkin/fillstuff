@@ -48,6 +48,7 @@ const Availability = props => {
 
 			<DialogPositionCreate
 				type="create"
+				showCheckboxCreationReceipt={true}
 				dialogOpen={dialogPositionCreate}
 				onCloseDialog={onCloseDialogPositionCreate}
 				currentStudioId={currentStudio._id}

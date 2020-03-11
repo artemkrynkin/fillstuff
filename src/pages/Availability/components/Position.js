@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import ClassNames from 'classnames';
 
@@ -29,21 +30,19 @@ const Position = props => {
 	const refDropdownActions = useRef(null);
 	const [dropdownActions, setDropdownActions] = useState(false);
 
-	function onHandleDropdownActions() {
-		setDropdownActions(prevValue => !prevValue);
-	}
+	const onHandleDropdownActions = () => setDropdownActions(prevValue => !prevValue);
 
-	const receiptsReceived = position.receipts
-		.filter(receipt => receipt.status === 'received')
-		.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+	const receiptsReceived = position.receipts.filter(receipt => receipt.status === 'received');
 
 	return (
 		<TableRow className={styles.position}>
 			<TableCell style={position.positionGroup ? { paddingLeft: 41 } : {}}>
-				<PositionNameInList name={position.name} characteristics={position.characteristics} />
+				<Link className={styles.positionLink} to={`/availability/${position._id}`}>
+					<PositionNameInList name={position.name} characteristics={position.characteristics} />
+				</Link>
 			</TableCell>
-			{position.receipts.length ? (
-				<TableCell align="right" width={240}>
+			<TableCell align="right" width={240}>
+				{position.receipts.length ? (
 					<QuantityIndicator
 						type="position"
 						unitReceipt={position.unitReceipt}
@@ -52,8 +51,8 @@ const Position = props => {
 						minimumBalance={position.minimumBalance}
 						receipts={position.receipts.map(receipt => ({ ...receipt.current }))}
 					/>
-				</TableCell>
-			) : null}
+				) : null}
+			</TableCell>
 			{position.receipts.length ? (
 				<TableCell align="right" width={140}>
 					{position.activeReceipt ? (
@@ -93,100 +92,100 @@ const Position = props => {
 				</TableCell>
 			) : null}
 			{!position.receipts.length ? (
-				<TableCell align="center" colSpan={3}>
-					<span className={styles.caption}>Нет поступлений</span>
+				<TableCell align="left" colSpan={2} width={280}>
+					<span className={styles.caption} style={{ marginLeft: 17 }}>
+						Нет поступлений
+					</span>
 				</TableCell>
 			) : null}
 			<TableCell align="right" width={50} style={{ padding: '0 7px' }}>
-				<div>
-					<IconButton
-						ref={refDropdownActions}
-						className={positionActionsButtonClasses(dropdownActions)}
-						onClick={onHandleDropdownActions}
-						size="small"
-					>
-						<FontAwesomeIcon icon={['far', 'ellipsis-h']} />
-					</IconButton>
+				<IconButton
+					ref={refDropdownActions}
+					className={positionActionsButtonClasses(dropdownActions)}
+					onClick={onHandleDropdownActions}
+					size="small"
+				>
+					<FontAwesomeIcon icon={['far', 'ellipsis-h']} />
+				</IconButton>
 
-					<Dropdown
-						anchor={refDropdownActions}
-						open={dropdownActions}
-						onClose={onHandleDropdownActions}
-						placement="bottom-end"
-						disablePortal={false}
-					>
-						{position.receipts.length || position.positionGroup ? (
-							<MenuList>
-								{position.receipts.length ? (
-									<MenuItem
-										onClick={() => {
-											onHandleDropdownActions();
-											onOpenDialogPosition('dialogPositionAddQuantity', position);
-										}}
-									>
-										Добавить количество
-									</MenuItem>
-								) : null}
-								{position.receipts.length ? (
-									<MenuItem
-										onClick={() => {
-											onHandleDropdownActions();
-											onOpenDialogPosition('dialogWriteOffCreate', position);
-										}}
-									>
-										Списать количество
-									</MenuItem>
-								) : null}
-								{position.positionGroup ? (
-									<MenuItem
-										onClick={() => {
-											onHandleDropdownActions();
-											onOpenDialogPosition('dialogPositionRemoveFromGroup', position);
-										}}
-									>
-										Открепить от группы
-									</MenuItem>
-								) : null}
-							</MenuList>
-						) : null}
-						{position.receipts.length || position.positionGroup ? <Divider /> : null}
+				<Dropdown
+					anchor={refDropdownActions}
+					open={dropdownActions}
+					onClose={onHandleDropdownActions}
+					placement="bottom-end"
+					disablePortal={false}
+				>
+					{position.receipts.length || position.positionGroup ? (
 						<MenuList>
-							<MenuItem
-								onClick={() => {
-									onHandleDropdownActions();
-									onOpenDialogPosition('dialogPositionQRCodeGeneration', position);
-								}}
-							>
-								Генерация QR-кода
-							</MenuItem>
-							{!position.activeReceipt && !position.receipts.length ? (
+							{position.receipts.length ? (
 								<MenuItem
 									onClick={() => {
 										onHandleDropdownActions();
+										onOpenDialogPosition('dialogReceiptActiveAddQuantity', position);
 									}}
 								>
-									Добавить поступление
+									Добавить количество
 								</MenuItem>
 							) : null}
-							<MenuItem
-								onClick={() => {
-									onHandleDropdownActions();
-									onOpenDialogPosition('dialogPositionEdit', position);
-								}}
-							>
-								Редактировать
-							</MenuItem>
-							<MenuItem
-								onClick={() => {
-									onHandleDropdownActions();
-									onOpenDialogPosition('dialogPositionArchive', position);
-								}}
-							>
-								Архивировать
-							</MenuItem>
+							{position.receipts.length ? (
+								<MenuItem
+									onClick={() => {
+										onHandleDropdownActions();
+										onOpenDialogPosition('dialogWriteOffCreate', position);
+									}}
+								>
+									Списать количество
+								</MenuItem>
+							) : null}
+							{position.positionGroup ? (
+								<MenuItem
+									onClick={() => {
+										onHandleDropdownActions();
+										onOpenDialogPosition('dialogPositionRemoveFromGroup', position);
+									}}
+								>
+									Открепить от группы
+								</MenuItem>
+							) : null}
 						</MenuList>
-					</Dropdown>
-				</div>
+					) : null}
+					{position.receipts.length || position.positionGroup ? <Divider /> : null}
+					<MenuList>
+						<MenuItem
+							onClick={() => {
+								onHandleDropdownActions();
+								onOpenDialogPosition('dialogPositionQRCodeGeneration', position);
+							}}
+						>
+							Генерация QR-кода
+						</MenuItem>
+						{!position.activeReceipt && !position.receipts.length ? (
+							<MenuItem
+								onClick={() => {
+									onHandleDropdownActions();
+								}}
+							>
+								Добавить поступление
+							</MenuItem>
+						) : null}
+						<MenuItem
+							onClick={() => {
+								onHandleDropdownActions();
+								onOpenDialogPosition('dialogPositionEdit', position);
+							}}
+						>
+							Редактировать
+						</MenuItem>
+						<MenuItem
+							onClick={() => {
+								onHandleDropdownActions();
+								onOpenDialogPosition('dialogPositionArchive', position);
+							}}
+						>
+							Архивировать
+						</MenuItem>
+					</MenuList>
+				</Dropdown>
 			</TableCell>
 		</TableRow>
 	);

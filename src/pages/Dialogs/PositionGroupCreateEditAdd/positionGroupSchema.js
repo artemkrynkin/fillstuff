@@ -10,6 +10,7 @@ const positionGroupSchema = (type, depopulate = false) => {
 						.required()
 				: schema;
 		}),
+		dividedPositions: Yup.bool().required(),
 		minimumBalance: Yup.number()
 			.nullable(true)
 			.transform(value => (isNaN(value) ? null : value))

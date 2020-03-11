@@ -13,11 +13,12 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import ToggleButton from '@material-ui/lab/ToggleButton';
 
 import { DialogActions } from 'src/components/Dialog';
 import NumberFormat from 'src/components/NumberFormat';
 import Chips from 'src/components/Chips';
-import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
 import PositionNameInList from 'src/components/PositionNameInList';
 
 import { SearchTextField } from './styles';
@@ -52,7 +53,7 @@ const FormPositionGroupCreateEditAdd = props => {
 			isFetching: isLoadingAllPositions,
 			// error: errorPositions
 		},
-		formikProps: { errors, isSubmitting, touched, values },
+		formikProps: { errors, isSubmitting, touched, values, setFieldValue },
 	} = props;
 	const searchTextFieldPosition = useRef(null);
 	const [searchTextPosition, setSearchTextPosition] = useState('');
@@ -72,7 +73,7 @@ const FormPositionGroupCreateEditAdd = props => {
 			<DialogContent style={{ overflow: 'initial' }}>
 				{type === 'create' || type === 'edit' ? (
 					<div>
-						<Grid className={stylesGlobal.formLabelControl} style={{ marginBottom: 12 }} wrap="nowrap" alignItems="flex-start" container>
+						<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 							<InputLabel error={Boolean(touched.name && errors.name)} style={{ minWidth: 126 }}>
 								Название
 							</InputLabel>
@@ -89,38 +90,57 @@ const FormPositionGroupCreateEditAdd = props => {
 							/>
 						</Grid>
 
-						<Grid className={stylesGlobal.formLabelControl} style={{ marginBottom: 12, paddingLeft: 138 }}>
-							<Field type="checkbox" name="dividedPositions" Label={{ label: 'Считать позиции раздельно' }} as={CheckboxWithLabel} />
-						</Grid>
+						<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
+							<InputLabel
+								error={
+									Boolean(touched.dividedPositions && errors.dividedPositions) || Boolean(touched.minimumBalance && errors.minimumBalance)
+								}
+								style={{ width: 126 }}
+							>
+								Минимальный остаток
+								<Tooltip title={<div style={{ maxWidth: 200 }}>текст который ничем не может помочь</div>} placement="bottom">
+									<div className={styles.helpIcon}>
+										<FontAwesomeIcon icon={['fal', 'question-circle']} fixedWidth />
+									</div>
+								</Tooltip>
+							</InputLabel>
+							<Grid>
+								<Grid className={stylesGlobal.formLabelControl} alignItems="center" container>
+									<ToggleButtonGroup
+										value={values.dividedPositions}
+										onChange={(event, value) => {
+											if (value === null) return;
 
-						{!values.dividedPositions ? (
-							<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
-								<InputLabel error={Boolean(touched.minimumBalance && errors.minimumBalance)} style={{ width: 126 }}>
-									Минимальный остаток
-									<Tooltip title={<div style={{ maxWidth: 200 }}>текст который ничем не может помочь</div>} placement="bottom">
-										<div className={styles.helpIcon}>
-											<FontAwesomeIcon icon={['fal', 'question-circle']} fixedWidth />
-										</div>
-									</Tooltip>
-								</InputLabel>
-								<FormControl>
-									<Field
-										name="minimumBalance"
-										placeholder="0"
-										error={Boolean(touched.minimumBalance && errors.minimumBalance)}
-										helperText={(touched.minimumBalance && errors.minimumBalance) || ''}
-										as={TextField}
-										InputProps={{
-											inputComponent: NumberFormat,
-											inputProps: {
-												allowNegative: false,
-											},
+											setFieldValue('dividedPositions', value);
 										}}
-										style={{ width: 130 }}
-									/>
-								</FormControl>
+										size="small"
+										exclusive
+									>
+										<ToggleButton value={false}>Общий для группы</ToggleButton>
+										<ToggleButton value={true}>Раздельный по позициям</ToggleButton>
+									</ToggleButtonGroup>
+								</Grid>
+
+								{!values.dividedPositions && values.dividedPositions !== '' ? (
+									<FormControl>
+										<Field
+											name="minimumBalance"
+											placeholder="0"
+											error={Boolean(touched.minimumBalance && errors.minimumBalance)}
+											helperText={(touched.minimumBalance && errors.minimumBalance) || ''}
+											as={TextField}
+											InputProps={{
+												inputComponent: NumberFormat,
+												inputProps: {
+													allowNegative: false,
+												},
+											}}
+											style={{ width: 130 }}
+										/>
+									</FormControl>
+								) : null}
 							</Grid>
-						) : null}
+						</Grid>
 					</div>
 				) : null}
 

@@ -63,7 +63,7 @@ class DialogPositionGroupCreateEditAdd extends Component {
 			type === 'create'
 				? {
 						name: '',
-						dividedPositions: true,
+						dividedPositions: '',
 						minimumBalance: '',
 						positions: [],
 				  }

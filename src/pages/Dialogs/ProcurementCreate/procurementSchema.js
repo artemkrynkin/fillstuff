@@ -63,16 +63,19 @@ const procurementSchema = Yup.object().shape({
 			unitCostDelivery: Yup.number()
 				.transform(value => (isNaN(value) ? 0 : value))
 				.min(0),
-			extraCharge: Yup.number()
+			markupPercent: Yup.number()
 				.transform(value => (isNaN(value) ? 0 : value))
 				.min(0),
-			unitExtraCharge: Yup.number()
+			markup: Yup.number()
 				.transform(value => (isNaN(value) ? 0 : value))
 				.min(0),
-			manualExtraCharge: Yup.number()
+			unitMarkup: Yup.number()
 				.transform(value => (isNaN(value) ? 0 : value))
 				.min(0),
-			unitManualExtraCharge: Yup.number()
+			manualMarkup: Yup.number()
+				.transform(value => (isNaN(value) ? 0 : value))
+				.min(0),
+			unitManualMarkup: Yup.number()
 				.transform(value => (isNaN(value) ? 0 : value))
 				.min(0),
 		})

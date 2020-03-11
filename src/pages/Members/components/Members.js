@@ -24,6 +24,7 @@ class Members extends Component {
 
 	render() {
 		const {
+			tabName,
 			members: {
 				data: members,
 				isFetching: isLoadingMembers,
@@ -31,14 +32,16 @@ class Members extends Component {
 			},
 		} = this.props;
 
+		const arrayName = tabName !== 'guests' ? 'regular' : 'guests';
+
 		return (
 			<div className={styles.container}>
 				{!isLoadingMembers && members ? (
-					members.activated.length || members.deactivated.length ? (
+					members[arrayName].activated.length || members[arrayName].deactivated.length ? (
 						<div>
-							{members.activated.length ? (
+							{members[arrayName].activated.length ? (
 								<Grid spacing={2} container>
-									{members.activated.map(member => (
+									{members[arrayName].activated.map(member => (
 										<Grid key={member._id} xs={4} item>
 											<Link to={`/members/${member._id}`}>
 												<Member member={member} />
@@ -47,11 +50,11 @@ class Members extends Component {
 									))}
 								</Grid>
 							) : null}
-							{members.deactivated.length ? (
+							{members[arrayName].deactivated.length ? (
 								<div style={{ marginTop: 40 }}>
 									<div className={styles.title}>Отключённые участники</div>
 									<Grid spacing={2} container>
-										{members.deactivated.map(member => (
+										{members[arrayName].deactivated.map(member => (
 											<Grid key={member._id} xs={4} item>
 												<Link to={`/members/${member._id}`}>
 													<Member member={member} />
@@ -63,7 +66,7 @@ class Members extends Component {
 							) : null}
 						</div>
 					) : (
-						<div className={styles.none}>Участников соотвествующих критериям поиска не найдено</div>
+						<div className={styles.none}>Ничего не найдено</div>
 					)
 				) : (
 					<div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />
@@ -81,20 +84,37 @@ const mapStateToProps = (state, ownProps) => {
 			// error: errorMembers
 		},
 	} = state;
-	const { tabName } = ownProps;
 
 	const members = {
-		data: null,
+		data: {
+			regular: {
+				activated: [],
+				deactivated: [],
+			},
+			guests: {
+				activated: [],
+				deactivated: [],
+			},
+		},
 		isFetching: isLoadingMembers,
 	};
 
 	if (!isLoadingMembers && membersData) {
-		const allMembers = membersData.filter(member => member.guest === (tabName === 'guests'));
-
-		members.data = {
-			activated: allMembers.filter(member => !member.deactivated),
-			deactivated: allMembers.filter(member => member.deactivated),
-		};
+		membersData.forEach(member => {
+			if (!member.guest) {
+				if (!member.deactivated) {
+					members.data.regular.activated.push(member);
+				} else {
+					members.data.regular.deactivated.push(member);
+				}
+			} else {
+				if (!member.deactivated) {
+					members.data.guests.activated.push(member);
+				} else {
+					members.data.guests.deactivated.push(member);
+				}
+			}
+		});
 	}
 
 	return {

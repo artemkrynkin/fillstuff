@@ -17,12 +17,17 @@ import positionSchema from './positionSchema';
 class DialogPositionCreateEdit extends Component {
 	static propTypes = {
 		type: PropTypes.oneOf(['create', 'edit']).isRequired,
+		showCheckboxCreationReceipt: PropTypes.bool.isRequired,
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
 		onExitedDialog: PropTypes.func,
 		onCallback: PropTypes.func,
 		currentStudioId: PropTypes.string.isRequired,
 		selectedPosition: PropTypes.object,
+	};
+
+	static defaultProps = {
+		showCheckboxCreationReceipt: false,
 	};
 
 	initialState = {
@@ -98,7 +103,7 @@ class DialogPositionCreateEdit extends Component {
 	};
 
 	render() {
-		const { type, dialogOpen, onCloseDialog, currentStudioId, characteristics, selectedPosition } = this.props;
+		const { type, showCheckboxCreationReceipt, dialogOpen, onCloseDialog, currentStudioId, characteristics, selectedPosition } = this.props;
 		const { shopLinkVisible, isLoadingCharacteristics } = this.state;
 
 		if (type === 'edit' && !selectedPosition) return null;
@@ -119,6 +124,8 @@ class DialogPositionCreateEdit extends Component {
 				valueTemp: '',
 			},
 		};
+
+		if (type === 'create' && showCheckboxCreationReceipt) initialValues.createReceiptAfterPositionCreate = false;
 
 		if (selectedPosition) initialValues = { ...initialValues, ...selectedPosition };
 
@@ -148,6 +155,7 @@ class DialogPositionCreateEdit extends Component {
 							currentStudioId={currentStudioId}
 							characteristics={characteristics}
 							type={type}
+							showCheckboxCreationReceipt={showCheckboxCreationReceipt}
 							shopLinkVisible={shopLinkVisible}
 							isLoadingCharacteristics={isLoadingCharacteristics}
 							formikProps={props}

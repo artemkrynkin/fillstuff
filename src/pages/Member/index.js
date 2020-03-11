@@ -62,8 +62,13 @@ class Members extends Component {
 
 		const metaInfo = {
 			pageName: 'member',
-			pageTitle: memberData && memberData.data && memberData.data.user.name ? memberData.data.user.name : null,
+			pageTitle: 'Данные пользователя',
 		};
+
+		if (memberData && memberData.data && memberData.data.user.name) {
+			metaInfo.pageTitle = memberData.data.user.name;
+		}
+
 		const { title, description } = generateMetaInfo({
 			type: metaInfo.pageName,
 			data: {

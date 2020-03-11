@@ -46,7 +46,18 @@ const positions = (
 			let stateData = { ...state }.data;
 			const positionIndex = stateData.findIndex(position => position._id === action.payload.positionId);
 
-			stateData.splice(positionIndex, 1);
+			if (!action.payload.positionGroupId) {
+				stateData.splice(positionIndex, 1);
+			}
+
+			if (action.payload.remainingPositionId) {
+				stateData.forEach(position => {
+					if (position._id === action.payload.remainingPositionId) {
+						position.divided = true;
+						delete position.positionGroup;
+					}
+				});
+			}
 
 			return {
 				...state,

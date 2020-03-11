@@ -23,9 +23,3 @@
   color: var(--c-hex-bg-300);
   font-size: 16px;
 }
-
-.infoIcon {
-  color: var(--c-hex-bg-300);
-  font-size: 16px;
-  margin-right: 10px;
-}

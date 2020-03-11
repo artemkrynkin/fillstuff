@@ -22,6 +22,7 @@ import PageNotFound from 'src/pages/PageNotFound';
 import PasswordRecovery from 'src/pages/PasswordRecovery';
 import Dashboard from 'src/pages/Dashboard';
 import Availability from 'src/pages/Availability';
+import Position from 'src/pages/Position';
 import WriteOffs from 'src/pages/WriteOffs';
 import Procurements from 'src/pages/Procurements';
 import Procurement from 'src/pages/Procurement';
@@ -67,6 +68,15 @@ const AvailabilityFallback = signedOutFallback(
 		</PageFallback>
 	),
 	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/availability`} />} />
+);
+
+const PositionFallback = signedOutFallback(
+	props => (
+		<PageFallback {...props}>
+			<Position match={props.match} />
+		</PageFallback>
+	),
+	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/availability/${match.params.positionId}`} />} />
 );
 
 const WriteOffsFallback = signedOutFallback(
@@ -129,7 +139,7 @@ const MemberFallback = signedOutFallback(
 			<Member match={props.match} />
 		</PageFallback>
 	),
-	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/member/${match.params.memberId}`} />} />
+	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/members/${match.params.memberId}`} />} />
 );
 
 const StatisticsFallback = signedOutFallback(
@@ -200,6 +210,7 @@ class Routes extends Component {
 
 						<Route path="/dashboard" component={DashboardFallback} exact strict sensitive />
 						<Route path="/availability" component={AvailabilityFallback} exact strict sensitive />
+						<Route path="/availability/:positionId" component={PositionFallback} exact strict sensitive />
 						<Route path="/write-offs" component={WriteOffsFallback} exact strict sensitive />
 						<Route path="/procurements" component={ProcurementsFallback} exact strict sensitive />
 						<Route path="/procurements/:procurementId" component={ProcurementFallback} exact strict sensitive />

@@ -19,7 +19,7 @@ const positionSchema = (depopulate = false) => {
 				return divided ? schema.min(1).required() : schema;
 			}),
 		isFree: Yup.bool().required(),
-		shopName: Yup.string().required(),
+		shopName: Yup.string(),
 		shopLink: Yup.string(),
 		characteristics: Yup.array()
 			.when('empty', (empty, schema) => (depopulate ? schema.of(Yup.string()) : schema))

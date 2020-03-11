@@ -36,7 +36,7 @@ const FormFieldArrayReceipt = props => {
 
 	const autoGenUnitSellingPrice =
 		!formEditable && !receipt.position.isFree
-			? formatNumber(receipt.unitPurchasePrice + receipt.unitCostDelivery + receipt.unitExtraCharge)
+			? formatNumber(receipt.unitPurchasePrice + receipt.unitCostDelivery + receipt.unitMarkup)
 			: null;
 
 	useEffect(() => {
@@ -56,7 +56,7 @@ const FormFieldArrayReceipt = props => {
 						label={isNmpNmp ? 'Количество уп.' : 'Количество шт.'}
 						placeholder="0"
 						error={Boolean(formError(touched, errors, `receipts.${index}.quantity`))}
-						helperText={typeof formError(touched, errors, `receipts.${index}.quantity`) === 'string' || null}
+						helperText={formError(touched, errors, `receipts.${index}.quantity`, null)}
 						as={TextField}
 						InputProps={{
 							inputComponent: NumberFormat,
@@ -73,7 +73,7 @@ const FormFieldArrayReceipt = props => {
 						label="Количество уп."
 						placeholder="0"
 						error={Boolean(formError(touched, errors, `receipts.${index}.quantityPackages`))}
-						helperText={typeof formError(touched, errors, `receipts.${index}.quantityPackages`) === 'string' || null}
+						helperText={formError(touched, errors, `receipts.${index}.quantityPackages`, null)}
 						as={TextField}
 						InputProps={{
 							inputComponent: NumberFormat,
@@ -95,7 +95,7 @@ const FormFieldArrayReceipt = props => {
 						placeholder="0"
 						as={TextField}
 						error={Boolean(formError(touched, errors, `receipts.${index}.quantityInUnit`))}
-						helperText={typeof formError(touched, errors, `receipts.${index}.quantityInUnit`) === 'string' || null}
+						helperText={formError(touched, errors, `receipts.${index}.quantityInUnit`, null)}
 						InputProps={{
 							inputComponent: NumberFormat,
 							inputProps: {
@@ -116,7 +116,7 @@ const FormFieldArrayReceipt = props => {
 						placeholder="0"
 						as={TextField}
 						error={Boolean(formError(touched, errors, `receipts.${index}.purchasePrice`))}
-						helperText={typeof formError(touched, errors, `receipts.${index}.purchasePrice`) === 'string' || null}
+						helperText={formError(touched, errors, `receipts.${index}.purchasePrice`, null)}
 						InputProps={{
 							endAdornment: <InputAdornment position="end">₽</InputAdornment>,
 							inputComponent: NumberFormat,
@@ -144,9 +144,31 @@ const FormFieldArrayReceipt = props => {
 				)}
 			</Grid>
 
-			<Grid style={{ width: 180 }} item>
-				{!formEditable ? (
-					!receipt.position.isFree ? (
+			{formEditable ? (
+				<Grid style={{ width: 180 }} item>
+					{!receipt.position.isFree ? (
+						<Field
+							name={`receipts.${index}.markupPercent`}
+							label="Наценка"
+							placeholder="0"
+							as={TextField}
+							error={Boolean(formError(touched, errors, `receipts.${index}.markupPercent`))}
+							helperText={formError(touched, errors, `receipts.${index}.markupPercent`, null)}
+							InputProps={{
+								endAdornment: <InputAdornment position="end">%</InputAdornment>,
+								inputComponent: NumberFormat,
+								inputProps: {
+									...moneyInputFormatProps,
+								},
+							}}
+							disabled={isSubmitting || !formEditable}
+							fullWidth
+						/>
+					) : null}
+				</Grid>
+			) : (
+				<Grid style={{ width: 180 }} item>
+					{!receipt.position.isFree ? (
 						<Tooltip
 							title={
 								<div>
@@ -165,19 +187,19 @@ const FormFieldArrayReceipt = props => {
 											{...currencyMoneyFormatProps}
 										/>
 									) : null}
-									{receipt.unitExtraCharge > 0 ? <br /> : null}
-									{receipt.unitExtraCharge > 0 ? (
+									{receipt.unitMarkup > 0 ? <br /> : null}
+									{receipt.unitMarkup > 0 ? (
 										<NumberFormat
-											value={receipt.unitExtraCharge}
-											renderText={value => `Процент студии: ${value}`}
+											value={receipt.unitMarkup}
+											renderText={value => `Наценка: ${value}`}
 											displayType="text"
 											{...currencyMoneyFormatProps}
 										/>
 									) : null}
-									{receipt.unitManualExtraCharge > 0 ? <br /> : null}
-									{receipt.unitManualExtraCharge > 0 ? (
+									{receipt.unitManualMarkup > 0 ? <br /> : null}
+									{receipt.unitManualMarkup > 0 ? (
 										<NumberFormat
-											value={receipt.unitManualExtraCharge}
+											value={receipt.unitManualMarkup}
 											renderText={value => `Ручная наценка: ${value}`}
 											displayType="text"
 											{...currencyMoneyFormatProps}
@@ -218,7 +240,7 @@ const FormFieldArrayReceipt = props => {
 
 												onHandleSellingPriceEditable(false);
 
-												receiptCalc.manualExtraCharge(receipt, {
+												receiptCalc.manualMarkup(receipt, {
 													isFree: receipt.position.isFree,
 													unitReceipt: receipt.position.unitReceipt,
 													unitRelease: receipt.position.unitRelease,
@@ -250,9 +272,9 @@ const FormFieldArrayReceipt = props => {
 							}}
 							fullWidth
 						/>
-					)
-				) : null}
-			</Grid>
+					)}
+				</Grid>
+			)}
 
 			{formEditable ? (
 				<div className={styles.removeReceipt}>

@@ -44,7 +44,7 @@ const Member = new Schema({
 		type: Boolean,
 		default: false,
 	},
-	extraCharge: {
+	markupPosition: {
 		type: Boolean,
 		default: true,
 	},

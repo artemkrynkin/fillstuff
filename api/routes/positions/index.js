@@ -22,71 +22,23 @@ positionsRouter.post(
 
 		const positionsPromise = Position.find({ studio: studioId })
 			.sort({ isArchived: 1, name: 1 })
-			.populate({
-				path: 'activeReceipt characteristics',
-			})
-			.populate({
-				path: 'receipts',
-				match: { status: /received|active/ },
-			})
+			.populate([
+				{
+					path: 'activeReceipt characteristics',
+				},
+				{
+					path: 'receipts',
+					match: { status: /received|active/ },
+					options: {
+						sort: { createdAt: 1 },
+					},
+				},
+			])
 			.catch(err => next({ code: 2, err }));
 
 		const positions = await positionsPromise;
 
 		res.json(positions);
-	}
-);
-
-positionsRouter.post(
-	'/getPositionsAndGroups',
-	isAuthedResolver,
-	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
-	async (req, res, next) => {
-		const { studioId } = req.body;
-
-		const positionsPromise = Position.find({
-			studio: studioId,
-			isArchived: false,
-			positionGroup: { $exists: false },
-		})
-			.sort({ name: 1 })
-			.populate({
-				path: 'activeReceipt characteristics',
-			})
-			.populate({
-				path: 'receipts',
-				match: { status: /received|active/ },
-			})
-			.catch(err => next({ code: 2, err }));
-
-		const positionGroupsPromise = PositionGroup.find({
-			studio: studioId,
-		})
-			.sort({ name: 1 })
-			.populate({
-				path: 'positions',
-				populate: {
-					path: 'activeReceipt characteristics',
-				},
-			})
-			.populate({
-				path: 'positions',
-				populate: {
-					path: 'receipts',
-					match: { status: /received|active/ },
-				},
-			})
-			.catch(err => next({ code: 2, err }));
-
-		const positions = await positionsPromise;
-		const positionGroups = await positionGroupsPromise;
-
-		// positions.sort((positionA, positionB) => positionA.name.localeCompare(positionB.name));
-		// positionGroups.sort((groupA, groupB) => groupA.name.localeCompare(groupB.name));
-
-		const positionsAndGroups = [...positionGroups, ...positions];
-
-		res.json(positionsAndGroups);
 	}
 );
 
@@ -100,8 +52,7 @@ positionsRouter.post(
 		} = req.body;
 
 		Position.findById(positionId)
-			.populate('characteristics')
-			.populate('activeReceipt')
+			.populate('activeReceipt characteristics')
 			.then(position => res.json(position))
 			.catch(err => next({ code: 2, err }));
 	}
@@ -129,10 +80,15 @@ positionsRouter.post(
 		await Promise.all([newPosition.save()]);
 
 		const position = await Position.findById(newPosition._id)
-			.populate({ path: 'studio', select: 'stock' })
-			.populate({
-				path: 'characteristics',
-			})
+			.populate([
+				{
+					path: 'studio',
+					select: 'stock',
+				},
+				{
+					path: 'characteristics',
+				},
+			])
 			.catch(err => next({ code: 2, err }));
 
 		const {
@@ -188,211 +144,20 @@ positionsRouter.post(
 		await Promise.all([position.save()]);
 
 		Position.findById(position._id)
-			.populate({
-				path: 'activeReceipt characteristics',
-			})
-			.populate({
-				path: 'receipts',
-				match: { status: /received|active/ },
-			})
-			.then(position => res.json(position))
-			.catch(err => next({ code: 2, err }));
-	}
-);
-
-positionsRouter.post(
-	'/createPositionWithReceipt',
-	isAuthedResolver,
-	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
-	async (req, res, next) => {
-		const {
-			studioId,
-			data: { position: newPositionValues, receipt: newReceiptValues },
-		} = req.body;
-
-		const newReceipt = new Receipt({
-			...newReceiptValues,
-			studio: studioId,
-			status: 'active',
-		});
-
-		const newPosition = new Position({
-			...newPositionValues,
-			studio: studioId,
-			activeReceipt: newReceipt._id,
-			receipts: [newReceipt],
-		});
-
-		newReceipt.position = newPosition._id;
-
-		receiptCalc.quantity(newReceipt, {
-			unitReceipt: newPosition.unitReceipt,
-			unitRelease: newPosition.unitRelease,
-		});
-		receiptCalc.unitPurchasePrice(newReceipt, {
-			unitReceipt: newPosition.unitReceipt,
-			unitRelease: newPosition.unitRelease,
-		});
-		receiptCalc.sellingPrice(newReceipt, {
-			isFree: newPosition.isFree,
-			extraCharge: newPosition.extraCharge,
-		});
-		receiptCalc.manualExtraCharge(newReceipt, {
-			isFree: newPosition.isFree,
-			unitReceipt: newPosition.unitReceipt,
-			unitRelease: newPosition.unitRelease,
-		});
-
-		const newReceiptErr = newReceipt.validateSync();
-		const newPositionErr = newPosition.validateSync();
-
-		if (newReceiptErr) return next({ code: newReceiptErr.errors ? 5 : 2, err: newReceiptErr });
-		if (newPositionErr) return next({ code: newPositionErr.errors ? 5 : 2, err: newPositionErr });
-
-		await Promise.all([newReceipt.save(), newPosition.save()]);
-
-		const position = await Position.findById(newPosition._id)
-			.populate({ path: 'studio', select: 'stock' })
-			.populate({
-				path: 'activeReceipt characteristics',
-			})
-			.populate({
-				path: 'receipts',
-				match: { status: /received|active/ },
-			})
-			.catch(err => next({ code: 2, err }));
-
-		const {
-			studio: {
-				stock: { numberPositions: numberPositionsOld, stockPrice: stockPriceOld },
-			},
-			activeReceipt,
-		} = position;
-
-		Studio.findByIdAndUpdate(
-			position.studio._id,
-			{
-				$set: {
-					'stock.numberPositions': numberPositionsOld + 1,
-					'stock.stockPrice': stockPriceOld + activeReceipt.current.quantity * activeReceipt.unitPurchasePrice,
+			.populate([
+				{
+					path: 'activeReceipt characteristics',
 				},
-			},
-			{ runValidators: true }
-		).catch(err => next({ code: 2, err }));
-
-		position.depopulate('studio');
-
-		res.json(position);
-	}
-);
-
-positionsRouter.post(
-	'/positionReceiptAddQuantity',
-	isAuthedResolver,
-	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
-	async (req, res, next) => {
-		const {
-			params: { positionId },
-			data: { comment, quantity: quantityAdded },
-		} = req.body;
-
-		const quantity = Number(quantityAdded);
-
-		const position = await Position.findById(positionId)
-			.populate({ path: 'studio', select: 'stock' })
-			.populate('activeReceipt')
-			.catch(err => next({ code: 2, err }));
-
-		const {
-			studio: {
-				stock: { stockPrice: stockPriceOld },
-			},
-			activeReceipt,
-		} = position;
-
-		const activeReceiptCurrentSet = {
-			quantity: activeReceipt.current.quantity + quantity,
-		};
-
-		if (position.unitReceipt === 'nmp' && position.unitRelease === 'pce') {
-			activeReceiptCurrentSet.quantityPackages = (activeReceipt.current.quantity + quantity) / activeReceipt.quantityInUnit;
-		}
-
-		await Receipt.findByIdAndUpdate(
-			activeReceipt._id,
-			{
-				$set: {
-					current: activeReceiptCurrentSet,
-				},
-				$push: {
-					additions: {
-						quantity,
-						comment,
+				{
+					path: 'receipts',
+					match: { status: /received|active/ },
+					options: {
+						sort: { createdAt: 1 },
 					},
 				},
-			},
-			{ runValidators: true }
-		).catch(err => next({ code: 2, err }));
-
-		Studio.findByIdAndUpdate(
-			position.studio._id,
-			{
-				$set: {
-					'stock.stockPrice': stockPriceOld + quantity * activeReceipt.unitPurchasePrice,
-				},
-			},
-			{ runValidators: true }
-		).catch(err => next({ code: 2, err }));
-
-		Position.findById(position._id)
-			.populate({
-				path: 'activeReceipt characteristics',
-			})
-			.populate({
-				path: 'receipts',
-				match: { status: /received|active/ },
-			})
+			])
 			.then(position => res.json(position))
 			.catch(err => next({ code: 2, err }));
-	}
-);
-
-positionsRouter.post(
-	'/removePositionFromGroup',
-	isAuthedResolver,
-	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
-	async (req, res, next) => {
-		const {
-			params: { positionId },
-		} = req.body;
-
-		const position = await Position.findById(positionId)
-			.populate('positionGroup')
-			.catch(err => next({ code: 2, err }));
-
-		Position.findByIdAndUpdate(position._id, {
-			$set: { divided: true },
-			$unset: { positionGroup: 1 },
-		}).catch(err => next({ code: 2, err }));
-
-		let remainingPositionId = {};
-
-		if (position.positionGroup.positions.length > 2) {
-			PositionGroup.findByIdAndUpdate(position.positionGroup._id, { $pull: { positions: position._id } }).catch(err =>
-				next({ code: 2, err })
-			);
-		} else {
-			remainingPositionId = position.positionGroup.positions.find(positionId => String(positionId) !== String(position._id));
-
-			Position.findByIdAndUpdate(remainingPositionId, {
-				$set: { divided: true },
-				$unset: { positionGroup: 1 },
-			}).catch(err => next({ code: 2, err }));
-
-			PositionGroup.findByIdAndRemove(position.positionGroup._id).catch(err => next({ code: 2, err }));
-		}
-
-		res.json(remainingPositionId);
 	}
 );
 
@@ -406,12 +171,22 @@ positionsRouter.post(
 		} = req.body;
 
 		const position = await Position.findById(positionId)
-			.populate({ path: 'studio', select: 'stock' })
-			.populate('positionGroup')
-			.populate({
-				path: 'receipts',
-				match: { status: /received|active/ },
-			})
+			.populate([
+				{
+					path: 'studio',
+					select: 'stock',
+				},
+				{
+					path: 'positionGroup',
+				},
+				{
+					path: 'receipts',
+					match: { status: /received|active|closed/ },
+					options: {
+						sort: { createdAt: 1 },
+					},
+				},
+			])
 			.catch(err => next({ code: 2, err }));
 
 		// if (position.receipts.some(receipt => receipt.status === 'expected')) {
@@ -420,11 +195,16 @@ positionsRouter.post(
 		// 		message: 'Позиция не может быть архивирована, пока есть поступление в одном из непоступивших заказов.',
 		// 	});
 		// }
+		let remainingPositionId = null;
 
-		Position.findByIdAndUpdate(position._id, {
-			$set: { isArchived: true, divided: true },
-			$unset: { positionGroup: 1 },
-		}).catch(err => next({ code: 2, err }));
+		if (position.receipts.length) {
+			Position.findByIdAndUpdate(position._id, {
+				$set: { isArchived: true, divided: true },
+				$unset: { positionGroup: 1 },
+			}).catch(err => next({ code: 2, err }));
+		} else {
+			Position.findByIdAndDelete(position._id).catch(err => next({ code: 2, err }));
+		}
 
 		if (position.positionGroup) {
 			if (position.positionGroup.positions.length > 2) {
@@ -432,7 +212,7 @@ positionsRouter.post(
 					next({ code: 2, err })
 				);
 			} else {
-				const remainingPositionId = position.positionGroup.positions.find(positionId => String(positionId) !== String(position._id));
+				remainingPositionId = position.positionGroup.positions.find(positionId => String(positionId) !== String(position._id));
 
 				Position.findByIdAndUpdate(remainingPositionId, {
 					$set: { divided: true },
@@ -450,9 +230,9 @@ positionsRouter.post(
 			receipts,
 		} = position;
 
-		const purchasePriceReceiptsPosition = receipts.reduce((sum, receipt) => {
-			return sum + receipt.current.quantity * receipt.unitPurchasePrice;
-		}, 0);
+		const purchasePriceReceiptsPosition = receipts
+			.filter(receipt => /received|active/.test(receipt.status))
+			.reduce((sum, receipt) => sum + receipt.current.quantity * receipt.unitPurchasePrice, 0);
 
 		Studio.findByIdAndUpdate(
 			position.studio._id,
@@ -465,7 +245,9 @@ positionsRouter.post(
 			{ runValidators: true }
 		).catch(err => next({ code: 2, err }));
 
-		res.json();
+		res.json({
+			remainingPositionId,
+		});
 	}
 );
 

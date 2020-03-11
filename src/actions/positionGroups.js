@@ -1,5 +1,31 @@
 import axios from 'axios';
 
+export const getPositionGroups = ({ showRequest } = { showRequest: true }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+
+		if (showRequest) dispatch({ type: 'REQUEST_POSITION_GROUPS' });
+
+		return await axios
+			.post('/api/getPositionGroups', {
+				studioId,
+				memberId,
+			})
+			.then(response => {
+				dispatch({
+					type: 'RECEIVE_POSITION_GROUPS',
+					payload: response.data,
+				});
+			})
+			.catch(error => {
+				console.error(error.response);
+
+				return Promise.resolve({ status: 'error' });
+			});
+	};
+};
+
 export const createPositionGroup = ({ data }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
@@ -100,6 +126,45 @@ export const addPositionInGroup = ({ params, data }) => {
 
 					return Promise.resolve({ status: 'error' });
 				}
+			});
+	};
+};
+
+export const removePositionFromGroup = ({ params, data }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+		const { positionId } = params;
+		const { positionGroupId } = data;
+
+		return await axios
+			.post('/api/removePositionFromGroup', {
+				studioId,
+				memberId,
+				params,
+			})
+			.then(response => {
+				if (!response.data.code) {
+					const { remainingPositionId } = response.data;
+
+					dispatch({
+						type: 'REMOVE_POSITION_FROM_GROUP',
+						payload: {
+							positionGroupId,
+							positionId,
+							remainingPositionId,
+						},
+					});
+
+					return Promise.resolve({ status: 'success' });
+				} else {
+					return Promise.resolve({ status: 'error' });
+				}
+			})
+			.catch(error => {
+				console.error(error);
+
+				return Promise.resolve({ status: 'error' });
 			});
 	};
 };

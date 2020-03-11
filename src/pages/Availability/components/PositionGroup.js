@@ -30,12 +30,9 @@ const positionGroupActionsButtonClasses = dropdownActions =>
 const PositionGroup = props => {
 	const { positionGroup, onOpenDialogPositionGroup, onOpenDialogPosition } = props;
 	const refDropdownActions = useRef(null);
-	const [defaultExpanded] = useState(positionGroup.positions.length !== 0 && positionGroup.dividedPositions);
 	const [dropdownActions, setDropdownActions] = useState(false);
 
-	function onHandleDropdownActions() {
-		setDropdownActions(prevValue => !prevValue);
-	}
+	const onHandleDropdownActions = () => setDropdownActions(prevValue => !prevValue);
 
 	return (
 		<TableRow className={styles.positionGroup}>
@@ -45,8 +42,7 @@ const PositionGroup = props => {
 						timeout: 300,
 						unmountOnExit: true,
 					}}
-					defaultExpanded={defaultExpanded}
-					disabled={!positionGroup.positions.length}
+					defaultExpanded={false}
 				>
 					<ExpansionPanelSummary
 						expandIcon={<FontAwesomeIcon icon={['far', 'angle-down']} />}
@@ -58,10 +54,9 @@ const PositionGroup = props => {
 						<Table>
 							<TableBody>
 								<TableRow>
-									<TableCellExpansionPanel width={36} style={{ paddingLeft: 5, paddingRight: 0 }} />
-									<TableCellExpansionPanel style={{ paddingLeft: 5 }}>
+									<TableCellExpansionPanel style={{ paddingLeft: 41 }}>
 										<span className={styles.positionGroupName}>{positionGroup.name}</span>
-										<span className={styles.caption}>
+										<span className={styles.caption} style={{ marginLeft: 5 }}>
 											{declensionNumber(positionGroup.positions.length, ['позиция', 'позиции', 'позиций'], true)}
 										</span>
 									</TableCellExpansionPanel>

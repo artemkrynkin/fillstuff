@@ -68,7 +68,7 @@ const FormProcurementCreate = props => {
 							<Typography className={styles.headerInfoText} variant="body1">
 								Для {declensionNumber(sellingPositionCount, ['позиции', 'позиций', 'позиций'], true)} рассчитана цена продажи.
 								<br />
-								При необходимости измените её в ручную.
+								При необходимости измените её вручную.
 							</Typography>
 						</Grid>
 					</div>

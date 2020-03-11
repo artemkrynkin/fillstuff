@@ -141,7 +141,7 @@ membersRouter.post(
 
 		if (/owner|admin/.test(setMemberData.roles) && !/artist/.test(setMemberData.roles)) {
 			setMemberData.purchaseExpenseStudio = true;
-			setMemberData.extraCharge = false;
+			setMemberData.markupPosition = false;
 		}
 
 		const member = await Member.findByIdAndUpdate(memberId, { $set: setMemberData }, { new: true, runValidators: true })

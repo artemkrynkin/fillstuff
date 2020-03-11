@@ -16,16 +16,18 @@ const Chip = props => {
 	return (
 		<div className={styles.item}>
 			<div className={styles.label}>{chipLabel}</div>
-			<div className={styles.remove} onClick={onRemoveChip}>
-				<FontAwesomeIcon icon={['far', 'times']} />
-			</div>
+			{onRemoveChip ? (
+				<div className={styles.remove} onClick={onRemoveChip}>
+					<FontAwesomeIcon icon={['far', 'times']} />
+				</div>
+			) : null}
 		</div>
 	);
 };
 
 Chip.propTypes = {
 	chipLabel: PropTypes.node.isRequired,
-	onRemoveChip: PropTypes.func.isRequired,
+	onRemoveChip: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 };
 
 const Chips = props => {
@@ -44,7 +46,7 @@ const Chips = props => {
 	return (
 		<div className={classes}>
 			{chips.map((chip, index) => (
-				<Chip key={index} chipLabel={onRenderChipLabel(chip)} onRemoveChip={() => onRemoveChip(chips, index)} />
+				<Chip key={index} chipLabel={onRenderChipLabel(chip)} onRemoveChip={onRemoveChip ? () => onRemoveChip(chips, index) : null} />
 			))}
 		</div>
 	);
@@ -59,7 +61,7 @@ Chips.defaultProps = {
 Chips.propTypes = {
 	chips: PropTypes.array.isRequired,
 	onRenderChipLabel: PropTypes.func.isRequired,
-	onRemoveChip: PropTypes.func.isRequired,
+	onRemoveChip: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 };
 
 export default Chips;

@@ -2,8 +2,6 @@ import { getIn } from 'formik';
 
 import theme from 'shared/theme';
 
-import { history } from './history';
-
 export const isNumeric = num => {
 	return !isNaN(parseFloat(num)) && isFinite(num);
 };
@@ -53,31 +51,6 @@ export const calculateColor = text => {
 		sum += text.charCodeAt(index);
 	}
 	return theme.calculateColors[sum % theme.calculateColors.length];
-};
-
-export const changeStudioCurrentUrl = studioId => {
-	let location = history.location,
-		pathnameArray = location.pathname.split('/');
-
-	if (pathnameArray[1] === 'studios') {
-		if (studioId) {
-			pathnameArray[2] = studioId;
-
-			switch (pathnameArray[3]) {
-				case 'dashboard':
-				case 'statistics':
-				case 'settings':
-					break;
-				default:
-					pathnameArray[3] = 'dashboard';
-					break;
-			}
-		} else pathnameArray = pathnameArray.splice(0, 2);
-
-		return pathnameArray.join('/');
-	}
-
-	return location.pathname;
 };
 
 export const formError = (touched, errors, name, helperText = null) => {

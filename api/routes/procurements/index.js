@@ -22,7 +22,7 @@ procurementsRouter.post(
 	async (req, res, next) => {
 		const {
 			studioId,
-			query: { page, limit, dateStart, dateEnd, number, position, role },
+			query: { page, limit, dateStart, dateEnd, number, position, member },
 		} = req.body;
 
 		let conditions = {
@@ -38,7 +38,7 @@ procurementsRouter.post(
 
 		if (number) conditions.number = { $regex: number, $options: 'i' };
 
-		if (role && role !== 'all') conditions.member = mongoose.Types.ObjectId(role);
+		if (member && member !== 'all') conditions.member = mongoose.Types.ObjectId(member);
 
 		if (position && position !== 'all') conditions.positions = mongoose.Types.ObjectId(position);
 
@@ -76,13 +76,7 @@ procurementsRouter.post(
 		const procurementsResult = await procurementsPromise;
 		const procurementsCount = await procurementsCountPromise;
 
-		let { data: procurements, paging } = procurementsResult;
-
-		// if (position && position !== 'all') {
-		// 	procurements.data = procurements.data.filter(procurement =>
-		// 		procurement.receipts.some(receipt => String(receipt.position._id) === position)
-		// 	);
-		// }
+		const { data: procurements, paging } = procurementsResult;
 
 		res.json({
 			data: procurements,
@@ -104,22 +98,24 @@ procurementsRouter.post(
 		} = req.body;
 
 		Procurement.findById(procurementId)
-			.populate({
-				path: 'member',
-				populate: {
-					path: 'user',
-					select: 'avatar name email',
-				},
-			})
-			.populate({
-				path: 'receipts',
-				populate: {
-					path: 'position',
+			.populate([
+				{
+					path: 'member',
 					populate: {
-						path: 'characteristics',
+						path: 'user',
+						select: 'avatar name email',
 					},
 				},
-			})
+				{
+					path: 'receipts',
+					populate: {
+						path: 'position',
+						populate: {
+							path: 'characteristics',
+						},
+					},
+				},
+			])
 			.then(procurement => res.json(procurement))
 			.catch(err => next({ code: 2, err }));
 	}
@@ -150,9 +146,7 @@ procurementsRouter.post(
 		}
 
 		const positions = await Position.find({ _id: { $in: newProcurementValues.receipts.map(receipt => receipt.position) } })
-			.populate({
-				path: 'activeReceipt',
-			})
+			.populate('activeReceipt')
 			.catch(err => next({ code: 2, err }));
 
 		const updatePositionsAndActiveReceipt = [];
@@ -212,23 +206,28 @@ procurementsRouter.post(
 		await Promise.all([newProcurement.save(), ...updatePositionsAndActiveReceipt, Receipt.insertMany(newProcurement.receipts)]);
 
 		const procurement = await Procurement.findById(newProcurement._id)
-			.populate({ path: 'studio', select: 'stock' })
-			.populate({
-				path: 'member',
-				populate: {
-					path: 'user',
-					select: 'avatar name email',
+			.populate([
+				{
+					path: 'studio',
+					select: 'stock',
 				},
-			})
-			.populate({
-				path: 'receipts',
-				populate: {
-					path: 'position',
+				{
+					path: 'member',
 					populate: {
-						path: 'characteristics',
+						path: 'user',
+						select: 'avatar name email',
 					},
 				},
-			})
+				{
+					path: 'receipts',
+					populate: {
+						path: 'position',
+						populate: {
+							path: 'characteristics',
+						},
+					},
+				},
+			])
 			.catch(err => next({ code: 2, err }));
 
 		const {

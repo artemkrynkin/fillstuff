@@ -40,10 +40,11 @@ const receiptInitialValues = (position, remainingValues) => ({
 	unitSellingPrice: '',
 	costDelivery: '',
 	unitCostDelivery: '',
-	extraCharge: '',
-	unitExtraCharge: '',
-	manualExtraCharge: '',
-	unitManualExtraCharge: '',
+	markupPercent: position.activeReceipt ? position.activeReceipt.markupPercent : '',
+	markup: '',
+	unitMarkup: '',
+	manualMarkup: '',
+	unitManualMarkup: '',
 	...remainingValues,
 });
 
@@ -181,6 +182,8 @@ class ProcurementCreate extends Component {
 
 			// Формируем цену покупки единицы и цену продажи
 			procurement.receipts.forEach(receipt => {
+				console.log(receipt.markup, receipt.unitMarkup);
+
 				receiptCalc.unitPurchasePrice(receipt, {
 					unitReceipt: receipt.position.unitReceipt,
 					unitRelease: receipt.position.unitRelease,
@@ -188,7 +191,6 @@ class ProcurementCreate extends Component {
 
 				receiptCalc.sellingPrice(receipt, {
 					isFree: receipt.position.isFree,
-					extraCharge: receipt.position.extraCharge,
 				});
 			});
 

@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import moment from 'moment';
-import _ from 'lodash';
 
 import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
@@ -106,12 +105,22 @@ writeOffsRouter.post(
 		const quantity = Number(quantityWriteOff);
 
 		const positionPromise = Position.findById(positionId)
-			.populate({ path: 'studio', select: 'stock' })
-			.populate('activeReceipt')
-			.populate({
-				path: 'receipts',
-				match: { status: /received|active/ },
-			})
+			.populate([
+				{
+					path: 'studio',
+					select: 'stock',
+				},
+				{
+					path: 'activeReceipt',
+				},
+				{
+					path: 'receipts',
+					match: { status: /received|active/ },
+					options: {
+						sort: { createdAt: 1 },
+					},
+				},
+			])
 			.catch(err => next({ code: 2, err }));
 
 		const memberPromise = Member.findById(memberId).catch(err => next({ code: 2, err }));
@@ -155,9 +164,9 @@ writeOffsRouter.post(
 			if (remainingQuantity !== 0) {
 				const currentWriteOffQuantity = remainingQuantity > receipt.current.quantity ? receipt.current.quantity : remainingQuantity;
 
-				const unitSellingPrice = member.extraCharge
+				const unitSellingPrice = member.markupPosition
 					? receipt.unitSellingPrice
-					: receipt.unitSellingPrice - (receipt.unitExtraCharge + receipt.unitManualExtraCharge);
+					: receipt.unitSellingPrice - (receipt.unitMarkup + receipt.unitManualMarkup);
 
 				const newWriteOff = new WriteOff({
 					studio: studioId,
@@ -168,11 +177,8 @@ writeOffsRouter.post(
 					quantity: currentWriteOffQuantity,
 					purchasePrice: currentWriteOffQuantity * receipt.unitPurchasePrice,
 					unitPurchasePrice: receipt.unitPurchasePrice,
-					sellingPrice: !position.isFree ? currentWriteOffQuantity * unitSellingPrice : 0,
-					unitSellingPrice: !position.isFree ? unitSellingPrice : 0,
-					unitCostDelivery: receipt.unitCostDelivery,
-					unitExtraCharge: member.extraCharge ? receipt.unitExtraCharge : 0,
-					unitManualExtraCharge: member.extraCharge ? receipt.unitManualExtraCharge : 0,
+					sellingPrice: !purchaseExpenseStudio && !position.isFree ? currentWriteOffQuantity * unitSellingPrice : 0,
+					unitSellingPrice: !purchaseExpenseStudio && !position.isFree ? unitSellingPrice : 0,
 				});
 
 				if (purchaseExpenseStudio && /artist/.test(member.roles)) {
@@ -257,13 +263,18 @@ writeOffsRouter.post(
 		).catch(err => next({ code: 2, err }));
 
 		Position.findById(position._id)
-			.populate({
-				path: 'activeReceipt characteristics',
-			})
-			.populate({
-				path: 'receipts',
-				match: { status: /received|active/ },
-			})
+			.populate([
+				{
+					path: 'activeReceipt characteristics',
+				},
+				{
+					path: 'receipts',
+					match: { status: /received|active/ },
+					options: {
+						sort: { createdAt: 1 },
+					},
+				},
+			])
 			.then(position => res.json(position))
 			.catch(err => next({ code: 2, err }));
 	}
@@ -281,8 +292,15 @@ writeOffsRouter.post(
 		} = req.body;
 
 		const writeOffPromise = WriteOff.findById(writeOffId)
-			.populate({ path: 'studio', select: 'stock' })
-			.populate('position receipt')
+			.populate([
+				{
+					path: 'studio',
+					select: 'stock',
+				},
+				{
+					path: 'position receipt',
+				},
+			])
 			.catch(err => next({ code: 2, err }));
 
 		const memberPromise = Member.findById(memberId, 'billingDebt billingPeriodDebt billingPeriodWriteOffs').catch(err =>
@@ -386,24 +404,26 @@ writeOffsRouter.post(
 		).catch(err => next({ code: 2, err }));
 
 		const updatedWriteOff = await WriteOff.findById(writeOff._id)
-			.populate({
-				path: 'member',
-				populate: {
-					path: 'user',
-					select: 'avatar name email',
+			.populate([
+				{
+					path: 'member',
+					populate: {
+						path: 'user',
+						select: 'avatar name email',
+					},
 				},
-			})
-			.populate({
-				path: 'position',
-				populate: {
-					path: 'characteristics',
+				{
+					path: 'position',
+					populate: {
+						path: 'characteristics',
+					},
+					select: 'isArchived name unitRelease characteristics',
 				},
-				select: 'isArchived name unitRelease characteristics',
-			})
-			.populate({
-				path: 'receipt',
-				select: 'unitPurchasePrice',
-			})
+				{
+					path: 'receipt',
+					select: 'unitPurchasePrice',
+				},
+			])
 			.catch(err => next({ code: 2, err }));
 
 		res.json(updatedWriteOff);

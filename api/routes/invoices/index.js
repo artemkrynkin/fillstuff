@@ -143,30 +143,32 @@ invoicesRouter.post(
 
 		const invoice = await Invoice.findById(invoiceId)
 			.lean()
-			.populate({
-				path: 'member',
-				populate: {
-					path: 'user',
-					select: 'avatar name email',
-				},
-			})
-			.populate({
-				path: 'writeOffs',
-				populate: {
-					path: 'position',
+			.populate([
+				{
+					path: 'member',
 					populate: {
-						path: 'characteristics',
+						path: 'user',
+						select: 'avatar name email',
 					},
 				},
-			})
-			.populate({
-				path: 'payments.merchant',
-				select: 'user',
-				populate: {
-					path: 'user',
-					select: 'avatar name email',
+				{
+					path: 'writeOffs',
+					populate: {
+						path: 'position',
+						populate: {
+							path: 'characteristics',
+						},
+					},
 				},
-			})
+				{
+					path: 'payments.merchant',
+					select: 'user',
+					populate: {
+						path: 'user',
+						select: 'avatar name email',
+					},
+				},
+			])
 			.catch(err => next({ code: 2, err }));
 
 		if (invoice.payments.length) invoice.payments.reverse();
@@ -307,30 +309,32 @@ invoicesRouter.post(
 
 		const invoicePayable = await Invoice.findById(invoice._id)
 			.lean()
-			.populate({
-				path: 'member',
-				populate: {
-					path: 'user',
-					select: 'avatar name email',
-				},
-			})
-			.populate({
-				path: 'writeOffs',
-				populate: {
-					path: 'position',
+			.populate([
+				{
+					path: 'member',
 					populate: {
-						path: 'characteristics',
+						path: 'user',
+						select: 'avatar name email',
 					},
 				},
-			})
-			.populate({
-				path: 'payments.merchant',
-				select: 'user',
-				populate: {
-					path: 'user',
-					select: 'avatar name email',
+				{
+					path: 'writeOffs',
+					populate: {
+						path: 'position',
+						populate: {
+							path: 'characteristics',
+						},
+					},
 				},
-			})
+				{
+					path: 'payments.merchant',
+					select: 'user',
+					populate: {
+						path: 'user',
+						select: 'avatar name email',
+					},
+				},
+			])
 			.catch(err => next({ code: 2, err }));
 
 		if (invoicePayable.payments.length) invoicePayable.payments.reverse();

@@ -8,7 +8,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import { Dialog, DialogActions, DialogTitle } from 'src/components/Dialog';
 
 import { getStudioStock } from 'src/actions/studio';
-import { archivePositionInGroup } from 'src/actions/positionsInGroups';
+import { archivePosition } from 'src/actions/positions';
 
 const DialogPositionArchive = props => {
 	const { dialogOpen, onCloseDialog, onExitedDialog, selectedPosition } = props;
@@ -16,7 +16,7 @@ const DialogPositionArchive = props => {
 	if (!selectedPosition) return null;
 
 	const onSubmit = () => {
-		props.archivePositionInGroup(selectedPosition._id, selectedPosition.positionGroup).then(response => {
+		props.archivePosition(selectedPosition._id, selectedPosition.positionGroup).then(response => {
 			onCloseDialog();
 
 			if (response.status === 'success') props.getStudioStock();
@@ -69,8 +69,7 @@ DialogPositionArchive.propTypes = {
 const mapDispatchToProps = dispatch => {
 	return {
 		getStudioStock: () => dispatch(getStudioStock()),
-		archivePositionInGroup: (positionId, positionGroupId) =>
-			dispatch(archivePositionInGroup({ params: { positionId }, data: { positionGroupId } })),
+		archivePosition: (positionId, positionGroupId) => dispatch(archivePosition({ params: { positionId }, data: { positionGroupId } })),
 	};
 };
 

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import loadable from '@loadable/component';
 
-import { getPositionsAndGroups } from 'src/actions/positionsInGroups';
 import { getPositions } from 'src/actions/positions';
 
 import TitlePageOrLogo from './TitlePageOrLogo';
@@ -19,7 +18,6 @@ const Procurements = props => {
 	const [dialogProcurementCreate, setDialogProcurementCreate] = useState(false);
 
 	const onOpenDialogProcurementCreate = async () => {
-		props.getPositionsAndGroups();
 		await props.getPositions();
 
 		setDialogProcurementCreate(true);
@@ -46,9 +44,8 @@ const Procurements = props => {
 	);
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = dispatch => {
 	return {
-		getPositionsAndGroups: () => dispatch(getPositionsAndGroups()),
 		getPositions: () => dispatch(getPositions({ showRequest: false })),
 	};
 };

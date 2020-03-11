@@ -44,12 +44,12 @@ let WriteOff = new Schema({
 	},
 	// Дата отмены списания
 	canceledDate: Date,
-	// Запрос на отмену от
+	// Id пользователя запросившего отмену
 	cancellationRequestBy: {
 		type: Schema.Types.ObjectId,
 		ref: 'Member',
 	},
-	// Запрос на отмену подтвержден от
+	// Id пользователя подтвердившего отмену
 	cancellationConfirmedBy: {
 		type: Schema.Types.ObjectId,
 		ref: 'Member',
@@ -88,27 +88,6 @@ let WriteOff = new Schema({
 	},
 	// Цена продажи единицы
 	unitSellingPrice: {
-		type: Number,
-		min: [0, 'Не может быть меньше 0'],
-		default: 0,
-		set: value => formatNumber(value),
-	},
-	// Стоимость доставки единицы
-	unitCostDelivery: {
-		type: Number,
-		min: [0, 'Не может быть меньше 0'],
-		default: 0,
-		set: value => formatNumber(value),
-	},
-	// Накрутка единицы
-	unitExtraCharge: {
-		type: Number,
-		min: [0, 'Не может быть меньше 0'],
-		default: 0,
-		set: value => formatNumber(value),
-	},
-	// Ручная накрутка единицы
-	unitManualExtraCharge: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,

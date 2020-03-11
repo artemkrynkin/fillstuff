@@ -10,6 +10,41 @@ const positionGroupsRouter = Router();
 // const debug = require('debug')('api:products');
 
 positionGroupsRouter.post(
+	'/getPositionGroups',
+	isAuthedResolver,
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
+	async (req, res, next) => {
+		const { studioId } = req.body;
+
+		const positionGroupsPromise = PositionGroup.find({ studio: studioId })
+			.sort({ name: 1 })
+			.populate({
+				path: 'positions',
+				options: {
+					sort: { name: 1 },
+				},
+				populate: [
+					{
+						path: 'activeReceipt characteristics',
+					},
+					{
+						path: 'receipts',
+						match: { status: /received|active/ },
+						options: {
+							sort: { createdAt: 1 },
+						},
+					},
+				],
+			})
+			.catch(err => next({ code: 2, err }));
+
+		const positionGroups = await positionGroupsPromise;
+
+		res.json(positionGroups);
+	}
+);
+
+positionGroupsRouter.post(
 	'/getPositionGroup',
 	// isAuthedResolver,
 	// (req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -21,6 +56,9 @@ positionGroupsRouter.post(
 		PositionGroup.findById(positionGroupId)
 			.populate({
 				path: 'positions',
+				options: {
+					sort: { name: 1 },
+				},
 				populate: {
 					path: 'activeReceipt characteristics',
 				},
@@ -62,16 +100,21 @@ positionGroupsRouter.post(
 		PositionGroup.findById(newPositionGroup._id)
 			.populate({
 				path: 'positions',
-				populate: {
-					path: 'activeReceipt characteristics',
+				options: {
+					sort: { name: 1 },
 				},
-			})
-			.populate({
-				path: 'positions',
-				populate: {
-					path: 'receipts',
-					match: { status: /received|active/ },
-				},
+				populate: [
+					{
+						path: 'activeReceipt characteristics',
+					},
+					{
+						path: 'receipts',
+						match: { status: /received|active/ },
+						options: {
+							sort: { createdAt: 1 },
+						},
+					},
+				],
 			})
 			.then(positionGroup => res.json(positionGroup))
 			.catch(err => next({ code: 2, err }));
@@ -115,16 +158,21 @@ positionGroupsRouter.post(
 		PositionGroup.findById(positionGroup._id)
 			.populate({
 				path: 'positions',
-				populate: {
-					path: 'activeReceipt characteristics',
+				options: {
+					sort: { name: 1 },
 				},
-			})
-			.populate({
-				path: 'positions',
-				populate: {
-					path: 'receipts',
-					match: { status: /received|active/ },
-				},
+				populate: [
+					{
+						path: 'activeReceipt characteristics',
+					},
+					{
+						path: 'receipts',
+						match: { status: /received|active/ },
+						options: {
+							sort: { createdAt: 1 },
+						},
+					},
+				],
 			})
 			.then(positionGroup => res.json(positionGroup))
 			.catch(err => next({ code: 2, err }));
@@ -160,19 +208,65 @@ positionGroupsRouter.post(
 		PositionGroup.findById(positionGroup._id)
 			.populate({
 				path: 'positions',
-				populate: {
-					path: 'activeReceipt characteristics',
+				options: {
+					sort: { name: 1 },
 				},
-			})
-			.populate({
-				path: 'positions',
-				populate: {
-					path: 'receipts',
-					match: { status: /received|active/ },
-				},
+				populate: [
+					{
+						path: 'activeReceipt characteristics',
+					},
+					{
+						path: 'receipts',
+						match: { status: /received|active/ },
+						options: {
+							sort: { createdAt: 1 },
+						},
+					},
+				],
 			})
 			.then(positionGroup => res.json(positionGroup))
 			.catch(err => next({ code: 2, err }));
+	}
+);
+
+positionGroupsRouter.post(
+	'/removePositionFromGroup',
+	isAuthedResolver,
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
+	async (req, res, next) => {
+		const {
+			params: { positionId },
+		} = req.body;
+
+		const position = await Position.findById(positionId)
+			.populate('positionGroup')
+			.catch(err => next({ code: 2, err }));
+
+		Position.findByIdAndUpdate(position._id, {
+			$set: { divided: true },
+			$unset: { positionGroup: 1 },
+		}).catch(err => next({ code: 2, err }));
+
+		let remainingPositionId = null;
+
+		if (position.positionGroup.positions.length > 2) {
+			PositionGroup.findByIdAndUpdate(position.positionGroup._id, { $pull: { positions: position._id } }).catch(err =>
+				next({ code: 2, err })
+			);
+		} else {
+			remainingPositionId = position.positionGroup.positions.find(positionId => String(positionId) !== String(position._id));
+
+			Position.findByIdAndUpdate(remainingPositionId, {
+				$set: { divided: true },
+				$unset: { positionGroup: 1 },
+			}).catch(err => next({ code: 2, err }));
+
+			PositionGroup.findByIdAndRemove(position.positionGroup._id).catch(err => next({ code: 2, err }));
+		}
+
+		res.json({
+			remainingPositionId,
+		});
 	}
 );
 

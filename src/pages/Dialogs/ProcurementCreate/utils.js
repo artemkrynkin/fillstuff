@@ -1,6 +1,6 @@
 export const positionTransform = position => ({
 	_id: position._id,
-	activeReceipt: position.activeReceipt,
+	lastReceipt: position.receipts[position.receipts.length - 1],
 	unitRelease: position.unitRelease,
 	unitReceipt: position.unitReceipt,
 	isFree: position.isFree,

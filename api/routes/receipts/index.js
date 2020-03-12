@@ -11,6 +11,28 @@ const receiptsRouter = Router();
 // const debug = require('debug')('api:products');
 
 receiptsRouter.post(
+	'/getReceiptsPosition',
+	isAuthedResolver,
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
+	async (req, res, next) => {
+		const {
+			studioId,
+			params: { positionId },
+		} = req.body;
+
+		Receipt.find({ studio: studioId, position: positionId })
+			.sort('-createdAt')
+			.populate([
+				{
+					path: 'procurement',
+				},
+			])
+			.then(invoices => res.json(invoices))
+			.catch(err => next({ code: 2, err }));
+	}
+);
+
+receiptsRouter.post(
 	'/activeReceiptAddQuantity',
 	isAuthedResolver,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),

@@ -13,6 +13,7 @@ import { LoadingComponent } from 'src/components/Loading';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 
 import { getPosition } from 'src/actions/positions';
+import { getReceiptsPosition } from 'src/actions/receipts';
 
 import stylesPage from 'src/styles/page.module.css';
 import styles from './index.module.css';
@@ -24,6 +25,13 @@ const Index = loadable(() => import('./components/index' /* webpackChunkName: "M
 class Position extends Component {
 	state = {
 		positionData: null,
+		receiptsData: null,
+	};
+
+	getReceipts = () => {
+		this.props.getReceiptsPosition().then(response => {
+			this.setState({ receiptsData: response });
+		});
 	};
 
 	componentDidMount() {
@@ -38,11 +46,15 @@ class Position extends Component {
 				});
 			}
 		});
+
+		this.props.getReceiptsPosition().then(response => {
+			this.setState({ receiptsData: response });
+		});
 	}
 
 	render() {
 		const { currentStudio } = this.props;
-		const { positionData } = this.state;
+		const { positionData, receiptsData } = this.state;
 
 		const metaInfo = {
 			pageName: 'position',
@@ -71,7 +83,7 @@ class Position extends Component {
 				<Header pageName={metaInfo.pageName} pageTitle="В наличии" pageParams={pageParams} />
 				<div className={`${stylesPage.pageContent} ${styles.container}`}>
 					<div className={styles.wrapper}>
-						<Index currentStudio={currentStudio} positionData={positionData} />
+						<Index currentStudio={currentStudio} positionData={positionData} receiptsData={receiptsData} getReceipts={this.getReceipts} />
 					</div>
 				</div>
 			</div>
@@ -88,6 +100,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 	return {
 		getPosition: () => dispatch(getPosition({ params: { positionId } })),
+		getReceiptsPosition: () => dispatch(getReceiptsPosition({ params: { positionId } })),
 	};
 };
 

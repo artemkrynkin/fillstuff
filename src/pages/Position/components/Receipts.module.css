@@ -1,0 +1,35 @@
+.buttonLink {
+  background: none;
+  border: none;
+  color: var(--c-hex-t-500);
+  font-size: 13px;
+}
+
+.buttonLink:hover {
+  color: var(--c-hex-t-400);
+}
+
+.receipts .buttonLink {
+  font-weight: 500;
+}
+
+.status {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.statusRed {
+  color: var(--c-hex-o-1);
+}
+
+.statusGreen {
+  color: var(--c-hex-t-A700);
+}
+
+.statusYellow {
+  color: var(--c-hex-o-14);
+}
+
+.statusOrange {
+  color: var(--c-hex-o-15);
+}

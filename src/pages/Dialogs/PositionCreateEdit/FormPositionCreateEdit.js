@@ -25,7 +25,6 @@ import { DialogActions } from 'src/components/Dialog';
 import NumberFormat from 'src/components/NumberFormat';
 import { SelectAutocompleteCreate } from 'src/components/selectAutocomplete';
 import Chips from 'src/components/Chips';
-import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
 
 import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
@@ -38,7 +37,6 @@ const FormPositionCreateEdit = props => {
 		currentStudioId,
 		characteristics,
 		type,
-		showCheckboxCreationReceipt,
 		shopLinkVisible,
 		isLoadingCharacteristics,
 		formikProps: { errors, isSubmitting, setFieldValue, touched, values },
@@ -227,22 +225,6 @@ const FormPositionCreateEdit = props => {
 						</Grid>
 					</Grid>
 				</Grid>
-
-				{type === 'create' && showCheckboxCreationReceipt ? (
-					<Grid alignItems="center" style={{ margin: '-2px 0 0', paddingLeft: 157 }} container>
-						<Field
-							type="checkbox"
-							name="createReceiptAfterPositionCreate"
-							Label={{ label: 'Создать поступление после позиции' }}
-							as={CheckboxWithLabel}
-						/>
-						<Tooltip title={<div style={{ maxWidth: 200 }}>текст который ничем не может помочь</div>} placement="bottom">
-							<div className={styles.helpIcon} style={{ marginLeft: 10 }}>
-								<FontAwesomeIcon icon={['fal', 'question-circle']} fixedWidth />
-							</div>
-						</Tooltip>
-					</Grid>
-				) : null}
 
 				<Divider style={{ margin: '8px 0 20px' }} />
 

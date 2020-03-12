@@ -17,12 +17,15 @@ const WriteOff = props => {
 	return (
 		<TableRow className={styles.writeOff}>
 			<TableCell width={280}>
-				<PositionNameInList name={writeOff.position.name} characteristics={writeOff.position.characteristics} />
+				<a className={styles.positionLink} href={`/availability/${writeOff.position._id}`} target="_blank" rel="noreferrer noopener">
+					<PositionNameInList name={writeOff.position.name} characteristics={writeOff.position.characteristics} />
+				</a>
 			</TableCell>
-			<TableCell align="right" width={125}>
+			<TableCell />
+			<TableCell align="right" width={160}>
 				{writeOff.quantity} {writeOff.position.unitRelease === 'pce' ? 'шт.' : 'уп.'}
 			</TableCell>
-			<TableCell align="right" width={125}>
+			<TableCell align="right" width={140}>
 				<NumberFormat
 					value={formatNumber(writeOff.unitSellingPrice, { toString: true })}
 					renderText={value => value}
@@ -30,7 +33,7 @@ const WriteOff = props => {
 					{...currencyMoneyFormatProps}
 				/>
 			</TableCell>
-			<TableCell align="right" width={125}>
+			<TableCell align="right" width={140}>
 				<NumberFormat
 					value={formatNumber(writeOff.sellingPrice, { toString: true })}
 					renderText={value => value}

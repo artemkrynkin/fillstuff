@@ -19,11 +19,13 @@ const Receipt = props => {
 	return (
 		<TableRow>
 			<TableCell width={280}>
-				<PositionNameInList
-					name={receipt.position.name}
-					characteristics={receipt.position.characteristics}
-					isArchived={receipt.position.isArchived}
-				/>
+				<a className={styles.positionLink} href={`/availability/${receipt.position._id}`} target="_blank" rel="noreferrer noopener">
+					<PositionNameInList
+						name={receipt.position.name}
+						characteristics={receipt.position.characteristics}
+						isArchived={receipt.position.isArchived}
+					/>
+				</a>
 			</TableCell>
 			<TableCell />
 			<TableCell align="right" width={160}>

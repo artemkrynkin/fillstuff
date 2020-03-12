@@ -19,7 +19,9 @@ const Payment = props => {
 			<TableCell>
 				<AvatarTitle className={styles.avatar} imageSrc={payment.merchant.user.avatar} title={payment.merchant.user.name} />
 			</TableCell>
-			<TableCell align="right">
+			<TableCell>{moment(payment.date).format('DD MMMM YYYY')}</TableCell>
+			<TableCell />
+			<TableCell align="right" width={140}>
 				<NumberFormat
 					value={formatNumber(payment.amount, { toString: true })}
 					renderText={value => value}
@@ -27,7 +29,6 @@ const Payment = props => {
 					{...currencyMoneyFormatProps}
 				/>
 			</TableCell>
-			<TableCell align="right">{moment(payment.date).format('DD MMMM YYYY')}</TableCell>
 		</TableRow>
 	);
 };

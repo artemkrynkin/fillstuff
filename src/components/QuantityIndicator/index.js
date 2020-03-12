@@ -34,6 +34,7 @@ const QuantityIndicator = props => {
 	const { type, dividedPositions, divided, unitReceipt, unitRelease, minimumBalance, receipts, positions } = props;
 
 	let quantity;
+	let quantityPackages;
 
 	if (type === 'positionGroup' && !positions.length) return null;
 
@@ -43,6 +44,7 @@ const QuantityIndicator = props => {
 		}, 0);
 	} else {
 		quantity = receipts.reduce((sum, receipt) => sum + receipt.quantity, 0);
+		quantityPackages = receipts.reduce((sum, receipt) => sum + receipt.quantityPackages, 0);
 	}
 
 	if (type === 'positionGroup') {
@@ -71,9 +73,9 @@ const QuantityIndicator = props => {
 			<div className={qiClasses(dividedPositions)}>
 				{!dividedPositions ? (
 					<div>
-						<span className={styles.quantity}>{quantity + ' ' + unitReleaseGroupTransform}</span>
+						<span className={styles.quantity}>{`${quantity} ${unitReleaseGroupTransform}`}</span>
 						<span className={styles.minimumBalance} style={{ marginLeft: 5 }}>
-							{'/ ' + minimumBalance}
+							{`/ ${minimumBalance}`}
 						</span>
 						<span className={qiCircleClasses(quantity, minimumBalance)} />
 					</div>
@@ -97,14 +99,22 @@ const QuantityIndicator = props => {
 	}
 
 	if (type === 'position' || type === 'receipt') {
+		const unitReceiptTransform = unitReceipt === 'pce' ? 'шт.' : 'уп.';
 		const unitReleaseTransform = unitReceipt === 'pce' ? 'шт.' : unitRelease === 'pce' ? 'шт.' : 'уп.';
 
 		return receipts.length ? (
 			<div>
-				<span className={styles.quantity}>{quantity + ' ' + unitReleaseTransform}</span>
+				<span className={styles.quantity}>
+					{`${quantity} ${unitReleaseTransform}`}
+					{type === 'receipt' && unitReceipt === 'nmp' && unitRelease === 'pce' ? (
+						<span className={styles.minimumBalance} style={{ marginLeft: 5 }}>
+							{`/ ${quantityPackages} ${unitReceiptTransform}`}
+						</span>
+					) : null}
+				</span>
 				{divided ? (
 					<span className={styles.minimumBalance} style={{ marginLeft: 5 }}>
-						{'/ ' + minimumBalance}
+						{`/ ${minimumBalance}`}
 					</span>
 				) : null}
 				{divided && type === 'position' ? <span className={qiCircleClasses(quantity, minimumBalance)} /> : null}

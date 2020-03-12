@@ -36,11 +36,13 @@ const WriteOff = props => {
 				<AvatarTitle imageSrc={writeOff.member.user.avatar} title={writeOff.member.user.name} />
 			</TableCell>
 			<TableCell>
-				<PositionNameInList
-					name={writeOff.position.name}
-					characteristics={writeOff.position.characteristics}
-					canceled={writeOff.canceled}
-				/>
+				<a className={styles.positionLink} href={`/availability/${writeOff.position._id}`} target="_blank" rel="noreferrer noopener">
+					<PositionNameInList
+						name={writeOff.position.name}
+						characteristics={writeOff.position.characteristics}
+						canceled={writeOff.canceled}
+					/>
+				</a>
 			</TableCell>
 			<TableCell align="right" width={115}>
 				{writeOff.quantity} {writeOff.position.unitRelease === 'pce' ? 'шт.' : 'уп.'}

@@ -53,3 +53,9 @@
 .receipts {
   border-top: 1px solid var(--c-hex-br-5);
 }
+
+.positionLink {
+  display: block;
+  margin: -9px 0;
+  padding: 9px 0;
+}

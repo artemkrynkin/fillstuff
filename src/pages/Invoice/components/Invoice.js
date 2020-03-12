@@ -151,13 +151,14 @@ class Invoice extends Component {
 							<TableHead>
 								<TableRow>
 									<TableCell width={280}>Позиция</TableCell>
-									<TableCell align="right" width={125}>
+									<TableCell />
+									<TableCell align="right" width={160}>
 										Количество
 									</TableCell>
-									<TableCell align="right" width={125}>
-										Цена продажи
+									<TableCell align="right" width={140}>
+										Цена
 									</TableCell>
-									<TableCell align="right" width={125}>
+									<TableCell align="right" width={140}>
 										Сумма
 									</TableCell>
 								</TableRow>
@@ -173,8 +174,11 @@ class Invoice extends Component {
 							<TableHead>
 								<TableRow>
 									<TableCell>Принял</TableCell>
-									<TableCell align="right">Сумма</TableCell>
-									<TableCell align="right">Дата</TableCell>
+									<TableCell>Дата</TableCell>
+									<TableCell />
+									<TableCell align="right" width={140}>
+										Сумма
+									</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableBody>

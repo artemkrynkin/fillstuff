@@ -21,8 +21,6 @@ const MemberCard = props => {
 	const [MemberInvitationOrLogin, setDialogMemberInvitationOrLogin] = useState(false);
 
 	const onOpenDialogMemberInvitationOrLogin = async () => {
-		// await props.getPositions();
-
 		setDialogMemberInvitationOrLogin(true);
 	};
 

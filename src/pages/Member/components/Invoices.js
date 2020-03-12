@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import ClassNames from 'classnames';
@@ -49,8 +48,7 @@ const statusColorClasses = status =>
 
 const Invoices = props => {
 	const { member, invoicesData, updateMember, getInvoices } = props;
-	const showInitialInvoices = 3;
-	const [showAllInvoices, setShowAllInvoices] = useState(false);
+	const [showInvoices, setShowInvoices] = useState(3);
 
 	const createInvoice = () => {
 		props.createInvoice().then(response => {
@@ -63,11 +61,13 @@ const Invoices = props => {
 
 	const nextBillingDateIsCurrentYear = momentDate.isSame(member.nextBillingDate, 'year');
 
-	const onShowAllInvoices = () => setShowAllInvoices(true);
+	const onShowInvoices = length => setShowInvoices(length);
 
 	return (
 		<div>
-			<div className={styles.title}>Задолженность</div>
+			<Typography variant="h6" gutterBottom>
+				Задолженность
+			</Typography>
 			<Grid className={styles.debt} container>
 				<Grid xs={2} item>
 					<div className={styles.debtTitle}>Общая</div>
@@ -101,7 +101,9 @@ const Invoices = props => {
 
 			<Divider style={{ margin: '30px -15px' }} />
 
-			<div className={styles.title}>Выставленные счета</div>
+			<Typography variant="h6" gutterBottom>
+				Выставленные счета
+			</Typography>
 			<div className={styles.invoices}>
 				{invoicesData && invoicesData.status === 'success' && invoicesData.data.length ? (
 					<div>
@@ -120,7 +122,7 @@ const Invoices = props => {
 								{invoicesData.data.map((invoice, index) => {
 									const isCurrentYear = momentDate.isSame(invoice.createdAt, 'year');
 
-									if (!showAllInvoices && index >= showInitialInvoices) return null;
+									if (index + 1 > showInvoices) return null;
 
 									return (
 										<TableRow key={invoice._id}>
@@ -128,9 +130,9 @@ const Invoices = props => {
 												{moment(invoice.createdAt).format(isCurrentYear ? 'D MMMM в HH:mm' : 'D MMMM YYYY')}
 											</TableCell>
 											<TableCell width={240}>
-												<Link className={styles.buttonLink} to={`/invoices/${invoice._id}`} target="_blank" rel="noreferrer noopener">
+												<a className={styles.buttonLink} href={`/invoices/${invoice._id}`} target="_blank" rel="noreferrer noopener">
 													{moment(invoice.fromDate).format('DD.MM.YYYY')} &ndash; {moment(invoice.toDate).format('DD.MM.YYYY')}
-												</Link>
+												</a>
 											</TableCell>
 											<TableCell width={140}>
 												<span className={statusColorClasses(invoice.status)}>{statusTransform(invoice.status)}</span>
@@ -148,9 +150,9 @@ const Invoices = props => {
 								})}
 							</TableBody>
 						</Table>
-						{!showAllInvoices && invoicesData.data.length > showInitialInvoices ? (
+						{invoicesData.data.length > showInvoices ? (
 							<Grid justify="center" container>
-								<Button onClick={onShowAllInvoices} variant="outlined" style={{ marginTop: 25 }}>
+								<Button onClick={() => onShowInvoices(invoicesData.data.length)} variant="outlined" style={{ marginTop: 25 }}>
 									Показать все счета
 								</Button>
 							</Grid>

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import ClassNames from 'classnames';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import ButtonBase from '@material-ui/core/ButtonBase';
 import TableRow from '@material-ui/core/TableRow';
 import IconButton from '@material-ui/core/IconButton';
 import MenuList from '@material-ui/core/MenuList';
@@ -93,9 +94,7 @@ const Position = props => {
 			) : null}
 			{!position.receipts.length ? (
 				<TableCell align="left" colSpan={2} width={280}>
-					<span className={styles.caption} style={{ marginLeft: 17 }}>
-						Нет поступлений
-					</span>
+					<ButtonBase className={styles.createReceipt}>Создать поступление</ButtonBase>
 				</TableCell>
 			) : null}
 			<TableCell align="right" width={50} style={{ padding: '0 7px' }}>
@@ -159,15 +158,6 @@ const Position = props => {
 						>
 							Генерация QR-кода
 						</MenuItem>
-						{!position.activeReceipt && !position.receipts.length ? (
-							<MenuItem
-								onClick={() => {
-									onHandleDropdownActions();
-								}}
-							>
-								Добавить поступление
-							</MenuItem>
-						) : null}
 						<MenuItem
 							onClick={() => {
 								onHandleDropdownActions();
@@ -182,7 +172,7 @@ const Position = props => {
 								onOpenDialogPosition('dialogPositionArchive', position);
 							}}
 						>
-							Архивировать
+							{position.receipts.length ? 'Архивировать' : 'Удалить'}
 						</MenuItem>
 					</MenuList>
 				</Dropdown>

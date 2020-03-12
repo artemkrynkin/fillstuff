@@ -112,7 +112,7 @@ const PositionDetails = props => {
 									// onOpenDialogPosition('dialogPositionArchive', position);
 								}}
 							>
-								Архивировать
+								{position.receipts.length ? 'Архивировать' : 'Удалить'}
 							</MenuItem>
 						</MenuList>
 					</Dropdown>

@@ -49,7 +49,7 @@ class DialogWriteOffCreate extends Component {
 			<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth="md" scroll="body">
 				<DialogTitle onClose={onCloseDialog}>Списание количества</DialogTitle>
 				<Formik
-					initialValues={{ quantity: '' }}
+					initialValues={{ quantity: '', purchaseExpenseStudio: true }}
 					validationSchema={writeOffSchema}
 					validateOnBlur={false}
 					validateOnChange={false}

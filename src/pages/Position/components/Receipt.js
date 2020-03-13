@@ -58,16 +58,20 @@ const Receipt = props => {
 		<TableRow>
 			<TableCell>{moment(receipt.createdAt).format(isCurrentYear ? 'D MMMM в HH:mm' : 'D MMMM YYYY')}</TableCell>
 			<TableCell>
-				<Link className={styles.buttonLink} to={`/procurements/${receipt.procurement._id}`}>
-					{!receipt.procurement.noInvoice ? (
-						<div>
-							<span>№</span>
-							{receipt.procurement.number}
-						</div>
-					) : (
-						'Чек/накладная отсутствует'
-					)}
-				</Link>
+				{receipt.procurement ? (
+					<Link className={styles.buttonLink} to={`/procurements/${receipt.procurement._id}`}>
+						{!receipt.procurement.noInvoice ? (
+							<div>
+								<span>№</span>
+								{receipt.procurement.number}
+							</div>
+						) : (
+							'Чек/накладная отсутствует'
+						)}
+					</Link>
+				) : (
+					<span className={styles.caption}>Закупка отсутствует</span>
+				)}
 			</TableCell>
 			<TableCell>
 				<span className={statusColorClasses(receipt.status)}>{statusTransform(receipt.status)}</span>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import TableRow from '@material-ui/core/TableRow';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -9,9 +10,9 @@ import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFor
 import PositionNameInList from 'src/components/PositionNameInList';
 import QuantityIndicator from 'src/components/QuantityIndicator';
 
-import styles from './Procurement.module.css';
-
 import { TableCell, TableCellHighlight, TableRowHighlight } from './styles';
+
+import styles from './Receipt.module.css';
 
 const Receipt = props => {
 	const { receipt, positionSameFilter } = props;
@@ -21,21 +22,21 @@ const Receipt = props => {
 	return (
 		<TableRow classes={positionSameFilter ? { root: TableRowHighlightClasses.root } : {}}>
 			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} width={280}>
-				<a className={styles.positionLink} href={`/availability/${receipt.position._id}`} target="_blank" rel="noreferrer noopener">
+				<Link className={styles.positionLink} to={`/availability/${receipt.position._id}`}>
 					<PositionNameInList
 						name={receipt.position.name}
 						characteristics={receipt.position.characteristics}
 						isArchived={receipt.position.isArchived}
 					/>
-				</a>
+				</Link>
 			</TableCell>
 			<TableCell />
-			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="right" width={160}>
+			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="right" width={200}>
 				<QuantityIndicator
 					type="receipt"
 					unitReceipt={receipt.position.unitReceipt}
 					unitRelease={receipt.position.unitRelease}
-					receipts={[{ ...receipt.initial }]}
+					receipts={[!receipt.quantityInUnit ? { ...receipt.initial } : { ...receipt.initial, quantityInUnit: receipt.quantityInUnit }]}
 				/>
 			</TableCell>
 			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="right" width={140}>

@@ -89,7 +89,7 @@ class Procurement extends Component {
 								<TableRow>
 									<TableCell width={280}>Позиция</TableCell>
 									<TableCell />
-									<TableCell align="right" width={160}>
+									<TableCell align="right" width={200}>
 										Количество
 									</TableCell>
 									<TableCell align="right" width={140}>

@@ -1,0 +1,57 @@
+.buttonLink {
+  background: none;
+  border: none;
+  color: var(--c-hex-t-500);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.buttonLink:hover {
+  color: var(--c-hex-t-400);
+}
+
+.status {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.statusRed {
+  color: var(--c-hex-o-1);
+}
+
+.statusGreen {
+  color: var(--c-hex-t-A700);
+}
+
+.statusYellow {
+  color: var(--c-hex-o-14);
+}
+
+.statusOrange {
+  color: var(--c-hex-o-15);
+}
+
+.caption {
+  color: var(--c-hex-bg-300);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.sellingPrice {
+  display: flex;
+  align-items: center;
+}
+
+.changeSellingPrice {
+  color: var(--c-hex-t-300);
+  margin-right: 10px;
+  padding: 4px;
+}
+
+.changeSellingPrice:hover {
+  color: var(--c-hex-t-400);
+}
+
+.changeSellingPrice svg {
+  font-size: 12px;
+}

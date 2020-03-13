@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import TableRow from '@material-ui/core/TableRow';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -9,9 +10,9 @@ import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFor
 import PositionNameInList from 'src/components/PositionNameInList';
 import QuantityIndicator from 'src/components/QuantityIndicator';
 
-import styles from './Procurement.module.css';
-
 import { TableCell } from './styles';
+
+import styles from './Receipt.module.css';
 
 const Receipt = props => {
 	const { receipt } = props;
@@ -19,21 +20,21 @@ const Receipt = props => {
 	return (
 		<TableRow>
 			<TableCell width={280}>
-				<a className={styles.positionLink} href={`/availability/${receipt.position._id}`} target="_blank" rel="noreferrer noopener">
+				<Link className={styles.positionLink} to={`/availability/${receipt.position._id}`}>
 					<PositionNameInList
 						name={receipt.position.name}
 						characteristics={receipt.position.characteristics}
 						isArchived={receipt.position.isArchived}
 					/>
-				</a>
+				</Link>
 			</TableCell>
 			<TableCell />
-			<TableCell align="right" width={160}>
+			<TableCell align="right" width={200}>
 				<QuantityIndicator
 					type="receipt"
 					unitReceipt={receipt.position.unitReceipt}
 					unitRelease={receipt.position.unitRelease}
-					receipts={[{ ...receipt.initial }]}
+					receipts={[!receipt.quantityInUnit ? { ...receipt.initial } : { ...receipt.initial, quantityInUnit: receipt.quantityInUnit }]}
 				/>
 			</TableCell>
 			<TableCell align="right" width={140}>

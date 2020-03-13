@@ -13,7 +13,7 @@ import { LoadingComponent } from 'src/components/Loading';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 
 import { getPosition } from 'src/actions/positions';
-import { getReceiptsPosition } from 'src/actions/receipts';
+import { getReceiptsPosition, changeReceiptPosition } from 'src/actions/receipts';
 
 import stylesPage from 'src/styles/page.module.css';
 import styles from './index.module.css';
@@ -31,6 +31,27 @@ class Position extends Component {
 	getReceipts = () => {
 		this.props.getReceiptsPosition().then(response => {
 			this.setState({ receiptsData: response });
+		});
+	};
+
+	changeSellingPriceReceipt = (receiptId, values, callback) => {
+		this.props.changeReceiptPosition({ receiptId }, values).then(response => {
+			const receiptEdited = response.data;
+
+			const newReceiptsData = {
+				status: 'success',
+				data: this.state.receiptsData.data.slice().map(receipt => {
+					if (receipt._id === receiptEdited._id) {
+						return receiptEdited;
+					} else {
+						return receipt;
+					}
+				}),
+			};
+
+			this.setState({ receiptsData: newReceiptsData });
+
+			callback();
 		});
 	};
 
@@ -83,7 +104,12 @@ class Position extends Component {
 				<Header pageName={metaInfo.pageName} pageTitle="В наличии" pageParams={pageParams} />
 				<div className={`${stylesPage.pageContent} ${styles.container}`}>
 					<div className={styles.wrapper}>
-						<Index currentStudio={currentStudio} positionData={positionData} receiptsData={receiptsData} getReceipts={this.getReceipts} />
+						<Index
+							currentStudio={currentStudio}
+							positionData={positionData}
+							receiptsData={receiptsData}
+							changeSellingPriceReceipt={this.changeSellingPriceReceipt}
+						/>
 					</div>
 				</div>
 			</div>
@@ -101,6 +127,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
 		getPosition: () => dispatch(getPosition({ params: { positionId } })),
 		getReceiptsPosition: () => dispatch(getReceiptsPosition({ params: { positionId } })),
+		changeReceiptPosition: (params, data) => dispatch(changeReceiptPosition({ params, data })),
 	};
 };
 

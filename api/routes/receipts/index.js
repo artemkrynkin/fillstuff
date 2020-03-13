@@ -33,6 +33,43 @@ receiptsRouter.post(
 );
 
 receiptsRouter.post(
+	'/changeReceiptPosition',
+	isAuthedResolver,
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
+	async (req, res, next) => {
+		const {
+			params: { receiptId },
+			data: receiptEdited,
+		} = req.body;
+
+		const receipt = await Receipt.findById(receiptId).catch(err => next({ code: 2, err }));
+
+		receipt.sellingPrice = receiptEdited.sellingPrice;
+		receipt.unitSellingPrice = receiptEdited.unitSellingPrice;
+		receipt.markupPercent = receiptEdited.markupPercent;
+		receipt.markup = receiptEdited.markup;
+		receipt.unitMarkup = receiptEdited.unitMarkup;
+		receipt.manualMarkup = receiptEdited.manualMarkup;
+		receipt.unitManualMarkup = receiptEdited.unitManualMarkup;
+
+		const receiptErr = receipt.validateSync();
+
+		if (receiptErr) return next({ code: receiptErr.errors ? 5 : 2, err: receiptErr });
+
+		await Promise.all([receipt.save()]);
+
+		Receipt.findById(receipt._id)
+			.populate([
+				{
+					path: 'procurement',
+				},
+			])
+			.then(receipt => res.json(receipt))
+			.catch(err => next({ code: 2, err }));
+	}
+);
+
+receiptsRouter.post(
 	'/activeReceiptAddQuantity',
 	isAuthedResolver,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),

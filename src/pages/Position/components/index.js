@@ -8,7 +8,7 @@ import PositionDetails from './PositionDetails';
 import Receipts from './Receipts';
 
 const Index = props => {
-	const { positionData, receiptsData, getReceipts } = props;
+	const { positionData, receiptsData, changeSellingPriceReceipt } = props;
 
 	if (!positionData || !positionData.data) return <div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />;
 
@@ -19,7 +19,7 @@ const Index = props => {
 			<Grid container direction="row" justify="center" alignItems="flex-start" spacing={2}>
 				<Grid item xs={12}>
 					<PositionDetails position={position} />
-					<Receipts position={position} receiptsData={receiptsData} getReceipts={getReceipts} />
+					<Receipts position={position} receiptsData={receiptsData} changeSellingPriceReceipt={changeSellingPriceReceipt} />
 				</Grid>
 			</Grid>
 		</Container>

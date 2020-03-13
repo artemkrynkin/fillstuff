@@ -161,33 +161,39 @@ export const receiptCalc = {
 		}
 
 		if (!isNaN(receipt.initial.quantity)) receipt.current.quantity = receipt.initial.quantity;
+
+		return receipt;
 	},
 	unitPurchasePrice: (receipt, { unitReceipt, unitRelease }) => {
 		receipt.unitPurchasePrice =
 			unitReceipt === 'nmp' && unitRelease === 'pce' ? formatNumber(receipt.purchasePrice / receipt.quantityInUnit) : receipt.purchasePrice;
+
+		return receipt;
 	},
 	sellingPrice: (receipt, { isFree }) => {
 		receipt.sellingPrice = 0;
 		receipt.unitSellingPrice = 0;
 
-		if (isFree) return;
+		if (isFree) return receipt;
 
 		receipt.markup = formatNumber(percentOfNumber(receipt.purchasePrice, receipt.markupPercent));
 		receipt.unitMarkup = formatNumber(percentOfNumber(receipt.unitPurchasePrice, receipt.markupPercent));
 
 		receipt.sellingPrice = formatNumber(receipt.purchasePrice + receipt.costDelivery + receipt.markup);
 		receipt.unitSellingPrice = formatNumber(receipt.unitPurchasePrice + receipt.unitCostDelivery + receipt.unitMarkup);
+
+		return receipt;
 	},
 	manualMarkup: (receipt, { isFree, unitReceipt, unitRelease }) => {
 		receipt.manualMarkup = 0;
 		receipt.unitManualMarkup = 0;
 
-		if (isFree) return;
+		if (isFree) return receipt;
 
 		if (unitReceipt === 'nmp' && unitRelease === 'pce') {
 			const autoGenUnitSellingPrice = formatNumber(receipt.unitPurchasePrice + receipt.unitCostDelivery + receipt.unitMarkup);
 
-			if (receipt.unitSellingPrice <= autoGenUnitSellingPrice) return;
+			if (receipt.unitSellingPrice < autoGenUnitSellingPrice) return receipt;
 
 			receipt.unitSellingPrice = formatNumber(receipt.unitSellingPrice);
 
@@ -198,7 +204,7 @@ export const receiptCalc = {
 		} else {
 			const autoGenSellingPrice = formatNumber(receipt.purchasePrice + receipt.costDelivery + receipt.markup);
 
-			if (receipt.sellingPrice <= autoGenSellingPrice) return;
+			if (receipt.sellingPrice < autoGenSellingPrice) return receipt;
 
 			receipt.sellingPrice = formatNumber(receipt.sellingPrice);
 
@@ -207,5 +213,7 @@ export const receiptCalc = {
 
 			receipt.unitSellingPrice = formatNumber(autoGenSellingPrice + receipt.unitManualMarkup);
 		}
+
+		return receipt;
 	},
 };

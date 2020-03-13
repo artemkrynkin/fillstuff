@@ -12,6 +12,7 @@ import {
 	faUserAlt as fasUserAlt,
 	faCheckSquare as fasCheckSquare,
 	faWallet as fasWallet,
+	faPen as falPen,
 } from '@fortawesome/pro-solid-svg-icons';
 
 import {
@@ -92,6 +93,7 @@ library.add(
 	fasUserAlt,
 	fasCheckSquare,
 	fasWallet,
+	falPen,
 
 	// Regular
 	farAngleLeft,

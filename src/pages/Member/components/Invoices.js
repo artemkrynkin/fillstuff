@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import ClassNames from 'classnames';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
@@ -14,37 +13,16 @@ import TableBody from '@material-ui/core/TableBody';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
-import { formatNumber } from 'shared/utils';
-
 import Money from 'src/components/Money';
-import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
 
 import { createInvoice } from 'src/actions/invoices';
+
+import Invoice from './Invoice';
 
 import { TableCell } from './styles';
 import styles from './Invoices.module.css';
 
 const momentDate = moment();
-
-const statusTransform = status => {
-	switch (status) {
-		case 'paid':
-			return 'Оплачен';
-		case 'partially-paid':
-			return 'Частично оплачен';
-		case 'unpaid':
-		default:
-			return 'Не оплачен';
-	}
-};
-
-const statusColorClasses = status =>
-	ClassNames({
-		[styles.status]: true,
-		[styles.statusRed]: status === 'unpaid',
-		[styles.statusYellow]: status === 'partially-paid',
-		[styles.statusGreen]: status === 'paid',
-	});
 
 const Invoices = props => {
 	const { member, invoicesData, updateMember, getInvoices } = props;
@@ -120,33 +98,9 @@ const Invoices = props => {
 							</TableHead>
 							<TableBody>
 								{invoicesData.data.map((invoice, index) => {
-									const isCurrentYear = momentDate.isSame(invoice.createdAt, 'year');
-
 									if (index + 1 > showInvoices) return null;
 
-									return (
-										<TableRow key={invoice._id}>
-											<TableCell width={200}>
-												{moment(invoice.createdAt).format(isCurrentYear ? 'D MMMM в HH:mm' : 'D MMMM YYYY')}
-											</TableCell>
-											<TableCell width={240}>
-												<a className={styles.buttonLink} href={`/invoices/${invoice._id}`} target="_blank" rel="noreferrer noopener">
-													{moment(invoice.fromDate).format('DD.MM.YYYY')} &ndash; {moment(invoice.toDate).format('DD.MM.YYYY')}
-												</a>
-											</TableCell>
-											<TableCell width={140}>
-												<span className={statusColorClasses(invoice.status)}>{statusTransform(invoice.status)}</span>
-											</TableCell>
-											<TableCell align="right" width={140}>
-												<NumberFormat
-													value={formatNumber(invoice.amount, { toString: true })}
-													renderText={value => value}
-													displayType="text"
-													{...currencyMoneyFormatProps}
-												/>
-											</TableCell>
-										</TableRow>
-									);
+									return <Invoice key={invoice._id} invoice={invoice} />;
 								})}
 							</TableBody>
 						</Table>

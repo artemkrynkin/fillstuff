@@ -33,8 +33,9 @@ const compareQuantity = (a, b) => {
 const QuantityIndicator = props => {
 	const { type, dividedPositions, divided, unitReceipt, unitRelease, minimumBalance, receipts, positions } = props;
 
-	let quantity;
-	let quantityPackages;
+	let quantity = 0;
+	let quantityPackages = 0;
+	let quantityInUnit = 0;
 
 	if (type === 'positionGroup' && !positions.length) return null;
 
@@ -43,8 +44,12 @@ const QuantityIndicator = props => {
 			return sum + position.receipts.reduce((sum, receipt) => sum + receipt.current.quantity, 0);
 		}, 0);
 	} else {
-		quantity = receipts.reduce((sum, receipt) => sum + receipt.quantity, 0);
-		quantityPackages = receipts.reduce((sum, receipt) => sum + receipt.quantityPackages, 0);
+		receipts.forEach(receipt => {
+			quantity += receipt.quantity;
+
+			if (receipt.quantityPackages) quantityPackages += receipt.quantityPackages;
+			if (receipt.quantityInUnit) quantityInUnit = receipt.quantityInUnit;
+		});
 	}
 
 	if (type === 'positionGroup') {
@@ -99,18 +104,17 @@ const QuantityIndicator = props => {
 	}
 
 	if (type === 'position' || type === 'receipt') {
-		const unitReceiptTransform = unitReceipt === 'pce' ? 'шт.' : 'уп.';
 		const unitReleaseTransform = unitReceipt === 'pce' ? 'шт.' : unitRelease === 'pce' ? 'шт.' : 'уп.';
 
 		return receipts.length ? (
 			<div>
 				<span className={styles.quantity}>
-					{`${quantity} ${unitReleaseTransform}`}
 					{type === 'receipt' && unitReceipt === 'nmp' && unitRelease === 'pce' ? (
-						<span className={styles.minimumBalance} style={{ marginLeft: 5 }}>
-							{`/ ${quantityPackages} ${unitReceiptTransform}`}
+						<span className={styles.minimumBalance} style={{ marginRight: 5 }}>
+							{`${quantityPackages} уп. по ${quantityInUnit} шт.`}
 						</span>
 					) : null}
+					{`${quantity} ${unitReleaseTransform}`}
 				</span>
 				{divided ? (
 					<span className={styles.minimumBalance} style={{ marginLeft: 5 }}>

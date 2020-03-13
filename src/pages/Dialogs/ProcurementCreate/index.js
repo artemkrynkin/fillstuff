@@ -182,8 +182,6 @@ class ProcurementCreate extends Component {
 
 			// Формируем цену покупки единицы и цену продажи
 			procurement.receipts.forEach(receipt => {
-				console.log(receipt.markup, receipt.unitMarkup);
-
 				receiptCalc.unitPurchasePrice(receipt, {
 					unitReceipt: receipt.position.unitReceipt,
 					unitRelease: receipt.position.unitRelease,

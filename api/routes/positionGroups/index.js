@@ -91,7 +91,6 @@ positionGroupsRouter.post(
 				{
 					$set: {
 						positionGroup: newPositionGroup._id,
-						divided: newPositionGroup.dividedPositions,
 					},
 				}
 			),
@@ -136,24 +135,12 @@ positionGroupsRouter.post(
 			.catch(err => next({ code: 2, err }));
 
 		positionGroup.name = positionGroupEdited.name;
-		positionGroup.dividedPositions = positionGroupEdited.dividedPositions;
-		positionGroup.minimumBalance = positionGroupEdited.minimumBalance;
 
 		const positionGroupErr = positionGroup.validateSync();
 
 		if (positionGroupErr) return next({ code: positionGroupErr.errors ? 5 : 2, err: positionGroupErr });
 
-		await Promise.all([
-			positionGroup.save(),
-			Position.updateMany(
-				{ _id: { $in: positionGroup.positions } },
-				{
-					$set: {
-						divided: positionGroup.dividedPositions,
-					},
-				}
-			),
-		]);
+		await Promise.all([positionGroup.save()]);
 
 		PositionGroup.findById(positionGroup._id)
 			.populate({
@@ -200,7 +187,6 @@ positionGroupsRouter.post(
 			{
 				$set: {
 					positionGroup: positionGroup._id,
-					divided: positionGroup.dividedPositions,
 				},
 			}
 		).catch(err => next({ code: 2, err }));
@@ -243,7 +229,6 @@ positionGroupsRouter.post(
 			.catch(err => next({ code: 2, err }));
 
 		Position.findByIdAndUpdate(position._id, {
-			$set: { divided: true },
 			$unset: { positionGroup: 1 },
 		}).catch(err => next({ code: 2, err }));
 
@@ -257,7 +242,6 @@ positionGroupsRouter.post(
 			remainingPositionId = position.positionGroup.positions.find(positionId => String(positionId) !== String(position._id));
 
 			Position.findByIdAndUpdate(remainingPositionId, {
-				$set: { divided: true },
 				$unset: { positionGroup: 1 },
 			}).catch(err => next({ code: 2, err }));
 

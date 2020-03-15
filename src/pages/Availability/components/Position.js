@@ -48,7 +48,6 @@ const Position = props => {
 						type="position"
 						unitReceipt={position.unitReceipt}
 						unitRelease={position.unitRelease}
-						divided={position.divided}
 						minimumBalance={position.minimumBalance}
 						receipts={position.receipts.map(receipt => ({ ...receipt.current }))}
 					/>

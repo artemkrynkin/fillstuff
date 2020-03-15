@@ -21,15 +21,6 @@ let PositionGroup = new Schema({
 		ref: 'Studio',
 		required: [true, i18n.__('Обязательное поле')],
 	},
-	dividedPositions: {
-		type: Boolean,
-		default: true,
-	},
-	// Минимальный остаток
-	minimumBalance: {
-		type: Number,
-		min: [1, 'Не может быть меньше 1'],
-	},
 	// Позиции
 	positions: [
 		{

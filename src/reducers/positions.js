@@ -53,7 +53,6 @@ const positions = (
 			if (action.payload.remainingPositionId) {
 				stateData.forEach(position => {
 					if (position._id === action.payload.remainingPositionId) {
-						position.divided = true;
 						delete position.positionGroup;
 					}
 				});
@@ -71,7 +70,6 @@ const positions = (
 			stateData.forEach(position => {
 				if (action.payload.positions.some(positionInGroup => position._id === positionInGroup._id)) {
 					position.positionGroup = action.payload._id;
-					position.divided = action.payload.divided;
 				}
 			});
 
@@ -87,7 +85,6 @@ const positions = (
 			stateData.forEach(position => {
 				if (action.payload.positionsAdded.some(positionAddedId => position._id === positionAddedId)) {
 					position.positionGroup = action.payload.positionGroupId;
-					position.divided = action.payload.positionGroup.divided;
 				}
 			});
 
@@ -105,7 +102,6 @@ const positions = (
 					position._id === action.payload.positionId ||
 					(action.payload.remainingPositionId && position._id === action.payload.remainingPositionId)
 				) {
-					position.divided = true;
 					delete position.positionGroup;
 				}
 			});

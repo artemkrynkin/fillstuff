@@ -8,16 +8,11 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import DialogContent from '@material-ui/core/DialogContent';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Grid from '@material-ui/core/Grid';
-import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
-import Tooltip from '@material-ui/core/Tooltip';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import ToggleButton from '@material-ui/lab/ToggleButton';
 
 import { DialogActions } from 'src/components/Dialog';
-import NumberFormat from 'src/components/NumberFormat';
 import Chips from 'src/components/Chips';
 import PositionNameInList from 'src/components/PositionNameInList';
 
@@ -53,7 +48,7 @@ const FormPositionGroupCreateEditAdd = props => {
 			isFetching: isLoadingAllPositions,
 			// error: errorPositions
 		},
-		formikProps: { errors, isSubmitting, touched, values, setFieldValue },
+		formikProps: { errors, isSubmitting, touched, values },
 	} = props;
 	const searchTextFieldPosition = useRef(null);
 	const [searchTextPosition, setSearchTextPosition] = useState('');
@@ -72,76 +67,22 @@ const FormPositionGroupCreateEditAdd = props => {
 		<Form>
 			<DialogContent style={{ overflow: 'initial' }}>
 				{type === 'create' || type === 'edit' ? (
-					<div>
-						<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
-							<InputLabel error={Boolean(touched.name && errors.name)} style={{ minWidth: 126 }}>
-								Название
-							</InputLabel>
-							<Field
-								name="name"
-								error={Boolean(touched.name && errors.name)}
-								helperText={(touched.name && errors.name) || ''}
-								as={TextField}
-								inputProps={{
-									maxLength: 60,
-								}}
-								autoFocus
-								fullWidth
-							/>
-						</Grid>
-
-						<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
-							<InputLabel
-								error={
-									Boolean(touched.dividedPositions && errors.dividedPositions) || Boolean(touched.minimumBalance && errors.minimumBalance)
-								}
-								style={{ width: 126 }}
-							>
-								Минимальный остаток
-								<Tooltip title={<div style={{ maxWidth: 200 }}>текст который ничем не может помочь</div>} placement="bottom">
-									<div className={styles.helpIcon}>
-										<FontAwesomeIcon icon={['fal', 'question-circle']} fixedWidth />
-									</div>
-								</Tooltip>
-							</InputLabel>
-							<Grid>
-								<Grid className={stylesGlobal.formLabelControl} alignItems="center" container>
-									<ToggleButtonGroup
-										value={values.dividedPositions}
-										onChange={(event, value) => {
-											if (value === null) return;
-
-											setFieldValue('dividedPositions', value);
-										}}
-										size="small"
-										exclusive
-									>
-										<ToggleButton value={false}>Общий для группы</ToggleButton>
-										<ToggleButton value={true}>Раздельный по позициям</ToggleButton>
-									</ToggleButtonGroup>
-								</Grid>
-
-								{!values.dividedPositions && values.dividedPositions !== '' ? (
-									<FormControl>
-										<Field
-											name="minimumBalance"
-											placeholder="0"
-											error={Boolean(touched.minimumBalance && errors.minimumBalance)}
-											helperText={(touched.minimumBalance && errors.minimumBalance) || ''}
-											as={TextField}
-											InputProps={{
-												inputComponent: NumberFormat,
-												inputProps: {
-													allowNegative: false,
-												},
-											}}
-											style={{ width: 130 }}
-										/>
-									</FormControl>
-								) : null}
-							</Grid>
-						</Grid>
-					</div>
+					<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
+						<InputLabel error={Boolean(touched.name && errors.name)} style={{ minWidth: 126 }}>
+							Название
+						</InputLabel>
+						<Field
+							name="name"
+							error={Boolean(touched.name && errors.name)}
+							helperText={(touched.name && errors.name) || ''}
+							as={TextField}
+							inputProps={{
+								maxLength: 60,
+							}}
+							autoFocus
+							fullWidth
+						/>
+					</Grid>
 				) : null}
 
 				{type === 'create' || type === 'add' ? (

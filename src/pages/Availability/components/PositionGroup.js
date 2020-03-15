@@ -63,8 +63,6 @@ const PositionGroup = props => {
 									<TableCellExpansionPanel align="right" width={240}>
 										<QuantityIndicator
 											type="positionGroup"
-											dividedPositions={positionGroup.dividedPositions}
-											minimumBalance={positionGroup.minimumBalance}
 											positions={positionGroup.positions.filter(position => position.activeReceipt && position.receipts.length)}
 										/>
 									</TableCellExpansionPanel>

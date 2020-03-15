@@ -15,9 +15,8 @@ const positionSchema = (depopulate = false) => {
 		minimumBalance: Yup.number()
 			.nullable(true)
 			.transform(value => (isNaN(value) ? null : value))
-			.when('divided', (divided, schema) => {
-				return divided ? schema.min(1).required() : schema;
-			}),
+			.min(1)
+			.required(),
 		isFree: Yup.bool().required(),
 		shopName: Yup.string(),
 		shopLink: Yup.string(),

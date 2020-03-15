@@ -4,11 +4,10 @@ import ClassNames from 'classnames';
 
 import styles from './index.module.css';
 
-const qiClasses = dividedPositions =>
-	ClassNames({
-		[styles.container]: dividedPositions,
-		[styles.disappearing]: dividedPositions,
-	});
+const qiClasses = ClassNames({
+	[styles.container]: true,
+	[styles.disappearing]: true,
+});
 
 const qiCircleClasses = (quantity, minimumBalance) =>
 	ClassNames({
@@ -25,7 +24,7 @@ const compareQuantity = (a, b) => {
 };
 
 const QuantityIndicator = props => {
-	const { type, dividedPositions, divided, unitReceipt, unitRelease, minimumBalance, receipts, positions } = props;
+	const { type, unitReceipt, unitRelease, minimumBalance, receipts, positions } = props;
 
 	let quantity = 0;
 	let quantityPackages = 0;
@@ -47,28 +46,13 @@ const QuantityIndicator = props => {
 	}
 
 	if (type === 'positionGroup') {
-		const unitReleaseGroup = positions.reduce((unitRelease, position) => {
-			return !unitRelease ? position.unitRelease : unitRelease !== position.unitRelease ? 'units' : unitRelease;
-		}, '');
-		const unitReleaseGroupTransform = unitReleaseGroup === 'pce' ? 'шт.' : unitReleaseGroup === 'nmp' ? 'уп.' : 'ед.';
-
 		const positionExpiring = positions.length ? positions.slice(0).sort(compareQuantity)[0] : undefined;
 		const receiptExpiringQuantity =
 			positionExpiring && positionExpiring.receipts.reduce((sum, receipt) => sum + receipt.current.quantity, 0);
 
 		return (
-			<div className={qiClasses(dividedPositions)}>
-				{!dividedPositions ? (
-					<div>
-						<span>{`${quantity} ${unitReleaseGroupTransform}`}</span>
-						<span className={styles.minimumBalance} style={{ marginLeft: 5 }}>
-							{`/ ${minimumBalance}`}
-						</span>
-						<span className={qiCircleClasses(quantity, minimumBalance)} />
-					</div>
-				) : (
-					<span className={qiCircleClasses(receiptExpiringQuantity, positionExpiring.minimumBalance)} />
-				)}
+			<div className={qiClasses}>
+				<span className={qiCircleClasses(receiptExpiringQuantity, positionExpiring.minimumBalance)} />
 			</div>
 		);
 	}
@@ -86,12 +70,10 @@ const QuantityIndicator = props => {
 				) : (
 					`${quantity} ${unitReleaseTransform}`
 				)}
-				{divided ? (
-					<span className={styles.minimumBalance} style={{ marginLeft: 5 }}>
-						{`/ ${minimumBalance}`}
-					</span>
-				) : null}
-				{divided && type === 'position' ? <span className={qiCircleClasses(quantity, minimumBalance)} /> : null}
+				<span className={styles.minimumBalance} style={{ marginLeft: 5 }}>
+					{`/ ${minimumBalance}`}
+				</span>
+				<span className={qiCircleClasses(quantity, minimumBalance)} />
 			</div>
 		) : (
 			'-'
@@ -101,7 +83,6 @@ const QuantityIndicator = props => {
 
 QuantityIndicator.propTypes = {
 	children: PropTypes.node,
-	dividedPositions: PropTypes.bool,
 	type: PropTypes.oneOf(['positionGroup', 'position', 'receipt', 'procurementReceipt']).isRequired,
 	unitReceipt: PropTypes.oneOf(['pce', 'nmp']),
 	unitRelease: PropTypes.oneOf(['pce', 'nmp']),

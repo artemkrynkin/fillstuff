@@ -199,7 +199,7 @@ positionsRouter.post(
 
 		if (position.receipts.length) {
 			Position.findByIdAndUpdate(position._id, {
-				$set: { isArchived: true, divided: true },
+				$set: { isArchived: true },
 				$unset: { positionGroup: 1 },
 			}).catch(err => next({ code: 2, err }));
 		} else {
@@ -215,7 +215,6 @@ positionsRouter.post(
 				remainingPositionId = position.positionGroup.positions.find(positionId => String(positionId) !== String(position._id));
 
 				Position.findByIdAndUpdate(remainingPositionId, {
-					$set: { divided: true },
 					$unset: { positionGroup: 1 },
 				}).catch(err => next({ code: 2, err }));
 

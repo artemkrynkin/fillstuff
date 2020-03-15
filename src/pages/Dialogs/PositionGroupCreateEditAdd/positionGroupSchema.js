@@ -10,13 +10,6 @@ const positionGroupSchema = (type, depopulate = false) => {
 						.required()
 				: schema;
 		}),
-		dividedPositions: Yup.bool().required(),
-		minimumBalance: Yup.number()
-			.nullable(true)
-			.transform(value => (isNaN(value) ? null : value))
-			.when('dividedPositions', (dividedPositions, schema) => {
-				return type !== 'add' && !dividedPositions ? schema.min(1).required() : schema.strip();
-			}),
 		positions: Yup.array()
 			.min(
 				type !== 'add' ? 2 : 1,

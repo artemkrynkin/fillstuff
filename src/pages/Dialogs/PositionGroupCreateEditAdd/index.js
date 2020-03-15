@@ -57,26 +57,15 @@ class DialogPositionGroupCreateEditAdd extends Component {
 	render() {
 		const { type, dialogOpen, onCloseDialog, positions, selectedPositionGroup } = this.props;
 
-		if ((type === 'edit' || type === 'add') && !selectedPositionGroup) return null;
+		if (/edit|add/.test(type) && !selectedPositionGroup) return null;
 
-		let initialValues =
-			type === 'create'
-				? {
-						name: '',
-						dividedPositions: '',
-						minimumBalance: '',
-						positions: [],
-				  }
-				: type === 'edit'
-				? {
-						minimumBalance: '',
-						...selectedPositionGroup,
-				  }
-				: {
-						minimumBalance: '',
-						...selectedPositionGroup,
-						positions: [],
-				  };
+		let initialValues = {
+			name: '',
+			positions: [],
+		};
+
+		if (/edit|add/.test(type)) initialValues = { ...initialValues, ...selectedPositionGroup };
+		if (type === 'add') initialValues.positions = [];
 
 		return (
 			<DialogSticky open={dialogOpen} onClose={onCloseDialog} onExited={this.onExitedDialog} maxWidth="md" scroll="body" stickyActions>

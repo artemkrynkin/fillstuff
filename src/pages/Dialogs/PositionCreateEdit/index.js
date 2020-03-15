@@ -105,7 +105,6 @@ class DialogPositionCreateEdit extends Component {
 
 		let initialValues = {
 			name: '',
-			divided: true,
 			unitReceipt: '',
 			unitRelease: '',
 			minimumBalance: '',

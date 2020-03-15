@@ -34,10 +34,6 @@ let Position = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'PositionGroup',
 	},
-	divided: {
-		type: Boolean,
-		default: true,
-	},
 	/**
 	 * штука - pce
 	 * упаковка - nmp

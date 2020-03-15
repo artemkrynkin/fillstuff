@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Field, Form, Formik } from 'formik';
 
 import Grid from '@material-ui/core/Grid';
@@ -19,6 +19,9 @@ import styles from './FormChangeSellingPrice.module.css';
 
 const FormChangeSellingPrice = props => {
 	const { position, receipt, onClose, changeSellingPriceReceipt } = props;
+	const [activeField, setActiveField] = useState('');
+
+	const onSetActiveField = fieldName => setActiveField(fieldName);
 
 	const isNmpPce = position.unitReceipt === 'nmp' && position.unitRelease === 'pce';
 	const isNmpNmp = position.unitReceipt === 'nmp' && position.unitRelease === 'nmp';
@@ -29,8 +32,6 @@ const FormChangeSellingPrice = props => {
 		markupPercent: receipt.markupPercent,
 		markup: receipt.markup,
 		unitMarkup: receipt.unitMarkup,
-		manualMarkup: receipt.manualMarkup,
-		unitManualMarkup: receipt.unitManualMarkup,
 	};
 
 	const onSubmit = (values, actions) => {
@@ -54,118 +55,133 @@ const FormChangeSellingPrice = props => {
 
 				return (
 					<Form className={styles.form}>
-						<Grid className={stylesGlobal.formLabelControl}>
-							<Field
-								name="markupPercent"
-								label="Наценка"
-								placeholder="0"
-								as={TextField}
-								error={Boolean(errors.markupPercent && touched.markupPercent)}
-								helperText={typeof errors.markupPercent === 'string' && touched.markupPercent ? errors.markupPercent : null}
-								InputProps={{
-									endAdornment: <InputAdornment position="end">%</InputAdornment>,
-									inputComponent: NumberFormat,
-									inputProps: {
-										...moneyInputFormatProps,
-										onChange: ({ target: { value } }) => {
-											setFieldValue('markupPercent', value);
-
-											const receiptValues = {
-												purchasePrice: receipt.purchasePrice,
-												unitPurchasePrice: receipt.unitPurchasePrice,
-												costDelivery: receipt.costDelivery,
-												unitCostDelivery: receipt.unitCostDelivery,
-												markupPercent: Number(value),
-											};
-
-											const newReceiptValues = receiptCalc.sellingPrice(receiptValues, {
-												isFree: position.isFree,
-											});
-
-											setFieldValue('sellingPrice', newReceiptValues.sellingPrice);
-											setFieldValue('unitSellingPrice', newReceiptValues.unitSellingPrice);
-											setFieldValue('markup', newReceiptValues.markup);
-											setFieldValue('unitMarkup', newReceiptValues.unitMarkup);
-										},
-									},
-								}}
-								disabled={isSubmitting}
-								autoFocus
-								fullWidth
-							/>
-						</Grid>
-
-						<Grid className={stylesGlobal.formLabelControl}>
-							<Field
-								name={isNmpPce ? 'unitSellingPrice' : 'sellingPrice'}
-								label={isNmpNmp ? 'Цена продажи уп.' : 'Цена продажи шт.'}
-								placeholder="0"
-								as={TextField}
-								error={
-									isNmpPce
-										? Boolean(errors.unitSellingPrice && touched.unitSellingPrice)
-										: Boolean(errors.sellingPrice && touched.sellingPrice)
-								}
-								helperText={
-									isNmpPce
-										? typeof errors.unitSellingPrice === 'string' && touched.unitSellingPrice
-											? errors.unitSellingPrice
-											: null
-										: typeof errors.sellingPrice === 'string' && touched.sellingPrice
-										? errors.sellingPrice
-										: null
-								}
-								InputProps={{
-									endAdornment: <InputAdornment position="end">₽</InputAdornment>,
-									inputComponent: NumberFormat,
-									inputProps: {
-										...moneyInputFormatProps,
-										onFocus: ({ target }) => (target.selectionStart = target.value.length),
-										onBlur: ({ target: { value } }) => {
-											if (Number(value) < autoGenUnitSellingPrice) {
-												setFieldValue(isNmpPce ? 'unitSellingPrice' : 'sellingPrice', autoGenUnitSellingPrice);
-											}
-										},
-										onChange: ({ target: { value } }) => {
-											const receiptValues = {};
-
-											if (isNmpPce) {
-												receiptValues.unitPurchasePrice = receipt.unitPurchasePrice;
-												receiptValues.unitSellingPrice = Number(value);
-												receiptValues.unitCostDelivery = receipt.unitCostDelivery;
-												receiptValues.unitMarkup = values.unitMarkup;
-												receiptValues.quantityInUnit = receipt.quantityInUnit;
-											} else {
-												receiptValues.purchasePrice = receipt.purchasePrice;
-												receiptValues.sellingPrice = Number(value);
-												receiptValues.costDelivery = receipt.costDelivery;
-												receiptValues.markup = values.markup;
-											}
-
-											const newReceiptValues = receiptCalc.manualMarkup(receiptValues, {
-												isFree: position.isFree,
-												unitReceipt: position.unitReceipt,
-												unitRelease: position.unitRelease,
-											});
-
-											setFieldValue('sellingPrice', newReceiptValues.sellingPrice);
-											setFieldValue('unitSellingPrice', newReceiptValues.unitSellingPrice);
-											setFieldValue('manualMarkup', newReceiptValues.manualMarkup);
-											setFieldValue('unitManualMarkup', newReceiptValues.unitManualMarkup);
-										},
-									},
-								}}
-								disabled={isSubmitting}
-								validate={value => {
-									if (value < autoGenUnitSellingPrice) {
-										return 'Не может быть ниже рассчитанной цены';
+						<Grid className={styles.formContent} spacing={2} container>
+							<Grid className={stylesGlobal.formLabelControl} xs={7} item>
+								<Field
+									name={isNmpPce ? 'unitSellingPrice' : 'sellingPrice'}
+									label={isNmpNmp ? 'Цена продажи уп.' : 'Цена продажи шт.'}
+									placeholder="0"
+									as={TextField}
+									error={
+										isNmpPce
+											? Boolean(errors.unitSellingPrice && touched.unitSellingPrice)
+											: Boolean(errors.sellingPrice && touched.sellingPrice)
 									}
-								}}
-								fullWidth
-							/>
+									helperText={
+										isNmpPce
+											? typeof errors.unitSellingPrice === 'string' && touched.unitSellingPrice
+												? errors.unitSellingPrice
+												: null
+											: typeof errors.sellingPrice === 'string' && touched.sellingPrice
+											? errors.sellingPrice
+											: null
+									}
+									InputProps={{
+										endAdornment: <InputAdornment position="end">₽</InputAdornment>,
+										inputComponent: NumberFormat,
+										inputProps: {
+											...moneyInputFormatProps,
+											onFocus: event => {
+												onSetActiveField('sellingPrice');
+
+												event.target.select();
+											},
+											onBlur: ({ target: { value } }) => {
+												if (Number(value) < autoGenUnitSellingPrice) {
+													setFieldValue(isNmpPce ? 'unitSellingPrice' : 'sellingPrice', autoGenUnitSellingPrice);
+												}
+											},
+											onChange: ({ target: { value } }) => {
+												if (activeField === 'markupPercent') return;
+
+												const receiptValues = {};
+
+												receiptValues.purchasePrice = receipt.purchasePrice;
+												receiptValues.unitPurchasePrice = receipt.unitPurchasePrice;
+												receiptValues.sellingPrice = Number(value);
+												receiptValues.unitSellingPrice = Number(value);
+												receiptValues.costDelivery = receipt.costDelivery;
+												receiptValues.unitCostDelivery = receipt.unitCostDelivery;
+
+												const newReceiptValues = {
+													...receiptCalc.markupPercent(receiptValues, {
+														isFree: position.isFree,
+														unitReceipt: position.unitReceipt,
+														unitRelease: position.unitRelease,
+													}),
+													...receiptCalc.sellingPrice(receiptValues, {
+														isFree: position.isFree,
+													}),
+												};
+
+												setFieldValue('sellingPrice', newReceiptValues.sellingPrice);
+												setFieldValue('unitSellingPrice', newReceiptValues.unitSellingPrice);
+												setFieldValue('markupPercent', newReceiptValues.markupPercent);
+												setFieldValue('markup', newReceiptValues.markup);
+												setFieldValue('unitMarkup', newReceiptValues.unitMarkup);
+											},
+										},
+									}}
+									disabled={isSubmitting}
+									validate={value => {
+										if (value < autoGenUnitSellingPrice) {
+											return 'Не может быть ниже рассчитанной цены';
+										}
+									}}
+									autoFocus
+									fullWidth
+								/>
+							</Grid>
+
+							<Grid className={stylesGlobal.formLabelControl} xs={5} item>
+								<Field
+									name="markupPercent"
+									label="Наценка"
+									placeholder="0"
+									as={TextField}
+									error={Boolean(errors.markupPercent && touched.markupPercent)}
+									helperText={typeof errors.markupPercent === 'string' && touched.markupPercent ? errors.markupPercent : null}
+									InputProps={{
+										endAdornment: <InputAdornment position="end">%</InputAdornment>,
+										inputComponent: NumberFormat,
+										inputProps: {
+											...moneyInputFormatProps,
+											onFocus: event => {
+												onSetActiveField('markupPercent');
+
+												event.target.select();
+											},
+											onChange: ({ target: { value } }) => {
+												if (activeField === 'sellingPrice') return;
+
+												setFieldValue('markupPercent', Number(value));
+
+												const receiptValues = {
+													purchasePrice: receipt.purchasePrice,
+													unitPurchasePrice: receipt.unitPurchasePrice,
+													costDelivery: receipt.costDelivery,
+													unitCostDelivery: receipt.unitCostDelivery,
+													markupPercent: Number(value),
+												};
+
+												const newReceiptValues = receiptCalc.sellingPrice(receiptValues, {
+													isFree: position.isFree,
+												});
+
+												setFieldValue('sellingPrice', newReceiptValues.sellingPrice);
+												setFieldValue('unitSellingPrice', newReceiptValues.unitSellingPrice);
+												setFieldValue('markup', newReceiptValues.markup);
+												setFieldValue('unitMarkup', newReceiptValues.unitMarkup);
+											},
+										},
+									}}
+									disabled={isSubmitting}
+									fullWidth
+								/>
+							</Grid>
 						</Grid>
 
-						<Grid alignItems="center" spacing={2} container>
+						<Grid className={styles.footer} alignItems="center" justify="center" spacing={2} container>
 							<Grid xs={6} item>
 								<Button type="submit" disabled={isSubmitting} variant="contained" color="primary" size="small" fullWidth>
 									{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}

@@ -2,19 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ClassNames from 'classnames';
 
-import { declensionNumber } from 'src/helpers/utils';
-
 import styles from './index.module.css';
 
 const qiClasses = dividedPositions =>
 	ClassNames({
+		[styles.container]: dividedPositions,
 		[styles.disappearing]: dividedPositions,
 	});
-
-const qiTextClasses = ClassNames({
-	[styles.minimumBalance]: true,
-	[styles.circleText]: true,
-});
 
 const qiCircleClasses = (quantity, minimumBalance) =>
 	ClassNames({
@@ -59,63 +53,39 @@ const QuantityIndicator = props => {
 		const unitReleaseGroupTransform = unitReleaseGroup === 'pce' ? 'шт.' : unitReleaseGroup === 'nmp' ? 'уп.' : 'ед.';
 
 		const positionExpiring = positions.length ? positions.slice(0).sort(compareQuantity)[0] : undefined;
-		const receiptExpiring =
-			positionExpiring &&
-			positionExpiring.receipts.reduce(
-				(indicators, receipt) => {
-					indicators.quantity += receipt.current.quantity;
-					indicators.positions += 1;
-
-					return indicators;
-				},
-				{
-					quantity: 0,
-					positions: 0,
-				}
-			);
+		const receiptExpiringQuantity =
+			positionExpiring && positionExpiring.receipts.reduce((sum, receipt) => sum + receipt.current.quantity, 0);
 
 		return (
 			<div className={qiClasses(dividedPositions)}>
 				{!dividedPositions ? (
 					<div>
-						<span className={styles.quantity}>{`${quantity} ${unitReleaseGroupTransform}`}</span>
+						<span>{`${quantity} ${unitReleaseGroupTransform}`}</span>
 						<span className={styles.minimumBalance} style={{ marginLeft: 5 }}>
 							{`/ ${minimumBalance}`}
 						</span>
 						<span className={qiCircleClasses(quantity, minimumBalance)} />
 					</div>
 				) : (
-					<div>
-						{(receiptExpiring.quantity / positionExpiring.minimumBalance) * 100 > 100 &&
-						(receiptExpiring.quantity / positionExpiring.minimumBalance) * 100 <= 150 ? (
-							<span className={qiTextClasses} style={{ marginLeft: 5 }}>
-								{declensionNumber(
-									receiptExpiring.positions,
-									['Одна из позиций заканчивается', 'Две позиции заканчиваются', 'Несколько позиций заканчиваются'],
-									false
-								)}
-							</span>
-						) : null}
-						<span className={qiCircleClasses(receiptExpiring.quantity, positionExpiring.minimumBalance)} />
-					</div>
+					<span className={qiCircleClasses(receiptExpiringQuantity, positionExpiring.minimumBalance)} />
 				)}
 			</div>
 		);
 	}
 
-	if (type === 'position' || type === 'receipt') {
+	if (type === 'position' || type === 'receipt' || type === 'procurementReceipt') {
 		const unitReleaseTransform = unitReceipt === 'pce' ? 'шт.' : unitRelease === 'pce' ? 'шт.' : 'уп.';
 
 		return receipts.length ? (
-			<div>
-				<span className={styles.quantity}>
-					{type === 'receipt' && unitReceipt === 'nmp' && unitRelease === 'pce' ? (
-						<span className={styles.minimumBalance} style={{ marginRight: 5 }}>
-							{`${quantityPackages} уп. по ${quantityInUnit} шт.`}
-						</span>
-					) : null}
-					{`${quantity} ${unitReleaseTransform}`}
-				</span>
+			<div className={styles.container}>
+				{type === 'procurementReceipt' && unitReceipt === 'nmp' && unitRelease === 'pce' ? (
+					<div className={styles.quantityContainer}>
+						<span className={styles.quantityLarge}>{`${quantity} ${unitReleaseTransform}`}</span>
+						<span className={styles.quantitySmall}>{`${quantityPackages} уп. по ${quantityInUnit} шт.`}</span>
+					</div>
+				) : (
+					`${quantity} ${unitReleaseTransform}`
+				)}
 				{divided ? (
 					<span className={styles.minimumBalance} style={{ marginLeft: 5 }}>
 						{`/ ${minimumBalance}`}
@@ -132,7 +102,7 @@ const QuantityIndicator = props => {
 QuantityIndicator.propTypes = {
 	children: PropTypes.node,
 	dividedPositions: PropTypes.bool,
-	type: PropTypes.oneOf(['positionGroup', 'position', 'receipt']).isRequired,
+	type: PropTypes.oneOf(['positionGroup', 'position', 'receipt', 'procurementReceipt']).isRequired,
 	unitReceipt: PropTypes.oneOf(['pce', 'nmp']),
 	unitRelease: PropTypes.oneOf(['pce', 'nmp']),
 	receipts: PropTypes.array,

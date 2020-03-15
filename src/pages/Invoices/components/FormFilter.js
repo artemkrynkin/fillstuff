@@ -240,7 +240,7 @@ const FormFilter = props => {
 											size: 'small',
 										}}
 										rightArrowIcon={<FontAwesomeIcon icon={['far', 'angle-right']} />}
-										maxDate={values.dateEnd}
+										maxDate={values.dateEnd || new Date()}
 										disableFuture
 										disableToolbar
 									/>
@@ -266,7 +266,7 @@ const FormFilter = props => {
 											size: 'small',
 										}}
 										rightArrowIcon={<FontAwesomeIcon icon={['far', 'angle-right']} />}
-										minDate={values.dateStart}
+										minDate={values.dateStart || new Date()}
 										disableFuture
 										disableToolbar
 									/>

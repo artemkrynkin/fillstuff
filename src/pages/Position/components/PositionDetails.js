@@ -35,7 +35,7 @@ const PositionDetails = props => {
 
 	return (
 		<CardPaper
-			leftContent="Детали позиции"
+			leftContent={position.name}
 			rightContent={
 				<div>
 					<IconButton
@@ -120,17 +120,6 @@ const PositionDetails = props => {
 			}
 			title
 		>
-			<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" style={{ marginBottom: 0 }} container>
-				<InputLabel style={{ minWidth: 146 }}>Наименование</InputLabel>
-				<TextField
-					className="none-padding"
-					defaultValue={position.name}
-					inputProps={{
-						readOnly: true,
-					}}
-					fullWidth
-				/>
-			</Grid>
 			<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" style={{ marginBottom: 0 }} container>
 				<InputLabel style={{ minWidth: 146 }}>Единица поступления</InputLabel>
 				<TextField

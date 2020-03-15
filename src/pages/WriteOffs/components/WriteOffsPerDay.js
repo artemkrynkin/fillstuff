@@ -79,10 +79,6 @@ const WriteOffsPerDay = props => {
 		});
 	};
 
-	const isCurrentDay = moment()
-		.subtract({ day: 1 })
-		.isBefore(writeOffs[0].createdAt);
-
 	return (
 		<CardPaper className={styles.container} header={false}>
 			<div className={styles.wrapper}>
@@ -142,12 +138,15 @@ const WriteOffsPerDay = props => {
 									<TableCell align="right" width={115}>
 										Количество
 									</TableCell>
-									<TableCell align="right">Цена покупки</TableCell>
-									<TableCell align="right">Цена продажи</TableCell>
 									<TableCell align="right" width={140}>
+										Цена покупки
+									</TableCell>
+									<TableCell align="right" width={140}>
+										Цена продажи
+									</TableCell>
+									<TableCell align="right" width={160}>
 										Время
 									</TableCell>
-									{isCurrentDay ? <TableCell width={50} /> : null}
 								</TableRow>
 							</TableHead>
 							<TableBody>
@@ -155,7 +154,6 @@ const WriteOffsPerDay = props => {
 									<WriteOff
 										key={writeOff._id}
 										writeOff={writeOff}
-										isCurrentDay={isCurrentDay}
 										onOpenDialogWriteOffCancel={() => onHandleDialogWriteOffCancel(true, writeOff)}
 									/>
 								))}

@@ -143,19 +143,6 @@ let Receipt = new Schema({
 		default: 0,
 		set: value => formatNumber(value),
 	},
-	// Ручная наценка
-	manualMarkup: {
-		type: Number,
-		min: [0, 'Не может быть меньше 0'],
-		default: 0,
-		set: value => formatNumber(value),
-	},
-	unitManualMarkup: {
-		type: Number,
-		min: [0, 'Не может быть меньше 0'],
-		default: 0,
-		set: value => formatNumber(value),
-	},
 	__v: {
 		type: Number,
 		select: false,

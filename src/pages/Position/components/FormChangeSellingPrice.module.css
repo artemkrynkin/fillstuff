@@ -1,4 +1,12 @@
 .form {
-  padding: 20px;
-  width: 250px;
+  width: 280px;
+}
+
+.formContent {
+  padding: 15px 15px 0;
+}
+
+.footer {
+  border-top: 1px solid var(--c-hex-br-5);
+  padding: 2px 15px 10px;
 }

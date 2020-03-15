@@ -18,12 +18,6 @@ const changeSellingPriceSchema = Yup.object().shape({
 	unitMarkup: Yup.number()
 		.transform(value => (isNaN(value) ? 0 : value))
 		.min(0),
-	manualMarkup: Yup.number()
-		.transform(value => (isNaN(value) ? 0 : value))
-		.min(0),
-	unitManualMarkup: Yup.number()
-		.transform(value => (isNaN(value) ? 0 : value))
-		.min(0),
 });
 
 export default changeSellingPriceSchema;

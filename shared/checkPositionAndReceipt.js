@@ -184,34 +184,27 @@ export const receiptCalc = {
 
 		return receipt;
 	},
-	manualMarkup: (receipt, { isFree, unitReceipt, unitRelease }) => {
-		receipt.manualMarkup = 0;
-		receipt.unitManualMarkup = 0;
+	markupPercent: (receipt, { isFree, unitReceipt, unitRelease }) => {
+		receipt.markupPercent = 0;
 
 		if (isFree) return receipt;
 
 		if (unitReceipt === 'nmp' && unitRelease === 'pce') {
-			const autoGenUnitSellingPrice = formatNumber(receipt.unitPurchasePrice + receipt.unitCostDelivery + receipt.unitMarkup);
+			const autoGenUnitSellingPrice = formatNumber(receipt.unitPurchasePrice + receipt.unitCostDelivery);
 
 			if (receipt.unitSellingPrice < autoGenUnitSellingPrice) return receipt;
 
 			receipt.unitSellingPrice = formatNumber(receipt.unitSellingPrice);
 
-			receipt.unitManualMarkup = formatNumber(receipt.unitSellingPrice - autoGenUnitSellingPrice);
-			receipt.manualMarkup = formatNumber(receipt.unitManualMarkup * receipt.quantityInUnit);
-
-			receipt.sellingPrice = formatNumber(autoGenUnitSellingPrice * receipt.quantityInUnit + receipt.manualMarkup);
+			receipt.markupPercent = formatNumber(receipt.unitSellingPrice - autoGenUnitSellingPrice) * 100;
 		} else {
-			const autoGenSellingPrice = formatNumber(receipt.purchasePrice + receipt.costDelivery + receipt.markup);
+			const autoGenUnitSellingPrice = formatNumber(receipt.purchasePrice + receipt.costDelivery);
 
-			if (receipt.sellingPrice < autoGenSellingPrice) return receipt;
+			if (receipt.sellingPrice < autoGenUnitSellingPrice) return receipt;
 
 			receipt.sellingPrice = formatNumber(receipt.sellingPrice);
 
-			receipt.manualMarkup = formatNumber(receipt.sellingPrice - autoGenSellingPrice);
-			receipt.unitManualMarkup = receipt.manualMarkup;
-
-			receipt.unitSellingPrice = formatNumber(autoGenSellingPrice + receipt.unitManualMarkup);
+			receipt.markupPercent = formatNumber(receipt.sellingPrice - autoGenUnitSellingPrice) * 100;
 		}
 
 		return receipt;

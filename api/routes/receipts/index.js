@@ -49,8 +49,6 @@ receiptsRouter.post(
 		receipt.markupPercent = receiptEdited.markupPercent;
 		receipt.markup = receiptEdited.markup;
 		receipt.unitMarkup = receiptEdited.unitMarkup;
-		receipt.manualMarkup = receiptEdited.manualMarkup;
-		receipt.unitManualMarkup = receiptEdited.unitManualMarkup;
 
 		const receiptErr = receipt.validateSync();
 

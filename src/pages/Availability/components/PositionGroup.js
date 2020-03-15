@@ -42,7 +42,7 @@ const PositionGroup = props => {
 						timeout: 300,
 						unmountOnExit: true,
 					}}
-					defaultExpanded={false}
+					defaultExpanded={true}
 				>
 					<ExpansionPanelSummary
 						expandIcon={<FontAwesomeIcon icon={['far', 'angle-down']} />}

@@ -196,15 +196,6 @@ const FormFieldArrayReceipt = props => {
 											{...currencyMoneyFormatProps}
 										/>
 									) : null}
-									{receipt.unitManualMarkup > 0 ? <br /> : null}
-									{receipt.unitManualMarkup > 0 ? (
-										<NumberFormat
-											value={receipt.unitManualMarkup}
-											renderText={value => `Ручная наценка: ${value}`}
-											displayType="text"
-											{...currencyMoneyFormatProps}
-										/>
-									) : null}
 								</div>
 							}
 							disableHoverListener={sellingPriceEditable}
@@ -240,10 +231,13 @@ const FormFieldArrayReceipt = props => {
 
 												onHandleSellingPriceEditable(false);
 
-												receiptCalc.manualMarkup(receipt, {
+												receiptCalc.markupPercent(receipt, {
 													isFree: receipt.position.isFree,
 													unitReceipt: receipt.position.unitReceipt,
 													unitRelease: receipt.position.unitRelease,
+												});
+												receiptCalc.sellingPrice(receipt, {
+													isFree: receipt.position.isFree,
 												});
 											},
 											onKeyDown: event => {

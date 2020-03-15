@@ -164,9 +164,7 @@ writeOffsRouter.post(
 			if (remainingQuantity !== 0) {
 				const currentWriteOffQuantity = remainingQuantity > receipt.current.quantity ? receipt.current.quantity : remainingQuantity;
 
-				const unitSellingPrice = member.markupPosition
-					? receipt.unitSellingPrice
-					: receipt.unitSellingPrice - (receipt.unitMarkup + receipt.unitManualMarkup);
+				const unitSellingPrice = member.markupPosition ? receipt.unitSellingPrice : receipt.unitSellingPrice - receipt.unitMarkup;
 
 				const newWriteOff = new WriteOff({
 					studio: studioId,

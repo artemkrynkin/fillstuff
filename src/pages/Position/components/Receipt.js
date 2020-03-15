@@ -27,9 +27,9 @@ const statusTransform = status => {
 		case 'closed':
 			return 'Закрыто';
 		case 'active':
-			return 'Активно';
+			return 'На реализации';
 		case 'received':
-			return 'Получено';
+			return 'на складе';
 		case 'expected':
 		default:
 			return 'Ожидается';
@@ -76,7 +76,15 @@ const Receipt = props => {
 			<TableCell>
 				<span className={statusColorClasses(receipt.status)}>{statusTransform(receipt.status)}</span>
 			</TableCell>
-			<TableCell align="right" width={200}>
+			<TableCell align="right" width={140}>
+				<QuantityIndicator
+					type="receipt"
+					unitReceipt={position.unitReceipt}
+					unitRelease={position.unitRelease}
+					receipts={[!receipt.quantityInUnit ? { ...receipt.current } : { ...receipt.current, quantityInUnit: receipt.quantityInUnit }]}
+				/>
+			</TableCell>
+			<TableCell align="right" width={140}>
 				<QuantityIndicator
 					type="receipt"
 					unitReceipt={position.unitReceipt}
@@ -95,16 +103,6 @@ const Receipt = props => {
 			<TableCell align="right" width={140}>
 				{!position.isFree ? (
 					<Grid alignItems="center" justify="flex-end" container>
-						{receipt.status !== 'closed' ? (
-							<ButtonBase
-								ref={refDropdownChangeSellingPrice}
-								className={styles.changeSellingPrice}
-								onClick={onHandleDropdownChangeSellingPrice}
-							>
-								<FontAwesomeIcon icon={['fas', 'pen']} rotation={270} />
-							</ButtonBase>
-						) : null}
-
 						<Tooltip
 							title={
 								<div>
@@ -132,15 +130,6 @@ const Receipt = props => {
 											{...currencyMoneyFormatProps}
 										/>
 									) : null}
-									{receipt.unitManualMarkup > 0 ? <br /> : null}
-									{receipt.unitManualMarkup > 0 ? (
-										<NumberFormat
-											value={formatNumber(receipt.unitManualMarkup, { toString: true })}
-											renderText={value => `Ручная наценка: ${value}`}
-											displayType="text"
-											{...currencyMoneyFormatProps}
-										/>
-									) : null}
 								</div>
 							}
 						>
@@ -153,6 +142,16 @@ const Receipt = props => {
 								/>
 							</span>
 						</Tooltip>
+
+						{receipt.status !== 'closed' ? (
+							<ButtonBase
+								ref={refDropdownChangeSellingPrice}
+								className={styles.changeSellingPrice}
+								onClick={onHandleDropdownChangeSellingPrice}
+							>
+								<FontAwesomeIcon icon={['fas', 'pen']} />
+							</ButtonBase>
+						) : null}
 					</Grid>
 				) : (
 					<span className={styles.caption}>Бесплатно</span>
@@ -164,7 +163,7 @@ const Receipt = props => {
 					onClose={onHandleDropdownChangeSellingPrice}
 					placement="bottom-end"
 					disablePortal={false}
-					style={{ margin: '5px -50px 5px 0' }}
+					style={{ margin: '5px -10px 5px 0' }}
 				>
 					<FormChangeSellingPrice
 						position={position}

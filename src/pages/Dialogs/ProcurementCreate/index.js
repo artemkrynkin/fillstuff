@@ -43,8 +43,6 @@ const receiptInitialValues = (position, remainingValues) => ({
 	markupPercent: position.lastReceipt ? position.lastReceipt.markupPercent : '',
 	markup: '',
 	unitMarkup: '',
-	manualMarkup: '',
-	unitManualMarkup: '',
 	...remainingValues,
 });
 

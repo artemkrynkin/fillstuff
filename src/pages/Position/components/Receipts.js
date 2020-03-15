@@ -42,11 +42,14 @@ const Receipts = props => {
 								<TableCell>Дата поступления</TableCell>
 								<TableCell>Закупка</TableCell>
 								<TableCell>Статус</TableCell>
-								<TableCell align="right" width={200}>
-									Количество
+								<TableCell align="right" width={140}>
+									В наличии
 								</TableCell>
 								<TableCell align="right" width={140}>
-									Цена закупки
+									Поступило
+								</TableCell>
+								<TableCell align="right" width={140}>
+									Цена покупки
 								</TableCell>
 								<TableCell align="right" width={140}>
 									Цена продажи

@@ -44,7 +44,7 @@
 
 .changeSellingPrice {
   color: var(--c-hex-t-300);
-  margin-right: 10px;
+  margin-left: 10px;
   padding: 4px;
 }
 

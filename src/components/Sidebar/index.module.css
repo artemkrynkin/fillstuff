@@ -20,13 +20,13 @@
   font-size: 26px;
   font-weight: 700;
   height: 30px;
-  margin: 0 55px 0 22px;
+  margin: 0 55px 0 24px;
   opacity: 0.45;
   padding: 10px 0;
   position: relative;
   text-decoration: none;
   transition: opacity 250ms ease-in-out;
-  width: 166px;
+  width: 130px;
 }
 
 .logo:after {

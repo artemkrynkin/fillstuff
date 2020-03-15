@@ -70,10 +70,12 @@ const QuantityIndicator = props => {
 				) : (
 					`${quantity} ${unitReleaseTransform}`
 				)}
-				<span className={styles.minimumBalance} style={{ marginLeft: 5 }}>
-					{`/ ${minimumBalance}`}
-				</span>
-				<span className={qiCircleClasses(quantity, minimumBalance)} />
+				{minimumBalance ? (
+					<span className={styles.minimumBalance} style={{ marginLeft: 5 }}>
+						{`/ ${minimumBalance}`}
+					</span>
+				) : null}
+				{minimumBalance ? <span className={qiCircleClasses(quantity, minimumBalance)} /> : null}
 			</div>
 		) : (
 			'-'

@@ -192,19 +192,23 @@ export const receiptCalc = {
 		if (unitReceipt === 'nmp' && unitRelease === 'pce') {
 			const autoGenUnitSellingPrice = formatNumber(receipt.unitPurchasePrice + receipt.unitCostDelivery);
 
-			if (receipt.unitSellingPrice < autoGenUnitSellingPrice) return receipt;
-
 			receipt.unitSellingPrice = formatNumber(receipt.unitSellingPrice);
 
-			receipt.markupPercent = formatNumber(receipt.unitSellingPrice - autoGenUnitSellingPrice) * 100;
+			if (receipt.unitSellingPrice < autoGenUnitSellingPrice) return receipt;
+
+			receipt.markupPercent = formatNumber(
+				(formatNumber(receipt.unitSellingPrice - autoGenUnitSellingPrice) / receipt.unitPurchasePrice) * 100
+			);
 		} else {
 			const autoGenUnitSellingPrice = formatNumber(receipt.purchasePrice + receipt.costDelivery);
+
+			receipt.sellingPrice = formatNumber(receipt.sellingPrice);
 
 			if (receipt.sellingPrice < autoGenUnitSellingPrice) return receipt;
 
 			receipt.sellingPrice = formatNumber(receipt.sellingPrice);
 
-			receipt.markupPercent = formatNumber(receipt.sellingPrice - autoGenUnitSellingPrice) * 100;
+			receipt.markupPercent = formatNumber((formatNumber(receipt.sellingPrice - autoGenUnitSellingPrice) / receipt.purchasePrice) * 100);
 		}
 
 		return receipt;

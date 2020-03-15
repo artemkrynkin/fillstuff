@@ -56,17 +56,21 @@ const positionGroups = (
 		}
 		case 'REMOVE_POSITION_FROM_GROUP':
 		case 'ARCHIVE_POSITION': {
-			let stateData = { ...state }.data;
+			let stateData;
 
-			if (action.payload.positionGroupId) {
-				const positionGroupIndex = stateData.findIndex(positionGroup => positionGroup._id === action.payload.positionGroupId);
+			if (state.data) {
+				stateData = { ...state }.data;
 
-				if (stateData[positionGroupIndex].positions.length > 2) {
-					const positionIndex = stateData[positionGroupIndex].positions.findIndex(position => position._id === action.payload.positionId);
+				if (action.payload.positionGroupId) {
+					const positionGroupIndex = stateData.findIndex(positionGroup => positionGroup._id === action.payload.positionGroupId);
 
-					stateData[positionGroupIndex].positions.splice(positionIndex, 1);
-				} else {
-					stateData.splice(positionGroupIndex, 1);
+					if (stateData[positionGroupIndex].positions.length > 2) {
+						const positionIndex = stateData[positionGroupIndex].positions.findIndex(position => position._id === action.payload.positionId);
+
+						stateData[positionGroupIndex].positions.splice(positionIndex, 1);
+					} else {
+						stateData.splice(positionGroupIndex, 1);
+					}
 				}
 			}
 
@@ -77,13 +81,17 @@ const positionGroups = (
 			};
 		}
 		case 'EDIT_POSITION': {
-			let stateData = { ...state }.data;
+			let stateData;
 
-			if (action.payload.position.positionGroup) {
-				const positionGroupIndex = stateData.findIndex(positionGroup => positionGroup._id === action.payload.position.positionGroup);
-				const positionIndex = stateData[positionGroupIndex].positions.findIndex(position => position._id === action.payload.positionId);
+			if (state.data) {
+				stateData = { ...state }.data;
 
-				stateData[positionGroupIndex].positions[positionIndex] = action.payload.position;
+				if (action.payload.position.positionGroup) {
+					const positionGroupIndex = stateData.findIndex(positionGroup => positionGroup._id === action.payload.position.positionGroup);
+					const positionIndex = stateData[positionGroupIndex].positions.findIndex(position => position._id === action.payload.positionId);
+
+					stateData[positionGroupIndex].positions[positionIndex] = action.payload.position;
+				}
 			}
 
 			return {

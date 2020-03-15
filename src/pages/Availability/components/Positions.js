@@ -39,7 +39,9 @@ const DialogPositionRemoveFromGroup = loadable(() =>
 	import('src/pages/Dialogs/PositionRemoveFromGroup' /* webpackChunkName: "Dialog_PositionRemoveFromGroup" */)
 );
 
-const DialogPositionArchive = loadable(() => import('src/pages/Dialogs/PositionArchive' /* webpackChunkName: "Dialog_PositionArchive" */));
+const DialogPositionArchiveDelete = loadable(() =>
+	import('src/pages/Dialogs/PositionArchiveDelete' /* webpackChunkName: "Dialog_PositionArchiveDelete" */)
+);
 
 const DialogPositionOrGroupQRCodeGeneration = loadable(() =>
 	import('src/pages/Dialogs/PositionOrGroupQRCodeGeneration' /* webpackChunkName: "Dialog_PositionOrGroupQRCodeGeneration" */)
@@ -61,7 +63,7 @@ class Positions extends Component {
 		dialogPositionGroupQRCodeGeneration: false,
 		dialogPositionEdit: false,
 		dialogPositionRemoveFromGroup: false,
-		dialogPositionArchive: false,
+		dialogPositionArchiveDelete: false,
 		dialogPositionQRCodeGeneration: false,
 		dialogReceiptActiveAddQuantity: false,
 		dialogWriteOffCreate: false,
@@ -109,7 +111,7 @@ class Positions extends Component {
 			dialogPositionGroupQRCodeGeneration,
 			dialogPositionEdit,
 			dialogPositionRemoveFromGroup,
-			dialogPositionArchive,
+			dialogPositionArchiveDelete,
 			dialogPositionQRCodeGeneration,
 			dialogReceiptActiveAddQuantity,
 			dialogWriteOffCreate,
@@ -200,11 +202,11 @@ class Positions extends Component {
 							selectedPosition={dialogOpenedName === 'dialogPositionRemoveFromGroup' ? position : null}
 						/>
 
-						<DialogPositionArchive
-							dialogOpen={dialogPositionArchive}
-							onCloseDialog={() => this.onCloseDialogByName('dialogPositionArchive')}
+						<DialogPositionArchiveDelete
+							dialogOpen={dialogPositionArchiveDelete}
+							onCloseDialog={() => this.onCloseDialogByName('dialogPositionArchiveDelete')}
 							onExitedDialog={this.onPositionDrop}
-							selectedPosition={dialogOpenedName === 'dialogPositionArchive' ? position : null}
+							selectedPosition={dialogOpenedName === 'dialogPositionArchiveDelete' ? position : null}
 						/>
 
 						<DialogPositionQRCodeGeneration

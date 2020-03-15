@@ -11,9 +11,17 @@ import { getStudioStock } from 'src/actions/studio';
 import { removePositionFromGroup } from 'src/actions/positionGroups';
 
 const DialogPositionRemoveFromGroup = props => {
-	const { dialogOpen, onCloseDialog, onExitedDialog, selectedPosition } = props;
+	const { dialogOpen, onCloseDialog, onExitedDialog, onCallback, selectedPosition } = props;
 
 	if (!selectedPosition) return null;
+
+	const onSubmit = () => {
+		props.removePositionFromGroup(selectedPosition._id, selectedPosition.positionGroup).then(response => {
+			if (onCallback !== undefined) onCallback(response);
+
+			onCloseDialog();
+		});
+	};
 
 	return (
 		<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog}>
@@ -41,7 +49,7 @@ const DialogPositionRemoveFromGroup = props => {
 				}}
 				rightHandleProps={{
 					handleProps: {
-						onClick: () => props.removePositionFromGroup(selectedPosition._id, selectedPosition.positionGroup).then(onCloseDialog),
+						onClick: onSubmit,
 					},
 					text: 'Открепить',
 				}}
@@ -54,6 +62,7 @@ DialogPositionRemoveFromGroup.propTypes = {
 	dialogOpen: PropTypes.bool.isRequired,
 	onCloseDialog: PropTypes.func.isRequired,
 	onExitedDialog: PropTypes.func,
+	onCallback: PropTypes.func,
 	selectedPosition: PropTypes.object,
 };
 

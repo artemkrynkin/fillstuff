@@ -10,13 +10,17 @@ import { Dialog, DialogActions, DialogTitle } from 'src/components/Dialog';
 import { getStudioStock } from 'src/actions/studio';
 import { archivePosition } from 'src/actions/positions';
 
-const DialogPositionArchive = props => {
-	const { dialogOpen, onCloseDialog, onExitedDialog, selectedPosition } = props;
+const PositionArchiveDelete = props => {
+	const { dialogOpen, onCloseDialog, onExitedDialog, onCallback, selectedPosition } = props;
 
 	if (!selectedPosition) return null;
 
+	const type = selectedPosition.receipts.length ? 'archive' : 'delete';
+
 	const onSubmit = () => {
 		props.archivePosition(selectedPosition._id, selectedPosition.positionGroup).then(response => {
+			if (onCallback !== undefined) onCallback(response);
+
 			onCloseDialog();
 
 			if (response.status === 'success') props.getStudioStock();
@@ -25,10 +29,10 @@ const DialogPositionArchive = props => {
 
 	return (
 		<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog}>
-			<DialogTitle onClose={onCloseDialog}>Архивирование позиции</DialogTitle>
+			<DialogTitle onClose={onCloseDialog}>{type === 'archive' ? 'Архивирование' : 'Удаление'} позиции</DialogTitle>
 			<DialogContent>
 				<DialogContentText>
-					Вы действительно хотите архивировать позицию{' '}
+					Вы действительно хотите {type === 'archive' ? 'архивировать' : 'удалить'} позицию{' '}
 					<span>
 						<b>
 							{selectedPosition.characteristics.reduce(
@@ -52,17 +56,18 @@ const DialogPositionArchive = props => {
 						autoFocus: true,
 						onClick: onSubmit,
 					},
-					text: 'Архивировать',
+					text: type === 'archive' ? 'Архивировать' : 'Удалить',
 				}}
 			/>
 		</Dialog>
 	);
 };
 
-DialogPositionArchive.propTypes = {
+PositionArchiveDelete.propTypes = {
 	dialogOpen: PropTypes.bool.isRequired,
 	onCloseDialog: PropTypes.func.isRequired,
 	onExitedDialog: PropTypes.func,
+	onCallback: PropTypes.func,
 	selectedPosition: PropTypes.object,
 };
 
@@ -73,4 +78,4 @@ const mapDispatchToProps = dispatch => {
 	};
 };
 
-export default connect(null, mapDispatchToProps)(DialogPositionArchive);
+export default connect(null, mapDispatchToProps)(PositionArchiveDelete);

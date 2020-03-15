@@ -31,10 +31,14 @@ const positions = (
 			};
 		}
 		case 'EDIT_POSITION': {
-			let stateData = { ...state }.data;
-			const positionIndex = stateData.findIndex(position => position._id === action.payload.positionId);
+			let stateData;
 
-			stateData[positionIndex] = action.payload.position;
+			if (state.data) {
+				stateData = { ...state }.data;
+				const positionIndex = stateData.findIndex(position => position._id === action.payload.positionId);
+
+				stateData[positionIndex] = action.payload.position;
+			}
 
 			return {
 				...state,
@@ -43,19 +47,23 @@ const positions = (
 			};
 		}
 		case 'ARCHIVE_POSITION': {
-			let stateData = { ...state }.data;
-			const positionIndex = stateData.findIndex(position => position._id === action.payload.positionId);
+			let stateData;
 
-			if (!action.payload.positionGroupId) {
-				stateData.splice(positionIndex, 1);
-			}
+			if (state.data) {
+				stateData = { ...state }.data;
+				const positionIndex = stateData.findIndex(position => position._id === action.payload.positionId);
 
-			if (action.payload.remainingPositionId) {
-				stateData.forEach(position => {
-					if (position._id === action.payload.remainingPositionId) {
-						delete position.positionGroup;
-					}
-				});
+				if (!action.payload.positionGroupId) {
+					stateData.splice(positionIndex, 1);
+				}
+
+				if (action.payload.remainingPositionId) {
+					stateData.forEach(position => {
+						if (position._id === action.payload.remainingPositionId) {
+							delete position.positionGroup;
+						}
+					});
+				}
 			}
 
 			return {
@@ -95,16 +103,20 @@ const positions = (
 			};
 		}
 		case 'REMOVE_POSITION_FROM_GROUP': {
-			let stateData = { ...state }.data;
+			let stateData;
 
-			stateData.forEach(position => {
-				if (
-					position._id === action.payload.positionId ||
-					(action.payload.remainingPositionId && position._id === action.payload.remainingPositionId)
-				) {
-					delete position.positionGroup;
-				}
-			});
+			if (state.data) {
+				stateData = { ...state }.data;
+
+				stateData.forEach(position => {
+					if (
+						position._id === action.payload.positionId ||
+						(action.payload.remainingPositionId && position._id === action.payload.remainingPositionId)
+					) {
+						delete position.positionGroup;
+					}
+				});
+			}
 
 			return {
 				...state,

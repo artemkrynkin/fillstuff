@@ -337,6 +337,7 @@ const FormFilter = props => {
 									placeholder="Введите имя"
 									value={searchTextMember}
 									onChange={onTypeSearchTextMember}
+									autoFocus
 									fullWidth
 								/>
 								{searchTextMember ? (

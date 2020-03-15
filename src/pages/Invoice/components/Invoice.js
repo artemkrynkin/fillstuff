@@ -64,15 +64,7 @@ class Invoice extends Component {
 	onChangeTab = (event, tabName) => this.setState({ tabName });
 
 	componentDidMount() {
-		this.props.getInvoice().then(response => {
-			if (response.status === 'success') {
-				this.setState({ invoiceData: response });
-			} else {
-				history.push({
-					pathname: '/invoices',
-				});
-			}
-		});
+		this.getInvoice();
 	}
 
 	render() {

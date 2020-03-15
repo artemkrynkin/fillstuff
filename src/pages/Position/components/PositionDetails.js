@@ -27,7 +27,7 @@ const positionActionsButtonClasses = dropdownActions =>
 	});
 
 const PositionDetails = props => {
-	const { position } = props;
+	const { position, onOpenDialogPosition } = props;
 	const refDropdownActions = useRef(null);
 	const [dropdownActions, setDropdownActions] = useState(false);
 
@@ -54,46 +54,24 @@ const PositionDetails = props => {
 						placement="bottom-end"
 						disablePortal={false}
 					>
-						{position.receipts.length || position.positionGroup ? (
+						{position.positionGroup ? (
 							<MenuList>
-								{position.receipts.length ? (
-									<MenuItem
-										onClick={() => {
-											onHandleDropdownActions();
-											// onOpenDialogPosition('dialogReceiptActiveAddQuantity', position);
-										}}
-									>
-										Добавить количество
-									</MenuItem>
-								) : null}
-								{position.receipts.length ? (
-									<MenuItem
-										onClick={() => {
-											onHandleDropdownActions();
-											// onOpenDialogPosition('dialogWriteOffCreate', position);
-										}}
-									>
-										Списать количество
-									</MenuItem>
-								) : null}
-								{position.positionGroup ? (
-									<MenuItem
-										onClick={() => {
-											onHandleDropdownActions();
-											// onOpenDialogPosition('dialogPositionRemoveFromGroup', position);
-										}}
-									>
-										Открепить от группы
-									</MenuItem>
-								) : null}
+								<MenuItem
+									onClick={() => {
+										onHandleDropdownActions();
+										onOpenDialogPosition('dialogPositionRemoveFromGroup', position);
+									}}
+								>
+									Открепить от группы
+								</MenuItem>
 							</MenuList>
 						) : null}
-						{position.receipts.length || position.positionGroup ? <Divider /> : null}
+						{position.positionGroup ? <Divider /> : null}
 						<MenuList>
 							<MenuItem
 								onClick={() => {
 									onHandleDropdownActions();
-									// onOpenDialogPosition('dialogPositionQRCodeGeneration', position);
+									onOpenDialogPosition('dialogPositionQRCodeGeneration', position);
 								}}
 							>
 								Генерация QR-кода
@@ -101,7 +79,7 @@ const PositionDetails = props => {
 							<MenuItem
 								onClick={() => {
 									onHandleDropdownActions();
-									// onOpenDialogPosition('dialogPositionEdit', position);
+									onOpenDialogPosition('dialogPositionEdit', position);
 								}}
 							>
 								Редактировать
@@ -109,7 +87,7 @@ const PositionDetails = props => {
 							<MenuItem
 								onClick={() => {
 									onHandleDropdownActions();
-									// onOpenDialogPosition('dialogPositionArchive', position);
+									onOpenDialogPosition('dialogPositionArchiveDelete', position);
 								}}
 							>
 								{position.receipts.length ? 'Архивировать' : 'Удалить'}

@@ -12,6 +12,7 @@ import Header from 'src/components/Header';
 import { LoadingComponent } from 'src/components/Loading';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 
+import { getCharacteristics } from 'src/actions/characteristics';
 import { getPosition } from 'src/actions/positions';
 import { getReceiptsPosition, changeReceiptPosition } from 'src/actions/receipts';
 
@@ -26,6 +27,20 @@ class Position extends Component {
 	state = {
 		positionData: null,
 		receiptsData: null,
+	};
+
+	getPosition = () => {
+		this.props.getPosition().then(response => {
+			if (response.status === 'success') {
+				this.setState({
+					positionData: response,
+				});
+			} else {
+				history.push({
+					pathname: '/availability',
+				});
+			}
+		});
 	};
 
 	getReceipts = () => {
@@ -56,17 +71,7 @@ class Position extends Component {
 	};
 
 	componentDidMount() {
-		this.props.getPosition().then(response => {
-			if (response.status === 'success') {
-				this.setState({
-					positionData: response,
-				});
-			} else {
-				history.push({
-					pathname: '/availability',
-				});
-			}
-		});
+		this.getPosition();
 
 		this.props.getReceiptsPosition().then(response => {
 			this.setState({ receiptsData: response });
@@ -74,7 +79,7 @@ class Position extends Component {
 	}
 
 	render() {
-		const { currentStudio } = this.props;
+		const { currentStudio, getCharacteristics } = this.props;
 		const { positionData, receiptsData } = this.state;
 
 		const metaInfo = {
@@ -108,6 +113,8 @@ class Position extends Component {
 							currentStudio={currentStudio}
 							positionData={positionData}
 							receiptsData={receiptsData}
+							getCharacteristics={() => getCharacteristics(currentStudio._id)}
+							getPosition={this.getPosition}
 							changeSellingPriceReceipt={this.changeSellingPriceReceipt}
 						/>
 					</div>
@@ -125,6 +132,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	} = ownProps;
 
 	return {
+		getCharacteristics: currentStudioId => dispatch(getCharacteristics(currentStudioId)),
 		getPosition: () => dispatch(getPosition({ params: { positionId } })),
 		getReceiptsPosition: () => dispatch(getReceiptsPosition({ params: { positionId } })),
 		changeReceiptPosition: (params, data) => dispatch(changeReceiptPosition({ params, data })),

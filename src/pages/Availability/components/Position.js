@@ -168,7 +168,7 @@ const Position = props => {
 						<MenuItem
 							onClick={() => {
 								onHandleDropdownActions();
-								onOpenDialogPosition('dialogPositionArchive', position);
+								onOpenDialogPosition('dialogPositionArchiveDelete', position);
 							}}
 						>
 							{position.receipts.length ? 'Архивировать' : 'Удалить'}

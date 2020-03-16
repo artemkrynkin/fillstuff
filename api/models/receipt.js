@@ -128,7 +128,7 @@ let Receipt = new Schema({
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,
-		set: value => formatNumber(value, { fractionDigits: 0 }),
+		set: value => formatNumber(value, { fractionDigits: 4 }),
 	},
 	// Наценка
 	markup: {

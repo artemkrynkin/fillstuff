@@ -159,6 +159,7 @@ const FormFieldArrayReceipt = props => {
 								inputComponent: NumberFormat,
 								inputProps: {
 									...moneyInputFormatProps,
+									decimalScale: 4,
 								},
 							}}
 							disabled={isSubmitting || !formEditable}

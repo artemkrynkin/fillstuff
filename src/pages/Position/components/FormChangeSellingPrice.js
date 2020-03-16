@@ -146,6 +146,7 @@ const FormChangeSellingPrice = props => {
 										inputComponent: NumberFormat,
 										inputProps: {
 											...moneyInputFormatProps,
+											decimalScale: 4,
 											onFocus: event => {
 												onSetActiveField('markupPercent');
 

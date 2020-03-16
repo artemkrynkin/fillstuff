@@ -197,7 +197,8 @@ export const receiptCalc = {
 			if (receipt.unitSellingPrice < autoGenUnitSellingPrice) return receipt;
 
 			receipt.markupPercent = formatNumber(
-				(formatNumber(receipt.unitSellingPrice - autoGenUnitSellingPrice) / receipt.unitPurchasePrice) * 100
+				(formatNumber(receipt.unitSellingPrice - autoGenUnitSellingPrice) / receipt.unitPurchasePrice) * 100,
+				{ fractionDigits: 4 }
 			);
 		} else {
 			const autoGenUnitSellingPrice = formatNumber(receipt.purchasePrice + receipt.costDelivery);
@@ -206,9 +207,9 @@ export const receiptCalc = {
 
 			if (receipt.sellingPrice < autoGenUnitSellingPrice) return receipt;
 
-			receipt.sellingPrice = formatNumber(receipt.sellingPrice);
-
-			receipt.markupPercent = formatNumber((formatNumber(receipt.sellingPrice - autoGenUnitSellingPrice) / receipt.purchasePrice) * 100);
+			receipt.markupPercent = formatNumber((formatNumber(receipt.sellingPrice - autoGenUnitSellingPrice) / receipt.purchasePrice) * 100, {
+				fractionDigits: 4,
+			});
 		}
 
 		return receipt;

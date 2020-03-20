@@ -5,7 +5,7 @@ import loadable from '@loadable/component';
 import generateMetaInfo from 'shared/generate-meta-info';
 
 import Head from 'src/components/head';
-import Header from 'src/components/Header';
+import HeaderPage from 'src/components/HeaderPage';
 import { LoadingComponent } from 'src/components/Loading';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 
@@ -29,14 +29,12 @@ const Procurements = () => {
 	});
 
 	return (
-		<div className={stylesPage.pageWrap}>
+		<div className={stylesPage.page}>
 			<Head title={title} description={description} />
 
-			<Header pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
+			<HeaderPage pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
 			<div className={`${stylesPage.pageContent} ${styles.container}`}>
-				<div className={styles.wrapper}>
-					<Index />
-				</div>
+				<Index />
 			</div>
 		</div>
 	);

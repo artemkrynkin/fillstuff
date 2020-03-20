@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -32,9 +32,9 @@ class Sidebar extends Component {
 		const { activePage } = this.state;
 
 		return (
-			<aside className={styles.container}>
+			<div className={styles.container}>
 				<div className={styles.wrapper}>
-					<Link className={styles.logo} to="/" />
+					<div className={styles.logo} />
 					<div className={styles.menu}>
 						<div className={styles.menuItem}>
 							<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to="/dashboard">
@@ -140,7 +140,7 @@ class Sidebar extends Component {
 						{/*</div>*/}
 					</div>
 				</div>
-			</aside>
+			</div>
 		);
 	}
 }

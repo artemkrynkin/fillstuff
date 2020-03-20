@@ -8,7 +8,7 @@ import generateMetaInfo from 'shared/generate-meta-info';
 import { history } from 'src/helpers/history';
 
 import Head from 'src/components/head';
-import Header from 'src/components/Header';
+import HeaderPage from 'src/components/HeaderPage';
 import { LoadingComponent } from 'src/components/Loading';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 
@@ -81,20 +81,18 @@ class Members extends Component {
 		};
 
 		return (
-			<div className={stylesPage.pageWrap}>
+			<div className={stylesPage.page}>
 				<Head title={title} description={description} />
 
-				<Header pageName={metaInfo.pageName} pageTitle="Команда" pageParams={pageParams} />
+				<HeaderPage pageName={metaInfo.pageName} pageTitle="Команда" pageParams={pageParams} />
 				<div className={`${stylesPage.pageContent} ${styles.container}`}>
-					<div className={styles.wrapper}>
-						<Index
-							currentStudio={currentStudio}
-							memberData={memberData}
-							invoicesData={invoicesData}
-							updateMember={this.updateMember}
-							getInvoices={this.getInvoices}
-						/>
-					</div>
+					<Index
+						currentStudio={currentStudio}
+						memberData={memberData}
+						invoicesData={invoicesData}
+						updateMember={this.updateMember}
+						getInvoices={this.getInvoices}
+					/>
 				</div>
 			</div>
 		);

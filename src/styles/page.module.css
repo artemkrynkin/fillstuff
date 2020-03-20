@@ -1,19 +1,17 @@
+.pageWrapper {
+  display: flex;
+}
+
+.pageWrapperContent {
+  flex: 1 1 auto;
+  min-height: calc(100vh - 50px);
+}
+
 .page {
-  display: flex;
+  height: 100%;
 }
-
-.pageLayout {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  min-height: 100vh;
-  width: calc(100% - 256px);
-}
-
-.pageWrap {}
 
 .pageContent {
-  flex: auto;
-  display: flex;
-  flex-direction: column;
+  padding-bottom: 40px;
+  height: calc(100% - 50px);
 }

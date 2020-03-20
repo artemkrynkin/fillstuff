@@ -3,7 +3,7 @@ import React from 'react';
 import generateMetaInfo from 'shared/generate-meta-info';
 
 import Head from 'src/components/head';
-import Header from 'src/components/Header';
+import HeaderPage from 'src/components/HeaderPage';
 
 import stylesPage from 'src/styles/page.module.css';
 
@@ -23,7 +23,7 @@ const Statistics = () => {
 		<div className={stylesPage.pageWrap}>
 			<Head title={title} description={description} />
 
-			<Header pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
+			<HeaderPage pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
 			<div className={stylesPage.pageContent}>
 				<div className={`${stylesPage.pageContent}`}></div>
 			</div>

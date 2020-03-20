@@ -1,0 +1,16 @@
+.container {
+  background-color: var(--c-hex-t-200);
+  height: 50px;
+  padding: 0 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1200;
+}
+
+.containerWrapper {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+}

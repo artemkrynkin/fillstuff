@@ -10,15 +10,15 @@ class Layout extends Component {
 		const { authed, theme, children } = this.props;
 
 		return (
-			<div className={stylesPage.pageLayout}>
+			<div className={stylesPage.pageWrapperContent}>
 				{authed ? (
 					theme === 'default' ? (
 						children
 					) : (
-						<div className={`${stylesPage.pageContent} ${styles.layout_bg}`}>{children}</div>
+						<div className={`${stylesPage.page} ${styles.layout_bg}`}>{children}</div>
 					)
 				) : (
-					<div className={`${stylesPage.pageContent} ${styles.layout_bg} ${styles.container}`}>
+					<div className={`${stylesPage.page} ${styles.layout_bg} ${styles.container}`}>
 						<Link className={styles.logo} to="/" />
 						{children}
 						<div className={styles.codeOfConduct}>

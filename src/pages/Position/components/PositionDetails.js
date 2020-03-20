@@ -143,14 +143,14 @@ const PositionDetails = props => {
 				/>
 			</Grid>
 
-			{(position.shopName && position.shopLink) || position.characteristics.length ? (
+			{position.shopName || position.characteristics.length ? (
 				<div>
 					<Divider style={{ margin: '20px 0' }} />
 
 					<Typography variant="h6" gutterBottom>
 						Информация для закупок
 					</Typography>
-					{position.shopName && position.shopLink ? (
+					{position.shopName ? (
 						<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" style={{ marginBottom: 0 }} container>
 							<InputLabel style={{ minWidth: 146 }}>Магазин / Ссылка</InputLabel>
 							<Typography variant="subtitle2" style={{ fontWeight: 400, padding: '8px 0' }}>

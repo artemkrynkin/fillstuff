@@ -70,7 +70,7 @@ const Receipt = props => {
 						)}
 					</Link>
 				) : (
-					<span className={styles.caption}>Закупка отсутствует</span>
+					<span className={styles.caption}>Данные отсутствуют</span>
 				)}
 			</TableCell>
 			<TableCell>

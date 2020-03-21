@@ -25,11 +25,11 @@ const momentDate = moment();
 const statusTransform = status => {
 	switch (status) {
 		case 'closed':
-			return 'Закрыто';
+			return 'Реализовано';
 		case 'active':
 			return 'На реализации';
 		case 'received':
-			return 'на складе';
+			return 'На складе';
 		case 'expected':
 		default:
 			return 'Ожидается';

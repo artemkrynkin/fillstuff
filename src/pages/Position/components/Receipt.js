@@ -76,21 +76,22 @@ const Receipt = props => {
 			<TableCell>
 				<span className={statusColorClasses(receipt.status)}>{statusTransform(receipt.status)}</span>
 			</TableCell>
-			<TableCell align="right" width={140}>
-				<QuantityIndicator
-					type="receipt"
-					unitReceipt={position.unitReceipt}
-					unitRelease={position.unitRelease}
-					receipts={[!receipt.quantityInUnit ? { ...receipt.current } : { ...receipt.current, quantityInUnit: receipt.quantityInUnit }]}
-				/>
-			</TableCell>
-			<TableCell align="right" width={140}>
-				<QuantityIndicator
-					type="receipt"
-					unitReceipt={position.unitReceipt}
-					unitRelease={position.unitRelease}
-					receipts={[!receipt.quantityInUnit ? { ...receipt.initial } : { ...receipt.initial, quantityInUnit: receipt.quantityInUnit }]}
-				/>
+			<TableCell align="right" width={200}>
+				<Grid alignItems="flex-end" justify="flex-end" container>
+					<QuantityIndicator
+						type="receipt"
+						unitReceipt={position.unitReceipt}
+						unitRelease={position.unitRelease}
+						receipts={[!receipt.quantityInUnit ? { ...receipt.current } : { ...receipt.current, quantityInUnit: receipt.quantityInUnit }]}
+					/>
+					<span style={{ margin: '0 5px' }}>/</span>
+					<QuantityIndicator
+						type="receipt"
+						unitReceipt={position.unitReceipt}
+						unitRelease={position.unitRelease}
+						receipts={[!receipt.quantityInUnit ? { ...receipt.initial } : { ...receipt.initial, quantityInUnit: receipt.quantityInUnit }]}
+					/>
+				</Grid>
 			</TableCell>
 			<TableCell align="right" width={140}>
 				<NumberFormat

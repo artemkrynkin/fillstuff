@@ -47,11 +47,11 @@ const HelpPanel = props => {
 				open={dropdownProfile}
 				onClose={onHandleDropdownProfile}
 				placement="right-end"
-				style={{ marginLeft: 5, width: 150 }}
+				style={{ marginLeft: 5 }}
 			>
 				<MenuList>
 					<MenuItem onClick={onHandleDropdownProfile} to={'/user-settings'} component={Link}>
-						Настройки аккаунта
+						Настройки&nbsp;аккаунта
 					</MenuItem>
 					<MenuItem onClick={onHandleDropdownProfile}>Оплата</MenuItem>
 				</MenuList>

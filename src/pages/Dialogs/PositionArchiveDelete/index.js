@@ -3,12 +3,16 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
+import Typography from '@material-ui/core/Typography';
+import DialogActions from '@material-ui/core/DialogActions';
+import Button from '@material-ui/core/Button';
 
-import { Dialog, DialogActions, DialogTitle } from 'src/components/Dialog';
+import { Dialog, DialogTitle } from 'src/components/Dialog';
 
 import { getStudioStock } from 'src/actions/studio';
-import { archivePosition } from 'src/actions/positions';
+import { archivePosition, archivePositionAfterEnded } from 'src/actions/positions';
+
+import { ButtonRed } from './styles';
 
 const PositionArchiveDelete = props => {
 	const { dialogOpen, onCloseDialog, onExitedDialog, onCallback, selectedPosition } = props;
@@ -17,7 +21,7 @@ const PositionArchiveDelete = props => {
 
 	const type = selectedPosition.receipts.length ? 'archive' : 'delete';
 
-	const onSubmit = () => {
+	const onArchiveDelete = () => {
 		props.archivePosition(selectedPosition._id, selectedPosition.positionGroup).then(response => {
 			if (onCallback !== undefined) onCallback(response);
 
@@ -27,38 +31,56 @@ const PositionArchiveDelete = props => {
 		});
 	};
 
+	const onArchivedAfterEnded = () => {
+		props.archivePositionAfterEnded(selectedPosition._id, { archivedAfterEnded: true }).then(response => {
+			if (onCallback !== undefined) onCallback(response);
+
+			onCloseDialog();
+		});
+	};
+
 	return (
-		<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog}>
-			<DialogTitle onClose={onCloseDialog}>{type === 'archive' ? 'Архивирование' : 'Удаление'} позиции</DialogTitle>
+		<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth={type === 'archive' ? 'md' : 'sm'}>
+			<DialogTitle onClose={onCloseDialog} theme="noTheme">
+				{type === 'archive' ? 'Архивирование' : 'Удаление'} позиции
+			</DialogTitle>
 			<DialogContent>
-				<DialogContentText>
-					Вы действительно хотите {type === 'archive' ? 'архивировать' : 'удалить'} позицию{' '}
-					<span>
-						<b>
-							{selectedPosition.characteristics.reduce(
-								(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
-								selectedPosition.name
-							)}
-						</b>
-						?
-					</span>
-				</DialogContentText>
+				<Typography variant="body1">
+					Вы действительно хотите {type === 'archive' ? 'архивировать' : 'удалить'}{' '}
+					<b>
+						{selectedPosition.characteristics.reduce(
+							(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
+							selectedPosition.name
+						)}
+					</b>
+					?
+				</Typography>
+				<DialogActions>
+					<Button onClick={onCloseDialog} variant="outlined" size="small">
+						Отмена
+					</Button>
+					{type === 'archive' ? (
+						<ButtonRed
+							onClick={onArchiveDelete}
+							variant={!selectedPosition.archivedAfterEnded ? 'outlined' : 'contained'}
+							color="primary"
+							size="small"
+						>
+							Архивировать
+						</ButtonRed>
+					) : null}
+					{type === 'archive' && !selectedPosition.archivedAfterEnded ? (
+						<ButtonRed onClick={onArchivedAfterEnded} variant="contained" color="primary" size="small">
+							Архивировать после реализации
+						</ButtonRed>
+					) : null}
+					{type === 'delete' ? (
+						<ButtonRed onClick={onArchiveDelete} variant="contained" color="primary" size="small">
+							Удалить
+						</ButtonRed>
+					) : null}
+				</DialogActions>
 			</DialogContent>
-			<DialogActions
-				leftHandleProps={{
-					handleProps: {
-						onClick: onCloseDialog,
-					},
-					text: 'Отмена',
-				}}
-				rightHandleProps={{
-					handleProps: {
-						autoFocus: true,
-						onClick: onSubmit,
-					},
-					text: type === 'archive' ? 'Архивировать' : 'Удалить',
-				}}
-			/>
 		</Dialog>
 	);
 };
@@ -75,6 +97,7 @@ const mapDispatchToProps = dispatch => {
 	return {
 		getStudioStock: () => dispatch(getStudioStock()),
 		archivePosition: (positionId, positionGroupId) => dispatch(archivePosition({ params: { positionId }, data: { positionGroupId } })),
+		archivePositionAfterEnded: (positionId, data) => dispatch(archivePositionAfterEnded({ params: { positionId }, data })),
 	};
 };
 

@@ -1,0 +1,45 @@
+.container.destructive:hover {
+  background-color: rgba(var(--c-rgb-o-1), 0.1);
+  color: var(--c-hex-o-1);
+}
+
+.content {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.iconBefore,
+.iconAfter {
+  color: var(--c-hex-bg-400);
+  font-size: 14px;
+  transition: background-color 50ms ease-out;
+  text-align: center;
+  width: 16px;
+}
+
+.container:hover .iconBefore,
+.container:hover .iconAfter {
+  color: var(--c-hex-bg-700);
+}
+
+.container.destructive:hover .iconBefore,
+.container.destructive:hover .iconAfter {
+  color: var(--c-hex-o-1);
+}
+
+.iconBefore {
+  margin-right: 12px;
+}
+
+.iconAfter {
+  margin-left: 12px;
+}
+
+.iconAfter svg[data-icon="check"] {
+  color: var(--c-hex-t-300);
+  opacity: 0;
+}
+
+:global(.Mui-selected) .iconAfter svg[data-icon="check"] {
+  opacity: 1;
+}

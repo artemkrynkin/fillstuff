@@ -119,73 +119,6 @@ export const editPosition = ({ params, data }) => {
 	};
 };
 
-export const createPositionReceipt = ({ data }) => {
-	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
-
-		return await axios
-			.post('/api/createPositionWithReceipt', {
-				studioId,
-				memberId,
-				data,
-			})
-			.then(response => {
-				dispatch({
-					type: 'CREATE_POSITION',
-					payload: response.data,
-				});
-
-				return Promise.resolve({ status: 'success' });
-			})
-			.catch(error => {
-				if (error.response) {
-					return Promise.resolve({ status: 'error', data: error.response.data });
-				} else {
-					console.error(error);
-
-					return Promise.resolve({ status: 'error' });
-				}
-			});
-	};
-};
-
-export const editPositionReceipt = ({ params, data }) => {
-	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
-		const { positionId } = params;
-
-		return await axios
-			.post('/api/editPositionWithReceipt', {
-				studioId,
-				memberId,
-				params,
-				data,
-			})
-			.then(response => {
-				dispatch({
-					type: 'EDIT_POSITION',
-					payload: {
-						positionId,
-						position: response.data,
-					},
-				});
-
-				return Promise.resolve({ status: 'success' });
-			})
-			.catch(error => {
-				if (error.response) {
-					return Promise.resolve({ status: 'error', data: error.response.data });
-				} else {
-					console.error(error);
-
-					return Promise.resolve({ status: 'error' });
-				}
-			});
-	};
-};
-
 export const archivePosition = ({ params, data }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
@@ -201,18 +134,53 @@ export const archivePosition = ({ params, data }) => {
 			})
 			.then(response => {
 				if (!response.data.code) {
-					const { remainingPositionId } = response.data;
-
 					dispatch({
 						type: 'ARCHIVE_POSITION',
 						payload: {
 							positionGroupId,
 							positionId,
-							remainingPositionId,
 						},
 					});
 
 					return Promise.resolve({ status: 'success' });
+				} else {
+					return Promise.resolve({ status: 'error' });
+				}
+			})
+			.catch(error => {
+				console.error(error);
+
+				return Promise.resolve({ status: 'error' });
+			});
+	};
+};
+
+export const archivePositionAfterEnded = ({ params, data }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+		const { positionId } = params;
+
+		return await axios
+			.post('/api/archivePositionAfterEnded', {
+				studioId,
+				memberId,
+				params,
+				data,
+			})
+			.then(response => {
+				if (!response.data.code) {
+					const position = response.data;
+
+					dispatch({
+						type: 'EDIT_POSITION',
+						payload: {
+							positionId,
+							position,
+						},
+					});
+
+					return Promise.resolve({ status: 'success', data: position });
 				} else {
 					return Promise.resolve({ status: 'error' });
 				}

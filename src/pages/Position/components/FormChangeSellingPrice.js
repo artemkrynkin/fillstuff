@@ -183,17 +183,17 @@ const FormChangeSellingPrice = props => {
 						</Grid>
 
 						<Grid className={styles.footer} alignItems="center" justify="center" spacing={2} container>
-							<Grid xs={6} item>
+							<Grid xs={5} item>
+								<Button onClick={onClose} disabled={isSubmitting} variant="contained" size="small" fullWidth>
+									Отмена
+								</Button>
+							</Grid>
+							<Grid xs={7} item>
 								<Button type="submit" disabled={isSubmitting} variant="contained" color="primary" size="small" fullWidth>
 									{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
 									<span className="loading-button-label" style={{ opacity: Number(!isSubmitting) }}>
 										Сохранить
 									</span>
-								</Button>
-							</Grid>
-							<Grid xs={6} item>
-								<Button onClick={onClose} disabled={isSubmitting} variant="contained" size="small" fullWidth>
-									Отмена
 								</Button>
 							</Grid>
 						</Grid>

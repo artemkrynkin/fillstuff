@@ -27,8 +27,8 @@ let Receipt = new Schema({
 	},
 	status: {
 		type: String,
-		enum: ['expected', 'received', 'active', 'closed'],
-		default: 'expected',
+		enum: ['received', 'active', 'closed'],
+		default: 'received',
 	},
 	current: {
 		// Количество

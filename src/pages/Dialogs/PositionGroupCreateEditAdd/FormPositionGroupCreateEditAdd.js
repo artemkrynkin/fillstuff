@@ -6,13 +6,14 @@ import { Form, Field, FieldArray } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import DialogContent from '@material-ui/core/DialogContent';
+import Button from '@material-ui/core/Button';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Grid from '@material-ui/core/Grid';
 import InputLabel from '@material-ui/core/InputLabel';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
+import DialogActions from '@material-ui/core/DialogActions';
 
-import { DialogActions } from 'src/components/Dialog';
 import Chips from 'src/components/Chips';
 import PositionNameInList from 'src/components/PositionNameInList';
 
@@ -169,22 +170,23 @@ const FormPositionGroupCreateEditAdd = props => {
 					</Grid>
 				) : null}
 			</DialogContent>
-			<DialogActions
-				leftHandleProps={{
-					handleProps: {
-						onClick: onCloseDialog,
-					},
-					text: 'Отмена',
-				}}
-				rightHandleProps={{
-					handleProps: {
-						type: 'submit',
-						disabled: isSubmitting,
-					},
-					text: type === 'create' ? 'Создать' : type === 'edit' ? 'Сохранить' : 'Добавить',
-					isLoading: isSubmitting,
-				}}
-			/>
+			<DialogActions>
+				<Grid spacing={2} container>
+					<Grid xs={4} item>
+						<Button onClick={onCloseDialog} variant="outlined" size="large" fullWidth>
+							Отмена
+						</Button>
+					</Grid>
+					<Grid xs={8} item>
+						<Button type="submit" disabled={isSubmitting} variant="contained" color="primary" size="large" fullWidth>
+							{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
+							<span className="loading-button-label" style={{ opacity: Number(!isSubmitting) }}>
+								{type === 'create' ? 'Создать' : type === 'edit' ? 'Сохранить' : 'Добавить'}
+							</span>
+						</Button>
+					</Grid>
+				</Grid>
+			</DialogActions>
 		</Form>
 	);
 };

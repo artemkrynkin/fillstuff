@@ -5,11 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Grid from '@material-ui/core/Grid';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import MenuItem from '@material-ui/core/MenuItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import Dropdown from 'src/components/Dropdown';
+import MenuItem from 'src/components/MenuItem';
 
 import { SearchTextField } from './Filter.styles';
 import styles from './Filter.module.css';
@@ -102,20 +101,18 @@ const FormFilter = props => {
 						open={dropdownRole}
 						onClose={() => handlerDropdown('dropdownRole')}
 						placement="bottom-start"
-						innerContentStyle={{ maxHeight: 300, overflow: 'auto' }}
+						innerContentStyle={{ width: 220, maxHeight: 300, overflow: 'auto' }}
 					>
-						<List component="nav">
+						<List>
 							{roles.map((role, index) => (
-								<ListItem
+								<MenuItem
 									key={index}
 									disabled={isSubmitting}
 									selected={values.role === role}
 									onClick={() => onChangeFilterRole(role, setFieldValue, submitForm)}
-									component={MenuItem}
-									button
 								>
 									{FilterRoleTransform(role)}
-								</ListItem>
+								</MenuItem>
 							))}
 						</List>
 					</Dropdown>

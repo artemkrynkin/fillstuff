@@ -24,10 +24,6 @@
 }
 
 .statusYellow {
-  color: var(--c-hex-o-14);
-}
-
-.statusOrange {
   color: var(--c-hex-o-15);
 }
 

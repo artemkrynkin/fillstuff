@@ -117,123 +117,125 @@ class Positions extends Component {
 			dialogWriteOffCreate,
 		} = this.state;
 
-		if (isLoadingPositions || isLoadingPositionGroups) {
-			return <div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />;
-		}
+		return (
+			<div className={styles.container}>
+				{!isLoadingPositions && !isLoadingPositionGroups && positions && positionGroups ? (
+					!positions.length && !positionGroups.length ? (
+						<div className={styles.none}>Еще не создано ни одной позиции</div>
+					) : positions.every(position => position.isArchived) ? (
+						<div className={styles.none}>Все созданные позиции находятся в архиве</div>
+					) : (
+						<Paper>
+							<Table style={{ tableLayout: 'fixed' }}>
+								<TableHead className={styles.tableHeaderSticky}>
+									<TableRow>
+										<TableCell>Позиция</TableCell>
+										<TableCell align="right" width={240}>
+											Количество
+										</TableCell>
+										<TableCell align="right" width={140}>
+											Цена покупки
+										</TableCell>
+										<TableCell align="right" width={140}>
+											Цена продажи
+										</TableCell>
+										<TableCell width={50} />
+									</TableRow>
+								</TableHead>
+								<TableBody className={styles.tableBody}>
+									{positionGroups.map(positionGroup => (
+										<PositionGroup
+											key={positionGroup._id}
+											positionGroup={positionGroup}
+											onOpenDialogPositionGroup={this.onOpenDialogByName}
+											onOpenDialogPosition={this.onOpenDialogByName}
+										/>
+									))}
+									{positions.map(position => {
+										if (position.positionGroup || position.isArchived) return null;
 
-		if (!isLoadingPositions && !isLoadingPositionGroups && positions && positionGroups) {
-			if (!positions.length && !positionGroups.length) {
-				return <div className={styles.none}>Еще не создано ни одной позиции</div>;
-			} else {
-				return (
-					<Paper>
-						<Table style={{ tableLayout: 'fixed' }}>
-							<TableHead className={styles.tableHeaderSticky}>
-								<TableRow>
-									<TableCell>Позиция</TableCell>
-									<TableCell align="right" width={240}>
-										Количество
-									</TableCell>
-									<TableCell align="right" width={140}>
-										Цена покупки
-									</TableCell>
-									<TableCell align="right" width={140}>
-										Цена продажи
-									</TableCell>
-									<TableCell width={50} />
-								</TableRow>
-							</TableHead>
-							<TableBody className={styles.tableBody}>
-								{positionGroups.map(positionGroup => (
-									<PositionGroup
-										key={positionGroup._id}
-										positionGroup={positionGroup}
-										onOpenDialogPositionGroup={this.onOpenDialogByName}
-										onOpenDialogPosition={this.onOpenDialogByName}
-									/>
-								))}
-								{positions.map(position => {
-									if (position.positionGroup || position.isArchived) return null;
+										return <Position key={position._id} position={position} onOpenDialogPosition={this.onOpenDialogByName} />;
+									})}
+								</TableBody>
+							</Table>
+						</Paper>
+					)
+				) : isLoadingPositions || isLoadingPositionGroups ? (
+					<div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />
+				) : null}
 
-									return <Position key={position._id} position={position} onOpenDialogPosition={this.onOpenDialogByName} />;
-								})}
-							</TableBody>
-						</Table>
+				{/* Dialogs PositionGroups */}
+				<DialogPositionGroupEdit
+					type="edit"
+					dialogOpen={dialogPositionGroupEdit}
+					onCloseDialog={() => this.onCloseDialogByName('dialogPositionGroupEdit')}
+					onExitedDialog={this.onPositionGroupDrop}
+					selectedPositionGroup={dialogOpenedName === 'dialogPositionGroupEdit' ? positionGroup : null}
+				/>
 
-						{/* Dialogs PositionGroups */}
-						<DialogPositionGroupEdit
-							type="edit"
-							dialogOpen={dialogPositionGroupEdit}
-							onCloseDialog={() => this.onCloseDialogByName('dialogPositionGroupEdit')}
-							onExitedDialog={this.onPositionGroupDrop}
-							selectedPositionGroup={dialogOpenedName === 'dialogPositionGroupEdit' ? positionGroup : null}
-						/>
+				<DialogPositionGroupAdd
+					type="add"
+					dialogOpen={dialogPositionGroupAdd}
+					onCloseDialog={() => this.onCloseDialogByName('dialogPositionGroupAdd')}
+					onExitedDialog={this.onPositionGroupDrop}
+					selectedPositionGroup={dialogOpenedName === 'dialogPositionGroupAdd' ? positionGroup : null}
+				/>
 
-						<DialogPositionGroupAdd
-							type="add"
-							dialogOpen={dialogPositionGroupAdd}
-							onCloseDialog={() => this.onCloseDialogByName('dialogPositionGroupAdd')}
-							onExitedDialog={this.onPositionGroupDrop}
-							selectedPositionGroup={dialogOpenedName === 'dialogPositionGroupAdd' ? positionGroup : null}
-						/>
+				<DialogPositionGroupQRCodeGeneration
+					dialogOpen={dialogPositionGroupQRCodeGeneration}
+					onCloseDialog={() => this.onCloseDialogByName('dialogPositionGroupQRCodeGeneration')}
+					onExitedDialog={this.onPositionGroupDrop}
+					type="positionGroup"
+					selectedPositionOrGroup={dialogOpenedName === 'dialogPositionGroupQRCodeGeneration' ? positionGroup : null}
+				/>
 
-						<DialogPositionGroupQRCodeGeneration
-							dialogOpen={dialogPositionGroupQRCodeGeneration}
-							onCloseDialog={() => this.onCloseDialogByName('dialogPositionGroupQRCodeGeneration')}
-							onExitedDialog={this.onPositionGroupDrop}
-							type="positionGroup"
-							selectedPositionOrGroup={dialogOpenedName === 'dialogPositionGroupQRCodeGeneration' ? positionGroup : null}
-						/>
+				{/* Dialogs Positions */}
+				<DialogPositionEdit
+					type="edit"
+					dialogOpen={dialogPositionEdit}
+					onCloseDialog={() => this.onCloseDialogByName('dialogPositionEdit')}
+					onExitedDialog={this.onPositionDrop}
+					currentStudioId={currentStudio._id}
+					selectedPosition={dialogOpenedName === 'dialogPositionEdit' ? position : null}
+				/>
 
-						{/* Dialogs Positions */}
-						<DialogPositionEdit
-							type="edit"
-							dialogOpen={dialogPositionEdit}
-							onCloseDialog={() => this.onCloseDialogByName('dialogPositionEdit')}
-							onExitedDialog={this.onPositionDrop}
-							currentStudioId={currentStudio._id}
-							selectedPosition={dialogOpenedName === 'dialogPositionEdit' ? position : null}
-						/>
+				<DialogPositionRemoveFromGroup
+					dialogOpen={dialogPositionRemoveFromGroup}
+					onCloseDialog={() => this.onCloseDialogByName('dialogPositionRemoveFromGroup')}
+					onExitedDialog={this.onPositionDrop}
+					selectedPosition={dialogOpenedName === 'dialogPositionRemoveFromGroup' ? position : null}
+				/>
 
-						<DialogPositionRemoveFromGroup
-							dialogOpen={dialogPositionRemoveFromGroup}
-							onCloseDialog={() => this.onCloseDialogByName('dialogPositionRemoveFromGroup')}
-							onExitedDialog={this.onPositionDrop}
-							selectedPosition={dialogOpenedName === 'dialogPositionRemoveFromGroup' ? position : null}
-						/>
+				<DialogPositionArchiveDelete
+					dialogOpen={dialogPositionArchiveDelete}
+					onCloseDialog={() => this.onCloseDialogByName('dialogPositionArchiveDelete')}
+					onExitedDialog={this.onPositionDrop}
+					selectedPosition={dialogOpenedName === 'dialogPositionArchiveDelete' ? position : null}
+				/>
 
-						<DialogPositionArchiveDelete
-							dialogOpen={dialogPositionArchiveDelete}
-							onCloseDialog={() => this.onCloseDialogByName('dialogPositionArchiveDelete')}
-							onExitedDialog={this.onPositionDrop}
-							selectedPosition={dialogOpenedName === 'dialogPositionArchiveDelete' ? position : null}
-						/>
+				<DialogPositionQRCodeGeneration
+					dialogOpen={dialogPositionQRCodeGeneration}
+					onCloseDialog={() => this.onCloseDialogByName('dialogPositionQRCodeGeneration')}
+					onExitedDialog={this.onPositionDrop}
+					type="position"
+					selectedPositionOrGroup={dialogOpenedName === 'dialogPositionQRCodeGeneration' ? position : null}
+				/>
 
-						<DialogPositionQRCodeGeneration
-							dialogOpen={dialogPositionQRCodeGeneration}
-							onCloseDialog={() => this.onCloseDialogByName('dialogPositionQRCodeGeneration')}
-							onExitedDialog={this.onPositionDrop}
-							type="position"
-							selectedPositionOrGroup={dialogOpenedName === 'dialogPositionQRCodeGeneration' ? position : null}
-						/>
+				<DialogReceiptActiveAddQuantity
+					dialogOpen={dialogReceiptActiveAddQuantity}
+					onCloseDialog={() => this.onCloseDialogByName('dialogReceiptActiveAddQuantity')}
+					onExitedDialog={this.onPositionDrop}
+					selectedPosition={dialogOpenedName === 'dialogReceiptActiveAddQuantity' ? position : null}
+				/>
 
-						<DialogReceiptActiveAddQuantity
-							dialogOpen={dialogReceiptActiveAddQuantity}
-							onCloseDialog={() => this.onCloseDialogByName('dialogReceiptActiveAddQuantity')}
-							onExitedDialog={this.onPositionDrop}
-							selectedPosition={dialogOpenedName === 'dialogReceiptActiveAddQuantity' ? position : null}
-						/>
-
-						<DialogWriteOffCreate
-							dialogOpen={dialogWriteOffCreate}
-							onCloseDialog={() => this.onCloseDialogByName('dialogWriteOffCreate')}
-							onExitedDialog={this.onPositionDrop}
-							selectedPosition={dialogOpenedName === 'dialogWriteOffCreate' ? position : null}
-						/>
-					</Paper>
-				);
-			}
-		} else return null;
+				<DialogWriteOffCreate
+					dialogOpen={dialogWriteOffCreate}
+					onCloseDialog={() => this.onCloseDialogByName('dialogWriteOffCreate')}
+					onExitedDialog={this.onPositionDrop}
+					selectedPosition={dialogOpenedName === 'dialogWriteOffCreate' ? position : null}
+				/>
+			</div>
+		);
 	}
 }
 

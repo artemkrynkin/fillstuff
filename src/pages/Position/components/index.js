@@ -29,7 +29,15 @@ const DialogPositionArchiveDelete = loadable(() =>
 );
 
 const Index = props => {
-	const { currentStudio, positionData, receiptsData, getCharacteristics, getPosition, changeSellingPriceReceipt } = props;
+	const {
+		currentStudio,
+		positionData,
+		receiptsData,
+		getCharacteristics,
+		getPosition,
+		onCancelArchivePositionAfterEnded,
+		changeSellingPriceReceipt,
+	} = props;
 	const [dialogOpenedName, setDialogOpenedName] = useState('');
 	const [dialogs, setDialogs] = useState({
 		dialogPositionEdit: false,
@@ -72,7 +80,11 @@ const Index = props => {
 		<Container maxWidth="lg">
 			<Grid container direction="row" justify="center" alignItems="flex-start" spacing={2}>
 				<Grid item xs={12}>
-					<PositionDetails position={position} onOpenDialogPosition={onOpenDialogByName} />
+					<PositionDetails
+						position={position}
+						onOpenDialogPosition={onOpenDialogByName}
+						onCancelArchivePositionAfterEnded={onCancelArchivePositionAfterEnded}
+					/>
 					<Receipts position={position} receiptsData={receiptsData} changeSellingPriceReceipt={changeSellingPriceReceipt} />
 				</Grid>
 			</Grid>
@@ -82,7 +94,7 @@ const Index = props => {
 				dialogOpen={dialogs.dialogPositionEdit}
 				onCloseDialog={() => onCloseDialogByName('dialogPositionEdit')}
 				onExitedDialog={onExitedDialogByName}
-				onCallback={() => getPosition()}
+				onCallback={getPosition}
 				currentStudioId={currentStudio._id}
 				selectedPosition={dialogOpenedName === 'dialogPositionEdit' ? position : null}
 			/>
@@ -91,7 +103,6 @@ const Index = props => {
 				dialogOpen={dialogs.dialogPositionRemoveFromGroup}
 				onCloseDialog={() => onCloseDialogByName('dialogPositionRemoveFromGroup')}
 				onExitedDialog={onExitedDialogByName}
-				onCallback={onBackAvailability}
 				selectedPosition={dialogOpenedName === 'dialogPositionRemoveFromGroup' ? position : null}
 			/>
 
@@ -99,7 +110,13 @@ const Index = props => {
 				dialogOpen={dialogs.dialogPositionArchiveDelete}
 				onCloseDialog={() => onCloseDialogByName('dialogPositionArchiveDelete')}
 				onExitedDialog={onExitedDialogByName}
-				onCallback={onBackAvailability}
+				onCallback={response => {
+					if (response.status === 'success' && response.data) {
+						getPosition();
+					} else {
+						onBackAvailability();
+					}
+				}}
 				selectedPosition={dialogOpenedName === 'dialogPositionArchiveDelete' ? position : null}
 			/>
 

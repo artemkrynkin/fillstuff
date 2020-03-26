@@ -12,7 +12,9 @@ import {
 	faUserAlt as fasUserAlt,
 	faCheckSquare as fasCheckSquare,
 	faWallet as fasWallet,
-	faPen as falPen,
+	faPen as fasPen,
+	faCircle as fasCircle,
+	faClock as fasClock,
 } from '@fortawesome/pro-solid-svg-icons';
 
 import {
@@ -41,6 +43,10 @@ import {
 	faUndo as farUndo,
 	faArchive as farArchive,
 	faBoxAlt as farBoxAlt,
+	faPen as farPen,
+	faFolderPlus as farFolderPlus,
+	faFolderMinus as farFolderMinus,
+	faTruck as farTruck,
 } from '@fortawesome/pro-regular-svg-icons';
 
 import {
@@ -93,7 +99,9 @@ library.add(
 	fasUserAlt,
 	fasCheckSquare,
 	fasWallet,
-	falPen,
+	fasPen,
+	fasCircle,
+	fasClock,
 
 	// Regular
 	farAngleLeft,
@@ -121,6 +129,10 @@ library.add(
 	farUndo,
 	farArchive,
 	farBoxAlt,
+	farPen,
+	farFolderPlus,
+	farFolderMinus,
+	farTruck,
 
 	// Light
 	falAngleLeft,

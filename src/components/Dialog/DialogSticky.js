@@ -6,7 +6,8 @@ import MuiDialog from '@material-ui/core/Dialog';
 
 import { observeActions } from './utils';
 
-import styles from './index.module.css';
+import './index.module.css';
+import stylesDialogTitle from './DialogTitle.module.css';
 
 export const DialogSticky = props => {
 	const { stickyAnyone, stickyTitle, stickyActions, children, ...remainingProps } = props;
@@ -15,8 +16,8 @@ export const DialogSticky = props => {
 	const onEnterDialog = element => {
 		const { onEnter } = remainingProps;
 
-		if (stickyTitle) observeActions(element, styles.title, 'top');
-		if (stickyActions) observeActions(element, styles.actions, 'bottom');
+		if (stickyTitle) observeActions(element, stylesDialogTitle.title, 'top');
+		if (stickyActions) observeActions(element, 'MuiDialogActions-root', 'bottom');
 
 		stickyAnyone.forEach(({ stickySelector, position, sentinelAdditionalText }) => {
 			observeActions(element, stickySelector, position, sentinelAdditionalText);
@@ -26,9 +27,9 @@ export const DialogSticky = props => {
 	};
 
 	const classes = ClassNames({
-		[styles.sticky]: !stickyAnyone.length,
-		[styles.stickyTitle]: stickyTitle,
-		[styles.stickyActions]: stickyActions,
+		sticky: !stickyAnyone.length,
+		stickyTitle: stickyTitle,
+		stickyActions: stickyActions,
 	});
 
 	return (

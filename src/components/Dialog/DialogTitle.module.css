@@ -1,0 +1,94 @@
+.title {
+  border-radius: 8px 8px 0 0;
+  position: relative;
+}
+
+.titlePrimary {
+  background-color: var(--c-hex-t-300);
+  border-bottom: 1px solid var(--c-hex-t-100);
+  color: white;
+}
+
+.titleWhite {
+  background-color: white;
+  border-bottom: 1px solid var(--c-hex-br-5);
+  color: var(--c-hex-bg-700);
+}
+
+.titleNoTheme {
+  background-color: white;
+  border-bottom: none;
+  color: var(--c-hex-bg-700);
+  padding-bottom: 0;
+}
+
+.titleNoContent {
+  padding: 0;
+}
+
+:global(.stickyTitle) .title {
+  position: sticky;
+  top: 0;
+  z-index: 1100;
+}
+
+:global(.stickyTitle) .title:global(.stuck) {
+  border-bottom: 1px solid var(--c-hex-bg-50);
+  border-radius: 0;
+}
+
+.titleText {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.titleTextCenter {
+  text-align: center;
+}
+
+.titlePrimary .titleText {
+  color: white;
+}
+
+.titleWhite .titleText {
+  color: var(--c-hex-bg-700);
+}
+
+.titleNoTheme .titleText {
+  color: var(--c-hex-bg-700);
+}
+
+.close {
+  background-color: transparent !important;
+  border-radius: 0;
+  padding: 15px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.close svg {
+  width: 24px !important;
+}
+
+.titlePrimary .close {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.titlePrimary .close:hover {
+  color: white;
+}
+
+.titleWhite .close,
+.titleNoTheme .close,
+.titleNoContent .close {
+  color: rgba(var(--c-rgb-bg-300), 0.8)
+}
+
+.titleWhite .close:hover,
+.titleNoTheme .close:hover,
+.titleNoContent .close:hover {
+  color: var(--c-hex-bg-300);
+}

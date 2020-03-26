@@ -2,7 +2,6 @@ import React from 'react';
 import momentTz from 'moment-timezone';
 import { Field, Form } from 'formik';
 
-import stylesGlobal from 'src/styles/globals.module.css';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import FormControl from '@material-ui/core/FormControl';
@@ -11,11 +10,12 @@ import Grid from '@material-ui/core/Grid';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
-import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 
 import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
+import MenuItem from 'src/components/MenuItem';
 
+import stylesGlobal from 'src/styles/globals.module.css';
 // import { checkPermissions } from 'shared/roles-access-rights';
 
 const timezones = require('shared/timezones')
@@ -71,15 +71,21 @@ const FormGeneralSettings = props => {
 				</InputLabel>
 				<FormControl fullWidth>
 					{/*{checkPermissions(currentUserRole, ['studio.full_control']) ? (*/}
-					<Field name="timezone" as={Select} error={Boolean(touched.timezone && errors.timezone)}>
+					<Field
+						name="timezone"
+						as={Select}
+						error={Boolean(touched.timezone && errors.timezone)}
+						renderValue={value => {
+							if (!value) return 'Выберите';
+							else return value;
+						}}
+					>
 						<MenuItem value="">Не выбран</MenuItem>
-						{timezones.map((timezone, index) => {
-							return (
-								<MenuItem key={index} value={timezone.name}>
-									({timezone.offset}) {timezone.name}
-								</MenuItem>
-							);
-						})}
+						{timezones.map((timezone, index) => (
+							<MenuItem key={index} value={timezone.name}>
+								({timezone.offset}) {timezone.name}
+							</MenuItem>
+						))}
 					</Field>
 					{/*) : (*/}
 					{/*	<TextField*/}

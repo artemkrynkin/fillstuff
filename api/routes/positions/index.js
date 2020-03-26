@@ -1,13 +1,10 @@
 import { Router } from 'express';
 
-import { receiptCalc } from 'shared/checkPositionAndReceipt';
-
 import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
 import Studio from 'api/models/studio';
 import Position from 'api/models/position';
 import PositionGroup from 'api/models/positionGroup';
-import Receipt from 'api/models/receipt';
 
 const positionsRouter = Router();
 
@@ -189,13 +186,12 @@ positionsRouter.post(
 			])
 			.catch(err => next({ code: 2, err }));
 
-		// if (position.receipts.some(receipt => receipt.status === 'expected')) {
-		// 	return res.json({
-		// 		code: 400,
-		// 		message: 'Позиция не может быть архивирована, пока есть поступление в одном из непоступивших заказов.',
-		// 	});
-		// }
-		let remainingPositionId = null;
+		if (position.deliveryIsExpected) {
+			return res.json({
+				code: 400,
+				message: 'Позиция не может быть архивирована, пока есть поступление в одном из непоступивших заказов.',
+			});
+		}
 
 		if (position.receipts.length) {
 			Position.findByIdAndUpdate(position._id, {
@@ -203,22 +199,18 @@ positionsRouter.post(
 				$unset: { positionGroup: 1 },
 			}).catch(err => next({ code: 2, err }));
 		} else {
-			Position.findByIdAndDelete(position._id).catch(err => next({ code: 2, err }));
+			Position.findByIdAndRemove(position._id).catch(err => next({ code: 2, err }));
 		}
 
 		if (position.positionGroup) {
-			if (position.positionGroup.positions.length > 2) {
+			if (position.positionGroup.positions.length > 1) {
 				PositionGroup.findByIdAndUpdate(position.positionGroup._id, { $pull: { positions: position._id } }).catch(err =>
 					next({ code: 2, err })
 				);
 			} else {
-				remainingPositionId = position.positionGroup.positions.find(positionId => String(positionId) !== String(position._id));
-
-				Position.findByIdAndUpdate(remainingPositionId, {
-					$unset: { positionGroup: 1 },
-				}).catch(err => next({ code: 2, err }));
-
-				PositionGroup.findByIdAndRemove(position.positionGroup._id).catch(err => next({ code: 2, err }));
+				PositionGroup.findByIdAndRemove(position.positionGroup._id, { $pull: { positions: position._id } }).catch(err =>
+					next({ code: 2, err })
+				);
 			}
 		}
 
@@ -244,9 +236,43 @@ positionsRouter.post(
 			{ runValidators: true }
 		).catch(err => next({ code: 2, err }));
 
-		res.json({
-			remainingPositionId,
-		});
+		res.json();
+	}
+);
+
+positionsRouter.post(
+	'/archivePositionAfterEnded',
+	isAuthedResolver,
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
+	async (req, res, next) => {
+		const {
+			params: { positionId },
+			data: { archivedAfterEnded },
+		} = req.body;
+
+		const positionEdited = {
+			$set: {},
+			$unset: {},
+		};
+
+		if (archivedAfterEnded) positionEdited.$set.archivedAfterEnded = archivedAfterEnded;
+		else positionEdited.$unset.archivedAfterEnded = 1;
+
+		Position.findByIdAndUpdate(positionId, positionEdited, { new: true })
+			.populate([
+				{
+					path: 'activeReceipt characteristics',
+				},
+				{
+					path: 'receipts',
+					match: { status: /received|active/ },
+					options: {
+						sort: { createdAt: 1 },
+					},
+				},
+			])
+			.then(position => res.json(position))
+			.catch(err => next({ code: 2, err }));
 	}
 );
 

@@ -24,7 +24,7 @@ const compareQuantity = (a, b) => {
 };
 
 const QuantityIndicator = props => {
-	const { type, unitReceipt, unitRelease, minimumBalance, receipts, positions } = props;
+	const { type, unitReceipt, unitRelease, minimumBalance, archivedAfterEnded, receipts, positions } = props;
 
 	let quantity = 0;
 	let quantityPackages = 0;
@@ -70,12 +70,12 @@ const QuantityIndicator = props => {
 				) : (
 					`${quantity} ${unitReleaseTransform}`
 				)}
-				{minimumBalance ? (
+				{minimumBalance && !archivedAfterEnded ? (
 					<span className={styles.minimumBalance} style={{ marginLeft: 5 }}>
 						{`/ ${minimumBalance}`}
 					</span>
 				) : null}
-				{minimumBalance ? <span className={qiCircleClasses(quantity, minimumBalance)} /> : null}
+				{minimumBalance && !archivedAfterEnded ? <span className={qiCircleClasses(quantity, minimumBalance)} /> : null}
 			</div>
 		) : (
 			'-'
@@ -90,6 +90,7 @@ QuantityIndicator.propTypes = {
 	unitRelease: PropTypes.oneOf(['pce', 'nmp']),
 	receipts: PropTypes.array,
 	minimumBalance: PropTypes.number,
+	archivedAfterEnded: PropTypes.bool,
 	positions: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
 };
 

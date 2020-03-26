@@ -1,8 +1,12 @@
+.container {
+}
+
 .none {
   color: var(--c-hex-bg-300);
   font-size: 16px;
   font-weight: 700;
   line-height: 1.4;
+  margin-top: 40px;
   text-align: center;
 }
 

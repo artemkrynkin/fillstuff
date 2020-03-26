@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import DialogActions from '@material-ui/core/DialogActions';
 
-import { Dialog, DialogActions, DialogTitle } from 'src/components/Dialog';
+import { Dialog, DialogTitle } from 'src/components/Dialog';
 
 import { getStudioStock } from 'src/actions/studio';
 import { cancelWriteOff } from 'src/actions/writeOffs';
@@ -25,9 +27,11 @@ const DialogWriteOffCancel = props => {
 
 	return (
 		<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog}>
-			<DialogTitle onClose={onCloseDialog}>Отменить списание</DialogTitle>
+			<DialogTitle onClose={onCloseDialog} theme="noTheme">
+				Отменить списание
+			</DialogTitle>
 			<DialogContent>
-				<DialogContentText>
+				<Typography variant="body1">
 					Вы действительно хотите отменить списание позиции{' '}
 					<span>
 						<b>
@@ -38,23 +42,16 @@ const DialogWriteOffCancel = props => {
 						</b>
 						?
 					</span>
-				</DialogContentText>
+				</Typography>
+				<DialogActions>
+					<Button onClick={onCloseDialog} variant="outlined" size="small">
+						Отмена
+					</Button>
+					<Button onClick={onSubmit} variant="contained" color="primary" size="small">
+						Отменить списание
+					</Button>
+				</DialogActions>
 			</DialogContent>
-			<DialogActions
-				leftHandleProps={{
-					handleProps: {
-						onClick: onCloseDialog,
-					},
-					text: 'Отмена',
-				}}
-				rightHandleProps={{
-					handleProps: {
-						autoFocus: true,
-						onClick: onSubmit,
-					},
-					text: 'Отменить',
-				}}
-			/>
 		</Dialog>
 	);
 };

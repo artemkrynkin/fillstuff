@@ -29,10 +29,8 @@ const statusTransform = status => {
 		case 'active':
 			return 'На реализации';
 		case 'received':
-			return 'На складе';
-		case 'expected':
 		default:
-			return 'Ожидается';
+			return 'На складе';
 	}
 };
 
@@ -42,7 +40,6 @@ const statusColorClasses = status =>
 		[styles.statusRed]: status === 'closed',
 		[styles.statusGreen]: status === 'active',
 		[styles.statusYellow]: status === 'received',
-		[styles.statusOrange]: status === 'expected',
 	});
 
 const Receipt = props => {

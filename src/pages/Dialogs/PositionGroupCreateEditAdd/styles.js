@@ -11,7 +11,7 @@ export const SearchTextField = withStyles({
 			boxShadow: 'none !important',
 			borderRadius: 0,
 			minHeight: 40,
-			padding: '0 25px',
+			padding: '0 20px',
 		},
 	},
 })(InputBase);

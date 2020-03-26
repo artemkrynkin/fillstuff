@@ -13,7 +13,7 @@ import { LoadingComponent } from 'src/components/Loading';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 
 import { getCharacteristics } from 'src/actions/characteristics';
-import { getPosition } from 'src/actions/positions';
+import { getPosition, archivePositionAfterEnded } from 'src/actions/positions';
 import { getReceiptsPosition, changeReceiptPosition } from 'src/actions/receipts';
 
 import stylesPage from 'src/styles/page.module.css';
@@ -40,6 +40,14 @@ class Position extends Component {
 					pathname: '/availability',
 				});
 			}
+		});
+	};
+
+	onCancelArchivePositionAfterEnded = positionId => {
+		this.props.archivePositionAfterEnded(positionId, { archivedAfterEnded: false }).then(response => {
+			this.setState({
+				positionData: response,
+			});
 		});
 	};
 
@@ -114,6 +122,7 @@ class Position extends Component {
 						receiptsData={receiptsData}
 						getCharacteristics={() => getCharacteristics(currentStudio._id)}
 						getPosition={this.getPosition}
+						onCancelArchivePositionAfterEnded={this.onCancelArchivePositionAfterEnded}
 						changeSellingPriceReceipt={this.changeSellingPriceReceipt}
 					/>
 				</div>
@@ -132,6 +141,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
 		getCharacteristics: currentStudioId => dispatch(getCharacteristics(currentStudioId)),
 		getPosition: () => dispatch(getPosition({ params: { positionId } })),
+		archivePositionAfterEnded: (positionId, data) => dispatch(archivePositionAfterEnded({ params: { positionId }, data })),
 		getReceiptsPosition: () => dispatch(getReceiptsPosition({ params: { positionId } })),
 		changeReceiptPosition: (params, data) => dispatch(changeReceiptPosition({ params, data })),
 	};

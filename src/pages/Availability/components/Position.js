@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import ClassNames from 'classnames';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,17 +9,18 @@ import ButtonBase from '@material-ui/core/ButtonBase';
 import TableRow from '@material-ui/core/TableRow';
 import IconButton from '@material-ui/core/IconButton';
 import MenuList from '@material-ui/core/MenuList';
-import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
 
 import PositionNameInList from 'src/components/PositionNameInList';
 import QuantityIndicator from 'src/components/QuantityIndicator';
 import Dropdown from 'src/components/Dropdown';
+import MenuItem from 'src/components/MenuItem';
+import PriceDisplay from './PriceDisplay';
+
+import { archivePositionAfterEnded } from 'src/actions/positions';
 
 import { TableCell } from './styles';
 import styles from './Positions.module.css';
-
-import PriceDisplay from './PriceDisplay';
 
 const positionActionsButtonClasses = dropdownActions =>
 	ClassNames({
@@ -35,11 +37,20 @@ const Position = props => {
 
 	const receiptsReceived = position.receipts.filter(receipt => receipt.status === 'received');
 
+	const onArchivedAfterEnded = () => {
+		props.archivePositionAfterEnded(position._id, { archivedAfterEnded: false });
+	};
+
 	return (
 		<TableRow className={styles.position}>
 			<TableCell style={position.positionGroup ? { paddingLeft: 41 } : {}}>
 				<Link className={styles.positionLink} to={`/availability/${position._id}`}>
-					<PositionNameInList name={position.name} characteristics={position.characteristics} />
+					<PositionNameInList
+						name={position.name}
+						characteristics={position.characteristics}
+						archivedAfterEnded={position.archivedAfterEnded}
+						deliveryIsExpected={position.deliveryIsExpected}
+					/>
 				</Link>
 			</TableCell>
 			<TableCell align="right" width={240}>
@@ -49,6 +60,7 @@ const Position = props => {
 						unitReceipt={position.unitReceipt}
 						unitRelease={position.unitRelease}
 						minimumBalance={position.minimumBalance}
+						archivedAfterEnded={position.archivedAfterEnded}
 						receipts={position.receipts.map(receipt => ({ ...receipt.current }))}
 					/>
 				) : null}
@@ -113,63 +125,86 @@ const Position = props => {
 					placement="bottom-end"
 					disablePortal={false}
 				>
-					{position.receipts.length || position.positionGroup ? (
+					{position.receipts.length ? (
 						<MenuList>
-							{position.receipts.length ? (
-								<MenuItem
-									onClick={() => {
-										onHandleDropdownActions();
-										onOpenDialogPosition('dialogReceiptActiveAddQuantity', position);
-									}}
-								>
-									Добавить количество
-								</MenuItem>
-							) : null}
-							{position.receipts.length ? (
-								<MenuItem
-									onClick={() => {
-										onHandleDropdownActions();
-										onOpenDialogPosition('dialogWriteOffCreate', position);
-									}}
-								>
-									Списать количество
-								</MenuItem>
-							) : null}
-							{position.positionGroup ? (
-								<MenuItem
-									onClick={() => {
-										onHandleDropdownActions();
-										onOpenDialogPosition('dialogPositionRemoveFromGroup', position);
-									}}
-								>
-									Открепить от группы
-								</MenuItem>
-							) : null}
+							<MenuItem
+								onClick={() => {
+									onHandleDropdownActions();
+									onOpenDialogPosition('dialogReceiptActiveAddQuantity', position);
+								}}
+							>
+								Добавить количество
+							</MenuItem>
+							<MenuItem
+								onClick={() => {
+									onHandleDropdownActions();
+									onOpenDialogPosition('dialogWriteOffCreate', position);
+								}}
+							>
+								Списать количество
+							</MenuItem>
 						</MenuList>
 					) : null}
-					{position.receipts.length || position.positionGroup ? <Divider /> : null}
+					{position.receipts.length ? <Divider /> : null}
 					<MenuList>
 						<MenuItem
 							onClick={() => {
 								onHandleDropdownActions();
 								onOpenDialogPosition('dialogPositionQRCodeGeneration', position);
 							}}
+							iconBefore={<FontAwesomeIcon icon={['fal', 'qrcode']} style={{ fontSize: 16 }} />}
 						>
 							Генерация QR-кода
 						</MenuItem>
+					</MenuList>
+					<Divider />
+					<MenuList>
+						{position.positionGroup ? (
+							<MenuItem
+								onClick={() => {
+									onHandleDropdownActions();
+									onOpenDialogPosition('dialogPositionRemoveFromGroup', position);
+								}}
+								iconBefore={<FontAwesomeIcon icon={['far', 'folder-minus']} style={{ fontSize: 16 }} />}
+							>
+								Открепить от группы
+							</MenuItem>
+						) : null}
 						<MenuItem
 							onClick={() => {
 								onHandleDropdownActions();
 								onOpenDialogPosition('dialogPositionEdit', position);
 							}}
+							iconBefore={<FontAwesomeIcon icon={['far', 'pen']} />}
 						>
 							Редактировать
 						</MenuItem>
+						{position.archivedAfterEnded ? (
+							<MenuItem
+								onClick={() => {
+									onHandleDropdownActions();
+									onArchivedAfterEnded();
+								}}
+								iconBefore={
+									<span className="fa-layers fa-fw" style={{ width: '16px' }}>
+										<FontAwesomeIcon icon={['far', 'archive']} />
+										<FontAwesomeIcon icon={['fas', 'circle']} transform="shrink-5 down-2.5 right-7" inverse />
+										<FontAwesomeIcon icon={['fas', 'clock']} transform="shrink-7 down-2.5 right-7" />
+									</span>
+								}
+							>
+								Отменить архивирование
+							</MenuItem>
+						) : null}
 						<MenuItem
 							onClick={() => {
 								onHandleDropdownActions();
 								onOpenDialogPosition('dialogPositionArchiveDelete', position);
 							}}
+							iconBefore={
+								position.receipts.length ? <FontAwesomeIcon icon={['far', 'archive']} /> : <FontAwesomeIcon icon={['far', 'trash-alt']} />
+							}
+							destructive
 						>
 							{position.receipts.length ? 'Архивировать' : 'Удалить'}
 						</MenuItem>
@@ -184,4 +219,10 @@ Position.propTypes = {
 	position: PropTypes.object.isRequired,
 };
 
-export default Position;
+const mapDispatchToProps = dispatch => {
+	return {
+		archivePositionAfterEnded: (positionId, data) => dispatch(archivePositionAfterEnded({ params: { positionId }, data })),
+	};
+};
+
+export default connect(null, mapDispatchToProps)(Position);

@@ -56,14 +56,6 @@ const positions = (
 				if (!action.payload.positionGroupId) {
 					stateData.splice(positionIndex, 1);
 				}
-
-				if (action.payload.remainingPositionId) {
-					stateData.forEach(position => {
-						if (position._id === action.payload.remainingPositionId) {
-							delete position.positionGroup;
-						}
-					});
-				}
 			}
 
 			return {
@@ -109,10 +101,7 @@ const positions = (
 				stateData = { ...state }.data;
 
 				stateData.forEach(position => {
-					if (
-						position._id === action.payload.positionId ||
-						(action.payload.remainingPositionId && position._id === action.payload.remainingPositionId)
-					) {
+					if (position._id === action.payload.positionId) {
 						delete position.positionGroup;
 					}
 				});

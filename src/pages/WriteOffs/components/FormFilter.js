@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import ClassNames from 'classnames';
 import moment from 'moment';
 import MomentUtils from '@date-io/moment';
 import { Form } from 'formik';
@@ -7,16 +8,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Grid from '@material-ui/core/Grid';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
+import Tooltip from '@material-ui/core/Tooltip';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import Switch from '@material-ui/core/Switch';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { DatePicker } from '@material-ui/pickers';
 
 import { memberRoleTransform } from 'shared/roles-access-rights';
@@ -24,6 +22,7 @@ import { memberRoleTransform } from 'shared/roles-access-rights';
 import { weekActive, monthActive, paginationCalendarFormat } from 'src/components/Pagination/utils';
 import Dropdown from 'src/components/Dropdown';
 import PositionNameInList from 'src/components/PositionNameInList';
+import MenuItem from 'src/components/MenuItem';
 
 import { FilterSearchTextField } from './Filter.styles';
 import styles from './Filter.module.css';
@@ -211,40 +210,34 @@ const FormFilter = props => {
 					</ButtonBase>
 
 					<Dropdown anchor={refDropdownDate} open={dropdownDate} onClose={() => handlerDropdown('dropdownDate')} placement="bottom-start">
-						<List component="nav">
-							<ListItem
+						<List>
+							<MenuItem
 								disabled={isSubmitting}
 								selected={isMonthActive()}
 								onClick={() => onChangeFilterDate('currentMonth', setFieldValue, submitForm)}
-								component={MenuItem}
-								button
 							>
 								Текущий месяц
-							</ListItem>
-							<ListItem
+							</MenuItem>
+							<MenuItem
 								disabled={isSubmitting}
 								selected={isWeekActive()}
 								onClick={() => onChangeFilterDate('currentWeek', setFieldValue, submitForm)}
-								component={MenuItem}
-								button
 							>
 								Текущая неделя
-							</ListItem>
+							</MenuItem>
 						</List>
 						<Divider />
 						<List component="nav">
-							<ListItem
+							<MenuItem
 								ref={refDropdownDateRange}
 								disabled={isSubmitting}
 								onClick={() => {
 									handlerDropdown('dropdownDate');
 									handlerDropdown('dropdownDateRange');
 								}}
-								component={MenuItem}
-								button
 							>
 								Указать период
-							</ListItem>
+							</MenuItem>
 						</List>
 					</Dropdown>
 
@@ -253,6 +246,7 @@ const FormFilter = props => {
 						open={dropdownDateRange}
 						onClose={() => handlerDropdown('dropdownDateRange')}
 						placement="bottom-start"
+						innerContentStyle={{ width: 190 }}
 					>
 						<Grid className={styles.dropdownContent} alignItems="center" container>
 							<MuiPickersUtilsProvider utils={MomentUtils}>
@@ -349,32 +343,28 @@ const FormFilter = props => {
 						innerContentStyle={{ width: 250, maxHeight: 300, overflow: 'auto' }}
 					>
 						{!isLoadingAllPositions && positions && positions.length ? (
-							<List component="nav">
+							<List>
 								{!searchTextPosition
 									? positionList.map((position, index) => (
-											<ListItem
+											<MenuItem
 												key={index}
 												disabled={isSubmitting}
 												selected={values.position === position}
 												onClick={() => onChangeFilterPosition(position, setFieldValue, submitForm)}
-												component={MenuItem}
-												button
 											>
 												{FilterPositionTransform(position)}
-											</ListItem>
+											</MenuItem>
 									  ))
 									: null}
 								{positions.map((position, index) => {
 									if (position.isArchived && !searchTextPosition) return null;
 
 									return (
-										<ListItem
+										<MenuItem
 											key={index}
 											disabled={isSubmitting}
 											selected={values.position === position._id}
 											onClick={() => onChangeFilterPosition(position._id, setFieldValue, submitForm)}
-											component={MenuItem}
-											button
 										>
 											<PositionNameInList
 												className={styles.positionName}
@@ -382,7 +372,7 @@ const FormFilter = props => {
 												characteristics={position.characteristics}
 												isArchived={position.isArchived}
 											/>
-										</ListItem>
+										</MenuItem>
 									);
 								})}
 							</List>
@@ -434,32 +424,28 @@ const FormFilter = props => {
 								) : null}
 							</div>
 						}
-						innerContentStyle={{ width: 200, maxHeight: 300, overflow: 'auto' }}
+						innerContentStyle={{ width: 250, maxHeight: 300, overflow: 'auto' }}
 					>
 						{!isLoadingAllMembers && members && members.length ? (
-							<List component="nav">
+							<List>
 								{!searchTextMember
 									? roles.map((role, index) => (
-											<ListItem
+											<MenuItem
 												key={index}
 												disabled={isSubmitting}
 												selected={values.role === role}
 												onClick={() => onChangeFilterRole(role, setFieldValue, submitForm)}
-												component={MenuItem}
-												button
 											>
 												{FilterRoleTransform(role)}
-											</ListItem>
+											</MenuItem>
 									  ))
 									: null}
 								{members.map((member, index) => (
-									<ListItem
+									<MenuItem
 										key={index}
 										disabled={isSubmitting}
 										selected={values.role === member._id}
 										onClick={() => onChangeFilterRole(member._id, setFieldValue, submitForm)}
-										component={MenuItem}
-										button
 									>
 										<div className={styles.user}>
 											<Avatar
@@ -473,7 +459,7 @@ const FormFilter = props => {
 												<div className={styles.userCaption}>{memberRoleTransform(member.roles).join(', ')}</div>
 											</Grid>
 										</div>
-									</ListItem>
+									</MenuItem>
 								))}
 							</List>
 						) : (
@@ -484,30 +470,28 @@ const FormFilter = props => {
 					</Dropdown>
 				</Grid>
 
+				{/* Filter Only Canceled */}
+				<Grid item>
+					<Tooltip title="Показывать только отменённые списания">
+						<ButtonBase
+							className={ClassNames({
+								[styles.filterButtonOnlyCanceled]: true,
+								[styles.filterButtonOnlyCanceledActive]: values.onlyCanceled,
+							})}
+							onClick={() => onChangeFilterOnlyCanceled(!values.onlyCanceled, setFieldValue, submitForm)}
+							disableRipple
+						>
+							<FontAwesomeIcon icon={['far', 'undo']} />
+						</ButtonBase>
+					</Tooltip>
+				</Grid>
+
 				<Grid item style={{ marginLeft: 'auto' }}>
 					{!isMonthActive() || values.position !== 'all' || values.role !== 'all' || values.onlyCanceled !== false ? (
 						<ButtonBase onClick={() => onResetAllFilters(setFieldValue, submitForm)} className={styles.filterButtonLinkRed} disableRipple>
 							<span>Сбросить фильтры</span>
 						</ButtonBase>
 					) : null}
-				</Grid>
-			</Grid>
-			<Grid container>
-				{/* Filter Only canceled */}
-				<Grid style={{ paddingLeft: 15 }} item>
-					<FormControlLabel
-						control={
-							<Switch
-								checked={values.onlyCanceled}
-								onChange={() => onChangeFilterOnlyCanceled(!values.onlyCanceled, setFieldValue, submitForm)}
-								value="purchaseExpenseStudio"
-								color="primary"
-								disableRipple
-							/>
-						}
-						label="Только отменённые списания"
-						labelPlacement="end"
-					/>
 				</Grid>
 			</Grid>
 		</Form>

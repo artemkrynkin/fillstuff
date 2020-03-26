@@ -145,14 +145,11 @@ export const removePositionFromGroup = ({ params, data }) => {
 			})
 			.then(response => {
 				if (!response.data.code) {
-					const { remainingPositionId } = response.data;
-
 					dispatch({
 						type: 'REMOVE_POSITION_FROM_GROUP',
 						payload: {
 							positionGroupId,
 							positionId,
-							remainingPositionId,
 						},
 					});
 

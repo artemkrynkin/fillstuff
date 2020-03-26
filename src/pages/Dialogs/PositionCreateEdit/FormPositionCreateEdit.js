@@ -8,11 +8,13 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import IconButton from '@material-ui/core/IconButton';
-import MenuItem from '@material-ui/core/MenuItem';
 import Tooltip from '@material-ui/core/Tooltip';
 import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
+import DialogActions from '@material-ui/core/DialogActions';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
@@ -21,10 +23,10 @@ import { unitTypes, unitTypeTransform, characteristicTypeTransform } from 'share
 
 import { onAddCharacteristicInPosition, checkCharacteristicsOnAbsenceInPosition } from 'src/helpers/positionUtils';
 
-import { DialogActions } from 'src/components/Dialog';
 import NumberFormat from 'src/components/NumberFormat';
 import { SelectAutocompleteCreate } from 'src/components/selectAutocomplete';
 import Chips from 'src/components/Chips';
+import MenuItem from 'src/components/MenuItem';
 
 import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
@@ -217,7 +219,17 @@ const FormPositionCreateEdit = props => {
 									},
 								}}
 							/>
-							<Tooltip title={<div style={{ maxWidth: 200 }}>текст который ничем не может помочь</div>} placement="bottom">
+							<Tooltip
+								title={
+									<div style={{ maxWidth: 250 }}>
+										Достигнув этого значения вы&nbsp;получите сигнал о&nbsp;необходимости пополнить запасы позиции.
+										<br />
+										<br />
+										При расчете учитывайте время необходимое для закупки (заказ, доставку и&nbsp;тд.) и&nbsp;интенсивность расхода позиции.
+									</div>
+								}
+								placement="bottom"
+							>
 								<div className={styles.helpIcon} style={{ marginLeft: 10 }}>
 									<FontAwesomeIcon icon={['fal', 'question-circle']} fixedWidth />
 								</div>
@@ -311,10 +323,11 @@ const FormPositionCreateEdit = props => {
 														}
 													},
 												}}
+												renderValue={value => {
+													if (!value) return 'Выберите';
+													else return characteristicTypeTransform(value);
+												}}
 											>
-												<MenuItem value="" disabled>
-													Выберите
-												</MenuItem>
 												{checkCharacteristicsOnAbsenceInPosition(values).map((characteristicType, index) => (
 													<MenuItem key={index} value={characteristicType}>
 														{characteristicTypeTransform(characteristicType)}
@@ -393,22 +406,23 @@ const FormPositionCreateEdit = props => {
 					)}
 				/>
 			</DialogContent>
-			<DialogActions
-				leftHandleProps={{
-					handleProps: {
-						onClick: onCloseDialog,
-					},
-					text: 'Отмена',
-				}}
-				rightHandleProps={{
-					handleProps: {
-						type: 'submit',
-						disabled: isSubmitting,
-					},
-					text: type === 'create' ? 'Создать' : 'Сохранить',
-					isLoading: isSubmitting,
-				}}
-			/>
+			<DialogActions>
+				<Grid spacing={2} container>
+					<Grid xs={4} item>
+						<Button onClick={onCloseDialog} variant="outlined" size="large" fullWidth>
+							Отмена
+						</Button>
+					</Grid>
+					<Grid xs={8} item>
+						<Button type="submit" disabled={isSubmitting} variant="contained" color="primary" size="large" fullWidth>
+							{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
+							<span className="loading-button-label" style={{ opacity: Number(!isSubmitting) }}>
+								{type === 'create' ? 'Создать' : 'Сохранить'}
+							</span>
+						</Button>
+					</Grid>
+				</Grid>
+			</DialogActions>
 		</Form>
 	);
 };

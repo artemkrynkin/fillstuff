@@ -6,6 +6,7 @@ import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 import mongoose from 'mongoose';
 import Member from 'api/models/member';
 import Studio from 'api/models/studio';
+import PositionGroup from 'api/models/positionGroup';
 import Position from 'api/models/position';
 import WriteOff from 'api/models/writeOff';
 import Receipt from 'api/models/receipt';
@@ -111,6 +112,9 @@ writeOffsRouter.post(
 					select: 'stock',
 				},
 				{
+					path: 'positionGroup',
+				},
+				{
 					path: 'activeReceipt',
 				},
 				{
@@ -130,12 +134,14 @@ writeOffsRouter.post(
 
 		const {
 			studio: {
-				stock: { stockPrice: stockPriceOld },
+				stock: { numberPositions: numberPositionsOld, stockPrice: stockPriceOld },
 			},
 			receipts = position.receipts.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)),
 		} = position;
 
-		const allQuantityReceipts = receipts.reduce((sum, receipt) => sum + receipt.current.quantity, 0);
+		const allQuantityReceipts = receipts
+			.filter(receipt => /received|active/.test(receipt.status))
+			.reduce((sum, receipt) => sum + receipt.current.quantity, 0);
 
 		if (allQuantityReceipts === 0 || allQuantityReceipts - quantity < 0) {
 			return res.json({
@@ -156,6 +162,7 @@ writeOffsRouter.post(
 		const awaitingPromises = [];
 		const newWriteOffsErr = [];
 		const writeOffsIds = [];
+		let numberArchivedPosition = 0;
 		let remainingQuantity = quantity;
 		let totalPurchasePrice = 0;
 		let totalSellingPrice = 0;
@@ -201,29 +208,56 @@ writeOffsRouter.post(
 					currentReceiptSet.current.quantityPackages = currentReceiptSet.current.quantity / receipt.quantityInUnit;
 				}
 
-				if (receipts[index + 1] !== undefined && currentReceiptSet.current.quantity === 0) {
-					currentReceiptSet.status = 'closed';
-				}
-
-				remainingQuantity = remainingQuantity > receipt.current.quantity ? Math.abs(receipt.current.quantity - remainingQuantity) : 0;
+				remainingQuantity = remainingQuantity > receipt.current.quantity ? remainingQuantity - receipt.current.quantity : 0;
 				totalPurchasePrice += newWriteOff.purchasePrice;
 				if (!position.isFree) totalSellingPrice += newWriteOff.sellingPrice;
 
-				const activeReceiptId =
-					receipts[index + 1] !== undefined && currentReceiptSet.current.quantity === 0 ? receipts[index + 1]._id : receipt._id;
+				if (currentReceiptSet.current.quantity === 0) {
+					currentReceiptSet.status = 'closed';
+				}
 
-				if (
-					remainingQuantity === 0 &&
-					(currentReceiptSet.current.quantity === 0 || (index !== 0 && currentReceiptSet.current.quantity !== 0))
-				) {
-					awaitingPromises.push(
-						Receipt.findByIdAndUpdate(activeReceiptId, { $set: { status: 'active' } }, { runValidators: true }).catch(err =>
-							next({ code: 2, err })
-						),
-						Position.findByIdAndUpdate(position._id, { $set: { activeReceipt: activeReceiptId } }, { runValidators: true }).catch(err =>
-							next({ code: 2, err })
-						)
-					);
+				const nextReceipt = receipts[index + 1];
+
+				if (nextReceipt !== undefined) {
+					if (currentReceiptSet.current.quantity === 0) {
+						awaitingPromises.push(
+							Receipt.findByIdAndUpdate(nextReceipt._id, { $set: { status: 'active' } }, { runValidators: true }).catch(err =>
+								next({ code: 2, err })
+							),
+							Position.findByIdAndUpdate(position._id, { $set: { activeReceipt: nextReceipt._id } }).catch(err => next({ code: 2, err }))
+						);
+					}
+				} else {
+					if (currentReceiptSet.current.quantity === 0) {
+						Position.findByIdAndUpdate(position._id, { $unset: { activeReceipt: 1 } }).catch(err => next({ code: 2, err }));
+					}
+
+					if (position.archivedAfterEnded && !position.deliveryIsExpected && currentReceiptSet.current.quantity === 0) {
+						awaitingPromises.push(
+							Position.findByIdAndUpdate(position._id, {
+								$set: { isArchived: true },
+								$unset: { archivedAfterEnded: 1, positionGroup: 1 },
+							}).catch(err => next({ code: 2, err }))
+						);
+
+						numberArchivedPosition += 1;
+
+						if (position.positionGroup) {
+							if (position.positionGroup.positions.length > 1) {
+								awaitingPromises.push(
+									PositionGroup.findByIdAndUpdate(position.positionGroup._id, { $pull: { positions: position._id } }).catch(err =>
+										next({ code: 2, err })
+									)
+								);
+							} else {
+								awaitingPromises.push(
+									PositionGroup.findByIdAndRemove(position.positionGroup._id, { $pull: { positions: position._id } }).catch(err =>
+										next({ code: 2, err })
+									)
+								);
+							}
+						}
+					}
 				}
 
 				awaitingPromises.push(
@@ -254,6 +288,7 @@ writeOffsRouter.post(
 			studioId,
 			{
 				$set: {
+					'stock.numberPositions': numberPositionsOld - numberArchivedPosition,
 					'stock.stockPrice': stockPriceOld - totalPurchasePrice,
 				},
 			},
@@ -365,9 +400,7 @@ writeOffsRouter.post(
 				)
 			);
 			awaitingPromises.push(
-				Position.findByIdAndUpdate(writeOff.position._id, { $set: { activeReceipt: receipt._id } }, { runValidators: true }).catch(err =>
-					next({ code: 2, err })
-				)
+				Position.findByIdAndUpdate(writeOff.position._id, { $set: { activeReceipt: receipt._id } }).catch(err => next({ code: 2, err }))
 			);
 		}
 

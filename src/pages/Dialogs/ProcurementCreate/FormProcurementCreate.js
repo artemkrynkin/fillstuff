@@ -12,13 +12,15 @@ import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
 import InputLabel from '@material-ui/core/InputLabel';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import DialogActions from '@material-ui/core/DialogActions';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { DatePicker } from '@material-ui/pickers';
 
 import { declensionNumber } from 'src/helpers/utils';
 
 import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
-import { DialogActions } from 'src/components/Dialog';
 import NumberFormat, { moneyInputFormatProps } from 'src/components/NumberFormat';
 import Dropdown from 'src/components/Dropdown';
 
@@ -242,28 +244,25 @@ const FormProcurementCreate = props => {
 					)}
 				</FieldArray>
 			</DialogContent>
-			<DialogActions
-				leftHandleProps={
-					!formEditable
-						? {
-								handleProps: {
-									onClick: () => {
-										onHandleEditFormProcurement(true);
-									},
-								},
-								text: 'Изменить закупку',
-						  }
-						: {}
-				}
-				rightHandleProps={{
-					handleProps: {
-						onClick: () => submitForm(),
-						disabled: isSubmitting,
-					},
-					text: !formEditable ? 'Занести на склад' : 'Проверить данные',
-					isLoading: isSubmitting,
-				}}
-			/>
+			<DialogActions>
+				<Grid spacing={2} container>
+					{!formEditable ? (
+						<Grid xs={3} item>
+							<Button onClick={() => onHandleEditFormProcurement(true)} variant="outlined" size="large" fullWidth>
+								Изменить закупку
+							</Button>
+						</Grid>
+					) : null}
+					<Grid xs={!formEditable ? 9 : 12} item>
+						<Button onClick={submitForm} disabled={isSubmitting} variant="contained" color="primary" size="large" fullWidth>
+							{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
+							<span className="loading-button-label" style={{ opacity: Number(!isSubmitting) }}>
+								{!formEditable ? 'Занести на склад' : 'Проверить данные'}
+							</span>
+						</Button>
+					</Grid>
+				</Grid>
+			</DialogActions>
 		</Form>
 	);
 };

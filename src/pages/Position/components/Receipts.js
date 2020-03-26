@@ -66,7 +66,7 @@ const Receipts = props => {
 					{receiptsData.data.length > showReceipts ? (
 						<Grid justify="center" container>
 							<Button onClick={() => onShowReceipts(receiptsData.data.length)} variant="outlined" style={{ marginTop: 25 }}>
-								Показать все счета
+								Показать все поступления
 							</Button>
 						</Grid>
 					) : null}

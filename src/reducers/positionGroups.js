@@ -64,7 +64,7 @@ const positionGroups = (
 				if (action.payload.positionGroupId) {
 					const positionGroupIndex = stateData.findIndex(positionGroup => positionGroup._id === action.payload.positionGroupId);
 
-					if (stateData[positionGroupIndex].positions.length > 2) {
+					if (stateData[positionGroupIndex].positions.length > 1) {
 						const positionIndex = stateData[positionGroupIndex].positions.findIndex(position => position._id === action.payload.positionId);
 
 						stateData[positionGroupIndex].positions.splice(positionIndex, 1);

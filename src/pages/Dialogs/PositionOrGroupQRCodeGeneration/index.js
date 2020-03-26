@@ -14,11 +14,14 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
+import DialogActions from '@material-ui/core/DialogActions';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import theme from 'shared/theme';
 import { sleep } from 'shared/utils';
 
-import { DialogSticky, DialogActions, DialogTitle } from 'src/components/Dialog';
+import { DialogSticky, DialogTitle } from 'src/components/Dialog';
 
 import marks from './marks';
 
@@ -227,7 +230,9 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 				scroll="body"
 				stickyActions
 			>
-				<DialogTitle onClose={onCloseDialog}>Генерация QR-кода</DialogTitle>
+				<DialogTitle onClose={onCloseDialog} theme="noTheme">
+					Генерация QR-кода
+				</DialogTitle>
 				<Formik
 					initialValues={{ quantity: '' }}
 					validationSchema={QRCodeGenerationSchema}
@@ -297,22 +302,14 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 									<img className={styles.qrCode} src={QRCodeDataUrl} width={QRWidth} height={QRWidth} alt="" />
 								</div>
 							</DialogContent>
-							<DialogActions
-								leftHandleProps={{
-									handleProps: {
-										onClick: onCloseDialog,
-									},
-									text: 'Отмена',
-								}}
-								rightHandleProps={{
-									handleProps: {
-										type: 'submit',
-										disabled: isSubmitting,
-									},
-									text: 'Скачать PDF',
-									isLoading: isSubmitting,
-								}}
-							/>
+							<DialogActions>
+								<Button type="submit" disabled={isSubmitting} variant="contained" color="primary" size="large" fullWidth>
+									{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
+									<span className="loading-button-label" style={{ opacity: Number(!isSubmitting) }}>
+										Скачать PDF
+									</span>
+								</Button>
+							</DialogActions>
 						</Form>
 					)}
 				</Formik>

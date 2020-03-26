@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 import i18n from 'i18n';
 
 import { unitTypes } from 'shared/checkPositionAndReceipt';
-import { formatNumber } from 'shared/utils';
 
 const Schema = mongoose.Schema;
 
@@ -22,6 +21,14 @@ let Position = new Schema({
 	isArchived: {
 		type: Boolean,
 		default: false,
+	},
+	// Архивируется после окончания поступлений
+	archivedAfterEnded: {
+		type: Boolean,
+	},
+	// Ожидается доставка
+	deliveryIsExpected: {
+		type: Boolean,
 	},
 	// Студия
 	studio: {

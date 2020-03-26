@@ -8,7 +8,6 @@ import Fade from '@material-ui/core/Fade';
 import theme from 'shared/theme';
 
 import stylesGlobal from 'src/styles/globals.module.css';
-import stylesDialog from 'src/components/Dialog/index.module.css';
 
 export const BliksideTheme = createMuiTheme({
 	props: {
@@ -305,37 +304,36 @@ export const BliksideTheme = createMuiTheme({
 		},
 		MuiList: {
 			padding: {
-				paddingTop: 6,
-				paddingBottom: 6,
+				paddingLeft: '8px !important',
+				paddingRight: '8px !important',
 			},
 		},
 		MuiListItem: {
-			button: {
-				transition: 'background-color 150ms ease-out',
-				'&:hover': {
-					backgroundColor: theme.blueGrey.cBg50,
+			root: {
+				'&$selected, &$selected:hover': {
+					backgroundColor: null,
+					fontWeight: 600,
 				},
 			},
-			root: {
-				'&$selected': {
-					backgroundColor: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg100)}, 0.6)`,
-					'&:hover': {
-						backgroundColor: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg100)}, 0.6)`,
-					},
+			button: {
+				transition: 'background-color 50ms ease-out',
+				'&:hover': {
+					backgroundColor: theme.blueGrey.cBg50,
 				},
 			},
 		},
 		MuiMenuItem: {
 			root: {
 				color: theme.blueGrey.cBg700,
+				borderRadius: 4,
 				fontSize: 13,
 				minHeight: 34,
 				lineHeight: 1.6,
 				whiteSpace: null,
 			},
 			gutters: {
-				paddingLeft: 10,
-				paddingRight: 10,
+				paddingLeft: 8,
+				paddingRight: 8,
 			},
 		},
 		MuiFormGroup: {
@@ -460,18 +458,18 @@ export const BliksideTheme = createMuiTheme({
 					`0 2px 2px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.14)`,
 					`0 3px 1px -2px rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.12)`,
 				].join(),
-				'&:active': {
-					boxShadow: [
-						`0 1px 5px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.2)`,
-						`0 2px 2px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.14)`,
-						`0 3px 1px -2px rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.12)`,
-					].join(),
-				},
 				'&:hover': {
 					boxShadow: [
 						`0 2px 4px -1px rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.2)`,
 						`0 4px 5px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.14)`,
 						`0 1px 10px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.12)`,
+					].join(),
+				},
+				'&:active': {
+					boxShadow: [
+						`0 1px 5px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.2)`,
+						`0 2px 2px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.14)`,
+						`0 3px 1px -2px rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.12)`,
 					].join(),
 				},
 			},
@@ -503,13 +501,6 @@ export const BliksideTheme = createMuiTheme({
 					`0 2px 2px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.14)`,
 					`0 3px 1px -2px rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.12)`,
 				].join(),
-				'&:active': {
-					boxShadow: [
-						`0 1px 5px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.2)`,
-						`0 2px 2px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.14)`,
-						`0 3px 1px -2px rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.12)`,
-					].join(),
-				},
 				'&:hover': {
 					boxShadow: [
 						`0 2px 4px -1px rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.2)`,
@@ -517,12 +508,19 @@ export const BliksideTheme = createMuiTheme({
 						`0 1px 10px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.12)`,
 					].join(),
 				},
+				'&:active': {
+					boxShadow: [
+						`0 1px 5px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.2)`,
+						`0 2px 2px 0 rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.14)`,
+						`0 3px 1px -2px rgba(${ColorConvert.hex.rgb(theme.teal.cT600)}, 0.12)`,
+					].join(),
+				},
 			},
 		},
 		MuiToggleButton: {
 			root: {
 				color: theme.blueGrey.cBg400,
-				border: `1px solid ${theme.blueGrey.cBg100}`,
+				border: `1px solid ${theme.brightness.cBr5}`,
 				transition:
 					'background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
 				textTransform: 'initial',
@@ -531,9 +529,9 @@ export const BliksideTheme = createMuiTheme({
 				},
 				'&$selected': {
 					color: theme.blueGrey.cBg500,
-					backgroundColor: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg300)}, 0.15)`,
+					backgroundColor: theme.brightness.cBr5,
 					'&:hover': {
-						backgroundColor: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg300)}, 0.15)`,
+						backgroundColor: theme.brightness.cBr5,
 					},
 				},
 				'&$disabled': {
@@ -738,7 +736,7 @@ export const BliksideTheme = createMuiTheme({
 			},
 			paper: {
 				margin: 20,
-				[`.${stylesDialog.stickyTitle} &, .${stylesDialog.stickyActions} &`]: {
+				[`.stickyTitle &, .stickyActions &`]: {
 					overflowY: 'initial',
 				},
 			},
@@ -753,7 +751,7 @@ export const BliksideTheme = createMuiTheme({
 		},
 		MuiDialogContent: {
 			root: {
-				padding: '25px 25px 30px',
+				padding: '20px',
 				'&:first-child': {
 					paddingTop: null,
 				},
@@ -762,6 +760,19 @@ export const BliksideTheme = createMuiTheme({
 		MuiDialogContentText: {
 			root: {
 				color: theme.blueGrey.cBg500,
+			},
+		},
+		MuiDialogActions: {
+			root: {
+				padding: '10px 20px',
+				'.MuiDialogContent-root > &': {
+					padding: '20px 0 0',
+				},
+			},
+			spacing: {
+				'& > :not(:first-child)': {
+					marginLeft: 15,
+				},
 			},
 		},
 		MuiTableCell: {

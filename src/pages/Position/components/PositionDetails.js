@@ -4,7 +4,6 @@ import ClassNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import IconButton from '@material-ui/core/IconButton';
 import MenuList from '@material-ui/core/MenuList';
-import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
 import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
@@ -15,6 +14,7 @@ import { characteristicTypeTransform, unitTypeTransform } from 'shared/checkPosi
 
 import CardPaper from 'src/components/CardPaper';
 import Dropdown from 'src/components/Dropdown';
+import MenuItem from 'src/components/MenuItem';
 import Chips from 'src/components/Chips';
 
 import stylesGlobal from 'src/styles/globals.module.css';
@@ -27,7 +27,7 @@ const positionActionsButtonClasses = dropdownActions =>
 	});
 
 const PositionDetails = props => {
-	const { position, onOpenDialogPosition } = props;
+	const { position, onOpenDialogPosition, onCancelArchivePositionAfterEnded } = props;
 	const refDropdownActions = useRef(null);
 	const [dropdownActions, setDropdownActions] = useState(false);
 
@@ -54,41 +54,65 @@ const PositionDetails = props => {
 						placement="bottom-end"
 						disablePortal={false}
 					>
-						{position.positionGroup ? (
-							<MenuList>
-								<MenuItem
-									onClick={() => {
-										onHandleDropdownActions();
-										onOpenDialogPosition('dialogPositionRemoveFromGroup', position);
-									}}
-								>
-									Открепить от группы
-								</MenuItem>
-							</MenuList>
-						) : null}
-						{position.positionGroup ? <Divider /> : null}
 						<MenuList>
 							<MenuItem
 								onClick={() => {
 									onHandleDropdownActions();
 									onOpenDialogPosition('dialogPositionQRCodeGeneration', position);
 								}}
+								iconBefore={<FontAwesomeIcon icon={['fal', 'qrcode']} style={{ fontSize: 16 }} />}
 							>
 								Генерация QR-кода
 							</MenuItem>
+						</MenuList>
+						<Divider />
+						<MenuList>
+							{position.positionGroup ? (
+								<MenuItem
+									onClick={() => {
+										onHandleDropdownActions();
+										onOpenDialogPosition('dialogPositionRemoveFromGroup', position);
+									}}
+									iconBefore={<FontAwesomeIcon icon={['far', 'folder-minus']} style={{ fontSize: 16 }} />}
+								>
+									Открепить от группы
+								</MenuItem>
+							) : null}
 							<MenuItem
 								onClick={() => {
 									onHandleDropdownActions();
 									onOpenDialogPosition('dialogPositionEdit', position);
 								}}
+								iconBefore={<FontAwesomeIcon icon={['far', 'pen']} />}
 							>
 								Редактировать
 							</MenuItem>
+							{position.archivedAfterEnded ? (
+								<MenuItem
+									onClick={() => {
+										onHandleDropdownActions();
+										onCancelArchivePositionAfterEnded(position._id);
+									}}
+									iconBefore={
+										<span className="fa-layers fa-fw" style={{ width: '16px' }}>
+											<FontAwesomeIcon icon={['far', 'archive']} />
+											<FontAwesomeIcon icon={['fas', 'circle']} transform="shrink-5 down-2.5 right-7" inverse />
+											<FontAwesomeIcon icon={['fas', 'clock']} transform="shrink-7 down-2.5 right-7" />
+										</span>
+									}
+								>
+									Отменить архивирование
+								</MenuItem>
+							) : null}
 							<MenuItem
 								onClick={() => {
 									onHandleDropdownActions();
 									onOpenDialogPosition('dialogPositionArchiveDelete', position);
 								}}
+								iconBefore={
+									position.receipts.length ? <FontAwesomeIcon icon={['far', 'archive']} /> : <FontAwesomeIcon icon={['far', 'trash-alt']} />
+								}
+								destructive
 							>
 								{position.receipts.length ? 'Архивировать' : 'Удалить'}
 							</MenuItem>

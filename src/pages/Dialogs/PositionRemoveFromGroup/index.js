@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
+import Typography from '@material-ui/core/Typography';
+import DialogActions from '@material-ui/core/DialogActions';
+import Button from '@material-ui/core/Button';
 
-import { Dialog, DialogActions, DialogTitle } from 'src/components/Dialog';
+import { Dialog, DialogTitle } from 'src/components/Dialog';
 
 import { getStudioStock } from 'src/actions/studio';
 import { removePositionFromGroup } from 'src/actions/positionGroups';
@@ -25,9 +27,11 @@ const DialogPositionRemoveFromGroup = props => {
 
 	return (
 		<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog}>
-			<DialogTitle onClose={onCloseDialog}>Открепление позиции от группы</DialogTitle>
+			<DialogTitle onClose={onCloseDialog} theme="noTheme">
+				Открепление позиции от группы
+			</DialogTitle>
 			<DialogContent>
-				<DialogContentText>
+				<Typography variant="body1">
 					Вы действительно хотите открепить позицию{' '}
 					<span>
 						<b>
@@ -38,22 +42,16 @@ const DialogPositionRemoveFromGroup = props => {
 						</b>{' '}
 						от группы?
 					</span>
-				</DialogContentText>
+				</Typography>
+				<DialogActions>
+					<Button onClick={onCloseDialog} variant="outlined" size="small">
+						Отмена
+					</Button>
+					<Button onClick={onSubmit} variant="contained" color="primary" size="small">
+						Открепить
+					</Button>
+				</DialogActions>
 			</DialogContent>
-			<DialogActions
-				leftHandleProps={{
-					handleProps: {
-						onClick: onCloseDialog,
-					},
-					text: 'Отмена',
-				}}
-				rightHandleProps={{
-					handleProps: {
-						onClick: onSubmit,
-					},
-					text: 'Открепить',
-				}}
-			/>
 		</Dialog>
 	);
 };

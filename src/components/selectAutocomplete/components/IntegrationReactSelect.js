@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { emphasize, makeStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import TextField from '@material-ui/core/TextField';
+import MuiMenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -182,10 +183,25 @@ Control.propTypes = {
 	selectProps: PropTypes.object.isRequired,
 };
 
+const MenuList = props => {
+	return (
+		<MuiMenuList ref={props.innerRef} {...props.innerProps}>
+			{props.children}
+		</MuiMenuList>
+	);
+};
+
+MenuList.propTypes = {
+	children: PropTypes.node,
+	innerProps: PropTypes.object,
+	innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+};
+
 const Option = props => {
 	return (
 		<MenuItem ref={props.innerRef} selected={props.isSelected} component="div" {...props.innerProps}>
 			{props.children}
+			{props.isSelected ? <FontAwesomeIcon icon={['far', 'check']} /> : null}
 		</MenuItem>
 	);
 };
@@ -286,6 +302,7 @@ const components = {
 	LoadingIndicator,
 	MultiValue,
 	NoOptionsMessage,
+	MenuList,
 	Option,
 	Placeholder,
 	SingleValue,

@@ -8,13 +8,13 @@ import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import IconButton from '@material-ui/core/IconButton';
 import MenuList from '@material-ui/core/MenuList';
-import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
 
 import { declensionNumber } from 'src/helpers/utils';
 
 import QuantityIndicator from 'src/components/QuantityIndicator';
 import Dropdown from 'src/components/Dropdown';
+import MenuItem from 'src/components/MenuItem';
 
 import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, TableCellExpansionPanel } from './styles';
 import styles from './Positions.module.css';
@@ -77,9 +77,11 @@ const PositionGroup = props => {
 						<ExpansionPanelDetails>
 							<Table style={{ tableLayout: 'fixed' }}>
 								<TableBody>
-									{positionGroup.positions.sort().map(position => (
-										<Position key={position._id} position={position} onOpenDialogPosition={onOpenDialogPosition} />
-									))}
+									{positionGroup.positions.map(position => {
+										if (position.isArchived) return null;
+
+										return <Position key={position._id} position={position} onOpenDialogPosition={onOpenDialogPosition} />;
+									})}
 								</TableBody>
 							</Table>
 						</ExpansionPanelDetails>
@@ -106,10 +108,11 @@ const PositionGroup = props => {
 							<MenuItem
 								onClick={() => {
 									onHandleDropdownActions();
-									onOpenDialogPositionGroup('dialogPositionGroupAdd', positionGroup);
+									onOpenDialogPositionGroup('dialogPositionGroupQRCodeGeneration', positionGroup);
 								}}
+								iconBefore={<FontAwesomeIcon icon={['fal', 'qrcode']} style={{ fontSize: 16 }} />}
 							>
-								Добавить позиции
+								Генерация QR-кода
 							</MenuItem>
 						</MenuList>
 						<Divider />
@@ -117,16 +120,18 @@ const PositionGroup = props => {
 							<MenuItem
 								onClick={() => {
 									onHandleDropdownActions();
-									onOpenDialogPositionGroup('dialogPositionGroupQRCodeGeneration', positionGroup);
+									onOpenDialogPositionGroup('dialogPositionGroupAdd', positionGroup);
 								}}
+								iconBefore={<FontAwesomeIcon icon={['far', 'folder-plus']} style={{ fontSize: 16 }} />}
 							>
-								Генерация QR-кода
+								Добавить позиции
 							</MenuItem>
 							<MenuItem
 								onClick={() => {
 									onHandleDropdownActions();
 									onOpenDialogPositionGroup('dialogPositionGroupEdit', positionGroup);
 								}}
+								iconBefore={<FontAwesomeIcon icon={['far', 'pen']} />}
 							>
 								Редактировать
 							</MenuItem>

@@ -7,9 +7,11 @@ import * as Yup from 'yup';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField/TextField';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import DialogActions from '@material-ui/core/DialogActions';
 
-import { Dialog, DialogActions, DialogTitle } from 'src/components/Dialog';
+import { Dialog, DialogTitle } from 'src/components/Dialog';
 import NumberFormat from 'src/components/NumberFormat';
 
 import { getStudioStock } from 'src/actions/studio';
@@ -103,21 +105,23 @@ class DialogReceiptActiveAddQuantity extends Component {
 									/>
 								</Grid>
 							</DialogContent>
-							<DialogActions
-								leftHandleProps={{
-									handleProps: {
-										onClick: onCloseDialog,
-									},
-									text: 'Отмена',
-								}}
-								rightHandleProps={{
-									handleProps: {
-										type: 'submit',
-										disabled: isSubmitting,
-									},
-									text: isSubmitting ? <CircularProgress size={20} /> : 'Добавить',
-								}}
-							/>
+							<DialogActions>
+								<Grid spacing={2} container>
+									<Grid xs={4} item>
+										<Button onClick={onCloseDialog} variant="outlined" size="large" fullWidth>
+											Отмена
+										</Button>
+									</Grid>
+									<Grid xs={8} item>
+										<Button type="submit" disabled={isSubmitting} variant="contained" color="primary" size="large" fullWidth>
+											{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
+											<span className="loading-button-label" style={{ opacity: Number(!isSubmitting) }}>
+												Добавить
+											</span>
+										</Button>
+									</Grid>
+								</Grid>
+							</DialogActions>
 						</Form>
 					)}
 				</Formik>

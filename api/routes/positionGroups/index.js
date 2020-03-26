@@ -232,25 +232,17 @@ positionGroupsRouter.post(
 			$unset: { positionGroup: 1 },
 		}).catch(err => next({ code: 2, err }));
 
-		let remainingPositionId = null;
-
-		if (position.positionGroup.positions.length > 2) {
+		if (position.positionGroup.positions.length > 1) {
 			PositionGroup.findByIdAndUpdate(position.positionGroup._id, { $pull: { positions: position._id } }).catch(err =>
 				next({ code: 2, err })
 			);
 		} else {
-			remainingPositionId = position.positionGroup.positions.find(positionId => String(positionId) !== String(position._id));
-
-			Position.findByIdAndUpdate(remainingPositionId, {
-				$unset: { positionGroup: 1 },
-			}).catch(err => next({ code: 2, err }));
-
-			PositionGroup.findByIdAndRemove(position.positionGroup._id).catch(err => next({ code: 2, err }));
+			PositionGroup.findByIdAndRemove(position.positionGroup._id, { $pull: { positions: position._id } }).catch(err =>
+				next({ code: 2, err })
+			);
 		}
 
-		res.json({
-			remainingPositionId,
-		});
+		res.json();
 	}
 );
 

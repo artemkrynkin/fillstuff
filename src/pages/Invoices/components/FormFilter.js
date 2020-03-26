@@ -7,8 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Grid from '@material-ui/core/Grid';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -21,6 +19,7 @@ import { memberRoleTransform } from 'shared/roles-access-rights';
 
 import { weekActive, monthActive, paginationCalendarFormat } from 'src/components/Pagination/utils';
 import Dropdown from 'src/components/Dropdown';
+import MenuItem from 'src/components/MenuItem';
 
 import { FilterSearchTextField } from './Filter.styles';
 import styles from './Filter.module.css';
@@ -167,49 +166,41 @@ const FormFilter = props => {
 					</ButtonBase>
 
 					<Dropdown anchor={refDropdownDate} open={dropdownDate} onClose={() => handlerDropdown('dropdownDate')} placement="bottom-start">
-						<List component="nav">
-							<ListItem
+						<List>
+							<MenuItem
 								disabled={isSubmitting}
 								selected={!values.dateStartView && !values.dateEndView}
 								onClick={() => onChangeFilterDate('allTime', setFieldValue, submitForm)}
-								component={MenuItem}
-								button
 							>
 								Всё время
-							</ListItem>
-							<ListItem
+							</MenuItem>
+							<MenuItem
 								disabled={isSubmitting}
 								selected={isMonthActive()}
 								onClick={() => onChangeFilterDate('currentMonth', setFieldValue, submitForm)}
-								component={MenuItem}
-								button
 							>
 								Текущий месяц
-							</ListItem>
-							<ListItem
+							</MenuItem>
+							<MenuItem
 								disabled={isSubmitting}
 								selected={isWeekActive()}
 								onClick={() => onChangeFilterDate('currentWeek', setFieldValue, submitForm)}
-								component={MenuItem}
-								button
 							>
 								Текущая неделя
-							</ListItem>
+							</MenuItem>
 						</List>
 						<Divider />
-						<List component="nav">
-							<ListItem
+						<List>
+							<MenuItem
 								ref={refDropdownDateRange}
 								disabled={isSubmitting}
 								onClick={() => {
 									handlerDropdown('dropdownDate');
 									handlerDropdown('dropdownDateRange');
 								}}
-								component={MenuItem}
-								button
 							>
 								Указать период
-							</ListItem>
+							</MenuItem>
 						</List>
 					</Dropdown>
 
@@ -218,6 +209,7 @@ const FormFilter = props => {
 						open={dropdownDateRange}
 						onClose={() => handlerDropdown('dropdownDateRange')}
 						placement="bottom-start"
+						innerContentStyle={{ width: 190 }}
 					>
 						<Grid className={styles.dropdownContent} alignItems="center" container>
 							<MuiPickersUtilsProvider utils={MomentUtils}>
@@ -294,20 +286,18 @@ const FormFilter = props => {
 						open={dropdownStatus}
 						onClose={() => handlerDropdown('dropdownStatus')}
 						placement="bottom-start"
-						innerContentStyle={{ maxHeight: 300, overflow: 'auto' }}
+						innerContentStyle={{ width: 250, maxHeight: 300, overflow: 'auto' }}
 					>
-						<List component="nav">
+						<List>
 							{statusList.map((status, index) => (
-								<ListItem
+								<MenuItem
 									key={index}
 									disabled={isSubmitting}
 									selected={values.status === status}
 									onClick={() => onChangeFilterStatus(status, setFieldValue, submitForm)}
-									component={MenuItem}
-									button
 								>
 									{FilterStatusTransform(status)}
-								</ListItem>
+								</MenuItem>
 							))}
 						</List>
 					</Dropdown>
@@ -347,29 +337,25 @@ const FormFilter = props => {
 								) : null}
 							</div>
 						}
-						innerContentStyle={{ width: 200, maxHeight: 300, overflow: 'auto' }}
+						innerContentStyle={{ width: 250, maxHeight: 300, overflow: 'auto' }}
 					>
 						{!isLoadingAllMembers && members && members.length ? (
-							<List component="nav">
+							<List>
 								{!searchTextMember ? (
-									<ListItem
+									<MenuItem
 										disabled={isSubmitting}
 										selected={values.member === 'all'}
 										onClick={() => onChangeFilterMember('all', setFieldValue, submitForm)}
-										component={MenuItem}
-										button
 									>
 										Все участники
-									</ListItem>
+									</MenuItem>
 								) : null}
 								{members.map((member, index) => (
-									<ListItem
+									<MenuItem
 										key={index}
 										disabled={isSubmitting}
 										selected={values.member === member._id}
 										onClick={() => onChangeFilterMember(member._id, setFieldValue, submitForm)}
-										component={MenuItem}
-										button
 									>
 										<div className={styles.user}>
 											<Avatar
@@ -383,7 +369,7 @@ const FormFilter = props => {
 												<div className={styles.userCaption}>{memberRoleTransform(member.roles).join(', ')}</div>
 											</Grid>
 										</div>
-									</ListItem>
+									</MenuItem>
 								))}
 							</List>
 						) : (

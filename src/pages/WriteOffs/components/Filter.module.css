@@ -57,6 +57,26 @@
   transition: color 150ms ease-out;
 }
 
+.filterButtonOnlyCanceled {
+  color: var(--c-hex-bg-300);
+  border-radius: 4px;
+  font-size: 13px;
+  margin: 4px;
+  padding: 10px 11px 9px;
+  transition: background-color 50ms ease-out, color 50ms ease-out;
+}
+
+.filterButtonOnlyCanceled:hover {
+  background-color: var(--c-hex-bg-50);
+  color: var(--c-hex-bg-400);
+}
+
+.filterButtonOnlyCanceledActive,
+.filterButtonOnlyCanceledActive:hover {
+  background-color: var(--c-hex-t-50);
+  color: var(--c-hex-t-300);
+}
+
 .filterSearchTextFieldContainer {
   background-color: white;
   position: sticky;

@@ -21,15 +21,43 @@
 
 .name {
   color: var(--c-hex-bg-700);
+}
+
+.sizeSm .name {
   font-size: 13px;
   font-weight: 400;
 }
 
+.sizeMd .name {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.sizeLg .name {
+  font-size: 18px;
+  font-weight: 500;
+}
+
 .characteristics {
   color: var(--c-hex-bg-300);
+}
+
+.sizeSm .characteristics {
   font-size: 12px;
   font-weight: 600;
   margin-top: 4px;
+}
+
+.sizeMd .characteristics {
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 6px;
+}
+
+.sizeLg .characteristics {
+  font-size: 14px;
+  font-weight: 700;
+  margin-top: 10px;
 }
 
 .symbols {

@@ -34,7 +34,7 @@ const CardPaper = props => {
 					)}
 				</Grid>
 			) : null}
-			<div className={styles.content}>{children}</div>
+			{children ? <div className={styles.content}>{children}</div> : null}
 		</Paper>
 	);
 };
@@ -48,14 +48,14 @@ CardPaper.defaultProps = {
 
 CardPaper.propTypes = {
 	className: PropTypes.string,
-	elevation: PropTypes.number.isRequired,
-	header: PropTypes.bool.isRequired,
+	elevation: PropTypes.number,
+	header: PropTypes.bool,
 	leftContent: PropTypes.node,
 	rightContent: PropTypes.node,
 	title: PropTypes.bool,
 	customRightColumn: PropTypes.bool,
 	style: PropTypes.object,
-	children: PropTypes.node.isRequired,
+	children: PropTypes.node,
 };
 
 export default CardPaper;

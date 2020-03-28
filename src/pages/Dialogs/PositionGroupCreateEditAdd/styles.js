@@ -7,11 +7,11 @@ export const SearchTextField = withStyles({
 	root: {
 		borderBottom: `1px solid ${theme.brightness.cBr5}`,
 		borderTop: `1px solid ${theme.brightness.cBr5}`,
+		boxShadow: 'none !important',
+		borderRadius: 0,
+		minHeight: 42,
 		'& input': {
-			boxShadow: 'none !important',
-			borderRadius: 0,
-			minHeight: 40,
-			padding: '0 20px',
+			padding: '7px 20px',
 		},
 	},
 })(InputBase);

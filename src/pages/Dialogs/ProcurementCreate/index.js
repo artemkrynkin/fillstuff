@@ -29,7 +29,7 @@ const initialValues = {
 	receipts: [],
 };
 
-const receiptInitialValues = (position, remainingValues) => ({
+const receiptInitialValues = position => ({
 	position,
 	quantity: '',
 	quantityPackages: '',
@@ -43,7 +43,6 @@ const receiptInitialValues = (position, remainingValues) => ({
 	markupPercent: position.lastReceipt ? position.lastReceipt.markupPercent : '',
 	markup: '',
 	unitMarkup: '',
-	...remainingValues,
 });
 
 class ProcurementCreate extends Component {
@@ -73,7 +72,7 @@ class ProcurementCreate extends Component {
 		if (formEditable) {
 			const indicators = UnitCostDelivery.indicators(procurement.receipts);
 
-			await sleep(300);
+			await sleep(500);
 
 			if (
 				procurement.totalPrice !== indicators.pricePositions &&

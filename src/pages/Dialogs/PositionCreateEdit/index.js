@@ -134,7 +134,7 @@ class DialogPositionCreateEdit extends Component {
 				<DialogTitle onClose={onCloseDialog}>{type === 'create' ? 'Создание позиции' : 'Редактирование позиции'}</DialogTitle>
 				<Formik
 					initialValues={initialValues}
-					validationSchema={() => positionSchema()}
+					validationSchema={positionSchema}
 					validateOnBlur={false}
 					validateOnChange={false}
 					onSubmit={(values, actions) => this.onSubmit(values, actions)}

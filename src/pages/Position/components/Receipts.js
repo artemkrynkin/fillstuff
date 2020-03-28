@@ -16,7 +16,7 @@ import Receipt from './Receipt';
 import { TableCell } from './styles';
 
 const Receipts = props => {
-	const { position, receiptsData, changeSellingPriceReceipt } = props;
+	const { position, receiptsData, onOpenDialogReceipt, onChangeSellingPriceReceipt } = props;
 	const [showReceipts, setShowReceipts] = useState(5);
 
 	const onShowReceipts = length => setShowReceipts(length);
@@ -25,8 +25,11 @@ const Receipts = props => {
 		<CardPaper
 			leftContent="Поступления"
 			rightContent={
-				receiptsData && receiptsData.status === 'success' && !receiptsData.data.length ? (
-					<Button variant="outlined" color="primary" size="small">
+				receiptsData &&
+				receiptsData.status === 'success' &&
+				receiptsData.data.length &&
+				receiptsData.data.every(receipt => receipt.status === 'closed') ? (
+					<Button onClick={() => onOpenDialogReceipt('dialogReceiptCreate', position)} variant="outlined" color="primary" size="small">
 						Создать поступление
 					</Button>
 				) : null
@@ -58,7 +61,12 @@ const Receipts = props => {
 								if (index + 1 > showReceipts) return null;
 
 								return (
-									<Receipt key={receipt._id} position={position} receipt={receipt} changeSellingPriceReceipt={changeSellingPriceReceipt} />
+									<Receipt
+										key={receipt._id}
+										position={position}
+										receipt={receipt}
+										onChangeSellingPriceReceipt={onChangeSellingPriceReceipt}
+									/>
 								);
 							})}
 						</TableBody>

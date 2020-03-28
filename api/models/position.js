@@ -86,6 +86,11 @@ let Position = new Schema({
 			ref: 'Characteristic',
 		},
 	],
+	// Имеет поступления
+	hasReceipts: {
+		type: Boolean,
+		default: false,
+	},
 	// Поступления
 	receipts: [
 		{

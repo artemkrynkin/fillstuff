@@ -8,7 +8,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import styles from './index.module.css';
 
 const PositionNameInList = props => {
-	const { name, characteristics, deliveryIsExpected, isArchived, archivedAfterEnded, canceled, className, style } = props;
+	const { name, characteristics, deliveryIsExpected, isArchived, archivedAfterEnded, canceled, size, className, style } = props;
 
 	const classes = ClassNames({
 		...Object.fromEntries(
@@ -18,16 +18,14 @@ const PositionNameInList = props => {
 				.map(key => [key, true])
 		),
 		[styles.container]: true,
+		[styles.sizeSm]: size === 'sm',
+		[styles.sizeMd]: size === 'md',
+		[styles.sizeLg]: size === 'lg',
 	});
 
 	return (
 		<div className={classes} style={style}>
-			<div
-				className={ClassNames({
-					[styles.names]: true,
-					[styles.cutWidth]: deliveryIsExpected || isArchived || archivedAfterEnded || canceled,
-				})}
-			>
+			<div className={styles.names}>
 				<span className={styles.name}>{name}</span>
 				{characteristics.length ? (
 					<span className={styles.characteristics}>
@@ -83,6 +81,7 @@ PositionNameInList.defaultProps = {
 	isArchived: false,
 	archivedAfterEnded: false,
 	canceled: false,
+	size: 'sm',
 };
 
 PositionNameInList.propTypes = {
@@ -97,6 +96,7 @@ PositionNameInList.propTypes = {
 	isArchived: PropTypes.bool,
 	archivedAfterEnded: PropTypes.bool,
 	canceled: PropTypes.bool,
+	size: PropTypes.oneOf(['sm', 'md', 'lg']),
 };
 
 export default PositionNameInList;

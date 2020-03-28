@@ -105,7 +105,9 @@ const Position = props => {
 			) : null}
 			{!position.receipts.length ? (
 				<TableCell align="left" colSpan={2} width={280}>
-					<ButtonBase className={styles.createReceipt}>Создать поступление</ButtonBase>
+					<ButtonBase onClick={() => onOpenDialogPosition('dialogReceiptCreate', position)} className={styles.createReceipt}>
+						Создать поступление
+					</ButtonBase>
 				</TableCell>
 			) : null}
 			<TableCell align="right" width={50} style={{ padding: '0 7px' }}>
@@ -202,11 +204,11 @@ const Position = props => {
 								onOpenDialogPosition('dialogPositionArchiveDelete', position);
 							}}
 							iconBefore={
-								position.receipts.length ? <FontAwesomeIcon icon={['far', 'archive']} /> : <FontAwesomeIcon icon={['far', 'trash-alt']} />
+								position.hasReceipts ? <FontAwesomeIcon icon={['far', 'archive']} /> : <FontAwesomeIcon icon={['far', 'trash-alt']} />
 							}
 							destructive
 						>
-							{position.receipts.length ? 'Архивировать' : 'Удалить'}
+							{position.hasReceipts ? 'Архивировать' : 'Удалить'}
 						</MenuItem>
 					</MenuList>
 				</Dropdown>

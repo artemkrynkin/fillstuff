@@ -19,7 +19,7 @@ const PositionArchiveDelete = props => {
 
 	if (!selectedPosition) return null;
 
-	const type = selectedPosition.receipts.length ? 'archive' : 'delete';
+	const type = selectedPosition.hasReceipts ? 'archive' : 'delete';
 
 	const onArchiveDelete = () => {
 		props.archivePosition(selectedPosition._id, selectedPosition.positionGroup).then(response => {
@@ -62,14 +62,14 @@ const PositionArchiveDelete = props => {
 					{type === 'archive' ? (
 						<ButtonRed
 							onClick={onArchiveDelete}
-							variant={!selectedPosition.archivedAfterEnded ? 'outlined' : 'contained'}
+							variant={!selectedPosition.archivedAfterEnded && selectedPosition.receipts.length ? 'outlined' : 'contained'}
 							color="primary"
 							size="small"
 						>
 							Архивировать
 						</ButtonRed>
 					) : null}
-					{type === 'archive' && !selectedPosition.archivedAfterEnded ? (
+					{type === 'archive' && !selectedPosition.archivedAfterEnded && selectedPosition.receipts.length ? (
 						<ButtonRed onClick={onArchivedAfterEnded} variant="contained" color="primary" size="small">
 							Архивировать после реализации
 						</ButtonRed>

@@ -113,6 +113,26 @@ const positions = (
 				data: stateData,
 			};
 		}
+		case 'CREATE_RECEIPT': {
+			let stateData;
+
+			if (state.data) {
+				stateData = { ...state }.data;
+				const positionIndex = stateData.findIndex(position => position._id === action.payload.receipt.position);
+
+				stateData[positionIndex] = {
+					...stateData[positionIndex],
+					activeReceipt: action.payload.receipt,
+					receipts: [action.payload.receipt],
+				};
+			}
+
+			return {
+				...state,
+				isFetching: false,
+				data: stateData,
+			};
+		}
 		case 'UNAUTHORIZED_USER': {
 			return {
 				...state,

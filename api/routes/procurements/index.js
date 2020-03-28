@@ -180,8 +180,11 @@ procurementsRouter.post(
 						!position.activeReceipt || position.activeReceipt.current.quantity === 0
 							? {
 									activeReceipt: newReceipt,
+									hasReceipts: true,
 							  }
-							: {},
+							: {
+									hasReceipts: true,
+							  },
 					$push: {
 						receipts: newReceipt,
 					},

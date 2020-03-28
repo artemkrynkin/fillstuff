@@ -5,6 +5,7 @@ import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 import Studio from 'api/models/studio';
 import Position from 'api/models/position';
 import Receipt from 'api/models/receipt';
+import { receiptCalc } from '../../../shared/checkPositionAndReceipt';
 
 const receiptsRouter = Router();
 
@@ -27,13 +28,80 @@ receiptsRouter.post(
 					path: 'procurement',
 				},
 			])
-			.then(invoices => res.json(invoices))
+			.then(receipts => res.json(receipts))
 			.catch(err => next({ code: 2, err }));
 	}
 );
 
 receiptsRouter.post(
-	'/changeReceiptPosition',
+	'/createReceipt',
+	isAuthedResolver,
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
+	async (req, res, next) => {
+		const {
+			studioId,
+			data: { receipt: newReceiptValues },
+		} = req.body;
+
+		const positionPromise = Position.findById(newReceiptValues.position).catch(err => next({ code: 2, err }));
+		const studioPromise = Studio.findById(studioId, 'stock').catch(err => next({ code: 2, err }));
+
+		const position = await positionPromise;
+		const studio = await studioPromise;
+
+		const newReceipt = new Receipt({
+			...newReceiptValues,
+			position: position,
+			studio: studioId,
+			status: 'active',
+		});
+
+		receiptCalc.quantity(newReceipt, {
+			unitReceipt: position.unitReceipt,
+			unitRelease: position.unitRelease,
+		});
+
+		const newReceiptErr = newReceipt.validateSync();
+
+		if (newReceiptErr) return next({ code: newReceiptErr.errors ? 5 : 2, err: newReceiptErr });
+
+		await Promise.all([
+			newReceipt.save(),
+			Position.findByIdAndUpdate(newReceipt.position, {
+				$set: { activeReceipt: newReceipt, hasReceipts: true },
+				$push: { receipts: newReceipt },
+			}),
+		]);
+
+		const {
+			stock: { stockPrice: stockPriceOld },
+		} = studio;
+
+		Studio.findByIdAndUpdate(
+			studioId,
+			{
+				$set: {
+					'stock.stockPrice': stockPriceOld + newReceipt.initial.quantity * newReceipt.unitPurchasePrice,
+				},
+			},
+			{ runValidators: true }
+		).catch(err => next({ code: 2, err }));
+
+		const receipt = await Receipt.findById(newReceipt._id)
+			.populate([
+				{
+					path: 'procurement',
+				},
+			])
+			.then(invoices => res.json(invoices))
+			.catch(err => next({ code: 2, err }));
+
+		res.json(receipt);
+	}
+);
+
+receiptsRouter.post(
+	'/changeReceipt',
 	isAuthedResolver,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {

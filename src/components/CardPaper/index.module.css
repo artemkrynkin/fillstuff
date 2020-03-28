@@ -1,4 +1,6 @@
-.container {}
+.container {
+  overflow: hidden;
+}
 
 .header {
   align-items: center;

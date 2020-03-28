@@ -49,7 +49,18 @@ positionsRouter.post(
 		} = req.body;
 
 		Position.findById(positionId)
-			.populate('activeReceipt characteristics')
+			.populate([
+				{
+					path: 'activeReceipt characteristics',
+				},
+				{
+					path: 'receipts',
+					match: { status: /received|active/ },
+					options: {
+						sort: { createdAt: 1 },
+					},
+				},
+			])
 			.then(position => res.json(position))
 			.catch(err => next({ code: 2, err }));
 	}

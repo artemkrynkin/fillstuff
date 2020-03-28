@@ -209,7 +209,7 @@ const FormFilter = props => {
 						open={dropdownDateRange}
 						onClose={() => handlerDropdown('dropdownDateRange')}
 						placement="bottom-start"
-						innerContentStyle={{ width: 190 }}
+						innerContentStyle={{ minWidth: 190 }}
 					>
 						<Grid className={styles.dropdownContent} alignItems="center" container>
 							<MuiPickersUtilsProvider utils={MomentUtils}>

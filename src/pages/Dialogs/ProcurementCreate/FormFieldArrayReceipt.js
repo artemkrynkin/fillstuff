@@ -259,13 +259,13 @@ const FormFieldArrayReceipt = props => {
 						</Tooltip>
 					) : (
 						<TextField
-							className="none-padding"
 							label={isNmpNmp ? 'Цена продажи уп.' : 'Цена продажи шт.'}
 							defaultValue="Бесплатно"
 							inputProps={{
 								readOnly: true,
 							}}
 							fullWidth
+							readOnly
 						/>
 					)}
 				</Grid>

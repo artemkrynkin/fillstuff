@@ -31,10 +31,6 @@ const DialogPositionEdit = loadable(() =>
 	import('src/pages/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateEdit" */)
 );
 
-const DialogReceiptActiveAddQuantity = loadable(() =>
-	import('src/pages/Dialogs/ReceiptActiveAddQuantity' /* webpackChunkName: "Dialog_ReceiptActiveAddQuantity" */)
-);
-
 const DialogPositionRemoveFromGroup = loadable(() =>
 	import('src/pages/Dialogs/PositionRemoveFromGroup' /* webpackChunkName: "Dialog_PositionRemoveFromGroup" */)
 );
@@ -51,6 +47,12 @@ const DialogPositionGroupQRCodeGeneration = DialogPositionOrGroupQRCodeGeneratio
 
 const DialogPositionQRCodeGeneration = DialogPositionOrGroupQRCodeGeneration;
 
+const DialogReceiptActiveAddQuantity = loadable(() =>
+	import('src/pages/Dialogs/ReceiptActiveAddQuantity' /* webpackChunkName: "Dialog_ReceiptActiveAddQuantity" */)
+);
+
+const DialogReceiptCreate = loadable(() => import('src/pages/Dialogs/ReceiptCreate' /* webpackChunkName: "Dialog_ReceiptCreate" */));
+
 const DialogWriteOffCreate = loadable(() => import('src/pages/Dialogs/WriteOffCreate' /* webpackChunkName: "Dialog_WriteOffCreate" */));
 
 class Positions extends Component {
@@ -66,6 +68,7 @@ class Positions extends Component {
 		dialogPositionArchiveDelete: false,
 		dialogPositionQRCodeGeneration: false,
 		dialogReceiptActiveAddQuantity: false,
+		dialogReceiptCreate: false,
 		dialogWriteOffCreate: false,
 	};
 
@@ -114,6 +117,7 @@ class Positions extends Component {
 			dialogPositionArchiveDelete,
 			dialogPositionQRCodeGeneration,
 			dialogReceiptActiveAddQuantity,
+			dialogReceiptCreate,
 			dialogWriteOffCreate,
 		} = this.state;
 
@@ -226,6 +230,13 @@ class Positions extends Component {
 					onCloseDialog={() => this.onCloseDialogByName('dialogReceiptActiveAddQuantity')}
 					onExitedDialog={this.onPositionDrop}
 					selectedPosition={dialogOpenedName === 'dialogReceiptActiveAddQuantity' ? position : null}
+				/>
+
+				<DialogReceiptCreate
+					dialogOpen={dialogReceiptCreate}
+					onCloseDialog={() => this.onCloseDialogByName('dialogReceiptCreate')}
+					onExitedDialog={this.onPositionDrop}
+					selectedPosition={dialogOpenedName === 'dialogReceiptCreate' ? position : null}
 				/>
 
 				<DialogWriteOffCreate

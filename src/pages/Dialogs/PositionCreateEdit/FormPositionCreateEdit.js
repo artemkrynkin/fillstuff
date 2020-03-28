@@ -44,8 +44,6 @@ const FormPositionCreateEdit = props => {
 		formikProps: { errors, isSubmitting, setFieldValue, touched, values },
 	} = props;
 
-	const isEditActiveReceipt = Boolean(type === 'edit' && values.activeReceipt);
-
 	return (
 		<Form>
 			<DialogContent>
@@ -73,7 +71,7 @@ const FormPositionCreateEdit = props => {
 					</InputLabel>
 					<Grid>
 						<Grid alignItems="center" container>
-							{!isEditActiveReceipt ? (
+							{type === 'create' || !values.hasReceipts ? (
 								<ToggleButtonGroup
 									value={values.unitReceipt}
 									onChange={(event, value) => {
@@ -87,7 +85,7 @@ const FormPositionCreateEdit = props => {
 									exclusive
 								>
 									{unitTypes.map(unitType => (
-										<ToggleButton key={unitType} value={unitType} disabled={isEditActiveReceipt}>
+										<ToggleButton key={unitType} value={unitType}>
 											{unitTypeTransform(unitType)}
 										</ToggleButton>
 									))}
@@ -118,7 +116,7 @@ const FormPositionCreateEdit = props => {
 					</InputLabel>
 					<Grid>
 						<Grid alignItems="center" container>
-							{!isEditActiveReceipt ? (
+							{type === 'create' || !values.hasReceipts ? (
 								<ToggleButtonGroup
 									value={values.unitRelease}
 									onChange={(event, value) => {
@@ -165,7 +163,7 @@ const FormPositionCreateEdit = props => {
 					</InputLabel>
 					<Grid>
 						<Grid alignItems="center" container>
-							{!isEditActiveReceipt ? (
+							{type === 'create' || !values.activeReceipt ? (
 								<ToggleButtonGroup
 									value={values.isFree}
 									onChange={(event, value) => {
@@ -176,22 +174,24 @@ const FormPositionCreateEdit = props => {
 									size="small"
 									exclusive
 								>
-									<ToggleButton value={true}>Бесплатный</ToggleButton>
 									<ToggleButton value={false}>Платный</ToggleButton>
+									<ToggleButton value={true}>Бесплатный</ToggleButton>
 								</ToggleButtonGroup>
 							) : (
 								<Tooltip
 									title={
-										<div style={{ maxWidth: 200, textAlign: 'center' }}>Можно изменять только до&nbsp;внесения первого поступления</div>
+										<div style={{ maxWidth: 230, textAlign: 'center' }}>
+											Можно изменять только при отсутствии поступлений на&nbsp;реализации
+										</div>
 									}
 									placement="bottom"
 								>
 									<ToggleButtonGroup value={values.isFree} size="small" exclusive>
-										<ToggleButton value={true} disabled={true}>
-											Бесплатный
-										</ToggleButton>
 										<ToggleButton value={false} disabled={true}>
 											Платный
+										</ToggleButton>
+										<ToggleButton value={true} disabled={true}>
+											Бесплатный
 										</ToggleButton>
 									</ToggleButtonGroup>
 								</Tooltip>

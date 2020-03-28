@@ -69,13 +69,11 @@ const FormPositionGroupCreateEditAdd = props => {
 			<DialogContent style={{ overflow: 'initial' }}>
 				{type === 'create' || type === 'edit' ? (
 					<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
-						<InputLabel error={Boolean(touched.name && errors.name)} style={{ minWidth: 126 }}>
-							Название
-						</InputLabel>
 						<Field
 							name="name"
 							error={Boolean(touched.name && errors.name)}
 							helperText={(touched.name && errors.name) || ''}
+							label="Название"
 							as={TextField}
 							inputProps={{
 								maxLength: 60,

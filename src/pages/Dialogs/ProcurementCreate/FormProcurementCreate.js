@@ -147,7 +147,6 @@ const FormProcurementCreate = props => {
 							open={dropdownDate}
 							onClose={() => onHandleDropdownDate(false)}
 							placement="bottom"
-							arrow={false}
 							disablePortal={false}
 						>
 							<MuiPickersUtilsProvider utils={MomentUtils}>
@@ -254,7 +253,15 @@ const FormProcurementCreate = props => {
 						</Grid>
 					) : null}
 					<Grid xs={!formEditable ? 9 : 12} item>
-						<Button onClick={submitForm} disabled={isSubmitting} variant="contained" color="primary" size="large" fullWidth>
+						<Button
+							type={formEditable ? 'submit' : 'button'}
+							onClick={formEditable ? () => {} : submitForm}
+							disabled={isSubmitting}
+							variant="contained"
+							color="primary"
+							size="large"
+							fullWidth
+						>
 							{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
 							<span className="loading-button-label" style={{ opacity: Number(!isSubmitting) }}>
 								{!formEditable ? 'Занести на склад' : 'Проверить данные'}

@@ -43,7 +43,7 @@ const statusColorClasses = status =>
 	});
 
 const Receipt = props => {
-	const { position, receipt, changeSellingPriceReceipt } = props;
+	const { position, receipt, onChangeSellingPriceReceipt } = props;
 	const refDropdownChangeSellingPrice = useRef(null);
 	const [dropdownChangeSellingPrice, setDropdownChangeSellingPrice] = useState(false);
 
@@ -167,7 +167,7 @@ const Receipt = props => {
 						position={position}
 						receipt={receipt}
 						onClose={onHandleDropdownChangeSellingPrice}
-						changeSellingPriceReceipt={changeSellingPriceReceipt}
+						onChangeSellingPriceReceipt={onChangeSellingPriceReceipt}
 					/>
 				</Dropdown>
 			</TableCell>

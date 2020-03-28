@@ -18,7 +18,7 @@ import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './FormChangeSellingPrice.module.css';
 
 const FormChangeSellingPrice = props => {
-	const { position, receipt, onClose, changeSellingPriceReceipt } = props;
+	const { position, receipt, onClose, onChangeSellingPriceReceipt } = props;
 	const [activeField, setActiveField] = useState('');
 
 	const onSetActiveField = fieldName => setActiveField(fieldName);
@@ -37,7 +37,7 @@ const FormChangeSellingPrice = props => {
 	const onSubmit = (values, actions) => {
 		const newValues = changeSellingPriceSchema.cast(values);
 
-		changeSellingPriceReceipt(receipt._id, newValues, () => {
+		onChangeSellingPriceReceipt(receipt._id, newValues, () => {
 			actions.setSubmitting(false);
 			onClose();
 		});
@@ -81,10 +81,10 @@ const FormChangeSellingPrice = props => {
 										inputComponent: NumberFormat,
 										inputProps: {
 											...moneyInputFormatProps,
-											onFocus: event => {
+											onFocus: ({ target }) => {
 												onSetActiveField('sellingPrice');
 
-												event.target.select();
+												target.select();
 											},
 											onBlur: ({ target: { value } }) => {
 												if (Number(value) < autoGenUnitSellingPrice) {
@@ -94,14 +94,14 @@ const FormChangeSellingPrice = props => {
 											onChange: ({ target: { value } }) => {
 												if (activeField === 'markupPercent') return;
 
-												const receiptValues = {};
-
-												receiptValues.purchasePrice = receipt.purchasePrice;
-												receiptValues.unitPurchasePrice = receipt.unitPurchasePrice;
-												receiptValues.sellingPrice = Number(value);
-												receiptValues.unitSellingPrice = Number(value);
-												receiptValues.costDelivery = receipt.costDelivery;
-												receiptValues.unitCostDelivery = receipt.unitCostDelivery;
+												const receiptValues = {
+													purchasePrice: receipt.purchasePrice,
+													unitPurchasePrice: receipt.unitPurchasePrice,
+													sellingPrice: Number(value),
+													unitSellingPrice: Number(value),
+													costDelivery: receipt.costDelivery,
+													unitCostDelivery: receipt.unitCostDelivery,
+												};
 
 												const newReceiptValues = {
 													...receiptCalc.markupPercent(receiptValues, {
@@ -147,10 +147,10 @@ const FormChangeSellingPrice = props => {
 										inputProps: {
 											...moneyInputFormatProps,
 											decimalScale: 4,
-											onFocus: event => {
+											onFocus: ({ target }) => {
 												onSetActiveField('markupPercent');
 
-												event.target.select();
+												target.select();
 											},
 											onChange: ({ target: { value } }) => {
 												if (activeField === 'sellingPrice') return;

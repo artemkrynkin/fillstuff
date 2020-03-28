@@ -534,6 +534,14 @@ export const BliksideTheme = createMuiTheme({
 						backgroundColor: theme.brightness.cBr5,
 					},
 				},
+				'&$selected:not($disabled)': {
+					color: 'white',
+					backgroundColor: theme.teal.cT300,
+					borderColor: theme.teal.cT300,
+					'&:hover': {
+						backgroundColor: theme.teal.cT300,
+					},
+				},
 				'&$disabled': {
 					color: theme.blueGrey.cBg400,
 					borderColor: theme.blueGrey.cBg50,
@@ -564,49 +572,41 @@ export const BliksideTheme = createMuiTheme({
 		},
 		MuiInputBase: {
 			root: {
-				color: theme.blueGrey.cBg700,
-				fontSize: 13,
-				'&$disabled': {
-					color: theme.blueGrey.cBg500,
-				},
-				'&$focused:not($error)': {
-					'& $input:not([readonly])': {
-						backgroundColor: '#ffffff',
-						boxShadow: `0 0 0 2px ${theme.teal.cT300} inset`,
-					},
-				},
-				'&$error': {
-					'& $input:not([readonly])': {
-						boxShadow: `0 0 0 2px ${theme.other[0]} inset`,
-					},
-				},
-			},
-			input: {
 				backgroundColor: theme.brightness.cBr4,
 				borderRadius: 5,
 				boxShadow: `0 0 0 2px ${theme.brightness.cBr5} inset`,
 				boxSizing: 'border-box',
+				color: theme.blueGrey.cBg700,
+				fontSize: 13,
 				minHeight: 36,
-				padding: '5px 10px',
 				transition: 'background-color 150ms ease-out, box-shadow 150ms ease-out',
-				'&[readonly]': {
+				'[readonly] > &, [readonly] > &$focused:not($error)': {
 					backgroundColor: 'transparent',
 					boxShadow: 'none',
-					padding: '5px 10px',
-					'.none-padding &': {
+					'& $input': {
+						height: 36,
 						padding: 0,
 					},
 				},
 				'&$disabled': {
+					color: theme.blueGrey.cBg500,
 					backgroundColor: theme.brightness.cBr3,
 					boxShadow: 'none',
 				},
+				'&$focused:not($error)': {
+					backgroundColor: '#ffffff',
+					boxShadow: `0 0 0 2px ${theme.teal.cT300} inset`,
+				},
+				'&$error': {
+					boxShadow: `0 0 0 2px ${theme.other[0]} inset`,
+				},
+			},
+			input: {
+				height: 26,
+				padding: '5px 10px',
 			},
 			inputMultiline: {
 				padding: '10px',
-				'&[readonly]': {
-					padding: '10px',
-				},
 			},
 			multiline: {
 				padding: 0,
@@ -624,19 +624,18 @@ export const BliksideTheme = createMuiTheme({
 					color: theme.blueGrey.cBg500,
 				},
 			},
+			positionStart: {
+				marginLeft: 10,
+			},
+			positionEnd: {
+				marginRight: 10,
+			},
 		},
 		MuiSelect: {
 			select: {
-				borderRadius: 5,
-				minHeight: 36,
-				padding: '11px 25px 9px 10px',
 				'&:focus': {
-					background: theme.brightness.cBr5,
-					borderRadius: null,
+					backgroundColor: null,
 				},
-			},
-			selectMenu: {
-				minHeight: 36,
 			},
 		},
 		MuiSwitch: {

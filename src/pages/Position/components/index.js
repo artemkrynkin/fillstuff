@@ -28,6 +28,8 @@ const DialogPositionArchiveDelete = loadable(() =>
 	import('src/pages/Dialogs/PositionArchiveDelete' /* webpackChunkName: "Dialog_PositionArchiveDelete" */)
 );
 
+const DialogReceiptCreate = loadable(() => import('src/pages/Dialogs/ReceiptCreate' /* webpackChunkName: "Dialog_ReceiptCreate" */));
+
 const Index = props => {
 	const {
 		currentStudio,
@@ -36,7 +38,8 @@ const Index = props => {
 		getCharacteristics,
 		getPosition,
 		onCancelArchivePositionAfterEnded,
-		changeSellingPriceReceipt,
+		onReceiptCreate,
+		onChangeSellingPriceReceipt,
 	} = props;
 	const [dialogOpenedName, setDialogOpenedName] = useState('');
 	const [dialogs, setDialogs] = useState({
@@ -44,6 +47,7 @@ const Index = props => {
 		dialogPositionRemoveFromGroup: false,
 		dialogPositionArchiveDelete: false,
 		dialogPositionQRCodeGeneration: false,
+		dialogReceiptCreate: false,
 	});
 
 	const onOpenDialogByName = async dialogName => {
@@ -85,7 +89,12 @@ const Index = props => {
 						onOpenDialogPosition={onOpenDialogByName}
 						onCancelArchivePositionAfterEnded={onCancelArchivePositionAfterEnded}
 					/>
-					<Receipts position={position} receiptsData={receiptsData} changeSellingPriceReceipt={changeSellingPriceReceipt} />
+					<Receipts
+						position={position}
+						receiptsData={receiptsData}
+						onOpenDialogReceipt={onOpenDialogByName}
+						onChangeSellingPriceReceipt={onChangeSellingPriceReceipt}
+					/>
 				</Grid>
 			</Grid>
 
@@ -126,6 +135,14 @@ const Index = props => {
 				onExitedDialog={onExitedDialogByName}
 				type="position"
 				selectedPositionOrGroup={dialogOpenedName === 'dialogPositionQRCodeGeneration' ? position : null}
+			/>
+
+			<DialogReceiptCreate
+				dialogOpen={dialogs.dialogReceiptCreate}
+				onCloseDialog={() => onCloseDialogByName('dialogReceiptCreate')}
+				onExitedDialog={onExitedDialogByName}
+				onCallback={onReceiptCreate}
+				selectedPosition={dialogOpenedName === 'dialogReceiptCreate' ? position : null}
 			/>
 		</Container>
 	);

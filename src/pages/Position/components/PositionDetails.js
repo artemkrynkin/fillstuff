@@ -110,11 +110,11 @@ const PositionDetails = props => {
 									onOpenDialogPosition('dialogPositionArchiveDelete', position);
 								}}
 								iconBefore={
-									position.receipts.length ? <FontAwesomeIcon icon={['far', 'archive']} /> : <FontAwesomeIcon icon={['far', 'trash-alt']} />
+									position.hasReceipts ? <FontAwesomeIcon icon={['far', 'archive']} /> : <FontAwesomeIcon icon={['far', 'trash-alt']} />
 								}
 								destructive
 							>
-								{position.receipts.length ? 'Архивировать' : 'Удалить'}
+								{position.hasReceipts ? 'Архивировать' : 'Удалить'}
 							</MenuItem>
 						</MenuList>
 					</Dropdown>
@@ -125,45 +125,45 @@ const PositionDetails = props => {
 			<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" style={{ marginBottom: 0 }} container>
 				<InputLabel style={{ minWidth: 146 }}>Единица поступления</InputLabel>
 				<TextField
-					className="none-padding"
 					defaultValue={unitTypeTransform(position.unitReceipt)}
 					inputProps={{
 						readOnly: true,
 					}}
 					fullWidth
+					readOnly
 				/>
 			</Grid>
 			<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" style={{ marginBottom: 0 }} container>
 				<InputLabel style={{ minWidth: 146 }}>Единица отпуска</InputLabel>
 				<TextField
-					className="none-padding"
 					defaultValue={unitTypeTransform(position.unitRelease)}
 					inputProps={{
 						readOnly: true,
 					}}
 					fullWidth
+					readOnly
 				/>
 			</Grid>
 			<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" style={{ marginBottom: 0 }} container>
 				<InputLabel style={{ minWidth: 146 }}>Вид реализации</InputLabel>
 				<TextField
-					className="none-padding"
 					defaultValue={position.isFree ? 'Бесплатный' : 'Платный'}
 					inputProps={{
 						readOnly: true,
 					}}
 					fullWidth
+					readOnly
 				/>
 			</Grid>
 			<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" style={{ marginBottom: 0 }} container>
 				<InputLabel style={{ minWidth: 146 }}>Минимальный остаток</InputLabel>
 				<TextField
-					className="none-padding"
 					defaultValue={position.minimumBalance}
 					inputProps={{
 						readOnly: true,
 					}}
 					fullWidth
+					readOnly
 				/>
 			</Grid>
 

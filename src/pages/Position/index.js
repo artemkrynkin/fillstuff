@@ -14,7 +14,7 @@ import { withCurrentUser } from 'src/components/withCurrentUser';
 
 import { getCharacteristics } from 'src/actions/characteristics';
 import { getPosition, archivePositionAfterEnded } from 'src/actions/positions';
-import { getReceiptsPosition, changeReceiptPosition } from 'src/actions/receipts';
+import { getReceiptsPosition, changeReceipt } from 'src/actions/receipts';
 
 import stylesPage from 'src/styles/page.module.css';
 import styles from './index.module.css';
@@ -57,9 +57,24 @@ class Position extends Component {
 		});
 	};
 
-	changeSellingPriceReceipt = (receiptId, values, callback) => {
-		this.props.changeReceiptPosition({ receiptId }, values).then(response => {
-			const receiptEdited = response.data;
+	onReceiptCreate = response => {
+		if (response.status === 'success') {
+			const { data: newReceipt } = response;
+
+			const newReceiptsData = {
+				status: 'success',
+				data: this.state.receiptsData.data.slice(),
+			};
+
+			newReceiptsData.data.unshift(newReceipt);
+
+			this.setState({ receiptsData: newReceiptsData });
+		}
+	};
+
+	onChangeSellingPriceReceipt = (receiptId, values, callback) => {
+		this.props.changeReceipt({ receiptId }, values).then(response => {
+			const { data: receiptEdited } = response;
 
 			const newReceiptsData = {
 				status: 'success',
@@ -123,7 +138,8 @@ class Position extends Component {
 						getCharacteristics={() => getCharacteristics(currentStudio._id)}
 						getPosition={this.getPosition}
 						onCancelArchivePositionAfterEnded={this.onCancelArchivePositionAfterEnded}
-						changeSellingPriceReceipt={this.changeSellingPriceReceipt}
+						onReceiptCreate={this.onReceiptCreate}
+						onChangeSellingPriceReceipt={this.onChangeSellingPriceReceipt}
 					/>
 				</div>
 			</div>
@@ -143,7 +159,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 		getPosition: () => dispatch(getPosition({ params: { positionId } })),
 		archivePositionAfterEnded: (positionId, data) => dispatch(archivePositionAfterEnded({ params: { positionId }, data })),
 		getReceiptsPosition: () => dispatch(getReceiptsPosition({ params: { positionId } })),
-		changeReceiptPosition: (params, data) => dispatch(changeReceiptPosition({ params, data })),
+		changeReceipt: (params, data) => dispatch(changeReceipt({ params, data })),
 	};
 };
 

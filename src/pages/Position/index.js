@@ -19,7 +19,7 @@ import { getReceiptsPosition, changeReceipt } from 'src/actions/receipts';
 import stylesPage from 'src/styles/page.module.css';
 import styles from './index.module.css';
 
-const Index = loadable(() => import('./components/index' /* webpackChunkName: "Member_Index" */), {
+const Index = loadable(() => import('./components/index' /* webpackChunkName: "Position_Index" */), {
 	fallback: <LoadingComponent />,
 });
 

@@ -1,3 +1,4 @@
+import fs from 'fs';
 import bluebird from 'bluebird';
 import mongoose from 'mongoose';
 
@@ -11,8 +12,7 @@ const debug = require('debug')('shared:mongodb');
 const IS_PROD = process.env.NODE_ENV === 'production';
 
 const uri_dev = 'mongodb://localhost:27017/bliksidetest';
-const uri_prod = 'mongodb://localhost:27017/blikside';
-//mongodb://user1:741310PTppl#@rc1c-x6d91n4izpase64t.mdb.yandexcloud.net:27018/db1
+const uri_prod = 'mongodb://artem:741310PTppl#@rc1c-r70mh0q5hyyvlo3i.mdb.yandexcloud.net:27018/blikside-alpha';
 
 mongoose.Promise = bluebird;
 
@@ -22,10 +22,13 @@ const options = {
 	useCreateIndex: true,
 	useUnifiedTopology: true,
 	autoIndex: !IS_PROD,
-	// ssl: true,
-	// sslCA: fs.readFileSync('/usr/local/share/ca-certificates/Yandex/YandexInternalRootCA.crt'),
-	// replicaSet: 'rs01'
 };
+
+if (IS_PROD) {
+	options.ssl = true;
+	options.sslCA = fs.readFileSync('/usr/local/share/ca-certificates/Yandex/YandexInternalRootCA.crt');
+	options.replicaSet = 'rs01';
+}
 
 const DBConnection = mongoose.connection;
 

@@ -167,6 +167,7 @@ procurementsRouter.post(
 				position: position,
 				studio: studioId,
 				status: position.activeReceipt && position.activeReceipt.current.quantity !== 0 ? 'received' : 'active',
+				isFree: position.isFree,
 			});
 
 			receiptCalc.quantity(newReceipt, {

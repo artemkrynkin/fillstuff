@@ -30,6 +30,10 @@ let Receipt = new Schema({
 		enum: ['received', 'active', 'closed'],
 		default: 'received',
 	},
+	// Бесплатный или платный отпуск поступления
+	isFree: {
+		type: Boolean,
+	},
 	current: {
 		// Количество
 		quantity: {

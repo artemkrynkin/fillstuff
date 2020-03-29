@@ -25,10 +25,7 @@ const Receipts = props => {
 		<CardPaper
 			leftContent="Поступления"
 			rightContent={
-				receiptsData &&
-				receiptsData.status === 'success' &&
-				receiptsData.data.length &&
-				receiptsData.data.every(receipt => receipt.status === 'closed') ? (
+				receiptsData && receiptsData.status === 'success' && receiptsData.data.every(receipt => receipt.status === 'closed') ? (
 					<Button onClick={() => onOpenDialogReceipt('dialogReceiptCreate', position)} variant="outlined" color="primary" size="small">
 						Создать поступление
 					</Button>

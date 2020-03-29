@@ -54,6 +54,7 @@ receiptsRouter.post(
 			position: position,
 			studio: studioId,
 			status: 'active',
+			isFree: position.isFree,
 		});
 
 		receiptCalc.quantity(newReceipt, {

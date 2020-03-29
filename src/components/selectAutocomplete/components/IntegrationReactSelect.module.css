@@ -1,9 +1,16 @@
+.paper {
+  max-height: 400px;
+  min-height: 16px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
 .optionSelected {
   background-color: var(--c-hex-t-300);
   color: white;
-  margin: -6px -10px;
-  padding: 6px 10px;
+  margin: -7px -8px;
+  padding: 7px 8px;
   word-break: break-all;
   white-space: initial;
-  width: calc(100% + 20px);
+  width: calc(100% + 44px);
 }

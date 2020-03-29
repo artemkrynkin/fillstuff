@@ -633,6 +633,8 @@ export const BliksideTheme = createMuiTheme({
 		},
 		MuiSelect: {
 			select: {
+				paddingTop: 11,
+				paddingBottom: 10,
 				'&:focus': {
 					backgroundColor: null,
 				},

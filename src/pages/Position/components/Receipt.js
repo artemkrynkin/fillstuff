@@ -99,7 +99,7 @@ const Receipt = props => {
 				/>
 			</TableCell>
 			<TableCell align="right" width={140}>
-				{!position.isFree ? (
+				{!receipt.isFree ? (
 					<Grid alignItems="center" justify="flex-end" container>
 						<Tooltip
 							title={

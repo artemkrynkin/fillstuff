@@ -11,9 +11,10 @@ import { emphasize, makeStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import TextField from '@material-ui/core/TextField';
 import MuiMenuList from '@material-ui/core/MenuList';
-import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
+
+import MenuItem from 'src/components/MenuItem';
 
 import theme from 'shared/theme';
 
@@ -185,9 +186,11 @@ Control.propTypes = {
 
 const MenuList = props => {
 	return (
-		<MuiMenuList ref={props.innerRef} {...props.innerProps}>
-			{props.children}
-		</MuiMenuList>
+		<div className={styles.paper}>
+			<MuiMenuList ref={props.innerRef} {...props.innerProps}>
+				{props.children}
+			</MuiMenuList>
+		</div>
 	);
 };
 
@@ -199,9 +202,8 @@ MenuList.propTypes = {
 
 const Option = props => {
 	return (
-		<MenuItem ref={props.innerRef} selected={props.isSelected} component="div" {...props.innerProps}>
+		<MenuItem ref={props.innerRef} selected={props.isSelected} {...props.innerProps}>
 			{props.children}
-			{props.isSelected ? <FontAwesomeIcon icon={['far', 'check']} /> : null}
 		</MenuItem>
 	);
 };

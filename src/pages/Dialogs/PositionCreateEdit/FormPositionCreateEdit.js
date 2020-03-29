@@ -392,7 +392,7 @@ const FormPositionCreateEdit = props => {
 											<IconButton
 												size="small"
 												onClick={() => onAddCharacteristicInPosition(values, setFieldValue, arrayHelpersCharacteristics)}
-												disabled={values.characteristicTemp.type === '' || values.characteristicTemp.value === ''}
+												disabled={!values.characteristicTemp.type || !values.characteristicTemp.value}
 												disableRipple
 												disableFocusRipple
 											>

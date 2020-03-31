@@ -9,7 +9,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
-import Tooltip from '@material-ui/core/Tooltip';
 import InputLabel from '@material-ui/core/InputLabel';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -23,6 +22,7 @@ import { declensionNumber } from 'src/helpers/utils';
 import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
 import NumberFormat, { moneyInputFormatProps } from 'src/components/NumberFormat';
 import Dropdown from 'src/components/Dropdown';
+import Tooltip from 'src/components/Tooltip';
 
 import FormFieldArrayReceipts from './FormFieldArrayReceipts';
 
@@ -215,7 +215,7 @@ const FormProcurementCreate = props => {
 								<Tooltip
 									title={
 										<div style={{ maxWidth: 200 }}>
-											При наличии в закупке платных позиций, стоимость доставки будет включена в цену продажи этих позиций
+											При наличии в закупке платных позиций, стоимость доставки будет включена в цену продажи этих позиций.
 										</div>
 									}
 									placement="bottom-end"

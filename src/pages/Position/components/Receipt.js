@@ -4,16 +4,17 @@ import ClassNames from 'classnames';
 import moment from 'moment';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Tooltip from '@material-ui/core/Tooltip';
 import TableRow from '@material-ui/core/TableRow';
-import ButtonBase from '@material-ui/core/ButtonBase';
+import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid';
 
 import { formatNumber } from 'shared/utils';
 
 import QuantityIndicator from 'src/components/QuantityIndicator';
 import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
+import { DefinitionList, DefinitionListItem } from 'src/components/Definition';
 import Dropdown from 'src/components/Dropdown';
+import Tooltip from 'src/components/Tooltip';
 
 import FormChangeSellingPrice from './FormChangeSellingPrice';
 
@@ -103,52 +104,66 @@ const Receipt = props => {
 					<Grid alignItems="center" justify="flex-end" container>
 						<Tooltip
 							title={
-								<div>
-									<NumberFormat
-										value={formatNumber(receipt.unitPurchasePrice, { toString: true })}
-										renderText={value => `Цена покупки: ${value}`}
-										displayType="text"
-										{...currencyMoneyFormatProps}
+								<DefinitionList style={{ width: 230 }}>
+									<DefinitionListItem
+										term="Цена покупки"
+										value={
+											<NumberFormat
+												value={formatNumber(receipt.unitPurchasePrice, { toString: true })}
+												renderText={value => value}
+												displayType="text"
+												{...currencyMoneyFormatProps}
+											/>
+										}
 									/>
-									{receipt.unitCostDelivery > 0 ? <br /> : null}
-									{receipt.unitCostDelivery > 0 ? (
-										<NumberFormat
-											value={formatNumber(receipt.unitCostDelivery, { toString: true })}
-											renderText={value => `Стоимость доставки: ${value}`}
-											displayType="text"
-											{...currencyMoneyFormatProps}
+									{receipt.unitCostDelivery ? (
+										<DefinitionListItem
+											term="Стоимость доставки"
+											value={
+												<NumberFormat
+													value={formatNumber(receipt.unitCostDelivery, { toString: true })}
+													renderText={value => value}
+													displayType="text"
+													{...currencyMoneyFormatProps}
+												/>
+											}
 										/>
 									) : null}
-									{receipt.unitMarkup > 0 ? <br /> : null}
-									{receipt.unitMarkup > 0 ? (
-										<NumberFormat
-											value={formatNumber(receipt.unitMarkup, { toString: true })}
-											renderText={value => `Наценка: ${value}`}
-											displayType="text"
-											{...currencyMoneyFormatProps}
+									{receipt.unitMarkup ? (
+										<DefinitionListItem
+											term="Наценка"
+											value={
+												<NumberFormat
+													value={formatNumber(receipt.unitMarkup, { toString: true })}
+													renderText={value => value}
+													displayType="text"
+													{...currencyMoneyFormatProps}
+												/>
+											}
 										/>
 									) : null}
-								</div>
+								</DefinitionList>
 							}
+							placement="left"
+							interactive
 						>
-							<span>
-								<NumberFormat
-									value={formatNumber(receipt.unitSellingPrice, { toString: true })}
-									renderText={value => value}
-									displayType="text"
-									{...currencyMoneyFormatProps}
-								/>
-							</span>
+							<NumberFormat
+								value={formatNumber(receipt.unitSellingPrice, { toString: true })}
+								renderText={value => value}
+								displayType="text"
+								{...currencyMoneyFormatProps}
+							/>
 						</Tooltip>
 
 						{receipt.status !== 'closed' ? (
-							<ButtonBase
+							<IconButton
 								ref={refDropdownChangeSellingPrice}
 								className={styles.changeSellingPrice}
 								onClick={onHandleDropdownChangeSellingPrice}
+								size="small"
 							>
 								<FontAwesomeIcon icon={['fas', 'pen']} />
-							</ButtonBase>
+							</IconButton>
 						) : null}
 					</Grid>
 				) : (
@@ -161,7 +176,8 @@ const Receipt = props => {
 					onClose={onHandleDropdownChangeSellingPrice}
 					placement="bottom-end"
 					disablePortal={false}
-					style={{ margin: '5px -10px 5px 0' }}
+					style={{ margin: '-20px -10px -20px 0' }}
+					innerContentStyle={{ minWidth: 280 }}
 				>
 					<FormChangeSellingPrice
 						position={position}

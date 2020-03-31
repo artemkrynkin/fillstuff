@@ -86,12 +86,7 @@ const FormFilter = props => {
 			<Grid className={styles.bottomContainer} container>
 				{/* Filter Role */}
 				<Grid item>
-					<ButtonBase
-						ref={refDropdownRole}
-						className={styles.filterButtonLink}
-						onClick={() => handlerDropdown('dropdownRole')}
-						disableRipple
-					>
+					<ButtonBase ref={refDropdownRole} className={styles.filterButtonLink} onClick={() => handlerDropdown('dropdownRole')}>
 						<span>{FilterRoleTransform(values.role, members, isLoadingMembers)}</span>
 						<FontAwesomeIcon icon={['far', 'angle-down']} />
 					</ButtonBase>
@@ -120,7 +115,7 @@ const FormFilter = props => {
 
 				<Grid item style={{ marginLeft: 'auto' }}>
 					{values.name || values.role !== 'all' ? (
-						<ButtonBase onClick={() => onResetAllFilters(setFieldValue, submitForm)} className={styles.filterButtonLinkRed} disableRipple>
+						<ButtonBase onClick={() => onResetAllFilters(setFieldValue, submitForm)} className={styles.filterButtonLinkRed}>
 							<span>Сбросить фильтры</span>
 						</ButtonBase>
 					) : null}

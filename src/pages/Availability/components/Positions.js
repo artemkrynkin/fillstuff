@@ -39,13 +39,13 @@ const DialogPositionArchiveDelete = loadable(() =>
 	import('src/pages/Dialogs/PositionArchiveDelete' /* webpackChunkName: "Dialog_PositionArchiveDelete" */)
 );
 
-const DialogPositionOrGroupQRCodeGeneration = loadable(() =>
-	import('src/pages/Dialogs/PositionOrGroupQRCodeGeneration' /* webpackChunkName: "Dialog_PositionOrGroupQRCodeGeneration" */)
+const DialogPositionOrGroupQRCode = loadable(() =>
+	import('src/pages/Dialogs/PositionOrGroupQRCode' /* webpackChunkName: "Dialog_PositionOrGroupQRCode" */)
 );
 
-const DialogPositionGroupQRCodeGeneration = DialogPositionOrGroupQRCodeGeneration;
+const DialogPositionGroupQRCode = DialogPositionOrGroupQRCode;
 
-const DialogPositionQRCodeGeneration = DialogPositionOrGroupQRCodeGeneration;
+const DialogPositionQRCode = DialogPositionOrGroupQRCode;
 
 const DialogReceiptActiveAddQuantity = loadable(() =>
 	import('src/pages/Dialogs/ReceiptActiveAddQuantity' /* webpackChunkName: "Dialog_ReceiptActiveAddQuantity" */)
@@ -62,11 +62,11 @@ class Positions extends Component {
 		dialogOpenedName: '',
 		dialogPositionGroupEdit: false,
 		dialogPositionGroupAdd: false,
-		dialogPositionGroupQRCodeGeneration: false,
+		dialogPositionGroupQRCode: false,
 		dialogPositionEdit: false,
 		dialogPositionRemoveFromGroup: false,
 		dialogPositionArchiveDelete: false,
-		dialogPositionQRCodeGeneration: false,
+		dialogPositionQRCode: false,
 		dialogReceiptActiveAddQuantity: false,
 		dialogReceiptCreate: false,
 		dialogWriteOffCreate: false,
@@ -111,18 +111,18 @@ class Positions extends Component {
 			dialogOpenedName,
 			dialogPositionGroupEdit,
 			dialogPositionGroupAdd,
-			dialogPositionGroupQRCodeGeneration,
+			dialogPositionGroupQRCode,
 			dialogPositionEdit,
 			dialogPositionRemoveFromGroup,
 			dialogPositionArchiveDelete,
-			dialogPositionQRCodeGeneration,
+			dialogPositionQRCode,
 			dialogReceiptActiveAddQuantity,
 			dialogReceiptCreate,
 			dialogWriteOffCreate,
 		} = this.state;
 
 		return (
-			<div className={styles.container}>
+			<div>
 				{!isLoadingPositions && !isLoadingPositionGroups && positions && positionGroups ? (
 					!positions.length && !positionGroups.length ? (
 						<div className={styles.none}>Еще не создано ни одной позиции</div>
@@ -185,12 +185,12 @@ class Positions extends Component {
 					selectedPositionGroup={dialogOpenedName === 'dialogPositionGroupAdd' ? positionGroup : null}
 				/>
 
-				<DialogPositionGroupQRCodeGeneration
-					dialogOpen={dialogPositionGroupQRCodeGeneration}
-					onCloseDialog={() => this.onCloseDialogByName('dialogPositionGroupQRCodeGeneration')}
+				<DialogPositionGroupQRCode
+					dialogOpen={dialogPositionGroupQRCode}
+					onCloseDialog={() => this.onCloseDialogByName('dialogPositionGroupQRCode')}
 					onExitedDialog={this.onPositionGroupDrop}
 					type="positionGroup"
-					selectedPositionOrGroup={dialogOpenedName === 'dialogPositionGroupQRCodeGeneration' ? positionGroup : null}
+					selectedPositionOrGroup={dialogOpenedName === 'dialogPositionGroupQRCode' ? positionGroup : null}
 				/>
 
 				{/* Dialogs Positions */}
@@ -217,12 +217,12 @@ class Positions extends Component {
 					selectedPosition={dialogOpenedName === 'dialogPositionArchiveDelete' ? position : null}
 				/>
 
-				<DialogPositionQRCodeGeneration
-					dialogOpen={dialogPositionQRCodeGeneration}
-					onCloseDialog={() => this.onCloseDialogByName('dialogPositionQRCodeGeneration')}
+				<DialogPositionQRCode
+					dialogOpen={dialogPositionQRCode}
+					onCloseDialog={() => this.onCloseDialogByName('dialogPositionQRCode')}
 					onExitedDialog={this.onPositionDrop}
 					type="position"
-					selectedPositionOrGroup={dialogOpenedName === 'dialogPositionQRCodeGeneration' ? position : null}
+					selectedPositionOrGroup={dialogOpenedName === 'dialogPositionQRCode' ? position : null}
 				/>
 
 				<DialogReceiptActiveAddQuantity

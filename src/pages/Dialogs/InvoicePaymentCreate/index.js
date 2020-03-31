@@ -10,6 +10,7 @@ import TextField from '@material-ui/core/TextField';
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Typography from '@material-ui/core/Typography';
 
 import { Dialog, DialogTitle } from 'src/components/Dialog';
 import NumberFormat, { moneyInputFormatProps } from 'src/components/NumberFormat';
@@ -51,8 +52,8 @@ class DialogInvoicePaymentCreate extends Component {
 		if (!selectedInvoice) return null;
 
 		return (
-			<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth="md" scroll="body">
-				<DialogTitle onClose={onCloseDialog} theme="noTheme">
+			<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} scroll="body">
+				<DialogTitle onClose={onCloseDialog} theme="noTheme" titlePositionCenter>
 					Оплата счета
 				</DialogTitle>
 				<Formik
@@ -65,11 +66,18 @@ class DialogInvoicePaymentCreate extends Component {
 					{({ errors, isSubmitting, touched }) => (
 						<Form>
 							<DialogContent>
-								<Grid className={styles.header} alignItems="center" container>
-									<Grid xs={6} item>
-										<AvatarTitle imageSrc={selectedInvoice.member.user.avatar} title={selectedInvoice.member.user.name} />
+								<Grid className={styles.header} alignItems="center" direction="column" container>
+									<Grid item>
+										<AvatarTitle
+											className={styles.avatar}
+											imageSrc={selectedInvoice.member.user.avatar}
+											imageStyle={{ height: 90, width: 90 }}
+										/>
+										<Typography className={styles.name} variant="h6">
+											{selectedInvoice.member.user.name}
+										</Typography>
 									</Grid>
-									<Grid xs={6} item>
+									<Grid item>
 										<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
 											<div className={styles.indicatorsTitle}>
 												<Money value={selectedInvoice.amount - selectedInvoice.paymentAmountDue} />

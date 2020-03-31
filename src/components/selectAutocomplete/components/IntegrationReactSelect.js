@@ -10,7 +10,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { emphasize, makeStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import TextField from '@material-ui/core/TextField';
-import MuiMenuList from '@material-ui/core/MenuList';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
@@ -123,8 +122,10 @@ const selectStyles = {
 	}),
 	menuList: base => ({
 		...base,
-		paddingBottom: 6,
-		paddingTop: 6,
+		paddingBottom: 8,
+		paddingTop: 8,
+		paddingLeft: 8,
+		paddingRight: 8,
 	}),
 };
 
@@ -182,22 +183,6 @@ Control.propTypes = {
 	innerProps: PropTypes.object,
 	innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 	selectProps: PropTypes.object.isRequired,
-};
-
-const MenuList = props => {
-	return (
-		<div className={styles.paper}>
-			<MuiMenuList ref={props.innerRef} {...props.innerProps}>
-				{props.children}
-			</MuiMenuList>
-		</div>
-	);
-};
-
-MenuList.propTypes = {
-	children: PropTypes.node,
-	innerProps: PropTypes.object,
-	innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 };
 
 const Option = props => {
@@ -304,7 +289,6 @@ const components = {
 	LoadingIndicator,
 	MultiValue,
 	NoOptionsMessage,
-	MenuList,
 	Option,
 	Placeholder,
 	SingleValue,

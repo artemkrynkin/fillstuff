@@ -17,15 +17,10 @@ import Dropdown from 'src/components/Dropdown';
 import MenuItem from 'src/components/MenuItem';
 
 import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, TableCellExpansionPanel } from './styles';
-import styles from './Positions.module.css';
+import stylesPositions from './Positions.module.css';
+import styles from './PositionGroup.module.css';
 
 import Position from './Position';
-
-const positionGroupActionsButtonClasses = dropdownActions =>
-	ClassNames({
-		[styles.positionGroupActionsButton]: true,
-		[styles.positionGroupActionsButton_active]: Boolean(dropdownActions),
-	});
 
 const PositionGroup = props => {
 	const { positionGroup, onOpenDialogPositionGroup, onOpenDialogPosition } = props;
@@ -35,7 +30,7 @@ const PositionGroup = props => {
 	const onHandleDropdownActions = () => setDropdownActions(prevValue => !prevValue);
 
 	return (
-		<TableRow className={styles.positionGroup}>
+		<TableRow className={stylesPositions.positionGroup}>
 			<td colSpan={5} style={{ position: 'relative' }}>
 				<ExpansionPanel
 					TransitionProps={{
@@ -47,7 +42,6 @@ const PositionGroup = props => {
 					<ExpansionPanelSummary
 						expandIcon={<FontAwesomeIcon icon={['far', 'angle-down']} />}
 						IconButtonProps={{
-							disableRipple: true,
 							size: 'small',
 						}}
 					>
@@ -56,7 +50,7 @@ const PositionGroup = props => {
 								<TableRow>
 									<TableCellExpansionPanel style={{ paddingLeft: 41 }}>
 										<span className={styles.positionGroupName}>{positionGroup.name}</span>
-										<span className={styles.caption} style={{ marginLeft: 5 }}>
+										<span className={stylesPositions.caption} style={{ marginLeft: 5 }}>
 											{declensionNumber(positionGroup.positions.length, ['позиция', 'позиции', 'позиций'], true)}
 										</span>
 									</TableCellExpansionPanel>
@@ -90,55 +84,58 @@ const PositionGroup = props => {
 				<div className={styles.positionGroupActions}>
 					<IconButton
 						ref={refDropdownActions}
-						className={positionGroupActionsButtonClasses(dropdownActions)}
+						className={ClassNames({
+							[stylesPositions.actionsButton]: true,
+							[stylesPositions.actionsButtonActive]: dropdownActions,
+						})}
 						onClick={onHandleDropdownActions}
 						size="small"
 					>
 						<FontAwesomeIcon icon={['far', 'ellipsis-h']} />
 					</IconButton>
-
-					<Dropdown
-						anchor={refDropdownActions}
-						open={dropdownActions}
-						onClose={onHandleDropdownActions}
-						placement="bottom-end"
-						disablePortal={false}
-					>
-						<MenuList>
-							<MenuItem
-								onClick={() => {
-									onHandleDropdownActions();
-									onOpenDialogPositionGroup('dialogPositionGroupQRCodeGeneration', positionGroup);
-								}}
-								iconBefore={<FontAwesomeIcon icon={['fal', 'qrcode']} style={{ fontSize: 16 }} />}
-							>
-								Генерация QR-кода
-							</MenuItem>
-						</MenuList>
-						<Divider />
-						<MenuList>
-							<MenuItem
-								onClick={() => {
-									onHandleDropdownActions();
-									onOpenDialogPositionGroup('dialogPositionGroupAdd', positionGroup);
-								}}
-								iconBefore={<FontAwesomeIcon icon={['far', 'folder-plus']} style={{ fontSize: 16 }} />}
-							>
-								Добавить позиции
-							</MenuItem>
-							<MenuItem
-								onClick={() => {
-									onHandleDropdownActions();
-									onOpenDialogPositionGroup('dialogPositionGroupEdit', positionGroup);
-								}}
-								iconBefore={<FontAwesomeIcon icon={['far', 'pen']} />}
-							>
-								Редактировать
-							</MenuItem>
-						</MenuList>
-					</Dropdown>
 				</div>
 			</td>
+
+			<Dropdown
+				anchor={refDropdownActions}
+				open={dropdownActions}
+				onClose={onHandleDropdownActions}
+				placement="bottom-end"
+				disablePortal={false}
+			>
+				<MenuList>
+					<MenuItem
+						onClick={() => {
+							onHandleDropdownActions();
+							onOpenDialogPositionGroup('dialogPositionGroupQRCode', positionGroup);
+						}}
+						iconBefore={<FontAwesomeIcon icon={['fal', 'qrcode']} style={{ fontSize: 16 }} />}
+					>
+						Печать QR-кода
+					</MenuItem>
+				</MenuList>
+				<Divider />
+				<MenuList>
+					<MenuItem
+						onClick={() => {
+							onHandleDropdownActions();
+							onOpenDialogPositionGroup('dialogPositionGroupAdd', positionGroup);
+						}}
+						iconBefore={<FontAwesomeIcon icon={['far', 'folder-plus']} style={{ fontSize: 16 }} />}
+					>
+						Добавить позиции
+					</MenuItem>
+					<MenuItem
+						onClick={() => {
+							onHandleDropdownActions();
+							onOpenDialogPositionGroup('dialogPositionGroupEdit', positionGroup);
+						}}
+						iconBefore={<FontAwesomeIcon icon={['far', 'pen']} />}
+					>
+						Редактировать
+					</MenuItem>
+				</MenuList>
+			</Dropdown>
 		</TableRow>
 	);
 };

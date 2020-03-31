@@ -6,7 +6,6 @@ import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import Tooltip from '@material-ui/core/Tooltip';
 
 import { receiptCalc } from 'shared/checkPositionAndReceipt';
 import { formatNumber } from 'shared/utils';
@@ -15,6 +14,7 @@ import { formError } from 'src/helpers/utils';
 
 import NumberFormat, { moneyInputFormatProps, currencyMoneyFormatProps } from 'src/components/NumberFormat';
 import PositionNameInList from 'src/components/PositionNameInList';
+import Tooltip from 'src/components/Tooltip';
 
 import styles from './index.module.css';
 
@@ -273,7 +273,7 @@ const FormFieldArrayReceipt = props => {
 
 			{formEditable ? (
 				<div className={styles.removeReceipt}>
-					<IconButton size="small" onClick={() => remove(index)} disableRipple disableFocusRipple>
+					<IconButton size="small" onClick={() => remove(index)} disableFocusRipple>
 						<FontAwesomeIcon icon={['fal', 'times']} />
 					</IconButton>
 				</div>

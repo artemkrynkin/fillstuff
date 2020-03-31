@@ -3,13 +3,13 @@ import moment from 'moment';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TableRow from '@material-ui/core/TableRow';
-import ButtonBase from '@material-ui/core/ButtonBase';
+import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid';
-import Tooltip from '@material-ui/core/Tooltip';
 
 import { formatNumber } from 'shared/utils';
 
 import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
+import Tooltip from 'src/components/Tooltip';
 import PositionNameInList from 'src/components/PositionNameInList';
 import AvatarTitle from 'src/components/AvatarTitle';
 
@@ -18,7 +18,7 @@ import styles from './WriteOff.module.css';
 import { TableCell } from './styles';
 
 const WriteOff = props => {
-	const { writeOff, onOpenDialogWriteOffCancel } = props;
+	const { writeOff, isCurrentDay, onOpenDialogWriteOffCancel } = props;
 
 	const createdAtMoment = moment(writeOff.createdAt);
 	const isCurrentDayWriteOff = moment()
@@ -32,18 +32,16 @@ const WriteOff = props => {
 		.isBefore(writeOff.createdAt);
 
 	return (
-		<TableRow>
+		<TableRow className={styles.writeOff}>
 			<TableCell width={100}>
 				<AvatarTitle imageSrc={writeOff.member.user.avatar} title={writeOff.member.user.name} />
 			</TableCell>
 			<TableCell>
-				<a className={styles.positionLink} href={`/availability/${writeOff.position._id}`} target="_blank" rel="noreferrer noopener">
-					<PositionNameInList
-						name={writeOff.position.name}
-						characteristics={writeOff.position.characteristics}
-						canceled={writeOff.canceled}
-					/>
-				</a>
+				<PositionNameInList
+					name={writeOff.position.name}
+					characteristics={writeOff.position.characteristics}
+					canceled={writeOff.canceled}
+				/>
 			</TableCell>
 			<TableCell align="right" width={115}>
 				{writeOff.quantity} {writeOff.position.unitRelease === 'pce' ? 'шт.' : 'уп.'}
@@ -105,15 +103,19 @@ const WriteOff = props => {
 			<TableCell align="right" width={160}>
 				<Grid alignItems="center" justify="flex-end" container>
 					{!isCurrentHour ? createdAtMoment.format('HH:mm') : !isNow ? createdAtMoment.fromNow() : 'только что'}
-					{isCurrentDayWriteOff && !writeOff.canceled ? (
-						<Tooltip title="Отменить списание" placement="top">
-							<ButtonBase className={styles.cancelWriteOffButton} onClick={onOpenDialogWriteOffCancel} size="small">
-								<FontAwesomeIcon icon={['far', 'undo']} />
-							</ButtonBase>
-						</Tooltip>
-					) : null}
 				</Grid>
 			</TableCell>
+			{isCurrentDay ? (
+				<TableCell width={50} style={{ padding: '0 7px' }}>
+					{isCurrentDayWriteOff && !writeOff.canceled ? (
+						<Tooltip title="Отменить списание" placement="top">
+							<IconButton className={styles.cancelWriteOffButton} onClick={onOpenDialogWriteOffCancel}>
+								<FontAwesomeIcon icon={['far', 'undo']} />
+							</IconButton>
+						</Tooltip>
+					) : null}
+				</TableCell>
+			) : null}
 		</TableRow>
 	);
 };

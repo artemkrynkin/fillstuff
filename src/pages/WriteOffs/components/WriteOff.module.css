@@ -1,3 +1,11 @@
+.writeOff {
+  transition: background-color 150ms ease-out;
+}
+
+.writeOff:hover {
+  background-color: var(--c-hex-br-2);
+}
+
 .moneyContainer {
   display: flex;
   flex-direction: column;
@@ -32,12 +40,14 @@
 
 .cancelWriteOffButton {
   color: var(--c-hex-bg-200);
-  margin-left: 5px;
-  padding: 10px 0 10px 5px;
-  transition: color 150ms ease-out;
+  padding: 11px;
+  opacity: 0;
+  transition: color 150ms ease-out, opacity 150ms ease-out;
+  width: 36px;
 }
 
 .cancelWriteOffButton:hover {
+  background-color: rgba(var(--c-rgb-bg-100), 0.2);
   color: var(--c-hex-bg-300);
 }
 
@@ -45,8 +55,6 @@
   font-size: 14px;
 }
 
-.positionLink {
-  display: block;
-  margin: -9px 0;
-  padding: 9px 0;
+.writeOff:hover .cancelWriteOffButton {
+  opacity: 1;
 }

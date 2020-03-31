@@ -12,6 +12,8 @@ import { sleep } from 'shared/utils';
 
 import { history } from 'src/helpers/history';
 
+import { deleteParamsCoincidence } from 'src/components/Pagination/utils';
+
 import { getMembers } from 'src/actions/members';
 import { getPositions } from 'src/actions/positions';
 import { getProcurements } from 'src/actions/procurements';
@@ -20,7 +22,6 @@ import FormFilter from './FormFilter';
 import filterSchema from './filterSchema';
 
 import styles from './Filter.module.css';
-import { deleteParamsCoincidence } from '../../../components/Pagination/utils';
 
 class Filter extends Component {
 	static propTypes = {

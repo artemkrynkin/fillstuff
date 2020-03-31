@@ -196,7 +196,7 @@ writeOffsRouter.post(
 
 				awaitingPromises.push(newWriteOff.save());
 
-				if (!position.isFree) writeOffsIds.push(newWriteOff._id);
+				if (!position.isFree && !purchaseExpenseStudio) writeOffsIds.push(newWriteOff._id);
 
 				const currentReceiptSet = {
 					current: {

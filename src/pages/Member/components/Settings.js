@@ -64,7 +64,6 @@ const Settings = props => {
 											onChange={() => onToggleSettings('purchaseExpenseStudio')}
 											value="purchaseExpenseStudio"
 											color="primary"
-											disableRipple
 										/>
 									}
 									label="Может делать списания за счёт студии"
@@ -77,7 +76,6 @@ const Settings = props => {
 											// onChange={() => onToggleSettings('123')}
 											value="123"
 											color="primary"
-											disableRipple
 										/>
 									}
 									label="Платные позиции предоставляются бесплатно"
@@ -91,7 +89,6 @@ const Settings = props => {
 											onChange={() => onToggleSettings('markupPosition')}
 											value="markupPosition"
 											color="primary"
-											disableRipple
 										/>
 									}
 									label="Включить наценку для платных позиций"

@@ -1,8 +1,8 @@
 .paper {
-  max-height: 400px;
+  max-height: 226px;
   min-height: 16px;
-  overflow-x: hidden;
   overflow-y: auto;
+  position: relative;
 }
 
 .optionSelected {

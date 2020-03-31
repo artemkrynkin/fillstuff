@@ -13,11 +13,11 @@ import TableRow from '@material-ui/core/TableRow';
 import Collapse from '@material-ui/core/Collapse';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
-import Tooltip from '@material-ui/core/Tooltip';
 
 import CardPaper from 'src/components/CardPaper';
 import Money from 'src/components/Money';
 import AvatarTitle from 'src/components/AvatarTitle';
+import Tooltip from 'src/components/Tooltip';
 
 import WriteOff from './WriteOff';
 import Payment from './Payment';
@@ -61,7 +61,7 @@ const Invoice = props => {
 							<Grid className={styles.indicators} direction="column" justify="center" container>
 								{invoice.status !== 'paid' ? (
 									<div className={styles.indicatorsTitle}>
-										<Tooltip title="Погасить счет" placement="top" interactive>
+										<Tooltip title="Погасить счет" placement="top" style={{ display: 'inline-block', marginRight: 10 }}>
 											<button onClick={() => onOpenDialogInvoice('dialogInvoicePaymentCreate', invoice)} className={styles.acceptPayment}>
 												<FontAwesomeIcon icon={['fas', 'wallet']} />
 											</button>
@@ -159,7 +159,6 @@ const Invoice = props => {
 						open: expanded,
 					})}
 					onClick={onHandleExpand}
-					disableRipple
 				>
 					<FontAwesomeIcon icon={['far', 'angle-down']} className={expanded ? 'open' : ''} />
 				</ButtonBase>

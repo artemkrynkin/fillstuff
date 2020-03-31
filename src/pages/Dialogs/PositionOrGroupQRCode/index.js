@@ -28,7 +28,7 @@ import marks from './marks';
 import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
 
-const QRCodeGenerationSchema = Yup.object().shape({
+const QRCodeSchema = Yup.object().shape({
 	quantity: Yup.number()
 		.min(1, 'Введите количество')
 		.required(),
@@ -46,7 +46,7 @@ const QRCharacteristicsClasses = QRCodeSize =>
 		[styles.qrCharacteristicsHide]: QRCodeSize <= 2,
 	});
 
-class DialogPositionOrGroupQRCodeGeneration extends Component {
+class DialogPositionOrGroupQRCode extends Component {
 	static propTypes = {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
@@ -128,8 +128,8 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 						paddingRight: () => 20,
 						paddingTop: () => 20,
 						paddingBottom: () => 20,
-						hLineColor: (i, node) => theme.blueGrey.cBg100,
-						vLineColor: (i, node) => theme.blueGrey.cBg100,
+						hLineColor: () => theme.blueGrey.cBg100,
+						vLineColor: () => theme.blueGrey.cBg100,
 					},
 				});
 
@@ -231,11 +231,11 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 				stickyActions
 			>
 				<DialogTitle onClose={onCloseDialog} theme="noTheme">
-					Генерация QR-кода
+					Печать QR-кода
 				</DialogTitle>
 				<Formik
 					initialValues={{ quantity: '' }}
-					validationSchema={QRCodeGenerationSchema}
+					validationSchema={QRCodeSchema}
 					validateOnBlur={false}
 					validateOnChange={false}
 					onSubmit={(values, actions) => this.onGenerateAndSavePDF(actions, values)}
@@ -318,4 +318,4 @@ class DialogPositionOrGroupQRCodeGeneration extends Component {
 	}
 }
 
-export default DialogPositionOrGroupQRCodeGeneration;
+export default DialogPositionOrGroupQRCode;

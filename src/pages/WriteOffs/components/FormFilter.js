@@ -13,7 +13,6 @@ import Divider from '@material-ui/core/Divider';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
-import Tooltip from '@material-ui/core/Tooltip';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { DatePicker } from '@material-ui/pickers';
 
@@ -21,6 +20,7 @@ import { memberRoleTransform } from 'shared/roles-access-rights';
 
 import { weekActive, monthActive, paginationCalendarFormat } from 'src/components/Pagination/utils';
 import Dropdown from 'src/components/Dropdown';
+import Tooltip from 'src/components/Tooltip';
 import PositionNameInList from 'src/components/PositionNameInList';
 import MenuItem from 'src/components/MenuItem';
 
@@ -187,7 +187,6 @@ const FormFilter = props => {
 							handlerDropdown('dropdownDate');
 							handlerDropdown('dropdownDateRange', false);
 						}}
-						disableRipple
 					>
 						{isWeekActive() ? (
 							<span>За текущую неделю</span>
@@ -209,21 +208,27 @@ const FormFilter = props => {
 						<FontAwesomeIcon icon={['far', 'angle-down']} />
 					</ButtonBase>
 
-					<Dropdown anchor={refDropdownDate} open={dropdownDate} onClose={() => handlerDropdown('dropdownDate')} placement="bottom-start">
+					<Dropdown
+						anchor={refDropdownDate}
+						open={dropdownDate}
+						onClose={() => handlerDropdown('dropdownDate')}
+						placement="bottom-start"
+						innerContentStyle={{ minWidth: 190 }}
+					>
 						<List>
 							<MenuItem
 								disabled={isSubmitting}
 								selected={isMonthActive()}
 								onClick={() => onChangeFilterDate('currentMonth', setFieldValue, submitForm)}
 							>
-								Текущий месяц
+								За текущий месяц
 							</MenuItem>
 							<MenuItem
 								disabled={isSubmitting}
 								selected={isWeekActive()}
 								onClick={() => onChangeFilterDate('currentWeek', setFieldValue, submitForm)}
 							>
-								Текущая неделя
+								За текущую неделю
 							</MenuItem>
 						</List>
 						<Divider />
@@ -308,12 +313,7 @@ const FormFilter = props => {
 
 				{/* Filter Position */}
 				<Grid item>
-					<ButtonBase
-						ref={refDropdownPosition}
-						className={styles.filterButtonLink}
-						onClick={() => handlerDropdown('dropdownPosition')}
-						disableRipple
-					>
+					<ButtonBase ref={refDropdownPosition} className={styles.filterButtonLink} onClick={() => handlerDropdown('dropdownPosition')}>
 						<span>{FilterPositionTransform(values.position, allPositions, isLoadingAllPositions)}</span>
 						<FontAwesomeIcon icon={['far', 'angle-down']} />
 					</ButtonBase>
@@ -323,7 +323,7 @@ const FormFilter = props => {
 						open={dropdownPosition}
 						onClose={() => handlerDropdown('dropdownPosition')}
 						placement="bottom-start"
-						headerElement={
+						header={
 							<div className={styles.filterSearchTextFieldContainer}>
 								<FilterSearchTextField
 									inputRef={searchTextFieldPosition}
@@ -392,12 +392,7 @@ const FormFilter = props => {
 
 				{/* Filter Role */}
 				<Grid item>
-					<ButtonBase
-						ref={refDropdownRole}
-						className={styles.filterButtonLink}
-						onClick={() => handlerDropdown('dropdownRole')}
-						disableRipple
-					>
+					<ButtonBase ref={refDropdownRole} className={styles.filterButtonLink} onClick={() => handlerDropdown('dropdownRole')}>
 						<span>{FilterRoleTransform(values.role, allMembers, isLoadingAllMembers)}</span>
 						<FontAwesomeIcon icon={['far', 'angle-down']} />
 					</ButtonBase>
@@ -407,7 +402,7 @@ const FormFilter = props => {
 						open={dropdownRole}
 						onClose={() => handlerDropdown('dropdownRole')}
 						placement="bottom-start"
-						headerElement={
+						header={
 							<div className={styles.filterSearchTextFieldContainer}>
 								<FilterSearchTextField
 									inputRef={searchTextFieldMember}

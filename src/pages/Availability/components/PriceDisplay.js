@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import ClassNames from 'classnames';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Tooltip from '@material-ui/core/Tooltip';
 
 import { formatNumber } from 'shared/utils';
 
 import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
+import Tooltip from 'src/components/Tooltip';
 
 import styles from './Positions.module.css';
 
@@ -31,25 +31,25 @@ const PriceDisplay = props => {
 						{title} {receiptNearestPrice > price ? 'повысится' : 'снизится'} до {formatNumber(receiptNearestPrice, { toString: true })} ₽
 					</div>
 				}
+				style={{ display: 'inline-block' }}
 				interactive
+				open
 			>
-				<div style={{ display: 'inline-block' }}>
-					<NumberFormat
-						value={formatNumber(price, { toString: true })}
-						renderText={value => value}
-						displayType="text"
-						{...currencyMoneyFormatProps}
-					/>
-					{receiptNearestPrice > price ? (
-						<span className={priceDisplayChangeIconClasses(priceChangeIsGood)}>
-							<FontAwesomeIcon icon={['far', 'chevron-up']} />
-						</span>
-					) : (
-						<span className={priceDisplayChangeIconClasses(!priceChangeIsGood)}>
-							<FontAwesomeIcon icon={['far', 'chevron-down']} />
-						</span>
-					)}
-				</div>
+				<NumberFormat
+					value={formatNumber(price, { toString: true })}
+					renderText={value => value}
+					displayType="text"
+					{...currencyMoneyFormatProps}
+				/>
+				{receiptNearestPrice > price ? (
+					<span className={priceDisplayChangeIconClasses(priceChangeIsGood)}>
+						<FontAwesomeIcon icon={['far', 'chevron-up']} />
+					</span>
+				) : (
+					<span className={priceDisplayChangeIconClasses(!priceChangeIsGood)}>
+						<FontAwesomeIcon icon={['far', 'chevron-down']} />
+					</span>
+				)}
 			</Tooltip>
 		);
 	else if (!isFree)

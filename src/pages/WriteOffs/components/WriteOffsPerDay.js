@@ -12,12 +12,12 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Collapse from '@material-ui/core/Collapse';
 import Avatar from '@material-ui/core/Avatar';
-import Tooltip from '@material-ui/core/Tooltip';
 
 import { history } from 'src/helpers/history';
 
 import CardPaper from 'src/components/CardPaper';
 import Money from 'src/components/Money';
+import Tooltip from 'src/components/Tooltip';
 
 import WriteOff from './WriteOff';
 
@@ -78,6 +78,10 @@ const WriteOffsPerDay = props => {
 			search: queryString.stringify(query),
 		});
 	};
+
+	const isCurrentDay = moment()
+		.subtract({ day: 1 })
+		.isBefore(writeOffs[0].createdAt);
 
 	return (
 		<CardPaper className={styles.container} header={false}>
@@ -147,6 +151,7 @@ const WriteOffsPerDay = props => {
 									<TableCell align="right" width={160}>
 										Время
 									</TableCell>
+									{isCurrentDay ? <TableCell width={50} /> : null}
 								</TableRow>
 							</TableHead>
 							<TableBody>
@@ -154,6 +159,7 @@ const WriteOffsPerDay = props => {
 									<WriteOff
 										key={writeOff._id}
 										writeOff={writeOff}
+										isCurrentDay={isCurrentDay}
 										onOpenDialogWriteOffCancel={() => onHandleDialogWriteOffCancel(true, writeOff)}
 									/>
 								))}

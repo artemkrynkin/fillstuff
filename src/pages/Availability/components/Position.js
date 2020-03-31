@@ -11,22 +11,21 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuList from '@material-ui/core/MenuList';
 import Divider from '@material-ui/core/Divider';
 
+import { formatNumber } from 'shared/utils';
+
+import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
 import PositionNameInList from 'src/components/PositionNameInList';
 import QuantityIndicator from 'src/components/QuantityIndicator';
 import Dropdown from 'src/components/Dropdown';
 import MenuItem from 'src/components/MenuItem';
-import PriceDisplay from './PriceDisplay';
 
 import { archivePositionAfterEnded } from 'src/actions/positions';
 
-import { TableCell } from './styles';
-import styles from './Positions.module.css';
+import SellingPriceDisplay from './SellingPriceDisplay';
 
-const positionActionsButtonClasses = dropdownActions =>
-	ClassNames({
-		[styles.positionActionsButton]: true,
-		[styles.positionActionsButton_active]: Boolean(dropdownActions),
-	});
+import { TableCell } from './styles';
+import stylesPositions from './Positions.module.css';
+import styles from './Position.module.css';
 
 const Position = props => {
 	const { position, onOpenDialogPosition } = props;
@@ -35,14 +34,12 @@ const Position = props => {
 
 	const onHandleDropdownActions = () => setDropdownActions(prevValue => !prevValue);
 
-	const receiptsReceived = position.receipts.filter(receipt => receipt.status === 'received');
-
 	const onArchivedAfterEnded = () => {
 		props.archivePositionAfterEnded(position._id, { archivedAfterEnded: false });
 	};
 
 	return (
-		<TableRow className={styles.position}>
+		<TableRow className={stylesPositions.position}>
 			<TableCell style={position.positionGroup ? { paddingLeft: 41 } : {}}>
 				<Link className={styles.positionLink} to={`/availability/${position._id}`}>
 					<PositionNameInList
@@ -67,40 +64,17 @@ const Position = props => {
 			</TableCell>
 			{position.receipts.length ? (
 				<TableCell align="right" width={140}>
-					{position.activeReceipt ? (
-						<PriceDisplay
-							unitReceipt={position.unitReceipt}
-							unitRelease={position.unitRelease}
-							quantity={position.activeReceipt.current.quantity}
-							isFree={false}
-							price={Number(position.activeReceipt.unitPurchasePrice.toFixed(2))}
-							receiptsReceived={receiptsReceived}
-							receiptNearestPrice={receiptsReceived.length ? Number(receiptsReceived[0].unitPurchasePrice.toFixed(2)) : undefined}
-							priceChangeIsGood={false}
-							title="цена покупки"
-						/>
-					) : (
-						'-'
-					)}
+					<NumberFormat
+						value={formatNumber(position.activeReceipt.unitPurchasePrice, { toString: true })}
+						renderText={value => value}
+						displayType="text"
+						{...currencyMoneyFormatProps}
+					/>
 				</TableCell>
 			) : null}
 			{position.receipts.length ? (
 				<TableCell align="right" width={140}>
-					{position.activeReceipt ? (
-						<PriceDisplay
-							unitReceipt={position.unitReceipt}
-							unitRelease={position.unitRelease}
-							quantity={position.activeReceipt.current.quantity}
-							isFree={position.isFree}
-							price={Number(position.activeReceipt.unitSellingPrice.toFixed(2))}
-							receiptsReceived={receiptsReceived}
-							receiptNearestPrice={receiptsReceived.length ? Number(receiptsReceived[0].unitSellingPrice.toFixed(2)) : undefined}
-							priceChangeIsGood={true}
-							title="цена продажи"
-						/>
-					) : (
-						'-'
-					)}
+					<SellingPriceDisplay position={position} />
 				</TableCell>
 			) : null}
 			{!position.receipts.length ? (
@@ -113,106 +87,109 @@ const Position = props => {
 			<TableCell align="right" width={50} style={{ padding: '0 7px' }}>
 				<IconButton
 					ref={refDropdownActions}
-					className={positionActionsButtonClasses(dropdownActions)}
+					className={ClassNames({
+						[stylesPositions.actionsButton]: true,
+						[stylesPositions.actionsButtonActive]: dropdownActions,
+					})}
 					onClick={onHandleDropdownActions}
 					size="small"
 				>
 					<FontAwesomeIcon icon={['far', 'ellipsis-h']} />
 				</IconButton>
+			</TableCell>
 
-				<Dropdown
-					anchor={refDropdownActions}
-					open={dropdownActions}
-					onClose={onHandleDropdownActions}
-					placement="bottom-end"
-					disablePortal={false}
-				>
-					{position.receipts.length ? (
-						<MenuList>
-							<MenuItem
-								onClick={() => {
-									onHandleDropdownActions();
-									onOpenDialogPosition('dialogReceiptActiveAddQuantity', position);
-								}}
-							>
-								Добавить количество
-							</MenuItem>
-							<MenuItem
-								onClick={() => {
-									onHandleDropdownActions();
-									onOpenDialogPosition('dialogWriteOffCreate', position);
-								}}
-							>
-								Списать количество
-							</MenuItem>
-						</MenuList>
-					) : null}
-					{position.receipts.length ? <Divider /> : null}
+			<Dropdown
+				anchor={refDropdownActions}
+				open={dropdownActions}
+				onClose={onHandleDropdownActions}
+				placement="bottom-end"
+				disablePortal={false}
+			>
+				{position.receipts.length ? (
 					<MenuList>
 						<MenuItem
 							onClick={() => {
 								onHandleDropdownActions();
-								onOpenDialogPosition('dialogPositionQRCodeGeneration', position);
+								onOpenDialogPosition('dialogReceiptActiveAddQuantity', position);
 							}}
-							iconBefore={<FontAwesomeIcon icon={['fal', 'qrcode']} style={{ fontSize: 16 }} />}
 						>
-							Генерация QR-кода
+							Добавить количество
+						</MenuItem>
+						<MenuItem
+							onClick={() => {
+								onHandleDropdownActions();
+								onOpenDialogPosition('dialogWriteOffCreate', position);
+							}}
+						>
+							Списать количество
 						</MenuItem>
 					</MenuList>
-					<Divider />
-					<MenuList>
-						{position.positionGroup ? (
-							<MenuItem
-								onClick={() => {
-									onHandleDropdownActions();
-									onOpenDialogPosition('dialogPositionRemoveFromGroup', position);
-								}}
-								iconBefore={<FontAwesomeIcon icon={['far', 'folder-minus']} style={{ fontSize: 16 }} />}
-							>
-								Открепить от группы
-							</MenuItem>
-						) : null}
+				) : null}
+				{position.receipts.length ? <Divider /> : null}
+				<MenuList>
+					<MenuItem
+						onClick={() => {
+							onHandleDropdownActions();
+							onOpenDialogPosition('dialogPositionQRCode', position);
+						}}
+						iconBefore={<FontAwesomeIcon icon={['fal', 'qrcode']} style={{ fontSize: 16 }} />}
+					>
+						Печать QR-кода
+					</MenuItem>
+				</MenuList>
+				<Divider />
+				<MenuList>
+					{position.positionGroup ? (
 						<MenuItem
 							onClick={() => {
 								onHandleDropdownActions();
-								onOpenDialogPosition('dialogPositionEdit', position);
+								onOpenDialogPosition('dialogPositionRemoveFromGroup', position);
 							}}
-							iconBefore={<FontAwesomeIcon icon={['far', 'pen']} />}
+							iconBefore={<FontAwesomeIcon icon={['far', 'folder-minus']} style={{ fontSize: 16 }} />}
 						>
-							Редактировать
+							Открепить от группы
 						</MenuItem>
-						{position.archivedAfterEnded ? (
-							<MenuItem
-								onClick={() => {
-									onHandleDropdownActions();
-									onArchivedAfterEnded();
-								}}
-								iconBefore={
-									<span className="fa-layers fa-fw" style={{ width: '16px' }}>
-										<FontAwesomeIcon icon={['far', 'archive']} />
-										<FontAwesomeIcon icon={['fas', 'circle']} transform="shrink-5 down-2.5 right-7" inverse />
-										<FontAwesomeIcon icon={['fas', 'clock']} transform="shrink-7 down-2.5 right-7" />
-									</span>
-								}
-							>
-								Отменить архивирование
-							</MenuItem>
-						) : null}
+					) : null}
+					<MenuItem
+						onClick={() => {
+							onHandleDropdownActions();
+							onOpenDialogPosition('dialogPositionEdit', position);
+						}}
+						iconBefore={<FontAwesomeIcon icon={['far', 'pen']} />}
+					>
+						Редактировать
+					</MenuItem>
+					{position.archivedAfterEnded ? (
 						<MenuItem
 							onClick={() => {
 								onHandleDropdownActions();
-								onOpenDialogPosition('dialogPositionArchiveDelete', position);
+								onArchivedAfterEnded();
 							}}
 							iconBefore={
-								position.hasReceipts ? <FontAwesomeIcon icon={['far', 'archive']} /> : <FontAwesomeIcon icon={['far', 'trash-alt']} />
+								<span className="fa-layers fa-fw" style={{ width: '16px' }}>
+									<FontAwesomeIcon icon={['far', 'archive']} />
+									<FontAwesomeIcon icon={['fas', 'circle']} transform="shrink-5 down-2.5 right-7" inverse />
+									<FontAwesomeIcon icon={['fas', 'clock']} transform="shrink-7 down-2.5 right-7" />
+								</span>
 							}
-							destructive
 						>
-							{position.hasReceipts ? 'Архивировать' : 'Удалить'}
+							Отменить архивирование
 						</MenuItem>
-					</MenuList>
-				</Dropdown>
-			</TableCell>
+					) : null}
+					<MenuItem
+						onClick={() => {
+							onHandleDropdownActions();
+							onOpenDialogPosition('dialogPositionArchiveDelete', position);
+						}}
+						iconBefore={
+							position.hasReceipts ? <FontAwesomeIcon icon={['far', 'archive']} /> : <FontAwesomeIcon icon={['far', 'trash-alt']} />
+						}
+						destructive
+					>
+						{position.hasReceipts ? 'Архивировать' : 'Удалить'}
+					</MenuItem>
+				</MenuList>
+			</Dropdown>
 		</TableRow>
 	);
 };

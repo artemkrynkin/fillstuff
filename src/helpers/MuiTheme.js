@@ -143,11 +143,17 @@ export const BliksideTheme = createMuiTheme({
 		},
 		MuiTooltip: {
 			tooltip: {
-				backgroundColor: `rgba(${ColorConvert.hex.rgb(theme.slateGrey.cSg5)}, 0.85)`,
-				borderRadius: 5,
-				fontSize: 12,
+				backgroundColor: 'white',
+				borderRadius: 8,
+				color: theme.blueGrey.cBg700,
+				fontSize: 13,
 				fontWeight: 400,
-				lineHeight: 1.2,
+				lineHeight: 1.4,
+				maxWidth: null,
+				boxShadow: `0 0 11px -5px rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg600)}, 0.2),
+					0 0 28px 2px rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg600)}, 0.14),
+					0 0 34px 6px rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg600)}, 0.12)`,
+				padding: '12px 15px',
 			},
 			tooltipPlacementLeft: {
 				margin: '0 10px',
@@ -174,7 +180,46 @@ export const BliksideTheme = createMuiTheme({
 				},
 			},
 			arrow: {
-				color: `rgba(${ColorConvert.hex.rgb(theme.slateGrey.cSg5)}, 0.85)`,
+				color: null,
+				fontSize: null,
+			},
+			popperArrow: {
+				'&[x-placement*="bottom"] $arrow': {
+					background: 'url(/img/arrow/arrow_bottom.svg) no-repeat center center',
+					marginTop: -12,
+					height: 12,
+					width: 20,
+					'&:before': {
+						display: 'none',
+					},
+				},
+				'&[x-placement*="top"] $arrow': {
+					background: 'url(/img/arrow/arrow_top.svg) no-repeat center center',
+					marginBottom: -12,
+					height: 12,
+					width: 20,
+					'&:before': {
+						display: 'none',
+					},
+				},
+				'&[x-placement*="right"] $arrow': {
+					background: 'url(/img/arrow/arrow_right.svg) no-repeat center center',
+					marginLeft: -12,
+					height: 20,
+					width: 12,
+					'&:before': {
+						display: 'none',
+					},
+				},
+				'&[x-placement*="left"] $arrow': {
+					background: 'url(/img/arrow/arrow_left.svg) no-repeat center center',
+					marginRight: -12,
+					height: 20,
+					width: 12,
+					'&:before': {
+						display: 'none',
+					},
+				},
 			},
 		},
 		MuiPaper: {

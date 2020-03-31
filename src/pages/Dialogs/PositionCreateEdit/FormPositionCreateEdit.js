@@ -8,7 +8,6 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
 import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
@@ -26,6 +25,7 @@ import { onAddCharacteristicInPosition, checkCharacteristicsOnAbsenceInPosition 
 import NumberFormat from 'src/components/NumberFormat';
 import { SelectAutocompleteCreate } from 'src/components/selectAutocomplete';
 import Chips from 'src/components/Chips';
+import Tooltip from 'src/components/Tooltip';
 import MenuItem from 'src/components/MenuItem';
 
 import stylesGlobal from 'src/styles/globals.module.css';
@@ -92,9 +92,7 @@ const FormPositionCreateEdit = props => {
 								</ToggleButtonGroup>
 							) : (
 								<Tooltip
-									title={
-										<div style={{ maxWidth: 200, textAlign: 'center' }}>Можно изменять только до&nbsp;внесения первого поступления</div>
-									}
+									title={<div style={{ width: 250 }}>Можно изменять только до&nbsp;внесения первого поступления.</div>}
 									placement="bottom"
 								>
 									<ToggleButtonGroup value={values.unitReceipt} size="small" exclusive>
@@ -139,9 +137,7 @@ const FormPositionCreateEdit = props => {
 								</ToggleButtonGroup>
 							) : (
 								<Tooltip
-									title={
-										<div style={{ maxWidth: 200, textAlign: 'center' }}>Можно изменять только до&nbsp;внесения первого поступления</div>
-									}
+									title={<div style={{ width: 250 }}>Можно изменять только до&nbsp;внесения первого поступления.</div>}
 									placement="bottom"
 								>
 									<ToggleButtonGroup value={values.unitRelease} size="small" exclusive>
@@ -179,11 +175,7 @@ const FormPositionCreateEdit = props => {
 								</ToggleButtonGroup>
 							) : (
 								<Tooltip
-									title={
-										<div style={{ maxWidth: 230, textAlign: 'center' }}>
-											Можно изменять только при отсутствии поступлений на&nbsp;реализации
-										</div>
-									}
+									title={<div style={{ width: 250 }}>Можно изменять только при отсутствии поступлений на&nbsp;реализации.</div>}
 									placement="bottom"
 								>
 									<ToggleButtonGroup value={values.isFree} size="small" exclusive>
@@ -221,7 +213,7 @@ const FormPositionCreateEdit = props => {
 							/>
 							<Tooltip
 								title={
-									<div style={{ maxWidth: 250 }}>
+									<div style={{ width: 270 }}>
 										Достигнув этого значения вы&nbsp;получите сигнал о&nbsp;необходимости пополнить запасы позиции.
 										<br />
 										<br />
@@ -229,10 +221,10 @@ const FormPositionCreateEdit = props => {
 									</div>
 								}
 								placement="bottom"
+								style={{ marginLeft: 10 }}
+								interactive
 							>
-								<div className={styles.helpIcon} style={{ marginLeft: 10 }}>
-									<FontAwesomeIcon icon={['fal', 'question-circle']} fixedWidth />
-								</div>
+								<FontAwesomeIcon className={styles.helpIcon} icon={['fal', 'question-circle']} />
 							</Tooltip>
 						</Grid>
 					</Grid>
@@ -393,7 +385,6 @@ const FormPositionCreateEdit = props => {
 												size="small"
 												onClick={() => onAddCharacteristicInPosition(values, setFieldValue, arrayHelpersCharacteristics)}
 												disabled={!values.characteristicTemp.type || !values.characteristicTemp.value}
-												disableRipple
 												disableFocusRipple
 											>
 												<FontAwesomeIcon icon={['fal', 'check-circle']} />

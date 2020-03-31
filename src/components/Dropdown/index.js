@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
@@ -7,7 +7,7 @@ import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 
 const Dropdown = props => {
-	const { anchor, open, onClose, headerElement, children, style, innerContentStyle, ...remainingProps } = props;
+	const { anchor, open, onClose, header, children, style, innerContentStyle, ...remainingProps } = props;
 	const [scrollTop, setScrollTop] = useState(0);
 	const scrollRef = useRef(null);
 
@@ -21,7 +21,11 @@ const Dropdown = props => {
 		setScrollTop(event.currentTarget.scrollTop);
 	};
 
-	if (scrollRef.current) scrollRef.current.scrollTop = scrollTop;
+	useEffect(() => {
+		if (scrollRef.current && open) {
+			scrollRef.current.scrollTop = scrollTop;
+		}
+	});
 
 	const popperStyle = {
 		zIndex: 1300,
@@ -41,7 +45,7 @@ const Dropdown = props => {
 					<Paper style={{ overflow: 'hidden' }} elevation={3}>
 						<ClickAwayListener onClickAway={handleClose}>
 							<div>
-								{headerElement ? headerElement : null}
+								{header ? header : null}
 								<div ref={scrollRef} onScroll={handleScroll} style={innerContentStyle}>
 									{children}
 								</div>
@@ -58,7 +62,7 @@ Dropdown.propTypes = {
 	anchor: PropTypes.object.isRequired,
 	open: PropTypes.bool.isRequired,
 	onClose: PropTypes.func.isRequired,
-	headerElement: PropTypes.node,
+	header: PropTypes.node,
 };
 
 export default Dropdown;

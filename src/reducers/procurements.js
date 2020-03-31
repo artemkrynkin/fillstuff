@@ -35,6 +35,7 @@ const procurements = (
 			let stateData = { ...state }.data;
 
 			stateData.data.unshift(action.payload);
+			stateData.paging.totalDocs += 1;
 			stateData.paging.totalCount += 1;
 
 			return {

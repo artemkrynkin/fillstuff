@@ -25,18 +25,33 @@ new CronJob(
 								const positions = await Position.find({
 									studio: studio._id,
 									isArchived: false,
-								}).populate({
-									path: 'activeReceipt',
-								});
+								}).populate([
+									{
+										path: 'receipts',
+										match: { status: /received|active/ },
+										options: {
+											sort: { createdAt: 1 },
+										},
+									},
+								]);
 
-								const stockPrice = positions.reduce((sum, position) => {
-									return sum + position.activeReceipt.current.quantity * position.activeReceipt.unitPurchasePrice;
-								}, 0);
+								const stockPrice = positions
+									.filter(position => position.receipts.length)
+									.reduce((sum, position) => {
+										return (
+											sum +
+											position.receipts.reduce(
+												(purchasePrice, receipt) => purchasePrice + receipt.current.quantity * receipt.unitPurchasePrice,
+												0
+											)
+										);
+									}, 0);
 
 								await Studio.findByIdAndUpdate(
 									studio._id,
 									{
 										$set: {
+											'stock.numberPositions': positions.length,
 											'stock.stockPrice': stockPrice,
 										},
 									},

@@ -100,7 +100,6 @@ const Procurement = props => {
 						open: expanded,
 					})}
 					onClick={onHandleExpand}
-					disableRipple
 				>
 					<FontAwesomeIcon icon={['far', 'angle-down']} className={expanded ? 'open' : ''} />
 				</ButtonBase>

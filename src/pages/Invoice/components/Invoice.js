@@ -10,7 +10,6 @@ import TableBody from '@material-ui/core/TableBody';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Tooltip from '@material-ui/core/Tooltip';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 
@@ -19,6 +18,7 @@ import { history } from 'src/helpers/history';
 import CardPaper from 'src/components/CardPaper';
 import Money from 'src/components/Money';
 import AvatarTitle from 'src/components/AvatarTitle';
+import Tooltip from 'src/components/Tooltip';
 
 import { getInvoice } from 'src/actions/invoices';
 
@@ -88,7 +88,7 @@ class Invoice extends Component {
 							<Grid className={styles.indicators} direction="column" justify="center" container>
 								{invoice.status !== 'paid' ? (
 									<div className={styles.indicatorsTitle}>
-										<Tooltip title="Погасить счет" placement="top" interactive>
+										<Tooltip title="Погасить счет" placement="top" style={{ display: 'inline-block', marginRight: 10 }}>
 											<button
 												onClick={() => this.onOpenDialogByName('dialogInvoicePaymentCreate', invoice)}
 												className={styles.acceptPayment}

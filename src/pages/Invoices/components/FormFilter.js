@@ -141,7 +141,6 @@ const FormFilter = props => {
 							handlerDropdown('dropdownDate');
 							handlerDropdown('dropdownDateRange', false);
 						}}
-						disableRipple
 					>
 						{!values.dateStartView && !values.dateEndView ? (
 							<span>Всё время</span>
@@ -165,7 +164,13 @@ const FormFilter = props => {
 						<FontAwesomeIcon icon={['far', 'angle-down']} />
 					</ButtonBase>
 
-					<Dropdown anchor={refDropdownDate} open={dropdownDate} onClose={() => handlerDropdown('dropdownDate')} placement="bottom-start">
+					<Dropdown
+						anchor={refDropdownDate}
+						open={dropdownDate}
+						onClose={() => handlerDropdown('dropdownDate')}
+						placement="bottom-start"
+						innerContentStyle={{ minWidth: 190 }}
+					>
 						<List>
 							<MenuItem
 								disabled={isSubmitting}
@@ -271,12 +276,7 @@ const FormFilter = props => {
 
 				{/* Filter Status */}
 				<Grid item>
-					<ButtonBase
-						ref={refDropdownStatus}
-						className={styles.filterButtonLink}
-						onClick={() => handlerDropdown('dropdownStatus')}
-						disableRipple
-					>
+					<ButtonBase ref={refDropdownStatus} className={styles.filterButtonLink} onClick={() => handlerDropdown('dropdownStatus')}>
 						<span>{FilterStatusTransform(values.status)}</span>
 						<FontAwesomeIcon icon={['far', 'angle-down']} />
 					</ButtonBase>
@@ -305,12 +305,7 @@ const FormFilter = props => {
 
 				{/* Filter Member */}
 				<Grid item>
-					<ButtonBase
-						ref={refDropdownMember}
-						className={styles.filterButtonLink}
-						onClick={() => handlerDropdown('dropdownMember')}
-						disableRipple
-					>
+					<ButtonBase ref={refDropdownMember} className={styles.filterButtonLink} onClick={() => handlerDropdown('dropdownMember')}>
 						<span>{FilterMemberTransform(values.member, allMembers, isLoadingAllMembers)}</span>
 						<FontAwesomeIcon icon={['far', 'angle-down']} />
 					</ButtonBase>
@@ -320,7 +315,7 @@ const FormFilter = props => {
 						open={dropdownMember}
 						onClose={() => handlerDropdown('dropdownMember')}
 						placement="bottom-start"
-						headerElement={
+						header={
 							<div className={styles.filterSearchTextFieldContainer}>
 								<FilterSearchTextField
 									inputRef={searchTextFieldMember}
@@ -382,7 +377,7 @@ const FormFilter = props => {
 
 				<Grid item style={{ marginLeft: 'auto' }}>
 					{values.dateStartView || values.dateEndView || values.status !== 'all' || values.member !== 'all' ? (
-						<ButtonBase onClick={() => onResetAllFilters(setFieldValue, submitForm)} className={styles.filterButtonLinkRed} disableRipple>
+						<ButtonBase onClick={() => onResetAllFilters(setFieldValue, submitForm)} className={styles.filterButtonLinkRed}>
 							<span>Сбросить фильтры</span>
 						</ButtonBase>
 					) : null}

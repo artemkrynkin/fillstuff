@@ -16,6 +16,6 @@
   transition: color 150ms ease-out;
 }
 
-.actionsButton_active {
+.actionsButtonActive {
   color: var(--c-hex-bg-300);
 }

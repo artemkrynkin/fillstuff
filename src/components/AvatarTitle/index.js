@@ -9,7 +9,7 @@ import Grid from '@material-ui/core/Grid';
 import styles from './index.module.css';
 
 const AvatarTitle = props => {
-	const { imageSrc, title, className } = props;
+	const { style, imageSrc, imageStyle, title, className } = props;
 
 	const classes = ClassNames({
 		...Object.fromEntries(
@@ -22,8 +22,8 @@ const AvatarTitle = props => {
 	});
 
 	return (
-		<div className={classes}>
-			<Avatar className={styles.image} src={imageSrc} alt={title}>
+		<div className={classes} style={{ ...style }}>
+			<Avatar className={styles.image} src={imageSrc} alt={title} style={{ ...imageStyle }}>
 				<div className={styles.userIcon}>
 					<FontAwesomeIcon icon={['fas', 'user-alt']} />
 				</div>
@@ -43,6 +43,7 @@ AvatarTitle.defaultProps = {
 
 AvatarTitle.propTypes = {
 	imageSrc: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+	imageStyle: PropTypes.object,
 	title: PropTypes.string,
 };
 

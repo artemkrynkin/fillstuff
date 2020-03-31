@@ -130,7 +130,7 @@ class ProfileSettings extends Component {
 						</div>
 						<input id="profile-photo" type="file" accept="image/*" onChange={this.onChangeAvatar} style={{ display: 'none' }} />
 						<label htmlFor="profile-photo">
-							<ButtonBase className={styles.buttonLink} component="span" disableRipple>
+							<ButtonBase className={styles.buttonLink} component="span">
 								{user.avatar ? 'Изменить' : 'Загрузить'} фотографию
 							</ButtonBase>
 						</label>
@@ -267,7 +267,6 @@ class ProfileSettings extends Component {
 							<ButtonBase
 								className={styles.buttonLink}
 								component="span"
-								disableRipple
 								onClick={this.onToggleEmailFields}
 								style={{ marginLeft: 10, marginTop: 10 }}
 							>
@@ -375,7 +374,6 @@ class ProfileSettings extends Component {
 								<ButtonBase
 									className={styles.buttonLink}
 									component="span"
-									disableRipple
 									onClick={this.onTogglePasswordFields}
 									style={{ marginLeft: 10, marginTop: 10 }}
 								>

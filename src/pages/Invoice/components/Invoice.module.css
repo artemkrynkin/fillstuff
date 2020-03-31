@@ -62,7 +62,6 @@
   color: var(--c-hex-t-300);
   font-size: 18px;
   line-height: 1;
-  margin-right: 10px;
   transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 

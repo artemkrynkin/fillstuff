@@ -15,10 +15,7 @@
   align-items: center;
   background: url('/img/logo_text_sg.svg') no-repeat center center;
   box-sizing: content-box;
-  color: var(--c-hex-sg-2);
   display: flex;
-  font-size: 26px;
-  font-weight: 700;
   height: 30px;
   margin: 0 55px 0 24px;
   opacity: 0.45;
@@ -26,7 +23,7 @@
   position: relative;
   text-decoration: none;
   transition: opacity 250ms ease-in-out;
-  width: 87px;
+  width: 98px;
 }
 
 .menu {

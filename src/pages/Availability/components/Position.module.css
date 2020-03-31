@@ -1,0 +1,21 @@
+.positionLink {
+  display: block;
+  margin: -9px 0;
+  padding: 9px 0;
+}
+
+.createReceipt {
+  background-color: var(--c-hex-br-4);
+  color: var(--c-hex-bg-400);
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.1;
+  padding: 9px;
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+
+.createReceipt:hover {
+  background-color: var(--c-hex-br-5);
+  color: var(--c-hex-bg-500);
+}

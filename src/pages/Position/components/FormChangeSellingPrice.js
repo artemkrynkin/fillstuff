@@ -10,7 +10,8 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import { receiptCalc } from 'shared/checkPositionAndReceipt';
 import { formatNumber } from 'shared/utils';
 
-import NumberFormat, { moneyInputFormatProps } from 'src/components/NumberFormat';
+import NumberFormat, { currencyMoneyFormatProps, moneyInputFormatProps } from 'src/components/NumberFormat';
+import { DefinitionList, DefinitionListItem } from 'src/components/Definition';
 
 import changeSellingPriceSchema from './changeSellingPriceSchema';
 
@@ -24,7 +25,6 @@ const FormChangeSellingPrice = props => {
 	const onSetActiveField = fieldName => setActiveField(fieldName);
 
 	const isNmpPce = position.unitReceipt === 'nmp' && position.unitRelease === 'pce';
-	const isNmpNmp = position.unitReceipt === 'nmp' && position.unitRelease === 'nmp';
 
 	const initialValues = {
 		sellingPrice: receipt.sellingPrice,
@@ -56,10 +56,38 @@ const FormChangeSellingPrice = props => {
 				return (
 					<Form className={styles.form}>
 						<Grid className={styles.formContent} spacing={2} container>
+							<Grid xs={12} item>
+								<DefinitionList>
+									<DefinitionListItem
+										term="Цена покупки"
+										value={
+											<NumberFormat
+												value={formatNumber(receipt.unitPurchasePrice, { toString: true })}
+												renderText={value => value}
+												displayType="text"
+												{...currencyMoneyFormatProps}
+											/>
+										}
+									/>
+									{receipt.unitCostDelivery ? (
+										<DefinitionListItem
+											term="Стоимость доставки"
+											value={
+												<NumberFormat
+													value={formatNumber(receipt.unitCostDelivery, { toString: true })}
+													renderText={value => value}
+													displayType="text"
+													{...currencyMoneyFormatProps}
+												/>
+											}
+										/>
+									) : null}
+								</DefinitionList>
+							</Grid>
 							<Grid className={stylesGlobal.formLabelControl} xs={7} item>
 								<Field
 									name={isNmpPce ? 'unitSellingPrice' : 'sellingPrice'}
-									label={isNmpNmp ? 'Цена продажи уп.' : 'Цена продажи шт.'}
+									label={'Цена продажи'}
 									placeholder="0"
 									as={TextField}
 									error={

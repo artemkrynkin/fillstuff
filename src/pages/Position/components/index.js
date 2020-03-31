@@ -18,11 +18,9 @@ const DialogPositionRemoveFromGroup = loadable(() =>
 	import('src/pages/Dialogs/PositionRemoveFromGroup' /* webpackChunkName: "Dialog_PositionRemoveFromGroup" */)
 );
 
-const DialogPositionOrGroupQRCodeGeneration = loadable(() =>
-	import('src/pages/Dialogs/PositionOrGroupQRCodeGeneration' /* webpackChunkName: "Dialog_PositionOrGroupQRCodeGeneration" */)
+const DialogPositionQRCode = loadable(() =>
+	import('src/pages/Dialogs/PositionOrGroupQRCode' /* webpackChunkName: "Dialog_PositionOrGroupQRCode" */)
 );
-
-const DialogPositionQRCodeGeneration = DialogPositionOrGroupQRCodeGeneration;
 
 const DialogPositionArchiveDelete = loadable(() =>
 	import('src/pages/Dialogs/PositionArchiveDelete' /* webpackChunkName: "Dialog_PositionArchiveDelete" */)
@@ -46,7 +44,7 @@ const Index = props => {
 		dialogPositionEdit: false,
 		dialogPositionRemoveFromGroup: false,
 		dialogPositionArchiveDelete: false,
-		dialogPositionQRCodeGeneration: false,
+		dialogPositionQRCode: false,
 		dialogReceiptCreate: false,
 	});
 
@@ -129,12 +127,12 @@ const Index = props => {
 				selectedPosition={dialogOpenedName === 'dialogPositionArchiveDelete' ? position : null}
 			/>
 
-			<DialogPositionQRCodeGeneration
-				dialogOpen={dialogs.dialogPositionQRCodeGeneration}
-				onCloseDialog={() => onCloseDialogByName('dialogPositionQRCodeGeneration')}
+			<DialogPositionQRCode
+				dialogOpen={dialogs.dialogPositionQRCode}
+				onCloseDialog={() => onCloseDialogByName('dialogPositionQRCode')}
 				onExitedDialog={onExitedDialogByName}
 				type="position"
-				selectedPositionOrGroup={dialogOpenedName === 'dialogPositionQRCodeGeneration' ? position : null}
+				selectedPositionOrGroup={dialogOpenedName === 'dialogPositionQRCode' ? position : null}
 			/>
 
 			<DialogReceiptCreate

@@ -960,43 +960,6 @@ export const BliksideTheme = createMuiTheme({
 				backgroundColor: 'white',
 				color: theme.blueGrey.cBg700,
 				padding: '10px 20px',
-				'&[class*="variantSuccess"]': {
-					backgroundColor: 'white',
-					'& $message svg[data-icon="check-circle"]': {
-						color: theme.teal.cT300,
-						fontSize: 20,
-						marginRight: 10,
-					},
-				},
-				'&[class*="variantError"]': {
-					backgroundColor: 'white',
-					'& $message svg[data-icon="times-circle"]': {
-						color: redColor['600'],
-						fontSize: 20,
-						marginRight: 10,
-					},
-				},
-				'&[class*="variantWarning"]': {
-					backgroundColor: 'white',
-					'& $message svg[data-icon="exclamation-circle"]': {
-						color: orangeColor['600'],
-						fontSize: 20,
-						marginRight: 10,
-					},
-				},
-				'&[class*="variantInfo"]': {
-					backgroundColor: 'white',
-					'& $message svg[data-icon="exclamation-circle"]': {
-						color: blueColor['600'],
-						fontSize: 20,
-						marginRight: 10,
-					},
-				},
-			},
-			message: {
-				'& > span[id="client-snackbar"]': {
-					alignItems: 'initial',
-				},
 			},
 			action: {
 				alignSelf: 'flex-start',

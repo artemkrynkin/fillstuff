@@ -11,6 +11,7 @@ import generateMetaInfo from 'shared/generate-meta-info';
 import { CLIENT_URL } from 'src/api/constants';
 
 import { BliksideTheme } from 'src/helpers/MuiTheme';
+import useStylesSnackbar from 'src/helpers/snackbarStyles';
 import signedOutFallback from 'src/helpers/signed-out-fallback';
 
 import AuthViewHandler from 'src/components/authViewHandler';
@@ -129,7 +130,7 @@ const snackbarSettings = {
 		horizontal: 'left',
 	},
 	preventDuplicate: true,
-	autoHideDuration: 5000,
+	autoHideDuration: 7000,
 	iconVariant: {
 		success: <FontAwesomeIcon icon={['fal', 'check-circle']} />,
 		error: <FontAwesomeIcon icon={['fal', 'times-circle']} />,
@@ -141,10 +142,20 @@ const snackbarSettings = {
 const Routes = props => {
 	const { currentUser, currentStudio, currentMember } = props;
 	const { title, description } = generateMetaInfo();
+	const classesSnackbar = useStylesSnackbar();
 
 	return (
 		<ThemeProvider theme={BliksideTheme}>
-			<SnackbarProvider {...snackbarSettings}>
+			<SnackbarProvider
+				classes={{
+					message: classesSnackbar.message,
+					variantSuccess: classesSnackbar.success,
+					variantError: classesSnackbar.error,
+					variantWarning: classesSnackbar.warning,
+					variantInfo: classesSnackbar.info,
+				}}
+				{...snackbarSettings}
+			>
 				{/* Метатеги по умолчанию, переопределяемые чем-нибудь вниз по дереву */}
 				<Head title={title} description={description} />
 

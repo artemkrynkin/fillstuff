@@ -28,7 +28,7 @@ const DialogPositionRemoveFromGroup = props => {
 				props.enqueueSnackbar({
 					message: (
 						<div>
-							От группы откреплена позиция <b>{selectedPosition.name}</b>.
+							Позиция <b>{selectedPosition.name}</b> откреплена от группы.
 						</div>
 					),
 					options: {

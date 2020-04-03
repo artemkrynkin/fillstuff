@@ -11,6 +11,7 @@ import { Dialog, DialogTitle } from 'src/components/Dialog';
 
 import { getStudioStock } from 'src/actions/studio';
 import { cancelWriteOff } from 'src/actions/writeOffs';
+import { enqueueSnackbar } from 'src/actions/snackbars';
 
 const DialogWriteOffCancel = props => {
 	const { dialogOpen, onCloseDialog, onExitedDialog, selectedWriteOff } = props;
@@ -22,6 +23,15 @@ const DialogWriteOffCancel = props => {
 			onCloseDialog();
 
 			if (response.status === 'success') props.getStudioStock();
+
+			if (response.status === 'error') {
+				this.props.enqueueSnackbar({
+					message: response.message || 'Неизвестная ошибка.',
+					options: {
+						variant: 'error',
+					},
+				});
+			}
 		});
 	};
 
@@ -67,6 +77,7 @@ const mapDispatchToProps = dispatch => {
 	return {
 		getStudioStock: () => dispatch(getStudioStock()),
 		cancelWriteOff: writeOffId => dispatch(cancelWriteOff({ params: { writeOffId } })),
+		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
 	};
 };
 

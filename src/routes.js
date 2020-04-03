@@ -1,12 +1,14 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { compose } from 'redux';
 import { Route, Switch, Redirect } from 'react-router';
+import { SnackbarProvider } from 'notistack';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ThemeProvider } from '@material-ui/core/styles';
 
 import generateMetaInfo from 'shared/generate-meta-info';
 
-import { CLIENT_URL } from './api/constants';
+import { CLIENT_URL } from 'src/api/constants';
 
 import { BliksideTheme } from 'src/helpers/MuiTheme';
 import signedOutFallback from 'src/helpers/signed-out-fallback';
@@ -15,7 +17,8 @@ import AuthViewHandler from 'src/components/authViewHandler';
 import Head from 'src/components/head';
 import Layout from 'src/components/Layout';
 import HelpPanel from 'src/components/HelpPanel';
-import Sidebar from './components/Sidebar';
+import Sidebar from 'src/components/Sidebar';
+import Snackbar from 'src/components/Snackbar';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 
 import Login from 'src/pages/Login';
@@ -55,7 +58,7 @@ const PasswordRecoveryFallback = signedOutFallback(
 );
 
 const DashboardFallback = signedOutFallback(
-	props => <Layout children={<Dashboard />} authed />,
+	() => <Layout children={<Dashboard />} authed />,
 	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/dashboard`} />} />
 );
 
@@ -105,12 +108,12 @@ const MemberFallback = signedOutFallback(
 );
 
 const StatisticsFallback = signedOutFallback(
-	props => <Layout children={<Statistics />} authed />,
+	() => <Layout children={<Statistics />} authed />,
 	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/statistics`} />} />
 );
 
 const SettingsFallback = signedOutFallback(
-	props => <Layout children={<Settings />} authed />,
+	() => <Layout children={<Settings />} authed />,
 	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/settings`} />} />
 );
 
@@ -119,15 +122,33 @@ const UserSettingsFallback = signedOutFallback(
 	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/user-settings`} />} />
 );
 
-class Routes extends Component {
-	render() {
-		const { currentUser, currentStudio, currentMember } = this.props;
-		const { title, description } = generateMetaInfo();
+const snackbarSettings = {
+	maxSnack: 5,
+	anchorOrigin: {
+		vertical: 'bottom',
+		horizontal: 'left',
+	},
+	preventDuplicate: true,
+	autoHideDuration: 5000,
+	iconVariant: {
+		success: <FontAwesomeIcon icon={['fal', 'check-circle']} />,
+		error: <FontAwesomeIcon icon={['fal', 'times-circle']} />,
+		warning: <FontAwesomeIcon icon={['fal', 'exclamation-circle']} />,
+		info: <FontAwesomeIcon icon={['fal', 'exclamation-circle']} />,
+	},
+};
 
-		return (
-			<ThemeProvider theme={BliksideTheme}>
+const Routes = props => {
+	const { currentUser, currentStudio, currentMember } = props;
+	const { title, description } = generateMetaInfo();
+
+	return (
+		<ThemeProvider theme={BliksideTheme}>
+			<SnackbarProvider {...snackbarSettings}>
 				{/* Метатеги по умолчанию, переопределяемые чем-нибудь вниз по дереву */}
 				<Head title={title} description={description} />
+
+				<Snackbar />
 
 				{/*
          AuthViewHandler often returns null, but is responsible for triggering
@@ -185,9 +206,9 @@ class Routes extends Component {
 						</Switch>
 					</div>
 				</div>
-			</ThemeProvider>
-		);
-	}
-}
+			</SnackbarProvider>
+		</ThemeProvider>
+	);
+};
 
 export default compose(withCurrentUser)(Routes);

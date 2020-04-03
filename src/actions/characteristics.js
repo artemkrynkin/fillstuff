@@ -52,7 +52,7 @@ export const createCharacteristic = ({ data }) => {
 			.catch(error => {
 				console.error(error);
 
-				return Promise.resolve({ status: 'error' });
+				return Promise.resolve({ status: 'error', message: error.message, ...error });
 			});
 	};
 };

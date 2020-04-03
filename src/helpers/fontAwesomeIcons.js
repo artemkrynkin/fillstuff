@@ -81,7 +81,7 @@ import {
 	faInfoCircle as falInfoCircle,
 } from '@fortawesome/pro-light-svg-icons';
 
-import { faExclamationCircle as fadExclamationCircle } from '@fortawesome/pro-duotone-svg-icons';
+import { faCheckCircle as fadCheckCircle } from '@fortawesome/pro-duotone-svg-icons';
 
 library.add(
 	// Brands
@@ -166,5 +166,5 @@ library.add(
 	falInfoCircle,
 
 	// Duotone
-	fadExclamationCircle
+	fadCheckCircle
 );

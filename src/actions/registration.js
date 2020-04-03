@@ -12,7 +12,7 @@ export const registration = async ({ data }) => {
 			} else {
 				console.error(error);
 
-				return Promise.resolve({ status: 'error' });
+				return Promise.resolve({ status: 'error', message: error.message, ...error });
 			}
 		});
 };

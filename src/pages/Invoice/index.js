@@ -17,6 +17,12 @@ const Index = loadable(() => import('./components/index' /* webpackChunkName: "I
 });
 
 const Procurement = props => {
+	const {
+		match: {
+			params: { invoiceId },
+		},
+	} = props;
+
 	const metaInfo = {
 		pageName: 'invoice',
 		pageTitle: 'Детали счета',
@@ -27,12 +33,6 @@ const Procurement = props => {
 			title: metaInfo.pageTitle,
 		},
 	});
-
-	const {
-		match: {
-			params: { invoiceId },
-		},
-	} = props;
 
 	const pageParams = {
 		backToPage: '/invoices',

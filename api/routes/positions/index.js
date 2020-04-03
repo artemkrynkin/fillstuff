@@ -200,7 +200,7 @@ positionsRouter.post(
 		if (position.deliveryIsExpected) {
 			return res.json({
 				code: 400,
-				message: 'Позиция не может быть архивирована, пока есть поступление в одном из непоступивших заказов.',
+				message: 'Позиция не может быть архивирована пока ожидается доставка',
 			});
 		}
 

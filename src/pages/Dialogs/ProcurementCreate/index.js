@@ -11,6 +11,7 @@ import { DialogStickyFR, DialogTitle } from 'src/components/Dialog';
 
 import { getStudioStock } from 'src/actions/studio';
 import { createProcurement } from 'src/actions/procurements';
+import { enqueueSnackbar } from 'src/actions/snackbars';
 
 import { positionTransform } from './utils';
 import FormProcurementCreate from './FormProcurementCreate';
@@ -215,10 +216,20 @@ class ProcurementCreate extends Component {
 			});
 
 			this.props.createProcurement(procurement).then(response => {
+				actions.setSubmitting(false);
+
 				if (response.status === 'success') {
 					this.props.getStudioStock();
-					actions.setSubmitting(false);
 					onCloseDialog();
+				}
+
+				if (response.status === 'error') {
+					this.props.enqueueSnackbar({
+						message: response.message || 'Неизвестная ошибка.',
+						options: {
+							variant: 'error',
+						},
+					});
 				}
 			});
 		}
@@ -299,6 +310,7 @@ const mapDispatchToProps = dispatch => {
 	return {
 		getStudioStock: () => dispatch(getStudioStock()),
 		createProcurement: procurement => dispatch(createProcurement({ data: { procurement } })),
+		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
 	};
 };
 

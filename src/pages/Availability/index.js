@@ -17,6 +17,8 @@ const Index = loadable(() => import('./components/index' /* webpackChunkName: "A
 });
 
 const Availability = props => {
+	const { currentStudio } = props;
+
 	const metaInfo = {
 		pageName: 'availability',
 		pageTitle: 'В наличии',
@@ -27,8 +29,6 @@ const Availability = props => {
 			title: metaInfo.pageTitle,
 		},
 	});
-
-	const { currentStudio } = props;
 
 	return (
 		<div className={stylesPage.page}>

@@ -18,6 +18,7 @@ import Money from 'src/components/Money';
 import AvatarTitle from 'src/components/AvatarTitle';
 
 import { createInvoicePayment } from 'src/actions/invoices';
+import { enqueueSnackbar } from 'src/actions/snackbars';
 
 import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
@@ -42,7 +43,19 @@ class DialogInvoicePaymentCreate extends Component {
 
 		this.props.createInvoicePayment(selectedInvoice._id, newValues).then(response => {
 			actions.setSubmitting(false);
-			onCloseDialog();
+
+			if (response.status === 'success') {
+				onCloseDialog();
+			}
+
+			if (response.status === 'error') {
+				this.props.enqueueSnackbar({
+					message: response.message || 'Неизвестная ошибка.',
+					options: {
+						variant: 'error',
+					},
+				});
+			}
 		});
 	};
 
@@ -130,14 +143,11 @@ class DialogInvoicePaymentCreate extends Component {
 	}
 }
 
-const mapStateToProps = state => {
-	return {};
-};
-
 const mapDispatchToProps = dispatch => {
 	return {
 		createInvoicePayment: (invoiceId, data) => dispatch(createInvoicePayment({ params: { invoiceId }, data })),
+		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
 	};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DialogInvoicePaymentCreate);
+export default connect(null, mapDispatchToProps)(DialogInvoicePaymentCreate);

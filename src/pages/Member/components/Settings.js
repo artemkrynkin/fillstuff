@@ -12,9 +12,9 @@ import Grid from '@material-ui/core/Grid';
 import MenuItem from 'src/components/MenuItem';
 
 import { editMember } from 'src/actions/members';
+import { enqueueSnackbar } from 'src/actions/snackbars';
 
 import stylesGlobal from 'src/styles/globals.module.css';
-// import styles from './Settings.module.css';
 
 const Settings = props => {
 	const { member, updateMember } = props;
@@ -24,12 +24,28 @@ const Settings = props => {
 
 		props.editMember({ roles: event.target.value }).then(response => {
 			if (response.status === 'success') updateMember(response);
+			if (response.status === 'error') {
+				props.enqueueSnackbar({
+					message: response.message || 'Неизвестная ошибка.',
+					options: {
+						variant: 'error',
+					},
+				});
+			}
 		});
 	};
 
 	const onToggleSettings = propName => {
 		props.editMember({ [propName]: !member[propName] }).then(response => {
 			if (response.status === 'success') updateMember(response);
+			if (response.status === 'error') {
+				props.enqueueSnackbar({
+					message: response.message || 'Неизвестная ошибка.',
+					options: {
+						variant: 'error',
+					},
+				});
+			}
 		});
 	};
 
@@ -109,6 +125,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 	return {
 		editMember: memberData => dispatch(editMember({ params: { memberId: member._id }, data: { member: memberData } })),
+		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
 	};
 };
 

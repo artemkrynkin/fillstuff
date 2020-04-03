@@ -16,6 +16,7 @@ import NumberFormat from 'src/components/NumberFormat';
 
 import { getStudioStock } from 'src/actions/studio';
 import { createWriteOff } from 'src/actions/writeOffs';
+import { enqueueSnackbar } from 'src/actions/snackbars';
 
 import stylesGlobal from 'src/styles/globals.module.css';
 
@@ -37,9 +38,21 @@ class DialogWriteOffCreate extends Component {
 		const { onCloseDialog, selectedPosition } = this.props;
 
 		this.props.createWriteOff(selectedPosition._id, values).then(response => {
-			if (response.status === 'success') this.props.getStudioStock();
 			actions.setSubmitting(false);
-			onCloseDialog();
+
+			if (response.status === 'success') {
+				this.props.getStudioStock();
+				onCloseDialog();
+			}
+
+			if (response.status === 'error') {
+				this.props.enqueueSnackbar({
+					message: response.message || 'Неизвестная ошибка.',
+					options: {
+						variant: 'error',
+					},
+				});
+			}
 		});
 	};
 
@@ -127,6 +140,7 @@ const mapDispatchToProps = dispatch => {
 	return {
 		getStudioStock: () => dispatch(getStudioStock()),
 		createWriteOff: (positionId, data) => dispatch(createWriteOff({ params: { positionId }, data })),
+		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
 	};
 };
 

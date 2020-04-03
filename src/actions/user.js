@@ -45,11 +45,11 @@ export const editMyAccount = ({ data }) => {
 			})
 			.catch(error => {
 				if (error.response) {
-					return Promise.resolve({ status: 'error', data: error.response.data });
+					return Promise.resolve({ status: 'error', message: error.response.data.message, data: error.response.data });
 				} else {
 					console.error(error);
 
-					return Promise.resolve({ status: 'error' });
+					return Promise.resolve({ status: 'error', message: error.message, ...error });
 				}
 			});
 	};

@@ -10,6 +10,7 @@ import { DialogSticky, DialogTitle } from 'src/components/Dialog';
 import { getStudioStock } from 'src/actions/studio';
 import { createCharacteristic } from 'src/actions/characteristics';
 import { createPosition, editPosition } from 'src/actions/positions';
+import { enqueueSnackbar } from 'src/actions/snackbars';
 
 import FormPositionCreateEdit from './FormPositionCreateEdit';
 import positionSchema from './positionSchema';
@@ -58,24 +59,59 @@ class DialogPositionCreateEdit extends Component {
 	onSubmit = (values, actions) => {
 		const { type, onCloseDialog, onCallback, position = positionSchema(true).cast(values) } = this.props;
 
+		actions.setSubmitting(false);
+
 		if (type === 'create') {
 			this.props.createPosition(position).then(response => {
 				if (onCallback !== undefined) onCallback(response);
 
+				actions.setSubmitting(false);
+
 				if (response.status === 'success') {
+					const { data: position } = response;
+
+					this.props.enqueueSnackbar({
+						message: (
+							<div>
+								Позиция <b>{position.name}</b> успешно создана.
+							</div>
+						),
+						options: {
+							variant: 'success',
+						},
+					});
+
 					this.props.getStudioStock();
-					actions.setSubmitting(false);
 					onCloseDialog();
+				}
+
+				if (response.status === 'error' && !response.data) {
+					this.props.enqueueSnackbar({
+						message: response.message || 'Неизвестная ошибка.',
+						options: {
+							variant: 'error',
+						},
+					});
 				}
 			});
 		} else {
 			this.props.editPosition(position._id, position).then(response => {
 				if (onCallback !== undefined) onCallback(response);
 
+				actions.setSubmitting(false);
+
 				if (response.status === 'success') {
 					this.props.getStudioStock();
-					actions.setSubmitting(false);
 					onCloseDialog();
+				}
+
+				if (response.status === 'error' && !response.data) {
+					this.props.enqueueSnackbar({
+						message: response.message || 'Неизвестная ошибка.',
+						options: {
+							variant: 'error',
+						},
+					});
 				}
 			});
 		}
@@ -170,6 +206,7 @@ const mapDispatchToProps = dispatch => {
 		createCharacteristic: characteristic => dispatch(createCharacteristic({ data: { characteristic } })),
 		createPosition: position => dispatch(createPosition({ data: { position } })),
 		editPosition: (positionId, position) => dispatch(editPosition({ params: { positionId }, data: { position } })),
+		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
 	};
 };
 

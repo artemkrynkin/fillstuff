@@ -213,7 +213,7 @@ invoicesRouter.post(
 		if (member.billingPeriodDebt === 0) {
 			return res.json({
 				code: 7,
-				message: 'Выставить счёт можно только если есть списанные платные позиции',
+				message: 'Выставить счет можно только если есть текущая задолженность.',
 			});
 		}
 
@@ -244,10 +244,16 @@ invoicesRouter.post(
 			{ runValidators: true }
 		).catch(err => next({ code: 2, err }));
 
-		Member.findById(member._id)
+		const memberEditedPromise = Member.findById(member._id)
 			.populate('user', 'avatar name email')
-			.then(member => res.json(member))
 			.catch(err => next({ code: 2, err }));
+
+		const invoicePromise = Invoice.findById(newInvoice._id).catch(err => next({ code: 2, err }));
+
+		const memberEdited = await memberEditedPromise;
+		const invoice = await invoicePromise;
+
+		res.json({ member: memberEdited, invoice });
 	}
 );
 

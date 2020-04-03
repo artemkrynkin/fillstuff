@@ -382,10 +382,8 @@ const FormPositionCreateEdit = props => {
 										</FormControl>
 										<div className={styles.addCharacteristic}>
 											<IconButton
-												size="small"
 												onClick={() => onAddCharacteristicInPosition(values, setFieldValue, arrayHelpersCharacteristics)}
 												disabled={!values.characteristicTemp.type || !values.characteristicTemp.value}
-												disableFocusRipple
 											>
 												<FontAwesomeIcon icon={['fal', 'check-circle']} />
 											</IconButton>

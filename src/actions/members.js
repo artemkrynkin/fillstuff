@@ -20,14 +20,7 @@ export const getMembers = ({ query = {}, showRequest = true } = { query: {}, sho
 				});
 			})
 			.catch(error => {
-				if (error.response && error.response.status === 401) {
-					dispatch({
-						type: 'UNAUTHORIZED_USER',
-						payload: error.response.data,
-					});
-				} else {
-					console.error(error.response);
-				}
+				console.error(error.response);
 
 				return Promise.resolve({ status: 'error' });
 			});
@@ -76,7 +69,7 @@ export const invitationMember = () => {
 			.catch(error => {
 				console.error(error);
 
-				return Promise.resolve({ status: 'error' });
+				return Promise.resolve({ status: 'error', message: error.message, ...error });
 			});
 	};
 };
@@ -100,11 +93,11 @@ export const editMember = ({ params, data }) => {
 			})
 			.catch(error => {
 				if (error.response) {
-					return Promise.resolve({ status: 'error', data: error.response.data });
+					return Promise.resolve({ status: 'error', message: error.response.data.message, data: error.response.data });
 				} else {
 					console.error(error);
 
-					return Promise.resolve({ status: 'error' });
+					return Promise.resolve({ status: 'error', message: error.message, ...error });
 				}
 			});
 	};

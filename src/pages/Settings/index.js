@@ -17,6 +17,8 @@ const Index = loadable(() => import('./components/index' /* webpackChunkName: "S
 });
 
 const Settings = props => {
+	const { currentUser, currentStudio } = props;
+
 	const metaInfo = {
 		pageName: 'settings',
 		pageTitle: 'Настройки',
@@ -27,8 +29,6 @@ const Settings = props => {
 			title: metaInfo.pageTitle,
 		},
 	});
-
-	const { currentUser, currentStudio } = props;
 
 	return (
 		<div className={stylesPage.page}>

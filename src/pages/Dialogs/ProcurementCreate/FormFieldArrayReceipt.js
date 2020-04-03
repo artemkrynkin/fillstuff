@@ -273,7 +273,7 @@ const FormFieldArrayReceipt = props => {
 
 			{formEditable ? (
 				<div className={styles.removeReceipt}>
-					<IconButton size="small" onClick={() => remove(index)} disableFocusRipple>
+					<IconButton className={styles.removeReceiptButton} onClick={() => remove(index)}>
 						<FontAwesomeIcon icon={['fal', 'times']} />
 					</IconButton>
 				</div>

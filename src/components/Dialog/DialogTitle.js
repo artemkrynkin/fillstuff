@@ -28,7 +28,7 @@ export const DialogTitle = props => {
 		<MuiDialogTitle className={classes} disableTypography>
 			<div className={textClasses} children={children} />
 			{onClose ? (
-				<IconButton className={styles.close} onClick={onClose} disableRipple>
+				<IconButton className={styles.close} onClick={onClose}>
 					<FontAwesomeIcon icon={['fal', 'times']} />
 				</IconButton>
 			) : null}

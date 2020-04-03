@@ -31,11 +31,10 @@ const PositionDetails = props => {
 				<IconButton
 					ref={refDropdownActions}
 					className={ClassNames({
-						[styles.actionsButton]: true,
-						[styles.actionsButtonActive]: dropdownActions,
+						[styles.actionButton]: true,
+						[styles.actionButtonActive]: dropdownActions,
 					})}
 					onClick={onHandleDropdownActions}
-					size="small"
 				>
 					<FontAwesomeIcon icon={['far', 'ellipsis-h']} />
 				</IconButton>

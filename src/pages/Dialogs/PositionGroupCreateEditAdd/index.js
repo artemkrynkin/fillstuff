@@ -6,6 +6,7 @@ import { Formik } from 'formik';
 import { DialogSticky, DialogTitle } from 'src/components/Dialog';
 
 import { createPositionGroup, editPositionGroup, addPositionInGroup } from 'src/actions/positionGroups';
+import { enqueueSnackbar } from 'src/actions/snackbars';
 
 import FormPositionGroupCreateEditAdd from './FormPositionGroupCreateEditAdd';
 import positionGroupSchema from './positionGroupSchema';
@@ -22,29 +23,31 @@ class DialogPositionGroupCreateEditAdd extends Component {
 	onSubmit = (values, actions) => {
 		const { type, onCloseDialog, positionGroup = positionGroupSchema(type, true).cast(values) } = this.props;
 
+		const callback = response => {
+			actions.setSubmitting(false);
+
+			if (response.status === 'success') {
+				onCloseDialog();
+			}
+
+			if (response.status === 'error') {
+				this.props.enqueueSnackbar({
+					message: response.message || 'Неизвестная ошибка.',
+					options: {
+						variant: 'error',
+					},
+				});
+			}
+		};
+
 		switch (type) {
 			case 'add':
-				return this.props.addPositionInGroup(positionGroup._id, positionGroup).then(response => {
-					if (response.status === 'success') {
-						actions.setSubmitting(false);
-						onCloseDialog();
-					}
-				});
+				return this.props.addPositionInGroup(positionGroup._id, positionGroup).then(callback);
 			case 'edit':
-				return this.props.editPositionGroup(positionGroup._id, positionGroup).then(response => {
-					if (response.status === 'success') {
-						actions.setSubmitting(false);
-						onCloseDialog();
-					}
-				});
+				return this.props.editPositionGroup(positionGroup._id, positionGroup).then(callback);
 			case 'create':
 			default:
-				return this.props.createPositionGroup(positionGroup).then(response => {
-					if (response.status === 'success') {
-						actions.setSubmitting(false);
-						onCloseDialog();
-					}
-				});
+				return this.props.createPositionGroup(positionGroup).then(callback);
 		}
 	};
 
@@ -103,6 +106,7 @@ const mapDispatchToProps = dispatch => {
 		createPositionGroup: data => dispatch(createPositionGroup({ data })),
 		editPositionGroup: (positionGroupId, data) => dispatch(editPositionGroup({ params: { positionGroupId }, data })),
 		addPositionInGroup: (positionGroupId, data) => dispatch(addPositionInGroup({ params: { positionGroupId }, data })),
+		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
 	};
 };
 

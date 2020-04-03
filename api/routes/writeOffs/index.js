@@ -156,7 +156,7 @@ writeOffsRouter.post(
 		}
 
 		if (purchaseExpenseStudio && !member.purchaseExpenseStudio) {
-			return res.json({ code: 4 });
+			return next({ code: 4 });
 		}
 
 		const awaitingPromises = [];

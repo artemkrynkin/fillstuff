@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
@@ -16,6 +17,7 @@ import Button from '@material-ui/core/Button';
 import Money from 'src/components/Money';
 
 import { createInvoice } from 'src/actions/invoices';
+import { enqueueSnackbar } from 'src/actions/snackbars';
 
 import Invoice from './Invoice';
 
@@ -31,8 +33,41 @@ const Invoices = props => {
 	const createInvoice = () => {
 		props.createInvoice().then(response => {
 			if (response.status === 'success') {
-				updateMember(response);
+				const {
+					data: { member, invoice },
+				} = response;
+
+				props.enqueueSnackbar({
+					message: (
+						<div>
+							<b>Успешно!</b>
+							<br />
+							Участнику <b>{member.user.name || member.user.email}</b> выставлен счет за период{' '}
+							<Link to={`/invoices/${invoice._id}`}>
+								{moment(invoice.fromDate).format('DD.MM.YYYY')} &ndash; {moment(invoice.toDate).format('DD.MM.YYYY')}
+							</Link>
+							.
+						</div>
+					),
+					options: {
+						variant: 'success',
+					},
+				});
+
+				updateMember({
+					status: response.status,
+					data: member,
+				});
 				getInvoices();
+			}
+
+			if (response.status === 'error') {
+				props.enqueueSnackbar({
+					message: response.message || 'Неизвестная ошибка.',
+					options: {
+						variant: 'error',
+					},
+				});
 			}
 		});
 	};
@@ -60,11 +95,11 @@ const Invoices = props => {
 					</div>
 				</Grid>
 				<Grid xs={3} item>
-					{member.billingPeriodDebt !== 0 ? (
-						<Button onClick={createInvoice} variant="outlined" color="primary">
-							Выставить счет
-						</Button>
-					) : null}
+					{/*{member.billingPeriodDebt !== 0 ? (*/}
+					<Button onClick={createInvoice} variant="outlined" color="primary">
+						Выставить счет
+					</Button>
+					{/*) : null}*/}
 				</Grid>
 			</Grid>
 			<Grid container>
@@ -129,6 +164,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 	return {
 		createInvoice: () => dispatch(createInvoice({ params: { memberId: member._id } })),
+		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
 	};
 };
 

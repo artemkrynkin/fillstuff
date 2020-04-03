@@ -46,28 +46,19 @@
   background-color: var(--c-hex-br-2);
 }
 
-.actionsButton {
+.actionButton {
   color: var(--c-hex-bg-200);
   padding: 8px;
   opacity: 0;
-  transition: color 150ms ease-out, opacity 150ms ease-out;
   width: 36px;
 }
 
-.actionsButton:hover {
-  background-color: rgba(var(--c-rgb-bg-100), 0.2);
-}
-
-.actionsButton svg {
-  font-size: 20px;
-}
-
-.actionsButtonActive {
+.actionButtonActive {
   color: var(--c-hex-bg-300);
   opacity: 1;
 }
 
-.positionGroup:hover .actionsButton,
-.position:hover .actionsButton {
+.positionGroup:hover .actionButton,
+.position:hover .actionButton {
   opacity: 1;
 }

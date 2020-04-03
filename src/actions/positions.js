@@ -71,11 +71,11 @@ export const createPosition = ({ data }) => {
 			})
 			.catch(error => {
 				if (error.response) {
-					return Promise.resolve({ status: 'error', data: error.response.data });
+					return Promise.resolve({ status: 'error', message: error.response.data.message, data: error.response.data });
 				} else {
 					console.error(error);
 
-					return Promise.resolve({ status: 'error' });
+					return Promise.resolve({ status: 'error', message: error.message, ...error });
 				}
 			});
 	};
@@ -109,11 +109,11 @@ export const editPosition = ({ params, data }) => {
 			})
 			.catch(error => {
 				if (error.response) {
-					return Promise.resolve({ status: 'error', data: error.response.data });
+					return Promise.resolve({ status: 'error', message: error.response.data.message, data: error.response.data });
 				} else {
 					console.error(error);
 
-					return Promise.resolve({ status: 'error' });
+					return Promise.resolve({ status: 'error', message: error.message, ...error });
 				}
 			});
 	};
@@ -144,13 +144,13 @@ export const archivePosition = ({ params, data }) => {
 
 					return Promise.resolve({ status: 'success' });
 				} else {
-					return Promise.resolve({ status: 'error' });
+					return Promise.resolve({ status: 'error', ...response.data });
 				}
 			})
 			.catch(error => {
 				console.error(error);
 
-				return Promise.resolve({ status: 'error' });
+				return Promise.resolve({ status: 'error', message: error.message, ...error });
 			});
 	};
 };
@@ -169,21 +169,17 @@ export const archivePositionAfterEnded = ({ params, data }) => {
 				data,
 			})
 			.then(response => {
-				if (!response.data.code) {
-					const position = response.data;
+				const position = response.data;
 
-					dispatch({
-						type: 'EDIT_POSITION',
-						payload: {
-							positionId,
-							position,
-						},
-					});
+				dispatch({
+					type: 'EDIT_POSITION',
+					payload: {
+						positionId,
+						position,
+					},
+				});
 
-					return Promise.resolve({ status: 'success', data: position });
-				} else {
-					return Promise.resolve({ status: 'error' });
-				}
+				return Promise.resolve({ status: 'success', data: position });
 			})
 			.catch(error => {
 				console.error(error);

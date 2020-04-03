@@ -15,6 +15,7 @@ import { withCurrentUser } from 'src/components/withCurrentUser';
 import { getCharacteristics } from 'src/actions/characteristics';
 import { getPosition, archivePositionAfterEnded } from 'src/actions/positions';
 import { getReceiptsPosition, changeReceipt } from 'src/actions/receipts';
+import { enqueueSnackbar } from 'src/actions/snackbars';
 
 import stylesPage from 'src/styles/page.module.css';
 import styles from './index.module.css';
@@ -74,22 +75,33 @@ class Position extends Component {
 
 	onChangeSellingPriceReceipt = (receiptId, values, callback) => {
 		this.props.changeReceipt({ receiptId }, values).then(response => {
-			const { data: receiptEdited } = response;
-
-			const newReceiptsData = {
-				status: 'success',
-				data: this.state.receiptsData.data.slice().map(receipt => {
-					if (receipt._id === receiptEdited._id) {
-						return receiptEdited;
-					} else {
-						return receipt;
-					}
-				}),
-			};
-
-			this.setState({ receiptsData: newReceiptsData });
-
 			callback();
+
+			if (response.status === 'success') {
+				const { data: receiptEdited } = response;
+
+				const newReceiptsData = {
+					status: 'success',
+					data: this.state.receiptsData.data.slice().map(receipt => {
+						if (receipt._id === receiptEdited._id) {
+							return receiptEdited;
+						} else {
+							return receipt;
+						}
+					}),
+				};
+
+				this.setState({ receiptsData: newReceiptsData });
+			}
+
+			if (response.status === 'error') {
+				this.props.enqueueSnackbar({
+					message: response.message || 'Неизвестная ошибка.',
+					options: {
+						variant: 'error',
+					},
+				});
+			}
 		});
 	};
 
@@ -160,6 +172,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 		archivePositionAfterEnded: (positionId, data) => dispatch(archivePositionAfterEnded({ params: { positionId }, data })),
 		getReceiptsPosition: () => dispatch(getReceiptsPosition({ params: { positionId } })),
 		changeReceipt: (params, data) => dispatch(changeReceipt({ params, data })),
+		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
 	};
 };
 

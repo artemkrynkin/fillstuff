@@ -88,16 +88,14 @@ receiptsRouter.post(
 			{ runValidators: true }
 		).catch(err => next({ code: 2, err }));
 
-		const receipt = await Receipt.findById(newReceipt._id)
+		Receipt.findById(newReceipt._id)
 			.populate([
 				{
 					path: 'procurement',
 				},
 			])
-			.then(invoices => res.json(invoices))
+			.then(receipt => res.json(receipt))
 			.catch(err => next({ code: 2, err }));
-
-		res.json(receipt);
 	}
 );
 

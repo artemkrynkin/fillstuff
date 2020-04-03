@@ -11,6 +11,7 @@ import { Dialog, DialogTitle } from 'src/components/Dialog';
 
 import { getStudioStock } from 'src/actions/studio';
 import { archivePosition, archivePositionAfterEnded } from 'src/actions/positions';
+import { enqueueSnackbar } from 'src/actions/snackbars';
 
 import { ButtonRed } from './styles';
 
@@ -27,7 +28,29 @@ const PositionArchiveDelete = props => {
 
 			onCloseDialog();
 
-			if (response.status === 'success') props.getStudioStock();
+			if (response.status === 'success') {
+				props.enqueueSnackbar({
+					message: (
+						<div>
+							Позиция <b>{selectedPosition.name}</b> успешно {type === 'archive' ? 'архивирована' : 'удалена'}.
+						</div>
+					),
+					options: {
+						variant: 'success',
+					},
+				});
+
+				props.getStudioStock();
+			}
+
+			if (response.status === 'error') {
+				props.enqueueSnackbar({
+					message: response.message || 'Неизвестная ошибка.',
+					options: {
+						variant: 'error',
+					},
+				});
+			}
 		});
 	};
 
@@ -98,6 +121,7 @@ const mapDispatchToProps = dispatch => {
 		getStudioStock: () => dispatch(getStudioStock()),
 		archivePosition: (positionId, positionGroupId) => dispatch(archivePosition({ params: { positionId }, data: { positionGroupId } })),
 		archivePositionAfterEnded: (positionId, data) => dispatch(archivePositionAfterEnded({ params: { positionId }, data })),
+		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
 	};
 };
 

@@ -71,17 +71,17 @@
 
 .removeReceipt {
   display: inline-flex;
+  flex: 1 1 auto;
   margin: 32px 4px auto auto;
 }
 
-.removeReceipt button {
-  background-color: transparent !important;
-  color: var(--c-hex-bg-300);
-  padding: 6px 0;
+.removeReceiptButton {
+  margin-left: auto;
+  padding: 6px;
+  width: 32px;
 }
 
-.removeReceipt button svg {
-  font-size: 20px;
+.removeReceiptButton svg {
   width: 20px !important;
 }
 

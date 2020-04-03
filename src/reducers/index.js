@@ -11,6 +11,8 @@ import writeOffs from './writeOffs';
 import procurements from './procurements';
 import invoices from './invoices';
 
+import snackbars from './snackbars';
+
 const getReducers = () => {
 	return combineReducers({
 		user,
@@ -23,6 +25,8 @@ const getReducers = () => {
 		writeOffs,
 		procurements,
 		invoices,
+
+		snackbars,
 	});
 };
 

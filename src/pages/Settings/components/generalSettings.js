@@ -10,6 +10,7 @@ import { sleep } from 'shared/utils';
 import CardPaper from 'src/components/CardPaper';
 
 import { editStudio } from 'src/actions/studio';
+import { enqueueSnackbar } from 'src/actions/snackbars';
 
 import FormGeneralSettings from './FormGeneralSettings';
 
@@ -33,6 +34,31 @@ const GeneralSettings = props => {
 		settings: currentStudio.settings,
 	};
 
+	const onSubmit = async (values, actions) => {
+		await sleep(500);
+
+		props.editStudio(values).then(response => {
+			actions.setSubmitting(false);
+
+			if (response.status === 'error') {
+				if (response.data.formErrors) {
+					response.data.formErrors.forEach(error => {
+						actions.setFieldError(error.field, error.message);
+					});
+				} else {
+					if (response.status === 'error') {
+						props.enqueueSnackbar({
+							message: response.message || 'Неизвестная ошибка.',
+							options: {
+								variant: 'error',
+							},
+						});
+					}
+				}
+			}
+		});
+	};
+
 	return (
 		<CardPaper elevation={1} leftContent="Общие" title style={{ marginBottom: 16 }}>
 			<Formik
@@ -41,21 +67,7 @@ const GeneralSettings = props => {
 				validateOnChange={false}
 				validateOnBlur={false}
 				enableReinitialize
-				onSubmit={async (values, actions) => {
-					await sleep(500);
-
-					props.editStudio(values).then(response => {
-						if (response.status === 'error') {
-							if (response.data.formErrors) {
-								response.data.formErrors.forEach(error => {
-									actions.setFieldError(error.field, error.message);
-								});
-							}
-
-							actions.setSubmitting(false);
-						}
-					});
-				}}
+				onSubmit={(values, actions) => onSubmit(values, actions)}
 			>
 				{props => (
 					<FormGeneralSettings
@@ -72,6 +84,7 @@ const GeneralSettings = props => {
 const mapDispatchToProps = dispatch => {
 	return {
 		editStudio: data => dispatch(editStudio({ data })),
+		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
 	};
 };
 

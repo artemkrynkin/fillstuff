@@ -123,6 +123,7 @@ const positions = (
 				stateData[positionIndex] = {
 					...stateData[positionIndex],
 					activeReceipt: action.payload.receipt,
+					hasReceipts: true,
 					receipts: [action.payload.receipt],
 				};
 			}

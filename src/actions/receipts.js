@@ -17,13 +17,9 @@ export const getReceiptsPosition = ({ params }) => {
 				return Promise.resolve({ status: 'success', data: receipts });
 			})
 			.catch(error => {
-				if (error.response) {
-					return Promise.resolve({ status: 'error', data: error.response.data });
-				} else {
-					console.error(error);
+				console.error(error);
 
-					return Promise.resolve({ status: 'error' });
-				}
+				return Promise.resolve({ status: 'error' });
 			});
 	};
 };
@@ -53,11 +49,11 @@ export const createReceipt = ({ data }) => {
 			})
 			.catch(error => {
 				if (error.response) {
-					return Promise.resolve({ status: 'error', data: error.response.data });
+					return Promise.resolve({ status: 'error', message: error.response.data.message, data: error.response.data });
 				} else {
 					console.error(error);
 
-					return Promise.resolve({ status: 'error' });
+					return Promise.resolve({ status: 'error', message: error.message, ...error });
 				}
 			});
 	};
@@ -82,11 +78,11 @@ export const changeReceipt = ({ params, data }) => {
 			})
 			.catch(error => {
 				if (error.response) {
-					return Promise.resolve({ status: 'error', data: error.response.data });
+					return Promise.resolve({ status: 'error', message: error.response.data.message, data: error.response.data });
 				} else {
 					console.error(error);
 
-					return Promise.resolve({ status: 'error' });
+					return Promise.resolve({ status: 'error', message: error.message, ...error });
 				}
 			});
 	};
@@ -120,7 +116,7 @@ export const activeReceiptAddQuantity = ({ params, data }) => {
 			})
 			.catch(error => {
 				if (error.response) {
-					return Promise.resolve({ status: 'error', data: error.response.data });
+					return Promise.resolve({ status: 'error', message: error.response.data.message, data: error.response.data });
 				} else {
 					console.error(error);
 

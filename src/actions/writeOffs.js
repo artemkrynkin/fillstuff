@@ -61,17 +61,13 @@ export const createWriteOff = ({ params, data }) => {
 
 					return Promise.resolve({ status: 'success' });
 				} else {
-					return Promise.resolve({ status: 'error', message: response.data.message });
+					return Promise.resolve({ status: 'error', ...response.data });
 				}
 			})
 			.catch(error => {
-				if (error.response) {
-					return Promise.resolve({ status: 'error', data: error.response.data });
-				} else {
-					console.error(error);
+				console.error(error);
 
-					return Promise.resolve({ status: 'error' });
-				}
+				return Promise.resolve({ status: 'error', message: error.message, ...error });
 			});
 	};
 };
@@ -102,17 +98,13 @@ export const cancelWriteOff = ({ params }) => {
 
 					return Promise.resolve({ status: 'success' });
 				} else {
-					return Promise.resolve({ status: 'error', message: response.data.message });
+					return Promise.resolve({ status: 'error', ...response.data });
 				}
 			})
 			.catch(error => {
-				if (error.response) {
-					return Promise.resolve({ status: 'error', data: error.response.data });
-				} else {
-					console.error(error);
+				console.error(error);
 
-					return Promise.resolve({ status: 'error' });
-				}
+				return Promise.resolve({ status: 'error', message: error.message, ...error });
 			});
 	};
 };

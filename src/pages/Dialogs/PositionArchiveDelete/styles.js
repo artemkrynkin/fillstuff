@@ -1,5 +1,5 @@
 import MuiButton from '@material-ui/core/Button';
-import redColor from '@material-ui/core/colors/red';
+import { red as redColor } from '@material-ui/core/colors';
 import { withStyles } from '@material-ui/core';
 
 import ColorConvert from 'color-convert';

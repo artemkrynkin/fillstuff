@@ -62,15 +62,15 @@
 .close {
   background-color: transparent !important;
   border-radius: 0;
-  padding: 15px;
+  padding: 16px;
   position: absolute;
   right: 0;
   top: 0;
-  transition: color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .close svg {
-  width: 24px !important;
+  font-size: 22px;
+  width: 22px !important;
 }
 
 .titlePrimary .close {

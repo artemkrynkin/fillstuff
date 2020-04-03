@@ -11,6 +11,7 @@ import { Dialog, DialogTitle } from 'src/components/Dialog';
 
 import { getStudioStock } from 'src/actions/studio';
 import { removePositionFromGroup } from 'src/actions/positionGroups';
+import { enqueueSnackbar } from 'src/actions/snackbars';
 
 const DialogPositionRemoveFromGroup = props => {
 	const { dialogOpen, onCloseDialog, onExitedDialog, onCallback, selectedPosition } = props;
@@ -22,6 +23,15 @@ const DialogPositionRemoveFromGroup = props => {
 			if (onCallback !== undefined) onCallback(response);
 
 			onCloseDialog();
+
+			if (response.status === 'error') {
+				props.enqueueSnackbar({
+					message: response.message || 'Неизвестная ошибка.',
+					options: {
+						variant: 'error',
+					},
+				});
+			}
 		});
 	};
 
@@ -69,6 +79,7 @@ const mapDispatchToProps = dispatch => {
 		getStudioStock: () => dispatch(getStudioStock()),
 		removePositionFromGroup: (positionId, positionGroupId) =>
 			dispatch(removePositionFromGroup({ params: { positionId }, data: { positionGroupId } })),
+		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
 	};
 };
 

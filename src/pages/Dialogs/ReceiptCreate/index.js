@@ -10,6 +10,7 @@ import { Dialog, DialogTitle } from 'src/components/Dialog';
 
 import { getStudioStock } from 'src/actions/studio';
 import { createReceipt } from 'src/actions/receipts';
+import { enqueueSnackbar } from 'src/actions/snackbars';
 
 import FormReceiptCreate from './FormReceiptCreate';
 import receiptSchema from './receiptSchema';
@@ -66,10 +67,20 @@ class DialogReceiptCreate extends Component {
 			this.props.createReceipt({ receipt: newReceipt }).then(response => {
 				if (onCallback !== undefined) onCallback(response);
 
+				actions.setSubmitting(false);
+
 				if (response.status === 'success') {
 					this.props.getStudioStock();
-					actions.setSubmitting(false);
 					onCloseDialog();
+				}
+
+				if (response.status === 'error') {
+					this.props.enqueueSnackbar({
+						message: response.message || 'Неизвестная ошибка.',
+						options: {
+							variant: 'error',
+						},
+					});
 				}
 			});
 		}
@@ -136,6 +147,7 @@ const mapDispatchToProps = dispatch => {
 	return {
 		getStudioStock: () => dispatch(getStudioStock()),
 		createReceipt: receipt => dispatch(createReceipt({ data: receipt })),
+		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
 	};
 };
 

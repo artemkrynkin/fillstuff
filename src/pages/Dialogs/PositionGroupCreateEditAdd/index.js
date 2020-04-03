@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Formik } from 'formik';
 
+import { declensionNumber } from 'src/helpers/utils';
+
 import { DialogSticky, DialogTitle } from 'src/components/Dialog';
 
 import { createPositionGroup, editPositionGroup, addPositionInGroup } from 'src/actions/positionGroups';
@@ -21,13 +23,44 @@ class DialogPositionGroupCreateEditAdd extends Component {
 	};
 
 	onSubmit = (values, actions) => {
-		const { type, onCloseDialog, positionGroup = positionGroupSchema(type, true).cast(values) } = this.props;
+		const { type, onCloseDialog, positionGroup = positionGroupSchema(type, true).cast(values), selectedPositionGroup } = this.props;
+
+		const positionNumbersOld = selectedPositionGroup.positions.length;
 
 		const callback = response => {
 			actions.setSubmitting(false);
 
 			if (response.status === 'success') {
 				onCloseDialog();
+
+				if (type === 'add') {
+					const numbersPosition = positionNumbersOld - selectedPositionGroup.positions.length;
+
+					this.props.enqueueSnackbar({
+						message: (
+							<div>
+								В группу <b>{positionGroup.name}</b> {declensionNumber(Math.abs(numbersPosition), ['добавлена', 'добавлено', 'добавлено'])}{' '}
+								{declensionNumber(Math.abs(numbersPosition), ['позиция', 'позиции', 'позиций'], true)}.
+							</div>
+						),
+						options: {
+							variant: 'success',
+						},
+					});
+				}
+
+				if (type === 'create') {
+					this.props.enqueueSnackbar({
+						message: (
+							<div>
+								Группа <b>{positionGroup.name}</b> успешно создана.
+							</div>
+						),
+						options: {
+							variant: 'success',
+						},
+					});
+				}
 			}
 
 			if (response.status === 'error') {

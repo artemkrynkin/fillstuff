@@ -24,6 +24,19 @@ const DialogPositionRemoveFromGroup = props => {
 
 			onCloseDialog();
 
+			if (response.status === 'success') {
+				props.enqueueSnackbar({
+					message: (
+						<div>
+							От группы откреплена позиция <b>{selectedPosition.name}</b>.
+						</div>
+					),
+					options: {
+						variant: 'success',
+					},
+				});
+			}
+
 			if (response.status === 'error') {
 				props.enqueueSnackbar({
 					message: response.message || 'Неизвестная ошибка.',
@@ -57,7 +70,7 @@ const DialogPositionRemoveFromGroup = props => {
 					<Button onClick={onCloseDialog} variant="outlined" size="small">
 						Отмена
 					</Button>
-					<Button onClick={onSubmit} variant="contained" color="primary" size="small">
+					<Button onClick={onSubmit} variant="contained" color="primary" size="small" autoFocus>
 						Открепить
 					</Button>
 				</DialogActions>

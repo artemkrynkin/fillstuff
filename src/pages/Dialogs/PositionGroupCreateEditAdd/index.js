@@ -25,7 +25,11 @@ class DialogPositionGroupCreateEditAdd extends Component {
 	onSubmit = (values, actions) => {
 		const { type, onCloseDialog, positionGroup = positionGroupSchema(type, true).cast(values), selectedPositionGroup } = this.props;
 
-		const positionNumbersOld = selectedPositionGroup.positions.length;
+		let positionNumbersOld = 0;
+
+		if (type === 'add') {
+			positionNumbersOld = selectedPositionGroup.positions.length;
+		}
 
 		const callback = response => {
 			actions.setSubmitting(false);

@@ -12,7 +12,6 @@ import HeaderPage from 'src/components/HeaderPage';
 import { LoadingComponent } from 'src/components/Loading';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 
-import { getCharacteristics } from 'src/actions/characteristics';
 import { getPosition, archivePositionAfterEnded } from 'src/actions/positions';
 import { getReceiptsPosition, changeReceipt } from 'src/actions/receipts';
 import { enqueueSnackbar } from 'src/actions/snackbars';
@@ -114,7 +113,6 @@ class Position extends Component {
 	}
 
 	render() {
-		const { currentStudio, getCharacteristics } = this.props;
 		const { positionData, receiptsData } = this.state;
 
 		const metaInfo = {
@@ -144,10 +142,8 @@ class Position extends Component {
 				<HeaderPage pageName={metaInfo.pageName} pageTitle="В наличии" pageParams={pageParams} />
 				<div className={`${stylesPage.pageContent} ${styles.container}`}>
 					<Index
-						currentStudio={currentStudio}
 						positionData={positionData}
 						receiptsData={receiptsData}
-						getCharacteristics={() => getCharacteristics(currentStudio._id)}
 						getPosition={this.getPosition}
 						onCancelArchivePositionAfterEnded={this.onCancelArchivePositionAfterEnded}
 						onReceiptCreate={this.onReceiptCreate}
@@ -167,7 +163,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	} = ownProps;
 
 	return {
-		getCharacteristics: currentStudioId => dispatch(getCharacteristics(currentStudioId)),
 		getPosition: () => dispatch(getPosition({ params: { positionId } })),
 		archivePositionAfterEnded: (positionId, data) => dispatch(archivePositionAfterEnded({ params: { positionId }, data })),
 		getReceiptsPosition: () => dispatch(getReceiptsPosition({ params: { positionId } })),

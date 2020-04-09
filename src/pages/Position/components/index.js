@@ -30,10 +30,8 @@ const DialogReceiptCreate = loadable(() => import('src/pages/Dialogs/ReceiptCrea
 
 const Index = props => {
 	const {
-		currentStudio,
 		positionData,
 		receiptsData,
-		getCharacteristics,
 		getPosition,
 		onCancelArchivePositionAfterEnded,
 		onReceiptCreate,
@@ -49,8 +47,6 @@ const Index = props => {
 	});
 
 	const onOpenDialogByName = async dialogName => {
-		if (dialogName === 'dialogPositionEdit') await getCharacteristics();
-
 		setDialogOpenedName(dialogName);
 
 		setDialogs({
@@ -102,7 +98,6 @@ const Index = props => {
 				onCloseDialog={() => onCloseDialogByName('dialogPositionEdit')}
 				onExitedDialog={onExitedDialogByName}
 				onCallback={getPosition}
-				currentStudioId={currentStudio._id}
 				selectedPosition={dialogOpenedName === 'dialogPositionEdit' ? position : null}
 			/>
 

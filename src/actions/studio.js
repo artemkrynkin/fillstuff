@@ -35,19 +35,19 @@ export const getStudio = (userId, studioId) => {
 	};
 };
 
-export const getStudioStock = () => {
+export const getStudioStore = () => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 
 		dispatch({ type: 'REQUEST_STUDIO' });
 
 		return await axios
-			.post('/api/getStudioStock', {
+			.post('/api/getStudioStore', {
 				studioId,
 			})
 			.then(response => {
 				dispatch({
-					type: 'GET_STUDIO_STOCK',
+					type: 'GET_STUDIO_STORE',
 					payload: response.data,
 				});
 			})

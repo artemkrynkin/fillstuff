@@ -9,7 +9,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 
 import { Dialog, DialogTitle } from 'src/components/Dialog';
 
-import { getStudioStock } from 'src/actions/studio';
+import { getStudioStore } from 'src/actions/studio';
 import { cancelWriteOff } from 'src/actions/writeOffs';
 import { enqueueSnackbar } from 'src/actions/snackbars';
 
@@ -22,7 +22,7 @@ const DialogWriteOffCancel = props => {
 		props.cancelWriteOff(selectedWriteOff._id).then(response => {
 			onCloseDialog();
 
-			if (response.status === 'success') props.getStudioStock();
+			if (response.status === 'success') props.getStudioStore();
 
 			if (response.status === 'error') {
 				this.props.enqueueSnackbar({
@@ -46,7 +46,7 @@ const DialogWriteOffCancel = props => {
 					<span>
 						<b>
 							{selectedWriteOff.position.characteristics.reduce(
-								(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
+								(fullName, characteristic) => `${fullName} ${characteristic.name}`,
 								selectedWriteOff.position.name
 							)}
 						</b>
@@ -75,7 +75,7 @@ DialogWriteOffCancel.propTypes = {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		getStudioStock: () => dispatch(getStudioStock()),
+		getStudioStore: () => dispatch(getStudioStore()),
 		cancelWriteOff: writeOffId => dispatch(cancelWriteOff({ params: { writeOffId } })),
 		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
 	};

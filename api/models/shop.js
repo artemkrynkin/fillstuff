@@ -1,26 +1,21 @@
 import mongoose from 'mongoose';
 import i18n from 'i18n';
 
-import { characteristicsTypes } from 'shared/checkPositionAndReceipt';
-
 const Schema = mongoose.Schema;
 
-let Characteristic = new Schema({
+let Shop = new Schema({
 	studio: {
 		type: Schema.Types.ObjectId,
 		ref: 'Studio',
 		required: [true, i18n.__('Обязательное поле')],
 		select: false,
 	},
-	type: {
-		type: String,
-		enum: characteristicsTypes,
-	},
 	name: {
 		type: String,
-		maxlength: [60, i18n.__('Не может превышать 60 символов')],
 		required: [true, i18n.__('Обязательное поле')],
-		trim: true,
+	},
+	link: {
+		type: String,
 	},
 	__v: {
 		type: Number,
@@ -28,4 +23,4 @@ let Characteristic = new Schema({
 	},
 });
 
-export default mongoose.model('Characteristic', Characteristic);
+export default mongoose.model('Shop', Shop);

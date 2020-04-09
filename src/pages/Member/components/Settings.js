@@ -49,27 +49,25 @@ const Settings = props => {
 		});
 	};
 
+	const labelStyle = { width: 120 };
+
 	return (
 		<div>
-			<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" style={{ maxWidth: 450 }} container>
-				<InputLabel style={{ minWidth: 110 }}>Роли:</InputLabel>
-				<FormControl fullWidth>
-					<Select onChange={onToggleRoles} value={member.roles} name="role" multiple>
-						<MenuItem value="owner">Владелец</MenuItem>
-						<MenuItem value="admin">Администратор</MenuItem>
-						<MenuItem value="artist">Мастер</MenuItem>
-					</Select>
-				</FormControl>
+			<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="baseline" style={{ maxWidth: 500 }} container>
+				<InputLabel style={labelStyle} data-inline>
+					Роли
+				</InputLabel>
+				<Select onChange={onToggleRoles} value={member.roles} name="role" multiple fullWidth>
+					<MenuItem value="owner">Владелец</MenuItem>
+					<MenuItem value="admin">Администратор</MenuItem>
+					<MenuItem value="artist">Мастер</MenuItem>
+				</Select>
 			</Grid>
 			{/artist/.test(member.roles) ? (
-				<Grid
-					className={stylesGlobal.formLabelControl}
-					wrap="nowrap"
-					alignItems="flex-start"
-					style={{ maxWidth: 500, marginBottom: 0 }}
-					container
-				>
-					<InputLabel style={{ minWidth: 110 }}>Настройки списаний:</InputLabel>
+				<Grid wrap="nowrap" alignItems="baseline" style={{ maxWidth: 500 }} container>
+					<InputLabel style={labelStyle} data-inline>
+						Настройки списаний
+					</InputLabel>
 					<Grid direction="column" container>
 						<FormControl component="fieldset">
 							<FormGroup>

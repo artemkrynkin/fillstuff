@@ -9,7 +9,7 @@ import Button from '@material-ui/core/Button';
 
 import { Dialog, DialogTitle } from 'src/components/Dialog';
 
-import { getStudioStock } from 'src/actions/studio';
+import { getStudioStore } from 'src/actions/studio';
 import { removePositionFromGroup } from 'src/actions/positionGroups';
 import { enqueueSnackbar } from 'src/actions/snackbars';
 
@@ -59,7 +59,7 @@ const DialogPositionRemoveFromGroup = props => {
 					<span>
 						<b>
 							{selectedPosition.characteristics.reduce(
-								(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
+								(fullName, characteristic) => `${fullName} ${characteristic.name}`,
 								selectedPosition.name
 							)}
 						</b>{' '}
@@ -89,7 +89,7 @@ DialogPositionRemoveFromGroup.propTypes = {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		getStudioStock: () => dispatch(getStudioStock()),
+		getStudioStore: () => dispatch(getStudioStore()),
 		removePositionFromGroup: (positionId, positionGroupId) =>
 			dispatch(removePositionFromGroup({ params: { positionId }, data: { positionGroupId } })),
 		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),

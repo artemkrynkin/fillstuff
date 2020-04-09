@@ -14,7 +14,7 @@ const Index = props => {
 			<Grid direction="row" justify="center" alignItems="flex-start" spacing={2} container>
 				<Grid xs={12} item>
 					<Indicators currentStudio={currentStudio} />
-					<Positions currentStudio={currentStudio} />
+					<Positions />
 				</Grid>
 			</Grid>
 		</Container>

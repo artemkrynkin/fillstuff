@@ -83,7 +83,7 @@ const findPositionByFullName = (position, searchText) => {
 	const searchTextLowercase = String(searchText).toLowerCase();
 
 	const positionName = position.characteristics
-		.reduce((fullName, characteristic) => `${fullName} ${characteristic.label}`, position.name)
+		.reduce((fullName, characteristic) => `${fullName} ${characteristic.name}`, position.name)
 		.toLowerCase();
 
 	return positionName.indexOf(searchTextLowercase) !== -1;

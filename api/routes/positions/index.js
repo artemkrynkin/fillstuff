@@ -21,7 +21,7 @@ positionsRouter.post(
 			.sort({ isArchived: 1, name: 1 })
 			.populate([
 				{
-					path: 'activeReceipt characteristics',
+					path: 'activeReceipt characteristics shops.shop',
 				},
 				{
 					path: 'receipts',
@@ -51,7 +51,7 @@ positionsRouter.post(
 		Position.findById(positionId)
 			.populate([
 				{
-					path: 'activeReceipt characteristics',
+					path: 'activeReceipt characteristics shops.shop',
 				},
 				{
 					path: 'receipts',
@@ -91,7 +91,7 @@ positionsRouter.post(
 			.populate([
 				{
 					path: 'studio',
-					select: 'stock',
+					select: 'store',
 				},
 				{
 					path: 'characteristics',
@@ -101,7 +101,7 @@ positionsRouter.post(
 
 		const {
 			studio: {
-				stock: { numberPositions: numberPositionsOld },
+				store: { numberPositions: numberPositionsOld },
 			},
 		} = position;
 
@@ -109,7 +109,7 @@ positionsRouter.post(
 			position.studio._id,
 			{
 				$set: {
-					'stock.numberPositions': numberPositionsOld + 1,
+					'store.numberPositions': numberPositionsOld + 1,
 				},
 			},
 			{ runValidators: true }
@@ -139,6 +139,7 @@ positionsRouter.post(
 		position.shopName = positionEdited.shopName;
 		position.shopLink = positionEdited.shopLink;
 		position.characteristics = positionEdited.characteristics;
+		position.shops = positionEdited.shops;
 
 		if (!position.activeReceipt) {
 			position.unitReceipt = positionEdited.unitReceipt;
@@ -182,7 +183,7 @@ positionsRouter.post(
 			.populate([
 				{
 					path: 'studio',
-					select: 'stock',
+					select: 'store',
 				},
 				{
 					path: 'positionGroup',
@@ -227,7 +228,7 @@ positionsRouter.post(
 
 		const {
 			studio: {
-				stock: { numberPositions: numberPositionsOld, stockPrice: stockPriceOld },
+				store: { numberPositions: numberPositionsOld, storePrice: storePriceOld },
 			},
 			receipts,
 		} = position;
@@ -240,8 +241,8 @@ positionsRouter.post(
 			position.studio._id,
 			{
 				$set: {
-					'stock.numberPositions': numberPositionsOld - 1,
-					'stock.stockPrice': stockPriceOld - purchasePriceReceiptsPosition,
+					'store.numberPositions': numberPositionsOld - 1,
+					'store.storePrice': storePriceOld - purchasePriceReceiptsPosition,
 				},
 			},
 			{ runValidators: true }

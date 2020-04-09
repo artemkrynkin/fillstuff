@@ -6,20 +6,20 @@ const characteristics = (
 	action
 ) => {
 	switch (action.type) {
-		case 'REQUEST_SPECIFICATIONS': {
+		case 'REQUEST_CHARACTERISTICS': {
 			return {
 				...state,
 				isFetching: true,
 			};
 		}
-		case 'RECEIVE_SPECIFICATIONS': {
+		case 'RECEIVE_CHARACTERISTICS': {
 			return {
 				...state,
 				isFetching: false,
 				data: action.payload,
 			};
 		}
-		case 'CREATE_SPECIFICATION': {
+		case 'CREATE_CHARACTERISTIC': {
 			let stateData = { ...state }.data;
 
 			stateData.push(action.payload);

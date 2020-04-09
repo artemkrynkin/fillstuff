@@ -14,7 +14,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import { Dialog, DialogTitle } from 'src/components/Dialog';
 import NumberFormat from 'src/components/NumberFormat';
 
-import { getStudioStock } from 'src/actions/studio';
+import { getStudioStore } from 'src/actions/studio';
 import { activeReceiptAddQuantity } from 'src/actions/receipts';
 
 import stylesGlobal from 'src/styles/globals.module.css';
@@ -39,7 +39,7 @@ class DialogReceiptActiveAddQuantity extends Component {
 
 		this.props.activeReceiptAddQuantity(selectedPosition._id, values).then(response => {
 			if (response.status === 'success') {
-				this.props.getStudioStock();
+				this.props.getStudioStore();
 				onCloseDialog();
 			} else actions.setSubmitting(false);
 		});
@@ -65,13 +65,13 @@ class DialogReceiptActiveAddQuantity extends Component {
 							<DialogContent>
 								<Grid className={stylesGlobal.formLabelControl}>
 									<TextField
-										className="none-padding"
 										label="Наименование"
 										InputProps={{
 											value: selectedPosition.name,
 											readOnly: true,
 										}}
 										fullWidth
+										readOnly
 									/>
 								</Grid>
 								<Grid className={stylesGlobal.formLabelControl}>
@@ -132,7 +132,7 @@ class DialogReceiptActiveAddQuantity extends Component {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		getStudioStock: () => dispatch(getStudioStock()),
+		getStudioStore: () => dispatch(getStudioStore()),
 		activeReceiptAddQuantity: (positionId, data) => dispatch(activeReceiptAddQuantity({ params: { positionId }, data })),
 	};
 };

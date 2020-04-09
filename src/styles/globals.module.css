@@ -3,17 +3,6 @@
   margin-bottom: 20px;
 }
 
-.formLabelControl > label {
-  align-items: center;
-  display: flex;
-  min-height: 36px;
-  margin-right: 10px;
-}
-
-.formLabelControl > label + div {
-  flex-grow: 1;
-}
-
 /* Control Label Radio Title and Subtitle */
 .formRadioTitleSubtitle {
   align-items: flex-start;

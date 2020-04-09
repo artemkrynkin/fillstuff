@@ -20,7 +20,6 @@ import AvatarTitle from 'src/components/AvatarTitle';
 import { createInvoicePayment } from 'src/actions/invoices';
 import { enqueueSnackbar } from 'src/actions/snackbars';
 
-import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
 
 const invoicePaymentSchema = Yup.object().shape({
@@ -99,24 +98,22 @@ class DialogInvoicePaymentCreate extends Component {
 										</Grid>
 									</Grid>
 								</Grid>
-								<Grid className={stylesGlobal.formLabelControl}>
-									<Field
-										name="amount"
-										label="Сумма платежа"
-										error={Boolean(touched.amount && errors.amount)}
-										helperText={(touched.amount && errors.amount) || ''}
-										as={TextField}
-										InputProps={{
-											inputComponent: NumberFormat,
-											inputProps: {
-												...moneyInputFormatProps,
-												decimalScale: 0,
-											},
-										}}
-										fullWidth
-										autoFocus
-									/>
-								</Grid>
+								<Field
+									name="amount"
+									label="Сумма платежа"
+									error={Boolean(touched.amount && errors.amount)}
+									helperText={(touched.amount && errors.amount) || ''}
+									as={TextField}
+									InputProps={{
+										inputComponent: NumberFormat,
+										inputProps: {
+											...moneyInputFormatProps,
+											decimalScale: 0,
+										},
+									}}
+									fullWidth
+									autoFocus
+								/>
 							</DialogContent>
 							<DialogActions>
 								<Grid spacing={2} container>

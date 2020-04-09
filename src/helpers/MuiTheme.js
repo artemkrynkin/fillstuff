@@ -6,7 +6,6 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import Fade from '@material-ui/core/Fade';
 
 import theme from 'shared/theme';
-import { red as redColor, orange as orangeColor, blue as blueColor } from '@material-ui/core/colors';
 
 import stylesGlobal from 'src/styles/globals.module.css';
 
@@ -15,6 +14,7 @@ export const BliksideTheme = createMuiTheme({
 		MuiInputLabel: {
 			disableAnimation: true,
 			shrink: true,
+			component: 'div',
 		},
 		MuiInput: {
 			autoComplete: 'off',
@@ -390,6 +390,9 @@ export const BliksideTheme = createMuiTheme({
 			},
 		},
 		MuiFormControl: {
+			root: {
+				verticalAlign: null,
+			},
 			marginNormal: {
 				marginBottom: 20,
 				marginTop: 0,
@@ -401,7 +404,7 @@ export const BliksideTheme = createMuiTheme({
 		},
 		MuiFormControlLabel: {
 			root: {
-				marginLeft: -10,
+				marginLeft: -9,
 				marginRight: 0,
 			},
 			label: {
@@ -436,11 +439,23 @@ export const BliksideTheme = createMuiTheme({
 			},
 		},
 		MuiInputLabel: {
+			root: {
+				'&[data-inline]': {
+					alignItems: 'center',
+					display: 'flex',
+					flex: '0 0 auto',
+					marginRight: 10,
+				},
+			},
 			formControl: {
+				marginBottom: 5,
 				top: null,
 				left: null,
 				position: null,
 				transform: null,
+				'[readonly] &': {
+					marginBottom: 0,
+				},
 			},
 			shrink: {
 				transform: 'translate(0, 0)',
@@ -671,11 +686,6 @@ export const BliksideTheme = createMuiTheme({
 			},
 			multiline: {
 				padding: 0,
-			},
-			formControl: {
-				'label + &': {
-					marginTop: 5,
-				},
 			},
 		},
 		MuiInputAdornment: {

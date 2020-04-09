@@ -154,7 +154,7 @@ class DialogPositionOrGroupQRCode extends Component {
 						if (type === 'position' && QRCodeSize > 2)
 							contentColumn.push({
 								text: selectedPositionOrGroup.characteristics.reduce(
-									(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
+									(fullName, characteristic) => `${fullName} ${characteristic.name}`,
 									''
 								),
 								fontSize: QRSettings.fontSizePdf - 2,
@@ -294,7 +294,7 @@ class DialogPositionOrGroupQRCode extends Component {
 											}}
 										>
 											{selectedPositionOrGroup.characteristics.reduce(
-												(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
+												(fullName, characteristic) => `${fullName} ${characteristic.name}`,
 												''
 											)}
 										</div>

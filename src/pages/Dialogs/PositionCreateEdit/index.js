@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import validator from 'validator';
 import { Formik } from 'formik';
-import { debounce } from 'lodash';
 
 import { DialogSticky, DialogTitle } from 'src/components/Dialog';
 
-import { getStudioStock } from 'src/actions/studio';
-import { createCharacteristic } from 'src/actions/characteristics';
+import { getStudioStore } from 'src/actions/studio';
+import { getCharacteristics, createCharacteristic } from 'src/actions/characteristics';
+import { getShops } from 'src/actions/shops';
 import { createPosition, editPosition } from 'src/actions/positions';
 import { enqueueSnackbar } from 'src/actions/snackbars';
 
@@ -22,37 +21,18 @@ class DialogPositionCreateEdit extends Component {
 		onCloseDialog: PropTypes.func.isRequired,
 		onExitedDialog: PropTypes.func,
 		onCallback: PropTypes.func,
-		currentStudioId: PropTypes.string.isRequired,
 		selectedPosition: PropTypes.object,
 	};
 
-	initialState = {
-		shopLinkVisible: false,
-		isLoadingCharacteristics: false,
-	};
+	onGetCharacteristics = characteristicType => this.props.getCharacteristics({ type: characteristicType });
 
-	state = this.initialState;
-
-	onChangeShopFields = debounce((value, setFieldValue) => {
-		setFieldValue('shopName', value);
-
-		if (validator.isURL(value)) {
-			setFieldValue('shopName', '');
-			setFieldValue('shopLink', value);
-
-			this.setState({ shopLinkVisible: true });
-		}
-	}, 300);
-
-	onCreateCharacteristic = (characteristic, setFieldValue) => {
-		this.setState({ isLoadingCharacteristics: true }, () => {
-			this.props.createCharacteristic(characteristic).then(response => {
+	onCreateCharacteristic = (characteristic, callback) => {
+		this.props.createCharacteristic(characteristic).then(response => {
+			if (response.status === 'success') {
 				const characteristic = response.data;
 
-				this.setState({ isLoadingCharacteristics: false });
-
-				setFieldValue('characteristicTemp.value', characteristic);
-			});
+				if (callback) callback(characteristic);
+			}
 		});
 	};
 
@@ -81,7 +61,7 @@ class DialogPositionCreateEdit extends Component {
 						},
 					});
 
-					this.props.getStudioStock();
+					this.props.getStudioStore();
 					onCloseDialog();
 				}
 
@@ -101,7 +81,7 @@ class DialogPositionCreateEdit extends Component {
 				actions.setSubmitting(false);
 
 				if (response.status === 'success') {
-					this.props.getStudioStock();
+					this.props.getStudioStore();
 					onCloseDialog();
 				}
 
@@ -118,24 +98,17 @@ class DialogPositionCreateEdit extends Component {
 	};
 
 	onEnterDialog = () => {
-		const { type, selectedPosition } = this.props;
-
-		if (type === 'edit' && selectedPosition) {
-			if (validator.isURL(selectedPosition.shopLink)) this.setState({ shopLinkVisible: true });
-		}
+		this.props.getShops();
 	};
 
 	onExitedDialog = () => {
 		const { onExitedDialog } = this.props;
 
-		this.setState(this.initialState, () => {
-			if (onExitedDialog) onExitedDialog();
-		});
+		if (onExitedDialog) onExitedDialog();
 	};
 
 	render() {
-		const { type, dialogOpen, onCloseDialog, currentStudioId, characteristics, selectedPosition } = this.props;
-		const { shopLinkVisible, isLoadingCharacteristics } = this.state;
+		const { type, dialogOpen, onCloseDialog, characteristics, shops, selectedPosition } = this.props;
 
 		if (type === 'edit' && !selectedPosition) return null;
 
@@ -145,14 +118,8 @@ class DialogPositionCreateEdit extends Component {
 			unitRelease: '',
 			minimumBalance: '',
 			isFree: '',
-			shopName: '',
-			shopLink: '',
 			characteristics: [],
-			characteristicTemp: {
-				type: '',
-				value: '',
-				valueTemp: '',
-			},
+			shops: [],
 		};
 
 		if (selectedPosition) initialValues = { ...initialValues, ...selectedPosition };
@@ -160,9 +127,9 @@ class DialogPositionCreateEdit extends Component {
 		return (
 			<DialogSticky
 				open={dialogOpen}
-				onEnter={this.onEnterDialog}
 				onClose={onCloseDialog}
 				onExited={this.onExitedDialog}
+				onEnter={this.onEnterDialog}
 				maxWidth="lg"
 				scroll="body"
 				stickyActions
@@ -178,13 +145,11 @@ class DialogPositionCreateEdit extends Component {
 					{props => (
 						<FormPositionCreateEdit
 							onCloseDialog={onCloseDialog}
-							onChangeShopFields={this.onChangeShopFields}
+							onGetCharacteristics={this.onGetCharacteristics}
 							onCreateCharacteristic={this.onCreateCharacteristic}
-							currentStudioId={currentStudioId}
 							characteristics={characteristics}
+							shops={shops}
 							type={type}
-							shopLinkVisible={shopLinkVisible}
-							isLoadingCharacteristics={isLoadingCharacteristics}
 							formikProps={props}
 						/>
 					)}
@@ -196,14 +161,17 @@ class DialogPositionCreateEdit extends Component {
 
 const mapStateToProps = state => {
 	return {
-		characteristics: state.characteristics.data,
+		characteristics: state.characteristics,
+		shops: state.shops,
 	};
 };
 
 const mapDispatchToProps = dispatch => {
 	return {
-		getStudioStock: () => dispatch(getStudioStock()),
+		getStudioStore: () => dispatch(getStudioStore()),
+		getCharacteristics: params => dispatch(getCharacteristics({ params })),
 		createCharacteristic: characteristic => dispatch(createCharacteristic({ data: { characteristic } })),
+		getShops: () => dispatch(getShops()),
 		createPosition: position => dispatch(createPosition({ data: { position } })),
 		editPosition: (positionId, position) => dispatch(editPosition({ params: { positionId }, data: { position } })),
 		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),

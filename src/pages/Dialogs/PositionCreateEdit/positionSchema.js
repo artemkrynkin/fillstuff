@@ -18,14 +18,27 @@ const positionSchema = (depopulate = false) => {
 			.min(1)
 			.required(),
 		isFree: Yup.bool().required(),
-		shopName: Yup.string(),
-		shopLink: Yup.string(),
 		characteristics: Yup.array()
 			.when('empty', (empty, schema) => (depopulate ? schema.of(Yup.string()) : schema))
 			.transform((currentValue, originalValue) => {
-				return depopulate ? currentValue.map(characteristic => characteristic._id) : currentValue;
+				return depopulate
+					? currentValue
+							.sort((characteristicA, characteristicB) => characteristicA.type.localeCompare(characteristicB.type))
+							.map(characteristic => characteristic._id)
+					: currentValue;
 			}),
-		characteristicTemp: Yup.object().when('empty', (empty, schema) => (!depopulate ? schema : schema.strip())),
+		shops: Yup.array()
+			.when('empty', (empty, schema) => (depopulate ? schema.of(Yup.object()) : schema))
+			.transform((currentValue, originalValue) => {
+				return depopulate
+					? currentValue
+							.sort((shopA, shopB) => shopA.numberReceipts - shopB.numberReceipts)
+							.map(shop => ({
+								...shop,
+								shop: shop.shop._id,
+							}))
+					: currentValue;
+			}),
 	});
 };
 

@@ -1,22 +1,23 @@
 import axios from 'axios';
 
-export const getCharacteristics = ({ params }) => {
+export const getShops = () => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
 
-		dispatch({ type: 'REQUEST_CHARACTERISTICS' });
+		dispatch({ type: 'REQUEST_SHOPS' });
 
 		return await axios
-			.post('/api/getCharacteristics', {
+			.post('/api/getShops', {
 				studioId,
 				memberId,
-				params,
 			})
 			.then(response => {
+				const { data: shops } = response;
+
 				dispatch({
-					type: 'RECEIVE_CHARACTERISTICS',
-					payload: response.data,
+					type: 'RECEIVE_SHOPS',
+					payload: shops,
 				});
 
 				return Promise.resolve({ status: 'success' });
@@ -29,28 +30,28 @@ export const getCharacteristics = ({ params }) => {
 	};
 };
 
-export const createCharacteristic = ({ data }) => {
+export const createShop = ({ data }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
 
-		dispatch({ type: 'REQUEST_CHARACTERISTICS' });
+		dispatch({ type: 'REQUEST_SHOPS' });
 
 		return await axios
-			.post('/api/createCharacteristic', {
+			.post('/api/createShop', {
 				studioId,
 				memberId,
 				data,
 			})
 			.then(response => {
-				const characteristic = response.data;
+				const { data: shop } = response;
 
 				dispatch({
-					type: 'CREATE_CHARACTERISTIC',
-					payload: characteristic,
+					type: 'CREATE_SHOP',
+					payload: shop,
 				});
 
-				return Promise.resolve({ status: 'success', data: characteristic });
+				return Promise.resolve({ status: 'success', data: shop });
 			})
 			.catch(error => {
 				console.error(error);

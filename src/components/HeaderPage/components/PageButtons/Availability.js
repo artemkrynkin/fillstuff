@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
 import loadable from '@loadable/component';
-
-// import Button from '@material-ui/core/Button';
-
-import { getCharacteristics } from 'src/actions/characteristics';
 
 import { Button } from './styles';
 import styles from './index.module.css';
@@ -17,16 +12,11 @@ const DialogPositionGroupCreate = loadable(() =>
 	import('src/pages/Dialogs/PositionGroupCreateEditAdd' /* webpackChunkName: "Dialog_PositionGroupCreateEditAdd" */)
 );
 
-const Availability = props => {
-	const { currentStudio } = props;
+const Availability = () => {
 	const [dialogPositionCreate, setDialogPositionCreate] = useState(false);
 	const [dialogPositionGroupCreate, setDialogPositionGroupCreate] = useState(false);
 
-	const onOpenDialogPositionCreate = async () => {
-		await props.getCharacteristics();
-
-		setDialogPositionCreate(true);
-	};
+	const onOpenDialogPositionCreate = () => setDialogPositionCreate(true);
 
 	const onCloseDialogPositionCreate = () => setDialogPositionCreate(false);
 
@@ -43,29 +33,11 @@ const Availability = props => {
 				Создать группу
 			</Button>
 
-			<DialogPositionCreate
-				type="create"
-				dialogOpen={dialogPositionCreate}
-				onCloseDialog={onCloseDialogPositionCreate}
-				currentStudioId={currentStudio._id}
-			/>
+			<DialogPositionCreate type="create" dialogOpen={dialogPositionCreate} onCloseDialog={onCloseDialogPositionCreate} />
 
-			<DialogPositionGroupCreate
-				type="create"
-				dialogOpen={dialogPositionGroupCreate}
-				onCloseDialog={onCloseDialogPositionGroupCreate}
-				currentStudioId={currentStudio._id}
-			/>
+			<DialogPositionGroupCreate type="create" dialogOpen={dialogPositionGroupCreate} onCloseDialog={onCloseDialogPositionGroupCreate} />
 		</div>
 	);
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentStudio } = ownProps;
-
-	return {
-		getCharacteristics: () => dispatch(getCharacteristics(currentStudio._id)),
-	};
-};
-
-export default connect(null, mapDispatchToProps)(Availability);
+export default Availability;

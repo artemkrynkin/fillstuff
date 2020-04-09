@@ -109,7 +109,7 @@ writeOffsRouter.post(
 			.populate([
 				{
 					path: 'studio',
-					select: 'stock',
+					select: 'store',
 				},
 				{
 					path: 'positionGroup',
@@ -134,7 +134,7 @@ writeOffsRouter.post(
 
 		const {
 			studio: {
-				stock: { numberPositions: numberPositionsOld, stockPrice: stockPriceOld },
+				store: { numberPositions: numberPositionsOld, storePrice: storePriceOld },
 			},
 			receipts = position.receipts.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)),
 		} = position;
@@ -288,8 +288,8 @@ writeOffsRouter.post(
 			studioId,
 			{
 				$set: {
-					'stock.numberPositions': numberPositionsOld - numberArchivedPosition,
-					'stock.stockPrice': stockPriceOld - totalPurchasePrice,
+					'store.numberPositions': numberPositionsOld - numberArchivedPosition,
+					'store.storePrice': storePriceOld - totalPurchasePrice,
 				},
 			},
 			{ runValidators: true }
@@ -328,7 +328,7 @@ writeOffsRouter.post(
 			.populate([
 				{
 					path: 'studio',
-					select: 'stock',
+					select: 'store',
 				},
 				{
 					path: 'position receipt',
@@ -365,7 +365,7 @@ writeOffsRouter.post(
 
 		const {
 			studio: {
-				stock: { stockPrice: stockPriceOld },
+				store: { storePrice: storePriceOld },
 			},
 			receipt,
 		} = writeOff;
@@ -428,7 +428,7 @@ writeOffsRouter.post(
 			writeOff.studio._id,
 			{
 				$set: {
-					'stock.stockPrice': stockPriceOld + writeOff.purchasePrice,
+					'store.storePrice': storePriceOld + writeOff.purchasePrice,
 				},
 			},
 			{ runValidators: true }

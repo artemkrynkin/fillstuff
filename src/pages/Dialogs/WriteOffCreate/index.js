@@ -14,7 +14,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { Dialog, DialogTitle } from 'src/components/Dialog';
 import NumberFormat from 'src/components/NumberFormat';
 
-import { getStudioStock } from 'src/actions/studio';
+import { getStudioStore } from 'src/actions/studio';
 import { createWriteOff } from 'src/actions/writeOffs';
 import { enqueueSnackbar } from 'src/actions/snackbars';
 
@@ -41,7 +41,7 @@ class DialogWriteOffCreate extends Component {
 			actions.setSubmitting(false);
 
 			if (response.status === 'success') {
-				this.props.getStudioStock();
+				this.props.getStudioStore();
 				onCloseDialog();
 			}
 
@@ -78,13 +78,13 @@ class DialogWriteOffCreate extends Component {
 							<DialogContent>
 								<Grid className={stylesGlobal.formLabelControl}>
 									<TextField
-										className="none-padding"
 										label="Наименование"
 										InputProps={{
 											value: selectedPosition.name,
 											readOnly: true,
 										}}
 										fullWidth
+										readOnly
 									/>
 								</Grid>
 								<Grid className={stylesGlobal.formLabelControl}>
@@ -138,7 +138,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		getStudioStock: () => dispatch(getStudioStock()),
+		getStudioStore: () => dispatch(getStudioStore()),
 		createWriteOff: (positionId, data) => dispatch(createWriteOff({ params: { positionId }, data })),
 		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
 	};

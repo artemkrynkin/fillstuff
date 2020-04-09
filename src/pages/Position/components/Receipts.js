@@ -25,7 +25,7 @@ const Receipts = props => {
 		<CardPaper
 			leftContent="Поступления"
 			rightContent={
-				receiptsData && receiptsData.status === 'success' && receiptsData.data.every(receipt => receipt.status === 'closed') ? (
+				!position.receipts.length ? (
 					<Button onClick={() => onOpenDialogReceipt('dialogReceiptCreate', position)} variant="outlined" color="primary" size="small">
 						Создать поступление
 					</Button>
@@ -77,9 +77,9 @@ const Receipts = props => {
 					) : null}
 				</div>
 			) : receiptsData && receiptsData.status === 'success' && !receiptsData.data.length ? (
-				<Typography>Еще нет ни одного поступления</Typography>
+				<Typography style={{ padding: '2px 0' }}>Еще нет ни одного поступления</Typography>
 			) : receiptsData && receiptsData.status === 'error' ? (
-				<Typography>Не удалось загрузить поступления</Typography>
+				<Typography style={{ padding: '2px 0' }}>Не удалось загрузить поступления</Typography>
 			) : !receiptsData ? (
 				<div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />
 			) : null}

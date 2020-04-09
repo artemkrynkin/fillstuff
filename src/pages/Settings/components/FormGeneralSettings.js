@@ -38,10 +38,12 @@ const FormGeneralSettings = props => {
 
 	// const timezone = timezones.find(timezone => timezone.name === currentStudio.timezone);
 
+	const labelStyle = { width: 130 };
+
 	return (
 		<Form>
-			<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" style={{ maxWidth: 500 }} container>
-				<InputLabel error={Boolean(touched.name && errors.name)} style={{ minWidth: 130 }}>
+			<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="baseline" style={{ maxWidth: 500 }} container>
+				<InputLabel error={Boolean(touched.name && errors.name)} style={labelStyle} data-inline>
 					Название:
 				</InputLabel>
 				{/*{checkPermissions(currentUserRole, ['studio.full_control']) ? (*/}
@@ -53,6 +55,7 @@ const FormGeneralSettings = props => {
 					inputProps={{
 						maxLength: 60,
 					}}
+					fullWidth
 				/>
 				{/*) : (*/}
 				{/*	<TextField*/}
@@ -65,8 +68,8 @@ const FormGeneralSettings = props => {
 				{/*	/>*/}
 				{/*)}*/}
 			</Grid>
-			<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" style={{ maxWidth: 500 }} container>
-				<InputLabel error={Boolean(touched.timezone && errors.timezone)} style={{ minWidth: 130 }}>
+			<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="baseline" style={{ maxWidth: 500 }} container>
+				<InputLabel error={Boolean(touched.timezone && errors.timezone)} style={labelStyle} data-inline>
 					Часовой пояс:
 				</InputLabel>
 				<FormControl fullWidth>
@@ -101,14 +104,8 @@ const FormGeneralSettings = props => {
 				</FormControl>
 			</Grid>
 			<Divider style={{ marginBottom: 10 }} />
-			<Grid
-				className={stylesGlobal.formLabelControl}
-				wrap="nowrap"
-				alignItems="flex-start"
-				style={{ maxWidth: 500, marginBottom: 0 }}
-				container
-			>
-				<InputLabel error={Boolean(touched.timezone && errors.timezone)} style={{ minWidth: 130 }}>
+			<Grid wrap="nowrap" alignItems="baseline" style={{ maxWidth: 500 }} container>
+				<InputLabel error={Boolean(touched.timezone && errors.timezone)} style={labelStyle} data-inline>
 					Настройки закупок:
 				</InputLabel>
 				<Grid direction="column" container>

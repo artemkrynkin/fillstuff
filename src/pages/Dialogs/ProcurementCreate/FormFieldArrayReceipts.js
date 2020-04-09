@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
 import ClassNames from 'classnames';
 import loadable from '@loadable/component';
 
@@ -8,8 +7,6 @@ import Grid from '@material-ui/core/Grid';
 import FormHelperText from '@material-ui/core/FormHelperText';
 
 import { SelectAutocomplete } from 'src/components/selectAutocomplete';
-
-import { getCharacteristics } from 'src/actions/characteristics';
 
 import { positionTransform } from './utils';
 import FormFieldArrayReceipt from './FormFieldArrayReceipt';
@@ -29,7 +26,6 @@ const addPositionContainerClasses = formEditable =>
 const FormFieldArrayReceipts = props => {
 	const {
 		dialogRef,
-		currentStudioId,
 		receiptInitialValues,
 		positions: {
 			data: positions,
@@ -45,11 +41,7 @@ const FormFieldArrayReceipts = props => {
 
 	const onChangeTextSearchPosition = value => setTextSearchPosition(value);
 
-	const onOpenDialogPositionCreate = async () => {
-		await props.getCharacteristics();
-
-		setDialogPositionCreate(true);
-	};
+	const onOpenDialogPositionCreate = () => setDialogPositionCreate(true);
 
 	const onCloseDialogPositionCreate = () => setDialogPositionCreate(false);
 
@@ -139,18 +131,9 @@ const FormFieldArrayReceipts = props => {
 						}, 0);
 					}
 				}}
-				currentStudioId={currentStudioId}
 			/>
 		</div>
 	);
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-	const { currentStudioId } = ownProps;
-
-	return {
-		getCharacteristics: () => dispatch(getCharacteristics(currentStudioId)),
-	};
-};
-
-export default connect(null, mapDispatchToProps)(FormFieldArrayReceipts);
+export default FormFieldArrayReceipts;

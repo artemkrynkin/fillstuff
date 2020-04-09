@@ -9,7 +9,7 @@ import Button from '@material-ui/core/Button';
 
 import { Dialog, DialogTitle } from 'src/components/Dialog';
 
-import { getStudioStock } from 'src/actions/studio';
+import { getStudioStore } from 'src/actions/studio';
 import { archivePosition, archivePositionAfterEnded } from 'src/actions/positions';
 import { enqueueSnackbar } from 'src/actions/snackbars';
 
@@ -40,7 +40,7 @@ const PositionArchiveDelete = props => {
 					},
 				});
 
-				props.getStudioStock();
+				props.getStudioStore();
 			}
 
 			if (response.status === 'error') {
@@ -72,7 +72,7 @@ const PositionArchiveDelete = props => {
 					Вы действительно хотите {type === 'archive' ? 'архивировать' : 'удалить'}{' '}
 					<b>
 						{selectedPosition.characteristics.reduce(
-							(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
+							(fullName, characteristic) => `${fullName} ${characteristic.name}`,
 							selectedPosition.name
 						)}
 					</b>
@@ -118,7 +118,7 @@ PositionArchiveDelete.propTypes = {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		getStudioStock: () => dispatch(getStudioStock()),
+		getStudioStore: () => dispatch(getStudioStore()),
 		archivePosition: (positionId, positionGroupId) => dispatch(archivePosition({ params: { positionId }, data: { positionGroupId } })),
 		archivePositionAfterEnded: (positionId, data) => dispatch(archivePositionAfterEnded({ params: { positionId }, data })),
 		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),

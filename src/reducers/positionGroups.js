@@ -100,6 +100,35 @@ const positionGroups = (
 				data: stateData,
 			};
 		}
+		case 'CREATE_RECEIPT': {
+			let stateData;
+
+			if (state.data) {
+				stateData = { ...state }.data;
+				const positionGroupIndex = stateData.findIndex(positionGroup =>
+					positionGroup.positions.some(position => position._id === action.payload.receipt.position)
+				);
+
+				if (positionGroupIndex !== -1) {
+					const positionIndex = stateData[positionGroupIndex].positions.findIndex(
+						position => position._id === action.payload.receipt.position
+					);
+
+					stateData[positionGroupIndex].positions[positionIndex] = {
+						...stateData[positionGroupIndex].positions[positionIndex],
+						activeReceipt: action.payload.receipt,
+						hasReceipts: true,
+						receipts: [action.payload.receipt],
+					};
+				}
+			}
+
+			return {
+				...state,
+				isFetching: false,
+				data: stateData,
+			};
+		}
 		case 'UNAUTHORIZED_USER': {
 			return {
 				...state,

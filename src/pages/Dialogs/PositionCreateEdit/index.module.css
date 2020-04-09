@@ -1,24 +1,4 @@
-.addCharacteristic {
-  display: inline-flex;
-  margin: 2px 0 2px 16px;
-}
-
-.addCharacteristic button {
-  background-color: transparent !important;
-  color: var(--c-hex-t-300);
-  padding: 3px 0;
-}
-
-.addCharacteristic button[disabled] {
-  color: var(--c-hex-bg-100);
-}
-
-.addCharacteristic button svg {
-  font-size: 26px;
-  width: 26px !important;
-}
-
-.helpIcon {
+.iconHelp {
   color: var(--c-hex-bg-300);
   font-size: 16px;
 }

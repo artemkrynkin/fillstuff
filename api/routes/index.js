@@ -4,6 +4,7 @@ import account from './account';
 import studio from './studio';
 import members from './members';
 import characteristics from './characteristics';
+import shops from './shops';
 import positions from './positions';
 import positionGroups from './positionGroups';
 import receipts from './receipts';
@@ -18,6 +19,7 @@ const router = app => {
 	app.use('/api', studio);
 	app.use('/api', members);
 	app.use('/api', characteristics);
+	app.use('/api', shops);
 	app.use('/api', positions);
 	app.use('/api', positionGroups);
 	app.use('/api', receipts);

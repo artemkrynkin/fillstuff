@@ -47,6 +47,7 @@ import {
 	faFolderPlus as farFolderPlus,
 	faFolderMinus as farFolderMinus,
 	faTruck as farTruck,
+	faCog as farCog,
 } from '@fortawesome/pro-regular-svg-icons';
 
 import {
@@ -81,7 +82,7 @@ import {
 	faInfoCircle as falInfoCircle,
 } from '@fortawesome/pro-light-svg-icons';
 
-import { faCheckCircle as fadCheckCircle } from '@fortawesome/pro-duotone-svg-icons';
+import { faCheckCircle as fadCheckCircle, faExclamationCircle as fadExclamationCircle } from '@fortawesome/pro-duotone-svg-icons';
 
 library.add(
 	// Brands
@@ -102,6 +103,7 @@ library.add(
 	fasPen,
 	fasCircle,
 	fasClock,
+	farCog,
 
 	// Regular
 	farAngleLeft,
@@ -166,5 +168,6 @@ library.add(
 	falInfoCircle,
 
 	// Duotone
-	fadCheckCircle
+	fadCheckCircle,
+	fadExclamationCircle
 );

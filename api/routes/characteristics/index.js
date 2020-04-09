@@ -13,24 +13,35 @@ characteristicsRouter.post(
 	isAuthedResolver,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	(req, res, next) => {
-		const { studioId } = req.body;
+		const {
+			studioId,
+			params: { type },
+		} = req.body;
 
-		Characteristic.find({ studio: studioId })
+		const conditions = { studio: studioId };
+
+		if (type) conditions.type = type;
+
+		Characteristic.find(conditions)
 			.then(characteristics => res.json(characteristics))
 			.catch(err => next(err));
 	}
 );
 
 characteristicsRouter.post(
-	'/createCharacteristics',
+	'/createCharacteristic',
 	isAuthedResolver,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	(req, res, next) => {
 		const {
+			studioId,
 			data: { characteristic: newCharacteristic },
 		} = req.body;
 
-		const characteristic = new Characteristic(newCharacteristic);
+		const characteristic = new Characteristic({
+			studio: studioId,
+			...newCharacteristic,
+		});
 
 		return characteristic
 			.save()

@@ -29,7 +29,7 @@ const PositionNameInList = props => {
 				<span className={styles.name}>{name}</span>
 				{characteristics.length ? (
 					<span className={styles.characteristics}>
-						{characteristics.reduce((characteristics, characteristic) => `${characteristics}${characteristic.label} `, '').trim()}
+						{characteristics.reduce((characteristics, characteristic) => `${characteristics}${characteristic.name} `, '').trim()}
 					</span>
 				) : null}
 			</div>
@@ -86,8 +86,7 @@ PositionNameInList.propTypes = {
 	characteristics: PropTypes.arrayOf(
 		PropTypes.shape({
 			type: PropTypes.string.isRequired,
-			value: PropTypes.string.isRequired,
-			label: PropTypes.string.isRequired,
+			name: PropTypes.string.isRequired,
 		})
 	),
 	isArchived: PropTypes.bool,

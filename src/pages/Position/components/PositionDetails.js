@@ -48,7 +48,7 @@ const PositionDetails = props => {
 				<DefinitionListItem term="Минимальный остаток" value={position.minimumBalance} />
 			</DefinitionList>
 
-			{position.shopName || position.shopLink || position.characteristics.length ? (
+			{position.characteristics.length || position.shops.length ? (
 				<div>
 					<Divider style={{ margin: '20px 0' }} />
 
@@ -56,22 +56,29 @@ const PositionDetails = props => {
 						Информация для закупок
 					</Typography>
 					<DefinitionList>
-						{position.shopName || position.shopLink ? (
+						{position.shops.length ? (
 							<DefinitionListItem
-								term="Магазин / Ссылка"
+								term="Магазины"
 								value={
-									position.shopLink ? (
-										<a
-											// eslint-disable-next-line
-											href={!~position.shopLink.search(/^http[s]?\:\/\//) ? `//${position.shopLink}` : `${position.shopLink}`}
-											target="_blank"
-											rel="noreferrer noopener"
-										>
-											{position.shopName || position.shopLink}
-										</a>
-									) : (
-										position.shopName
-									)
+									<Chips
+										chips={position.shops}
+										onRenderChipLabel={value =>
+											value.shop.link ? (
+												<a
+													// eslint-disable-next-line
+													href={!~value.shop.link.search(/^http[s]?\:\/\//) ? `//${value.shop.link}` : `${value.shop.link}`}
+													target="_blank"
+													rel="noreferrer noopener"
+													style={{ margin: '-5px -15px -6px', padding: '5px 15px 6px' }}
+												>
+													{value.shop.name}
+												</a>
+											) : (
+												<span>{value.shop.name}</span>
+											)
+										}
+										onRemoveChip={null}
+									/>
 								}
 							/>
 						) : null}
@@ -83,7 +90,7 @@ const PositionDetails = props => {
 										chips={position.characteristics}
 										onRenderChipLabel={value => (
 											<span>
-												<span style={{ fontWeight: 600 }}>{characteristicTypeTransform(value.type)}</span>: {value.label}
+												<span style={{ fontWeight: 600 }}>{characteristicTypeTransform(value.type)}</span>: {value.name}
 											</span>
 										)}
 										onRemoveChip={null}

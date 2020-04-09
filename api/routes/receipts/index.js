@@ -2,10 +2,11 @@ import { Router } from 'express';
 
 import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
+import { receiptCalc } from 'shared/checkPositionAndReceipt';
+
 import Studio from 'api/models/studio';
 import Position from 'api/models/position';
 import Receipt from 'api/models/receipt';
-import { receiptCalc } from '../../../shared/checkPositionAndReceipt';
 
 const receiptsRouter = Router();
 
@@ -44,7 +45,7 @@ receiptsRouter.post(
 		} = req.body;
 
 		const positionPromise = Position.findById(newReceiptValues.position).catch(err => next({ code: 2, err }));
-		const studioPromise = Studio.findById(studioId, 'stock').catch(err => next({ code: 2, err }));
+		const studioPromise = Studio.findById(studioId, 'store').catch(err => next({ code: 2, err }));
 
 		const position = await positionPromise;
 		const studio = await studioPromise;
@@ -75,14 +76,14 @@ receiptsRouter.post(
 		]);
 
 		const {
-			stock: { stockPrice: stockPriceOld },
+			store: { storePrice: storePriceOld },
 		} = studio;
 
 		Studio.findByIdAndUpdate(
 			studioId,
 			{
 				$set: {
-					'stock.stockPrice': stockPriceOld + newReceipt.initial.quantity * newReceipt.unitPurchasePrice,
+					'store.storePrice': storePriceOld + newReceipt.initial.quantity * newReceipt.unitPurchasePrice,
 				},
 			},
 			{ runValidators: true }
@@ -150,7 +151,7 @@ receiptsRouter.post(
 			.populate([
 				{
 					path: 'studio',
-					select: 'stock',
+					select: 'store',
 				},
 				{
 					path: 'activeReceipt',
@@ -160,7 +161,7 @@ receiptsRouter.post(
 
 		const {
 			studio: {
-				stock: { stockPrice: stockPriceOld },
+				store: { storePrice: storePriceOld },
 			},
 			activeReceipt,
 		} = position;
@@ -193,7 +194,7 @@ receiptsRouter.post(
 			position.studio._id,
 			{
 				$set: {
-					'stock.stockPrice': stockPriceOld + quantity * activeReceipt.unitPurchasePrice,
+					'store.storePrice': storePriceOld + quantity * activeReceipt.unitPurchasePrice,
 				},
 			},
 			{ runValidators: true }

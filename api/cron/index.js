@@ -35,7 +35,7 @@ new CronJob(
 									},
 								]);
 
-								const stockPrice = positions
+								const storePrice = positions
 									.filter(position => position.receipts.length)
 									.reduce((sum, position) => {
 										return (
@@ -51,8 +51,8 @@ new CronJob(
 									studio._id,
 									{
 										$set: {
-											'stock.numberPositions': positions.length,
-											'stock.stockPrice': stockPrice,
+											'store.numberPositions': positions.length,
+											'store.storePrice': storePrice,
 										},
 									},
 									{ runValidators: true }

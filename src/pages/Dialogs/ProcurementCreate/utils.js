@@ -6,6 +6,6 @@ export const positionTransform = position => ({
 	isFree: position.isFree,
 	name: position.name,
 	characteristics: position.characteristics,
-	label: position.characteristics.reduce((fullName, characteristic) => `${fullName} ${characteristic.label}`, position.name),
+	label: position.characteristics.reduce((fullName, characteristic) => `${fullName} ${characteristic.name}`, position.name),
 	value: position._id,
 });

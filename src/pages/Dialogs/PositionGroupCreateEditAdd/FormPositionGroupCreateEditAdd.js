@@ -34,7 +34,7 @@ const findPositionByFullName = (position, searchText) => {
 	const searchTextLowercase = String(searchText).toLowerCase();
 
 	const positionName = position.characteristics
-		.reduce((fullName, characteristic) => `${fullName} ${characteristic.label}`, position.name)
+		.reduce((fullName, characteristic) => `${fullName} ${characteristic.name}`, position.name)
 		.toLowerCase();
 
 	return positionName.indexOf(searchTextLowercase) !== -1;
@@ -67,8 +67,8 @@ const FormPositionGroupCreateEditAdd = props => {
 	return (
 		<Form>
 			<DialogContent style={{ overflow: 'initial' }}>
-				{type === 'create' || type === 'edit' ? (
-					<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
+				{/create|edit/.test(type) ? (
+					<Grid className={stylesGlobal.formLabelControl}>
 						<Field
 							name="name"
 							error={Boolean(touched.name && errors.name)}
@@ -84,7 +84,7 @@ const FormPositionGroupCreateEditAdd = props => {
 					</Grid>
 				) : null}
 
-				{type === 'create' || type === 'add' ? (
+				{/create|add/.test(type) ? (
 					<Grid className={styles.selectPositions} direction="column" wrap="nowrap" container>
 						<InputLabel error={typeof errors.positions === 'string'}>
 							{typeof errors.positions === 'string' ? errors.positions : 'Выберите позиции'}
@@ -154,7 +154,7 @@ const FormPositionGroupCreateEditAdd = props => {
 											onRenderChipLabel={position => (
 												<span>
 													{position.characteristics.reduce(
-														(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
+														(fullName, characteristic) => `${fullName} ${characteristic.name}`,
 														position.name
 													)}
 												</span>

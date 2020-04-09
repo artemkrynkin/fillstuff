@@ -26,13 +26,11 @@ import Tooltip from 'src/components/Tooltip';
 
 import FormFieldArrayReceipts from './FormFieldArrayReceipts';
 
-import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
 
 const FormProcurementCreate = props => {
 	const {
 		dialogRef,
-		currentStudioId,
 		receiptInitialValues,
 		onHandleEditFormProcurement,
 		positions,
@@ -75,6 +73,7 @@ const FormProcurementCreate = props => {
 						</Grid>
 					</div>
 				) : null}
+
 				<ErrorMessage name="pricePositions">
 					{message => (
 						<div
@@ -96,6 +95,7 @@ const FormProcurementCreate = props => {
 						</div>
 					)}
 				</ErrorMessage>
+
 				<Grid style={{ marginBottom: 12 }} spacing={2} container>
 					<Grid xs={4} item>
 						<Field
@@ -126,7 +126,7 @@ const FormProcurementCreate = props => {
 						) : null}
 					</Grid>
 					<Grid xs={2} item>
-						<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" style={{ marginBottom: 0 }} container>
+						<Grid wrap="nowrap" alignItems="center" container>
 							<InputLabel style={{ margin: '20px 8px 0 -8px' }}>от</InputLabel>
 							<TextField
 								innerRef={refDropdownDate}
@@ -141,32 +141,6 @@ const FormProcurementCreate = props => {
 								fullWidth
 							/>
 						</Grid>
-
-						<Dropdown
-							anchor={refDropdownDate}
-							open={dropdownDate}
-							onClose={() => onHandleDropdownDate(false)}
-							placement="bottom"
-							disablePortal={false}
-						>
-							<MuiPickersUtilsProvider utils={MomentUtils}>
-								<DatePicker
-									value={values.date}
-									onChange={onChangeDate}
-									variant="static"
-									leftArrowButtonProps={{
-										size: 'small',
-									}}
-									leftArrowIcon={<FontAwesomeIcon icon={['far', 'angle-left']} />}
-									rightArrowButtonProps={{
-										size: 'small',
-									}}
-									rightArrowIcon={<FontAwesomeIcon icon={['far', 'angle-right']} />}
-									disableFuture
-									disableToolbar
-								/>
-							</MuiPickersUtilsProvider>
-						</Dropdown>
 					</Grid>
 					<Grid xs={3} item>
 						<Field
@@ -233,7 +207,6 @@ const FormProcurementCreate = props => {
 					{props => (
 						<FormFieldArrayReceipts
 							dialogRef={dialogRef}
-							currentStudioId={currentStudioId}
 							receiptInitialValues={receiptInitialValues}
 							positions={positions}
 							formEditable={formEditable}
@@ -270,6 +243,32 @@ const FormProcurementCreate = props => {
 					</Grid>
 				</Grid>
 			</DialogActions>
+
+			<Dropdown
+				anchor={refDropdownDate}
+				open={dropdownDate}
+				onClose={() => onHandleDropdownDate(false)}
+				placement="bottom"
+				disablePortal={false}
+			>
+				<MuiPickersUtilsProvider utils={MomentUtils}>
+					<DatePicker
+						value={values.date}
+						onChange={onChangeDate}
+						variant="static"
+						leftArrowButtonProps={{
+							size: 'small',
+						}}
+						leftArrowIcon={<FontAwesomeIcon icon={['far', 'angle-left']} />}
+						rightArrowButtonProps={{
+							size: 'small',
+						}}
+						rightArrowIcon={<FontAwesomeIcon icon={['far', 'angle-right']} />}
+						disableFuture
+						disableToolbar
+					/>
+				</MuiPickersUtilsProvider>
+			</Dropdown>
 		</Form>
 	);
 };

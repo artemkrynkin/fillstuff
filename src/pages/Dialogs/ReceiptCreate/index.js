@@ -8,7 +8,7 @@ import { receiptCalc } from 'shared/checkPositionAndReceipt';
 
 import { Dialog, DialogTitle } from 'src/components/Dialog';
 
-import { getStudioStock } from 'src/actions/studio';
+import { getStudioStore } from 'src/actions/studio';
 import { createReceipt } from 'src/actions/receipts';
 import { enqueueSnackbar } from 'src/actions/snackbars';
 
@@ -70,7 +70,7 @@ class DialogReceiptCreate extends Component {
 				actions.setSubmitting(false);
 
 				if (response.status === 'success') {
-					this.props.getStudioStock();
+					this.props.getStudioStore();
 					onCloseDialog();
 				}
 
@@ -145,7 +145,7 @@ class DialogReceiptCreate extends Component {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		getStudioStock: () => dispatch(getStudioStock()),
+		getStudioStore: () => dispatch(getStudioStore()),
 		createReceipt: receipt => dispatch(createReceipt({ data: receipt })),
 		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
 	};

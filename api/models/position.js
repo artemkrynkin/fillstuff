@@ -71,19 +71,23 @@ let Position = new Schema({
 		type: Boolean,
 		default: false,
 	},
-	// Название магазина
-	shopName: {
-		type: String,
-	},
-	// Ссылка на товар в магазине
-	shopLink: {
-		type: String,
-	},
 	// Характеристики
 	characteristics: [
 		{
 			type: Schema.Types.ObjectId,
 			ref: 'Characteristic',
+		},
+	],
+	// Магазины
+	shops: [
+		{
+			shop: {
+				type: Schema.Types.ObjectId,
+				ref: 'Shop',
+			},
+			numberReceipts: {
+				type: Number,
+			},
 		},
 	],
 	// Имеет поступления

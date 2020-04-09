@@ -213,7 +213,7 @@ procurementsRouter.post(
 			.populate([
 				{
 					path: 'studio',
-					select: 'stock',
+					select: 'store',
 				},
 				{
 					path: 'member',
@@ -236,7 +236,7 @@ procurementsRouter.post(
 
 		const {
 			studio: {
-				stock: { stockPrice: stockPriceOld },
+				store: { storePrice: storePriceOld },
 			},
 		} = procurement;
 
@@ -244,8 +244,8 @@ procurementsRouter.post(
 			procurement.studio._id,
 			{
 				$set: {
-					'stock.stockPrice':
-						stockPriceOld + procurement.receipts.reduce((sum, receipt) => sum + receipt.initial.quantity * receipt.unitPurchasePrice, 0),
+					'store.storePrice':
+						storePriceOld + procurement.receipts.reduce((sum, receipt) => sum + receipt.initial.quantity * receipt.unitPurchasePrice, 0),
 				},
 			},
 			{ runValidators: true }

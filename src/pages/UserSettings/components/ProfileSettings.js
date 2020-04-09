@@ -115,7 +115,7 @@ class ProfileSettings extends Component {
 			[styles.photoImg_null]: !user.avatar,
 		});
 
-		let labelStyles = { minWidth: 52 };
+		let labelStyle = { minWidth: 52 };
 
 		return (
 			<CardPaper leftContent="Профиль" title style={{ marginBottom: 16 }}>
@@ -174,13 +174,16 @@ class ProfileSettings extends Component {
 						>
 							{({ errors, isSubmitting, touched }) => (
 								<Form>
-									<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
-										<FormLabel style={labelStyles}>Имя:</FormLabel>
+									<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="baseline" container>
+										<FormLabel style={labelStyle} data-inline>
+											Имя:
+										</FormLabel>
 										<Field
 											name="name"
 											error={Boolean(touched.name && errors.name)}
 											helperText={(touched.name && errors.name) || ''}
 											as={TextField}
+											fullWidth
 										/>
 									</Grid>
 									<Grid justify="flex-end" container>
@@ -196,9 +199,11 @@ class ProfileSettings extends Component {
 						</Formik>
 
 						<Divider style={{ margin: '20px 0' }} />
-						<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
-							<FormLabel style={labelStyles}>Email:</FormLabel>
-							<Grid item>
+						<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="baseline" container>
+							<FormLabel style={labelStyle} data-inline>
+								Email:
+							</FormLabel>
+							<Grid xs={12} item>
 								{visibleEmailFields ? (
 									<Formik
 										initialValues={{ newEmail: '' }}
@@ -276,9 +281,11 @@ class ProfileSettings extends Component {
 
 						{user.email ? <Divider style={{ margin: '20px 0' }} /> : null}
 						{user.email ? (
-							<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" style={{ margin: 0 }} container>
-								<FormLabel style={labelStyles}>Пароль:</FormLabel>
-								<Grid item>
+							<Grid wrap="nowrap" alignItems="baseline" container>
+								<FormLabel style={labelStyle} data-inline>
+									Пароль:
+								</FormLabel>
+								<Grid xs={12} item>
 									{visiblePasswordFields ? (
 										<Formik
 											initialValues={{
@@ -368,6 +375,7 @@ class ProfileSettings extends Component {
 												value: user.hasPassword ? `обновлён ${moment(user.passwordUpdate).fromNow()}` : 'ещё не установлен',
 											}}
 											fullWidth
+											readOnly
 										/>
 									)}
 								</Grid>

@@ -1,4 +1,4 @@
-const studio = (
+const shops = (
 	state = {
 		isFetching: false,
 		data: null,
@@ -6,37 +6,23 @@ const studio = (
 	action
 ) => {
 	switch (action.type) {
-		case 'REQUEST_STUDIO': {
+		case 'REQUEST_SHOPS': {
 			return {
 				...state,
 				isFetching: true,
 			};
 		}
-		case 'RECEIVE_STUDIO': {
+		case 'RECEIVE_SHOPS': {
 			return {
 				...state,
 				isFetching: false,
 				data: action.payload,
 			};
 		}
-		case 'GET_STUDIO_STORE': {
+		case 'CREATE_SHOP': {
 			let stateData = { ...state }.data;
 
-			stateData.store = action.payload;
-
-			return {
-				...state,
-				isFetching: false,
-				data: stateData,
-			};
-		}
-		case 'EDIT_STUDIO': {
-			let stateData = { ...state }.data;
-
-			stateData = {
-				...stateData,
-				...action.payload,
-			};
+			stateData.push(action.payload);
 
 			return {
 				...state,
@@ -57,4 +43,4 @@ const studio = (
 	}
 };
 
-export default studio;
+export default shops;

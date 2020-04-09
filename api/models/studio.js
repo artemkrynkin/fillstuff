@@ -34,9 +34,9 @@ let Studio = new Schema({
 			},
 		},
 	},
-	stock: {
+	store: {
 		// если есть платные позиции, то true, иначе false
-		store: {
+		shop: {
 			type: Boolean,
 			default: false,
 		},
@@ -45,7 +45,7 @@ let Studio = new Schema({
 			set: value => formatNumber(value, { fractionDigits: 0 }),
 			default: 0,
 		},
-		stockPrice: {
+		storePrice: {
 			type: Number,
 			set: value => formatNumber(value),
 			default: 0,

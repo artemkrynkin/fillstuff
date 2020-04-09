@@ -7,6 +7,7 @@ import members from './members';
 import positionGroups from './positionGroups';
 import positions from './positions';
 import characteristics from './characteristics';
+import shops from './shops';
 import writeOffs from './writeOffs';
 import procurements from './procurements';
 import invoices from './invoices';
@@ -22,6 +23,7 @@ const getReducers = () => {
 		positionGroups,
 		positions,
 		characteristics,
+		shops,
 		writeOffs,
 		procurements,
 		invoices,

@@ -18,11 +18,11 @@ studioRouter.post('/getStudio', isAuthedResolver, (req, res, next) => {
 		.catch(err => next(err));
 });
 
-studioRouter.post('/getStudioStock', isAuthedResolver, (req, res, next) => {
+studioRouter.post('/getStudioStore', isAuthedResolver, (req, res, next) => {
 	const { studioId } = req.body;
 
 	Studio.findById(studioId)
-		.then(studio => res.json(studio.stock))
+		.then(studio => res.json(studio.store))
 		.catch(err => next(err));
 });
 

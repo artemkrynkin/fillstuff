@@ -9,7 +9,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
-import { getCharacteristics } from 'src/actions/characteristics';
 import { getPositions } from 'src/actions/positions';
 import { getPositionGroups } from 'src/actions/positionGroups';
 
@@ -86,14 +85,12 @@ class Positions extends Component {
 	onCloseDialogByName = dialogName => this.setState({ [dialogName]: false });
 
 	componentDidMount() {
-		this.props.getCharacteristics();
 		this.props.getPositions();
 		this.props.getPositionGroups();
 	}
 
 	render() {
 		const {
-			currentStudio,
 			positions: {
 				data: positions,
 				isFetching: isLoadingPositions,
@@ -199,7 +196,6 @@ class Positions extends Component {
 					dialogOpen={dialogPositionEdit}
 					onCloseDialog={() => this.onCloseDialogByName('dialogPositionEdit')}
 					onExitedDialog={this.onPositionDrop}
-					currentStudioId={currentStudio._id}
 					selectedPosition={dialogOpenedName === 'dialogPositionEdit' ? position : null}
 				/>
 
@@ -259,7 +255,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		getCharacteristics: () => dispatch(getCharacteristics()),
 		getPositions: () => dispatch(getPositions()),
 		getPositionGroups: () => dispatch(getPositionGroups()),
 	};

@@ -9,7 +9,7 @@ import { sleep, formatNumber } from 'shared/utils';
 
 import { DialogStickyFR, DialogTitle } from 'src/components/Dialog';
 
-import { getStudioStock } from 'src/actions/studio';
+import { getStudioStore } from 'src/actions/studio';
 import { createProcurement } from 'src/actions/procurements';
 import { enqueueSnackbar } from 'src/actions/snackbars';
 
@@ -219,7 +219,7 @@ class ProcurementCreate extends Component {
 				actions.setSubmitting(false);
 
 				if (response.status === 'success') {
-					this.props.getStudioStock();
+					this.props.getStudioStore();
 					onCloseDialog();
 				}
 
@@ -280,7 +280,6 @@ class ProcurementCreate extends Component {
 					{props => (
 						<FormProcurementCreate
 							dialogRef={this.dialogRef}
-							currentStudioId={currentStudio._id}
 							receiptInitialValues={receiptInitialValues}
 							onHandleEditFormProcurement={this.onHandleEditFormProcurement}
 							positions={positions}
@@ -308,7 +307,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		getStudioStock: () => dispatch(getStudioStock()),
+		getStudioStore: () => dispatch(getStudioStore()),
 		createProcurement: procurement => dispatch(createProcurement({ data: { procurement } })),
 		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
 	};

@@ -363,8 +363,11 @@ export const BliksideTheme = createMuiTheme({
 			},
 			button: {
 				transition: 'background-color 50ms ease-out',
-				'&:hover': {
+				'&:hover, &$focusVisible:hover': {
 					backgroundColor: theme.blueGrey.cBg50,
+				},
+				'&$focusVisible': {
+					backgroundColor: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg50)}, 0.5)`,
 				},
 			},
 		},
@@ -445,6 +448,7 @@ export const BliksideTheme = createMuiTheme({
 					display: 'flex',
 					flex: '0 0 auto',
 					marginRight: 10,
+					marginTop: 10,
 				},
 			},
 			formControl: {
@@ -665,7 +669,7 @@ export const BliksideTheme = createMuiTheme({
 					},
 				},
 				'&$disabled': {
-					color: theme.blueGrey.cBg500,
+					color: theme.blueGrey.cBg600,
 					backgroundColor: theme.brightness.cBr3,
 					boxShadow: 'none',
 				},

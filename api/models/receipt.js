@@ -5,7 +5,7 @@ import { formatNumber } from 'shared/utils';
 
 const Schema = mongoose.Schema;
 
-let Receipt = new Schema({
+const Receipt = new Schema({
 	createdAt: {
 		type: Date,
 		default: Date.now,

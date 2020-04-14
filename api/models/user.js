@@ -6,7 +6,7 @@ import i18n from 'i18n';
 
 const Schema = mongoose.Schema;
 
-let User = new Schema({
+const User = new Schema({
 	avatar: {
 		type: String,
 		default: null,

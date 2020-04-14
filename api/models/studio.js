@@ -6,7 +6,7 @@ import { formatNumber } from 'shared/utils';
 
 const Schema = mongoose.Schema;
 
-let Studio = new Schema({
+const Studio = new Schema({
 	createdAt: {
 		type: Date,
 		default: Date.now,

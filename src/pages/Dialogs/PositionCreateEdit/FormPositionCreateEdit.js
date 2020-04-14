@@ -41,7 +41,7 @@ const FormPositionCreateEdit = props => {
 	return (
 		<Form>
 			<DialogContent>
-				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="baseline" container>
+				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 					<InputLabel error={Boolean(touched.name && errors.name)} style={labelStyle} data-inline>
 						Наименование
 					</InputLabel>
@@ -59,7 +59,7 @@ const FormPositionCreateEdit = props => {
 					/>
 				</Grid>
 
-				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="baseline" container>
+				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 					<InputLabel error={Boolean(touched.unitReceipt && errors.unitReceipt)} style={labelStyle} data-inline>
 						Единица поступления
 					</InputLabel>
@@ -102,7 +102,7 @@ const FormPositionCreateEdit = props => {
 					</Grid>
 				</Grid>
 
-				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="baseline" container>
+				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 					<InputLabel error={Boolean(touched.unitRelease && errors.unitRelease)} style={labelStyle} data-inline>
 						Единица отпуска
 					</InputLabel>
@@ -147,7 +147,7 @@ const FormPositionCreateEdit = props => {
 					</Grid>
 				</Grid>
 
-				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="baseline" container>
+				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 					<InputLabel error={Boolean(touched.isFree && errors.isFree)} style={labelStyle} data-inline>
 						Вид реализации
 					</InputLabel>
@@ -186,7 +186,7 @@ const FormPositionCreateEdit = props => {
 					</Grid>
 				</Grid>
 
-				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="baseline" container>
+				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 					<InputLabel error={Boolean(touched.minimumBalance && errors.minimumBalance)} style={labelStyle} data-inline>
 						Минимальный остаток
 					</InputLabel>
@@ -214,7 +214,7 @@ const FormPositionCreateEdit = props => {
 								</div>
 							}
 							placement="bottom"
-							style={{ marginLeft: 10 }}
+							style={{ marginLeft: 8 }}
 							interactive
 						>
 							<FontAwesomeIcon className={styles.iconHelp} icon={['fal', 'question-circle']} />

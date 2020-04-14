@@ -10,7 +10,9 @@ import { sleep, formatNumber } from 'shared/utils';
 import { DialogStickyFR, DialogTitle } from 'src/components/Dialog';
 
 import { getStudioStore } from 'src/actions/studio';
-import { createProcurement } from 'src/actions/procurements';
+import { getShops } from 'src/actions/shops';
+import { getPositions } from 'src/actions/positions';
+import { createProcurementReceived } from 'src/actions/procurements';
 import { enqueueSnackbar } from 'src/actions/snackbars';
 
 import { positionTransform } from './utils';
@@ -18,17 +20,6 @@ import FormProcurementCreate from './FormProcurementCreate';
 import procurementSchema from './procurementSchema';
 
 import styles from './index.module.css';
-
-const initialValues = {
-	number: '',
-	noInvoice: false,
-	date: undefined,
-	costDelivery: '',
-	pricePositions: 0,
-	totalPrice: '',
-	compensateCostDelivery: true,
-	receipts: [],
-};
 
 const receiptInitialValues = position => ({
 	position,
@@ -48,11 +39,11 @@ const receiptInitialValues = position => ({
 
 class ProcurementCreate extends Component {
 	static propTypes = {
-		type: PropTypes.oneOf(['create']).isRequired,
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
 		onExitedDialog: PropTypes.func,
 		currentStudio: PropTypes.object.isRequired,
+		selectedProcurement: PropTypes.object,
 	};
 
 	initialState = {
@@ -68,9 +59,10 @@ class ProcurementCreate extends Component {
 	onSubmit = async (values, actions) => {
 		const { onCloseDialog } = this.props;
 		const { formEditable } = this.state;
-		const procurement = procurementSchema.cast(values);
 
 		if (formEditable) {
+			const procurement = procurementSchema().cast(values);
+
 			const indicators = UnitCostDelivery.indicators(procurement.receipts);
 
 			await sleep(500);
@@ -196,6 +188,8 @@ class ProcurementCreate extends Component {
 
 			actions.setSubmitting(false);
 		} else {
+			const procurement = procurementSchema(true).cast(values);
+
 			if (procurement.totalPrice === procurement.pricePositions) {
 				procurement.totalPrice = formatNumber(procurement.pricePositions + procurement.costDelivery);
 			}
@@ -215,7 +209,7 @@ class ProcurementCreate extends Component {
 				return newReceipt;
 			});
 
-			this.props.createProcurement(procurement).then(response => {
+			this.props.createProcurementReceived(procurement).then(response => {
 				actions.setSubmitting(false);
 
 				if (response.status === 'success') {
@@ -235,6 +229,11 @@ class ProcurementCreate extends Component {
 		}
 	};
 
+	onEnterDialog = () => {
+		this.props.getShops();
+		this.props.getPositions();
+	};
+
 	onExitedDialog = () => {
 		const { onExitedDialog } = this.props;
 
@@ -244,20 +243,35 @@ class ProcurementCreate extends Component {
 	};
 
 	render() {
-		const { dialogOpen, onCloseDialog, currentStudio, positions } = this.props;
+		const { dialogOpen, onCloseDialog, currentStudio, shops, positions, selectedProcurement } = this.props;
 		const { formEditable } = this.state;
+
+		let initialValues = {
+			shop: '',
+			noInvoice: false,
+			invoiceNumber: '',
+			invoiceDate: undefined,
+			costDelivery: '',
+			pricePositions: 0,
+			totalPrice: '',
+			compensateCostDelivery: true,
+			receipts: [],
+		};
 
 		if (currentStudio.settings.procurements.compensateCostDelivery) {
 			initialValues.compensateCostDelivery = currentStudio.settings.procurements.compensateCostDelivery;
 		}
 
+		if (selectedProcurement) initialValues = { ...initialValues, ...selectedProcurement };
+
 		return (
 			<DialogStickyFR
 				ref={this.dialogRef}
 				open={dialogOpen}
+				onEnter={this.onEnterDialog}
 				onClose={onCloseDialog}
 				onExited={this.onExitedDialog}
-				maxWidth="xl"
+				maxWidth="lg"
 				scroll="body"
 				stickyAnyone={[
 					{
@@ -272,7 +286,7 @@ class ProcurementCreate extends Component {
 				<DialogTitle onClose={onCloseDialog}>Создание закупки</DialogTitle>
 				<Formik
 					initialValues={initialValues}
-					validationSchema={procurementSchema}
+					validationSchema={procurementSchema()}
 					validateOnBlur={!formEditable}
 					validateOnChange={false}
 					onSubmit={(values, actions) => this.onSubmit(values, actions)}
@@ -282,6 +296,7 @@ class ProcurementCreate extends Component {
 							dialogRef={this.dialogRef}
 							receiptInitialValues={receiptInitialValues}
 							onHandleEditFormProcurement={this.onHandleEditFormProcurement}
+							shops={shops}
 							positions={positions}
 							formEditable={formEditable}
 							formikProps={props}
@@ -301,6 +316,7 @@ const mapStateToProps = state => {
 	}
 
 	return {
+		shops: state.shops,
 		positions: positions,
 	};
 };
@@ -308,7 +324,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
 	return {
 		getStudioStore: () => dispatch(getStudioStore()),
-		createProcurement: procurement => dispatch(createProcurement({ data: { procurement } })),
+		getShops: () => dispatch(getShops()),
+		getPositions: () => dispatch(getPositions({ showRequest: false })),
+		createProcurementReceived: procurement => dispatch(createProcurementReceived({ data: { procurement } })),
 		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
 	};
 };

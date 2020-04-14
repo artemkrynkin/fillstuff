@@ -42,7 +42,7 @@ const FormGeneralSettings = props => {
 
 	return (
 		<Form>
-			<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="baseline" style={{ maxWidth: 500 }} container>
+			<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" style={{ maxWidth: 500 }} container>
 				<InputLabel error={Boolean(touched.name && errors.name)} style={labelStyle} data-inline>
 					Название:
 				</InputLabel>
@@ -68,7 +68,7 @@ const FormGeneralSettings = props => {
 				{/*	/>*/}
 				{/*)}*/}
 			</Grid>
-			<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="baseline" style={{ maxWidth: 500 }} container>
+			<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" style={{ maxWidth: 500 }} container>
 				<InputLabel error={Boolean(touched.timezone && errors.timezone)} style={labelStyle} data-inline>
 					Часовой пояс:
 				</InputLabel>
@@ -104,7 +104,7 @@ const FormGeneralSettings = props => {
 				</FormControl>
 			</Grid>
 			<Divider style={{ marginBottom: 10 }} />
-			<Grid wrap="nowrap" alignItems="baseline" style={{ maxWidth: 500 }} container>
+			<Grid wrap="nowrap" alignItems="flex-start" style={{ maxWidth: 500 }} container>
 				<InputLabel error={Boolean(touched.timezone && errors.timezone)} style={labelStyle} data-inline>
 					Настройки закупок:
 				</InputLabel>

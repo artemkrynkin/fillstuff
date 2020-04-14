@@ -56,8 +56,10 @@ const FormFieldArrayReceipts = props => {
 			<div className={addPositionContainerClasses(formEditable)}>
 				<div className={styles.addPositionWrap}>
 					<Grid alignItems="flex-start" spacing={2} container>
-						<Grid xs={9} item>
+						<Grid style={{ flex: '1 1' }} item>
 							<SelectAutocomplete
+								isDisabled={isSubmitting || !formEditable || isLoadingPositions || !positions}
+								isLoading={isLoadingPositions}
 								value={textSearchPosition}
 								onChange={(option, { action }) => {
 									if (action === 'select-option') {
@@ -84,13 +86,12 @@ const FormFieldArrayReceipts = props => {
 									positionsAvailable.length === 0 ? 'Нет позиций для выбора. Создайте позицию' : 'Среди позиций совпадений не найдено.'
 								}
 								options={positionsAvailable}
-								isDisabled={isSubmitting || !formEditable}
 								isClearable
 							/>
 							{typeof errors.receipts === 'string' ? <FormHelperText error>{errors.receipts}</FormHelperText> : null}
 						</Grid>
-						<Grid xs={3} item>
-							<Button onClick={onOpenDialogPositionCreate} variant="outlined" color="primary" disabled={isSubmitting} fullWidth>
+						<Grid item>
+							<Button onClick={onOpenDialogPositionCreate} variant="outlined" color="primary" tabIndex={-1}>
 								Новая позиция
 							</Button>
 						</Grid>

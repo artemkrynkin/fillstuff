@@ -9,7 +9,8 @@ import positions from './positions';
 import characteristics from './characteristics';
 import shops from './shops';
 import writeOffs from './writeOffs';
-import procurements from './procurements';
+import procurementsExpected from './procurementsExpected';
+import procurementsReceived from './procurementsReceived';
 import invoices from './invoices';
 
 import snackbars from './snackbars';
@@ -25,7 +26,8 @@ const getReducers = () => {
 		characteristics,
 		shops,
 		writeOffs,
-		procurements,
+		procurementsExpected,
+		procurementsReceived,
 		invoices,
 
 		snackbars,

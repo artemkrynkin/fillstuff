@@ -103,8 +103,8 @@ const DropdownFooter = props => {
 const FormFilter = props => {
 	const {
 		handlerDropdown,
-		onChangeFilterNumber,
-		onClearFilterNumber,
+		onChangeFilterInvoiceNumber,
+		onClearFilterInvoiceNumber,
 		onChangeFilterDate,
 		onChangeFilterPosition,
 		onChangeFilterMember,
@@ -119,7 +119,7 @@ const FormFilter = props => {
 			isFetching: isLoadingAllPositions,
 			// error: errorPositions
 		},
-		refFilterNumberInput,
+		refFilterInvoiceNumberInput,
 		dropdownDate: { state: dropdownDate, ref: refDropdownDate },
 		dropdownDateRange: { state: dropdownDateRange, ref: refDropdownDateRange },
 		dropdownPosition: { state: dropdownPosition, ref: refDropdownPosition },
@@ -165,17 +165,20 @@ const FormFilter = props => {
 		<Form>
 			<Grid className={styles.topContainer} container>
 				<Field
-					inputRef={refFilterNumberInput}
-					name="number"
+					inputRef={refFilterInvoiceNumberInput}
+					name="invoiceNumber"
 					as={SearchTextField}
 					inputProps={{
-						onChange: event => onChangeFilterNumber(event, setFieldValue, submitForm),
+						onChange: event => onChangeFilterInvoiceNumber(event, setFieldValue, submitForm),
 					}}
 					placeholder="Поиск по номеру чека или накладной"
 					fullWidth
 				/>
-				{values.number && !isSubmitting ? (
-					<ButtonBase onClick={() => onClearFilterNumber(setFieldValue, submitForm)} className={styles.textFieldFilterNumberClear}>
+				{values.invoiceNumber && !isSubmitting ? (
+					<ButtonBase
+						onClick={() => onClearFilterInvoiceNumber(setFieldValue, submitForm)}
+						className={styles.textFieldFilterInvoiceNumberClear}
+					>
 						<FontAwesomeIcon icon={['fal', 'times']} />
 					</ButtonBase>
 				) : null}
@@ -474,7 +477,7 @@ const FormFilter = props => {
 				</Grid>
 
 				<Grid item style={{ marginLeft: 'auto' }}>
-					{values.dateStartView || values.dateEndView || values.number || values.position !== 'all' || values.member !== 'all' ? (
+					{values.dateStartView || values.dateEndView || values.invoiceNumber || values.position !== 'all' || values.member !== 'all' ? (
 						<ButtonBase onClick={() => onResetAllFilters(setFieldValue, submitForm)} className={styles.filterButtonLinkRed}>
 							<span>Сбросить фильтры</span>
 						</ButtonBase>

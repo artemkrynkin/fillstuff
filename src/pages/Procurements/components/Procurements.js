@@ -9,7 +9,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { deleteParamsCoincidence } from 'src/components/Pagination/utils';
 import LoadMoreButton from 'src/components/Pagination/LoadMoreButton';
 
-import { getProcurements } from 'src/actions/procurements';
+import { getProcurementsReceived } from 'src/actions/procurements';
 
 import Procurement from './Procurement';
 
@@ -61,7 +61,7 @@ class Procurements extends Component {
 
 		const query = deleteParamsCoincidence({ ...filterParams, page: nextPage }, { type: 'server', ...filterDeleteParams });
 
-		this.props.getProcurements(query, { showRequest: false, mergeData: true });
+		this.props.getProcurementsReceived(query, { showRequest: false, mergeData: true });
 	};
 
 	componentDidMount() {
@@ -71,26 +71,26 @@ class Procurements extends Component {
 
 		const query = deleteParamsCoincidence({ ...filterParams }, { type: 'server', ...filterDeleteParams });
 
-		this.props.getProcurements(query);
+		this.props.getProcurementsReceived(query);
 	}
 
 	render() {
 		const {
 			filterOptions: { params: filterParams },
 			paging,
-			procurements: {
-				data: procurementData,
-				isFetching: isLoadingProcurements,
+			procurementsReceived: {
+				data: procurementsReceived,
+				isFetching: isLoadingProcurementsReceived,
 				// error: errorProcurementsDates
 			},
 		} = this.props;
 
 		return (
 			<div className={styles.container}>
-				{!isLoadingProcurements && procurementData ? (
-					procurementData.paging.totalCount && procurementData.paging.totalDocs ? (
+				{!isLoadingProcurementsReceived && procurementsReceived ? (
+					procurementsReceived.paging.totalCount && procurementsReceived.paging.totalDocs ? (
 						<div>
-							{brokenDownByMonth(procurementData.data).map(month => (
+							{brokenDownByMonth(procurementsReceived.data).map(month => (
 								<div className={styles.date} key={month.date}>
 									<div className={styles.dateTitle}>{moment(month.date).calendar(null, calendarFormat)}</div>
 									{month.procurements.map(procurement => (
@@ -98,16 +98,16 @@ class Procurements extends Component {
 									))}
 								</div>
 							))}
-							{procurementData.paging.hasNextPage ? (
+							{procurementsReceived.paging.hasNextPage ? (
 								<LoadMoreButton page={paging.page} setPage={paging.setPage} onLoadMore={this.onLoadMore} />
 							) : null}
 						</div>
-					) : procurementData.paging.totalCount && !procurementData.paging.totalDocs ? (
+					) : procurementsReceived.paging.totalCount && !procurementsReceived.paging.totalDocs ? (
 						<div className={styles.none}>Ничего не найдено</div>
 					) : (
 						<div className={styles.none}>Еще не создано ни одной закупки</div>
 					)
-				) : isLoadingProcurements ? (
+				) : isLoadingProcurementsReceived ? (
 					<div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />
 				) : null}
 			</div>
@@ -117,13 +117,13 @@ class Procurements extends Component {
 
 const mapStateToProps = state => {
 	return {
-		procurements: state.procurements,
+		procurementsReceived: state.procurementsReceived,
 	};
 };
 
 const mapDispatchToProps = dispatch => {
 	return {
-		getProcurements: (query, params) => dispatch(getProcurements({ query, ...params })),
+		getProcurementsReceived: (query, params) => dispatch(getProcurementsReceived({ query, ...params })),
 	};
 };
 

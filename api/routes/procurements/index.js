@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import i18n from 'i18n';
 
 import { receiptCalc } from 'shared/checkPositionAndReceipt';
 
@@ -16,17 +15,18 @@ const procurementsRouter = Router();
 // const debug = require('debug')('api:products');
 
 procurementsRouter.post(
-	'/getProcurements',
+	'/getProcurementsReceived',
 	isAuthedResolver,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
 			studioId,
-			query: { page, limit, dateStart, dateEnd, number, position, member },
+			query: { page, limit, dateStart, dateEnd, invoiceNumber, position, member },
 		} = req.body;
 
 		let conditions = {
 			studio: studioId,
+			status: 'received',
 		};
 
 		if (dateStart && dateEnd) {
@@ -36,7 +36,7 @@ procurementsRouter.post(
 			};
 		}
 
-		if (number) conditions.number = { $regex: number, $options: 'i' };
+		if (invoiceNumber) conditions.invoiceNumber = { $regex: invoiceNumber, $options: 'i' };
 
 		if (member && member !== 'all') conditions.member = mongoose.Types.ObjectId(member);
 
@@ -89,7 +89,7 @@ procurementsRouter.post(
 );
 
 procurementsRouter.post(
-	'/getProcurement',
+	'/getProcurementReceived',
 	isAuthedResolver,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
@@ -97,7 +97,7 @@ procurementsRouter.post(
 			params: { procurementId },
 		} = req.body;
 
-		Procurement.findById(procurementId)
+		Procurement.findOne({ _id: procurementId, status: 'received' })
 			.populate([
 				{
 					path: 'member',
@@ -122,7 +122,7 @@ procurementsRouter.post(
 );
 
 procurementsRouter.post(
-	'/createProcurement',
+	'/createProcurementReceived',
 	isAuthedResolver,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
@@ -132,19 +132,6 @@ procurementsRouter.post(
 			data: { procurement: newProcurementValues },
 		} = req.body;
 
-		if (!newProcurementValues.noInvoice && (!newProcurementValues.number || !newProcurementValues.date)) {
-			const customErr = [];
-			const error = fieldName => ({
-				field: fieldName,
-				message: i18n.__('Обязательное поле'),
-			});
-
-			if (!newProcurementValues.number) customErr.push(error('number'));
-			if (!newProcurementValues.date) customErr.push(error('number'));
-
-			return next({ code: 5, customErr: customErr });
-		}
-
 		const positions = await Position.find({ _id: { $in: newProcurementValues.receipts.map(receipt => receipt.position) } })
 			.populate('activeReceipt')
 			.catch(err => next({ code: 2, err }));
@@ -153,9 +140,10 @@ procurementsRouter.post(
 
 		const newProcurement = new Procurement({
 			...newProcurementValues,
-			positions: [],
 			studio: studioId,
 			member: memberId,
+			status: 'received',
+			positions: [],
 		});
 
 		newProcurement.receipts = newProcurementValues.receipts.map(receipt => {
@@ -190,6 +178,11 @@ procurementsRouter.post(
 						receipts: newReceipt,
 					},
 				}).catch(err => next({ code: 2, err }))
+				// Position.findByIdAndUpdate({ _id: position, 'shops._id': newProcurement.shop }, {
+				//   $inc: {
+				//     'shops.$.numberReceipts': 1
+				//   }
+				// }).catch(err => next({ code: 2, err }))
 			);
 
 			if (position.activeReceipt && position.activeReceipt.current.quantity === 0) {

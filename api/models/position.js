@@ -5,7 +5,7 @@ import { unitTypes } from 'shared/checkPositionAndReceipt';
 
 const Schema = mongoose.Schema;
 
-let Position = new Schema({
+const Position = new Schema({
 	name: {
 		type: String,
 		minlength: [2, i18n.__('Не может быть короче 2 символов')],

@@ -15,6 +15,7 @@ import {
 	faPen as fasPen,
 	faCircle as fasCircle,
 	faClock as fasClock,
+	faRubleSign as fasRubleSign,
 } from '@fortawesome/pro-solid-svg-icons';
 
 import {
@@ -39,7 +40,6 @@ import {
 	faExclamationCircle as farExclamationCircle,
 	faChevronDown as farChevronDown,
 	faChevronUp as farChevronUp,
-	faSearch as farSearch,
 	faUndo as farUndo,
 	faArchive as farArchive,
 	faBoxAlt as farBoxAlt,
@@ -80,6 +80,7 @@ import {
 	faCog as falCog,
 	faReceipt as falReceipt,
 	faInfoCircle as falInfoCircle,
+	faSearch as falSearch,
 } from '@fortawesome/pro-light-svg-icons';
 
 import { faCheckCircle as fadCheckCircle, faExclamationCircle as fadExclamationCircle } from '@fortawesome/pro-duotone-svg-icons';
@@ -103,7 +104,7 @@ library.add(
 	fasPen,
 	fasCircle,
 	fasClock,
-	farCog,
+	fasRubleSign,
 
 	// Regular
 	farAngleLeft,
@@ -127,7 +128,6 @@ library.add(
 	farExclamationCircle,
 	farChevronDown,
 	farChevronUp,
-	farSearch,
 	farUndo,
 	farArchive,
 	farBoxAlt,
@@ -135,6 +135,7 @@ library.add(
 	farFolderPlus,
 	farFolderMinus,
 	farTruck,
+	farCog,
 
 	// Light
 	falAngleLeft,
@@ -166,6 +167,7 @@ library.add(
 	falCog,
 	falReceipt,
 	falInfoCircle,
+	falSearch,
 
 	// Duotone
 	fadCheckCircle,

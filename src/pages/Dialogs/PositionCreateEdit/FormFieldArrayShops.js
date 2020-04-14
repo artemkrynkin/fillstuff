@@ -24,17 +24,17 @@ const FormFieldArrayReceipts = props => {
 	const [dialogShopCreate, setDialogShopCreate] = useState(false);
 	const [shopTempName, setShopTempName] = useState('');
 
+	const onOpenDialogShopCreate = () => setDialogShopCreate(true);
+
+	const onCloseDialogShopCreate = () => setDialogShopCreate(false);
+
 	const shopsAvailable =
 		!isLoadingShops && shops
 			? shops.filter(shop => !values.shops.some(selectedShop => selectedShop.shop && selectedShop.shop._id === shop._id))
 			: [];
 
-	const onOpenDialogShopCreate = () => setDialogShopCreate(true);
-
-	const onCloseDialogShopCreate = () => setDialogShopCreate(false);
-
 	return (
-		<Grid wrap="nowrap" alignItems="baseline" container>
+		<Grid wrap="nowrap" alignItems="flex-start" container>
 			<InputLabel style={labelStyle} data-inline>
 				Магазины
 			</InputLabel>
@@ -51,7 +51,7 @@ const FormFieldArrayReceipts = props => {
 				) : null}
 
 				<Grid alignItems="center" spacing={2} container>
-					<Grid style={{ flex: '1 1 auto' }} item>
+					<Grid style={{ flex: '1 1' }} item>
 						<SelectAutocomplete
 							isDisabled={isSubmitting || isLoadingShops || !shops}
 							isLoading={isLoadingShops}
@@ -85,7 +85,6 @@ const FormFieldArrayReceipts = props => {
 							}
 							options={shopsAvailable}
 							isClearable
-							fullWidth
 						/>
 					</Grid>
 					<Grid item>

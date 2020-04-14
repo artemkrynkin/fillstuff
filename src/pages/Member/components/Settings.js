@@ -49,11 +49,11 @@ const Settings = props => {
 		});
 	};
 
-	const labelStyle = { width: 120 };
+	const labelStyle = { width: 100 };
 
 	return (
 		<div>
-			<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="baseline" style={{ maxWidth: 500 }} container>
+			<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" style={{ maxWidth: 500 }} container>
 				<InputLabel style={labelStyle} data-inline>
 					Роли
 				</InputLabel>
@@ -64,7 +64,7 @@ const Settings = props => {
 				</Select>
 			</Grid>
 			{/artist/.test(member.roles) ? (
-				<Grid wrap="nowrap" alignItems="baseline" style={{ maxWidth: 500 }} container>
+				<Grid wrap="nowrap" alignItems="flex-start" style={{ maxWidth: 500 }} container>
 					<InputLabel style={labelStyle} data-inline>
 						Настройки списаний
 					</InputLabel>

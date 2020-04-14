@@ -1,14 +1,14 @@
 import axios from 'axios';
 
-export const getProcurements = ({ query, showRequest = true, mergeData = false } = { showRequest: true, mergeData: false }) => {
+export const getProcurementsReceived = ({ query, showRequest = true, mergeData = false } = { showRequest: true, mergeData: false }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
 
-		if (showRequest) dispatch({ type: 'REQUEST_PROCUREMENTS' });
+		if (showRequest) dispatch({ type: 'REQUEST_PROCUREMENTS_RECEIVED' });
 
 		return await axios
-			.post('/api/getProcurements', {
+			.post('/api/getProcurementsReceived', {
 				studioId,
 				memberId,
 				query,
@@ -16,12 +16,12 @@ export const getProcurements = ({ query, showRequest = true, mergeData = false }
 			.then(response => {
 				if (!mergeData) {
 					dispatch({
-						type: 'RECEIVE_PROCUREMENTS',
+						type: 'RECEIVE_PROCUREMENTS_RECEIVED',
 						payload: response.data,
 					});
 				} else {
 					dispatch({
-						type: 'RECEIVE_MERGE_PROCUREMENTS',
+						type: 'RECEIVE_MERGE_PROCUREMENTS_RECEIVED',
 						payload: response.data,
 					});
 				}
@@ -36,13 +36,13 @@ export const getProcurements = ({ query, showRequest = true, mergeData = false }
 	};
 };
 
-export const getProcurement = ({ params }) => {
+export const getProcurementReceived = ({ params }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
 
 		return await axios
-			.post('/api/getProcurement', {
+			.post('/api/getProcurementReceived', {
 				studioId,
 				memberId,
 				params,
@@ -60,13 +60,13 @@ export const getProcurement = ({ params }) => {
 	};
 };
 
-export const createProcurement = ({ data }) => {
+export const createProcurementReceived = ({ data }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
 
 		return await axios
-			.post('/api/createProcurement', {
+			.post('/api/createProcurementReceived', {
 				studioId,
 				memberId,
 				data,
@@ -75,7 +75,7 @@ export const createProcurement = ({ data }) => {
 				const { data: procurement } = response;
 
 				dispatch({
-					type: 'CREATE_PROCUREMENT',
+					type: 'CREATE_PROCUREMENT_RECEIVED',
 					payload: procurement,
 				});
 

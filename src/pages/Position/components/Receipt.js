@@ -104,7 +104,7 @@ const Receipt = props => {
 					<Grid alignItems="center" justify="flex-end" container>
 						<Tooltip
 							title={
-								<DefinitionList style={{ width: 230 }}>
+								<DefinitionList style={{ width: 240 }}>
 									<DefinitionListItem
 										term="Цена покупки"
 										value={

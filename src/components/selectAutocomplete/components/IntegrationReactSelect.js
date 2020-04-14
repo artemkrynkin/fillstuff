@@ -52,7 +52,6 @@ const useStyles = makeStyles(DefaultTheme => ({
 		fontSize: 13,
 	},
 	singleValueDisabled: {
-		color: theme.blueGrey.cBg400,
 		fontSize: 13,
 	},
 	placeholder: {
@@ -185,9 +184,17 @@ Control.propTypes = {
 	selectProps: PropTypes.object.isRequired,
 };
 
+const MenuList = props => {
+	return (
+		<reactSelectComponents.MenuList {...props}>
+			<ul role="listbox">{props.children}</ul>
+		</reactSelectComponents.MenuList>
+	);
+};
+
 const Option = props => {
 	return (
-		<MenuItem ref={props.innerRef} selected={props.isSelected} {...props.innerProps}>
+		<MenuItem ref={props.innerRef} selected={props.isSelected} role="option" {...props.innerProps}>
 			{props.children}
 		</MenuItem>
 	);
@@ -290,6 +297,7 @@ const components = {
 	MultiValue,
 	NoOptionsMessage,
 	Option,
+	MenuList,
 	Placeholder,
 	SingleValue,
 	ValueContainer,

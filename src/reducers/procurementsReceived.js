@@ -1,4 +1,4 @@
-const procurements = (
+const procurementsReceived = (
 	state = {
 		isFetching: false,
 		data: null,
@@ -6,20 +6,20 @@ const procurements = (
 	action
 ) => {
 	switch (action.type) {
-		case 'REQUEST_PROCUREMENTS': {
+		case 'REQUEST_PROCUREMENTS_RECEIVED': {
 			return {
 				...state,
 				isFetching: true,
 			};
 		}
-		case 'RECEIVE_PROCUREMENTS': {
+		case 'RECEIVE_PROCUREMENTS_RECEIVED': {
 			return {
 				...state,
 				isFetching: false,
 				data: action.payload,
 			};
 		}
-		case 'RECEIVE_MERGE_PROCUREMENTS': {
+		case 'RECEIVE_MERGE_PROCUREMENTS_RECEIVED': {
 			let stateData = { ...state }.data;
 
 			stateData.data = [...stateData.data, ...action.payload.data];
@@ -31,7 +31,7 @@ const procurements = (
 				data: stateData,
 			};
 		}
-		case 'CREATE_PROCUREMENT': {
+		case 'CREATE_PROCUREMENT_RECEIVED': {
 			let stateData = { ...state }.data;
 
 			stateData.data.unshift(action.payload);
@@ -57,4 +57,4 @@ const procurements = (
 	}
 };
 
-export default procurements;
+export default procurementsReceived;

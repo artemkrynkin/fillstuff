@@ -5,7 +5,7 @@ import { characteristicsTypes } from 'shared/checkPositionAndReceipt';
 
 const Schema = mongoose.Schema;
 
-let Characteristic = new Schema({
+const Characteristic = new Schema({
 	studio: {
 		type: Schema.Types.ObjectId,
 		ref: 'Studio',

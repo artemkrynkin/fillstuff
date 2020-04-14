@@ -15,7 +15,7 @@ import CardPaper from 'src/components/CardPaper';
 import Money from 'src/components/Money';
 import AvatarTitle from 'src/components/AvatarTitle';
 
-import { getProcurement } from 'src/actions/procurements';
+import { getProcurementReceived } from 'src/actions/procurements';
 
 import Receipt from './Receipt';
 
@@ -28,7 +28,7 @@ class Procurement extends Component {
 	};
 
 	componentDidMount() {
-		this.props.getProcurement().then(response => {
+		this.props.getProcurementReceived().then(response => {
 			if (response.status === 'success') {
 				this.setState({ procurementData: response });
 			} else {
@@ -117,7 +117,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	const { procurementId } = ownProps;
 
 	return {
-		getProcurement: () => dispatch(getProcurement({ params: { procurementId } })),
+		getProcurementReceived: () => dispatch(getProcurementReceived({ params: { procurementId } })),
 	};
 };
 

@@ -198,7 +198,7 @@ const FormReceiptCreate = props => {
 									}}
 									disabled={isSubmitting}
 									validate={value => {
-										if (value < values.unitPurchasePrice) {
+										if (Number(value) < values.unitPurchasePrice) {
 											return 'Не может быть ниже цены покупки';
 										}
 									}}

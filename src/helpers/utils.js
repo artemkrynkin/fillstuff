@@ -53,8 +53,14 @@ export const calculateColor = text => {
 	return theme.calculateColors[sum % theme.calculateColors.length];
 };
 
-export const formError = (touched, errors, name, helperText = null) => {
+export const formError = (touched, errors, name) => {
 	const error = getIn(errors, name);
 	const touch = getIn(touched, name);
-	return touch && error ? error : helperText;
+	return Boolean(touch && error);
+};
+
+export const formErrorHelperText = (touched, errors, name, helperText = null) => {
+	const error = getIn(errors, name);
+	const touch = getIn(touched, name);
+	return touch && typeof error === 'string' ? error : helperText;
 };

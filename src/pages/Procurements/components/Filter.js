@@ -16,7 +16,7 @@ import { deleteParamsCoincidence } from 'src/components/Pagination/utils';
 
 import { getMembers } from 'src/actions/members';
 import { getPositions } from 'src/actions/positions';
-import { getProcurements } from 'src/actions/procurements';
+import { getProcurementsReceived } from 'src/actions/procurements';
 
 import FormFilter from './FormFilter';
 import filterSchema from './filterSchema';
@@ -36,7 +36,7 @@ class Filter extends Component {
 		dropdownMember: false,
 	};
 
-	refFilterNumberInput = createRef();
+	refFilterInvoiceNumberInput = createRef();
 	refDropdownDate = createRef();
 	refDropdownDateRange = createRef();
 	refDropdownPosition = createRef();
@@ -47,15 +47,15 @@ class Filter extends Component {
 			[name]: value === null || value === undefined ? !this.state[name] : value,
 		});
 
-	onChangeFilterNumber = debounce(({ target: { value } }, setFieldValue, submitForm) => {
-		setFieldValue('number', value);
+	onChangeFilterInvoiceNumber = debounce(({ target: { value } }, setFieldValue, submitForm) => {
+		setFieldValue('invoiceNumber', value);
 		submitForm();
 	}, 150);
 
-	onClearFilterNumber = (setFieldValue, submitForm) => {
-		setFieldValue('number', '', false);
+	onClearFilterInvoiceNumber = (setFieldValue, submitForm) => {
+		setFieldValue('invoiceNumber', '', false);
 
-		this.refFilterNumberInput.current.focus();
+		this.refFilterInvoiceNumberInput.current.focus();
 
 		submitForm();
 	};
@@ -111,7 +111,7 @@ class Filter extends Component {
 		setFieldValue('dateEnd', null, false);
 		setFieldValue('dateStartView', null, false);
 		setFieldValue('dateEndView', null, false);
-		setFieldValue('number', '', false);
+		setFieldValue('invoiceNumber', '', false);
 		setFieldValue('position', 'all', false);
 		setFieldValue('member', 'all', false);
 		submitForm();
@@ -153,7 +153,7 @@ class Filter extends Component {
 		if (
 			prevPropsFilterParams.dateStart !== filterParams.dateStart ||
 			prevPropsFilterParams.dateEnd !== filterParams.dateEnd ||
-			prevPropsFilterParams.number !== filterParams.number ||
+			prevPropsFilterParams.invoiceNumber !== filterParams.invoiceNumber ||
 			prevPropsFilterParams.position !== filterParams.position ||
 			prevPropsFilterParams.member !== filterParams.member
 		) {
@@ -161,7 +161,7 @@ class Filter extends Component {
 
 			const query = deleteParamsCoincidence({ ...filterParams, page: 1 }, { type: 'server', ...filterDeleteParams });
 
-			this.props.getProcurements(query);
+			this.props.getProcurementsReceived(query);
 		}
 	}
 
@@ -196,15 +196,15 @@ class Filter extends Component {
 					{props => (
 						<FormFilter
 							handlerDropdown={this.handlerDropdown}
-							onChangeFilterNumber={this.onChangeFilterNumber}
-							onClearFilterNumber={this.onClearFilterNumber}
+							onChangeFilterInvoiceNumber={this.onChangeFilterInvoiceNumber}
+							onClearFilterInvoiceNumber={this.onClearFilterInvoiceNumber}
 							onChangeFilterDate={this.onChangeFilterDate}
 							onChangeFilterPosition={this.onChangeFilterPosition}
 							onChangeFilterMember={this.onChangeFilterMember}
 							onResetAllFilters={this.onResetAllFilters}
 							members={members}
 							positions={positions}
-							refFilterNumberInput={this.refFilterNumberInput}
+							refFilterInvoiceNumberInput={this.refFilterInvoiceNumberInput}
 							dropdownDate={{
 								state: dropdownDate,
 								ref: this.refDropdownDate,
@@ -258,7 +258,7 @@ const mapDispatchToProps = dispatch => {
 	return {
 		getMembers: () => dispatch(getMembers()),
 		getPositions: () => dispatch(getPositions()),
-		getProcurements: query => dispatch(getProcurements({ query })),
+		getProcurementsReceived: query => dispatch(getProcurementsReceived({ query })),
 	};
 };
 

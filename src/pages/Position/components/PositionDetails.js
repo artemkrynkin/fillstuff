@@ -69,7 +69,7 @@ const PositionDetails = props => {
 													href={!~value.shop.link.search(/^http[s]?\:\/\//) ? `//${value.shop.link}` : `${value.shop.link}`}
 													target="_blank"
 													rel="noreferrer noopener"
-													style={{ margin: '-5px -15px -6px', padding: '5px 15px 6px' }}
+													style={{ margin: '-5px -12px -6px', padding: '5px 12px 6px' }}
 												>
 													{value.shop.name}
 												</a>

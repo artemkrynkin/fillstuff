@@ -46,7 +46,7 @@ const FormShopCreateEdit = props => {
 							maxLength: 60,
 						}}
 						validate={value => {
-							if (!validator.isURL(value)) return 'Неккоректная ссылка';
+							if (value !== '' && !validator.isURL(value)) return 'Неккоректная ссылка';
 						}}
 						fullWidth
 					/>

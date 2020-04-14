@@ -54,7 +54,7 @@ const FormFieldArrayCharacteristics = props => {
 	}, [characteristicsTypes]);
 
 	return (
-		<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="baseline" container>
+		<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 			<InputLabel style={labelStyle} data-inline>
 				Характеристики
 			</InputLabel>

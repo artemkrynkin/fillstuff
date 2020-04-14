@@ -6,7 +6,7 @@ import { formatNumber } from 'shared/utils';
 
 const Schema = mongoose.Schema;
 
-let Procurement = new Schema({
+const Procurement = new Schema({
 	createdAt: {
 		type: Date,
 		default: Date.now,
@@ -22,22 +22,77 @@ let Procurement = new Schema({
 		ref: 'Member',
 		required: [true, i18n.__('Обязательное поле')],
 	},
-	number: {
+	status: {
 		type: String,
-		trim: true,
+		enum: ['expected', 'received'],
 	},
-	date: Date,
+	shop: {
+		type: String,
+		ref: 'Shop',
+		required: [true, i18n.__('Обязательное поле')],
+	},
+	estimatedDeliveryDate: {
+		type: Date,
+		required: [
+			function() {
+				return this.status === 'expected';
+			},
+			i18n.__('Обязательное поле'),
+		],
+	},
+	estimatedDeliveryTimeFrom: {
+		type: Date,
+		required: [
+			function() {
+				return this.status === 'expected';
+			},
+			i18n.__('Обязательное поле'),
+		],
+	},
+	estimatedDeliveryTimeTo: {
+		type: Date,
+		required: [
+			function() {
+				return this.status === 'expected';
+			},
+			i18n.__('Обязательное поле'),
+		],
+	},
 	noInvoice: {
 		type: Boolean,
-		default: false,
+		required: [
+			function() {
+				return this.status === 'received';
+			},
+			i18n.__('Обязательное поле'),
+		],
 	},
-	costDelivery: {
+	invoiceNumber: {
+		type: String,
+		trim: true,
+		required: [
+			function() {
+				return this.status === 'received' && !this.noInvoice;
+			},
+			i18n.__('Обязательное поле'),
+		],
+	},
+	invoiceDate: {
+		type: Date,
+		required: [
+			function() {
+				return this.status === 'received' && !this.noInvoice;
+			},
+			i18n.__('Обязательное поле'),
+		],
+	},
+	pricePositions: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,
 		set: value => formatNumber(value),
 	},
-	pricePositions: {
+	costDelivery: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
 		default: 0,
@@ -51,7 +106,12 @@ let Procurement = new Schema({
 	},
 	compensateCostDelivery: {
 		type: Boolean,
-		default: false,
+		required: [
+			function() {
+				return this.status === 'received';
+			},
+			i18n.__('Обязательное поле'),
+		],
 	},
 	positions: [
 		{

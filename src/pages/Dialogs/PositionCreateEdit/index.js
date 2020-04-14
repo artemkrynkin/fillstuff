@@ -127,9 +127,9 @@ class DialogPositionCreateEdit extends Component {
 		return (
 			<DialogSticky
 				open={dialogOpen}
+				onEnter={this.onEnterDialog}
 				onClose={onCloseDialog}
 				onExited={this.onExitedDialog}
-				onEnter={this.onEnterDialog}
 				maxWidth="lg"
 				scroll="body"
 				stickyActions

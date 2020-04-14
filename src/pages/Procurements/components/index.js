@@ -17,7 +17,7 @@ const Index = () => {
 			limit: 10,
 			dateStart: null,
 			dateEnd: null,
-			number: '',
+			invoiceNumber: '',
 			position: 'all',
 			member: 'all',
 		}),

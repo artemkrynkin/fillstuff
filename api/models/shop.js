@@ -3,7 +3,7 @@ import i18n from 'i18n';
 
 const Schema = mongoose.Schema;
 
-let Shop = new Schema({
+const Shop = new Schema({
 	studio: {
 		type: Schema.Types.ObjectId,
 		ref: 'Studio',

@@ -3,6 +3,7 @@ import { Form, Field, FieldArray, ErrorMessage } from 'formik';
 import moment from 'moment';
 import MomentUtils from '@date-io/moment';
 import ClassNames from 'classnames';
+import loadable from '@loadable/component';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -11,6 +12,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 import Typography from '@material-ui/core/Typography';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import Button from '@material-ui/core/Button';
 import DialogActions from '@material-ui/core/DialogActions';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -20,31 +22,49 @@ import { DatePicker } from '@material-ui/pickers';
 import { declensionNumber } from 'src/helpers/utils';
 
 import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
+import { SelectAutocomplete } from 'src/components/selectAutocomplete';
 import NumberFormat, { moneyInputFormatProps } from 'src/components/NumberFormat';
 import Dropdown from 'src/components/Dropdown';
 import Tooltip from 'src/components/Tooltip';
 
 import FormFieldArrayReceipts from './FormFieldArrayReceipts';
 
+import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
+
+const DialogShopCreate = loadable(() => import('src/pages/Dialogs/ShopCreateEdit' /* webpackChunkName: "Dialog_ShopCreateEdit" */));
 
 const FormProcurementCreate = props => {
 	const {
 		dialogRef,
 		receiptInitialValues,
 		onHandleEditFormProcurement,
+		shops: {
+			data: shops,
+			isFetching: isLoadingShops,
+			// error: errorShops
+		},
 		positions,
 		formEditable,
 		formikProps: { errors, isSubmitting, submitForm, setFieldValue, touched, values },
 	} = props;
-	const refDropdownDate = useRef(null);
-	const [dropdownDate, setDropdownDate] = useState(false);
+	const [dialogShopCreate, setDialogShopCreate] = useState(false);
+	const refDropdownInvoiceDate = useRef(null);
+	const [dropdownInvoiceDate, setDropdownInvoiceDate] = useState(false);
+	const [shopTempName, setShopTempName] = useState('');
 
-	const onHandleDropdownDate = value => setDropdownDate(!value === null || value === undefined ? !dropdownDate : value);
+	const labelStyle = { width: 110 };
 
-	const onChangeDate = date => {
-		setFieldValue('date', date);
-		onHandleDropdownDate(false);
+	const onOpenDialogShopCreate = () => setDialogShopCreate(true);
+
+	const onCloseDialogShopCreate = () => setDialogShopCreate(false);
+
+	const onHandleDropdownInvoiceDate = value =>
+		setDropdownInvoiceDate(!value === null || value === undefined ? !dropdownInvoiceDate : value);
+
+	const onChangeInvoiceDate = date => {
+		setFieldValue('invoiceDate', date);
+		onHandleDropdownInvoiceDate(false);
 	};
 
 	const sellingPositionCount = !formEditable ? values.receipts.reduce((sum, receipt) => sum + (!receipt.position.isFree ? 1 : 0), 0) : 0;
@@ -96,89 +116,162 @@ const FormProcurementCreate = props => {
 					)}
 				</ErrorMessage>
 
-				<Grid style={{ marginBottom: 12 }} spacing={2} container>
-					<Grid xs={4} item>
-						<Field
-							name="number"
-							placeholder={values.noInvoice ? '-' : ''}
-							label="Номер чека/накладной"
-							error={Boolean(errors.number && touched.number)}
-							helperText={typeof errors.number === 'string' && touched.number ? errors.number : null}
-							as={TextField}
-							disabled={isSubmitting || !formEditable || values.noInvoice}
-							autoFocus
-							fullWidth
-						/>
-						{formEditable ? (
-							<Field
-								type="checkbox"
-								name="noInvoice"
-								Label={{ label: 'Чек/накладная отсутствует' }}
-								as={CheckboxWithLabel}
-								onChange={({ target: { checked } }) => {
-									setFieldValue('noInvoice', checked);
-
-									if (checked && values.number) setFieldValue('number', '');
-									if (checked && values.date) setFieldValue('date', '');
+				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
+					<InputLabel style={labelStyle} error={Boolean(touched.shop && errors.shop)} data-inline>
+						Магазин
+					</InputLabel>
+					<Grid alignItems="flex-start" spacing={2} container>
+						<Grid style={{ flex: '1 1', zIndex: 2 }} item>
+							<SelectAutocomplete
+								name="shop"
+								TextFieldProps={{
+									error: Boolean(touched.shop && errors.shop),
 								}}
-								disabled={isSubmitting || !formEditable}
+								isDisabled={isSubmitting || !formEditable || isLoadingShops || !shops}
+								isLoading={isLoadingShops}
+								value={values.shop}
+								inputValue={shopTempName}
+								onChange={shop => {
+									setFieldValue('shop', shop);
+
+									setShopTempName('');
+								}}
+								onInputChange={(value, { action }) => {
+									if (action !== 'input-blur' && action !== 'menu-close') {
+										setShopTempName(value);
+									}
+								}}
+								onKeyDown={event => {
+									if (event.keyCode === 13 && !setShopTempName) return event.preventDefault();
+								}}
+								getOptionValue={option => option._id}
+								getOptionLabel={option => option.name}
+								menuPlacement="auto"
+								menuPosition="fixed"
+								placeholder="Выберите"
+								noOptionsMessage={() =>
+									shops.length === 0 ? 'Нет магазинов для выбора. Создайте магазин' : 'Среди магазинов совпадений не найдено.'
+								}
+								options={shops}
+								isClearable
 							/>
-						) : null}
-					</Grid>
-					<Grid xs={2} item>
-						<Grid wrap="nowrap" alignItems="center" container>
-							<InputLabel style={{ margin: '20px 8px 0 -8px' }}>от</InputLabel>
-							<TextField
-								innerRef={refDropdownDate}
-								name="date"
-								placeholder={values.noInvoice ? '-' : ''}
-								label="Дата"
-								error={Boolean(errors.date && touched.date)}
-								helperText={typeof errors.date === 'string' && touched.date ? errors.date : null}
-								disabled={isSubmitting || !formEditable || values.noInvoice}
-								value={values.date ? moment(values.date).format('DD.MM.YYYY') : ''}
-								onFocus={() => onHandleDropdownDate(true)}
-								fullWidth
-							/>
+							{touched.shop && errors.shop ? <FormHelperText error>{errors.shop}</FormHelperText> : null}
+						</Grid>
+						<Grid style={{ visibility: !formEditable ? 'hidden' : 'visible' }} item>
+							<Button onClick={onOpenDialogShopCreate} variant="outlined" color="primary" tabIndex={-1}>
+								Новый магазин
+							</Button>
 						</Grid>
 					</Grid>
-					<Grid xs={3} item>
-						<Field
-							name="totalPrice"
-							placeholder="0"
-							label="Итого по чеку/накладной"
-							error={Boolean(errors.totalPrice && touched.totalPrice)}
-							helperText={typeof errors.totalPrice === 'string' && touched.totalPrice ? errors.totalPrice : null}
-							as={TextField}
-							InputProps={{
-								endAdornment: <InputAdornment position="end">₽</InputAdornment>,
-								inputComponent: NumberFormat,
-								inputProps: {
-									...moneyInputFormatProps,
-								},
-							}}
-							disabled={isSubmitting || !formEditable}
-							fullWidth
-						/>
-					</Grid>
-					<Grid xs={3} item>
-						<Field
-							name="costDelivery"
-							placeholder="0"
-							label="Стоимость доставки"
-							as={TextField}
-							InputProps={{
-								endAdornment: <InputAdornment position="end">₽</InputAdornment>,
-								inputComponent: NumberFormat,
-								inputProps: {
-									...moneyInputFormatProps,
-								},
-							}}
-							disabled={isSubmitting || !formEditable}
-							fullWidth
-						/>
+				</Grid>
+
+				<Grid style={{ marginBottom: formEditable ? 10 : 20 }} wrap="nowrap" alignItems="flex-start" container>
+					<InputLabel
+						error={Boolean(errors.invoiceNumber && touched.invoiceNumber) || Boolean(errors.invoiceDate && touched.invoiceDate)}
+						style={labelStyle}
+						data-inline
+					>
+						Чек/накладная
+					</InputLabel>
+					<Grid direction="column" container>
+						<Grid wrap="nowrap" alignItems="flex-start" spacing={2} container>
+							<Grid style={{ width: 196 }} item>
+								<Field
+									name="invoiceNumber"
+									placeholder={values.noInvoice ? '-' : 'Номер'}
+									error={Boolean(errors.invoiceNumber && touched.invoiceNumber)}
+									helperText={typeof errors.invoiceNumber === 'string' && touched.invoiceNumber ? errors.invoiceNumber : null}
+									as={TextField}
+									disabled={isSubmitting || !formEditable || values.noInvoice}
+									fullWidth
+								/>
+							</Grid>
+							<Grid style={{ width: 160 }} item>
+								<Grid alignItems="baseline" container>
+									<InputLabel style={{ marginLeft: -8, marginRight: 8 }} data-inline>
+										от
+									</InputLabel>
+									<Grid style={{ flex: '1 1' }} item>
+										<TextField
+											innerRef={refDropdownInvoiceDate}
+											name="invoiceDate"
+											placeholder={values.noInvoice ? '-' : 'Дата'}
+											error={Boolean(errors.invoiceDate && touched.invoiceDate)}
+											helperText={typeof errors.invoiceDate === 'string' && touched.invoiceDate ? errors.invoiceDate : null}
+											disabled={isSubmitting || !formEditable || values.noInvoice}
+											value={values.invoiceDate ? moment(values.invoiceDate).format('DD.MM.YYYY') : ''}
+											onFocus={() => onHandleDropdownInvoiceDate(true)}
+											fullWidth
+										/>
+									</Grid>
+								</Grid>
+							</Grid>
+						</Grid>
 						{formEditable ? (
-							<Grid alignItems="center" container>
+							<Grid item>
+								<Field
+									type="checkbox"
+									name="noInvoice"
+									Label={{ label: 'Чек/накладная отсутствует' }}
+									as={CheckboxWithLabel}
+									onChange={({ target: { checked } }) => {
+										setFieldValue('noInvoice', checked);
+
+										if (checked && values.invoiceNumber) setFieldValue('invoiceNumber', '');
+										if (checked && values.invoiceDate) setFieldValue('invoiceDate', '');
+									}}
+									disabled={isSubmitting || !formEditable}
+								/>
+							</Grid>
+						) : null}
+					</Grid>
+				</Grid>
+
+				<Grid style={{ marginBottom: formEditable ? 10 : 20 }} wrap="nowrap" alignItems="flex-start" container>
+					<InputLabel error={Boolean(errors.totalPrice && touched.totalPrice)} style={{ marginTop: 32, ...labelStyle }} data-inline>
+						Итого
+					</InputLabel>
+					<Grid direction="column" container>
+						<Grid wrap="nowrap" alignItems="flex-start" spacing={2} container>
+							<Grid style={{ width: 178 }} item>
+								<Field
+									name="totalPrice"
+									placeholder="0"
+									label="Стоимость позиций"
+									error={Boolean(errors.totalPrice && touched.totalPrice)}
+									helperText={typeof errors.totalPrice === 'string' && touched.totalPrice ? errors.totalPrice : null}
+									as={TextField}
+									InputProps={{
+										endAdornment: <InputAdornment position="end">₽</InputAdornment>,
+										inputComponent: NumberFormat,
+										inputProps: {
+											...moneyInputFormatProps,
+										},
+									}}
+									disabled={isSubmitting || !formEditable}
+									fullWidth
+								/>
+							</Grid>
+							<Grid style={{ width: 178 }} item>
+								<Field
+									name="costDelivery"
+									placeholder="0"
+									label="Стоимость доставки"
+									as={TextField}
+									InputProps={{
+										endAdornment: <InputAdornment position="end">₽</InputAdornment>,
+										inputComponent: NumberFormat,
+										inputProps: {
+											...moneyInputFormatProps,
+										},
+									}}
+									disabled={isSubmitting || !formEditable}
+									fullWidth
+								/>
+							</Grid>
+						</Grid>
+						{formEditable ? (
+							<Grid style={{ paddingLeft: 178 }} alignItems="center" container>
 								<Field
 									type="checkbox"
 									name="compensateCostDelivery"
@@ -192,7 +285,8 @@ const FormProcurementCreate = props => {
 											При наличии в закупке платных позиций, стоимость доставки будет включена в цену продажи этих позиций.
 										</div>
 									}
-									placement="bottom-end"
+									placement="bottom"
+									style={{ marginLeft: 5 }}
 								>
 									<div className={styles.helpIcon}>
 										<FontAwesomeIcon icon={['fal', 'question-circle']} fixedWidth />
@@ -219,13 +313,13 @@ const FormProcurementCreate = props => {
 			<DialogActions>
 				<Grid spacing={2} container>
 					{!formEditable ? (
-						<Grid xs={3} item>
+						<Grid xs={4} item>
 							<Button onClick={() => onHandleEditFormProcurement(true)} variant="outlined" size="large" fullWidth>
 								Изменить закупку
 							</Button>
 						</Grid>
 					) : null}
-					<Grid xs={!formEditable ? 9 : 12} item>
+					<Grid xs={!formEditable ? 8 : 12} item>
 						<Button
 							type={formEditable ? 'submit' : 'button'}
 							onClick={formEditable ? () => {} : submitForm}
@@ -244,17 +338,32 @@ const FormProcurementCreate = props => {
 				</Grid>
 			</DialogActions>
 
+			<DialogShopCreate
+				type="create"
+				dialogOpen={dialogShopCreate}
+				onCloseDialog={onCloseDialogShopCreate}
+				onCallback={response => {
+					if (response.status === 'success') {
+						const { data: shop } = response;
+
+						setFieldValue('shop', shop);
+
+						setShopTempName('');
+					}
+				}}
+			/>
+
 			<Dropdown
-				anchor={refDropdownDate}
-				open={dropdownDate}
-				onClose={() => onHandleDropdownDate(false)}
+				anchor={refDropdownInvoiceDate}
+				open={dropdownInvoiceDate}
+				onClose={() => onHandleDropdownInvoiceDate(false)}
 				placement="bottom"
 				disablePortal={false}
 			>
 				<MuiPickersUtilsProvider utils={MomentUtils}>
 					<DatePicker
-						value={values.date}
-						onChange={onChangeDate}
+						value={values.invoiceDate}
+						onChange={onChangeInvoiceDate}
 						variant="static"
 						leftArrowButtonProps={{
 							size: 'small',

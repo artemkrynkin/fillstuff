@@ -3,7 +3,7 @@ import i18n from 'i18n';
 
 const Schema = mongoose.Schema;
 
-let PositionGroup = new Schema({
+const PositionGroup = new Schema({
 	name: {
 		type: String,
 		minlength: [2, i18n.__('Не может быть короче 2 символов')],

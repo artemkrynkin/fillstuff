@@ -6,7 +6,7 @@ import { formatNumber } from 'shared/utils';
 
 const Schema = mongoose.Schema;
 
-let WriteOff = new Schema({
+const WriteOff = new Schema({
 	createdAt: {
 		type: Date,
 		default: Date.now,

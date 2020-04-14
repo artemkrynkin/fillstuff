@@ -163,26 +163,34 @@ procurementsRouter.post(
 				unitRelease: position.unitRelease,
 			});
 
+			const positionSet = {
+				hasReceipts: true,
+			};
+			const positionInc = {};
+			const positionPush = {
+				receipts: newReceipt,
+			};
+			const positionShopIndex = position.shops.findIndex(shop => String(shop.shop) === String(newProcurement.shop));
+
+			if (!position.activeReceipt || position.activeReceipt.current.quantity === 0) {
+				positionSet.activeReceipt = newReceipt;
+			}
+
+			if (positionShopIndex !== -1) {
+				positionInc[`shops.${positionShopIndex}.numberReceipts`] = 1;
+			} else {
+				positionPush.shops = {
+					shop: newProcurement.shop,
+					numberReceipts: 1,
+				};
+			}
+
 			updatePositionsAndActiveReceipt.push(
 				Position.findByIdAndUpdate(position, {
-					$set:
-						!position.activeReceipt || position.activeReceipt.current.quantity === 0
-							? {
-									activeReceipt: newReceipt,
-									hasReceipts: true,
-							  }
-							: {
-									hasReceipts: true,
-							  },
-					$push: {
-						receipts: newReceipt,
-					},
+					$set: positionSet,
+					$inc: positionInc,
+					$push: positionPush,
 				}).catch(err => next({ code: 2, err }))
-				// Position.findByIdAndUpdate({ _id: position, 'shops._id': newProcurement.shop }, {
-				//   $inc: {
-				//     'shops.$.numberReceipts': 1
-				//   }
-				// }).catch(err => next({ code: 2, err }))
 			);
 
 			if (position.activeReceipt && position.activeReceipt.current.quantity === 0) {

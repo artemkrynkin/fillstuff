@@ -115,7 +115,6 @@ const FormFieldArrayReceipt = props => {
 				) : null}
 
 				<Grid style={{ width: 154 }} item>
-					{/*{formEditable ? (*/}
 					<Field
 						name={`receipts.${index}.purchasePrice`}
 						label={receipt.position.unitReceipt === 'nmp' ? 'Цена покупки уп.' : 'Цена покупки шт.'}
@@ -133,25 +132,10 @@ const FormFieldArrayReceipt = props => {
 						disabled={isSubmitting || !formEditable}
 						fullWidth
 					/>
-					{/*) : (*/}
-					{/*   <TextField*/}
-					{/*     label={receipt.position.unitReceipt === 'nmp' ? 'Цена покупки уп.' : 'Цена покупки шт.'}*/}
-					{/*     defaultValue={receipt.purchasePrice}*/}
-					{/*     InputProps={{*/}
-					{/*       endAdornment: <InputAdornment position="end">₽</InputAdornment>,*/}
-					{/*       inputComponent: NumberFormat,*/}
-					{/*       inputProps: {*/}
-					{/*         ...moneyInputFormatProps,*/}
-					{/*       },*/}
-					{/*     }}*/}
-					{/*     disabled*/}
-					{/*     fullWidth*/}
-					{/*   />*/}
-					{/* )}*/}
 				</Grid>
 
 				{formEditable ? (
-					<Grid style={{ width: 174 }} item>
+					<Grid style={{ width: 154 }} item>
 						{!receipt.position.isFree ? (
 							<Field
 								name={`receipts.${index}.markupPercent`}

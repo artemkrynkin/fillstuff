@@ -105,7 +105,7 @@ const FormFieldArrayCharacteristics = props => {
 						</Grid>
 						<Grid xs={8} item>
 							<SelectAutocompleteCreate
-								isDisabled={isSubmitting || isLoadingCharacteristics || !characteristicTemp.type || !characteristics}
+								isDisabled={isSubmitting || !characteristicTemp.type}
 								isLoading={isLoadingCharacteristics}
 								value={characteristicTemp.name}
 								inputValue={characteristicTemp.name}

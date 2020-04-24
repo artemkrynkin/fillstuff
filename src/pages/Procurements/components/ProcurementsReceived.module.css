@@ -1,0 +1,19 @@
+.container {
+  margin-top: 40px;
+}
+
+.empty {
+  min-height: calc(100vh - 299px);
+  padding-top: 16px;
+}
+
+.date {
+  margin-bottom: 40px;
+}
+
+.dateTitle {
+  color: var(--c-hex-bg-500);
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 24px;
+}

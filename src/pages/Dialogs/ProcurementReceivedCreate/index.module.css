@@ -10,11 +10,6 @@
   padding-top: 20px;
 }
 
-.receiptsHeader {
-  margin-bottom: -8px;
-  padding: 0 20px;
-}
-
 .addPositionContainer {
   background-color: white;
   margin-bottom: 20px;
@@ -53,19 +48,6 @@
   border-bottom: none;
   margin-bottom: 0;
   padding-bottom: 0;
-}
-
-.positionName {
-  align-items: center;
-  color: var(--c-hex-bg-600);
-  display: flex;
-  font-size: 13px;
-  height: 36px;
-  margin-top: 5px;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .removeReceipt {

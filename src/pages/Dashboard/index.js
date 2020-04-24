@@ -6,6 +6,7 @@ import Head from 'src/components/head';
 import HeaderPage from 'src/components/HeaderPage';
 
 import stylesPage from 'src/styles/page.module.css';
+import styles from './index.module.css';
 
 const Dashboard = props => {
 	const metaInfo = {
@@ -25,7 +26,9 @@ const Dashboard = props => {
 
 			<HeaderPage pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
 			<div className={stylesPage.pageContent}>
-				<div className={`${stylesPage.pageContent}`}></div>
+				<div className={`${stylesPage.pageContent} ${styles.container}`}>
+					<div className={styles.notifications} />
+				</div>
 			</div>
 		</div>
 	);

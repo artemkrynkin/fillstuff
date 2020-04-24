@@ -1,67 +1,31 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import _ from 'lodash';
-import moment from 'moment';
 
-import CircularProgress from '@material-ui/core/CircularProgress';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
 
+import Empty from 'src/components/Empty';
 import { deleteParamsCoincidence } from 'src/components/Pagination/utils';
-import LoadMoreButton from 'src/components/Pagination/LoadMoreButton';
 
-import { getProcurementsReceived } from 'src/actions/procurements';
+import { getProcurementsExpected, getProcurementsReceived } from 'src/actions/procurements';
 
-import Procurement from './Procurement';
-
+import ProcurementsExpected from './ProcurementsExpected';
+import ProcurementsReceived from './ProcurementsReceived';
 import styles from './Procurements.module.css';
 
-const calendarFormat = {
-	sameDay: 'Сегодня',
-	nextDay: 'Завтра',
-	lastDay: 'Вчера',
-	sameElse: function(now) {
-		return this.isSame(now, 'year') ? 'D MMMM, dddd' : 'D MMMM YYYY';
-	},
-	nextWeek: function(now) {
-		return this.isSame(now, 'year') ? 'D MMMM, dddd' : 'D MMMM YYYY';
-	},
-	lastWeek: function(now) {
-		return this.isSame(now, 'year') ? 'D MMMM, dddd' : 'D MMMM YYYY';
-	},
-};
-
-const brokenDownByMonth = data => {
-	const procurements = data.slice();
-
-	return _.chain(procurements)
-		.groupBy(procurement => {
-			return moment(procurement.createdAt)
-				.set({
-					hour: 0,
-					minute: 0,
-					second: 0,
-					millisecond: 0,
-				})
-				.format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
-		})
-		.map((procurements, date) => ({ date, procurements }))
-		.value();
-};
+import emptyImage from 'public/img/stubs/procurements.svg';
+import { LoadingComponent } from '../../../components/Loading';
 
 class Procurements extends Component {
-	static propTypes = {
-		filterOptions: PropTypes.object.isRequired,
-		paging: PropTypes.object.isRequired,
-	};
-
-	onLoadMore = nextPage => {
+	onLoadMoreProcurementsReceived = nextPage => {
 		const {
 			filterOptions: { params: filterParams, delete: filterDeleteParams },
 		} = this.props;
 
 		const query = deleteParamsCoincidence({ ...filterParams, page: nextPage }, { type: 'server', ...filterDeleteParams });
 
-		this.props.getProcurementsReceived(query, { showRequest: false, mergeData: true });
+		this.props.getProcurementsReceived(query, { mergeData: true });
 	};
 
 	componentDidMount() {
@@ -71,59 +35,87 @@ class Procurements extends Component {
 
 		const query = deleteParamsCoincidence({ ...filterParams }, { type: 'server', ...filterDeleteParams });
 
+		this.props.getProcurementsExpected();
 		this.props.getProcurementsReceived(query);
 	}
 
 	render() {
 		const {
-			filterOptions: { params: filterParams },
+			filterOptions,
 			paging,
+			procurementsExpected: {
+				data: procurementsExpected,
+				// isFetching: isLoadingProcurementsExpected,
+				// error: errorProcurementsExpected
+			},
 			procurementsReceived: {
 				data: procurementsReceived,
-				isFetching: isLoadingProcurementsReceived,
-				// error: errorProcurementsDates
+				// isFetching: isLoadingProcurementsReceived,
+				// error: errorProcurementsReceived
 			},
 		} = this.props;
+		const { procurementsExpected: procurementsExpectedInitial, procurementsReceived: procurementsReceivedInitial } = this.props;
+
+		if (!procurementsExpected && !procurementsReceived) return <LoadingComponent className={styles.container} />;
+
+		if (
+			procurementsExpected &&
+			procurementsReceived &&
+			!procurementsExpected.paging.totalCount &&
+			!procurementsReceived.paging.totalCount &&
+			!procurementsReceived.paging.totalDocs
+		) {
+			return (
+				<Empty
+					className={styles.empty}
+					imageSrc={emptyImage}
+					content={
+						<Typography variant="h6" gutterBottom>
+							Похоже, у вас еще нет заказов или закупок
+						</Typography>
+					}
+					actions={
+						<Grid justify="center" alignItems="center" container>
+							<Button variant="contained" color="primary">
+								Создать заказ
+							</Button>
+							<Typography variant="caption" style={{ marginLeft: 16 }}>
+								или
+							</Typography>
+							<Button variant="contained" color="primary">
+								Оформить закупку
+							</Button>
+						</Grid>
+					}
+				/>
+			);
+		}
 
 		return (
-			<div className={styles.container}>
-				{!isLoadingProcurementsReceived && procurementsReceived ? (
-					procurementsReceived.paging.totalCount && procurementsReceived.paging.totalDocs ? (
-						<div>
-							{brokenDownByMonth(procurementsReceived.data).map(month => (
-								<div className={styles.date} key={month.date}>
-									<div className={styles.dateTitle}>{moment(month.date).calendar(null, calendarFormat)}</div>
-									{month.procurements.map(procurement => (
-										<Procurement key={procurement._id} procurement={procurement} filterParams={filterParams} />
-									))}
-								</div>
-							))}
-							{procurementsReceived.paging.hasNextPage ? (
-								<LoadMoreButton page={paging.page} setPage={paging.setPage} onLoadMore={this.onLoadMore} />
-							) : null}
-						</div>
-					) : procurementsReceived.paging.totalCount && !procurementsReceived.paging.totalDocs ? (
-						<div className={styles.none}>Ничего не найдено</div>
-					) : (
-						<div className={styles.none}>Еще не создано ни одной закупки</div>
-					)
-				) : isLoadingProcurementsReceived ? (
-					<div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />
-				) : null}
-			</div>
+			<Grid>
+				<ProcurementsExpected procurementsExpected={procurementsExpectedInitial} />
+				<ProcurementsReceived
+					filterOptions={filterOptions}
+					paging={paging}
+					procurementsReceived={procurementsReceivedInitial}
+					onLoadMore={this.onLoadMoreProcurementsReceived}
+				/>
+			</Grid>
 		);
 	}
 }
 
 const mapStateToProps = state => {
 	return {
+		procurementsExpected: state.procurementsExpected,
 		procurementsReceived: state.procurementsReceived,
 	};
 };
 
 const mapDispatchToProps = dispatch => {
 	return {
-		getProcurementsReceived: (query, params) => dispatch(getProcurementsReceived({ query, ...params })),
+		getProcurementsExpected: options => dispatch(getProcurementsExpected({ ...options })),
+		getProcurementsReceived: (query, options) => dispatch(getProcurementsReceived({ query, ...options })),
 	};
 };
 

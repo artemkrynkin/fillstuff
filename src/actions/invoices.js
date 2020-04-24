@@ -1,11 +1,14 @@
 import axios from 'axios';
 
-export const getInvoices = ({ query, showRequest = true, mergeData = false } = { showRequest: true, mergeData: false }) => {
+export const getInvoices = (
+	{ query, showRequest = true, mergeData = false, emptyData = false } = { showRequest: true, mergeData: false, emptyData: false }
+) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
 
 		if (showRequest) dispatch({ type: 'REQUEST_INVOICES' });
+		if (emptyData) dispatch({ type: 'EMPTY_INVOICES' });
 
 		return await axios
 			.post('/api/getInvoices', {

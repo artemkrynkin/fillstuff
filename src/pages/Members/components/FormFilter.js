@@ -4,7 +4,7 @@ import { Field, Form } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Grid from '@material-ui/core/Grid';
 import ButtonBase from '@material-ui/core/ButtonBase';
-import List from '@material-ui/core/List';
+import MenuList from '@material-ui/core/MenuList';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import Dropdown from 'src/components/Dropdown';
@@ -14,7 +14,7 @@ import { SearchTextField } from './Filter.styles';
 import styles from './Filter.module.css';
 
 const roles = ['all', 'owners', 'admins', 'artists'];
-const FilterRoleTransform = (roleSelected, members, loading) => {
+const FilterRoleTransform = roleSelected => {
 	switch (roleSelected) {
 		case 'all':
 			return 'Все роли';
@@ -25,17 +25,7 @@ const FilterRoleTransform = (roleSelected, members, loading) => {
 		case 'artists':
 			return 'Только мастера';
 		default:
-			if (!loading) {
-				if (members && members.length) {
-					const member = members.find(member => member._id === roleSelected);
-
-					return member ? member.user.name : null;
-				} else {
-					return 'Не найдено';
-				}
-			} else {
-				return <CircularProgress size={13} />;
-			}
+			return null;
 	}
 };
 
@@ -46,11 +36,6 @@ const FormFilter = props => {
 		onClearFilterName,
 		onChangeFilterRole,
 		onResetAllFilters,
-		members: {
-			data: members,
-			isFetching: isLoadingMembers,
-			// error: errorMembers
-		},
 		refFilterNameInput,
 		dropdownRole: { state: dropdownRole, ref: refDropdownRole },
 		formikProps: {
@@ -76,7 +61,11 @@ const FormFilter = props => {
 					fullWidth
 				/>
 				{values.name && !isSubmitting ? (
-					<ButtonBase onClick={() => onClearFilterName(setFieldValue, submitForm)} className={styles.textFieldFilterNameClear}>
+					<ButtonBase
+						onClick={() => onClearFilterName(setFieldValue, submitForm)}
+						className={styles.textFieldFilterNameClear}
+						tabIndex={-1}
+					>
 						<FontAwesomeIcon icon={['fal', 'times']} />
 					</ButtonBase>
 				) : null}
@@ -87,30 +76,9 @@ const FormFilter = props => {
 				{/* Filter Role */}
 				<Grid item>
 					<ButtonBase ref={refDropdownRole} className={styles.filterButtonLink} onClick={() => handlerDropdown('dropdownRole')}>
-						<span>{FilterRoleTransform(values.role, members, isLoadingMembers)}</span>
+						<span>{FilterRoleTransform(values.role)}</span>
 						<FontAwesomeIcon icon={['far', 'angle-down']} />
 					</ButtonBase>
-
-					<Dropdown
-						anchor={refDropdownRole}
-						open={dropdownRole}
-						onClose={() => handlerDropdown('dropdownRole')}
-						placement="bottom-start"
-						innerContentStyle={{ width: 220, maxHeight: 300, overflow: 'auto' }}
-					>
-						<List>
-							{roles.map((role, index) => (
-								<MenuItem
-									key={index}
-									disabled={isSubmitting}
-									selected={values.role === role}
-									onClick={() => onChangeFilterRole(role, setFieldValue, submitForm)}
-								>
-									{FilterRoleTransform(role)}
-								</MenuItem>
-							))}
-						</List>
-					</Dropdown>
 				</Grid>
 
 				<Grid item style={{ marginLeft: 'auto' }}>
@@ -121,6 +89,29 @@ const FormFilter = props => {
 					) : null}
 				</Grid>
 			</Grid>
+
+			{/* Filter Role */}
+			<Dropdown
+				anchor={refDropdownRole}
+				open={dropdownRole}
+				onClose={() => handlerDropdown('dropdownRole', false)}
+				placement="bottom-start"
+				innerContentStyle={{ width: 220, maxHeight: 300, overflow: 'auto' }}
+			>
+				<MenuList autoFocusItem={dropdownRole}>
+					{roles.map((role, index) => (
+						<MenuItem
+							key={index}
+							disabled={isSubmitting}
+							selected={values.role === role}
+							onClick={() => onChangeFilterRole(role, setFieldValue, submitForm)}
+							tabIndex={0}
+						>
+							{FilterRoleTransform(role)}
+						</MenuItem>
+					))}
+				</MenuList>
+			</Dropdown>
 		</Form>
 	);
 };

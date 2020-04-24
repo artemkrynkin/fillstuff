@@ -109,15 +109,6 @@ class Sidebar extends Component {
 							</NavLink>
 						</div>
 
-						{/*<div className={styles.menuItem}>*/}
-						{/*	<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to="/statistics">*/}
-						{/*		<div className={styles.menuIcon}>*/}
-						{/*			<FontAwesomeIcon icon={['fal', 'analytics']} />*/}
-						{/*		</div>*/}
-						{/*		Статистика*/}
-						{/*	</NavLink>*/}
-						{/*</div>*/}
-
 						<div className={styles.menuItem}>
 							<NavLink className={styles.menuLink} activeClassName={styles.menuLink_active} to="/settings">
 								<div className={styles.menuIcon}>

@@ -17,16 +17,34 @@ class SliderScroller extends Component {
 	}
 
 	static defaultProps = {
-		className: '',
+		classNamesInitial: {
+			container: '',
+			wrapOverflow: '',
+			wrapScroll: '',
+			arrowLeft: '',
+			arrowRight: '',
+			arrowShadowLeft: '',
+			arrowShadowRight: '',
+		},
 		offsetLeft: 0,
 		offsetRight: 0,
 		shadows: false,
 	};
 
 	static propTypes = {
+		classNames: PropTypes.shape({
+			container: PropTypes.string,
+			wrapOverflow: PropTypes.string,
+			wrapScroll: PropTypes.string,
+			arrowLeft: PropTypes.string,
+			arrowRight: PropTypes.string,
+			arrowShadowLeft: PropTypes.string,
+			arrowShadowRight: PropTypes.string,
+		}),
 		shadows: PropTypes.bool,
 		offsetLeft: PropTypes.number,
 		offsetRight: PropTypes.number,
+		children: PropTypes.node.isRequired,
 	};
 
 	state = {
@@ -111,42 +129,59 @@ class SliderScroller extends Component {
 	componentDidMount = () => {
 		this.setClasses();
 
-		new ResizeSensor(this.sliderScroller, this.setClasses);
-		new ResizeSensor(this.sliderScroller.querySelector(`.${styles.wrap}`), this.setClasses);
+		// new ResizeSensor(this.sliderScroller, this.setClasses);
+		// new ResizeSensor(this.sliderScroller.querySelector(`.${styles.wrapScroll}`), this.setClasses);
 	};
 
 	render() {
-		const { className, children, shadows } = this.props;
+		const { shadows, children } = this.props;
+		const classNames = { ...this.props.classNamesInitial, ...this.props.classNames };
 
-		const classes = ClassNames({
+		const classesContainer = ClassNames({
 			...Object.fromEntries(
-				className
+				classNames.container
 					.split(' ')
 					.filter(val => val)
 					.map(key => [key, true])
 			),
 			[styles.container]: true,
 		});
+		const classesWrapOverflow = ClassNames({
+			...Object.fromEntries(
+				classNames.wrapOverflow
+					.split(' ')
+					.filter(val => val)
+					.map(key => [key, true])
+			),
+			[styles.wrapOverflow]: true,
+		});
+		const classesWrapScroll = ClassNames({
+			...Object.fromEntries(
+				classNames.wrapScroll
+					.split(' ')
+					.filter(val => val)
+					.map(key => [key, true])
+			),
+			[styles.wrapScroll]: true,
+		});
 
 		return (
-			<div ref={this.sliderScrollRef} className={classes}>
-				<div className={styles.wrapOverflow}>
-					<div className={styles.wrapScroll} onScroll={this.onScroll}>
-						<div className={styles.wrap}>
-							<div className={styles.content}>{children}</div>
-						</div>
+			<div ref={this.sliderScrollRef} className={classesContainer}>
+				<div className={classesWrapOverflow}>
+					<div className={classesWrapScroll} onScroll={this.onScroll}>
+						{children}
 					</div>
 				</div>
 
-				<span className={`${styles.arrow} ${styles.arrow_left}`} onClick={event => this.handleClickArrow(event, 'left')}>
+				<span className={`${classNames.arrowLeft}`} onClick={event => this.handleClickArrow(event, 'left')}>
 					<FontAwesomeIcon icon={['fal', 'angle-left']} />
 				</span>
-				{shadows ? <div className={`${styles.arrowShadow} ${styles.arrowShadow_directionLeft}`} /> : null}
+				{shadows ? <div className={`${classNames.arrowShadowLeft}`} /> : null}
 
-				<span className={`${styles.arrow} ${styles.arrow_right}`} onClick={event => this.handleClickArrow(event, 'right')}>
+				<span className={`${classNames.arrowRight}`} onClick={event => this.handleClickArrow(event, 'right')}>
 					<FontAwesomeIcon icon={['fal', 'angle-right']} />
 				</span>
-				{shadows ? <div className={`${styles.arrowShadow} ${styles.arrowShadow_directionRight}`} /> : null}
+				{shadows ? <div className={`${classNames.arrowShadowRight}`} /> : null}
 			</div>
 		);
 	}

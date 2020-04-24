@@ -7,6 +7,10 @@
   min-height: calc(100vh - 50px);
 }
 
+.pageWrapperContent:not(.fullWidth) {
+  max-width: calc(100% - 320px);
+}
+
 .page {
   height: 100%;
 }

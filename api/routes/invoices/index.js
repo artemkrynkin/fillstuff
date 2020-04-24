@@ -23,7 +23,7 @@ invoicesRouter.post(
 			query: { page, limit, dateStart, dateEnd, member, status },
 		} = req.body;
 
-		let conditions = {
+		const conditions = {
 			studio: studioId,
 		};
 

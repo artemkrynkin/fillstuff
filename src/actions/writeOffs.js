@@ -1,11 +1,14 @@
 import axios from 'axios';
 
-export const getWriteOffs = ({ query, showRequest = true, mergeData = false } = { showRequest: true, mergeData: false }) => {
+export const getWriteOffs = (
+	{ query, showRequest = true, mergeData = false, emptyData = true } = { showRequest: true, mergeData: false, emptyData: true }
+) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
 
 		if (showRequest) dispatch({ type: 'REQUEST_WRITE_OFFS' });
+		if (emptyData) dispatch({ type: 'EMPTY_WRITE_OFFS' });
 
 		return await axios
 			.post('/api/getWriteOffs', {

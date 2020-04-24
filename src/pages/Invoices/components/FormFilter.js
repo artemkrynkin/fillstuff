@@ -1,19 +1,19 @@
 import React, { useState, useRef } from 'react';
 import moment from 'moment';
-import MomentUtils from '@date-io/moment';
 import { Form } from 'formik';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Grid from '@material-ui/core/Grid';
 import ButtonBase from '@material-ui/core/ButtonBase';
+import MenuList from '@material-ui/core/MenuList';
 import List from '@material-ui/core/List';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import { DatePicker } from '@material-ui/pickers';
+import MomentUtils from '@material-ui/pickers/adapter/moment';
+import { StaticDateRangePicker, LocalizationProvider } from '@material-ui/pickers';
 
 import { memberRoleTransform } from 'shared/roles-access-rights';
 
@@ -163,115 +163,6 @@ const FormFilter = props => {
 						)}
 						<FontAwesomeIcon icon={['far', 'angle-down']} />
 					</ButtonBase>
-
-					<Dropdown
-						anchor={refDropdownDate}
-						open={dropdownDate}
-						onClose={() => handlerDropdown('dropdownDate')}
-						placement="bottom-start"
-						innerContentStyle={{ minWidth: 190 }}
-					>
-						<List>
-							<MenuItem
-								disabled={isSubmitting}
-								selected={!values.dateStartView && !values.dateEndView}
-								onClick={() => onChangeFilterDate('allTime', setFieldValue, submitForm)}
-							>
-								Всё время
-							</MenuItem>
-							<MenuItem
-								disabled={isSubmitting}
-								selected={isMonthActive()}
-								onClick={() => onChangeFilterDate('currentMonth', setFieldValue, submitForm)}
-							>
-								Текущий месяц
-							</MenuItem>
-							<MenuItem
-								disabled={isSubmitting}
-								selected={isWeekActive()}
-								onClick={() => onChangeFilterDate('currentWeek', setFieldValue, submitForm)}
-							>
-								Текущая неделя
-							</MenuItem>
-						</List>
-						<Divider />
-						<List>
-							<MenuItem
-								ref={refDropdownDateRange}
-								disabled={isSubmitting}
-								onClick={() => {
-									handlerDropdown('dropdownDate');
-									handlerDropdown('dropdownDateRange');
-								}}
-							>
-								Указать период
-							</MenuItem>
-						</List>
-					</Dropdown>
-
-					<Dropdown
-						anchor={refDropdownDate}
-						open={dropdownDateRange}
-						onClose={() => handlerDropdown('dropdownDateRange')}
-						placement="bottom-start"
-						innerContentStyle={{ minWidth: 190 }}
-					>
-						<Grid className={styles.dropdownContent} alignItems="center" container>
-							<MuiPickersUtilsProvider utils={MomentUtils}>
-								<Grid className={styles.dropdownContentColumn} style={{ width: 'auto' }} item>
-									<DatePicker
-										value={values.dateStart || new Date()}
-										onChange={date => {
-											setFieldValue('dateStart', date.valueOf(), false);
-
-											if (moment(values.dateEnd).isBefore(date)) {
-												setFieldValue('dateEnd', date.valueOf(), false);
-											}
-										}}
-										variant="static"
-										leftArrowButtonProps={{
-											size: 'small',
-										}}
-										leftArrowIcon={<FontAwesomeIcon icon={['far', 'angle-left']} />}
-										rightArrowButtonProps={{
-											size: 'small',
-										}}
-										rightArrowIcon={<FontAwesomeIcon icon={['far', 'angle-right']} />}
-										maxDate={values.dateEnd || new Date()}
-										disableFuture
-										disableToolbar
-									/>
-								</Grid>
-								<Grid className={styles.dropdownContentColumn} style={{ width: 'auto' }} item>
-									<DatePicker
-										value={values.dateEnd || new Date()}
-										onChange={date => {
-											const dateEnd = date.set({ second: 59, millisecond: 999 });
-
-											setFieldValue('dateEnd', dateEnd.valueOf(), false);
-
-											if (moment(values.dateStart).isAfter(dateEnd)) {
-												setFieldValue('dateStart', dateEnd.valueOf(), false);
-											}
-										}}
-										variant="static"
-										leftArrowButtonProps={{
-											size: 'small',
-										}}
-										leftArrowIcon={<FontAwesomeIcon icon={['far', 'angle-left']} />}
-										rightArrowButtonProps={{
-											size: 'small',
-										}}
-										rightArrowIcon={<FontAwesomeIcon icon={['far', 'angle-right']} />}
-										minDate={values.dateStart || new Date()}
-										disableFuture
-										disableToolbar
-									/>
-								</Grid>
-							</MuiPickersUtilsProvider>
-						</Grid>
-						<DropdownFooter isSubmitting={isSubmitting} disabledSubmit={!values.dateStart || !values.dateEnd} />
-					</Dropdown>
 				</Grid>
 
 				{/* Filter Status */}
@@ -280,99 +171,18 @@ const FormFilter = props => {
 						<span>{FilterStatusTransform(values.status)}</span>
 						<FontAwesomeIcon icon={['far', 'angle-down']} />
 					</ButtonBase>
-
-					<Dropdown
-						anchor={refDropdownStatus}
-						open={dropdownStatus}
-						onClose={() => handlerDropdown('dropdownStatus')}
-						placement="bottom-start"
-						innerContentStyle={{ width: 250, maxHeight: 300, overflow: 'auto' }}
-					>
-						<List>
-							{statusList.map((status, index) => (
-								<MenuItem
-									key={index}
-									disabled={isSubmitting}
-									selected={values.status === status}
-									onClick={() => onChangeFilterStatus(status, setFieldValue, submitForm)}
-								>
-									{FilterStatusTransform(status)}
-								</MenuItem>
-							))}
-						</List>
-					</Dropdown>
 				</Grid>
 
 				{/* Filter Member */}
 				<Grid item>
-					<ButtonBase ref={refDropdownMember} className={styles.filterButtonLink} onClick={() => handlerDropdown('dropdownMember')}>
+					<ButtonBase
+						ref={refDropdownMember}
+						className={styles.filterButtonLink}
+						onClick={() => handlerDropdown('dropdownMember', null, onClearSearchTextMember)}
+					>
 						<span>{FilterMemberTransform(values.member, allMembers, isLoadingAllMembers)}</span>
 						<FontAwesomeIcon icon={['far', 'angle-down']} />
 					</ButtonBase>
-
-					<Dropdown
-						anchor={refDropdownMember}
-						open={dropdownMember}
-						onClose={() => handlerDropdown('dropdownMember')}
-						placement="bottom-start"
-						header={
-							<div className={styles.filterSearchTextFieldContainer}>
-								<FilterSearchTextField
-									inputRef={searchTextFieldMember}
-									placeholder="Введите имя"
-									value={searchTextMember}
-									onChange={onTypeSearchTextMember}
-									autoFocus
-									fullWidth
-								/>
-								{searchTextMember ? (
-									<ButtonBase onClick={onClearSearchTextMember} className={styles.filterSearchTextFieldClear}>
-										<FontAwesomeIcon icon={['fal', 'times']} />
-									</ButtonBase>
-								) : null}
-							</div>
-						}
-						innerContentStyle={{ width: 250, maxHeight: 300, overflow: 'auto' }}
-					>
-						{!isLoadingAllMembers && members && members.length ? (
-							<List>
-								{!searchTextMember ? (
-									<MenuItem
-										disabled={isSubmitting}
-										selected={values.member === 'all'}
-										onClick={() => onChangeFilterMember('all', setFieldValue, submitForm)}
-									>
-										Все участники
-									</MenuItem>
-								) : null}
-								{members.map((member, index) => (
-									<MenuItem
-										key={index}
-										disabled={isSubmitting}
-										selected={values.member === member._id}
-										onClick={() => onChangeFilterMember(member._id, setFieldValue, submitForm)}
-									>
-										<div className={styles.user}>
-											<Avatar
-												className={styles.userPhoto}
-												src={member.user.avatar}
-												alt={member.user.name}
-												children={<div className={styles.userIcon} children={<FontAwesomeIcon icon={['fas', 'user-alt']} />} />}
-											/>
-											<Grid className={styles.userInfo} direction="column" container>
-												<div className={styles.userTitle}>{member.user.name}</div>
-												<div className={styles.userCaption}>{memberRoleTransform(member.roles).join(', ')}</div>
-											</Grid>
-										</div>
-									</MenuItem>
-								))}
-							</List>
-						) : (
-							<div style={{ textAlign: 'center', padding: 15 }}>
-								{members && !members.length ? <Typography variant="caption">Ничего не найдено</Typography> : <CircularProgress size={20} />}
-							</div>
-						)}
-					</Dropdown>
 				</Grid>
 
 				<Grid item style={{ marginLeft: 'auto' }}>
@@ -383,6 +193,183 @@ const FormFilter = props => {
 					) : null}
 				</Grid>
 			</Grid>
+
+			{/* Filter Date */}
+			<Dropdown
+				anchor={refDropdownDate}
+				open={dropdownDate}
+				onClose={() => handlerDropdown('dropdownDate', false)}
+				placement="bottom-start"
+				innerContentStyle={{ minWidth: 190 }}
+			>
+				<MenuList autoFocusItem={dropdownDate} disablePadding>
+					<List tabIndex={-1}>
+						<MenuItem
+							disabled={isSubmitting}
+							selected={!values.dateStartView && !values.dateEndView}
+							onClick={() => onChangeFilterDate('allTime', setFieldValue, submitForm)}
+							tabIndex={0}
+						>
+							Всё время
+						</MenuItem>
+						<MenuItem
+							disabled={isSubmitting}
+							selected={isMonthActive()}
+							onClick={() => onChangeFilterDate('currentMonth', setFieldValue, submitForm)}
+							tabIndex={0}
+						>
+							Текущий месяц
+						</MenuItem>
+						<MenuItem
+							disabled={isSubmitting}
+							selected={isWeekActive()}
+							onClick={() => onChangeFilterDate('currentWeek', setFieldValue, submitForm)}
+							tabIndex={0}
+						>
+							Текущая неделя
+						</MenuItem>
+					</List>
+					<Divider />
+					<List tabIndex={-1}>
+						<MenuItem
+							ref={refDropdownDateRange}
+							disabled={isSubmitting}
+							onClick={() => {
+								handlerDropdown('dropdownDate');
+								handlerDropdown('dropdownDateRange');
+							}}
+							tabIndex={0}
+						>
+							Указать период
+						</MenuItem>
+					</List>
+				</MenuList>
+			</Dropdown>
+
+			<Dropdown
+				anchor={refDropdownDate}
+				open={dropdownDateRange}
+				onClose={() => handlerDropdown('dropdownDateRange', false)}
+				placement="bottom-start"
+				innerContentStyle={{ minWidth: 190 }}
+			>
+				<Grid className={styles.dropdownContent} alignItems="center" container>
+					<LocalizationProvider dateAdapter={MomentUtils}>
+						<StaticDateRangePicker
+							calendars={1}
+							displayStaticWrapperAs="desktop"
+							reduceAnimations
+							value={[moment(values.dateStart), moment(values.dateEnd)]}
+							onChange={date => {
+								const dateStartValue = date[0] ? date[0].valueOf() : null;
+								const dateEndValue = date[1] ? date[1].valueOf() : null;
+
+								setFieldValue('dateStart', dateStartValue, false);
+								setFieldValue('dateEnd', dateEndValue, false);
+							}}
+							leftArrowButtonProps={{
+								size: 'small',
+							}}
+							leftArrowIcon={<FontAwesomeIcon icon={['far', 'angle-left']} />}
+							rightArrowButtonProps={{
+								size: 'small',
+							}}
+							rightArrowIcon={<FontAwesomeIcon icon={['far', 'angle-right']} />}
+						/>
+					</LocalizationProvider>
+				</Grid>
+				<DropdownFooter isSubmitting={isSubmitting} disabledSubmit={!values.dateStart || !values.dateEnd} />
+			</Dropdown>
+
+			{/* Filter Status */}
+			<Dropdown
+				anchor={refDropdownStatus}
+				open={dropdownStatus}
+				onClose={() => handlerDropdown('dropdownStatus', false)}
+				placement="bottom-start"
+				innerContentStyle={{ width: 250, maxHeight: 300, overflow: 'auto' }}
+			>
+				<MenuList autoFocusItem={dropdownStatus}>
+					{statusList.map((status, index) => (
+						<MenuItem
+							key={index}
+							disabled={isSubmitting}
+							selected={values.status === status}
+							onClick={() => onChangeFilterStatus(status, setFieldValue, submitForm)}
+							tabIndex={0}
+						>
+							{FilterStatusTransform(status)}
+						</MenuItem>
+					))}
+				</MenuList>
+			</Dropdown>
+
+			{/* Filter Member */}
+			<Dropdown
+				anchor={refDropdownMember}
+				open={dropdownMember}
+				onClose={() => handlerDropdown('dropdownMember', false)}
+				placement="bottom-start"
+				header={
+					<div className={styles.filterSearchTextFieldContainer}>
+						<FilterSearchTextField
+							inputRef={searchTextFieldMember}
+							placeholder="Введите имя"
+							value={searchTextMember}
+							onChange={onTypeSearchTextMember}
+							autoFocus
+							fullWidth
+						/>
+						{searchTextMember ? (
+							<ButtonBase onClick={onClearSearchTextMember} className={styles.filterSearchTextFieldClear} tabIndex={-1}>
+								<FontAwesomeIcon icon={['fal', 'times']} />
+							</ButtonBase>
+						) : null}
+					</div>
+				}
+				innerContentStyle={{ width: 250, maxHeight: 300, overflow: 'auto' }}
+			>
+				{!isLoadingAllMembers && members && members.length ? (
+					<MenuList autoFocusItem={dropdownMember && !searchTextFieldMember.current}>
+						{!searchTextMember ? (
+							<MenuItem
+								disabled={isSubmitting}
+								selected={values.member === 'all'}
+								onClick={() => onChangeFilterMember('all', setFieldValue, submitForm)}
+								tabIndex={0}
+							>
+								Все участники
+							</MenuItem>
+						) : null}
+						{members.map((member, index) => (
+							<MenuItem
+								key={index}
+								disabled={isSubmitting}
+								selected={values.member === member._id}
+								onClick={() => onChangeFilterMember(member._id, setFieldValue, submitForm)}
+								tabIndex={0}
+							>
+								<div className={styles.user}>
+									<Avatar
+										className={styles.userPhoto}
+										src={member.user.avatar}
+										alt={member.user.name}
+										children={<div className={styles.userIcon} children={<FontAwesomeIcon icon={['fas', 'user-alt']} />} />}
+									/>
+									<Grid className={styles.userInfo} direction="column" container>
+										<div className={styles.userTitle}>{member.user.name}</div>
+										<div className={styles.userCaption}>{memberRoleTransform(member.roles).join(', ')}</div>
+									</Grid>
+								</div>
+							</MenuItem>
+						))}
+					</MenuList>
+				) : (
+					<div style={{ textAlign: 'center', padding: 15 }}>
+						{members && !members.length ? <Typography variant="caption">Ничего не найдено</Typography> : <CircularProgress size={20} />}
+					</div>
+				)}
+			</Dropdown>
 		</Form>
 	);
 };

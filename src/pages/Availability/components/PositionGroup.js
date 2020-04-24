@@ -27,7 +27,7 @@ const PositionGroup = props => {
 	const refDropdownActions = useRef(null);
 	const [dropdownActions, setDropdownActions] = useState(false);
 
-	const onHandleDropdownActions = () => setDropdownActions(prevValue => !prevValue);
+	const onHandleDropdownActions = value => setDropdownActions(value === null || value === undefined ? prevValue => !prevValue : value);
 
 	return (
 		<TableRow className={stylesPositions.positionGroup}>
@@ -88,7 +88,7 @@ const PositionGroup = props => {
 							[stylesPositions.actionButton]: true,
 							[stylesPositions.actionButtonActive]: dropdownActions,
 						})}
-						onClick={onHandleDropdownActions}
+						onClick={() => onHandleDropdownActions()}
 					>
 						<FontAwesomeIcon icon={['far', 'ellipsis-h']} />
 					</IconButton>
@@ -98,7 +98,7 @@ const PositionGroup = props => {
 			<Dropdown
 				anchor={refDropdownActions}
 				open={dropdownActions}
-				onClose={onHandleDropdownActions}
+				onClose={() => onHandleDropdownActions(false)}
 				placement="bottom-end"
 				disablePortal={false}
 			>

@@ -19,9 +19,9 @@ import AvatarTitle from 'src/components/AvatarTitle';
 import Receipt from './Receipt';
 
 import { TableCell } from './styles';
-import styles from './Procurement.module.css';
+import styles from './ProcurementReceived.module.css';
 
-const Procurement = props => {
+const ProcurementReceived = props => {
 	const { procurement, filterParams } = props;
 	const [expanded, setExpanded] = useState(filterParams.position !== 'all');
 
@@ -108,4 +108,4 @@ const Procurement = props => {
 	);
 };
 
-export default Procurement;
+export default ProcurementReceived;

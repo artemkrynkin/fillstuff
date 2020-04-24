@@ -12,6 +12,7 @@ import Chip from '@material-ui/core/Chip';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import MuiMenuList from '@material-ui/core/MenuList';
 
 import MenuItem from 'src/components/MenuItem';
 
@@ -187,14 +188,20 @@ Control.propTypes = {
 const MenuList = props => {
 	return (
 		<reactSelectComponents.MenuList {...props}>
-			<ul role="listbox">{props.children}</ul>
+			<MuiMenuList disablePadding>{props.children}</MuiMenuList>
 		</reactSelectComponents.MenuList>
 	);
 };
 
 const Option = props => {
 	return (
-		<MenuItem ref={props.innerRef} selected={props.isSelected} role="option" {...props.innerProps}>
+		<MenuItem
+			className={props.isFocused ? 'Mui-focusVisible' : ''}
+			ref={props.innerRef}
+			selected={props.isSelected}
+			role="option"
+			{...props.innerProps}
+		>
 			{props.children}
 		</MenuItem>
 	);
@@ -319,6 +326,7 @@ export const IntegrationSelectAutocompleteCreate = props => {
 					{formatCreateLabel || `Создать`} «{value}»
 				</div>
 			)}
+			tabSelectsValue={false}
 			{...remainingProps}
 		/>
 	);
@@ -335,6 +343,7 @@ export const IntegrationSelectAutocomplete = props => {
 			components={components}
 			onChange={option => (option !== null && props.field ? props.form.setFieldValue(props.field.name, option.value) : () => {})}
 			onBlur={props.field ? props.field.onBlur : () => {}}
+			tabSelectsValue={false}
 			{...remainingProps}
 		/>
 	);

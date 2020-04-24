@@ -14,7 +14,7 @@ const Index = () => {
 	const filterOptions = {
 		params: checkQueryInFilter({
 			page,
-			limit: 10,
+			limit: 2,
 			dateStart: null,
 			dateEnd: null,
 			invoiceNumber: '',

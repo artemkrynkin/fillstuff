@@ -45,7 +45,7 @@ const FormReceiptCreate = props => {
 										allowNegative: false,
 									},
 								}}
-								disabled={isSubmitting}
+								disabled={isSubmitting || checkSellingPrice}
 								autoFocus
 								fullWidth
 							/>
@@ -63,7 +63,7 @@ const FormReceiptCreate = props => {
 										allowNegative: false,
 									},
 								}}
-								disabled={isSubmitting}
+								disabled={isSubmitting || checkSellingPrice}
 								autoFocus
 								fullWidth
 							/>
@@ -85,7 +85,7 @@ const FormReceiptCreate = props => {
 										allowNegative: false,
 									},
 								}}
-								disabled={isSubmitting}
+								disabled={isSubmitting || checkSellingPrice}
 								fullWidth
 							/>
 						</Grid>
@@ -106,7 +106,7 @@ const FormReceiptCreate = props => {
 									...moneyInputFormatProps,
 								},
 							}}
-							disabled={isSubmitting}
+							disabled={isSubmitting || checkSellingPrice}
 							fullWidth
 						/>
 					</Grid>

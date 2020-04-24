@@ -33,7 +33,6 @@ import Procurements from 'src/pages/Procurements';
 import Procurement from 'src/pages/Procurement';
 import Invoices from 'src/pages/Invoices';
 import Invoice from 'src/pages/Invoice';
-import Statistics from 'src/pages/Statistics';
 import Members from 'src/pages/Members';
 import Member from 'src/pages/Member';
 import Settings from 'src/pages/Settings';
@@ -106,11 +105,6 @@ const MembersFallback = signedOutFallback(
 const MemberFallback = signedOutFallback(
 	props => <Layout children={<Member match={props.match} />} authed />,
 	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/members/${match.params.memberId}`} />} />
-);
-
-const StatisticsFallback = signedOutFallback(
-	() => <Layout children={<Statistics />} authed />,
-	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/statistics`} />} />
 );
 
 const SettingsFallback = signedOutFallback(
@@ -208,7 +202,6 @@ const Routes = props => {
 							<Route path="/invoices/:invoiceId" component={InvoiceFallback} exact strict sensitive />
 							<Route path={['/members', '/members/guests']} component={MembersFallback} exact strict sensitive />
 							<Route path="/members/:memberId" component={MemberFallback} exact strict sensitive />
-							<Route path="/statistics" component={StatisticsFallback} exact strict sensitive />
 							<Route path="/settings" component={SettingsFallback} exact strict sensitive />
 
 							<Route path="/user-settings" component={UserSettingsFallback} exact strict sensitive />

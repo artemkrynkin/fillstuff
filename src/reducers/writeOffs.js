@@ -12,6 +12,12 @@ const writeOffs = (
 				isFetching: true,
 			};
 		}
+		case 'EMPTY_WRITE_OFFS': {
+			return {
+				...state,
+				data: null,
+			};
+		}
 		case 'RECEIVE_WRITE_OFFS': {
 			return {
 				...state,

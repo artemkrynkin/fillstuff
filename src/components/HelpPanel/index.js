@@ -20,7 +20,7 @@ const HelpPanel = props => {
 	const refDropdownProfile = useRef(null);
 	const [dropdownProfile, setDropdownProfile] = useState(false);
 
-	const onHandleDropdownProfile = () => setDropdownProfile(prevValue => !prevValue);
+	const onHandleDropdownProfile = value => setDropdownProfile(value === null || value === undefined ? prevValue => !prevValue : value);
 
 	const onLogout = () => props.logout();
 
@@ -30,7 +30,7 @@ const HelpPanel = props => {
 
 			<Grid className={styles.wrapper} direction="column" justify="space-between" alignItems="center" container>
 				<Link className={styles.logo} to="/" />
-				<div className={styles.profile} ref={refDropdownProfile} onClick={onHandleDropdownProfile}>
+				<div className={styles.profile} ref={refDropdownProfile} onClick={() => onHandleDropdownProfile()}>
 					<div
 						className={ClassNames({
 							[styles.avatar]: true,
@@ -45,19 +45,26 @@ const HelpPanel = props => {
 			<Dropdown
 				anchor={refDropdownProfile}
 				open={dropdownProfile}
-				onClose={onHandleDropdownProfile}
+				onClose={() => onHandleDropdownProfile(false)}
 				placement="right-end"
 				style={{ marginLeft: 5 }}
 			>
 				<MenuList>
-					<MenuItem onClick={onHandleDropdownProfile} to={'/user-settings'} component={Link}>
+					<MenuItem onClick={() => onHandleDropdownProfile(false)} to={'/user-settings'} component={Link}>
 						Настройки&nbsp;аккаунта
 					</MenuItem>
-					<MenuItem onClick={onHandleDropdownProfile}>Оплата</MenuItem>
+					<MenuItem onClick={() => onHandleDropdownProfile(false)}>Оплата</MenuItem>
 				</MenuList>
 				<Divider />
 				<MenuList>
-					<MenuItem onClick={onLogout}>Выйти</MenuItem>
+					<MenuItem
+						onClick={() => {
+							onHandleDropdownProfile(false);
+							onLogout();
+						}}
+					>
+						Выйти
+					</MenuItem>
 				</MenuList>
 			</Dropdown>
 		</div>

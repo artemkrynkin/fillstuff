@@ -12,6 +12,12 @@ const procurementsReceived = (
 				isFetching: true,
 			};
 		}
+		case 'EMPTY_PROCUREMENTS_RECEIVED': {
+			return {
+				...state,
+				data: null,
+			};
+		}
 		case 'RECEIVE_PROCUREMENTS_RECEIVED': {
 			return {
 				...state,

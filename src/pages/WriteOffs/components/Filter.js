@@ -39,10 +39,13 @@ class Filter extends Component {
 	refDropdownPosition = createRef();
 	refDropdownRole = createRef();
 
-	handlerDropdown = (name, value) =>
-		this.setState({
-			[name]: value === null || value === undefined ? !this.state[name] : value,
-		});
+	handlerDropdown = (name, value, callback) =>
+		this.setState(
+			{
+				[name]: value === null || value === undefined ? !this.state[name] : value,
+			},
+			callback
+		);
 
 	onChangeFilterDate = (intervalDate, setFieldValue, submitForm) => {
 		const momentDate = moment();
@@ -159,7 +162,7 @@ class Filter extends Component {
 
 			if (!query.onlyCanceled) delete query.onlyCanceled;
 
-			this.props.getWriteOffs(query);
+			this.props.getWriteOffs(query, { emptyData: true });
 		}
 	}
 
@@ -229,8 +232,25 @@ class Filter extends Component {
 }
 
 const mapStateToProps = state => {
+	const {
+		members: {
+			data: membersData,
+			isFetching: isLoadingMembers,
+			// error: errorMembers
+		},
+	} = state;
+
+	const members = {
+		data: null,
+		isFetching: isLoadingMembers,
+	};
+
+	if (!isLoadingMembers && membersData) {
+		members.data = membersData.data;
+	}
+
 	return {
-		members: state.members,
+		members: members,
 		positions: state.positions,
 	};
 };
@@ -239,7 +259,7 @@ const mapDispatchToProps = dispatch => {
 	return {
 		getMembers: () => dispatch(getMembers()),
 		getPositions: () => dispatch(getPositions()),
-		getWriteOffs: query => dispatch(getWriteOffs({ query })),
+		getWriteOffs: (query, options) => dispatch(getWriteOffs({ query, ...options })),
 	};
 };
 

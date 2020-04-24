@@ -122,6 +122,8 @@ export const BliksideTheme = createMuiTheme({
 	overrides: {
 		MuiContainer: {
 			root: {
+				paddingLeft: null,
+				paddingRight: null,
 				'@media (min-width: 600px)': {
 					paddingLeft: 0,
 					paddingRight: 0,
@@ -134,7 +136,7 @@ export const BliksideTheme = createMuiTheme({
 		},
 		MuiTypography: {
 			gutterBottom: {
-				marginBottom: 20,
+				marginBottom: '0.5rem',
 			},
 		},
 		MuiDivider: {
@@ -350,8 +352,8 @@ export const BliksideTheme = createMuiTheme({
 		},
 		MuiList: {
 			padding: {
-				paddingLeft: '8px !important',
-				paddingRight: '8px !important',
+				paddingLeft: '8px',
+				paddingRight: '8px',
 			},
 		},
 		MuiListItem: {
@@ -871,36 +873,51 @@ export const BliksideTheme = createMuiTheme({
 				backgroundColor: null,
 			},
 		},
-		MuiPickersCalendarHeader: {
-			switchHeader: {
-				paddingRight: 5,
-			},
-			transitionContainer: {
-				height: 24,
-				order: -1,
-				'& > p': {
-					color: theme.blueGrey.cBg200,
-					fontSize: 13,
-					fontWeight: 600,
-					lineHeight: 1.4,
-					padding: '3px 0 3px 14px',
-					textAlign: 'left',
-					textTransform: 'capitalize',
-				},
-			},
-			dayLabel: {
-				color: theme.blueGrey.cBg300,
-				fontSize: 13,
-				fontWeight: 600,
-				margin: '0 4px',
-				textTransform: 'capitalize',
-			},
+		// MuiPickersCalendarHeader: {
+		// 	switchHeader: {
+		// 		paddingRight: 5,
+		// 	},
+		// 	transitionContainer: {
+		// 		height: 24,
+		// 		order: -1,
+		// 		'& > p': {
+		// 			color: theme.blueGrey.cBg200,
+		// 			fontSize: 13,
+		// 			fontWeight: 600,
+		// 			lineHeight: 1.4,
+		// 			padding: '3px 0 3px 14px',
+		// 			textAlign: 'left',
+		// 			textTransform: 'capitalize',
+		// 		},
+		// 	},
+		// 	dayLabel: {
+		// 		color: theme.blueGrey.cBg300,
+		// 		fontSize: 13,
+		// 		fontWeight: 600,
+		// 		margin: '0 4px',
+		// 		textTransform: 'capitalize',
+		// 	},
+		// 	iconButton: {
+		// 		color: theme.blueGrey.cBg300,
+		// 		margin: '0',
+		// 		'& svg': {
+		// 			fontSize: 20,
+		// 			width: '20px !important',
+		// 		},
+		// 		'&:hover': {
+		// 			backgroundColor: theme.blueGrey.cBg50,
+		// 		},
+		// 		'&:disabled': {
+		// 			color: theme.blueGrey.cBg100,
+		// 		},
+		// 	},
+		// },
+		MuiPickersArrowSwitcher: {
 			iconButton: {
 				color: theme.blueGrey.cBg300,
-				margin: '0',
+				width: 26,
 				'& svg': {
 					fontSize: 20,
-					width: '20px !important',
 				},
 				'&:hover': {
 					backgroundColor: theme.blueGrey.cBg50,
@@ -908,6 +925,9 @@ export const BliksideTheme = createMuiTheme({
 				'&:disabled': {
 					color: theme.blueGrey.cBg100,
 				},
+			},
+			previousMonthButtonMargin: {
+				marginRight: null,
 			},
 		},
 		MuiPickersDay: {
@@ -919,16 +939,45 @@ export const BliksideTheme = createMuiTheme({
 				'& p': {
 					fontWeight: 600,
 				},
-				'&:hover': {
+				'&:hover, focus': {
 					backgroundColor: theme.blueGrey.cBg50,
 				},
 			},
-			current: {
+			today: {
+				'&:not($daySelected)': {
+					border: `1px solid ${theme.teal.cT300}`,
+				},
+			},
+			daySelected: {
 				border: `1px solid ${theme.teal.cT300}`,
-				color: null,
+				color: 'white',
 			},
 			dayDisabled: {
 				color: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg600)}, 0.2)`,
+			},
+			dayWithMargin: {
+				margin: null,
+			},
+		},
+		MuiPickersDateRangeDay: {
+			day: {
+				transform: null,
+			},
+			dayInsideRangeInterval: {
+				color: theme.blueGrey.cBg700,
+			},
+			dayOutsideRangeInterval: {
+				'&:hover': {
+					border: null,
+				},
+			},
+		},
+		MuiPickersDesktopDateRangeCalendar: {
+			arrowSwitcher: {
+				padding: null,
+			},
+			calendar: {
+				minHeight: 'auto',
 			},
 		},
 		MuiTabs: {

@@ -2,12 +2,16 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import loadable from '@loadable/component';
 
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+
+import { LoadingComponent } from 'src/components/Loading';
+import Empty from 'src/components/Empty';
 
 import { getPositions } from 'src/actions/positions';
 import { getPositionGroups } from 'src/actions/positionGroups';
@@ -17,6 +21,8 @@ import Position from './Position';
 import PositionGroup from './PositionGroup';
 
 import styles from './Positions.module.css';
+
+import emptyImage from 'public/img/stubs/procurements.svg';
 
 const DialogPositionGroupCreateEditAdd = loadable(() =>
 	import('src/pages/Dialogs/PositionGroupCreateEditAdd' /* webpackChunkName: "Dialog_PositionGroupCreateEditAdd" */)
@@ -93,12 +99,12 @@ class Positions extends Component {
 		const {
 			positions: {
 				data: positions,
-				isFetching: isLoadingPositions,
+				// isFetching: isLoadingPositions,
 				// error: errorPositions
 			},
 			positionGroups: {
 				data: positionGroups,
-				isFetching: isLoadingPositionGroups,
+				// isFetching: isLoadingPositionGroups,
 				// error: errorPositions
 			},
 		} = this.props;
@@ -118,52 +124,80 @@ class Positions extends Component {
 			dialogWriteOffCreate,
 		} = this.state;
 
-		return (
-			<div>
-				{!isLoadingPositions && !isLoadingPositionGroups && positions && positionGroups ? (
-					!positions.length && !positionGroups.length ? (
-						<div className={styles.none}>Еще не создано ни одной позиции</div>
-					) : positions.every(position => position.isArchived) ? (
-						<div className={styles.none}>Все созданные позиции находятся в архиве</div>
-					) : (
-						<Paper>
-							<Table style={{ tableLayout: 'fixed' }}>
-								<TableHead className={styles.tableHeaderSticky}>
-									<TableRow>
-										<TableCell>Позиция</TableCell>
-										<TableCell align="right" width={240}>
-											Количество
-										</TableCell>
-										<TableCell align="right" width={140}>
-											Цена покупки
-										</TableCell>
-										<TableCell align="right" width={140}>
-											Цена продажи
-										</TableCell>
-										<TableCell width={50} />
-									</TableRow>
-								</TableHead>
-								<TableBody className={styles.tableBody}>
-									{positionGroups.map(positionGroup => (
-										<PositionGroup
-											key={positionGroup._id}
-											positionGroup={positionGroup}
-											onOpenDialogPositionGroup={this.onOpenDialogByName}
-											onOpenDialogPosition={this.onOpenDialogByName}
-										/>
-									))}
-									{positions.map(position => {
-										if (position.positionGroup || position.isArchived) return null;
+		if (!positions || !positionGroups) return <LoadingComponent className={styles.container} />;
 
-										return <Position key={position._id} position={position} onOpenDialogPosition={this.onOpenDialogByName} />;
-									})}
-								</TableBody>
-							</Table>
-						</Paper>
-					)
-				) : isLoadingPositions || isLoadingPositionGroups ? (
-					<div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />
-				) : null}
+		if (positions && !positions.length && !positionGroups.length) {
+			return (
+				<Empty
+					className={styles.empty}
+					imageSrc={emptyImage}
+					content={
+						<Typography variant="h6" gutterBottom>
+							Похоже, у вас еще нет позиций
+						</Typography>
+					}
+					actions={
+						<Button variant="contained" color="primary">
+							Создать позицию
+						</Button>
+					}
+				/>
+			);
+		}
+
+		if (positions && positions.every(position => position.isArchived)) {
+			return (
+				<Empty
+					className={styles.empty}
+					imageSrc={emptyImage}
+					content={
+						<Typography variant="h6" gutterBottom>
+							Похоже, все ваши позиции находятся в архиве
+						</Typography>
+					}
+					actions={
+						<Button variant="contained" color="primary">
+							Создать новую позицию
+						</Button>
+					}
+				/>
+			);
+		}
+
+		return (
+			<Paper>
+				<Table style={{ tableLayout: 'fixed' }}>
+					<TableHead className={styles.tableHeaderSticky}>
+						<TableRow>
+							<TableCell>Позиция</TableCell>
+							<TableCell align="right" width={240}>
+								Количество
+							</TableCell>
+							<TableCell align="right" width={140}>
+								Цена покупки
+							</TableCell>
+							<TableCell align="right" width={140}>
+								Цена продажи
+							</TableCell>
+							<TableCell width={50} />
+						</TableRow>
+					</TableHead>
+					<TableBody className={styles.tableBody}>
+						{positionGroups.map(positionGroup => (
+							<PositionGroup
+								key={positionGroup._id}
+								positionGroup={positionGroup}
+								onOpenDialogPositionGroup={this.onOpenDialogByName}
+								onOpenDialogPosition={this.onOpenDialogByName}
+							/>
+						))}
+						{positions.map(position => {
+							if (position.positionGroup || position.isArchived) return null;
+
+							return <Position key={position._id} position={position} onOpenDialogPosition={this.onOpenDialogByName} />;
+						})}
+					</TableBody>
+				</Table>
 
 				{/* Dialogs PositionGroups */}
 				<DialogPositionGroupEdit
@@ -241,7 +275,7 @@ class Positions extends Component {
 					onExitedDialog={this.onPositionDrop}
 					selectedPosition={dialogOpenedName === 'dialogWriteOffCreate' ? position : null}
 				/>
-			</div>
+			</Paper>
 		);
 	}
 }

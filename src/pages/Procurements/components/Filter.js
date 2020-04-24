@@ -42,10 +42,13 @@ class Filter extends Component {
 	refDropdownPosition = createRef();
 	refDropdownMember = createRef();
 
-	handlerDropdown = (name, value) =>
-		this.setState({
-			[name]: value === null || value === undefined ? !this.state[name] : value,
-		});
+	handlerDropdown = (name, value, callback) =>
+		this.setState(
+			{
+				[name]: value === null || value === undefined ? !this.state[name] : value,
+			},
+			callback
+		);
 
 	onChangeFilterInvoiceNumber = debounce(({ target: { value } }, setFieldValue, submitForm) => {
 		setFieldValue('invoiceNumber', value);
@@ -150,18 +153,23 @@ class Filter extends Component {
 			paging,
 		} = this.props;
 
+		const query = deleteParamsCoincidence({ ...filterParams, page: 1 }, { type: 'server', ...filterDeleteParams });
+
+		if (prevPropsFilterParams.invoiceNumber !== filterParams.invoiceNumber) {
+			paging.setPage(1);
+
+			this.props.getProcurementsReceived(query);
+		}
+
 		if (
 			prevPropsFilterParams.dateStart !== filterParams.dateStart ||
 			prevPropsFilterParams.dateEnd !== filterParams.dateEnd ||
-			prevPropsFilterParams.invoiceNumber !== filterParams.invoiceNumber ||
 			prevPropsFilterParams.position !== filterParams.position ||
 			prevPropsFilterParams.member !== filterParams.member
 		) {
 			paging.setPage(1);
 
-			const query = deleteParamsCoincidence({ ...filterParams, page: 1 }, { type: 'server', ...filterDeleteParams });
-
-			this.props.getProcurementsReceived(query);
+			this.props.getProcurementsReceived(query, { emptyData: true });
 		}
 	}
 
@@ -245,7 +253,7 @@ const mapStateToProps = state => {
 	};
 
 	if (!isLoadingMembers && membersData) {
-		members.data = membersData.filter(member => member.roles.some(role => /owner|admin/.test(role)));
+		members.data = membersData.data.filter(member => member.roles.some(role => /owner|admin/.test(role)));
 	}
 
 	return {
@@ -258,7 +266,7 @@ const mapDispatchToProps = dispatch => {
 	return {
 		getMembers: () => dispatch(getMembers()),
 		getPositions: () => dispatch(getPositions()),
-		getProcurementsReceived: query => dispatch(getProcurementsReceived({ query })),
+		getProcurementsReceived: (query, options) => dispatch(getProcurementsReceived({ query, ...options })),
 	};
 };
 

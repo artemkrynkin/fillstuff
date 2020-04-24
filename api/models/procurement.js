@@ -101,7 +101,12 @@ const Procurement = new Schema({
 	totalPrice: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
-		default: 0,
+		required: [
+			function() {
+				return this.status === 'received';
+			},
+			i18n.__('Обязательное поле'),
+		],
 		set: value => formatNumber(value),
 	},
 	compensateCostDelivery: {

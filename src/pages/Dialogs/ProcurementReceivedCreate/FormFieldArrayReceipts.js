@@ -58,7 +58,7 @@ const FormFieldArrayReceipts = props => {
 					<Grid alignItems="flex-start" spacing={2} container>
 						<Grid style={{ flex: '1 1' }} item>
 							<SelectAutocomplete
-								isDisabled={isSubmitting || !formEditable || isLoadingPositions || !positions}
+								isDisabled={isSubmitting || !formEditable}
 								isLoading={isLoadingPositions}
 								value={textSearchPosition}
 								onChange={(option, { action }) => {

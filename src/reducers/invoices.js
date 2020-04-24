@@ -12,6 +12,12 @@ const invoices = (
 				isFetching: true,
 			};
 		}
+		case 'EMPTY_INVOICES': {
+			return {
+				...state,
+				data: null,
+			};
+		}
 		case 'RECEIVE_INVOICES': {
 			return {
 				...state,

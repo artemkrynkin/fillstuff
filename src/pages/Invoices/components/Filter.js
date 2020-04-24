@@ -39,10 +39,13 @@ class Filter extends Component {
 	refDropdownStatus = createRef();
 	refDropdownMember = createRef();
 
-	handlerDropdown = (name, value) =>
-		this.setState({
-			[name]: value === null || value === undefined ? !this.state[name] : value,
-		});
+	handlerDropdown = (name, value, callback) =>
+		this.setState(
+			{
+				[name]: value === null || value === undefined ? !this.state[name] : value,
+			},
+			callback
+		);
 
 	onChangeFilterDate = (intervalDate, setFieldValue, submitForm) => {
 		const momentDate = moment();
@@ -143,7 +146,7 @@ class Filter extends Component {
 
 			const query = deleteParamsCoincidence({ ...filterParams, page: 1 }, { type: 'server', ...filterDeleteParams });
 
-			this.props.getInvoices(query);
+			this.props.getInvoices(query, { emptyData: true });
 		}
 	}
 
@@ -221,7 +224,7 @@ const mapStateToProps = state => {
 	};
 
 	if (!isLoadingMembers && membersData) {
-		members.data = membersData.filter(member => member.roles.some(role => /artist/.test(role)));
+		members.data = membersData.data.filter(member => member.roles.some(role => /artist/.test(role)));
 	}
 
 	return {
@@ -232,7 +235,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
 	return {
 		getMembers: () => dispatch(getMembers()),
-		getInvoices: query => dispatch(getInvoices({ query })),
+		getInvoices: (query, options) => dispatch(getInvoices({ query, ...options })),
 	};
 };
 

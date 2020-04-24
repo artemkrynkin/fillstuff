@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Form, Field, FieldArray, ErrorMessage } from 'formik';
 import moment from 'moment';
-import MomentUtils from '@date-io/moment';
 import ClassNames from 'classnames';
 import loadable from '@loadable/component';
 
@@ -16,8 +15,8 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import Button from '@material-ui/core/Button';
 import DialogActions from '@material-ui/core/DialogActions';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import { DatePicker } from '@material-ui/pickers';
+import MomentUtils from '@material-ui/pickers/adapter/moment';
+import { StaticDatePicker, LocalizationProvider } from '@material-ui/pickers';
 
 import { declensionNumber } from 'src/helpers/utils';
 
@@ -34,7 +33,7 @@ import styles from './index.module.css';
 
 const DialogShopCreate = loadable(() => import('src/pages/Dialogs/ShopCreateEdit' /* webpackChunkName: "Dialog_ShopCreateEdit" */));
 
-const FormProcurementCreate = props => {
+const FormProcurementReceivedCreate = props => {
 	const {
 		dialogRef,
 		receiptInitialValues,
@@ -53,14 +52,14 @@ const FormProcurementCreate = props => {
 	const [dropdownInvoiceDate, setDropdownInvoiceDate] = useState(false);
 	const [shopTempName, setShopTempName] = useState('');
 
-	const labelStyle = { width: 110 };
+	const labelStyle = { width: 150 };
 
 	const onOpenDialogShopCreate = () => setDialogShopCreate(true);
 
 	const onCloseDialogShopCreate = () => setDialogShopCreate(false);
 
 	const onHandleDropdownInvoiceDate = value =>
-		setDropdownInvoiceDate(!value === null || value === undefined ? !dropdownInvoiceDate : value);
+		setDropdownInvoiceDate(value === null || value === undefined ? prevValue => !prevValue : value);
 
 	const onChangeInvoiceDate = date => {
 		setFieldValue('invoiceDate', date);
@@ -127,7 +126,7 @@ const FormProcurementCreate = props => {
 								TextFieldProps={{
 									error: Boolean(touched.shop && errors.shop),
 								}}
-								isDisabled={isSubmitting || !formEditable || isLoadingShops || !shops}
+								isDisabled={isSubmitting || !formEditable}
 								isLoading={isLoadingShops}
 								value={values.shop}
 								inputValue={shopTempName}
@@ -154,6 +153,7 @@ const FormProcurementCreate = props => {
 								}
 								options={shops}
 								isClearable
+								autoFocus
 							/>
 							{touched.shop && errors.shop ? <FormHelperText error>{errors.shop}</FormHelperText> : null}
 						</Grid>
@@ -175,7 +175,7 @@ const FormProcurementCreate = props => {
 					</InputLabel>
 					<Grid direction="column" container>
 						<Grid wrap="nowrap" alignItems="flex-start" spacing={2} container>
-							<Grid style={{ width: 196 }} item>
+							<Grid style={{ width: 186 }} item>
 								<Field
 									name="invoiceNumber"
 									placeholder={values.noInvoice ? '-' : 'Номер'}
@@ -186,7 +186,7 @@ const FormProcurementCreate = props => {
 									fullWidth
 								/>
 							</Grid>
-							<Grid style={{ width: 160 }} item>
+							<Grid style={{ width: 130 }} item>
 								<Grid alignItems="baseline" container>
 									<InputLabel style={{ marginLeft: -8, marginRight: 8 }} data-inline>
 										от
@@ -200,7 +200,11 @@ const FormProcurementCreate = props => {
 											helperText={typeof errors.invoiceDate === 'string' && touched.invoiceDate ? errors.invoiceDate : null}
 											disabled={isSubmitting || !formEditable || values.noInvoice}
 											value={values.invoiceDate ? moment(values.invoiceDate).format('DD.MM.YYYY') : ''}
-											onFocus={() => onHandleDropdownInvoiceDate(true)}
+											onFocus={() => {
+												setTimeout(() => {
+													onHandleDropdownInvoiceDate(true);
+												}, 100);
+											}}
 											fullWidth
 										/>
 									</Grid>
@@ -233,7 +237,7 @@ const FormProcurementCreate = props => {
 					</InputLabel>
 					<Grid direction="column" container>
 						<Grid wrap="nowrap" alignItems="flex-start" spacing={2} container>
-							<Grid style={{ width: 178 }} item>
+							<Grid style={{ width: 158 }} item>
 								<Field
 									name="totalPrice"
 									placeholder="0"
@@ -252,7 +256,7 @@ const FormProcurementCreate = props => {
 									fullWidth
 								/>
 							</Grid>
-							<Grid style={{ width: 178 }} item>
+							<Grid style={{ width: 158 }} item>
 								<Field
 									name="costDelivery"
 									placeholder="0"
@@ -271,7 +275,7 @@ const FormProcurementCreate = props => {
 							</Grid>
 						</Grid>
 						{formEditable ? (
-							<Grid style={{ paddingLeft: 178 }} alignItems="center" container>
+							<Grid style={{ paddingLeft: 158 }} alignItems="center" container>
 								<Field
 									type="checkbox"
 									name="compensateCostDelivery"
@@ -358,13 +362,14 @@ const FormProcurementCreate = props => {
 				open={dropdownInvoiceDate}
 				onClose={() => onHandleDropdownInvoiceDate(false)}
 				placement="bottom"
-				disablePortal={false}
 			>
-				<MuiPickersUtilsProvider utils={MomentUtils}>
-					<DatePicker
+				<LocalizationProvider dateAdapter={MomentUtils}>
+					<StaticDatePicker
+						views={['date']}
+						displayStaticWrapperAs="desktop"
+						reduceAnimations
 						value={values.invoiceDate}
 						onChange={onChangeInvoiceDate}
-						variant="static"
 						leftArrowButtonProps={{
 							size: 'small',
 						}}
@@ -374,12 +379,12 @@ const FormProcurementCreate = props => {
 						}}
 						rightArrowIcon={<FontAwesomeIcon icon={['far', 'angle-right']} />}
 						disableFuture
-						disableToolbar
+						allowKeyboardControl={false}
 					/>
-				</MuiPickersUtilsProvider>
+				</LocalizationProvider>
 			</Dropdown>
 		</Form>
 	);
 };
 
-export default FormProcurementCreate;
+export default FormProcurementReceivedCreate;

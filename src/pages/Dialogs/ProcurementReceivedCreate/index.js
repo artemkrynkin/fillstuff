@@ -16,7 +16,7 @@ import { createProcurementReceived } from 'src/actions/procurements';
 import { enqueueSnackbar } from 'src/actions/snackbars';
 
 import { positionTransform } from './utils';
-import FormProcurementCreate from './FormProcurementCreate';
+import FormProcurementReceivedCreate from './FormProcurementReceivedCreate';
 import procurementSchema from './procurementSchema';
 
 import styles from './index.module.css';
@@ -37,7 +37,7 @@ const receiptInitialValues = position => ({
 	unitMarkup: '',
 });
 
-class ProcurementCreate extends Component {
+class ProcurementReceivedCreate extends Component {
 	static propTypes = {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
@@ -206,6 +206,8 @@ class ProcurementCreate extends Component {
 				if (!isNaN(quantity)) newReceipt.initial.quantity = quantity;
 				if (!isNaN(quantityPackages)) newReceipt.initial.quantityPackages = quantityPackages;
 
+				procurement.positions.push(position._id);
+
 				return newReceipt;
 			});
 
@@ -256,6 +258,7 @@ class ProcurementCreate extends Component {
 			totalPrice: '',
 			compensateCostDelivery: true,
 			receipts: [],
+			positions: [],
 		};
 
 		if (currentStudio.settings.procurements.compensateCostDelivery) {
@@ -292,7 +295,7 @@ class ProcurementCreate extends Component {
 					onSubmit={(values, actions) => this.onSubmit(values, actions)}
 				>
 					{props => (
-						<FormProcurementCreate
+						<FormProcurementReceivedCreate
 							dialogRef={this.dialogRef}
 							receiptInitialValues={receiptInitialValues}
 							onHandleEditFormProcurement={this.onHandleEditFormProcurement}
@@ -331,4 +334,4 @@ const mapDispatchToProps = dispatch => {
 	};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProcurementCreate);
+export default connect(mapStateToProps, mapDispatchToProps)(ProcurementReceivedCreate);

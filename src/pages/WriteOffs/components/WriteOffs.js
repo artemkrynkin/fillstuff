@@ -5,10 +5,12 @@ import moment from 'moment';
 import queryString from 'query-string';
 import _ from 'lodash';
 
-import CircularProgress from '@material-ui/core/CircularProgress';
+import Typography from '@material-ui/core/Typography';
 
 import { getFollowingDates, deleteParamsCoincidence } from 'src/components/Pagination/utils';
 import LoadMoreButtonDates from 'src/components/Pagination/LoadMoreButtonDates';
+import { LoadingComponent } from 'src/components/Loading';
+import Empty from 'src/components/Empty';
 
 import { history } from 'src/helpers/history';
 
@@ -17,6 +19,8 @@ import { getWriteOffs } from 'src/actions/writeOffs';
 import WriteOffsPerDay from './WriteOffsPerDay';
 
 import styles from './WriteOffs.module.css';
+
+import emptyImage from 'public/img/stubs/procurements.svg';
 
 const generatePaginate = (loadedDocs, data) => {
 	const writeOffs = data.slice();
@@ -101,46 +105,60 @@ class WriteOffs extends Component {
 			paging,
 			writeOffs: {
 				data: writeOffs,
-				isFetching: isLoadingWriteOffs,
+				// isFetching: isLoadingWriteOffs,
 				// error: errorWriteOffs
 			},
 		} = this.props;
 
+		if (!writeOffs) return <LoadingComponent className={styles.container} />;
+
+		if (writeOffs && !writeOffs.paging.totalCount && !writeOffs.data.length) {
+			return (
+				<Empty
+					className={styles.empty}
+					imageSrc={emptyImage}
+					content={
+						<Typography variant="h6" gutterBottom>
+							Похоже, у вас еще нет списаний
+						</Typography>
+					}
+				/>
+			);
+		}
+
+		if (writeOffs && writeOffs.paging.totalCount && !writeOffs.data.length) {
+			return (
+				<Empty
+					content={
+						<Typography variant="h6" gutterBottom>
+							Ничего не найдено
+						</Typography>
+					}
+					style={{ marginTop: 16 }}
+				/>
+			);
+		}
+
 		return (
 			<div className={styles.container}>
-				{!isLoadingWriteOffs && writeOffs ? (
-					writeOffs.paging.totalCount && writeOffs.data.length ? (
-						<div>
-							{generatePaginate(paging.loadedDocs, writeOffs.data).map(months => (
-								<div className={styles.date} key={months.date}>
-									<MonthDateTitle date={months.date} />
-									{months.days.map(writeOffsPerDay => (
-										<WriteOffsPerDay key={writeOffsPerDay.date} filterParams={filterParams} writeOffsPerDay={writeOffsPerDay} />
-									))}
-								</div>
-							))}
-						</div>
-					) : writeOffs.paging.totalCount && !writeOffs.data.length ? (
-						<div className={styles.none}>Ничего не найдено</div>
-					) : (
-						<div className={styles.none}>Еще не списано ни одной позиции</div>
-					)
-				) : null}
-
-				{!isLoadingWriteOffs && writeOffs && writeOffs.paging.totalCount ? (
-					<LoadMoreButtonDates
-						loaded={paging.loadedDocs}
-						count={writeOffs.data.length}
-						textButton="Показать списания за"
-						showDates={true}
-						dateStart={filterParams.dateStart}
-						dateEnd={filterParams.dateEnd}
-						onLoadMore={() => paging.onChangeLoadedDocs()}
-						onLoadOtherDates={this.onLoadOtherDates}
-					/>
-				) : isLoadingWriteOffs ? (
-					<div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />
-				) : null}
+				{generatePaginate(paging.loadedDocs, writeOffs.data).map(months => (
+					<div className={styles.date} key={months.date}>
+						<MonthDateTitle date={months.date} />
+						{months.days.map(writeOffsPerDay => (
+							<WriteOffsPerDay key={writeOffsPerDay.date} filterParams={filterParams} writeOffsPerDay={writeOffsPerDay} />
+						))}
+					</div>
+				))}
+				<LoadMoreButtonDates
+					loaded={paging.loadedDocs}
+					count={writeOffs.data.length}
+					textButton="Показать списания за"
+					showDates={true}
+					dateStart={filterParams.dateStart}
+					dateEnd={filterParams.dateEnd}
+					onLoadMore={() => paging.onChangeLoadedDocs()}
+					onLoadOtherDates={this.onLoadOtherDates}
+				/>
 			</div>
 		);
 	}
@@ -219,7 +237,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		getWriteOffs: (query, params) => dispatch(getWriteOffs({ query, ...params })),
+		getWriteOffs: (query, options) => dispatch(getWriteOffs({ query, ...options })),
 	};
 };
 

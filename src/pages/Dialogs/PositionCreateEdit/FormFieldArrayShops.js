@@ -53,7 +53,7 @@ const FormFieldArrayReceipts = props => {
 				<Grid alignItems="center" spacing={2} container>
 					<Grid style={{ flex: '1 1' }} item>
 						<SelectAutocomplete
-							isDisabled={isSubmitting || isLoadingShops || !shops}
+							isDisabled={isSubmitting}
 							isLoading={isLoadingShops}
 							value={shopTempName}
 							inputValue={shopTempName}

@@ -1,0 +1,58 @@
+.positions {
+  border-top: 1px solid var(--c-hex-br-5);
+  margin: 0 -20px -12px;
+  padding-top: 20px;
+}
+
+.addPositionContainer {
+  background-color: white;
+  margin-bottom: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.addPositionContainer:last-child {
+  margin-bottom: 0;
+}
+
+.addPositionContainer.disabled {
+  display: none;
+}
+
+.addPositionWrap {
+  padding: 0 20px;
+}
+
+.addPositionContainer:global(.stuck) .addPositionWrap {
+  box-shadow: 0 2px 2px 0 rgba(var(--c-rgb-bg-300), 0.2);
+}
+
+.positionsItems {
+  padding: 0 20px;
+}
+
+.positionItem {
+  border-bottom: 1px solid var(--c-hex-br-5);
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+}
+
+.positionItem:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.removePosition {
+  margin-left: auto;
+}
+
+.removePositionButton {
+  padding: 6px;
+  width: 32px;
+}
+
+.removePositionButton svg {
+  width: 20px !important;
+}

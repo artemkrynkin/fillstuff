@@ -6,30 +6,44 @@ import loadable from '@loadable/component';
 import { Button } from './styles';
 import styles from './index.module.css';
 
-const DialogProcurementCreate = loadable(() =>
-	import('src/pages/Dialogs/ProcurementCreate' /* webpackChunkName: "Dialog_ProcurementCreate" */)
+const DialogProcurementExpectedCreate = loadable(() =>
+	import('src/pages/Dialogs/ProcurementExpectedCreate' /* webpackChunkName: "Dialog_ProcurementExpectedCreate" */)
+);
+
+const DialogProcurementReceivedCreate = loadable(() =>
+	import('src/pages/Dialogs/ProcurementReceivedCreate' /* webpackChunkName: "Dialog_ProcurementReceivedCreate" */)
 );
 
 const Procurements = props => {
 	const { currentStudio } = props;
-	const [dialogProcurementCreate, setDialogProcurementCreate] = useState(false);
+	const [dialogProcurementExpectedCreate, setDialogProcurementExpectedCreate] = useState(false);
+	const [dialogProcurementReceivedCreate, setDialogProcurementReceivedCreate] = useState(false);
 
-	const onOpenDialogProcurementCreate = () => setDialogProcurementCreate(true);
+	const onOpenDialogProcurementExpectedCreate = () => setDialogProcurementExpectedCreate(true);
 
-	const onCloseDialogProcurementCreate = () => setDialogProcurementCreate(false);
+	const onCloseDialogProcurementExpectedCreate = () => setDialogProcurementExpectedCreate(false);
+
+	const onOpenDialogProcurementReceivedCreate = () => setDialogProcurementReceivedCreate(true);
+
+	const onCloseDialogProcurementReceivedCreate = () => setDialogProcurementReceivedCreate(false);
 
 	return (
 		<div className={styles.container}>
-			<Button variant="contained" color="primary" style={{ marginRight: 8 }}>
+			<Button onClick={onOpenDialogProcurementExpectedCreate} variant="contained" color="primary" style={{ marginRight: 8 }}>
 				Создать заказ
 			</Button>
-			<Button onClick={onOpenDialogProcurementCreate} variant="contained" color="primary">
+			<Button onClick={onOpenDialogProcurementReceivedCreate} variant="contained" color="primary">
 				Оформить закупку
 			</Button>
 
-			<DialogProcurementCreate
-				dialogOpen={dialogProcurementCreate}
-				onCloseDialog={onCloseDialogProcurementCreate}
+			<DialogProcurementExpectedCreate
+				dialogOpen={dialogProcurementExpectedCreate}
+				onCloseDialog={onCloseDialogProcurementExpectedCreate}
+			/>
+
+			<DialogProcurementReceivedCreate
+				dialogOpen={dialogProcurementReceivedCreate}
+				onCloseDialog={onCloseDialogProcurementReceivedCreate}
 				currentStudio={currentStudio}
 			/>
 		</div>

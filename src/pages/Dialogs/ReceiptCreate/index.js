@@ -25,7 +25,7 @@ class DialogReceiptCreate extends Component {
 	};
 
 	initialState = {
-		checkSellingPrice: null,
+		checkSellingPrice: false,
 	};
 
 	state = this.initialState;

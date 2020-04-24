@@ -12,6 +12,12 @@ const procurementsExpected = (
 				isFetching: true,
 			};
 		}
+		case 'EMPTY_PROCUREMENTS_EXPECTED': {
+			return {
+				...state,
+				data: null,
+			};
+		}
 		case 'RECEIVE_PROCUREMENTS_EXPECTED': {
 			return {
 				...state,
@@ -23,6 +29,7 @@ const procurementsExpected = (
 			let stateData = { ...state }.data;
 
 			stateData.data.unshift(action.payload);
+			stateData.paging.totalCount += 1;
 
 			return {
 				...state,

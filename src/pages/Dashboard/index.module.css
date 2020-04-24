@@ -1,0 +1,11 @@
+.container {
+  padding: 20px;
+}
+
+.notifications {
+  background: url('/img/monitor_noty.svg') no-repeat center center;
+  background-size: cover;
+  height: 197px;
+  margin: 0 auto;
+  width: 920px
+}

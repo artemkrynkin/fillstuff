@@ -53,9 +53,10 @@ const positions = (
 				stateData = { ...state }.data;
 				const positionIndex = stateData.findIndex(position => position._id === action.payload.positionId);
 
-				if (!action.payload.positionGroupId) {
-					stateData.splice(positionIndex, 1);
-				}
+				stateData[positionIndex] = {
+					...stateData[positionIndex],
+					isArchived: true,
+				};
 			}
 
 			return {

@@ -3,13 +3,18 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Grid from '@material-ui/core/Grid';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+
+import { LoadingComponent } from 'src/components/Loading';
+import Empty from 'src/components/Empty';
 
 import { getMembers } from 'src/actions/members';
 
 import Member from './Member';
 
 import styles from './Members.module.css';
+import emptyImage from 'public/img/stubs/procurements.svg';
 
 class Members extends Component {
 	componentDidMount() {
@@ -27,50 +32,76 @@ class Members extends Component {
 			tabName,
 			members: {
 				data: members,
-				isFetching: isLoadingMembers,
+				// isFetching: isLoadingMembers,
 				// error: errorMembers
 			},
 		} = this.props;
 
 		const arrayName = tabName !== 'guests' ? 'regular' : 'guests';
 
+		if (!members) return <LoadingComponent className={styles.container} />;
+
+		const currentMembers = members.data[arrayName];
+
+		if (tabName === 'guests' && !members.paging.totalGuests) {
+			return (
+				<Empty
+					className={styles.empty}
+					imageSrc={emptyImage}
+					content={
+						<Typography variant="h6" gutterBottom>
+							Похоже, у вас еще нет гостевых участников
+						</Typography>
+					}
+					actions={
+						<Button variant="contained" color="primary">
+							Добавить участника
+						</Button>
+					}
+				/>
+			);
+		}
+
+		if (!currentMembers.activated.length && !currentMembers.deactivated.length) {
+			return (
+				<Empty
+					content={
+						<Typography variant="h6" gutterBottom>
+							Ничего не найдено
+						</Typography>
+					}
+					style={{ marginTop: 16 }}
+				/>
+			);
+		}
+
 		return (
 			<div className={styles.container}>
-				{!isLoadingMembers && members ? (
-					members[arrayName].activated.length || members[arrayName].deactivated.length ? (
-						<div>
-							{members[arrayName].activated.length ? (
-								<Grid spacing={2} container>
-									{members[arrayName].activated.map(member => (
-										<Grid key={member._id} xs={4} item>
-											<Link to={`/members/${member._id}`}>
-												<Member member={member} />
-											</Link>
-										</Grid>
-									))}
+				{currentMembers.activated.length ? (
+					<Grid spacing={2} container>
+						{currentMembers.activated.map(member => (
+							<Grid key={member._id} xs={4} item>
+								<Link to={`/members/${member._id}`}>
+									<Member member={member} />
+								</Link>
+							</Grid>
+						))}
+					</Grid>
+				) : null}
+				{currentMembers.deactivated.length ? (
+					<div style={{ marginTop: 40 }}>
+						<div className={styles.title}>Отключённые участники</div>
+						<Grid spacing={2} container>
+							{currentMembers.deactivated.map(member => (
+								<Grid key={member._id} xs={4} item>
+									<Link to={`/members/${member._id}`}>
+										<Member member={member} />
+									</Link>
 								</Grid>
-							) : null}
-							{members[arrayName].deactivated.length ? (
-								<div style={{ marginTop: 40 }}>
-									<div className={styles.title}>Отключённые участники</div>
-									<Grid spacing={2} container>
-										{members[arrayName].deactivated.map(member => (
-											<Grid key={member._id} xs={4} item>
-												<Link to={`/members/${member._id}`}>
-													<Member member={member} />
-												</Link>
-											</Grid>
-										))}
-									</Grid>
-								</div>
-							) : null}
-						</div>
-					) : (
-						<div className={styles.none}>Ничего не найдено</div>
-					)
-				) : (
-					<div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />
-				)}
+							))}
+						</Grid>
+					</div>
+				) : null}
 			</div>
 		);
 	}
@@ -86,35 +117,43 @@ const mapStateToProps = (state, ownProps) => {
 	} = state;
 
 	const members = {
-		data: {
-			regular: {
-				activated: [],
-				deactivated: [],
-			},
-			guests: {
-				activated: [],
-				deactivated: [],
-			},
-		},
+		data: null,
 		isFetching: isLoadingMembers,
 	};
 
-	if (!isLoadingMembers && membersData) {
-		membersData.forEach(member => {
+	if (membersData) {
+		const newMembersData = {
+			data: {
+				regular: {
+					activated: [],
+					deactivated: [],
+				},
+				guests: {
+					activated: [],
+					deactivated: [],
+				},
+			},
+			paging: {},
+		};
+
+		membersData.data.forEach(member => {
 			if (!member.guest) {
 				if (!member.deactivated) {
-					members.data.regular.activated.push(member);
+					newMembersData.data.regular.activated.push(member);
 				} else {
-					members.data.regular.deactivated.push(member);
+					newMembersData.data.regular.deactivated.push(member);
 				}
 			} else {
 				if (!member.deactivated) {
-					members.data.guests.activated.push(member);
+					newMembersData.data.guests.activated.push(member);
 				} else {
-					members.data.guests.deactivated.push(member);
+					newMembersData.data.guests.deactivated.push(member);
 				}
 			}
 		});
+
+		newMembersData.paging = membersData.paging;
+		members.data = newMembersData;
 	}
 
 	return {

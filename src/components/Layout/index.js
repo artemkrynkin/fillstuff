@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import ClassNames from 'classnames';
 
 import stylesPage from 'src/styles/page.module.css';
 import styles from './index.module.css';
@@ -9,8 +10,13 @@ class Layout extends Component {
 	render() {
 		const { authed, theme, children } = this.props;
 
+		const pageWrapperContentClasses = ClassNames({
+			[stylesPage.pageWrapperContent]: true,
+			[stylesPage.fullWidth]: !authed || theme !== 'default',
+		});
+
 		return (
-			<div className={stylesPage.pageWrapperContent}>
+			<div className={pageWrapperContentClasses}>
 				{authed ? (
 					theme === 'default' ? (
 						children

@@ -8,6 +8,7 @@ import mongoose from 'mongoose';
 import User from 'api/models/member';
 import Studio from 'api/models/studio';
 import Member from 'api/models/member';
+import Procurement from '../../models/procurement';
 
 const membersRouter = Router();
 
@@ -23,7 +24,7 @@ membersRouter.post(
 			query: { name, role },
 		} = req.body;
 
-		let conditions = {
+		const conditions = {
 			studio: studioId,
 			confirmed: true,
 		};
@@ -34,8 +35,12 @@ membersRouter.post(
 			.lean()
 			.populate('user', 'avatar name email')
 			.catch(err => next({ code: 2, err }));
+		const membersRegularCountPromise = Member.countDocuments({ ...conditions, guest: false });
+		const membersGuestsCountPromise = Member.countDocuments({ ...conditions, guest: true });
 
 		const members = await membersPromise;
+		const membersRegularCount = await membersRegularCountPromise;
+		const membersGuestsCount = await membersGuestsCountPromise;
 
 		let membersTransform = members
 			.map(member => ({
@@ -54,7 +59,13 @@ membersRouter.post(
 			membersTransform = membersTransform.filter(member => member.user.name.toLowerCase().indexOf(name.toLowerCase()) !== -1);
 		}
 
-		res.json(membersTransform);
+		res.json({
+			data: membersTransform,
+			paging: {
+				totalRegular: membersRegularCount,
+				totalGuests: membersGuestsCount,
+			},
+		});
 	}
 );
 

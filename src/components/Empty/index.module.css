@@ -1,0 +1,46 @@
+.container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.image img {
+  display: block;
+  margin: 0 auto;
+  pointer-events: none;
+  user-select: none;
+}
+
+.imageMd img {
+  height: 45vh;
+  min-height: 250px;
+  max-height: 400px;
+}
+
+.imageSm img {
+  height: 35vh;
+  min-height: 200px;
+  max-height: 300px;
+}
+
+.content {
+  margin-top: 32px;
+  text-align: center;
+}
+
+.title {
+  margin-bottom: 16px;
+}
+
+.actions {
+  margin-top: 16px;
+}
+
+.actions button {
+  margin-left: 16px;
+}
+
+.actions button:first-child {
+  margin-left: 0
+}

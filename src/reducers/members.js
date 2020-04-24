@@ -11,6 +11,12 @@ const members = (
 				...state,
 				isFetching: true,
 			};
+		case 'EMPTY_MEMBERS': {
+			return {
+				...state,
+				data: null,
+			};
+		}
 		case 'RECEIVE_MEMBERS':
 			return {
 				...state,

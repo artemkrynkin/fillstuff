@@ -2,39 +2,24 @@
   position: relative;
 }
 
-.wrap {}
-
-.content {}
-
-.arrow {}
-
-.arrow_left {}
-
-.arrow_right {}
-
-.arrowShadow {}
-
-.arrowShadow_directionLeft {}
-
-.arrowShadow_directionRight {}
-
 .wrapOverflow {
   overflow: hidden;
 }
 
 .wrapScroll {
-  display: flex;
   overflow-x: auto;
   overflow-y: hidden;
   position: relative;
-  -ms-overflow-style: none;
   z-index: 1;
+}
+
+.wrapScroll {
+  -ms-overflow-style: none;
+  overflow: -moz-scrollbars-none !important;
 }
 
 .wrapScroll::-webkit-scrollbar {
   display: none;
 }
 
-.wrapScroll {
-  overflow: -moz-scrollbars-none !important;
-}
+.content {}

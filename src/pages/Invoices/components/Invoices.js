@@ -5,16 +5,21 @@ import _ from 'lodash';
 import moment from 'moment';
 import loadable from '@loadable/component';
 
-import CircularProgress from '@material-ui/core/CircularProgress';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 
 import { deleteParamsCoincidence } from 'src/components/Pagination/utils';
 import LoadMoreButton from 'src/components/Pagination/LoadMoreButton';
+import { LoadingComponent } from 'src/components/Loading';
+import Empty from 'src/components/Empty';
 
 import { getInvoices } from 'src/actions/invoices';
 
 import Invoice from './Invoice';
 
 import styles from './Invoices.module.css';
+
+import emptyImage from 'public/img/stubs/procurements.svg';
 
 const calendarFormat = {
 	sameDay: 'Сегодня',
@@ -72,7 +77,7 @@ class Invoices extends Component {
 
 		const query = deleteParamsCoincidence({ ...filterParams, page: nextPage }, { type: 'server', ...filterDeleteParams });
 
-		this.props.getInvoices(query, { showRequest: false, mergeData: true });
+		this.props.getInvoices(query, { mergeData: true });
 	};
 
 	onInvoiceDrop = () => this.setState({ invoice: null, dialogOpenedName: '' });
@@ -107,40 +112,66 @@ class Invoices extends Component {
 		} = this.props;
 		const { invoice, dialogOpenedName, dialogInvoicePaymentCreate } = this.state;
 
-		return (
-			<div className={styles.container}>
-				{!isLoadingInvoices && invoiceData ? (
-					invoiceData.paging.totalCount && invoiceData.paging.totalDocs ? (
-						<div>
-							{brokenDownByMonth(invoiceData.data).map(month => (
-								<div className={styles.date} key={month.date}>
-									<div className={styles.dateTitle}>{moment(month.date).calendar(null, calendarFormat)}</div>
-									{month.invoices.map(invoice => (
-										<Invoice key={invoice._id} invoice={invoice} onOpenDialogInvoice={this.onOpenDialogByName} />
-									))}
-								</div>
-							))}
-							{invoiceData.paging.hasNextPage ? (
-								<LoadMoreButton page={paging.page} setPage={paging.setPage} onLoadMore={this.onLoadMore} />
-							) : null}
-						</div>
-					) : invoiceData.paging.totalCount && !invoiceData.paging.totalDocs ? (
-						<div className={styles.none}>Ничего не найдено</div>
-					) : (
-						<div className={styles.none}>Еще не выставлено ни одного счета</div>
-					)
-				) : isLoadingInvoices ? (
-					<div children={<CircularProgress size={20} />} style={{ textAlign: 'center' }} />
-				) : null}
+		if (!invoiceData) return <LoadingComponent className={styles.container} />;
 
-				<DialogInvoicePaymentCreate
-					dialogOpen={dialogInvoicePaymentCreate}
-					onCloseDialog={() => this.onCloseDialogByName('dialogInvoicePaymentCreate')}
-					onExitedDialog={this.onInvoiceDrop}
-					selectedInvoice={dialogOpenedName === 'dialogInvoicePaymentCreate' ? invoice : null}
+		if (!invoiceData.paging.totalCount && !invoiceData.paging.totalDocs) {
+			return (
+				<Empty
+					className={styles.empty}
+					imageSrc={emptyImage}
+					content={
+						<Typography variant="h6" gutterBottom>
+							Похоже, у вас еще нет выставленных счетов
+						</Typography>
+					}
+					actions={
+						<Button variant="contained" color="primary">
+							Выставить счет
+						</Button>
+					}
 				/>
-			</div>
-		);
+			);
+		}
+
+		if (invoiceData.paging.totalCount && !invoiceData.paging.totalDocs) {
+			return (
+				<Empty
+					content={
+						<Typography variant="h6" gutterBottom>
+							Ничего не найдено
+						</Typography>
+					}
+					style={{ marginTop: 16 }}
+				/>
+			);
+		}
+
+		if (invoiceData.paging.totalCount && invoiceData.paging.totalDocs) {
+			return (
+				<div className={styles.container}>
+					{brokenDownByMonth(invoiceData.data).map(month => (
+						<div className={styles.date} key={month.date}>
+							<div className={styles.dateTitle}>{moment(month.date).calendar(null, calendarFormat)}</div>
+							{month.invoices.map(invoice => (
+								<Invoice key={invoice._id} invoice={invoice} onOpenDialogInvoice={this.onOpenDialogByName} />
+							))}
+						</div>
+					))}
+					{invoiceData.paging.hasNextPage ? (
+						<LoadMoreButton page={paging.page} setPage={paging.setPage} onLoadMore={this.onLoadMore} loading={isLoadingInvoices} />
+					) : null}
+
+					<DialogInvoicePaymentCreate
+						dialogOpen={dialogInvoicePaymentCreate}
+						onCloseDialog={() => this.onCloseDialogByName('dialogInvoicePaymentCreate')}
+						onExitedDialog={this.onInvoiceDrop}
+						selectedInvoice={dialogOpenedName === 'dialogInvoicePaymentCreate' ? invoice : null}
+					/>
+				</div>
+			);
+		}
+
+		return null;
 	}
 }
 
@@ -152,7 +183,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		getInvoices: (query, params) => dispatch(getInvoices({ query, ...params })),
+		getInvoices: (query, options) => dispatch(getInvoices({ query, ...options })),
 	};
 };
 

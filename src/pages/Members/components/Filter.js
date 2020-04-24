@@ -32,10 +32,13 @@ class Filter extends Component {
 	refFilterNameInput = createRef();
 	refDropdownRole = createRef();
 
-	handlerDropdown = (name, value) =>
-		this.setState({
-			[name]: value === null || value === undefined ? !this.state[name] : value,
-		});
+	handlerDropdown = (name, value, callback) =>
+		this.setState(
+			{
+				[name]: value === null || value === undefined ? !this.state[name] : value,
+			},
+			callback
+		);
 
 	onChangeFilterName = debounce(({ target: { value } }, setFieldValue, submitForm) => {
 		setFieldValue('name', value);
@@ -87,18 +90,21 @@ class Filter extends Component {
 
 	componentDidUpdate(prevProps, prevState) {
 		const { filterParams } = this.props;
+		const query = { ...filterParams };
 
-		if (prevProps.filterParams.name !== filterParams.name || prevProps.filterParams.role !== filterParams.role) {
-			const query = { ...filterParams };
+		Object.keys(query).forEach(key => (query[key] === '' || query[key] === 'all') && delete query[key]);
 
-			Object.keys(query).forEach(key => (query[key] === '' || query[key] === 'all') && delete query[key]);
+		if (prevProps.filterParams.name !== filterParams.name) {
+			this.props.getMembers(query);
+		}
 
-			this.props.getMembers(query, false);
+		if (prevProps.filterParams.role !== filterParams.role) {
+			this.props.getMembers(query, { emptyData: true });
 		}
 	}
 
 	render() {
-		const { tabName, onChangeTab, members, filterParams } = this.props;
+		const { tabName, onChangeTab, filterParams } = this.props;
 		const { dropdownRole } = this.state;
 
 		const initialValues = { ...filterParams };
@@ -124,7 +130,6 @@ class Filter extends Component {
 							onClearFilterName={this.onClearFilterName}
 							onChangeFilterRole={this.onChangeFilterRole}
 							onResetAllFilters={this.onResetAllFilters}
-							members={members}
 							refFilterNameInput={this.refFilterNameInput}
 							dropdownRole={{
 								state: dropdownRole,
@@ -139,16 +144,10 @@ class Filter extends Component {
 	}
 }
 
-const mapStateToProps = state => {
-	return {
-		members: state.members,
-	};
-};
-
 const mapDispatchToProps = dispatch => {
 	return {
-		getMembers: (query, showRequest) => dispatch(getMembers({ query, showRequest })),
+		getMembers: (query, options) => dispatch(getMembers({ query, ...options })),
 	};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Filter);
+export default connect(null, mapDispatchToProps)(Filter);

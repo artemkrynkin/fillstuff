@@ -21,7 +21,10 @@ const SellingPriceDisplay = props => {
 	const receiptsReceived = receipts.filter(receipt => receipt.status === 'received');
 	const nextReceipt = receiptsReceived.length ? receiptsReceived[0] : null;
 
-	if (!nextReceipt && !activeReceipt.unitCostDelivery && !activeReceipt.unitMarkup) {
+	if (
+		(!nextReceipt && !activeReceipt.unitCostDelivery && !activeReceipt.unitMarkup) ||
+		(nextReceipt && nextReceipt.unitSellingPrice === activeReceipt.unitSellingPrice)
+	) {
 		return (
 			<NumberFormat
 				value={formatNumber(activeReceipt.unitSellingPrice, { toString: true })}

@@ -1,11 +1,52 @@
 import axios from 'axios';
 
-export const getProcurementsReceived = ({ query, showRequest = true, mergeData = false } = { showRequest: true, mergeData: false }) => {
+export const getProcurementsExpected = (
+	{ showRequest = true, mergeData = false, emptyData = false } = { showRequest: true, mergeData: false, emptyData: false }
+) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+
+		if (showRequest) dispatch({ type: 'REQUEST_PROCUREMENTS_EXPECTED' });
+		if (emptyData) dispatch({ type: 'EMPTY_PROCUREMENTS_EXPECTED' });
+
+		return await axios
+			.post('/api/getProcurementsExpected', {
+				studioId,
+				memberId,
+			})
+			.then(response => {
+				if (!mergeData) {
+					dispatch({
+						type: 'RECEIVE_PROCUREMENTS_EXPECTED',
+						payload: response.data,
+					});
+				} else {
+					dispatch({
+						type: 'RECEIVE_MERGE_PROCUREMENTS_EXPECTED',
+						payload: response.data,
+					});
+				}
+
+				return Promise.resolve({ status: 'success' });
+			})
+			.catch(error => {
+				console.error(error.response);
+
+				return Promise.resolve({ status: 'error' });
+			});
+	};
+};
+
+export const getProcurementsReceived = (
+	{ query, showRequest = true, mergeData = false, emptyData = false } = { showRequest: true, mergeData: false, emptyData: false }
+) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
 
 		if (showRequest) dispatch({ type: 'REQUEST_PROCUREMENTS_RECEIVED' });
+		if (emptyData) dispatch({ type: 'EMPTY_PROCUREMENTS_RECEIVED' });
 
 		return await axios
 			.post('/api/getProcurementsReceived', {
@@ -56,6 +97,39 @@ export const getProcurementReceived = ({ params }) => {
 				console.error(error.response);
 
 				return Promise.resolve({ status: 'error' });
+			});
+	};
+};
+
+export const createProcurementExpected = ({ data }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+
+		return await axios
+			.post('/api/createProcurementExpected', {
+				studioId,
+				memberId,
+				data,
+			})
+			.then(response => {
+				const { data: procurement } = response;
+
+				dispatch({
+					type: 'CREATE_PROCUREMENT_EXPECTED',
+					payload: procurement,
+				});
+
+				return Promise.resolve({ status: 'success' });
+			})
+			.catch(error => {
+				if (error.response) {
+					return Promise.resolve({ status: 'error', message: error.response.data.message, data: error.response.data });
+				} else {
+					console.error(error);
+
+					return Promise.resolve({ status: 'error', message: error.message, ...error });
+				}
 			});
 	};
 };

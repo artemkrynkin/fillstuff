@@ -1,0 +1,11 @@
+.container {
+  margin-top: 40px;
+}
+
+.wrapOverflow {
+  margin: 0 -8px;
+}
+
+.sliderWrapScroll {
+  display: flex;
+}

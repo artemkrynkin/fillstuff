@@ -2,12 +2,9 @@
   margin-top: 40px;
 }
 
-.none {
-  color: var(--c-hex-bg-300);
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1.4;
-  text-align: center;
+.empty {
+  min-height: calc(100vh - 216px);
+  padding-top: 20px;
 }
 
 .title {

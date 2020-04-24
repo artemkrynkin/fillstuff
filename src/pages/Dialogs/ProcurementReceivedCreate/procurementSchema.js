@@ -77,6 +77,7 @@ const procurementSchema = (depopulate = false) => {
 		)
 			// eslint-disable-next-line
 			.min(1, 'Необходимо выбрать минимум ${min} позицию'),
+		positions: Yup.array().of(Yup.string()),
 	});
 };
 

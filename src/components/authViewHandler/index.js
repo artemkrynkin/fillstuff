@@ -9,7 +9,7 @@ const AuthViewHandler = props => {
 	const { children, user, studio, member, loading } = props;
 
 	if (user && user._id && studio && studio._id && member && member._id) return children(true);
-	if (loading) return <LoadingPage />;
+	if (loading) return <LoadingPage style={{ minHeight: '100vh' }} />;
 	return children(false);
 };
 

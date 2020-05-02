@@ -45,6 +45,7 @@ procurementsRouter.post(
 		const procurementsPromise = Procurement.paginate(conditions, {
 			sort: { createdAt: -1 },
 			lean: true,
+			leanWithId: false,
 			populate: [
 				{
 					path: 'member',

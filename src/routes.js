@@ -16,7 +16,7 @@ import signedOutFallback from 'src/helpers/signed-out-fallback';
 
 import AuthViewHandler from 'src/components/authViewHandler';
 import Head from 'src/components/head';
-import Layout from 'src/components/Layout';
+import { Layout } from 'src/components/Layout';
 import HelpPanel from 'src/components/HelpPanel';
 import Sidebar from 'src/components/Sidebar';
 import Snackbar from 'src/components/Snackbar';

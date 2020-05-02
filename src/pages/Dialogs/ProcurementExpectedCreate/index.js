@@ -92,7 +92,6 @@ class ProcurementExpectedCreate extends Component {
 						sentinelAdditionalText: 'AddPositionContainer',
 					},
 				]}
-				disableBackdropClick
 				stickyActions
 			>
 				<DialogTitle onClose={onCloseDialog}>Создание заказа</DialogTitle>

@@ -1,0 +1,10 @@
+.date {
+  margin-bottom: 40px;
+}
+
+.dateTitle {
+  color: var(--c-hex-bg-500);
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 16px;
+}

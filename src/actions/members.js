@@ -1,6 +1,12 @@
 import axios from 'axios';
 
-export const getMembers = ({ query = {}, showRequest = true, emptyData = false } = { query: {}, showRequest: true, emptyData: false }) => {
+export const getMembers = (
+	{ query = {}, showRequest = true, emptyData = false } = {
+		query: {},
+		showRequest: true,
+		emptyData: false,
+	}
+) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;

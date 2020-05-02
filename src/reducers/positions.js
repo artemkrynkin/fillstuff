@@ -12,6 +12,12 @@ const positions = (
 				isFetching: true,
 			};
 		}
+		case 'EMPTY_POSITIONS': {
+			return {
+				...state,
+				data: null,
+			};
+		}
 		case 'RECEIVE_POSITIONS': {
 			return {
 				...state,

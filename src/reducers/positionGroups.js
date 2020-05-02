@@ -12,6 +12,12 @@ const positionGroups = (
 				isFetching: true,
 			};
 		}
+		case 'EMPTY_POSITION_GROUPS': {
+			return {
+				...state,
+				data: null,
+			};
+		}
 		case 'RECEIVE_POSITION_GROUPS': {
 			return {
 				...state,

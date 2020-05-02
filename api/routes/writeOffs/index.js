@@ -22,7 +22,7 @@ writeOffsRouter.post(
 	async (req, res, next) => {
 		const {
 			studioId,
-			query: { dateStart, dateEnd, position, role, onlyCanceled },
+			query: { page, limit, dateStart, dateEnd, position, role, onlyCanceled },
 		} = req.body;
 
 		const conditions = {
@@ -46,6 +46,8 @@ writeOffsRouter.post(
 
 		const writeOffPromise = WriteOff.paginate(conditions, {
 			sort: { createdAt: -1 },
+			lean: true,
+			leanWithId: false,
 			populate: [
 				{
 					path: 'member',
@@ -63,7 +65,8 @@ writeOffsRouter.post(
 					select: 'isArchived name unitRelease characteristics',
 				},
 			],
-			pagination: false,
+			page,
+			limit,
 			customLabels: {
 				docs: 'data',
 				meta: 'paging',
@@ -74,7 +77,7 @@ writeOffsRouter.post(
 		const writeOffsResult = await writeOffPromise;
 		const writeOffsCount = await writeOffCountPromise;
 
-		let { data: writeOffs } = writeOffsResult;
+		let { data: writeOffs, paging } = writeOffsResult;
 
 		if (role && /owners|admins|artists/.test(role)) {
 			const roleFilter = role.slice(0, -1);
@@ -85,6 +88,7 @@ writeOffsRouter.post(
 		res.json({
 			data: writeOffs,
 			paging: {
+				...paging,
 				totalCount: writeOffsCount,
 			},
 		});

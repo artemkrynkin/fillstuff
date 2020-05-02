@@ -1,22 +1,31 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { compose } from 'redux';
+import { connect } from 'react-redux';
 import loadable from '@loadable/component';
+import _ from 'lodash';
+import moment from 'moment';
 
 import generateMetaInfo from 'shared/generate-meta-info';
 
 import Head from 'src/components/head';
 import HeaderPage from 'src/components/HeaderPage';
-import { LoadingComponent } from 'src/components/Loading';
+import { LoadingPage } from 'src/components/Loading';
+import { checkQueryInFilter, deleteParamsCoincidence } from 'src/components/Pagination/utils';
 import { withCurrentUser } from 'src/components/withCurrentUser';
+
+import { getInvoices } from 'src/actions/invoices';
 
 import stylesPage from 'src/styles/page.module.css';
 import styles from './index.module.css';
 
-const Index = loadable(() => import('./components/index' /* webpackChunkName: "Invoices_Index" */), {
-	fallback: <LoadingComponent />,
+const Index = loadable(() => import('./containers/index' /* webpackChunkName: "Invoices_Index" */), {
+	fallback: <LoadingPage />,
 });
 
-const Invoices = () => {
+const Invoices = props => {
+	const { invoices } = props;
+	const [page, setPage] = useState(1);
+
 	const metaInfo = {
 		pageName: 'invoices',
 		pageTitle: 'Счета',
@@ -28,16 +37,95 @@ const Invoices = () => {
 		},
 	});
 
+	const filterOptions = {
+		params: checkQueryInFilter({
+			page: 1,
+			limit: 10,
+			dateStart: null,
+			dateEnd: null,
+			status: 'all',
+			member: 'all',
+		}),
+		delete: {
+			searchByName: ['page', 'limit'],
+			searchByValue: [null, '', 'all'],
+			serverQueryByValue: [null, '', 'all'],
+		},
+	};
+
+	useEffect(() => {
+		const { params: filterParams, delete: filterDeleteParams } = filterOptions;
+
+		const query = deleteParamsCoincidence({ ...filterParams }, { type: 'server', ...filterDeleteParams });
+
+		props.getInvoices(query, { emptyData: true });
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	return (
 		<div className={stylesPage.page}>
 			<Head title={title} description={description} />
 
 			<HeaderPage pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
 			<div className={`${stylesPage.pageContent} ${styles.container}`}>
-				<Index />
+				<Index
+					invoices={invoices}
+					filterOptions={filterOptions}
+					paging={{
+						page,
+						setPage,
+					}}
+				/>
 			</div>
 		</div>
 	);
 };
 
-export default compose(withCurrentUser)(Invoices);
+const mapStateToProps = state => {
+	const {
+		invoices: {
+			data: invoicesData,
+			isFetching: isLoadingInvoices,
+			// error: errorPositions
+		},
+	} = state;
+
+	const invoices = {
+		data: null,
+		isFetching: isLoadingInvoices,
+	};
+
+	if (invoicesData) {
+		// Группируем счета по дням
+		const invoicesDays = _.chain(invoicesData.data)
+			.groupBy(invoice => {
+				return moment(invoice.createdAt)
+					.set({
+						hour: 0,
+						minute: 0,
+						second: 0,
+						millisecond: 0,
+					})
+					.format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
+			})
+			.map((invoices, date) => ({ date, invoices }))
+			.value();
+
+		invoices.data = {
+			data: invoicesDays,
+			paging: invoicesData.paging,
+		};
+	}
+
+	return {
+		invoices: invoices,
+	};
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		getInvoices: (query, options) => dispatch(getInvoices({ query, ...options })),
+	};
+};
+
+export default compose(connect(mapStateToProps, mapDispatchToProps), withCurrentUser)(Invoices);

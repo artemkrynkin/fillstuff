@@ -33,14 +33,17 @@ class DialogInvoicePaymentCreate extends Component {
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
 		onExitedDialog: PropTypes.func,
+		onCallback: PropTypes.func,
 		selectedInvoice: PropTypes.object,
 	};
 
 	onSubmit = (values, actions) => {
-		const { onCloseDialog, selectedInvoice } = this.props;
+		const { onCloseDialog, onCallback, selectedInvoice } = this.props;
 		const newValues = invoicePaymentSchema.cast(values);
 
 		this.props.createInvoicePayment(selectedInvoice._id, newValues).then(response => {
+			if (onCallback !== undefined) onCallback(response);
+
 			actions.setSubmitting(false);
 
 			if (response.status === 'success') {

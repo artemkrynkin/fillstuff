@@ -1,7 +1,11 @@
 import axios from 'axios';
 
 export const getWriteOffs = (
-	{ query, showRequest = true, mergeData = false, emptyData = true } = { showRequest: true, mergeData: false, emptyData: true }
+	{ query, showRequest = true, mergeData = false, emptyData = false } = {
+		showRequest: true,
+		mergeData: false,
+		emptyData: false,
+	}
 ) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;

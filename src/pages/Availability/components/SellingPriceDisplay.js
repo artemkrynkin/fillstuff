@@ -8,7 +8,7 @@ import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFor
 import { DefinitionList, DefinitionListItem } from 'src/components/Definition';
 import Tooltip from 'src/components/Tooltip';
 
-import stylesPositions from './Positions.module.css';
+import stylesPositions from '../containers/Positions.module.css';
 import styles from './SellingPriceDisplay.module.css';
 
 const SellingPriceDisplay = props => {

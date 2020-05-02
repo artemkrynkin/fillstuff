@@ -21,6 +21,7 @@ class SliderScroller extends Component {
 			container: '',
 			wrapOverflow: '',
 			wrapScroll: '',
+			wrapContent: '',
 			arrowLeft: '',
 			arrowRight: '',
 			arrowShadowLeft: '',
@@ -36,6 +37,7 @@ class SliderScroller extends Component {
 			container: PropTypes.string,
 			wrapOverflow: PropTypes.string,
 			wrapScroll: PropTypes.string,
+			wrapContent: PropTypes.string,
 			arrowLeft: PropTypes.string,
 			arrowRight: PropTypes.string,
 			arrowShadowLeft: PropTypes.string,
@@ -164,12 +166,21 @@ class SliderScroller extends Component {
 			),
 			[styles.wrapScroll]: true,
 		});
+		const classesWrapContent = ClassNames({
+			...Object.fromEntries(
+				classNames.wrapContent
+					.split(' ')
+					.filter(val => val)
+					.map(key => [key, true])
+			),
+			[styles.wrapContent]: true,
+		});
 
 		return (
 			<div ref={this.sliderScrollRef} className={classesContainer}>
 				<div className={classesWrapOverflow}>
 					<div className={classesWrapScroll} onScroll={this.onScroll}>
-						{children}
+						<div className={classesWrapContent}>{children}</div>
 					</div>
 				</div>
 

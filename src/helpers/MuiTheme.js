@@ -703,8 +703,10 @@ export const BliksideTheme = createMuiTheme({
 			},
 			positionStart: {
 				marginLeft: 10,
+				marginRight: null,
 			},
 			positionEnd: {
+				marginLeft: null,
 				marginRight: 10,
 			},
 		},

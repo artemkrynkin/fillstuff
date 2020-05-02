@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import loadable from '@loadable/component';
@@ -9,7 +9,7 @@ import { history } from 'src/helpers/history';
 
 import Head from 'src/components/head';
 import HeaderPage from 'src/components/HeaderPage';
-import { LoadingComponent } from 'src/components/Loading';
+import { LoadingPage } from 'src/components/Loading';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 
 import { getPosition, archivePositionAfterEnded } from 'src/actions/positions';
@@ -19,22 +19,38 @@ import { enqueueSnackbar } from 'src/actions/snackbars';
 import stylesPage from 'src/styles/page.module.css';
 import styles from './index.module.css';
 
-const Index = loadable(() => import('./components/index' /* webpackChunkName: "Position_Index" */), {
-	fallback: <LoadingComponent />,
+const Index = loadable(() => import('./containers/index' /* webpackChunkName: "Position_Index" */), {
+	fallback: <LoadingPage />,
 });
 
-class Position extends Component {
-	state = {
-		positionData: null,
-		receiptsData: null,
+const Position = props => {
+	const [positionData, setPositionData] = useState(null);
+	const [receiptsData, setReceiptsData] = useState(null);
+
+	const metaInfo = {
+		pageName: 'position',
+		pageTitle: 'Детали позиции',
 	};
 
-	getPosition = () => {
-		this.props.getPosition().then(response => {
+	if (positionData && positionData.data && positionData.data.name) {
+		metaInfo.pageTitle = positionData.data.name;
+	}
+
+	const { title, description } = generateMetaInfo({
+		type: metaInfo.pageName,
+		data: {
+			title: metaInfo.pageTitle,
+		},
+	});
+
+	const pageParams = {
+		backToPage: '/availability',
+	};
+
+	const getPosition = () => {
+		props.getPosition().then(response => {
 			if (response.status === 'success') {
-				this.setState({
-					positionData: response,
-				});
+				setPositionData(response);
 			} else {
 				history.push({
 					pathname: '/availability',
@@ -43,37 +59,35 @@ class Position extends Component {
 		});
 	};
 
-	onCancelArchivePositionAfterEnded = positionId => {
-		this.props.archivePositionAfterEnded(positionId, { archivedAfterEnded: false }).then(response => {
-			this.setState({
-				positionData: response,
-			});
+	const onCancelArchivePositionAfterEnded = positionId => {
+		props.archivePositionAfterEnded(positionId, { archivedAfterEnded: false }).then(response => {
+			setPositionData(response);
 		});
 	};
 
-	getReceipts = () => {
-		this.props.getReceiptsPosition().then(response => {
-			this.setState({ receiptsData: response });
+	const getReceipts = () => {
+		props.getReceiptsPosition().then(response => {
+			setReceiptsData(response);
 		});
 	};
 
-	onReceiptCreate = response => {
+	const onReceiptCreate = response => {
 		if (response.status === 'success') {
 			const { data: newReceipt } = response;
 
 			const newReceiptsData = {
 				status: 'success',
-				data: this.state.receiptsData.data.slice(),
+				data: receiptsData.data.slice(),
 			};
 
 			newReceiptsData.data.unshift(newReceipt);
 
-			this.setState({ receiptsData: newReceiptsData });
+			setReceiptsData(newReceiptsData);
 		}
 	};
 
-	onChangeSellingPriceReceipt = (receiptId, values, callback) => {
-		this.props.changeReceipt({ receiptId }, values).then(response => {
+	const onChangeSellingPriceReceipt = (receiptId, values, callback) => {
+		props.changeReceipt({ receiptId }, values).then(response => {
 			callback();
 
 			if (response.status === 'success') {
@@ -81,7 +95,7 @@ class Position extends Component {
 
 				const newReceiptsData = {
 					status: 'success',
-					data: this.state.receiptsData.data.slice().map(receipt => {
+					data: receiptsData.data.slice().map(receipt => {
 						if (receipt._id === receiptEdited._id) {
 							return receiptEdited;
 						} else {
@@ -90,11 +104,11 @@ class Position extends Component {
 					}),
 				};
 
-				this.setState({ receiptsData: newReceiptsData });
+				setReceiptsData(newReceiptsData);
 			}
 
 			if (response.status === 'error') {
-				this.props.enqueueSnackbar({
+				props.enqueueSnackbar({
 					message: response.message || 'Неизвестная ошибка.',
 					options: {
 						variant: 'error',
@@ -104,56 +118,30 @@ class Position extends Component {
 		});
 	};
 
-	componentDidMount() {
-		this.getPosition();
+	useEffect(() => {
+		getPosition();
+		getReceipts();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
-		this.props.getReceiptsPosition().then(response => {
-			this.setState({ receiptsData: response });
-		});
-	}
+	return (
+		<div className={stylesPage.page}>
+			<Head title={title} description={description} />
 
-	render() {
-		const { positionData, receiptsData } = this.state;
-
-		const metaInfo = {
-			pageName: 'position',
-			pageTitle: 'Детали позиции',
-		};
-
-		if (positionData && positionData.data && positionData.data.name) {
-			metaInfo.pageTitle = positionData.data.name;
-		}
-
-		const { title, description } = generateMetaInfo({
-			type: metaInfo.pageName,
-			data: {
-				title: metaInfo.pageTitle,
-			},
-		});
-
-		const pageParams = {
-			backToPage: '/availability',
-		};
-
-		return (
-			<div className={stylesPage.page}>
-				<Head title={title} description={description} />
-
-				<HeaderPage pageName={metaInfo.pageName} pageTitle="В наличии" pageParams={pageParams} />
-				<div className={`${stylesPage.pageContent} ${styles.container}`}>
-					<Index
-						positionData={positionData}
-						receiptsData={receiptsData}
-						getPosition={this.getPosition}
-						onCancelArchivePositionAfterEnded={this.onCancelArchivePositionAfterEnded}
-						onReceiptCreate={this.onReceiptCreate}
-						onChangeSellingPriceReceipt={this.onChangeSellingPriceReceipt}
-					/>
-				</div>
+			<HeaderPage pageName={metaInfo.pageName} pageTitle="В наличии" pageParams={pageParams} />
+			<div className={`${stylesPage.pageContent} ${styles.container}`}>
+				<Index
+					positionData={positionData}
+					receiptsData={receiptsData}
+					getPosition={getPosition}
+					onCancelArchivePositionAfterEnded={onCancelArchivePositionAfterEnded}
+					onReceiptCreate={onReceiptCreate}
+					onChangeSellingPriceReceipt={onChangeSellingPriceReceipt}
+				/>
 			</div>
-		);
-	}
-}
+		</div>
+	);
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => {
 	const {

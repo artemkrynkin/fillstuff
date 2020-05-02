@@ -1,0 +1,7 @@
+.empty {
+  min-height: calc(100vh - 90px);
+}
+
+.empty2 {
+  min-height: calc(100vh - 194px);
+}

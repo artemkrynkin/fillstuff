@@ -1,0 +1,55 @@
+.tableHeaderSticky th {
+  background-color: white;
+  border-bottom-color: transparent;
+  box-shadow: 0 1px 0 0 var(--c-hex-br-5);
+  position: sticky;
+  top: 50px;
+  z-index: 1;
+}
+
+.tableHeaderSticky th:first-child {
+  border-radius: 8px 0 0 0;
+}
+
+.tableHeaderSticky th:last-child {
+  border-radius: 0 8px 0 0;
+}
+
+.tableBody > .position:last-child > td:first-child {
+  border-radius: 0 0 0 8px;
+}
+
+.tableBody > .position:last-child > td:last-child {
+  border-radius: 0 0 8px 0;
+}
+
+.caption {
+  color: var(--c-hex-bg-300);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.position {
+  transition: background-color 150ms ease-out;
+}
+
+.position:hover {
+  background-color: var(--c-hex-br-2);
+}
+
+.actionButton {
+  color: var(--c-hex-bg-200);
+  padding: 8px;
+  opacity: 0;
+  width: 36px;
+}
+
+.actionButtonActive {
+  color: var(--c-hex-bg-300);
+  opacity: 1;
+}
+
+.positionGroup:hover .actionButton,
+.position:hover .actionButton {
+  opacity: 1;
+}

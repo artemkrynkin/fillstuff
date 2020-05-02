@@ -25,6 +25,18 @@ const writeOffs = (
 				data: action.payload,
 			};
 		}
+		case 'RECEIVE_MERGE_WRITE_OFFS': {
+			let stateData = { ...state }.data;
+
+			stateData.data = [...stateData.data, ...action.payload.data];
+			stateData.paging = action.payload.paging;
+
+			return {
+				...state,
+				isFetching: false,
+				data: stateData,
+			};
+		}
 		case 'CREATE_WRITE_OFF': {
 			let stateData = { ...state }.data;
 

@@ -1,0 +1,96 @@
+.container {
+  margin-bottom: 16px;
+}
+
+.container:last-child {
+  margin-bottom: 0;
+}
+
+.wrapper {
+  margin: -20px -15px;
+}
+
+.header {
+  cursor: pointer;
+  user-select: none;
+  padding: 20px 15px 0;
+}
+
+.title,
+.totalPrice {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.title {
+  color: var(--c-hex-t-500);
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.title:hover {
+  color: var(--c-hex-t-400);
+}
+
+.title span {
+  font-size: 14px;
+  margin-right: 2px;
+}
+
+.indicatorsTitle {
+  color: var(--c-hex-bg-700);
+  font-size: 18px;
+  font-weight: 700;
+  text-align: right;
+}
+
+.indicatorsSubtitle {
+  color: var(--c-hex-bg-300);
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 7px;
+  text-align: right;
+}
+
+.indicatorsSubtitle2 {
+  color: var(--c-hex-bg-500);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: right;
+}
+
+.indicatorsDetails {
+  margin-top: 20px;
+}
+
+.detailsButton {
+  background: none;
+  border: none;
+  color: var(--c-hex-bg-200);
+  display: flex;
+  margin-top: -3px;
+  padding-bottom: 5px;
+  transition: margin-top 150ms ease-out, padding-top 150ms ease-out;
+  width: 100%;
+}
+
+.detailsButton:global(.open) {
+  margin-top: 0;
+  padding-top: 3px;
+}
+
+.detailsButton svg {
+  font-size: 18px;
+  transform: rotateX(0deg);
+  transition: color 150ms ease-out, transform 150ms ease-out;
+  width: 18px !important;
+}
+
+.detailsButton svg:global(.open) {
+  transform: rotateX(180deg);
+}
+
+.receipts {
+  border-top: 1px solid var(--c-hex-br-5);
+  margin-top: 20px;
+}

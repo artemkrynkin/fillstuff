@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import loadable from '@loadable/component';
@@ -9,7 +9,7 @@ import { history } from 'src/helpers/history';
 
 import Head from 'src/components/head';
 import HeaderPage from 'src/components/HeaderPage';
-import { LoadingComponent } from 'src/components/Loading';
+import { LoadingPage } from 'src/components/Loading';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 
 import { getMember } from 'src/actions/members';
@@ -18,86 +18,80 @@ import { getInvoicesMember } from 'src/actions/invoices';
 import stylesPage from 'src/styles/page.module.css';
 import styles from './index.module.css';
 
-const Index = loadable(() => import('./components/index' /* webpackChunkName: "Member_Index" */), {
-	fallback: <LoadingComponent />,
+const Index = loadable(() => import('./containers/index' /* webpackChunkName: "Member_Index" */), {
+	fallback: <LoadingPage />,
 });
 
-class Members extends Component {
-	state = {
-		memberData: null,
-		invoicesData: null,
+const Members = props => {
+	const { currentStudio } = props;
+	const [memberData, setMemberData] = useState(null);
+	const [invoicesData, setInvoicesData] = useState(null);
+
+	const metaInfo = {
+		pageName: 'member',
+		pageTitle: 'Данные пользователя',
 	};
 
-	updateMember = memberData => {
-		this.setState({ memberData });
+	if (memberData && memberData.data && memberData.data.user.name) {
+		metaInfo.pageTitle = memberData.data.user.name;
+	}
+
+	const { title, description } = generateMetaInfo({
+		type: metaInfo.pageName,
+		data: {
+			title: metaInfo.pageTitle,
+		},
+	});
+
+	const pageParams = {
+		backToPage: memberData && memberData.data && memberData.data.guest ? '/members/guests' : '/members',
 	};
 
-	getInvoices = () => {
-		this.props.getInvoicesMember().then(response => {
-			this.setState({ invoicesData: response });
-		});
-	};
-
-	componentDidMount() {
-		this.props.getMember().then(response => {
+	const getMember = () => {
+		props.getMember().then(response => {
 			if (response.status === 'success') {
-				this.setState({
-					memberData: response,
-				});
+				setMemberData(response);
 			} else {
 				history.push({
 					pathname: '/members',
 				});
 			}
 		});
+	};
 
-		this.props.getInvoicesMember().then(response => {
-			this.setState({ invoicesData: response });
+	const updateMember = memberData => {
+		setMemberData(memberData);
+	};
+
+	const getInvoices = () => {
+		props.getInvoicesMember().then(response => {
+			setInvoicesData(response);
 		});
-	}
+	};
 
-	render() {
-		const { currentStudio } = this.props;
-		const { memberData, invoicesData } = this.state;
+	useEffect(() => {
+		getMember();
+		getInvoices();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
-		const metaInfo = {
-			pageName: 'member',
-			pageTitle: 'Данные пользователя',
-		};
+	return (
+		<div className={stylesPage.page}>
+			<Head title={title} description={description} />
 
-		if (memberData && memberData.data && memberData.data.user.name) {
-			metaInfo.pageTitle = memberData.data.user.name;
-		}
-
-		const { title, description } = generateMetaInfo({
-			type: metaInfo.pageName,
-			data: {
-				title: metaInfo.pageTitle,
-			},
-		});
-
-		const pageParams = {
-			backToPage: memberData && memberData.data && memberData.data.guest ? '/members/guests' : '/members',
-		};
-
-		return (
-			<div className={stylesPage.page}>
-				<Head title={title} description={description} />
-
-				<HeaderPage pageName={metaInfo.pageName} pageTitle="Команда" pageParams={pageParams} />
-				<div className={`${stylesPage.pageContent} ${styles.container}`}>
-					<Index
-						currentStudio={currentStudio}
-						memberData={memberData}
-						invoicesData={invoicesData}
-						updateMember={this.updateMember}
-						getInvoices={this.getInvoices}
-					/>
-				</div>
+			<HeaderPage pageName={metaInfo.pageName} pageTitle="Команда" pageParams={pageParams} />
+			<div className={`${stylesPage.pageContent} ${styles.container}`}>
+				<Index
+					currentStudio={currentStudio}
+					memberData={memberData}
+					invoicesData={invoicesData}
+					updateMember={updateMember}
+					getInvoices={getInvoices}
+				/>
 			</div>
-		);
-	}
-}
+		</div>
+	);
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => {
 	const {

@@ -41,6 +41,7 @@ invoicesRouter.post(
 		const invoicesPromise = Invoice.paginate(conditions, {
 			sort: { createdAt: -1 },
 			lean: true,
+			leanWithId: false,
 			populate: [
 				{
 					path: 'member',

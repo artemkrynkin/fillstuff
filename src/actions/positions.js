@@ -1,11 +1,12 @@
 import axios from 'axios';
 
-export const getPositions = ({ showRequest } = { showRequest: true }) => {
+export const getPositions = ({ showRequest = true, emptyData = false } = { showRequest: true, emptyData: false }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
 
 		if (showRequest) dispatch({ type: 'REQUEST_POSITIONS' });
+		if (emptyData) dispatch({ type: 'EMPTY_POSITIONS' });
 
 		return await axios
 			.post('/api/getPositions', {

@@ -5,13 +5,13 @@ import generateMetaInfo from 'shared/generate-meta-info';
 
 import Head from 'src/components/head';
 import HeaderPage from 'src/components/HeaderPage';
-import { LoadingComponent } from 'src/components/Loading';
+import { LoadingPage } from 'src/components/Loading';
 
 import stylesPage from 'src/styles/page.module.css';
 import styles from './index.module.css';
 
-const Index = loadable(() => import('./components/index' /* webpackChunkName: "UserSettings_Index" */), {
-	fallback: <LoadingComponent />,
+const Index = loadable(() => import('./containers/index' /* webpackChunkName: "UserSettings_Index" */), {
+	fallback: <LoadingPage />,
 });
 
 const UserSettings = () => {

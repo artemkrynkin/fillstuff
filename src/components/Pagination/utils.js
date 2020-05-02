@@ -3,7 +3,7 @@ import queryString from 'query-string';
 
 import { history } from 'src/helpers/history';
 
-export const checkQueryInFilter = initialQuery => {
+export const checkQueryInFilter = (initialQuery = {}) => {
 	const query = queryString.parse(history.location.search, { parseBooleans: true });
 
 	if (query.dateStart && query.dateEnd) {
@@ -29,6 +29,8 @@ export const checkQueryInFilter = initialQuery => {
 			delete query.dateEnd;
 		}
 	}
+
+	// console.log(Object.assign(initialQuery, query), query);
 
 	return Object.assign(initialQuery, query);
 };

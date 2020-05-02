@@ -1,11 +1,12 @@
 import axios from 'axios';
 
-export const getPositionGroups = ({ showRequest } = { showRequest: true }) => {
+export const getPositionGroups = ({ showRequest = true, emptyData = false } = { showRequest: true, emptyData: false }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
 
 		if (showRequest) dispatch({ type: 'REQUEST_POSITION_GROUPS' });
+		if (emptyData) dispatch({ type: 'EMPTY_POSITION_GROUPS' });
 
 		return await axios
 			.post('/api/getPositionGroups', {

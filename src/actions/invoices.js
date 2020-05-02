@@ -1,7 +1,11 @@
 import axios from 'axios';
 
 export const getInvoices = (
-	{ query, showRequest = true, mergeData = false, emptyData = false } = { showRequest: true, mergeData: false, emptyData: false }
+	{ query, showRequest = true, mergeData = false, emptyData = false } = {
+		showRequest: true,
+		mergeData: false,
+		emptyData: false,
+	}
 ) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;

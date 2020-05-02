@@ -1,7 +1,11 @@
 import axios from 'axios';
 
 export const getProcurementsExpected = (
-	{ showRequest = true, mergeData = false, emptyData = false } = { showRequest: true, mergeData: false, emptyData: false }
+	{ showRequest = true, mergeData = false, emptyData = false } = {
+		showRequest: true,
+		mergeData: false,
+		emptyData: false,
+	}
 ) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
@@ -39,7 +43,11 @@ export const getProcurementsExpected = (
 };
 
 export const getProcurementsReceived = (
-	{ query, showRequest = true, mergeData = false, emptyData = false } = { showRequest: true, mergeData: false, emptyData: false }
+	{ query, showRequest = true, mergeData = false, emptyData = false } = {
+		showRequest: true,
+		mergeData: false,
+		emptyData: false,
+	}
 ) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;

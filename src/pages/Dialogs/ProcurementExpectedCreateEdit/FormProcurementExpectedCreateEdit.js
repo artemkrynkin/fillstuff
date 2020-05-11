@@ -29,7 +29,7 @@ import stylesGlobal from 'src/styles/globals.module.css';
 
 const DialogShopCreate = loadable(() => import('src/pages/Dialogs/ShopCreateEdit' /* webpackChunkName: "Dialog_ShopCreateEdit" */));
 
-const FormProcurementExpectedCreate = props => {
+const FormProcurementExpectedCreateEdit = props => {
 	const {
 		onCloseDialog,
 		dialogRef,
@@ -39,6 +39,7 @@ const FormProcurementExpectedCreate = props => {
 			// error: errorShops
 		},
 		positions,
+		type,
 		formikProps: { errors, isSubmitting, setFieldValue, touched, values },
 	} = props;
 	const [dialogShopCreate, setDialogShopCreate] = useState(false);
@@ -283,7 +284,7 @@ const FormProcurementExpectedCreate = props => {
 						<Button type="submit" disabled={isSubmitting} variant="contained" color="primary" size="large" fullWidth>
 							{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
 							<span className="loading-button-label" style={{ opacity: Number(!isSubmitting) }}>
-								Создать заказ
+								{type === 'create' ? 'Создать' : 'Сохранить'}
 							</span>
 						</Button>
 					</Grid>
@@ -336,4 +337,4 @@ const FormProcurementExpectedCreate = props => {
 	);
 };
 
-export default FormProcurementExpectedCreate;
+export default FormProcurementExpectedCreateEdit;

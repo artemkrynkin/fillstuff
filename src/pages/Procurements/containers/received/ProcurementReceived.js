@@ -11,10 +11,12 @@ import TableBody from '@material-ui/core/TableBody';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Collapse from '@material-ui/core/Collapse';
+import Typography from '@material-ui/core/Typography';
 
 import CardPaper from 'src/components/CardPaper';
 import Money from 'src/components/Money';
 import AvatarTitle from 'src/components/AvatarTitle';
+import Tooltip from 'src/components/Tooltip';
 
 import Receipt from './Receipt';
 
@@ -49,7 +51,35 @@ const ProcurementReceived = props => {
 									'Чек/накладная отсутствует'
 								)}
 							</Link>
-							<AvatarTitle imageSrc={procurement.receivedByMember.user.avatar} title={procurement.receivedByMember.user.name} />
+							{!procurement.orderedByMember || procurement.orderedByMember._id === procurement.receivedByMember._id ? (
+								<AvatarTitle imageSrc={procurement.receivedByMember.user.avatar} title={procurement.receivedByMember.user.name} />
+							) : (
+								<div>
+									<Tooltip
+										title={
+											<div>
+												<Typography variant="body2">
+													<b>Заказал</b>
+												</Typography>
+												<Typography variant="body2" gutterBottom>
+													{procurement.orderedByMember.user.name}
+												</Typography>
+												<Typography variant="body2">
+													<b>Принял</b>
+												</Typography>
+												<Typography variant="body2">{procurement.receivedByMember.user.name}</Typography>
+											</div>
+										}
+										placement="top-start"
+										style={{ display: 'inline-block' }}
+									>
+										<div className={styles.users}>
+											<AvatarTitle className={styles.user} imageSrc={procurement.orderedByMember.user.avatar} />
+											<AvatarTitle className={styles.user} imageSrc={procurement.receivedByMember.user.avatar} />
+										</div>
+									</Tooltip>
+								</div>
+							)}
 						</Grid>
 						<Grid xs={6} item>
 							<div className={styles.indicatorsTitle}>
@@ -92,7 +122,7 @@ const ProcurementReceived = props => {
 							</TableHead>
 							<TableBody>
 								{procurement.receipts.map((receipt, index) => (
-									<Receipt key={index} receipt={receipt} positionSameFilter={receipt.position._id === filterParams.position} />
+									<Receipt key={receipt._id} receipt={receipt} positionSameFilter={receipt.position._id === filterParams.position} />
 								))}
 							</TableBody>
 						</Table>

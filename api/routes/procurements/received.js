@@ -158,15 +158,16 @@ procurementsRouter.post(
 			.catch(err => next({ code: 2, err }));
 
 		const positions = await positionsPromise;
+		const procurementExist = await procurementPromise;
 
-		const newProcurement = !procurementPromise
+		const newProcurement = !procurementExist
 			? new Procurement({
 					...newProcurementValues,
 					studio: studioId,
 					receivedByMember: memberId,
 					status: 'received',
 			  })
-			: await procurementPromise;
+			: procurementExist;
 
 		const updatePositionsAndActiveReceipt = [];
 

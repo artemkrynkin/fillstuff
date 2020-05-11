@@ -124,7 +124,7 @@ const FormFilter = props => {
 		searchTextFieldMember.current.focus();
 	};
 
-	const members = !isLoadingAllMembers && allMembers ? allMembers.filter(member => findMemberByName(member, searchTextMember)) : [];
+	const members = !isLoadingAllMembers && allMembers ? allMembers.filter(member => findMemberByName(member, searchTextMember)) : null;
 
 	const isWeekActive = currentWeek => weekActive(values.dateStartView, values.dateEndView, currentWeek);
 	const isMonthActive = currentMonth => monthActive(values.dateStartView, values.dateEndView, currentMonth);

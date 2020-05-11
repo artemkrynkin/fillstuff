@@ -6,7 +6,6 @@
 .image {
   background-color: var(--c-hex-br-5);
   height: 28px;
-  margin-right: 10px;
   width: 28px;
 }
 
@@ -27,6 +26,7 @@
 }
 
 .details {
+  margin-left: 10px;
   max-width: calc(100% - 38px);
 }
 

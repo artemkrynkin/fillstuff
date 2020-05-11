@@ -42,6 +42,111 @@ export const getProcurementsExpected = (
 	};
 };
 
+export const createProcurementExpected = ({ data }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+
+		return await axios
+			.post('/api/createProcurementExpected', {
+				studioId,
+				memberId,
+				data,
+			})
+			.then(response => {
+				const { data: procurement } = response;
+
+				dispatch({
+					type: 'CREATE_PROCUREMENT_EXPECTED',
+					payload: procurement,
+				});
+
+				return Promise.resolve({ status: 'success' });
+			})
+			.catch(error => {
+				if (error.response) {
+					return Promise.resolve({ status: 'error', message: error.response.data.message, data: error.response.data });
+				} else {
+					console.error(error);
+
+					return Promise.resolve({ status: 'error', message: error.message, ...error });
+				}
+			});
+	};
+};
+
+export const editProcurementExpected = ({ params, data }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+		const { procurementId } = params;
+
+		return await axios
+			.post('/api/editProcurementExpected', {
+				studioId,
+				memberId,
+				params,
+				data,
+			})
+			.then(response => {
+				const procurement = response.data;
+
+				dispatch({
+					type: 'EDIT_PROCUREMENT_EXPECTED',
+					payload: {
+						procurementId,
+						procurement,
+					},
+				});
+
+				return Promise.resolve({ status: 'success' });
+			})
+			.catch(error => {
+				if (error.response) {
+					return Promise.resolve({ status: 'error', message: error.response.data.message, data: error.response.data });
+				} else {
+					console.error(error);
+
+					return Promise.resolve({ status: 'error', message: error.message, ...error });
+				}
+			});
+	};
+};
+
+export const cancelProcurementExpected = ({ params }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+		const { procurementId } = params;
+
+		return await axios
+			.post('/api/cancelProcurementExpected', {
+				studioId,
+				memberId,
+				params,
+			})
+			.then(() => {
+				dispatch({
+					type: 'CANCEL_PROCUREMENT_EXPECTED',
+					payload: {
+						procurementId,
+					},
+				});
+
+				return Promise.resolve({ status: 'success' });
+			})
+			.catch(error => {
+				if (error.response) {
+					return Promise.resolve({ status: 'error', message: error.response.data.message, data: error.response.data });
+				} else {
+					console.error(error);
+
+					return Promise.resolve({ status: 'error', message: error.message, ...error });
+				}
+			});
+	};
+};
+
 export const getProcurementsReceived = (
 	{ query, showRequest = true, mergeData = false, emptyData = false } = {
 		showRequest: true,
@@ -109,39 +214,6 @@ export const getProcurementReceived = ({ params }) => {
 	};
 };
 
-export const createProcurementExpected = ({ data }) => {
-	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
-
-		return await axios
-			.post('/api/createProcurementExpected', {
-				studioId,
-				memberId,
-				data,
-			})
-			.then(response => {
-				const { data: procurement } = response;
-
-				dispatch({
-					type: 'CREATE_PROCUREMENT_EXPECTED',
-					payload: procurement,
-				});
-
-				return Promise.resolve({ status: 'success' });
-			})
-			.catch(error => {
-				if (error.response) {
-					return Promise.resolve({ status: 'error', message: error.response.data.message, data: error.response.data });
-				} else {
-					console.error(error);
-
-					return Promise.resolve({ status: 'error', message: error.message, ...error });
-				}
-			});
-	};
-};
-
 export const createProcurementReceived = ({ data }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
@@ -169,40 +241,6 @@ export const createProcurementReceived = ({ data }) => {
 						},
 					});
 				}
-
-				return Promise.resolve({ status: 'success' });
-			})
-			.catch(error => {
-				if (error.response) {
-					return Promise.resolve({ status: 'error', message: error.response.data.message, data: error.response.data });
-				} else {
-					console.error(error);
-
-					return Promise.resolve({ status: 'error', message: error.message, ...error });
-				}
-			});
-	};
-};
-
-export const cancelProcurementExpected = ({ params }) => {
-	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
-		const { procurementId } = params;
-
-		return await axios
-			.post('/api/cancelProcurementExpected', {
-				studioId,
-				memberId,
-				params,
-			})
-			.then(() => {
-				dispatch({
-					type: 'CANCEL_PROCUREMENT_EXPECTED',
-					payload: {
-						procurementId,
-					},
-				});
 
 				return Promise.resolve({ status: 'success' });
 			})

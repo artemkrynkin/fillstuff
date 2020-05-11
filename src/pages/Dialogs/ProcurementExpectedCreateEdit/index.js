@@ -2,6 +2,7 @@ import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Formik } from 'formik';
+import moment from 'moment';
 
 import { formatNumber } from 'shared/utils';
 
@@ -9,17 +10,18 @@ import { DialogStickyFR, DialogTitle } from 'src/components/Dialog';
 
 import { getShops } from 'src/actions/shops';
 import { getPositions } from 'src/actions/positions';
-import { createProcurementExpected } from 'src/actions/procurements';
+import { createProcurementExpected, editProcurementExpected } from 'src/actions/procurements';
 import { enqueueSnackbar } from 'src/actions/snackbars';
 
 import { positionTransform } from './utils';
-import FormProcurementExpectedCreate from './FormProcurementExpectedCreate';
+import FormProcurementExpectedCreateEdit from './FormProcurementExpectedCreateEdit';
 import procurementSchema from './procurementSchema';
 
 import styles from './index.module.css';
 
-class ProcurementExpectedCreate extends Component {
+class ProcurementExpectedCreateEdit extends Component {
 	static propTypes = {
+		type: PropTypes.oneOf(['create', 'edit']).isRequired,
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
 		onExitedDialog: PropTypes.func,
@@ -28,27 +30,46 @@ class ProcurementExpectedCreate extends Component {
 	dialogRef = createRef();
 
 	onSubmit = (values, actions) => {
-		const { onCloseDialog } = this.props;
+		const { type, onCloseDialog } = this.props;
 		const procurement = procurementSchema(true).cast(values);
 
 		procurement.totalPrice = formatNumber(procurement.pricePositions + procurement.costDelivery);
 
-		this.props.createProcurementExpected(procurement).then(response => {
-			actions.setSubmitting(false);
+		if (type === 'create') {
+			this.props.createProcurementExpected(procurement).then(response => {
+				actions.setSubmitting(false);
 
-			if (response.status === 'success') {
-				onCloseDialog();
-			}
+				if (response.status === 'success') {
+					onCloseDialog();
+				}
 
-			if (response.status === 'error') {
-				this.props.enqueueSnackbar({
-					message: response.message || 'Неизвестная ошибка.',
-					options: {
-						variant: 'error',
-					},
-				});
-			}
-		});
+				if (response.status === 'error') {
+					this.props.enqueueSnackbar({
+						message: response.message || 'Неизвестная ошибка.',
+						options: {
+							variant: 'error',
+						},
+					});
+				}
+			});
+		} else {
+			this.props.editProcurementExpected(procurement._id, procurement).then(response => {
+				actions.setSubmitting(false);
+
+				if (response.status === 'success') {
+					onCloseDialog();
+				}
+
+				if (response.status === 'error') {
+					this.props.enqueueSnackbar({
+						message: response.message || 'Неизвестная ошибка.',
+						options: {
+							variant: 'error',
+						},
+					});
+				}
+			});
+		}
 	};
 
 	onEnterDialog = () => {
@@ -63,7 +84,9 @@ class ProcurementExpectedCreate extends Component {
 	};
 
 	render() {
-		const { dialogOpen, onCloseDialog, shops, positions } = this.props;
+		const { type, dialogOpen, onCloseDialog, shops, positions, selectedProcurement } = this.props;
+
+		if (type === 'edit' && !selectedProcurement) return null;
 
 		let initialValues = {
 			shop: '',
@@ -75,6 +98,16 @@ class ProcurementExpectedCreate extends Component {
 			totalPrice: '',
 			positions: [],
 		};
+
+		if (selectedProcurement) {
+			initialValues = {
+				...initialValues,
+				...selectedProcurement,
+				deliveryDate: moment(selectedProcurement.deliveryDate).format(),
+				deliveryTimeFrom: moment(selectedProcurement.deliveryTimeFrom).format(),
+				deliveryTimeTo: moment(selectedProcurement.deliveryTimeTo).format(),
+			};
+		}
 
 		return (
 			<DialogStickyFR
@@ -94,7 +127,7 @@ class ProcurementExpectedCreate extends Component {
 				]}
 				stickyActions
 			>
-				<DialogTitle onClose={onCloseDialog}>Создание заказа</DialogTitle>
+				<DialogTitle onClose={onCloseDialog}>{type === 'create' ? 'Создание заказа' : 'Редактирование заказа'}</DialogTitle>
 				<Formik
 					initialValues={initialValues}
 					validationSchema={procurementSchema()}
@@ -103,11 +136,12 @@ class ProcurementExpectedCreate extends Component {
 					onSubmit={(values, actions) => this.onSubmit(values, actions)}
 				>
 					{props => (
-						<FormProcurementExpectedCreate
+						<FormProcurementExpectedCreateEdit
 							onCloseDialog={onCloseDialog}
 							dialogRef={this.dialogRef}
 							shops={shops}
 							positions={positions}
+							type={type}
 							formikProps={props}
 						/>
 					)}
@@ -135,8 +169,10 @@ const mapDispatchToProps = dispatch => {
 		getShops: () => dispatch(getShops()),
 		getPositions: () => dispatch(getPositions({ showRequest: false })),
 		createProcurementExpected: procurement => dispatch(createProcurementExpected({ data: { procurement } })),
+		editProcurementExpected: (procurementId, procurement) =>
+			dispatch(editProcurementExpected({ params: { procurementId }, data: { procurement } })),
 		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
 	};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProcurementExpectedCreate);
+export default connect(mapStateToProps, mapDispatchToProps)(ProcurementExpectedCreateEdit);

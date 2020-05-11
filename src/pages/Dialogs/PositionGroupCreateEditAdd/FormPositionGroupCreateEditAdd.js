@@ -112,7 +112,7 @@ const FormPositionGroupCreateEditAdd = props => {
 										positions.length ? (
 											positions.map((position, index) => (
 												<div
-													key={index}
+													key={position._id}
 													className={selectPositionsClasses(values.positions, position._id)}
 													onClick={() => {
 														const selectedPositionIndex = values.positions.findIndex(

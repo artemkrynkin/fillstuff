@@ -95,7 +95,7 @@ const FormFieldArrayPositions = props => {
 			{values.positions.length ? (
 				<div className={styles.positionsItems}>
 					{values.positions.map((position, index) => (
-						<Grid className={styles.positionItem} key={index} wrap="nowrap" alignItems="center" container>
+						<Grid className={styles.positionItem} key={position._id} wrap="nowrap" alignItems="center" container>
 							<Grid style={{ flex: '1 1' }} zeroMinWidth item>
 								<PositionNameInList name={position.name} characteristics={position.characteristics} size="md" />
 							</Grid>

@@ -103,7 +103,7 @@ const FormFieldArrayReceipts = props => {
 				<div className={styles.receiptsItems}>
 					{values.receipts.map((receipt, index) => (
 						<FormFieldArrayReceipt
-							key={index}
+							key={receipt.position._id}
 							receipt={receipt}
 							index={index}
 							formEditable={formEditable}

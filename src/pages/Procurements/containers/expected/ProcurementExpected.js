@@ -91,6 +91,7 @@ const ProcurementExpected = props => {
 					<MenuItem
 						onClick={() => {
 							onHandleDropdownActions();
+							onOpenDialogProcurement('dialogProcurementExpectedEdit', 'procurementExpected', procurement);
 						}}
 						iconBefore={<FontAwesomeIcon icon={['far', 'pen']} />}
 					>

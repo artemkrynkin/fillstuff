@@ -37,9 +37,8 @@ class DialogPositionCreateEdit extends Component {
 	};
 
 	onSubmit = (values, actions) => {
-		const { type, onCloseDialog, onCallback, position = positionSchema(true).cast(values) } = this.props;
-
-		actions.setSubmitting(false);
+		const { type, onCloseDialog, onCallback } = this.props;
+		const position = positionSchema(true).cast(values);
 
 		if (type === 'create') {
 			this.props.createPosition(position).then(response => {

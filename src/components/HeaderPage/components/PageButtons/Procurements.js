@@ -7,7 +7,7 @@ import { Button } from './styles';
 import styles from './index.module.css';
 
 const DialogProcurementExpectedCreate = loadable(() =>
-	import('src/pages/Dialogs/ProcurementExpectedCreate' /* webpackChunkName: "Dialog_ProcurementExpectedCreate" */)
+	import('src/pages/Dialogs/ProcurementExpectedCreateEdit' /* webpackChunkName: "Dialog_ProcurementExpectedCreateEdit" */)
 );
 
 const DialogProcurementReceivedCreate = loadable(() =>
@@ -37,6 +37,7 @@ const Procurements = props => {
 			</Button>
 
 			<DialogProcurementExpectedCreate
+				type="create"
 				dialogOpen={dialogProcurementExpectedCreate}
 				onCloseDialog={onCloseDialogProcurementExpectedCreate}
 			/>

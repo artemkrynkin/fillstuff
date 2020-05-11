@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
+import mongoose from 'mongoose';
 import Position from 'api/models/position';
 import Procurement from 'api/models/procurement';
 
@@ -17,7 +18,7 @@ procurementsRouter.post(
 		const { studioId } = req.body;
 
 		const conditions = {
-			studio: studioId,
+			studio: mongoose.Types.ObjectId(studioId),
 			status: 'expected',
 		};
 
@@ -51,6 +52,16 @@ procurementsRouter.post(
 					path: 'shop',
 				},
 			]);
+
+		// {
+		//   $lookup: {
+		//     from: 'members',
+		//     localField: 'orderedByMember',
+		//     foreignField: '_id',
+		//     as: 'orderedByMember'
+		//   }
+		// },
+
 		const procurementsCountPromise = Procurement.countDocuments(conditions);
 
 		const procurements = await procurementsPromise;

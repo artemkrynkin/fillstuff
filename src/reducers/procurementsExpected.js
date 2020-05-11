@@ -37,12 +37,27 @@ const procurementsExpected = (
 				data: stateData,
 			};
 		}
+		case 'EDIT_PROCUREMENT_EXPECTED': {
+			let stateData;
+
+			if (state.data) {
+				stateData = { ...state }.data;
+				const procurementIndex = stateData.data.findIndex(procurement => procurement._id === action.payload.procurementId);
+
+				stateData.data[procurementIndex] = action.payload.procurement;
+			}
+
+			return {
+				...state,
+				isFetching: false,
+				data: stateData,
+			};
+		}
 		case 'CANCEL_PROCUREMENT_EXPECTED': {
 			let stateData;
 
 			if (state.data) {
 				stateData = { ...state }.data;
-
 				const procurementIndex = stateData.data.findIndex(procurement => procurement._id === action.payload.procurementId);
 
 				stateData.data.splice(procurementIndex, 1);

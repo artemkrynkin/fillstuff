@@ -153,10 +153,10 @@ const FormFilter = props => {
 		searchTextFieldPosition.current.focus();
 	};
 
-	const members = !isLoadingAllMembers && allMembers ? allMembers.filter(member => findMemberByName(member, searchTextMember)) : [];
+	const members = !isLoadingAllMembers && allMembers ? allMembers.filter(member => findMemberByName(member, searchTextMember)) : null;
 
 	const positions =
-		!isLoadingAllPositions && allPositions ? allPositions.filter(position => findPositionByFullName(position, searchTextPosition)) : [];
+		!isLoadingAllPositions && allPositions ? allPositions.filter(position => findPositionByFullName(position, searchTextPosition)) : null;
 
 	const isWeekActive = currentWeek => weekActive(values.dateStartView, values.dateEndView, currentWeek);
 	const isMonthActive = currentMonth => monthActive(values.dateStartView, values.dateEndView, currentMonth);

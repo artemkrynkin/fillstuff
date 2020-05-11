@@ -75,7 +75,7 @@ const WriteOffsDay = props => {
 							<div>
 								<div className={styles.usersPerDayWrapper}>
 									{indicators.members.map((member, index) => (
-										<Tooltip key={index} title={member.user.name} placement="top" arrow={false}>
+										<Tooltip key={member._id} title={member.user.name} placement="top" arrow={false}>
 											<div
 												className={ClassNames({
 													[styles.user]: true,

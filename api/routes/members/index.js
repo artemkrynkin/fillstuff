@@ -8,7 +8,6 @@ import mongoose from 'mongoose';
 import User from 'api/models/member';
 import Studio from 'api/models/studio';
 import Member from 'api/models/member';
-import Procurement from '../../models/procurement';
 
 const membersRouter = Router();
 

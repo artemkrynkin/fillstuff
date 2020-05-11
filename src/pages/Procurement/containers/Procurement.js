@@ -75,7 +75,7 @@ const Procurement = props => {
 						</TableHead>
 						<TableBody>
 							{procurement.receipts.map((receipt, index) => (
-								<Receipt key={index} receipt={receipt} />
+								<Receipt key={receipt._id} receipt={receipt} />
 							))}
 						</TableBody>
 					</Table>

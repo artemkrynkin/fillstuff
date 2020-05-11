@@ -161,6 +161,49 @@ export const createProcurementReceived = ({ data }) => {
 					payload: procurement,
 				});
 
+				if (data.procurement.status === 'expected' && procurement.status === 'received') {
+					dispatch({
+						type: 'CANCEL_PROCUREMENT_EXPECTED',
+						payload: {
+							procurementId: procurement._id,
+						},
+					});
+				}
+
+				return Promise.resolve({ status: 'success' });
+			})
+			.catch(error => {
+				if (error.response) {
+					return Promise.resolve({ status: 'error', message: error.response.data.message, data: error.response.data });
+				} else {
+					console.error(error);
+
+					return Promise.resolve({ status: 'error', message: error.message, ...error });
+				}
+			});
+	};
+};
+
+export const cancelProcurementExpected = ({ params }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+		const { procurementId } = params;
+
+		return await axios
+			.post('/api/cancelProcurementExpected', {
+				studioId,
+				memberId,
+				params,
+			})
+			.then(() => {
+				dispatch({
+					type: 'CANCEL_PROCUREMENT_EXPECTED',
+					payload: {
+						procurementId,
+					},
+				});
+
 				return Promise.resolve({ status: 'success' });
 			})
 			.catch(error => {

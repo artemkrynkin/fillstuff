@@ -17,10 +17,13 @@ const Procurement = new Schema({
 		required: [true, i18n.__('Обязательное поле')],
 		select: false,
 	},
-	member: {
-		type: String,
+	orderedByMember: {
+		type: Schema.Types.ObjectId,
 		ref: 'Member',
-		required: [true, i18n.__('Обязательное поле')],
+	},
+	receivedByMember: {
+		type: Schema.Types.ObjectId,
+		ref: 'Member',
 	},
 	status: {
 		type: String,
@@ -31,7 +34,7 @@ const Procurement = new Schema({
 		ref: 'Shop',
 		required: [true, i18n.__('Обязательное поле')],
 	},
-	estimatedDeliveryDate: {
+	deliveryDate: {
 		type: Date,
 		required: [
 			function() {
@@ -40,7 +43,7 @@ const Procurement = new Schema({
 			i18n.__('Обязательное поле'),
 		],
 	},
-	estimatedDeliveryTimeFrom: {
+	deliveryTimeFrom: {
 		type: Date,
 		required: [
 			function() {
@@ -49,7 +52,7 @@ const Procurement = new Schema({
 			i18n.__('Обязательное поле'),
 		],
 	},
-	estimatedDeliveryTimeTo: {
+	deliveryTimeTo: {
 		type: Date,
 		required: [
 			function() {

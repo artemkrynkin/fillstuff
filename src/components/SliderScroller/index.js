@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ClassNames from 'classnames';
 
-import anime from 'animejs';
 import ResizeSensor from 'css-element-queries/src/ResizeSensor';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import ButtonBase from '@material-ui/core/ButtonBase';
 
 import styles from './index.module.css';
 
@@ -49,10 +49,6 @@ class SliderScroller extends Component {
 		children: PropTypes.node.isRequired,
 	};
 
-	state = {
-		animationProgress: 0,
-	};
-
 	sliderScrollRef = element => {
 		if (!element) return;
 		this.sliderScroller = element;
@@ -60,6 +56,8 @@ class SliderScroller extends Component {
 
 	setClasses() {
 		const sliderScrollerWrap = this.sliderScroller.querySelector(`.${styles.wrapScroll}`);
+		const sliderScrollerWrapContent = this.sliderScroller.querySelector(`.${styles.wrapContent}`);
+
 		const removeClass = direction => {
 			switch (direction) {
 				case 'right':
@@ -73,13 +71,14 @@ class SliderScroller extends Component {
 					this.sliderScroller.classList.remove('scroll-left');
 			}
 		};
+
 		const addDirectionClass = direction => {
 			if (!this.sliderScroller.classList.contains(`scroll-${direction}`)) {
 				this.sliderScroller.classList.add(`scroll-${direction}`);
 			}
 		};
 
-		if (sliderScrollerWrap.scrollWidth > this.sliderScroller.clientWidth) {
+		if (sliderScrollerWrap.scrollWidth > sliderScrollerWrapContent.clientWidth) {
 			let scrollShiftRight = sliderScrollerWrap.scrollLeft + sliderScrollerWrap.clientWidth;
 
 			if (sliderScrollerWrap.scrollLeft === 0 || sliderScrollerWrap.scrollLeft < this.props.offsetLeft) {
@@ -104,35 +103,20 @@ class SliderScroller extends Component {
 	onScroll = () => this.setClasses();
 
 	handleClickArrow = (event, direction) => {
-		const { animationProgress } = this.state;
+		const sliderScrollerWrap = event.currentTarget.parentElement.querySelector(`.${styles.wrapScroll}`);
+		const shiftValue = Math.round(sliderScrollerWrap.clientWidth / 2);
 
-		const sliderScrollerWrap = event.currentTarget.parentElement.querySelector(`.${styles.wrapScroll}`),
-			shiftValue = Math.round(sliderScrollerWrap.clientWidth / 2);
-
-		if (animationProgress !== 100) anime.remove(sliderScrollerWrap);
-
-		anime({
-			targets: sliderScrollerWrap,
-			scrollLeft: {
-				value:
-					direction === 'left'
-						? Math.max(sliderScrollerWrap.scrollLeft - shiftValue, 0)
-						: direction === 'right'
-						? Math.min(sliderScrollerWrap.scrollLeft + shiftValue, sliderScrollerWrap.scrollWidth - sliderScrollerWrap.clientWidth)
-						: 0,
-				duration: 300,
-				easing: 'easeInOutQuad',
-				delay: 0,
-			},
-			update: anim => this.setState({ animationProgress: anim.progress }),
-		});
+		sliderScrollerWrap.scrollLeft =
+			direction === 'left'
+				? Math.max(sliderScrollerWrap.scrollLeft - shiftValue, 0)
+				: Math.min(sliderScrollerWrap.scrollLeft + shiftValue, sliderScrollerWrap.scrollWidth - sliderScrollerWrap.clientWidth);
 	};
 
 	componentDidMount = () => {
 		this.setClasses();
 
-		// new ResizeSensor(this.sliderScroller, this.setClasses);
-		// new ResizeSensor(this.sliderScroller.querySelector(`.${styles.wrapScroll}`), this.setClasses);
+		new ResizeSensor(this.sliderScroller, this.setClasses);
+		new ResizeSensor(this.sliderScroller.querySelector(`.${styles.wrapScroll}`), this.setClasses);
 	};
 
 	render() {
@@ -184,14 +168,14 @@ class SliderScroller extends Component {
 					</div>
 				</div>
 
-				<span className={`${classNames.arrowLeft}`} onClick={event => this.handleClickArrow(event, 'left')}>
+				<ButtonBase className={`${classNames.arrowLeft}`} onClick={event => this.handleClickArrow(event, 'left')}>
 					<FontAwesomeIcon icon={['fal', 'angle-left']} />
-				</span>
+				</ButtonBase>
 				{shadows ? <div className={`${classNames.arrowShadowLeft}`} /> : null}
 
-				<span className={`${classNames.arrowRight}`} onClick={event => this.handleClickArrow(event, 'right')}>
+				<ButtonBase className={`${classNames.arrowRight}`} onClick={event => this.handleClickArrow(event, 'right')}>
 					<FontAwesomeIcon icon={['fal', 'angle-right']} />
-				</span>
+				</ButtonBase>
 				{shadows ? <div className={`${classNames.arrowShadowRight}`} /> : null}
 			</div>
 		);

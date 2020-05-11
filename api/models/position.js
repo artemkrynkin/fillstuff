@@ -27,9 +27,12 @@ const Position = new Schema({
 		type: Boolean,
 	},
 	// Ожидается доставка
-	deliveryIsExpected: {
-		type: Boolean,
-	},
+	deliveryIsExpected: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: 'Procurement',
+		},
+	],
 	// Студия
 	studio: {
 		type: Schema.Types.ObjectId,

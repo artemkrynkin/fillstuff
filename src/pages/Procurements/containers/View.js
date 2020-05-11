@@ -7,12 +7,13 @@ import Button from '@material-ui/core/Button';
 import { LoadingPage } from 'src/components/Loading';
 import Empty from 'src/components/Empty';
 
-import ProcurementsExpected from './ProcurementsExpected';
-import ProcurementsReceived from './ProcurementsReceived';
+import ProcurementsExpected from './expected/ProcurementsExpected';
+import ProcurementsReceived from './received/ProcurementsReceived';
 
 import styles from './View.module.css';
 
 import emptyImage from 'public/img/stubs/procurements.svg';
+import Filter from './Filter';
 
 const View = props => {
 	const {
@@ -57,7 +58,7 @@ const View = props => {
 	if (procurementsExpected && procurementsReceived && procurementsExpected.paging.totalCount && !procurementsReceived.paging.totalCount) {
 		return (
 			<Fragment>
-				<ProcurementsExpected procurementsExpected={procurementsExpected} />
+				<ProcurementsExpected onOpenDialogByName={onOpenDialogByName} procurementsExpected={procurementsExpected} />
 				<Empty
 					className={styles.empty2}
 					imageSrc={emptyImage}
@@ -78,13 +79,19 @@ const View = props => {
 	}
 
 	if (procurementsExpected && procurementsReceived && !procurementsExpected.paging.totalCount && procurementsReceived.paging.totalCount) {
-		return <ProcurementsReceived filterOptions={filterOptions} paging={paging} procurementsReceived={props.procurementsReceived} />;
+		return (
+			<Fragment>
+				<Filter filterOptions={filterOptions} paging={paging} />
+				<ProcurementsReceived filterOptions={filterOptions} paging={paging} procurementsReceived={props.procurementsReceived} />
+			</Fragment>
+		);
 	}
 
 	if (procurementsExpected && procurementsReceived && procurementsExpected.paging.totalCount && procurementsReceived.paging.totalCount) {
 		return (
 			<Fragment>
-				<ProcurementsExpected procurementsExpected={procurementsExpected} />
+				<Filter filterOptions={filterOptions} paging={paging} />
+				<ProcurementsExpected onOpenDialogByName={onOpenDialogByName} procurementsExpected={procurementsExpected} />
 				<ProcurementsReceived filterOptions={filterOptions} paging={paging} procurementsReceived={props.procurementsReceived} />
 			</Fragment>
 		);

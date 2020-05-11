@@ -126,7 +126,7 @@ const FormProcurementReceivedCreate = props => {
 								TextFieldProps={{
 									error: Boolean(touched.shop && errors.shop),
 								}}
-								isDisabled={isSubmitting || !formEditable}
+								isDisabled={isSubmitting || !formEditable || values.status === 'expected'}
 								isLoading={isLoadingShops}
 								value={values.shop}
 								inputValue={shopTempName}
@@ -153,11 +153,11 @@ const FormProcurementReceivedCreate = props => {
 								}
 								options={shops}
 								isClearable
-								autoFocus
+								autoFocus={values.status !== 'expected'}
 							/>
 							{touched.shop && errors.shop ? <FormHelperText error>{errors.shop}</FormHelperText> : null}
 						</Grid>
-						<Grid style={{ visibility: !formEditable ? 'hidden' : 'visible' }} item>
+						<Grid style={{ visibility: !formEditable || values.status === 'expected' ? 'hidden' : 'visible' }} item>
 							<Button onClick={onOpenDialogShopCreate} variant="outlined" color="primary" tabIndex={-1}>
 								Новый магазин
 							</Button>
@@ -183,6 +183,7 @@ const FormProcurementReceivedCreate = props => {
 									helperText={typeof errors.invoiceNumber === 'string' && touched.invoiceNumber ? errors.invoiceNumber : null}
 									as={TextField}
 									disabled={isSubmitting || !formEditable || values.noInvoice}
+									autoFocus={values.status === 'expected'}
 									fullWidth
 								/>
 							</Grid>

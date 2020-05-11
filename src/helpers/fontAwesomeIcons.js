@@ -48,6 +48,8 @@ import {
 	faFolderMinus as farFolderMinus,
 	faTruck as farTruck,
 	faCog as farCog,
+	faTruckLoading as farTruckLoading,
+	faCalendarEdit as farCalendarEdit,
 } from '@fortawesome/pro-regular-svg-icons';
 
 import {
@@ -136,6 +138,8 @@ library.add(
 	farFolderMinus,
 	farTruck,
 	farCog,
+	farTruckLoading,
+	farCalendarEdit,
 
 	// Light
 	falAngleLeft,

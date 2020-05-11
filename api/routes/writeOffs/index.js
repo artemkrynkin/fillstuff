@@ -236,7 +236,7 @@ writeOffsRouter.post(
 						Position.findByIdAndUpdate(position._id, { $unset: { activeReceipt: 1 } }).catch(err => next({ code: 2, err }));
 					}
 
-					if (position.archivedAfterEnded && !position.deliveryIsExpected && currentReceiptSet.current.quantity === 0) {
+					if (position.archivedAfterEnded && !position.deliveryIsExpected.length && currentReceiptSet.current.quantity === 0) {
 						awaitingPromises.push(
 							Position.findByIdAndUpdate(position._id, {
 								$set: { isArchived: true },

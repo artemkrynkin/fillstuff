@@ -198,7 +198,7 @@ positionsRouter.post(
 			])
 			.catch(err => next({ code: 2, err }));
 
-		if (position.deliveryIsExpected) {
+		if (position.deliveryIsExpected.length) {
 			return res.json({
 				code: 400,
 				message: 'Позиция не может быть архивирована пока ожидается доставка',

@@ -6,13 +6,13 @@ const procurementSchema = (depopulate = false) => {
 		shop: Yup.mixed()
 			.required()
 			.transform((currentValue, originalValue) => (depopulate ? currentValue._id : currentValue)),
-		estimatedDeliveryDate: Yup.mixed()
+		deliveryDate: Yup.mixed()
 			.required()
 			.transform((value, originalValue) => (moment(value).isValid() ? value : originalValue)),
-		estimatedDeliveryTimeFrom: Yup.mixed()
+		deliveryTimeFrom: Yup.mixed()
 			.required()
 			.transform((value, originalValue) => (moment(value).isValid() ? value : originalValue)),
-		estimatedDeliveryTimeTo: Yup.mixed()
+		deliveryTimeTo: Yup.mixed()
 			.required()
 			.transform((value, originalValue) => (moment(value).isValid() ? value : originalValue)),
 		costDelivery: Yup.number()

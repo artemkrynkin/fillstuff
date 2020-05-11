@@ -38,7 +38,7 @@ procurementsRouter.post(
 
 		if (invoiceNumber) conditions.invoiceNumber = { $regex: invoiceNumber, $options: 'i' };
 
-		if (member && member !== 'all') conditions.member = mongoose.Types.ObjectId(member);
+		if (member && member !== 'all') conditions.receivedByMember = mongoose.Types.ObjectId(member);
 
 		if (position && position !== 'all') conditions.positions = mongoose.Types.ObjectId(position);
 
@@ -48,7 +48,15 @@ procurementsRouter.post(
 			leanWithId: false,
 			populate: [
 				{
-					path: 'member',
+					path: 'orderedByMember',
+					select: 'user',
+					populate: {
+						path: 'user',
+						select: 'avatar name email',
+					},
+				},
+				{
+					path: 'receivedByMember',
 					select: 'user',
 					populate: {
 						path: 'user',
@@ -104,7 +112,14 @@ procurementsRouter.post(
 		Procurement.findOne({ _id: procurementId, status: 'received' })
 			.populate([
 				{
-					path: 'member',
+					path: 'orderedByMember',
+					populate: {
+						path: 'user',
+						select: 'avatar name email',
+					},
+				},
+				{
+					path: 'receivedByMember',
 					populate: {
 						path: 'user',
 						select: 'avatar name email',
@@ -136,18 +151,24 @@ procurementsRouter.post(
 			data: { procurement: newProcurementValues },
 		} = req.body;
 
-		const positions = await Position.find({ _id: { $in: newProcurementValues.positions } })
+		const procurementPromise = Procurement.findById(newProcurementValues._id).catch(err => next({ code: 2, err }));
+
+		const positionsPromise = Position.find({ _id: { $in: newProcurementValues.positions } })
 			.populate('activeReceipt')
 			.catch(err => next({ code: 2, err }));
 
-		const updatePositionsAndActiveReceipt = [];
+		const positions = await positionsPromise;
 
-		const newProcurement = new Procurement({
-			...newProcurementValues,
-			studio: studioId,
-			member: memberId,
-			status: 'received',
-		});
+		const newProcurement = !procurementPromise
+			? new Procurement({
+					...newProcurementValues,
+					studio: studioId,
+					receivedByMember: memberId,
+					status: 'received',
+			  })
+			: await procurementPromise;
+
+		const updatePositionsAndActiveReceipt = [];
 
 		newProcurement.receipts = newProcurementValues.receipts.map(receipt => {
 			const position = positions.find(position => String(position._id) === receipt.position);
@@ -173,10 +194,15 @@ procurementsRouter.post(
 			const positionPush = {
 				receipts: newReceipt,
 			};
+			const positionPull = {};
 			const positionShopIndex = position.shops.findIndex(shop => String(shop.shop) === String(newProcurement.shop));
 
 			if (!position.activeReceipt || position.activeReceipt.current.quantity === 0) {
 				positionSet.activeReceipt = newReceipt;
+			}
+
+			if (newProcurement.status === 'expected') {
+				positionPull.deliveryIsExpected = newProcurement._id;
 			}
 
 			if (positionShopIndex !== -1) {
@@ -193,6 +219,7 @@ procurementsRouter.post(
 					$set: positionSet,
 					$inc: positionInc,
 					$push: positionPush,
+					$pull: positionPull,
 				}).catch(err => next({ code: 2, err }))
 			);
 
@@ -204,6 +231,16 @@ procurementsRouter.post(
 
 			return newReceipt;
 		});
+
+		if (newProcurement.status === 'expected') {
+			newProcurement.receivedByMember = memberId;
+			newProcurement.status = 'received';
+			newProcurement.createdAt = Date.now();
+			newProcurement.compensateCostDelivery = newProcurementValues.compensateCostDelivery;
+			newProcurement.noInvoice = newProcurementValues.noInvoice;
+			if (newProcurementValues.invoiceNumber) newProcurement.invoiceNumber = newProcurementValues.invoiceNumber;
+			if (newProcurementValues.invoiceDate) newProcurement.invoiceDate = newProcurementValues.invoiceDate;
+		}
 
 		const newProcurementErr = newProcurement.validateSync();
 
@@ -218,7 +255,14 @@ procurementsRouter.post(
 					select: 'store',
 				},
 				{
-					path: 'member',
+					path: 'orderedByMember',
+					populate: {
+						path: 'user',
+						select: 'avatar name email',
+					},
+				},
+				{
+					path: 'receivedByMember',
 					populate: {
 						path: 'user',
 						select: 'avatar name email',

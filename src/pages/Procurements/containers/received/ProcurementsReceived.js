@@ -13,7 +13,6 @@ import { FilteredComponent } from 'src/components/Loading';
 
 import { getProcurementsReceived } from 'src/actions/procurements';
 
-import Filter from './Filter';
 import ProcurementReceived from './ProcurementReceived';
 
 import styles from './ProcurementsReceived.module.css';
@@ -57,43 +56,37 @@ const ProcurementsReceived = props => {
 
 	if (!procurementsReceived.data.length || !procurementsReceived.paging.totalDocs) {
 		return (
-			<Fragment>
-				<Filter filterOptions={props.filterOptions} paging={paging} />
-				<FilteredComponent loading={isLoadingProcurementsReceived}>
-					<Empty
-						content={
-							<Fragment>
-								<Typography variant="h6" gutterBottom>
-									Ничего не нашлось
-								</Typography>
-								<Typography variant="body1" gutterBottom>
-									Попробуйте изменить параметры поиска
-								</Typography>
-							</Fragment>
-						}
-					/>
-				</FilteredComponent>
-			</Fragment>
+			<FilteredComponent loading={isLoadingProcurementsReceived}>
+				<Empty
+					content={
+						<Fragment>
+							<Typography variant="h6" gutterBottom>
+								Ничего не нашлось
+							</Typography>
+							<Typography variant="body1" gutterBottom>
+								Попробуйте изменить параметры поиска
+							</Typography>
+						</Fragment>
+					}
+				/>
+			</FilteredComponent>
 		);
 	}
 
 	return (
-		<Fragment>
-			<Filter filterOptions={props.filterOptions} paging={paging} />
-			<FilteredComponent loading={isLoadingProcurementsReceived}>
-				{procurementsReceived.data.map(month => (
-					<div className={styles.date} key={month.date}>
-						<div className={styles.dateTitle}>{moment(month.date).calendar(null, calendarFormat)}</div>
-						{month.procurements.map(procurement => (
-							<ProcurementReceived key={procurement._id} procurement={procurement} filterParams={filterParams} />
-						))}
-					</div>
-				))}
-				{procurementsReceived.paging.hasNextPage ? (
-					<LoadMoreButton page={paging.page} setPage={paging.setPage} onLoadMore={onLoadMore} loading={moreDataLoading} />
-				) : null}
-			</FilteredComponent>
-		</Fragment>
+		<FilteredComponent loading={isLoadingProcurementsReceived}>
+			{procurementsReceived.data.map(month => (
+				<div className={styles.date} key={month.date}>
+					<div className={styles.dateTitle}>{moment(month.date).calendar(null, calendarFormat)}</div>
+					{month.procurements.map(procurement => (
+						<ProcurementReceived key={procurement._id} procurement={procurement} filterParams={filterParams} />
+					))}
+				</div>
+			))}
+			{procurementsReceived.paging.hasNextPage ? (
+				<LoadMoreButton page={paging.page} setPage={paging.setPage} onLoadMore={onLoadMore} loading={moreDataLoading} />
+			) : null}
+		</FilteredComponent>
 	);
 };
 

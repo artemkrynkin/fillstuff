@@ -15,16 +15,29 @@ const DialogProcurementReceivedCreate = loadable(() =>
 
 const Index = props => {
 	const { currentStudio } = props;
+	const [dialogData, setDialogData] = useState({
+		procurementReceived: null,
+	});
+	const [dialogOpenedName, setDialogOpenedName] = useState('');
 	const [dialogs, setDialogs] = useState({
 		dialogProcurementExpectedCreate: false,
 		dialogProcurementReceivedCreate: false,
 	});
 
-	const onOpenDialogByName = dialogName => {
+	const onOpenDialogByName = (dialogName, dataType, data) => {
+		setDialogOpenedName(dialogName);
+
 		setDialogs({
 			...dialogs,
 			[dialogName]: true,
 		});
+
+		if (dataType && data) {
+			setDialogData({
+				...dialogData,
+				[dataType]: data,
+			});
+		}
 	};
 
 	const onCloseDialogByName = dialogName => {
@@ -34,6 +47,17 @@ const Index = props => {
 		});
 	};
 
+	const onExitedDialogByName = dataType => {
+		setDialogOpenedName('');
+
+		if (dataType) {
+			setDialogData({
+				...dialogData,
+				[dataType]: null,
+			});
+		}
+	};
+
 	return (
 		<Container>
 			<View onOpenDialogByName={onOpenDialogByName} {...props} />
@@ -41,12 +65,15 @@ const Index = props => {
 			<DialogProcurementExpectedCreate
 				dialogOpen={dialogs.dialogProcurementExpectedCreate}
 				onCloseDialog={() => onCloseDialogByName('dialogProcurementExpectedCreate')}
+				onExitedDialog={() => onExitedDialogByName()}
 			/>
 
 			<DialogProcurementReceivedCreate
 				dialogOpen={dialogs.dialogProcurementReceivedCreate}
 				onCloseDialog={() => onCloseDialogByName('dialogProcurementReceivedCreate')}
 				currentStudio={currentStudio}
+				onExitedDialog={() => onExitedDialogByName('procurementReceived')}
+				selectedProcurement={dialogOpenedName === 'dialogProcurementReceivedCreate' ? dialogData.procurementReceived : null}
 			/>
 		</Container>
 	);

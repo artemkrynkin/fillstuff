@@ -67,9 +67,9 @@ class ProcurementExpectedCreate extends Component {
 
 		let initialValues = {
 			shop: '',
-			estimatedDeliveryDate: undefined,
-			estimatedDeliveryTimeFrom: '',
-			estimatedDeliveryTimeTo: '',
+			deliveryDate: undefined,
+			deliveryTimeFrom: '',
+			deliveryTimeTo: '',
 			costDelivery: '',
 			pricePositions: '',
 			totalPrice: '',

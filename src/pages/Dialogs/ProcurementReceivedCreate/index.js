@@ -265,7 +265,14 @@ class ProcurementReceivedCreate extends Component {
 			initialValues.compensateCostDelivery = currentStudio.settings.procurements.compensateCostDelivery;
 		}
 
-		if (selectedProcurement) initialValues = { ...initialValues, ...selectedProcurement };
+		if (selectedProcurement) {
+			initialValues = {
+				...initialValues,
+				...selectedProcurement,
+				receipts: selectedProcurement.positions.map(position => receiptInitialValues(position)),
+				positions: [],
+			};
+		}
 
 		return (
 			<DialogStickyFR

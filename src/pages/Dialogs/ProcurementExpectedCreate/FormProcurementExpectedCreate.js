@@ -42,8 +42,8 @@ const FormProcurementExpectedCreate = props => {
 		formikProps: { errors, isSubmitting, setFieldValue, touched, values },
 	} = props;
 	const [dialogShopCreate, setDialogShopCreate] = useState(false);
-	const refDropdownEstimatedDeliveryDate = useRef(null);
-	const [dropdownEstimatedDeliveryDate, setDropdownEstimatedDeliveryDate] = useState(false);
+	const refDropdownDeliveryDate = useRef(null);
+	const [dropdownDeliveryDate, setDropdownDeliveryDate] = useState(false);
 	const [shopTempName, setShopTempName] = useState('');
 
 	const labelStyle = { width: 150 };
@@ -52,12 +52,12 @@ const FormProcurementExpectedCreate = props => {
 
 	const onCloseDialogShopCreate = () => setDialogShopCreate(false);
 
-	const onHandleDropdownEstimatedDeliveryDate = value =>
-		setDropdownEstimatedDeliveryDate(!value === null || value === undefined ? !dropdownEstimatedDeliveryDate : value);
+	const onHandleDropdownDeliveryDate = value =>
+		setDropdownDeliveryDate(!value === null || value === undefined ? !dropdownDeliveryDate : value);
 
-	const onChangeEstimatedDeliveryDate = date => {
-		setFieldValue('estimatedDeliveryDate', date);
-		onHandleDropdownEstimatedDeliveryDate(false);
+	const onChangeDeliveryDate = date => {
+		setFieldValue('deliveryDate', date);
+		onHandleDropdownDeliveryDate(false);
 	};
 
 	return (
@@ -115,10 +115,7 @@ const FormProcurementExpectedCreate = props => {
 
 				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 					<InputLabel
-						error={
-							Boolean(errors.invoiceNumber && touched.invoiceNumber) ||
-							Boolean(errors.estimatedDeliveryDate && touched.estimatedDeliveryDate)
-						}
+						error={Boolean(errors.invoiceNumber && touched.invoiceNumber) || Boolean(errors.deliveryDate && touched.deliveryDate)}
 						style={labelStyle}
 						data-inline
 					>
@@ -127,18 +124,16 @@ const FormProcurementExpectedCreate = props => {
 					<Grid wrap="nowrap" alignItems="flex-start" spacing={2} container>
 						<Grid style={{ width: 116 }} item>
 							<TextField
-								innerRef={refDropdownEstimatedDeliveryDate}
-								name="estimatedDeliveryDate"
+								innerRef={refDropdownDeliveryDate}
+								name="deliveryDate"
 								placeholder={values.noInvoice ? '-' : 'Дата'}
-								error={Boolean(errors.estimatedDeliveryDate && touched.estimatedDeliveryDate)}
-								helperText={
-									typeof errors.estimatedDeliveryDate === 'string' && touched.estimatedDeliveryDate ? errors.estimatedDeliveryDate : null
-								}
+								error={Boolean(errors.deliveryDate && touched.deliveryDate)}
+								helperText={typeof errors.deliveryDate === 'string' && touched.deliveryDate ? errors.deliveryDate : null}
 								disabled={isSubmitting}
-								value={values.estimatedDeliveryDate ? moment(values.estimatedDeliveryDate).format('DD.MM.YYYY') : ''}
+								value={values.deliveryDate ? moment(values.deliveryDate).format('DD.MM.YYYY') : ''}
 								onFocus={() => {
 									setTimeout(() => {
-										onHandleDropdownEstimatedDeliveryDate(true);
+										onHandleDropdownDeliveryDate(true);
 									}, 100);
 								}}
 								fullWidth
@@ -151,14 +146,14 @@ const FormProcurementExpectedCreate = props => {
 								</InputLabel>
 								<Grid style={{ flex: '1 1' }} item>
 									<Field
-										name="estimatedDeliveryTimeFrom"
+										name="deliveryTimeFrom"
 										as={Select}
-										error={Boolean(touched.estimatedDeliveryTimeFrom && errors.estimatedDeliveryTimeFrom)}
+										error={Boolean(touched.deliveryTimeFrom && errors.deliveryTimeFrom)}
 										onChange={({ target: { value } }) => {
-											setFieldValue('estimatedDeliveryTimeFrom', value);
+											setFieldValue('deliveryTimeFrom', value);
 
-											if (moment(value).isAfter(values.estimatedDeliveryTimeTo)) {
-												setFieldValue('estimatedDeliveryTimeTo', value);
+											if (moment(value).isAfter(values.deliveryTimeTo)) {
+												setFieldValue('deliveryTimeTo', value);
 											}
 										}}
 										renderValue={value => {
@@ -191,9 +186,9 @@ const FormProcurementExpectedCreate = props => {
 								</InputLabel>
 								<Grid style={{ flex: '1 1' }} item>
 									<Field
-										name="estimatedDeliveryTimeTo"
+										name="deliveryTimeTo"
 										as={Select}
-										error={Boolean(touched.estimatedDeliveryTimeFrom && errors.estimatedDeliveryTimeFrom)}
+										error={Boolean(touched.deliveryTimeFrom && errors.deliveryTimeFrom)}
 										renderValue={value => {
 											if (!value) return '';
 											else return moment(value).format('HH:mm');
@@ -208,7 +203,7 @@ const FormProcurementExpectedCreate = props => {
 											});
 
 											return (
-												<MenuItem key={index} value={date.format()} hidden={date.isSameOrBefore(values.estimatedDeliveryTimeFrom)}>
+												<MenuItem key={index} value={date.format()} hidden={date.isSameOrBefore(values.deliveryTimeFrom)}>
 													{date.format('HH:mm')}
 												</MenuItem>
 											);
@@ -311,9 +306,9 @@ const FormProcurementExpectedCreate = props => {
 			/>
 
 			<Dropdown
-				anchor={refDropdownEstimatedDeliveryDate}
-				open={dropdownEstimatedDeliveryDate}
-				onClose={() => onHandleDropdownEstimatedDeliveryDate(false)}
+				anchor={refDropdownDeliveryDate}
+				open={dropdownDeliveryDate}
+				onClose={() => onHandleDropdownDeliveryDate(false)}
 				placement="bottom"
 				disablePortal={false}
 			>
@@ -322,8 +317,8 @@ const FormProcurementExpectedCreate = props => {
 						views={['date']}
 						displayStaticWrapperAs="desktop"
 						reduceAnimations
-						value={values.estimatedDeliveryDate}
-						onChange={onChangeEstimatedDeliveryDate}
+						value={values.deliveryDate}
+						onChange={onChangeDeliveryDate}
 						leftArrowButtonProps={{
 							size: 'small',
 						}}

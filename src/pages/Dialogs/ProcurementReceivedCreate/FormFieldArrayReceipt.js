@@ -25,7 +25,7 @@ const FormFieldArrayReceipt = props => {
 		index,
 		formEditable,
 		arrayHelpers: { remove },
-		formikProps: { errors, isSubmitting, setFieldValue, touched },
+		formikProps: { errors, isSubmitting, values, setFieldValue, touched },
 	} = props;
 	const sellingPriceFieldRef = useRef(null);
 
@@ -46,7 +46,7 @@ const FormFieldArrayReceipt = props => {
 						style={{ marginBottom: 15 }}
 					/>
 				</Grid>
-				{formEditable ? (
+				{formEditable && values.status !== 'expected' ? (
 					<Grid className={styles.removeReceipt} item>
 						<IconButton className={styles.removeReceiptButton} onClick={() => remove(index)} tabIndex={-1}>
 							<FontAwesomeIcon icon={['fal', 'times']} />

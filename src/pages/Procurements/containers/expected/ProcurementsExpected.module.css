@@ -1,0 +1,110 @@
+.container {
+  margin-bottom: 24px;
+}
+
+.wrapOverflow {
+  margin: 0 -8px;
+}
+
+.sliderWrapScroll {
+  scroll-snap-type: x mandatory;
+}
+
+.sliderWrapContent {
+  display: flex;
+}
+
+.sliderArrowLeft,
+.sliderArrowRight {
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  box-shadow: 0 1px 5px 0 rgba(var(--c-rgb-bg-600), 0.2), 0 2px 2px 0 rgba(var(--c-rgb-bg-600), 0.14), 0 3px 1px -2px rgba(var(--c-rgb-bg-600), 0.12);
+  bottom: 0;
+  font-size: 24px;
+  margin: auto 0;
+  height: 30px;
+  opacity: 0;
+  position: absolute;
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, opacity 150ms ease-out, visibility 150ms ease-out;
+  top: 0;
+  visibility: hidden;
+  width: 30px;
+  z-index: 3;
+}
+
+.sliderArrowLeft:hover,
+.sliderArrowRight:hover {
+  background-color: white;
+  box-shadow: 0 2px 4px -1px rgba(var(--c-rgb-bg-600), 0.2), 0 4px 5px 0 rgba(var(--c-rgb-bg-600), 0.14), 0 1px 10px 0 rgba(var(--c-rgb-bg-600), 0.12)
+}
+
+.sliderArrowLeft {
+  left: 8px;
+  padding-right: 2px;
+}
+
+.sliderArrowRight {
+  right: 8px;
+  padding-left: 2px;
+}
+
+.sliderContainer:hover:global(.scroll-left) .sliderArrowLeft,
+.sliderContainer:hover:global(.scroll-right) .sliderArrowRight,
+.sliderContainer:hover:global(.scroll-both) .sliderArrowLeft,
+.sliderContainer:hover:global(.scroll-both) .sliderArrowRight {
+  opacity: 1;
+  visibility: visible;
+}
+
+.sliderArrowShadowLeft,
+.sliderArrowShadowRight {
+  bottom: 0;
+  margin: auto 0;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  width: 40px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.sliderArrowShadowLeft:before,
+.sliderArrowShadowRight:before {
+  content: '';
+  height: 100%;
+  position: absolute;
+  transition: box-shadow 150ms ease-out;
+  width: 16px
+}
+
+.sliderArrowShadowLeft {
+  left: -8px;
+}
+
+.sliderArrowShadowLeft:before {
+  left: -8px;
+}
+
+.sliderArrowShadowLeft:before {
+  box-shadow: 0 0 0 0 var(--c-hex-br-4);
+  left: -16px;
+}
+
+.sliderArrowShadowRight {
+  right: -8px;
+}
+
+.sliderArrowShadowRight:before {
+  box-shadow: 0 0 0 0 var(--c-hex-br-4);
+  right: -16px;
+}
+
+.sliderContainer:global(.scroll-left) .sliderArrowShadowLeft:before,
+.sliderContainer:global(.scroll-both) .sliderArrowShadowLeft:before {
+  box-shadow: 7px 0 10px 3px var(--c-hex-br-4);
+}
+
+.sliderContainer:global(.scroll-right) .sliderArrowShadowRight:before,
+.sliderContainer:global(.scroll-both) .sliderArrowShadowRight:before {
+  box-shadow: -7px 0 10px 3px var(--c-hex-br-4);
+}

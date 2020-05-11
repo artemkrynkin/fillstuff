@@ -11,7 +11,7 @@ import Positions from './Positions';
 
 import styles from './View.module.css';
 
-import emptyImage from 'public/img/stubs/procurements.svg';
+import emptyImage from 'public/img/stubs/availability.svg';
 
 const View = props => {
 	const {

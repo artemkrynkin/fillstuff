@@ -28,13 +28,13 @@ const Procurement = props => {
 							{!procurement.noInvoice ? (
 								<div>
 									<span>№</span>
-									{procurement.number} от {moment(procurement.date).format('DD.MM.YYYY')}
+									{procurement.invoiceNumber} от {moment(procurement.invoiceDate).format('DD.MM.YYYY')}
 								</div>
 							) : (
 								'Чек/накладная отсутствует'
 							)}
 						</div>
-						<AvatarTitle imageSrc={procurement.member.user.avatar} title={procurement.member.user.name} />
+						<AvatarTitle imageSrc={procurement.receivedByMember.user.avatar} title={procurement.receivedByMember.user.name} />
 					</Grid>
 					<Grid xs={6} item>
 						<div className={styles.indicatorsTitle}>

@@ -61,7 +61,7 @@ const Receipt = props => {
 						{!receipt.procurement.noInvoice ? (
 							<div>
 								<span>№</span>
-								{receipt.procurement.number}
+								{receipt.procurement.invoiceNumber}
 							</div>
 						) : (
 							'Чек/накладная отсутствует'

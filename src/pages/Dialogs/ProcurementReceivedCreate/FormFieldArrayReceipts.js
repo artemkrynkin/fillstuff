@@ -17,10 +17,10 @@ const DialogPositionCreate = loadable(() =>
 	import('src/pages/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateEdit" */)
 );
 
-const addPositionContainerClasses = formEditable =>
+const addPositionContainerClasses = (formEditable, status) =>
 	ClassNames({
 		[styles.addPositionContainer]: true,
-		[styles.disabled]: !formEditable,
+		[styles.disabled]: !formEditable || status === 'expected',
 	});
 
 const FormFieldArrayReceipts = props => {
@@ -53,7 +53,7 @@ const FormFieldArrayReceipts = props => {
 	return (
 		<div className={styles.receipts}>
 			<div className="sentinel-topAddPositionContainer" />
-			<div className={addPositionContainerClasses(formEditable)}>
+			<div className={addPositionContainerClasses(formEditable, values.status)}>
 				<div className={styles.addPositionWrap}>
 					<Grid alignItems="flex-start" spacing={2} container>
 						<Grid style={{ flex: '1 1' }} item>

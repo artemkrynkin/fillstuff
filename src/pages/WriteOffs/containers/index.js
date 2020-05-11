@@ -56,9 +56,9 @@ const Index = props => {
 
 			<DialogWriteOffCancel
 				dialogOpen={dialogs.dialogWriteOffCancel}
-				onCloseDialog={() => onCloseDialogByName(false)}
+				onCloseDialog={() => onCloseDialogByName('dialogWriteOffCancel')}
 				onExitedDialog={() => onExitedDialogByName('writeOff')}
-				selectedInvoice={dialogOpenedName === 'dialogWriteOffCancel' ? dialogData.writeOff : null}
+				selectedWriteOff={dialogOpenedName === 'dialogWriteOffCancel' ? dialogData.writeOff : null}
 			/>
 		</Container>
 	);

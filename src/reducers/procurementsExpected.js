@@ -37,6 +37,24 @@ const procurementsExpected = (
 				data: stateData,
 			};
 		}
+		case 'CANCEL_PROCUREMENT_EXPECTED': {
+			let stateData;
+
+			if (state.data) {
+				stateData = { ...state }.data;
+
+				const procurementIndex = stateData.data.findIndex(procurement => procurement._id === action.payload.procurementId);
+
+				stateData.data.splice(procurementIndex, 1);
+				stateData.paging.totalCount -= 1;
+			}
+
+			return {
+				...state,
+				isFetching: false,
+				data: stateData,
+			};
+		}
 		case 'UNAUTHORIZED_USER': {
 			return {
 				...state,

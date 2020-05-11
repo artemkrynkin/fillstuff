@@ -1,0 +1,65 @@
+.container {
+  scroll-snap-align: center;
+  flex: 0 0 auto;
+  padding: 8px;
+  width: 32%;
+}
+
+.card {
+  cursor: pointer;
+  position: relative;
+  transition: box-shadow 150ms ease-out;
+}
+
+.card:hover {
+  box-shadow: 0 1px 8px 0 rgba(84, 110, 122, 0.2), 0 3px 4px 0 rgba(84, 110, 122, 0.14), 0 3px 3px -2px rgba(84, 110, 122, 0.12);
+}
+
+.actionButton {
+  color: var(--c-hex-bg-200);
+  position: absolute;
+  padding: 4px;
+  right: 10px;
+  top: 10px;
+}
+
+.actionButtonActive {
+  color: var(--c-hex-bg-300);
+}
+
+.deliveryDate {
+  color: var(--c-hex-bg-600);
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+.user {
+  margin-bottom: 16px;
+}
+
+.totalPrice {
+  color: var(--c-hex-bg-700);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.infoItem {
+  color: var(--c-hex-bg-300);
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 7px;
+  max-width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.infoItem:not(:first-child):before {
+  color: var(--c-hex-bg-400);
+  content: '\00a0· ';
+}
+
+.procurementReceived {
+  margin-left: auto;
+}

@@ -46,7 +46,7 @@ const Position = props => {
 						name={position.name}
 						characteristics={position.characteristics}
 						archivedAfterEnded={position.archivedAfterEnded}
-						deliveryIsExpected={position.deliveryIsExpected}
+						deliveryIsExpected={Boolean(position.deliveryIsExpected.length)}
 					/>
 				</Link>
 			</TableCell>

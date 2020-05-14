@@ -13,6 +13,10 @@ const DialogProcurementExpectedEdit = loadable(() =>
 	import('src/pages/Dialogs/ProcurementExpectedCreateEdit' /* webpackChunkName: "Dialog_ProcurementExpectedCreateEdit" */)
 );
 
+const DialogProcurementExpectedCancel = loadable(() =>
+	import('src/pages/Dialogs/ProcurementExpectedCancel' /* webpackChunkName: "Dialog_ProcurementExpectedCancel" */)
+);
+
 const DialogProcurementReceivedCreate = loadable(() =>
 	import('src/pages/Dialogs/ProcurementReceivedCreate' /* webpackChunkName: "Dialog_ProcurementReceivedCreate" */)
 );
@@ -27,6 +31,7 @@ const Index = props => {
 	const [dialogs, setDialogs] = useState({
 		dialogProcurementExpectedCreate: false,
 		dialogProcurementExpectedEdit: false,
+		dialogProcurementExpectedCancel: false,
 		dialogProcurementReceivedCreate: false,
 	});
 
@@ -81,6 +86,13 @@ const Index = props => {
 				onCloseDialog={() => onCloseDialogByName('dialogProcurementExpectedEdit')}
 				onExitedDialog={() => onExitedDialogByName('procurementExpected')}
 				selectedProcurement={dialogOpenedName === 'dialogProcurementExpectedEdit' ? dialogData.procurementExpected : null}
+			/>
+
+			<DialogProcurementExpectedCancel
+				dialogOpen={dialogs.dialogProcurementExpectedCancel}
+				onCloseDialog={() => onCloseDialogByName('dialogProcurementExpectedCancel')}
+				onExitedDialog={() => onExitedDialogByName('procurementExpected')}
+				selectedProcurement={dialogOpenedName === 'dialogProcurementExpectedCancel' ? dialogData.procurementExpected : null}
 			/>
 
 			<DialogProcurementReceivedCreate

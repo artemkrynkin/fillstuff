@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react';
-import { connect } from 'react-redux';
 import ClassNames from 'classnames';
 import moment from 'moment';
 
@@ -15,8 +14,6 @@ import Money from 'src/components/Money';
 import MenuItem from 'src/components/MenuItem';
 import Dropdown from 'src/components/Dropdown';
 import AvatarTitle from 'src/components/AvatarTitle';
-
-import { cancelProcurementExpected } from 'src/actions/procurements';
 
 import styles from './ProcurementExpected.module.css';
 
@@ -100,7 +97,7 @@ const ProcurementExpected = props => {
 					<MenuItem
 						onClick={() => {
 							onHandleDropdownActions();
-							props.cancelProcurementExpected(procurement._id);
+							onOpenDialogProcurement('dialogProcurementExpectedCancel', 'procurementExpected', procurement);
 						}}
 						iconBefore={<FontAwesomeIcon icon={['far', 'undo']} />}
 						destructive
@@ -113,10 +110,4 @@ const ProcurementExpected = props => {
 	);
 };
 
-const mapDispatchToProps = dispatch => {
-	return {
-		cancelProcurementExpected: procurementId => dispatch(cancelProcurementExpected({ params: { procurementId } })),
-	};
-};
-
-export default connect(null, mapDispatchToProps)(ProcurementExpected);
+export default ProcurementExpected;

@@ -5,6 +5,10 @@ import Container from '@material-ui/core/Container';
 
 import View from './View';
 
+const DialogProcurementExpectedView = loadable(() =>
+	import('src/pages/Dialogs/ProcurementExpectedView' /* webpackChunkName: "Dialog_ProcurementExpectedView" */)
+);
+
 const DialogProcurementExpectedCreate = loadable(() =>
 	import('src/pages/Dialogs/ProcurementExpectedCreateEdit' /* webpackChunkName: "Dialog_ProcurementExpectedCreateEdit" */)
 );
@@ -29,6 +33,7 @@ const Index = props => {
 	});
 	const [dialogOpenedName, setDialogOpenedName] = useState('');
 	const [dialogs, setDialogs] = useState({
+		dialogProcurementExpectedView: false,
 		dialogProcurementExpectedCreate: false,
 		dialogProcurementExpectedEdit: false,
 		dialogProcurementExpectedCancel: false,
@@ -72,6 +77,14 @@ const Index = props => {
 	return (
 		<Container>
 			<View onOpenDialogByName={onOpenDialogByName} {...props} />
+
+			<DialogProcurementExpectedView
+				dialogOpen={dialogs.dialogProcurementExpectedView}
+				onCloseDialog={() => onCloseDialogByName('dialogProcurementExpectedView')}
+				onExitedDialog={() => onExitedDialogByName()}
+				selectedProcurement={dialogOpenedName === 'dialogProcurementExpectedView' ? dialogData.procurementExpected : null}
+				onOpenDialogByName={onOpenDialogByName}
+			/>
 
 			<DialogProcurementExpectedCreate
 				type="create"

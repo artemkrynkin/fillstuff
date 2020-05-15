@@ -31,9 +31,19 @@ const ProcurementExpected = props => {
 	const timeFrom = moment(procurement.deliveryTimeFrom).format('HH:mm');
 	const timeTo = moment(procurement.deliveryTimeTo).format('HH:mm');
 
+	const openViewDialog = event => {
+		if (
+			event.target.closest('.' + styles.actionButton) &&
+			event.target.closest('.' + styles.actionButton).classList.contains(styles.actionButton)
+		)
+			return;
+
+		onOpenDialogProcurement('dialogProcurementExpectedView', 'procurementExpected', procurement);
+	};
+
 	return (
 		<div className={styles.container}>
-			<CardPaper className={styles.card} header={false} elevation={1}>
+			<CardPaper className={styles.card} onClick={openViewDialog} header={false} elevation={1}>
 				<IconButton
 					ref={refDropdownActions}
 					className={ClassNames({

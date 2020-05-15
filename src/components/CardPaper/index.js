@@ -8,7 +8,7 @@ import Paper from '@material-ui/core/Paper';
 import styles from './index.module.css';
 
 const CardPaper = props => {
-	const { className, elevation, header, leftContent, rightContent, title, customRightColumn, style, children } = props;
+	const { className, elevation, header, leftContent, rightContent, title, customRightColumn, style, children, ...remainingProps } = props;
 
 	const classes = ClassNames({
 		...Object.fromEntries(
@@ -21,7 +21,7 @@ const CardPaper = props => {
 	});
 
 	return (
-		<Paper className={classes} elevation={elevation} style={style}>
+		<Paper className={classes} elevation={elevation} style={style} {...remainingProps}>
 			{header ? (
 				<Grid className={styles.header} container>
 					{leftContent && title ? <div className={styles.title}>{leftContent}</div> : leftContent}

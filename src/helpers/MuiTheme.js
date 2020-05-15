@@ -555,6 +555,11 @@ export const BliksideTheme = createMuiTheme({
 			outlinedPrimary: {
 				color: `rgba(${ColorConvert.hex.rgb(theme.teal.cT100)}, 0.8)`,
 			},
+			iconSizeSmall: {
+				'& > *:first-child': {
+					fontSize: 14,
+				},
+			},
 			iconSizeMedium: {
 				'& > *:first-child': {
 					fontSize: 16,

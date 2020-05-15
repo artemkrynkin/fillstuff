@@ -1,0 +1,31 @@
+.headerActions {
+  margin: -3px 0;
+  padding-right: 26px;
+}
+
+.otherActionsButton {
+  color: rgba(var(--c-rgb-bg-300), 0.8);
+  height: 36px;
+  margin-left: auto;
+  padding: 6px;
+  width: 36px;
+}
+
+.otherActionsButton:hover,
+.otherActionsButtonActive {
+  color: var(--c-hex-bg-300);
+}
+
+.positionsItems {}
+
+.positionItem {
+  border-bottom: 1px solid var(--c-hex-br-5);
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+}
+
+.positionItem:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}

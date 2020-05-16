@@ -49,9 +49,7 @@ const PositionDetails = props => {
 			</DefinitionList>
 
 			{position.characteristics.length || position.shops.length ? (
-				<div>
-					<Divider style={{ margin: '20px 0' }} />
-
+				<div style={{ marginTop: 40 }}>
 					<Typography variant="h6" gutterBottom>
 						Информация для закупок
 					</Typography>

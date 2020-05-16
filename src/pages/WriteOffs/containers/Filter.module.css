@@ -62,9 +62,10 @@
   color: var(--c-hex-bg-300);
   border-radius: 4px;
   font-size: 13px;
+  height: 32px;
   margin: 4px;
-  padding: 10px 11px 9px;
   transition: background-color 50ms ease-out, color 50ms ease-out;
+  width: 32px;
 }
 
 .filterButtonOnlyCanceled:hover {

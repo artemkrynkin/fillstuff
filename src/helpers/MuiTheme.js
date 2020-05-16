@@ -831,7 +831,7 @@ export const BliksideTheme = createMuiTheme({
 		},
 		MuiDialogTitle: {
 			root: {
-				padding: '17px 20px',
+				padding: '16px 20px',
 			},
 		},
 		MuiDialogContent: {

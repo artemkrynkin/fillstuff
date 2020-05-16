@@ -23,7 +23,9 @@
   top: 10px;
 }
 
-.actionButtonActive {
+.actionButtonActive,
+.actionButtonActive:hover {
+  background-color: rgba(var(--c-rgb-bg-100), 0.4);
   color: var(--c-hex-bg-300);
 }
 

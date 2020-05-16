@@ -5,7 +5,6 @@
 
 .titlePrimary {
   background-color: var(--c-hex-t-300);
-  border-bottom: 1px solid var(--c-hex-t-100);
   color: white;
 }
 
@@ -40,7 +39,6 @@
 .titleText {
   font-size: 18px;
   font-weight: 500;
-  line-height: 1.2;
 }
 
 .titleTextCenter {
@@ -61,18 +59,17 @@
 
 .close {
   bottom: 0;
-  height: 36px;
+  height: 32px;
   margin: auto 0;
-  padding: 6px;
+  padding: 0;
   position: absolute;
   right: 10px;
   top: 0;
-  width: 36px;
+  width: 32px;
 }
 
 .close svg {
-  font-size: 22px;
-  width: 22px !important;
+  width: 20px !important;
 }
 
 .titlePrimary .close {
@@ -93,4 +90,9 @@
 .titleNoTheme .close:hover,
 .titleNoContent .close:hover {
   color: var(--c-hex-bg-300);
+}
+
+.titleNoTheme .close {
+  bottom: auto;
+  top: 10px;
 }

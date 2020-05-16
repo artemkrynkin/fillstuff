@@ -40,10 +40,11 @@
 
 .cancelWriteOffButton {
   color: var(--c-hex-bg-200);
-  padding: 11px;
+  height: 32px;
+  padding: 0;
   opacity: 0;
   transition: color 150ms ease-out, opacity 150ms ease-out;
-  width: 36px;
+  width: 32px;
 }
 
 .cancelWriteOffButton:hover {

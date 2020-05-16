@@ -95,14 +95,21 @@ const FormFieldArrayPositions = props => {
 			{values.positions.length ? (
 				<div className={styles.positionsItems}>
 					{values.positions.map((position, index) => (
-						<Grid className={styles.positionItem} key={position._id} wrap="nowrap" alignItems="center" container>
-							<Grid style={{ flex: '1 1' }} zeroMinWidth item>
-								<PositionNameInList name={position.name} characteristics={position.characteristics} size="md" />
+						<Grid className={styles.positionItem} key={position._id} wrap="nowrap" alignItems="baseline" container>
+							<Grid className={styles.positionItemNumber} item>
+								{index + 1}
 							</Grid>
-							<Grid className={styles.removePosition} item>
-								<IconButton className={styles.removePositionButton} onClick={() => remove(index)} tabIndex={-1}>
-									<FontAwesomeIcon icon={['fal', 'times']} />
-								</IconButton>
+							<Grid className={styles.positionItemContent} style={{ flex: '1 1' }} zeroMinWidth item>
+								<Grid wrap="nowrap" alignItems="flex-start" container>
+									<Grid style={{ flex: '1 1' }} zeroMinWidth item>
+										<PositionNameInList name={position.name} characteristics={position.characteristics} size="md" />
+									</Grid>
+									<Grid className={styles.removePosition} item>
+										<IconButton className={styles.removePositionButton} onClick={() => remove(index)} tabIndex={-1}>
+											<FontAwesomeIcon icon={['fal', 'times']} />
+										</IconButton>
+									</Grid>
+								</Grid>
 							</Grid>
 						</Grid>
 					))}

@@ -74,8 +74,18 @@ const ProcurementReceived = props => {
 										style={{ display: 'inline-block' }}
 									>
 										<div className={styles.users}>
-											<AvatarTitle className={styles.user} imageSrc={procurement.orderedByMember.user.avatar} />
-											<AvatarTitle className={styles.user} imageSrc={procurement.receivedByMember.user.avatar} />
+											<AvatarTitle
+												classNames={{
+													container: styles.user,
+												}}
+												imageSrc={procurement.orderedByMember.user.avatar}
+											/>
+											<AvatarTitle
+												classNames={{
+													container: styles.user,
+												}}
+												imageSrc={procurement.receivedByMember.user.avatar}
+											/>
 										</div>
 									</Tooltip>
 								</div>

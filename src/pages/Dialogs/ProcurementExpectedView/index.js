@@ -10,7 +10,6 @@ import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import MenuList from '@material-ui/core/MenuList';
 import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
 
 import { formatNumber } from 'shared/utils';
 
@@ -73,6 +72,10 @@ const ProcurementExpectedView = props => {
 						term="Заказал"
 						value={
 							<AvatarTitle
+								classNames={{
+									image: styles.avatarImage,
+									title: styles.avatarTitle,
+								}}
 								imageSrc={selectedProcurement.orderedByMember.user.avatar}
 								title={selectedProcurement.orderedByMember.user.name}
 							/>
@@ -115,16 +118,17 @@ const ProcurementExpectedView = props => {
 					/>
 				</DefinitionList>
 
-				<Divider style={{ margin: '20px 0' }} />
-
-				<Typography variant="h6" gutterBottom>
+				<Typography variant="h6" style={{ marginTop: 40 }} gutterBottom>
 					Заказанные позиции
 				</Typography>
 				{selectedProcurement.positions.length ? (
-					<div className={styles.positionsItems}>
+					<div>
 						{selectedProcurement.positions.map((position, index) => (
 							<Grid className={styles.positionItem} key={position._id} wrap="nowrap" alignItems="baseline" container>
-								<Grid style={{ flex: '1 1' }} zeroMinWidth item>
+								<Grid className={styles.positionItemNumber} item>
+									{index + 1}
+								</Grid>
+								<Grid className={styles.positionItemContent} style={{ flex: '1 1' }} zeroMinWidth item>
 									<PositionNameInList name={position.name} characteristics={position.characteristics} size="md" />
 								</Grid>
 							</Grid>

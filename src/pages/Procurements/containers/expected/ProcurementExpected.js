@@ -59,7 +59,9 @@ const ProcurementExpected = props => {
 					{deliveryDate} с {timeFrom} до {timeTo}
 				</div>
 				<AvatarTitle
-					className={styles.user}
+					classNames={{
+						container: styles.user,
+					}}
 					imageSrc={procurement.orderedByMember.user.avatar}
 					title={procurement.orderedByMember.user.name}
 				/>

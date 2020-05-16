@@ -17,7 +17,13 @@ const Payment = props => {
 	return (
 		<TableRow>
 			<TableCell>
-				<AvatarTitle className={styles.avatar} imageSrc={payment.merchant.user.avatar} title={payment.merchant.user.name} />
+				<AvatarTitle
+					classNames={{
+						container: styles.avatar,
+					}}
+					imageSrc={payment.merchant.user.avatar}
+					title={payment.merchant.user.name}
+				/>
 			</TableCell>
 			<TableCell>{moment(payment.date).format('DD MMMM YYYY')}</TableCell>
 			<TableCell />

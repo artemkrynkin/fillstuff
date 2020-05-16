@@ -84,9 +84,11 @@ class DialogInvoicePaymentCreate extends Component {
 								<Grid className={styles.header} alignItems="center" direction="column" container>
 									<Grid item>
 										<AvatarTitle
-											className={styles.avatar}
+											classNames={{
+												container: styles.avatar,
+												image: styles.avatarImage,
+											}}
 											imageSrc={selectedInvoice.member.user.avatar}
-											imageStyle={{ height: 90, width: 90 }}
 										/>
 										<Typography className={styles.name} variant="h6">
 											{selectedInvoice.member.user.name}

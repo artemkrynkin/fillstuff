@@ -9,11 +9,12 @@ import Grid from '@material-ui/core/Grid';
 import styles from './index.module.css';
 
 const AvatarTitle = props => {
-	const { style, imageSrc, imageStyle, title, className } = props;
+	const { imageSrc, title } = props;
+	const classNames = { ...props.classNamesInitial, ...props.classNames };
 
-	const classes = ClassNames({
+	const classesContainer = ClassNames({
 		...Object.fromEntries(
-			className
+			classNames.container
 				.split(' ')
 				.filter(val => val)
 				.map(key => [key, true])
@@ -21,16 +22,36 @@ const AvatarTitle = props => {
 		[styles.container]: true,
 	});
 
+	const classesImage = ClassNames({
+		...Object.fromEntries(
+			classNames.image
+				.split(' ')
+				.filter(val => val)
+				.map(key => [key, true])
+		),
+		[styles.image]: true,
+	});
+
+	const classesTitle = ClassNames({
+		...Object.fromEntries(
+			classNames.title
+				.split(' ')
+				.filter(val => val)
+				.map(key => [key, true])
+		),
+		[styles.title]: true,
+	});
+
 	return (
-		<div className={classes} style={{ ...style }}>
-			<Avatar className={styles.image} src={imageSrc} alt={title} style={{ ...imageStyle }}>
+		<div className={classesContainer}>
+			<Avatar className={classesImage} src={imageSrc} alt={title}>
 				<div className={styles.userIcon}>
 					<FontAwesomeIcon icon={['fas', 'user-alt']} />
 				</div>
 			</Avatar>
 			{title ? (
 				<Grid className={styles.details} alignItems="flex-end" container>
-					<div className={styles.title}>{title}</div>
+					<div className={classesTitle}>{title}</div>
 				</Grid>
 			) : null}
 		</div>
@@ -38,12 +59,20 @@ const AvatarTitle = props => {
 };
 
 AvatarTitle.defaultProps = {
-	className: '',
+	classNamesInitial: {
+		container: '',
+		image: '',
+		title: '',
+	},
 };
 
 AvatarTitle.propTypes = {
+	classNames: PropTypes.shape({
+		container: PropTypes.string,
+		image: PropTypes.string,
+		title: PropTypes.string,
+	}),
 	imageSrc: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-	imageStyle: PropTypes.object,
 	title: PropTypes.string,
 };
 

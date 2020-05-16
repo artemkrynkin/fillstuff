@@ -39,14 +39,27 @@
 }
 
 .receiptItem {
-  border-bottom: 1px solid var(--c-hex-br-5);
   margin-bottom: 12px;
-  padding-bottom: 20px;
 }
 
 .receiptItem:last-child {
-  border-bottom: none;
   margin-bottom: 0;
+}
+
+.receiptItemNumber {
+  color: var(--c-hex-bg-300);
+  font-size: 14px;
+  font-weight: 600;
+  width: 35px;
+}
+
+.receiptItemContent {
+  border-bottom: 1px solid var(--c-hex-br-5);
+  padding-bottom: 20px;
+}
+
+.receiptItem:last-child .receiptItemContent {
+  border-bottom: none;
   padding-bottom: 0;
 }
 
@@ -55,7 +68,8 @@
 }
 
 .removeReceiptButton {
-  padding: 6px;
+  height: 32px;
+  padding: 0;
   width: 32px;
 }
 

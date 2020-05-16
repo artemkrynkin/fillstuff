@@ -7,6 +7,11 @@
   margin-bottom: 10px;
 }
 
+.avatarImage {
+  height: 90px;
+  width: 90px;
+}
+
 .name {
   margin-bottom: 20px;
 }

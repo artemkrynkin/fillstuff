@@ -93,7 +93,7 @@ const Position = props => {
 					})}
 					onClick={() => onHandleDropdownActions()}
 				>
-					<FontAwesomeIcon icon={['far', 'ellipsis-h']} />
+					<FontAwesomeIcon icon={['far', 'ellipsis-v']} />
 				</IconButton>
 			</TableCell>
 

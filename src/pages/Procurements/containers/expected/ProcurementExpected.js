@@ -53,7 +53,7 @@ const ProcurementExpected = props => {
 					onClick={() => onHandleDropdownActions()}
 					size="small"
 				>
-					<FontAwesomeIcon icon={['far', 'ellipsis-h']} />
+					<FontAwesomeIcon icon={['far', 'ellipsis-v']} />
 				</IconButton>
 				<div className={styles.deliveryDate}>
 					{deliveryDate} с {timeFrom} до {timeTo}

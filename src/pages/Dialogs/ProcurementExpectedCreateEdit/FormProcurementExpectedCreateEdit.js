@@ -164,7 +164,7 @@ const FormProcurementExpectedCreateEdit = props => {
 										fullWidth
 									>
 										{times.map((time, index) => {
-											const date = moment(new Date()).set({
+											const date = moment(values.deliveryDate || new Date()).set({
 												hour: time.hour,
 												minute: time.minute,
 												second: 0,
@@ -197,7 +197,7 @@ const FormProcurementExpectedCreateEdit = props => {
 										fullWidth
 									>
 										{times.map((time, index) => {
-											const date = moment(new Date()).set({
+											const date = moment(values.deliveryDate || new Date()).set({
 												hour: time.hour,
 												minute: time.minute,
 												second: 0,

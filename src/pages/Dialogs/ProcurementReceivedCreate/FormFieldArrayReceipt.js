@@ -12,10 +12,13 @@ import { formatNumber } from 'shared/utils';
 
 import { formError, formErrorHelperText } from 'src/helpers/utils';
 
-import NumberFormat, { moneyInputFormatProps, currencyMoneyFormatProps } from 'src/components/NumberFormat';
+import NumberFormat, {
+	moneyInputFormatProps,
+	// currencyMoneyFormatProps
+} from 'src/components/NumberFormat';
 import PositionNameInList from 'src/components/PositionNameInList';
-import Tooltip from 'src/components/Tooltip';
-import { DefinitionList, DefinitionListItem } from 'src/components/Definition';
+// import Tooltip from 'src/components/Tooltip';
+// import { DefinitionList, DefinitionListItem } from 'src/components/Definition';
 
 import styles from './index.module.css';
 

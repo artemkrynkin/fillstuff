@@ -25,7 +25,7 @@ class DialogReceiptCreate extends Component {
 	};
 
 	initialState = {
-		checkSellingPrice: false,
+		checkSellingPrice: true,
 	};
 
 	state = this.initialState;
@@ -64,7 +64,7 @@ class DialogReceiptCreate extends Component {
 			if (!isNaN(quantity)) newReceipt.initial.quantity = quantity;
 			if (!isNaN(quantityPackages)) newReceipt.initial.quantityPackages = quantityPackages;
 
-			this.props.createReceipt({ receipt: newReceipt }).then(response => {
+			await this.props.createReceipt({ receipt: newReceipt }).then(response => {
 				if (onCallback !== undefined) onCallback(response);
 
 				actions.setSubmitting(false);
@@ -89,8 +89,8 @@ class DialogReceiptCreate extends Component {
 	onEnterDialog = () => {
 		const { selectedPosition } = this.props;
 
-		if (selectedPosition) {
-			this.setState({ checkSellingPrice: selectedPosition.isFree });
+		if (selectedPosition && !selectedPosition.isFree) {
+			this.setState({ checkSellingPrice: false });
 		}
 	};
 

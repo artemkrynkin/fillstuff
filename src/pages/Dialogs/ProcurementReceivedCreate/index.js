@@ -211,7 +211,7 @@ class ProcurementReceivedCreate extends Component {
 				return newReceipt;
 			});
 
-			this.props.createProcurementReceived(procurement).then(response => {
+			await this.props.createProcurementReceived(procurement).then(response => {
 				actions.setSubmitting(false);
 
 				if (response.status === 'success') {

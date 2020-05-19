@@ -10,11 +10,12 @@
   padding: 14px 20px 12px 15px;
   position: absolute;
   right: 0;
+  transition: color 150ms ease-out;
   top: 0;
 }
 
 .searchTextFieldClear:hover {
-  color: var(--c-hex-t-300);
+  color: var(--c-hex-bg-600);
 }
 
 .selectedPositions {

@@ -19,9 +19,10 @@ import { memberRoleTransform } from 'shared/roles-access-rights';
 
 import { weekActive, monthActive, paginationCalendarFormat } from 'src/components/Pagination/utils';
 import Dropdown from 'src/components/Dropdown';
+import Tooltip from 'src/components/Tooltip';
 import MenuItem from 'src/components/MenuItem';
 
-import { FilterSearchTextField } from './Filter.styles';
+import { FilterSearchTextField, IconButtonRed } from './Filter.styles';
 import styles from './Filter.module.css';
 
 const statusList = ['all', 'unpaid', 'partially-paid', 'paid'];
@@ -131,9 +132,9 @@ const FormFilter = props => {
 
 	return (
 		<Form>
-			<Grid container>
+			<div className={styles.bottomContainer}>
 				{/* Filter Date */}
-				<Grid item>
+				<div className={styles.bottomContainerItem}>
 					<ButtonBase
 						ref={refDropdownDate}
 						className={styles.filterButtonLink}
@@ -161,38 +162,71 @@ const FormFilter = props => {
 						) : (
 							'Некорректная дата'
 						)}
-						<FontAwesomeIcon icon={['far', 'angle-down']} />
+						{!values.dateStartView && !values.dateEndView ? <FontAwesomeIcon icon={['far', 'angle-down']} /> : null}
 					</ButtonBase>
-				</Grid>
+					{values.dateStartView || values.dateEndView ? (
+						<ButtonBase
+							onClick={() => onChangeFilterDate('allTime', setFieldValue, submitForm)}
+							className={styles.filterButtonLinkReset}
+							tabIndex={-1}
+						>
+							<FontAwesomeIcon icon={['fal', 'times']} />
+						</ButtonBase>
+					) : null}
+				</div>
 
 				{/* Filter Status */}
-				<Grid item>
+				<div className={styles.bottomContainerItem}>
 					<ButtonBase ref={refDropdownStatus} className={styles.filterButtonLink} onClick={() => handlerDropdown('dropdownStatus')}>
 						<span>{FilterStatusTransform(values.status)}</span>
-						<FontAwesomeIcon icon={['far', 'angle-down']} />
+						{values.status === 'all' ? <FontAwesomeIcon icon={['far', 'angle-down']} /> : null}
 					</ButtonBase>
-				</Grid>
+					{values.status !== 'all' ? (
+						<ButtonBase
+							onClick={() => onChangeFilterStatus('all', setFieldValue, submitForm)}
+							className={styles.filterButtonLinkReset}
+							tabIndex={-1}
+						>
+							<FontAwesomeIcon icon={['fal', 'times']} />
+						</ButtonBase>
+					) : null}
+				</div>
 
 				{/* Filter Member */}
-				<Grid item>
+				<div className={styles.bottomContainerItem}>
 					<ButtonBase
 						ref={refDropdownMember}
 						className={styles.filterButtonLink}
 						onClick={() => handlerDropdown('dropdownMember', null, onClearSearchTextMember)}
 					>
 						<span>{FilterMemberTransform(values.member, allMembers, isLoadingAllMembers)}</span>
-						<FontAwesomeIcon icon={['far', 'angle-down']} />
+						{values.member === 'all' ? <FontAwesomeIcon icon={['far', 'angle-down']} /> : null}
 					</ButtonBase>
-				</Grid>
-
-				<Grid item style={{ marginLeft: 'auto' }}>
-					{values.dateStartView || values.dateEndView || values.status !== 'all' || values.member !== 'all' ? (
-						<ButtonBase onClick={() => onResetAllFilters(setFieldValue, submitForm)} className={styles.filterButtonLinkRed}>
-							<span>Сбросить фильтры</span>
+					{values.member !== 'all' ? (
+						<ButtonBase
+							onClick={() => onChangeFilterMember('all', setFieldValue, submitForm)}
+							className={styles.filterButtonLinkReset}
+							tabIndex={-1}
+						>
+							<FontAwesomeIcon icon={['fal', 'times']} />
 						</ButtonBase>
 					) : null}
-				</Grid>
-			</Grid>
+				</div>
+
+				<div className={styles.bottomContainerItem} style={{ marginLeft: 'auto', marginRight: 10 }}>
+					{values.dateStartView || values.dateEndView || values.status !== 'all' || values.member !== 'all' ? (
+						<Tooltip title="Сбросить все фильтры">
+							<IconButtonRed
+								className={styles.filterButtonResetAll}
+								onClick={() => onResetAllFilters(setFieldValue, submitForm)}
+								color="primary"
+							>
+								<FontAwesomeIcon icon={['fal', 'times']} />
+							</IconButtonRed>
+						</Tooltip>
+					) : null}
+				</div>
+			</div>
 
 			{/* Filter Date */}
 			<Dropdown

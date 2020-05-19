@@ -20,9 +20,10 @@ import { memberRoleTransform } from 'shared/roles-access-rights';
 import { weekActive, monthActive, paginationCalendarFormat } from 'src/components/Pagination/utils';
 import Dropdown from 'src/components/Dropdown';
 import PositionNameInList from 'src/components/PositionNameInList';
+import Tooltip from 'src/components/Tooltip';
 import MenuItem from 'src/components/MenuItem';
 
-import { SearchTextField, FilterSearchTextField } from './Filter.styles';
+import { SearchTextField, FilterSearchTextField, IconButtonRed } from './Filter.styles';
 import styles from './Filter.module.css';
 
 const FilterMemberTransform = (memberSelected, members, loading) => {
@@ -163,7 +164,7 @@ const FormFilter = props => {
 
 	return (
 		<Form>
-			<Grid className={styles.topContainer} container>
+			<div className={styles.topContainer}>
 				<Field
 					inputRef={refFilterInvoiceNumberInput}
 					name="invoiceNumber"
@@ -184,11 +185,11 @@ const FormFilter = props => {
 					</ButtonBase>
 				) : null}
 				{isSubmitting ? <CircularProgress className={styles.loadingForm} size={20} /> : null}
-			</Grid>
+			</div>
 
-			<Grid className={styles.bottomContainer} container>
+			<div className={styles.bottomContainer}>
 				{/* Filter Date */}
-				<Grid item>
+				<div className={styles.bottomContainerItem}>
 					<ButtonBase
 						ref={refDropdownDate}
 						className={styles.filterButtonLink}
@@ -216,42 +217,71 @@ const FormFilter = props => {
 						) : (
 							'Некорректная дата'
 						)}
-						<FontAwesomeIcon icon={['far', 'angle-down']} />
+						{!values.dateStartView && !values.dateEndView ? <FontAwesomeIcon icon={['far', 'angle-down']} /> : null}
 					</ButtonBase>
-				</Grid>
+					{values.dateStartView || values.dateEndView ? (
+						<ButtonBase
+							onClick={() => onChangeFilterDate('allTime', setFieldValue, submitForm)}
+							className={styles.filterButtonLinkReset}
+							tabIndex={-1}
+						>
+							<FontAwesomeIcon icon={['fal', 'times']} />
+						</ButtonBase>
+					) : null}
+				</div>
 
-				{/* Filter Position */}
-				<Grid item>
+				<div className={styles.bottomContainerItem}>
 					<ButtonBase
 						ref={refDropdownPosition}
 						className={styles.filterButtonLink}
-						onClick={() => handlerDropdown('dropdownPosition', null, onClearSearchTextPosition)}
+						onClick={() => handlerDropdown('dropdownPosition', null)}
 					>
 						<span>{FilterPositionTransform(values.position, allPositions, isLoadingAllPositions)}</span>
-						<FontAwesomeIcon icon={['far', 'angle-down']} />
+						{values.position === 'all' ? <FontAwesomeIcon icon={['far', 'angle-down']} /> : null}
 					</ButtonBase>
-				</Grid>
-
-				{/* Filter Member */}
-				<Grid item>
-					<ButtonBase
-						ref={refDropdownMember}
-						className={styles.filterButtonLink}
-						onClick={() => handlerDropdown('dropdownMember', null, onClearSearchTextMember)}
-					>
-						<span>{FilterMemberTransform(values.member, allMembers, isLoadingAllMembers)}</span>
-						<FontAwesomeIcon icon={['far', 'angle-down']} />
-					</ButtonBase>
-				</Grid>
-
-				<Grid item style={{ marginLeft: 'auto' }}>
-					{values.dateStartView || values.dateEndView || values.invoiceNumber || values.position !== 'all' || values.member !== 'all' ? (
-						<ButtonBase onClick={() => onResetAllFilters(setFieldValue, submitForm)} className={styles.filterButtonLinkRed}>
-							<span>Сбросить фильтры</span>
+					{values.position !== 'all' ? (
+						<ButtonBase
+							onClick={() => onChangeFilterPosition('all', setFieldValue, submitForm)}
+							className={styles.filterButtonLinkReset}
+							tabIndex={-1}
+						>
+							<FontAwesomeIcon icon={['fal', 'times']} />
 						</ButtonBase>
 					) : null}
-				</Grid>
-			</Grid>
+				</div>
+				{/* Filter Position */}
+
+				{/* Filter Member */}
+				<div className={styles.bottomContainerItem}>
+					<ButtonBase ref={refDropdownMember} className={styles.filterButtonLink} onClick={() => handlerDropdown('dropdownMember', null)}>
+						<span>{FilterMemberTransform(values.member, allMembers, isLoadingAllMembers)}</span>
+						{values.member === 'all' ? <FontAwesomeIcon icon={['far', 'angle-down']} /> : null}
+					</ButtonBase>
+					{values.member !== 'all' ? (
+						<ButtonBase
+							onClick={() => onChangeFilterMember('all', setFieldValue, submitForm)}
+							className={styles.filterButtonLinkReset}
+							tabIndex={-1}
+						>
+							<FontAwesomeIcon icon={['fal', 'times']} />
+						</ButtonBase>
+					) : null}
+				</div>
+
+				<div className={styles.bottomContainerItem} style={{ marginLeft: 'auto', marginRight: 10 }}>
+					{values.dateStartView || values.dateEndView || values.invoiceNumber || values.position !== 'all' || values.member !== 'all' ? (
+						<Tooltip title="Сбросить все фильтры">
+							<IconButtonRed
+								className={styles.filterButtonResetAll}
+								onClick={() => onResetAllFilters(setFieldValue, submitForm)}
+								color="primary"
+							>
+								<FontAwesomeIcon icon={['fal', 'times']} />
+							</IconButtonRed>
+						</Tooltip>
+					) : null}
+				</div>
+			</div>
 
 			{/* Filter Date */}
 			<Dropdown
@@ -353,7 +383,6 @@ const FormFilter = props => {
 							placeholder="Введите название позиции"
 							value={searchTextPosition}
 							onChange={onTypeSearchTextPosition}
-							autoFocus
 							fullWidth
 						/>
 						{searchTextPosition ? (
@@ -424,7 +453,6 @@ const FormFilter = props => {
 							placeholder="Введите имя"
 							value={searchTextMember}
 							onChange={onTypeSearchTextMember}
-							autoFocus
 							fullWidth
 						/>
 						{searchTextMember ? (

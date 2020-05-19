@@ -24,7 +24,7 @@ import Tooltip from 'src/components/Tooltip';
 import PositionNameInList from 'src/components/PositionNameInList';
 import MenuItem from 'src/components/MenuItem';
 
-import { FilterSearchTextField } from './Filter.styles';
+import { FilterSearchTextField, IconButtonRed } from './Filter.styles';
 import styles from './Filter.module.css';
 
 const roles = ['all', 'owners', 'admins', 'artists'];
@@ -177,9 +177,9 @@ const FormFilter = props => {
 
 	return (
 		<Form>
-			<Grid container>
+			<div className={styles.bottomContainer}>
 				{/* Filter Date */}
-				<Grid item>
+				<div className={styles.bottomContainerItem}>
 					<ButtonBase
 						ref={refDropdownDate}
 						className={styles.filterButtonLink}
@@ -207,36 +207,63 @@ const FormFilter = props => {
 						) : (
 							'Некорректная дата'
 						)}
-						<FontAwesomeIcon icon={['far', 'angle-down']} />
+						{!values.dateStartView && !values.dateEndView ? <FontAwesomeIcon icon={['far', 'angle-down']} /> : null}
 					</ButtonBase>
-				</Grid>
+					{values.dateStartView || values.dateEndView ? (
+						<ButtonBase
+							onClick={() => onChangeFilterDate('allTime', setFieldValue, submitForm)}
+							className={styles.filterButtonLinkReset}
+							tabIndex={-1}
+						>
+							<FontAwesomeIcon icon={['fal', 'times']} />
+						</ButtonBase>
+					) : null}
+				</div>
 
 				{/* Filter Position */}
-				<Grid item>
+				<div className={styles.bottomContainerItem}>
 					<ButtonBase
 						ref={refDropdownPosition}
 						className={styles.filterButtonLink}
 						onClick={() => handlerDropdown('dropdownPosition', null, onClearSearchTextPosition)}
 					>
 						<span>{FilterPositionTransform(values.position, allPositions, isLoadingAllPositions)}</span>
-						<FontAwesomeIcon icon={['far', 'angle-down']} />
+						{values.position === 'all' ? <FontAwesomeIcon icon={['far', 'angle-down']} /> : null}
 					</ButtonBase>
-				</Grid>
+					{values.position !== 'all' ? (
+						<ButtonBase
+							onClick={() => onChangeFilterPosition('all', setFieldValue, submitForm)}
+							className={styles.filterButtonLinkReset}
+							tabIndex={-1}
+						>
+							<FontAwesomeIcon icon={['fal', 'times']} />
+						</ButtonBase>
+					) : null}
+				</div>
 
 				{/* Filter Role */}
-				<Grid item>
+				<div className={styles.bottomContainerItem}>
 					<ButtonBase
 						ref={refDropdownRole}
 						className={styles.filterButtonLink}
 						onClick={() => handlerDropdown('dropdownRole', null, onClearSearchTextMember)}
 					>
 						<span>{FilterRoleTransform(values.role, allMembers, isLoadingAllMembers)}</span>
-						<FontAwesomeIcon icon={['far', 'angle-down']} />
+						{values.role === 'all' ? <FontAwesomeIcon icon={['far', 'angle-down']} /> : null}
 					</ButtonBase>
-				</Grid>
+					{values.role !== 'all' ? (
+						<ButtonBase
+							onClick={() => onChangeFilterRole('all', setFieldValue, submitForm)}
+							className={styles.filterButtonLinkReset}
+							tabIndex={-1}
+						>
+							<FontAwesomeIcon icon={['fal', 'times']} />
+						</ButtonBase>
+					) : null}
+				</div>
 
 				{/* Filter Only Canceled */}
-				<Grid item>
+				<div className={styles.bottomContainerItem}>
 					<Tooltip title="Показывать только отменённые списания">
 						<ButtonBase
 							className={ClassNames({
@@ -249,20 +276,26 @@ const FormFilter = props => {
 							<FontAwesomeIcon icon={['far', 'undo']} />
 						</ButtonBase>
 					</Tooltip>
-				</Grid>
+				</div>
 
-				<Grid item style={{ marginLeft: 'auto' }}>
+				<div className={styles.bottomContainerItem} style={{ marginLeft: 'auto', marginRight: 10 }}>
 					{values.dateStartView ||
 					values.dateEndView ||
 					values.position !== 'all' ||
 					values.role !== 'all' ||
 					values.onlyCanceled !== false ? (
-						<ButtonBase onClick={() => onResetAllFilters(setFieldValue, submitForm)} className={styles.filterButtonLinkRed} disableRipple>
-							<span>Сбросить фильтры</span>
-						</ButtonBase>
+						<Tooltip title="Сбросить все фильтры">
+							<IconButtonRed
+								className={styles.filterButtonResetAll}
+								onClick={() => onResetAllFilters(setFieldValue, submitForm)}
+								color="primary"
+							>
+								<FontAwesomeIcon icon={['fal', 'times']} />
+							</IconButtonRed>
+						</Tooltip>
 					) : null}
-				</Grid>
-			</Grid>
+				</div>
+			</div>
 
 			{/* Filter Date */}
 			<Dropdown

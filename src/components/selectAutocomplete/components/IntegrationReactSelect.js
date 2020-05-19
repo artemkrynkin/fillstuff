@@ -85,7 +85,7 @@ const selectStyles = {
 		cursor: 'pointer',
 		fontSize: 16,
 		'&:hover': {
-			color: theme.teal.cT300,
+			color: theme.blueGrey.cBg600,
 		},
 	}),
 	dropdownIndicator: base => ({

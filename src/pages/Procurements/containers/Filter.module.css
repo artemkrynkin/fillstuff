@@ -8,7 +8,14 @@
 }
 
 .bottomContainer {
+  align-items: center;
   border-top: 1px solid var(--c-hex-br-5);
+  display: flex;
+}
+
+.bottomContainerItem {
+  align-items: center;
+  display: flex;
 }
 
 .loadingForm {
@@ -25,15 +32,15 @@
   padding: 12px 20px;
   position: absolute;
   right: 0;
+  transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
   top: 0;
 }
 
 .textFieldFilterInvoiceNumberClear:hover {
-  color: var(--c-hex-t-300);
+  color: var(--c-hex-bg-600);
 }
 
-.filterButtonLink,
-.filterButtonLinkRed {
+.filterButtonLink {
   background: none;
   border: none;
   display: flex;
@@ -50,16 +57,7 @@
   color: var(--c-hex-t-400);
 }
 
-.filterButtonLinkRed {
-  color: var(--c-hex-o-1);
-}
-
-.filterButtonLinkRed:hover {
-  color: rgba(var(--c-rgb-o-1), 0.8);
-}
-
-.filterButtonLink span,
-.filterButtonLinkRed span {
+.filterButtonLink span {
   display: block;
   max-width: 220px;
   overflow: hidden;
@@ -73,6 +71,24 @@
   margin: 2px 0 0 5px;
   transform: rotate(0deg);
   transition: color 150ms ease-out;
+}
+
+.filterButtonLinkReset {
+  color: var(--c-hex-bg-300);
+  font-size: 13px;
+  margin-left: -6px;
+  padding: 13px 6px 13px 0;
+  transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+
+.filterButtonLinkReset:hover {
+  color: var(--c-hex-bg-600);
+}
+
+.filterButtonResetAll {
+  height: 32px;
+  padding: 6px;
+  width: 32px;
 }
 
 .filterSearchTextFieldContainer {

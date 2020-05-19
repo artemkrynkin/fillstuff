@@ -2,15 +2,15 @@ import React from 'react';
 import { Field, Form } from 'formik';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Grid from '@material-ui/core/Grid';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import MenuList from '@material-ui/core/MenuList';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import Dropdown from 'src/components/Dropdown';
 import MenuItem from 'src/components/MenuItem';
+import Tooltip from 'src/components/Tooltip';
 
-import { SearchTextField } from './Filter.styles';
+import { SearchTextField, IconButtonRed } from './Filter.styles';
 import styles from './Filter.module.css';
 
 const roles = ['all', 'owners', 'admins', 'artists'];
@@ -49,7 +49,7 @@ const FormFilter = props => {
 
 	return (
 		<Form>
-			<Grid className={styles.topContainer} container>
+			<div className={styles.topContainer}>
 				<Field
 					inputRef={refFilterNameInput}
 					name="name"
@@ -70,25 +70,40 @@ const FormFilter = props => {
 					</ButtonBase>
 				) : null}
 				{isSubmitting ? <CircularProgress className={styles.loadingForm} size={20} /> : null}
-			</Grid>
+			</div>
 
-			<Grid className={styles.bottomContainer} container>
+			<div className={styles.bottomContainer}>
 				{/* Filter Role */}
-				<Grid item>
+				<div className={styles.bottomContainerItem}>
 					<ButtonBase ref={refDropdownRole} className={styles.filterButtonLink} onClick={() => handlerDropdown('dropdownRole')}>
 						<span>{FilterRoleTransform(values.role)}</span>
-						<FontAwesomeIcon icon={['far', 'angle-down']} />
+						{values.role === 'all' ? <FontAwesomeIcon icon={['far', 'angle-down']} /> : null}
 					</ButtonBase>
-				</Grid>
-
-				<Grid item style={{ marginLeft: 'auto' }}>
-					{values.name || values.role !== 'all' ? (
-						<ButtonBase onClick={() => onResetAllFilters(setFieldValue, submitForm)} className={styles.filterButtonLinkRed}>
-							<span>Сбросить фильтры</span>
+					{values.role !== 'all' ? (
+						<ButtonBase
+							onClick={() => onChangeFilterRole('all', setFieldValue, submitForm)}
+							className={styles.filterButtonLinkReset}
+							tabIndex={-1}
+						>
+							<FontAwesomeIcon icon={['fal', 'times']} />
 						</ButtonBase>
 					) : null}
-				</Grid>
-			</Grid>
+				</div>
+
+				<div className={styles.bottomContainerItem} style={{ marginLeft: 'auto', marginRight: 10 }}>
+					{values.name || values.role !== 'all' ? (
+						<Tooltip title="Сбросить все фильтры">
+							<IconButtonRed
+								className={styles.filterButtonResetAll}
+								onClick={() => onResetAllFilters(setFieldValue, submitForm)}
+								color="primary"
+							>
+								<FontAwesomeIcon icon={['fal', 'times']} />
+							</IconButtonRed>
+						</Tooltip>
+					) : null}
+				</div>
+			</div>
 
 			{/* Filter Role */}
 			<Dropdown

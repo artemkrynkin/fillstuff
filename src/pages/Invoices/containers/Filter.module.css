@@ -7,6 +7,16 @@
   position: relative;
 }
 
+.bottomContainer {
+  align-items: center;
+  display: flex;
+}
+
+.bottomContainerItem {
+  align-items: center;
+  display: flex;
+}
+
 .loadingForm {
   bottom: 0;
   margin: auto 0;
@@ -15,8 +25,7 @@
   right: 15px;
 }
 
-.filterButtonLink,
-.filterButtonLinkRed {
+.filterButtonLink {
   background: none;
   border: none;
   display: flex;
@@ -33,16 +42,7 @@
   color: var(--c-hex-t-400);
 }
 
-.filterButtonLinkRed {
-  color: var(--c-hex-o-1);
-}
-
-.filterButtonLinkRed:hover {
-  color: rgba(var(--c-rgb-o-1), 0.8);
-}
-
-.filterButtonLink span,
-.filterButtonLinkRed span {
+.filterButtonLink span {
   display: block;
   max-width: 220px;
   overflow: hidden;
@@ -56,6 +56,24 @@
   margin: 2px 0 0 5px;
   transform: rotate(0deg);
   transition: color 150ms ease-out;
+}
+
+.filterButtonLinkReset {
+  color: var(--c-hex-bg-300);
+  font-size: 13px;
+  margin-left: -6px;
+  padding: 13px 6px 13px 0;
+  transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+
+.filterButtonLinkReset:hover {
+  color: var(--c-hex-bg-600);
+}
+
+.filterButtonResetAll {
+  height: 32px;
+  padding: 6px;
+  width: 32px;
 }
 
 .filterSearchTextFieldContainer {

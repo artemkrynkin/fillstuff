@@ -21,10 +21,7 @@ const SellingPriceDisplay = props => {
 	const receiptsReceived = receipts.filter(receipt => receipt.status === 'received');
 	const nextReceipt = receiptsReceived.length ? receiptsReceived[0] : null;
 
-	if (
-		(!nextReceipt && !activeReceipt.unitCostDelivery && !activeReceipt.unitMarkup) ||
-		(nextReceipt && nextReceipt.unitSellingPrice === activeReceipt.unitSellingPrice)
-	) {
+	if (!nextReceipt) {
 		return (
 			<NumberFormat
 				value={formatNumber(activeReceipt.unitSellingPrice, { toString: true })}
@@ -80,19 +77,25 @@ const SellingPriceDisplay = props => {
 					</DefinitionList>
 
 					{nextReceipt ? (
-						<div className={styles.tooltipInfo}>
-							После списания{' '}
-							<b>
-								{activeReceipt.current.quantity}&nbsp;{unitRelease === 'pce' ? 'шт.' : 'уп.'}
-							</b>{' '}
-							цена продажи{' '}
-							<span
-								className={nextReceipt.unitSellingPrice > activeReceipt.unitSellingPrice ? styles.changePriceUp : styles.changePriceDown}
-							>
-								{nextReceipt.unitSellingPrice > activeReceipt.unitSellingPrice ? 'повысится' : 'снизится'}
-							</span>{' '}
-							до&nbsp;<b>{formatNumber(nextReceipt.unitSellingPrice, { toString: true })}&nbsp;₽</b>
-						</div>
+						nextReceipt.unitSellingPrice > activeReceipt.unitSellingPrice ? (
+							<div className={styles.tooltipInfo}>
+								После списания{' '}
+								<b>
+									{activeReceipt.current.quantity}&nbsp;{unitRelease === 'pce' ? 'шт.' : 'уп.'}
+								</b>{' '}
+								цена продажи <span className={styles.changePriceUp}>повысится</span> до&nbsp;
+								<b>{formatNumber(nextReceipt.unitSellingPrice, { toString: true })}&nbsp;₽</b>
+							</div>
+						) : nextReceipt.unitSellingPrice < activeReceipt.unitSellingPrice ? (
+							<div className={styles.tooltipInfo}>
+								После списания{' '}
+								<b>
+									{activeReceipt.current.quantity}&nbsp;{unitRelease === 'pce' ? 'шт.' : 'уп.'}
+								</b>{' '}
+								цена продажи <span className={styles.changePriceDown}>снизится</span> до&nbsp;
+								<b>{formatNumber(nextReceipt.unitSellingPrice, { toString: true })}&nbsp;₽</b>
+							</div>
+						) : null
 					) : null}
 				</div>
 			}
@@ -109,9 +112,9 @@ const SellingPriceDisplay = props => {
 			{nextReceipt ? (
 				nextReceipt.unitSellingPrice > activeReceipt.unitSellingPrice ? (
 					<FontAwesomeIcon className={styles.changePriceIconUp} icon={['far', 'chevron-up']} />
-				) : (
+				) : nextReceipt.unitSellingPrice < activeReceipt.unitSellingPrice ? (
 					<FontAwesomeIcon className={styles.changePriceIconDown} icon={['far', 'chevron-down']} />
-				)
+				) : null
 			) : null}
 		</Tooltip>
 	);

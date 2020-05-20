@@ -109,3 +109,27 @@ export const editMember = ({ params, data }) => {
 			});
 	};
 };
+
+export const deactivatedMember = ({ params }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+
+		return await axios
+			.post('/api/deactivatedMember', {
+				studioId,
+				memberId,
+				params,
+			})
+			.then(response => {
+				const { data: member } = response;
+
+				return Promise.resolve({ status: 'success', data: member });
+			})
+			.catch(error => {
+				console.error(error);
+
+				return Promise.resolve({ status: 'error', message: error.message, ...error });
+			});
+	};
+};

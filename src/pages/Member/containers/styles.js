@@ -1,4 +1,6 @@
+import MuiButton from '@material-ui/core/Button';
 import MuiTableCell from '@material-ui/core/TableCell';
+import { red as redColor } from '@material-ui/core/colors';
 import { withStyles } from '@material-ui/core';
 
 import theme from 'shared/theme';
@@ -22,3 +24,17 @@ export const TableCell = withStyles({
 		borderBottom: 'none',
 	},
 })(MuiTableCell);
+
+export const ButtonRed = withStyles({
+	root: {
+		'&:hover': {
+			backgroundColor: redColor['50'],
+		},
+	},
+	text: {
+		'& $label': {
+			color: redColor['600'],
+		},
+	},
+	label: {},
+})(MuiButton);

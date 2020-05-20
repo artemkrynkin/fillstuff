@@ -9,6 +9,8 @@ import { memberRoleTransform } from 'shared/roles-access-rights';
 
 import CardPaper from 'src/components/CardPaper';
 
+import { ButtonRed } from './styles';
+
 import styles from './MemberCard.module.css';
 
 const MemberCard = props => {
@@ -31,14 +33,16 @@ const MemberCard = props => {
 						</Grid>
 					</div>
 				</Grid>
-				<Grid style={{ textAlign: 'right' }} xs={6} item>
-					<Button onClick={() => onOpenDialogByName('memberInvitationOrLogin', 'member', member)} style={{ marginRight: 8 }}>
-						QR для входа
-					</Button>
-					<Button className={styles.deactivatedButton} variant="text">
-						Отключить участника
-					</Button>
-				</Grid>
+				{!member.deactivated ? (
+					<Grid style={{ textAlign: 'right' }} xs={6} item>
+						<Button onClick={() => onOpenDialogByName('memberInvitationOrLogin', 'member', member)} style={{ marginRight: 8 }}>
+							QR для входа
+						</Button>
+						<ButtonRed onClick={() => onOpenDialogByName('memberDeactivated', 'member', member)} variant="text">
+							Отключить участника
+						</ButtonRed>
+					</Grid>
+				) : null}
 			</Grid>
 		</CardPaper>
 	);

@@ -25,7 +25,7 @@ positionGroupsRouter.post(
 				},
 				populate: [
 					{
-						path: 'activeReceipt characteristics',
+						path: 'activeReceipt characteristics shops.shop',
 					},
 					{
 						path: 'receipts',
@@ -60,7 +60,7 @@ positionGroupsRouter.post(
 					sort: { name: 1 },
 				},
 				populate: {
-					path: 'activeReceipt characteristics',
+					path: 'activeReceipt characteristics shops.shop',
 				},
 			})
 			.then(positionGroup => res.json(positionGroup))
@@ -104,7 +104,7 @@ positionGroupsRouter.post(
 				},
 				populate: [
 					{
-						path: 'activeReceipt characteristics',
+						path: 'activeReceipt characteristics shops.shop',
 					},
 					{
 						path: 'receipts',
@@ -150,7 +150,7 @@ positionGroupsRouter.post(
 				},
 				populate: [
 					{
-						path: 'activeReceipt characteristics',
+						path: 'activeReceipt characteristics shops.shop',
 					},
 					{
 						path: 'receipts',
@@ -199,7 +199,7 @@ positionGroupsRouter.post(
 				},
 				populate: [
 					{
-						path: 'activeReceipt characteristics',
+						path: 'activeReceipt characteristics shops.shop',
 					},
 					{
 						path: 'receipts',

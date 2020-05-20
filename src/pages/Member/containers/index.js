@@ -9,14 +9,19 @@ const DialogMemberInvitationOrLogin = loadable(() =>
 	import('src/pages/Dialogs/MemberInvitationOrLogin' /* webpackChunkName: "Dialog_MemberInvitationOrLogin" */)
 );
 
+const DialogMemberDeactivated = loadable(() =>
+	import('src/pages/Dialogs/MemberDeactivated' /* webpackChunkName: "Dialog_MemberDeactivated" */)
+);
+
 const Index = props => {
-	const { currentStudio } = props;
+	const { currentStudio, getMember } = props;
 	const [dialogData, setDialogData] = useState({
 		member: null,
 	});
 	const [dialogOpenedName, setDialogOpenedName] = useState('');
 	const [dialogs, setDialogs] = useState({
 		memberInvitationOrLogin: false,
+		memberDeactivated: false,
 	});
 
 	const onOpenDialogByName = (dialogName, dataType, data) => {
@@ -62,7 +67,15 @@ const Index = props => {
 				onCloseDialog={() => onCloseDialogByName('memberInvitationOrLogin')}
 				onExitedDialog={() => onExitedDialogByName('member')}
 				currentStudio={currentStudio}
-				selectedMember={dialogOpenedName === 'memberInvitationOrLogin' ? dialogData.member : null}
+				selectedMember={dialogOpenedName === 'memberDeactivated' ? dialogData.member : null}
+			/>
+
+			<DialogMemberDeactivated
+				dialogOpen={dialogs.memberDeactivated}
+				onCloseDialog={() => onCloseDialogByName('memberDeactivated')}
+				onExitedDialog={() => onExitedDialogByName('member')}
+				onCallback={getMember}
+				selectedMember={dialogOpenedName === 'memberDeactivated' ? dialogData.member : null}
 			/>
 		</Container>
 	);

@@ -162,4 +162,21 @@ membersRouter.post(
 	}
 );
 
+membersRouter.post(
+	'/deactivatedMember',
+	isAuthedResolver,
+	(req, res, next) => hasPermissions(req, res, next, ['studio.control']),
+	async (req, res, next) => {
+		const {
+			params: { memberId },
+		} = req.body;
+
+		const member = await Member.findByIdAndUpdate(memberId, { $set: { deactivated: true } }, { new: true, runValidators: true })
+			.populate('user', 'avatar name email')
+			.catch(err => next({ code: 2, err }));
+
+		res.json(member);
+	}
+);
+
 export default membersRouter;

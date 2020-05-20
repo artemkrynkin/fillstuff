@@ -85,6 +85,7 @@ const Members = props => {
 					currentStudio={currentStudio}
 					memberData={memberData}
 					invoicesData={invoicesData}
+					getMember={getMember}
 					updateMember={updateMember}
 					getInvoices={getInvoices}
 				/>

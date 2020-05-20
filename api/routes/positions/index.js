@@ -94,7 +94,7 @@ positionsRouter.post(
 					select: 'store',
 				},
 				{
-					path: 'characteristics',
+					path: 'characteristics shops.shop',
 				},
 			])
 			.catch(err => next({ code: 2, err }));
@@ -155,7 +155,7 @@ positionsRouter.post(
 		Position.findById(position._id)
 			.populate([
 				{
-					path: 'activeReceipt characteristics',
+					path: 'activeReceipt characteristics shops.shop',
 				},
 				{
 					path: 'receipts',
@@ -273,7 +273,7 @@ positionsRouter.post(
 		Position.findByIdAndUpdate(positionId, positionEdited, { new: true })
 			.populate([
 				{
-					path: 'activeReceipt characteristics',
+					path: 'activeReceipt characteristics shops.shop',
 				},
 				{
 					path: 'receipts',

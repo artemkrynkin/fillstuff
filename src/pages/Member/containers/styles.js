@@ -16,7 +16,7 @@ export const TableCell = withStyles({
 		},
 	},
 	head: {
-		paddingTop: 18,
+		paddingTop: 6,
 		paddingBottom: 18,
 	},
 	body: {

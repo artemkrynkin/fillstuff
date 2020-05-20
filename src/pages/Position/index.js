@@ -47,10 +47,12 @@ const Position = props => {
 		backToPage: '/availability',
 	};
 
-	const getPosition = () => {
+	const getPosition = callback => {
 		props.getPosition().then(response => {
 			if (response.status === 'success') {
 				setPositionData(response);
+
+				if (callback !== undefined) callback(response);
 			} else {
 				history.push({
 					pathname: '/availability',
@@ -134,6 +136,7 @@ const Position = props => {
 					positionData={positionData}
 					receiptsData={receiptsData}
 					getPosition={getPosition}
+					getReceipts={getReceipts}
 					onCancelArchivePositionAfterEnded={onCancelArchivePositionAfterEnded}
 					onReceiptCreate={onReceiptCreate}
 					onChangeSellingPriceReceipt={onChangeSellingPriceReceipt}

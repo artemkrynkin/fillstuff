@@ -2,9 +2,11 @@ import { Router } from 'express';
 
 import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
+import mongoose from 'mongoose';
 import Studio from 'api/models/studio';
 import Position from 'api/models/position';
 import PositionGroup from 'api/models/positionGroup';
+import Receipt from 'api/models/receipt';
 
 const positionsRouter = Router();
 
@@ -133,9 +135,10 @@ positionsRouter.post(
 
 		const position = await Position.findById(positionId).catch(err => next({ code: 2, err }));
 
+		const promisesAwaits = [];
+
 		position.name = positionEdited.name;
 		position.minimumBalance = positionEdited.minimumBalance;
-		position.isFree = positionEdited.isFree;
 		position.shopName = positionEdited.shopName;
 		position.shopLink = positionEdited.shopLink;
 		position.characteristics = positionEdited.characteristics;
@@ -146,11 +149,29 @@ positionsRouter.post(
 			position.unitRelease = positionEdited.unitRelease;
 		}
 
+		if (position.isFree !== positionEdited.isFree) {
+			Receipt.updateMany(
+				{
+					position: mongoose.Types.ObjectId(positionId),
+					status: /received|active/,
+				},
+				{
+					$set: {
+						isFree: positionEdited.isFree,
+					},
+				}
+			).catch(err => next({ code: 2, err }));
+
+			position.isFree = positionEdited.isFree;
+		}
+
 		const positionErr = position.validateSync();
 
 		if (positionErr) return next({ code: positionErr.errors ? 5 : 2, err: positionErr });
 
-		await Promise.all([position.save()]);
+		promisesAwaits.push(position.save());
+
+		await Promise.all(promisesAwaits);
 
 		Position.findById(position._id)
 			.populate([

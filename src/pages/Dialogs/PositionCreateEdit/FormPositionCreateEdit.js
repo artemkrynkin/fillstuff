@@ -151,39 +151,19 @@ const FormPositionCreateEdit = props => {
 					<InputLabel error={Boolean(touched.isFree && errors.isFree)} style={labelStyle} data-inline>
 						Вид реализации
 					</InputLabel>
-					<Grid>
-						<Grid alignItems="center" container>
-							{type === 'create' || !values.activeReceipt ? (
-								<ToggleButtonGroup
-									value={values.isFree}
-									onChange={(event, value) => {
-										if (value === null) return;
+					<ToggleButtonGroup
+						value={values.isFree}
+						onChange={(event, value) => {
+							if (value === null) return;
 
-										setFieldValue('isFree', value);
-									}}
-									size="small"
-									exclusive
-								>
-									<ToggleButton value={false}>Платный</ToggleButton>
-									<ToggleButton value={true}>Бесплатный</ToggleButton>
-								</ToggleButtonGroup>
-							) : (
-								<Tooltip
-									title={<div style={{ width: 250 }}>Можно изменять только при отсутствии поступлений на&nbsp;реализации.</div>}
-									placement="bottom"
-								>
-									<ToggleButtonGroup value={values.isFree} size="small" exclusive>
-										<ToggleButton value={false} disabled={true}>
-											Платный
-										</ToggleButton>
-										<ToggleButton value={true} disabled={true}>
-											Бесплатный
-										</ToggleButton>
-									</ToggleButtonGroup>
-								</Tooltip>
-							)}
-						</Grid>
-					</Grid>
+							setFieldValue('isFree', value);
+						}}
+						size="small"
+						exclusive
+					>
+						<ToggleButton value={false}>Платный</ToggleButton>
+						<ToggleButton value={true}>Бесплатный</ToggleButton>
+					</ToggleButtonGroup>
 				</Grid>
 
 				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>

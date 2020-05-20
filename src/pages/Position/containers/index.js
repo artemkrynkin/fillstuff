@@ -26,7 +26,7 @@ const DialogPositionArchiveDelete = loadable(() =>
 const DialogReceiptCreate = loadable(() => import('src/pages/Dialogs/ReceiptCreate' /* webpackChunkName: "Dialog_ReceiptCreate" */));
 
 const Index = props => {
-	const { getPosition, onReceiptCreate } = props;
+	const { getPosition, getReceipts, onReceiptCreate } = props;
 	const [dialogData, setDialogData] = useState({
 		position: null,
 	});
@@ -88,7 +88,17 @@ const Index = props => {
 				dialogOpen={dialogs.dialogPositionEdit}
 				onCloseDialog={() => onCloseDialogByName('dialogPositionEdit')}
 				onExitedDialog={() => onExitedDialogByName('position')}
-				onCallback={getPosition}
+				onCallback={() => {
+					const oldPosition = props.positionData.data ? { ...props.positionData.data } : null;
+
+					getPosition(response => {
+						const newPosition = response.data ? response.data : null;
+
+						if (oldPosition && newPosition && oldPosition.isFree !== newPosition.isFree) {
+							getReceipts();
+						}
+					});
+				}}
 				selectedPosition={dialogOpenedName === 'dialogPositionEdit' ? dialogData.position : null}
 			/>
 

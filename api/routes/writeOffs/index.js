@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import moment from 'moment';
+import mongoose from 'mongoose';
 
 import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
 import Emitter from 'api/utils/emitter';
 
-import mongoose from 'mongoose';
 import Member from 'api/models/member';
 import Studio from 'api/models/studio';
 import PositionGroup from 'api/models/positionGroup';

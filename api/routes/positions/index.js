@@ -1,14 +1,14 @@
 import { Router } from 'express';
+import mongoose from 'mongoose';
 
 import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
-import mongoose from 'mongoose';
+import Emitter from 'api/utils/emitter';
+
 import Studio from 'api/models/studio';
 import Position from 'api/models/position';
 import PositionGroup from 'api/models/positionGroup';
 import Receipt from 'api/models/receipt';
-import Emitter from '../../utils/emitter';
-import StoreNotification from '../../models/storeNotification';
 
 const positionsRouter = Router();
 

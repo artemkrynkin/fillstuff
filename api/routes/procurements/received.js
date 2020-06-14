@@ -1,10 +1,10 @@
 import { Router } from 'express';
+import mongoose from 'mongoose';
 
 import { receiptCalc } from 'shared/checkPositionAndReceipt';
 
 import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
-import mongoose from 'mongoose';
 import Studio from 'api/models/studio';
 import Position from 'api/models/position';
 import Receipt from 'api/models/receipt';

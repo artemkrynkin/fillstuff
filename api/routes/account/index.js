@@ -4,12 +4,12 @@ import multer from 'multer';
 import validator from 'validator';
 import i18n from 'i18n';
 import sharp from 'sharp';
+import mongoose from 'mongoose';
 
 import { uploadAvatar } from 'api/utils/multer-settings';
 import { isAuthedResolver } from 'api/utils/permissions';
 import { updateCookieUserData } from 'api/utils/update-cookie-user-data';
 
-import mongoose from 'mongoose';
 import User, { UserSchema } from 'api/models/user';
 import Member from 'api/models/member';
 

@@ -1,10 +1,10 @@
 import { Router } from 'express';
+import mongoose from 'mongoose';
 
 import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
 import Emitter from 'api/utils/emitter';
 
-import mongoose from 'mongoose';
 import Position from 'api/models/position';
 import Procurement from 'api/models/procurement';
 

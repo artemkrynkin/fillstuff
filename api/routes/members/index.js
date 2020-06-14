@@ -1,10 +1,10 @@
 import { Router } from 'express';
+import mongoose from 'mongoose';
 
 import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
 import { memberRoleTransform } from 'shared/roles-access-rights';
 
-import mongoose from 'mongoose';
 import User from 'api/models/member';
 import Studio from 'api/models/studio';
 import Member from 'api/models/member';

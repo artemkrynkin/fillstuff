@@ -2,6 +2,8 @@ import { Router } from 'express';
 
 import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
+import Emitter from 'api/utils/emitter';
+
 import mongoose from 'mongoose';
 import Position from 'api/models/position';
 import Procurement from 'api/models/procurement';
@@ -51,7 +53,8 @@ procurementsRouter.post(
 				{
 					path: 'shop',
 				},
-			]);
+			])
+			.catch(err => next({ code: 2, err }));
 
 		// {
 		//   $lookup: {
@@ -105,6 +108,12 @@ procurementsRouter.post(
 
 		await Promise.all([newProcurement.save(), positionUpdated]);
 
+		Emitter.emit('createStoreNotification', {
+			studio: studioId,
+			type: 'delivery-is-expected',
+			procurement: newProcurement._id,
+		});
+
 		const procurement = await Procurement.findById(newProcurement._id)
 			.populate([
 				{
@@ -143,6 +152,7 @@ procurementsRouter.post(
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
+			studioId,
 			params: { procurementId },
 			data: { procurement: procurementEdited },
 		} = req.body;
@@ -190,7 +200,15 @@ procurementsRouter.post(
 					path: 'shop',
 				},
 			])
-			.then(procurement => res.json(procurement))
+			.then(procurement => {
+				Emitter.emit('editStoreNotification', {
+					studio: studioId,
+					type: 'delivery-is-expected',
+					procurement: procurement._id,
+				});
+
+				return res.json(procurement);
+			})
 			.catch(err => next({ code: 2, err }));
 	}
 );
@@ -201,6 +219,7 @@ procurementsRouter.post(
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
+			studioId,
 			params: { procurementId },
 		} = req.body;
 
@@ -208,9 +227,15 @@ procurementsRouter.post(
 			next({ code: 2, err })
 		);
 
-		Procurement.findByIdAndRemove(procurementId)
-			.then(() => res.json('success'))
-			.catch(err => next({ code: 2, err }));
+		const procurement = await Procurement.findByIdAndRemove(procurementId).catch(err => next({ code: 2, err }));
+
+		Emitter.emit('deleteStoreNotification', {
+			studio: studioId,
+			type: 'delivery-is-expected',
+			procurement: procurement._id,
+		});
+
+		res.json('success');
 	}
 );
 

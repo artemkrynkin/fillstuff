@@ -5,7 +5,7 @@
 
 .item {
   align-items: center;
-  background-color: var(--c-hex-br-5);
+  background-color: rgba(var(--c-rgb-bg-50), 0.8);
   border-radius: 12px;
   display: flex;
   margin: 0 5px 5px 0;
@@ -16,7 +16,7 @@
   color: var(--c-hex-bg-700);
   font-size: 13px;
   line-height: 1;
-  padding: 5px 12px 6px;
+  padding: 5px 10px 6px;
 }
 
 .remove {
@@ -25,16 +25,13 @@
   color: var(--c-hex-bg-300);
   cursor: pointer;
   display: flex;
-  margin-left: -12px;
-  padding: 5px 12px;
+  font-size: 14px;
+  height: 24px;
+  margin-left: -10px;
   transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1), color 250ms cubic-bezier(0.4, 0, 0.2, 1);
   width: 24px;
 }
 
 .remove:hover {
   color: var(--c-hex-t-300);
-}
-
-.remove svg {
-  font-size: 14px;
 }

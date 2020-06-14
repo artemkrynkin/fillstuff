@@ -4,7 +4,7 @@ import MuiTooltip from '@material-ui/core/Tooltip';
 // import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 const Tooltip = props => {
-	const { children, open: initialOpen, style, ...remainingProps } = props;
+	const { children, open: initialOpen, style, className, ...remainingProps } = props;
 	const [open, setOpen] = useState(initialOpen);
 
 	const onHandleOpen = value => setOpen(value === null || value === undefined ? value => !value : value);
@@ -18,7 +18,7 @@ const Tooltip = props => {
 	return (
 		// <ClickAwayListener onClickAway={event => onClickAway(event, false)}>
 		<MuiTooltip onOpen={() => onHandleOpen(true)} onClose={() => onHandleOpen(false)} open={open} {...remainingProps}>
-			<div onClick={() => onHandleOpen()} style={{ cursor: 'pointer', ...style }}>
+			<div className={className} onClick={() => onHandleOpen()} style={{ cursor: 'pointer', ...style }}>
 				{children}
 			</div>
 		</MuiTooltip>

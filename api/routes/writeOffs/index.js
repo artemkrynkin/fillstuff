@@ -3,6 +3,8 @@ import moment from 'moment';
 
 import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
+import Emitter from 'api/utils/emitter';
+
 import mongoose from 'mongoose';
 import Member from 'api/models/member';
 import Studio from 'api/models/studio';
@@ -10,6 +12,7 @@ import PositionGroup from 'api/models/positionGroup';
 import Position from 'api/models/position';
 import WriteOff from 'api/models/writeOff';
 import Receipt from 'api/models/receipt';
+import StoreNotification from 'api/models/storeNotification';
 
 const writeOffsRouter = Router();
 
@@ -146,8 +149,9 @@ writeOffsRouter.post(
 		const allQuantityReceipts = receipts
 			.filter(receipt => /received|active/.test(receipt.status))
 			.reduce((sum, receipt) => sum + receipt.current.quantity, 0);
+		const remainingQuantityAfterWriteOff = allQuantityReceipts - quantity;
 
-		if (allQuantityReceipts === 0 || allQuantityReceipts - quantity < 0) {
+		if (allQuantityReceipts === 0 || remainingQuantityAfterWriteOff < 0) {
 			return res.json({
 				code: 7,
 				message:
@@ -272,7 +276,20 @@ writeOffsRouter.post(
 
 		if (newWriteOffsErr.length) return next({ code: 2 });
 
-		await Promise.all([...awaitingPromises]);
+		await Promise.all(awaitingPromises);
+
+		if (remainingQuantityAfterWriteOff <= position.minimumBalance) {
+			const newStoreNotification = {
+				studio: studioId,
+				type: 'position-ends',
+				position: position._id,
+			};
+
+			const isCreatedStoreNotification = await StoreNotification.findOne(newStoreNotification).catch(err => next({ code: 2, err }));
+
+			if (!isCreatedStoreNotification) Emitter.emit('createStoreNotification', newStoreNotification);
+			else Emitter.emit('editStoreNotification', newStoreNotification);
+		}
 
 		Member.findByIdAndUpdate(
 			memberId,
@@ -302,7 +319,7 @@ writeOffsRouter.post(
 		Position.findById(position._id)
 			.populate([
 				{
-					path: 'activeReceipt characteristics',
+					path: 'activeReceipt characteristics shops.shop',
 				},
 				{
 					path: 'receipts',

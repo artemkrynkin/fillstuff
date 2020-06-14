@@ -49,76 +49,73 @@
   text-align: right;
 }
 
-.usersPerDayWrapper {
-  display: inline-flex;
+.users {
+  display: flex;
+  margin-left: -2px;
 }
 
 .user {
-  margin-right: -7px;
-  transition: margin 150ms ease-out, padding 150ms ease-out, transform 150ms ease-out;
+  border-radius: 50%;
+  margin-right: -10px;
+  transition: margin 150ms ease-out, padding 150ms ease-out;
 }
 
-.usersPerDayWrapper:hover .user {
-  transform: scale(0.9);
+.user:first-child:hover + .user {
+  margin-left: 6px;
+  padding-left: 6px;
 }
 
-.usersPerDayWrapper:hover .user:hover {
-  transform: scale(1.1);
-}
-
-.user:first-child {
-  padding-left: 0;
-}
-
-.user:last-child {
-  padding-right: 0;
-}
-
-.user:first-child:hover {
-  margin-right: 0;
-  padding-right: 5px;
-}
-
-.user:last-child:hover:not(.userSingle) {
-  margin-left: 8px;
-  padding-left: 5px;
-}
-
-.user:not(:first-child):not(:last-child):hover {
-  margin: 0 0 0 8px;
-  padding: 0 5px;
+.user:not(:first-child):hover {
+  margin: 0 -4px 0 6px;
+  padding: 0 6px;
 }
 
 .userPhoto {
-  background-color: var(--c-hex-br-5);
-  box-shadow: 3px 0 3px 0 rgba(var(--c-rgb-bg-900), 0.3);
-  height: 28px;
-  transition: box-shadow 150ms ease-out;
-  width: 28px;
+  border: 2px solid white;
+  height: 32px;
+  width: 32px;
 }
 
-.user:last-child .userPhoto {
-  box-shadow: none;
-}
-
-.user:hover .userPhoto {
-  box-shadow: 0 0 5px 0 rgba(var(--c-rgb-bg-900), 0.5);
-}
-
-.userIcon {
-  align-items: flex-end;
-  justify-content: center;
-  border: 2px solid var(--c-hex-bg-100);
-  border-radius: 50%;
+.remainingUsersButton {
+  background-color: var(--c-hex-bg-50);
+  align-items: center;
+  border-radius: 28px;
+  color: var(--c-hex-bg-500);
   display: flex;
-  height: 100%;
-  overflow: hidden;
-  width: 100%;
+  font-size: 12px;
+  font-weight: 700;
+  margin: 2px 0 2px 14px;
+  padding: 0 10px;
+  transition: margin 150ms ease-out
 }
 
-.userPhoto svg {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 20px;
+.remainingUsersButton:hover {
+  color: var(--c-hex-t-500);
+}
+
+.user:hover + .remainingUsersButton {
+  margin-left: 2px;
+}
+
+.allUsersPopup {
+  padding: 7px;
+}
+
+.closePopup {
+  color: var(--c-hex-bg-200);
+  position: absolute;
+  padding: 4px;
+  right: 10px;
+  top: 10px;
+}
+
+.usersPopup {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.userPopup {
+  margin: 3px;
 }
 
 .detailsButton {

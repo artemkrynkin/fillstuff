@@ -22,13 +22,14 @@ import { login } from 'src/actions/authentication';
 import styles from 'src/components/Layout/index.module.css';
 
 const Login = props => {
+	const { redirectPath, location } = props;
+
 	const { title: pageTitle, description: pageDescription } = generateMetaInfo({
 		type: 'login',
 		data: {
 			title: 'Вход',
 		},
 	});
-	const { redirectPath, location } = props;
 
 	let r;
 	if (location) {
@@ -134,7 +135,7 @@ const Login = props => {
 	);
 };
 
-const mapDispatchToProps = () => {
+const mapDispatchToProps = dispatch => {
 	return {
 		login: data => login({ data }),
 	};

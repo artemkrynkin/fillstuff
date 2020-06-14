@@ -104,8 +104,7 @@ const Invoices = props => {
 				<div className={styles.infoSmall}>
 					Счет будет выставлен {moment(member.nextBillingDate).format(nextBillingDateIsCurrentYear ? 'D MMMM' : 'D MMMM YYYY')}
 				</div>
-				<div className={styles.separator}>•</div>
-				<ButtonBase className={styles.buttonLink} component="span">
+				<ButtonBase className={`${styles.buttonLink} ${styles.infoItem}`} component="span">
 					Изменить дату выставления счетов
 				</ButtonBase>
 			</Grid>

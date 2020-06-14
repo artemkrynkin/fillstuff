@@ -67,7 +67,7 @@ const Index = props => {
 				onCloseDialog={() => onCloseDialogByName('memberInvitationOrLogin')}
 				onExitedDialog={() => onExitedDialogByName('member')}
 				currentStudio={currentStudio}
-				selectedMember={dialogOpenedName === 'memberDeactivated' ? dialogData.member : null}
+				selectedMember={dialogOpenedName === 'memberInvitationOrLogin' ? dialogData.member : null}
 			/>
 
 			<DialogMemberDeactivated

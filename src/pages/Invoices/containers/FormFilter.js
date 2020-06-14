@@ -194,11 +194,7 @@ const FormFilter = props => {
 
 				{/* Filter Member */}
 				<div className={styles.bottomContainerItem}>
-					<ButtonBase
-						ref={refDropdownMember}
-						className={styles.filterButtonLink}
-						onClick={() => handlerDropdown('dropdownMember', null, onClearSearchTextMember)}
-					>
+					<ButtonBase ref={refDropdownMember} className={styles.filterButtonLink} onClick={() => handlerDropdown('dropdownMember', null)}>
 						<span>{FilterMemberTransform(values.member, allMembers, isLoadingAllMembers)}</span>
 						{values.member === 'all' ? <FontAwesomeIcon icon={['far', 'angle-down']} /> : null}
 					</ButtonBase>
@@ -351,7 +347,6 @@ const FormFilter = props => {
 							placeholder="Введите имя"
 							value={searchTextMember}
 							onChange={onTypeSearchTextMember}
-							autoFocus
 							fullWidth
 						/>
 						{searchTextMember ? (

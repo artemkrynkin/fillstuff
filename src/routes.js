@@ -21,6 +21,7 @@ import HelpPanel from 'src/components/HelpPanel';
 import Sidebar from 'src/components/Sidebar';
 import Snackbar from 'src/components/Snackbar';
 import { withCurrentUser } from 'src/components/withCurrentUser';
+import Status from 'src/components/Status';
 
 import Login from 'src/pages/Login';
 import PageNotFound from 'src/pages/PageNotFound';
@@ -154,6 +155,7 @@ const Routes = props => {
 				<Head title={title} description={description} />
 
 				<Snackbar />
+				{currentUser && currentUser._id && currentStudio && currentStudio._id && currentMember && currentMember._id ? <Status /> : null}
 
 				{/*
          AuthViewHandler often returns null, but is responsible for triggering

@@ -17,7 +17,7 @@ const receiptSchema = Yup.object().shape({
 		.nullable(true)
 		.transform(value => (isNaN(value) ? null : value))
 		.when('position', (position, schema) => {
-			return position.unitReceipt === 'nmp' && position.unitRelease === 'pce' ? schema.min(1).required() : schema.strip();
+			return position.unitReceipt === 'nmp' ? schema.min(1).required() : schema.strip();
 		}),
 	purchasePrice: Yup.number()
 		.nullable(true)

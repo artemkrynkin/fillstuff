@@ -37,4 +37,13 @@
   color: var(--c-hex-t-400);
 }
 
-.invoices {}
+.infoItem {
+  display: inline-block;
+}
+
+.infoItem:not(:first-child):before {
+  color: var(--c-hex-bg-400);
+  font-size: 13px;
+  font-weight: 600;
+  content: '\00a0· ';
+}

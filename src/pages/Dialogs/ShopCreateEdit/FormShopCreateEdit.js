@@ -42,11 +42,8 @@ const FormShopCreateEdit = props => {
 						helperText={(touched.link && errors.link) || ''}
 						label="Сайт магазина"
 						as={TextField}
-						inputProps={{
-							maxLength: 60,
-						}}
 						validate={value => {
-							if (value !== '' && !validator.isURL(value)) return 'Неккоректная ссылка';
+							if (value !== '' && !validator.isURL(value)) return 'Некорректная ссылка';
 						}}
 						fullWidth
 					/>

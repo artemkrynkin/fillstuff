@@ -11,6 +11,7 @@ import receipts from './receipts';
 import writeOffs from './writeOffs';
 import procurements from './procurements';
 import invoices from './invoices';
+import storeNotifications from './storeNotifications';
 
 const router = app => {
 	app.use('/auth', authRoutes);
@@ -26,6 +27,7 @@ const router = app => {
 	app.use('/api', writeOffs);
 	app.use('/api', procurements);
 	app.use('/api', invoices);
+	app.use('/api', storeNotifications);
 };
 
 export default router;

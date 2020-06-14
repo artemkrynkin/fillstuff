@@ -9,12 +9,12 @@ import Grid from '@material-ui/core/Grid';
 import styles from './index.module.css';
 
 const AvatarTitle = props => {
-	const { imageSrc, title } = props;
-	const classNames = { ...props.classNamesInitial, ...props.classNames };
+	const { imageSrc, title, classNamesInitial, classNames, ...remainingProps } = props;
+	const classNamesCombined = { ...classNamesInitial, ...classNames };
 
 	const classesContainer = ClassNames({
 		...Object.fromEntries(
-			classNames.container
+			classNamesCombined.container
 				.split(' ')
 				.filter(val => val)
 				.map(key => [key, true])
@@ -24,7 +24,7 @@ const AvatarTitle = props => {
 
 	const classesImage = ClassNames({
 		...Object.fromEntries(
-			classNames.image
+			classNamesCombined.image
 				.split(' ')
 				.filter(val => val)
 				.map(key => [key, true])
@@ -34,7 +34,7 @@ const AvatarTitle = props => {
 
 	const classesTitle = ClassNames({
 		...Object.fromEntries(
-			classNames.title
+			classNamesCombined.title
 				.split(' ')
 				.filter(val => val)
 				.map(key => [key, true])
@@ -43,7 +43,7 @@ const AvatarTitle = props => {
 	});
 
 	return (
-		<div className={classesContainer}>
+		<div className={classesContainer} {...remainingProps}>
 			<Avatar className={classesImage} src={imageSrc} alt={title}>
 				<div className={styles.userIcon}>
 					<FontAwesomeIcon icon={['fas', 'user-alt']} />

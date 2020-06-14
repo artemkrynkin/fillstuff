@@ -459,9 +459,9 @@ export const BliksideTheme = createMuiTheme({
 				left: null,
 				position: null,
 				transform: null,
-				'[readonly] &': {
-					marginBottom: 0,
-				},
+				// '[readonly] &': {
+				// 	marginBottom: 0,
+				// },
 			},
 			shrink: {
 				transform: 'translate(0, 0)',

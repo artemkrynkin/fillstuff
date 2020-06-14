@@ -29,11 +29,10 @@
   color: var(--c-hex-bg-300);
 }
 
-.deliveryDate {
+.subtitle {
   color: var(--c-hex-bg-600);
-  font-size: 14px;
   font-weight: 500;
-  margin-bottom: 16px;
+  margin-bottom: 15px;
 }
 
 .user {
@@ -46,11 +45,16 @@
   font-weight: 700;
 }
 
+.info {
+  align-items: center;
+  display: flex;
+  margin-top: 7px;
+}
+
 .infoItem {
   color: var(--c-hex-bg-300);
   font-size: 12px;
   font-weight: 600;
-  margin-top: 7px;
   max-width: 90%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -59,9 +63,7 @@
 
 .infoItem:not(:first-child):before {
   color: var(--c-hex-bg-400);
+  font-size: 13px;
+  font-weight: 600;
   content: '\00a0· ';
-}
-
-.procurementReceived {
-  margin-left: auto;
 }

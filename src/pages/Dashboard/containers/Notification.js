@@ -1,0 +1,219 @@
+import React, { Fragment, useEffect, useRef, useState } from 'react';
+import { connect } from 'react-redux';
+import ClassNames from 'classnames';
+import moment from 'moment';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import MenuList from '@material-ui/core/MenuList';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+
+import CardPaper from 'src/components/CardPaper';
+import Money from 'src/components/Money';
+import Dropdown from 'src/components/Dropdown';
+import MenuItem from 'src/components/MenuItem';
+
+import { editStatusDeliveryIsExpected } from 'src/actions/storeNotifications';
+
+import styles from './Notification.module.css';
+
+const calendarFormat = {
+	sameDay: 'Сегодня',
+	nextDay: 'Завтра',
+	lastDay: 'Вчера',
+	sameElse: function(now) {
+		return this.isSame(now, 'year') ? 'D MMMM' : 'D MMMM YYYY';
+	},
+	nextWeek: function(now) {
+		return this.isSame(now, 'year') ? 'D MMMM' : 'D MMMM YYYY';
+	},
+	lastWeek: function(now) {
+		return this.isSame(now, 'year') ? 'D MMMM' : 'D MMMM YYYY';
+	},
+};
+
+const Notification = props => {
+	const { index, reverseIndex, importance, notification } = props;
+	const [actionStatus, setActionStatus] = useState(false);
+
+	const containerClasses = ClassNames({
+		[styles.card]: true,
+		[styles.cardImportanceRed]: importance === 'red',
+		[styles.cardImportanceOrange]: importance === 'orange',
+		[styles.cardImportanceGreen]: importance === 'green',
+		[styles.cardNew]: notification.actionStatus === 'new',
+		[styles.cardDeleting]: actionStatus === 'deleting' || notification.actionStatus === 'deleting',
+		[styles.cardPositionEnds]: notification.type === 'position-ends',
+		[styles.cardDeliveryIsExpected]: notification.type === 'delivery-is-expected',
+	});
+
+	const openViewDialog = event => {
+		if (
+			(event.target.closest('.' + styles.actionButton) &&
+				event.target.closest('.' + styles.actionButton).classList.contains(styles.actionButton)) ||
+			event.target.closest('[role="tooltip"]')
+		)
+			return;
+
+		// onOpenDialogProcurement('dialogProcurementExpectedView', 'procurementExpected', procurement);
+	};
+
+	useEffect(() => {
+		if (notification.type === 'delivery-is-expected') {
+			const momentDate = moment();
+
+			let interval;
+			const deliveryDateAndTime = moment(notification.procurement.deliveryDate).set({
+				hour: moment(notification.procurement.deliveryTimeTo).get('hour'),
+				minute: moment(notification.procurement.deliveryTimeTo).get('minute'),
+				second: 0,
+			});
+
+			const intervalHandler = async () => {
+				if (moment().isSameOrAfter(deliveryDateAndTime)) {
+					setActionStatus('deleting');
+					clearInterval(interval);
+
+					props.editStatusDeliveryIsExpected(notification);
+				}
+			};
+
+			if (momentDate.isSameOrBefore(deliveryDateAndTime)) {
+				interval = setInterval(intervalHandler, 5000);
+			}
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	return (
+		<CardPaper
+			className={containerClasses}
+			onClick={openViewDialog}
+			header={false}
+			elevation={1}
+			style={{ zIndex: reverseIndex, '--cardIndex': index, '--cardReverseIndex': reverseIndex }}
+		>
+			{notification.type === 'position-ends' ? (
+				<PositionEndsContent notification={notification} importance={importance} />
+			) : notification.type === 'delivery-is-expected' ? (
+				<DeliveryIsExpectedContent notification={notification} importance={importance} />
+			) : null}
+		</CardPaper>
+	);
+};
+
+const PositionEndsContent = props => {
+	const { notification } = props;
+
+	const remainingQuantity = notification.position.receipts.reduce((sum, receipt) => sum + receipt.current.quantity, 0);
+
+	return (
+		<Fragment>
+			<div className={styles.header}>
+				<FontAwesomeIcon className={styles.notificationIcon} icon={['fal', 'chart-line-down']} />
+				<Typography className={styles.title} variant="h6">
+					Заканчивается позиция
+				</Typography>
+			</div>
+			<Typography className={styles.subtitle} variant="subtitle1">
+				{notification.position.name}
+			</Typography>
+			<div className={styles.details}>
+				<div className={styles.caption}>
+					Остаток: {remainingQuantity} {notification.position.unitRelease === 'pce' ? 'шт.' : 'уп.'}
+				</div>
+			</div>
+		</Fragment>
+	);
+};
+
+const DeliveryIsExpectedContent = props => {
+	const { notification } = props;
+	const refDropdownActions = useRef(null);
+	const [dropdownActions, setDropdownActions] = useState(false);
+
+	const onHandleDropdownActions = value => setDropdownActions(value === null || value === undefined ? prevValue => !prevValue : value);
+
+	const timeFrom = moment(notification.procurement.deliveryTimeFrom).format('HH:mm');
+	const timeTo = moment(notification.procurement.deliveryTimeTo).format('HH:mm');
+
+	return (
+		<Fragment>
+			<IconButton
+				ref={refDropdownActions}
+				className={ClassNames({
+					[styles.actionButton]: true,
+					[styles.actionButtonActive]: dropdownActions,
+				})}
+				onClick={() => onHandleDropdownActions()}
+				size="small"
+			>
+				<FontAwesomeIcon icon={['far', 'ellipsis-v']} />
+			</IconButton>
+			<div className={styles.header}>
+				<FontAwesomeIcon className={styles.notificationIcon} icon={['fal', 'truck']} />
+				<Typography className={styles.title} variant="h6">
+					Ожидается доставка
+				</Typography>
+			</div>
+			<Typography className={styles.subtitle} variant="subtitle1">
+				{moment(notification.procurement.deliveryDate).calendar(null, calendarFormat)} с {timeFrom} до {timeTo}
+			</Typography>
+			<div className={styles.details}>
+				<div className={styles.totalPrice}>
+					<Money value={notification.procurement.totalPrice} />
+				</div>
+				<div className={styles.info}>
+					<div className={styles.infoItem}>{notification.procurement.shop.name}</div>
+				</div>
+			</div>
+
+			<Dropdown
+				anchor={refDropdownActions}
+				open={dropdownActions}
+				onClose={() => onHandleDropdownActions(false)}
+				placement="bottom-end"
+				disablePortal={true}
+			>
+				<MenuList>
+					<MenuItem
+						onClick={() => {
+							onHandleDropdownActions();
+							// onOpenDialogProcurement('dialogProcurementReceivedCreate', 'procurementReceived', procurement);
+						}}
+						iconBefore={<FontAwesomeIcon icon={['far', 'truck-loading']} />}
+					>
+						Оформить закупку
+					</MenuItem>
+					<MenuItem
+						onClick={() => {
+							onHandleDropdownActions();
+							// onOpenDialogProcurement('dialogProcurementExpectedEdit', 'procurementExpected', procurement);
+						}}
+						iconBefore={<FontAwesomeIcon icon={['far', 'pen']} />}
+					>
+						Редактировать
+					</MenuItem>
+					<MenuItem
+						onClick={() => {
+							onHandleDropdownActions();
+							// onOpenDialogProcurement('dialogProcurementExpectedCancel', 'procurementExpected', procurement);
+						}}
+						iconBefore={<FontAwesomeIcon icon={['far', 'undo']} />}
+						destructive
+					>
+						Отменить заказ
+					</MenuItem>
+				</MenuList>
+			</Dropdown>
+		</Fragment>
+	);
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		editStatusDeliveryIsExpected: data => dispatch(editStatusDeliveryIsExpected({ data })),
+	};
+};
+
+export default connect(null, mapDispatchToProps)(Notification);

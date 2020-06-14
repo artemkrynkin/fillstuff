@@ -89,3 +89,15 @@ export const editStudio = ({ data }) => {
 			});
 	};
 };
+
+export const joinStudio = () => {
+	return async (dispatch, getState, socket) => {
+		const studioId = getState().studio.data._id;
+
+		socket.emit('joinStudio', studioId);
+
+		socket.on('connect', () => {
+			socket.emit('joinStudio', studioId);
+		});
+	};
+};

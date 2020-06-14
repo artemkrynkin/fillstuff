@@ -19,7 +19,7 @@ const Chip = props => {
 			<div className={styles.label}>{chipLabel}</div>
 			{onRemoveChip ? (
 				<ButtonBase onClick={onRemoveChip} className={styles.remove} disabled={disabled}>
-					<FontAwesomeIcon icon={['far', 'times']} />
+					<FontAwesomeIcon icon={['fal', 'times']} />
 				</ButtonBase>
 			) : null}
 		</div>

@@ -30,8 +30,6 @@ const DialogProcurementExpectedCancel = props => {
 		props.cancelProcurementExpected(selectedProcurement._id).then(response => {
 			onCloseDialog();
 
-			if (response.status === 'success') props.getStudioStore();
-
 			if (response.status === 'error') {
 				this.props.enqueueSnackbar({
 					message: response.message || 'Неизвестная ошибка.',

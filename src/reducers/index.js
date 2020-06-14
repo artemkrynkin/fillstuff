@@ -12,6 +12,7 @@ import writeOffs from './writeOffs';
 import procurementsExpected from './procurementsExpected';
 import procurementsReceived from './procurementsReceived';
 import invoices from './invoices';
+import storeNotifications from './storeNotifications';
 
 import snackbars from './snackbars';
 
@@ -29,6 +30,7 @@ const getReducers = () => {
 		procurementsExpected,
 		procurementsReceived,
 		invoices,
+		storeNotifications,
 
 		snackbars,
 	});

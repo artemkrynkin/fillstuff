@@ -83,6 +83,8 @@ import {
 	faReceipt as falReceipt,
 	faInfoCircle as falInfoCircle,
 	faSearch as falSearch,
+	faChartLineDown as falChartLineDown,
+	faTruck as falTruck,
 } from '@fortawesome/pro-light-svg-icons';
 
 import { faCheckCircle as fadCheckCircle, faExclamationCircle as fadExclamationCircle } from '@fortawesome/pro-duotone-svg-icons';
@@ -172,6 +174,8 @@ library.add(
 	falReceipt,
 	falInfoCircle,
 	falSearch,
+	falChartLineDown,
+	falTruck,
 
 	// Duotone
 	fadCheckCircle,

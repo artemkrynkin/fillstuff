@@ -3,8 +3,8 @@ import ClassNames from 'classnames';
 import moment from 'moment';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
 import MenuList from '@material-ui/core/MenuList';
 
 import { declensionNumber } from 'src/helpers/utils';
@@ -17,7 +17,20 @@ import AvatarTitle from 'src/components/AvatarTitle';
 
 import styles from './ProcurementExpected.module.css';
 
-const momentDate = moment();
+const calendarFormat = {
+	sameDay: 'Сегодня',
+	nextDay: 'Завтра',
+	lastDay: 'Вчера',
+	sameElse: function(now) {
+		return this.isSame(now, 'year') ? 'D MMMM' : 'D MMMM YYYY';
+	},
+	nextWeek: function(now) {
+		return this.isSame(now, 'year') ? 'D MMMM' : 'D MMMM YYYY';
+	},
+	lastWeek: function(now) {
+		return this.isSame(now, 'year') ? 'D MMMM' : 'D MMMM YYYY';
+	},
+};
 
 const ProcurementExpected = props => {
 	const { procurement, onOpenDialogProcurement } = props;
@@ -26,15 +39,14 @@ const ProcurementExpected = props => {
 
 	const onHandleDropdownActions = value => setDropdownActions(value === null || value === undefined ? prevValue => !prevValue : value);
 
-	const isCurrentYear = momentDate.isSame(procurement.deliveryDate, 'year');
-	const deliveryDate = moment(procurement.deliveryDate).format(isCurrentYear ? 'D MMMM' : 'D MMMM YYYY');
 	const timeFrom = moment(procurement.deliveryTimeFrom).format('HH:mm');
 	const timeTo = moment(procurement.deliveryTimeTo).format('HH:mm');
 
 	const openViewDialog = event => {
 		if (
-			event.target.closest('.' + styles.actionButton) &&
-			event.target.closest('.' + styles.actionButton).classList.contains(styles.actionButton)
+			(event.target.closest('.' + styles.actionButton) &&
+				event.target.closest('.' + styles.actionButton).classList.contains(styles.actionButton)) ||
+			event.target.closest('[role="tooltip"]')
 		)
 			return;
 
@@ -55,9 +67,9 @@ const ProcurementExpected = props => {
 				>
 					<FontAwesomeIcon icon={['far', 'ellipsis-v']} />
 				</IconButton>
-				<div className={styles.deliveryDate}>
-					{deliveryDate} с {timeFrom} до {timeTo}
-				</div>
+				<Typography className={styles.subtitle} variant="subtitle1">
+					{moment(procurement.deliveryDate).calendar(null, calendarFormat)} с {timeFrom} до {timeTo}
+				</Typography>
 				<AvatarTitle
 					classNames={{
 						container: styles.user,
@@ -65,59 +77,53 @@ const ProcurementExpected = props => {
 					imageSrc={procurement.orderedByMember.user.avatar}
 					title={procurement.orderedByMember.user.name}
 				/>
-				<Grid alignItems="center" container>
-					<Grid xs={12} item>
-						<div className={styles.totalPrice}>
-							<Money value={procurement.totalPrice} />
-						</div>
-						<Grid container>
-							<div className={styles.infoItem}>{procurement.shop.name}</div>
-							<div className={styles.infoItem}>
-								{declensionNumber(procurement.positions.length, ['позиция', 'позиции', 'позиций'], true)}
-							</div>
-						</Grid>
-					</Grid>
-				</Grid>
-			</CardPaper>
+				<div className={styles.totalPrice}>
+					<Money value={procurement.totalPrice} />
+				</div>
+				<div className={styles.info}>
+					<div className={styles.infoItem}>{procurement.shop.name}</div>
+					<div className={styles.infoItem}>{declensionNumber(procurement.positions.length, ['позиция', 'позиции', 'позиций'], true)}</div>
+				</div>
 
-			<Dropdown
-				anchor={refDropdownActions}
-				open={dropdownActions}
-				onClose={() => onHandleDropdownActions(false)}
-				placement="bottom-end"
-				disablePortal={false}
-			>
-				<MenuList>
-					<MenuItem
-						onClick={() => {
-							onHandleDropdownActions();
-							onOpenDialogProcurement('dialogProcurementReceivedCreate', 'procurementReceived', procurement);
-						}}
-						iconBefore={<FontAwesomeIcon icon={['far', 'truck-loading']} />}
-					>
-						Оформить закупку
-					</MenuItem>
-					<MenuItem
-						onClick={() => {
-							onHandleDropdownActions();
-							onOpenDialogProcurement('dialogProcurementExpectedEdit', 'procurementExpected', procurement);
-						}}
-						iconBefore={<FontAwesomeIcon icon={['far', 'pen']} />}
-					>
-						Редактировать
-					</MenuItem>
-					<MenuItem
-						onClick={() => {
-							onHandleDropdownActions();
-							onOpenDialogProcurement('dialogProcurementExpectedCancel', 'procurementExpected', procurement);
-						}}
-						iconBefore={<FontAwesomeIcon icon={['far', 'undo']} />}
-						destructive
-					>
-						Отменить заказ
-					</MenuItem>
-				</MenuList>
-			</Dropdown>
+				<Dropdown
+					anchor={refDropdownActions}
+					open={dropdownActions}
+					onClose={() => onHandleDropdownActions(false)}
+					placement="bottom-end"
+					disablePortal={true}
+				>
+					<MenuList>
+						<MenuItem
+							onClick={() => {
+								onHandleDropdownActions();
+								onOpenDialogProcurement('dialogProcurementReceivedCreate', 'procurementReceived', procurement);
+							}}
+							iconBefore={<FontAwesomeIcon icon={['far', 'truck-loading']} />}
+						>
+							Оформить закупку
+						</MenuItem>
+						<MenuItem
+							onClick={() => {
+								onHandleDropdownActions();
+								onOpenDialogProcurement('dialogProcurementExpectedEdit', 'procurementExpected', procurement);
+							}}
+							iconBefore={<FontAwesomeIcon icon={['far', 'pen']} />}
+						>
+							Редактировать
+						</MenuItem>
+						<MenuItem
+							onClick={() => {
+								onHandleDropdownActions();
+								onOpenDialogProcurement('dialogProcurementExpectedCancel', 'procurementExpected', procurement);
+							}}
+							iconBefore={<FontAwesomeIcon icon={['far', 'undo']} />}
+							destructive
+						>
+							Отменить заказ
+						</MenuItem>
+					</MenuList>
+				</Dropdown>
+			</CardPaper>
 		</div>
 	);
 };

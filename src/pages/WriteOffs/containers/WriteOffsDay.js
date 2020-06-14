@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import ClassNames from 'classnames';
 import moment from 'moment';
+import queryString from 'query-string';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ButtonBase from '@material-ui/core/ButtonBase';
@@ -10,20 +11,21 @@ import TableBody from '@material-ui/core/TableBody';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Collapse from '@material-ui/core/Collapse';
-import Avatar from '@material-ui/core/Avatar';
+import IconButton from '@material-ui/core/IconButton';
 
 import { history } from 'src/helpers/history';
 
 import CardPaper from 'src/components/CardPaper';
+import AvatarTitle from 'src/components/AvatarTitle';
 import Money from 'src/components/Money';
 import Tooltip from 'src/components/Tooltip';
+import Dropdown from 'src/components/Dropdown';
+import { deleteParamsCoincidence } from 'src/components/Pagination/utils';
 
 import WriteOff from './WriteOff';
 
 import { TableCell } from './styles';
 import styles from './WriteOffsDay.module.css';
-import queryString from 'query-string';
-import { deleteParamsCoincidence } from '../../../components/Pagination/utils';
 
 const calendarFormat = {
 	sameDay: 'Сегодня',
@@ -39,10 +41,16 @@ const WriteOffsDay = props => {
 		writeOffDay: { date, indicators, writeOffs },
 		onOpenDialogByName,
 	} = props;
+	const refDropdownAllUsers = useRef(null);
 	const [expanded, setExpanded] = useState(moment(date).isSame(new Date(), 'day'));
+	const [dropdownAllUsers, setDropdownAllUsers] = useState(false);
+
+	const maxVisibleUsers = 4;
+
+	const onHandleDropdownAllUsers = () => setDropdownAllUsers(prevValue => !prevValue);
 
 	const onHandleExpand = event => {
-		if (!event.target.closest(`.${styles.usersPerDayWrapper}`)) setExpanded(!expanded);
+		if (!event.target.closest(`.${styles.users}`)) setExpanded(!expanded);
 	};
 
 	const onChangeFilterRole = role => {
@@ -72,28 +80,38 @@ const WriteOffsDay = props => {
 					<Grid container>
 						<Grid xs={6} item>
 							<div className={styles.title}>{moment(date).calendar(null, calendarFormat)}</div>
-							<div>
-								<div className={styles.usersPerDayWrapper}>
-									{indicators.members.map((member, index) => (
-										<Tooltip key={member._id} title={member.user.name} placement="top" arrow={false}>
-											<div
-												className={ClassNames({
-													[styles.user]: true,
-													[styles.userSingle]: indicators.members.length === 1,
-												})}
-												style={{ zIndex: indicators.members.length - index }}
+							<div ref={refDropdownAllUsers} className={styles.users}>
+								{indicators.members.map((member, index) => {
+									if (index >= maxVisibleUsers) return null;
+
+									return (
+										<Tooltip
+											key={member._id}
+											title={member.user.name}
+											className={ClassNames({
+												[styles.user]: true,
+											})}
+											style={{ zIndex: indicators.members.length - index }}
+											placement="top"
+											arrow={true}
+											enterDelay={150}
+											enterNextDelay={150}
+										>
+											<AvatarTitle
 												onClick={() => onChangeFilterRole(member._id)}
-											>
-												<Avatar
-													className={styles.userPhoto}
-													src={member.user.avatar}
-													alt={member.user.name}
-													children={<div className={styles.userIcon} children={<FontAwesomeIcon icon={['fas', 'user-alt']} />} />}
-												/>
-											</div>
+												classNames={{
+													image: styles.userPhoto,
+												}}
+												imageSrc={member.user.avatar}
+											/>
 										</Tooltip>
-									))}
-								</div>
+									);
+								})}
+								{indicators.members.length > maxVisibleUsers ? (
+									<div className={styles.remainingUsersButton} onClick={onHandleDropdownAllUsers}>
+										{`+${indicators.members.length - maxVisibleUsers}`}
+									</div>
+								) : null}
 							</div>
 						</Grid>
 						<Grid xs={6} item>
@@ -155,6 +173,39 @@ const WriteOffsDay = props => {
 					<FontAwesomeIcon icon={['far', 'angle-down']} className={expanded ? 'open' : ''} />
 				</ButtonBase>
 			</div>
+
+			{indicators.members.length > maxVisibleUsers ? (
+				<Dropdown
+					anchor={refDropdownAllUsers}
+					open={dropdownAllUsers}
+					onClose={onHandleDropdownAllUsers}
+					placement="bottom-start"
+					disablePortal={false}
+					style={{ margin: '-40px 0px 0px -8px' }}
+					innerContentStyle={{ minWidth: 252, maxWidth: 386 }}
+				>
+					<div className={styles.allUsersPopup}>
+						<IconButton className={styles.closePopup} onClick={onHandleDropdownAllUsers} size="small">
+							<FontAwesomeIcon icon={['fal', 'times']} />
+						</IconButton>
+						<div className={styles.usersPopup}>
+							{indicators.members.map(member => (
+								<Tooltip
+									key={member._id}
+									title={member.user.name}
+									className={ClassNames({
+										[styles.userPopup]: true,
+									})}
+									placement="top"
+									arrow={true}
+								>
+									<AvatarTitle onClick={() => onChangeFilterRole(member._id)} imageSrc={member.user.avatar} />
+								</Tooltip>
+							))}
+						</div>
+					</div>
+				</Dropdown>
+			) : null}
 		</CardPaper>
 	);
 };

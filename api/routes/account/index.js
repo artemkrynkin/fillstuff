@@ -17,6 +17,11 @@ const accountRouter = Router();
 const upload = uploadAvatar.single('avatar');
 
 accountRouter.post('/getMyAccount', isAuthedResolver, (req, res) => {
+	// const hour = 60 * 1 * 1000;
+	// req.session.cookie.expires = new Date(Date.now() + hour)
+	// req.session.cookie.maxAge = hour
+	// console.log(req.session.cookie.maxAge);
+
 	res.json(req.user);
 });
 
@@ -174,11 +179,17 @@ accountRouter.post(
 	}
 );
 
+accountRouter.post('/temporarySession', isAuthedResolver, (req, res, next) => {
+	const { userId } = req.body;
+});
+
 accountRouter.post('/getMyAccountMember', isAuthedResolver, (req, res, next) => {
 	const { userId, memberId } = req.body;
 
 	Member.findOne({ _id: memberId, user: mongoose.Types.ObjectId(userId) })
-		.then(studio => res.json(studio))
+		.then(member => {
+			res.json(member);
+		})
 		.catch(err => next(err));
 });
 

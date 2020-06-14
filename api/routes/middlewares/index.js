@@ -18,7 +18,7 @@ middlewares.use(cookieParser());
 import bodyParser from 'body-parser';
 middlewares.use(bodyParser.json());
 
-import session from 'shared/middlewares/session';
+import { session } from 'shared/middlewares/session';
 middlewares.use(session);
 
 import passport from 'passport';

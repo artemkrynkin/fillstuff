@@ -70,7 +70,7 @@ const FormReceiptCreate = props => {
 						)}
 					</Grid>
 
-					{isNmpPce ? (
+					{values.position.unitReceipt === 'nmp' ? (
 						<Grid xs={3} item>
 							<Field
 								name="quantityInUnit"

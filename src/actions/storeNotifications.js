@@ -102,9 +102,9 @@ export const storeNotificationEvents = () => {
 			})
 			.on('deleteStoreNotification', async storeNotification => {
 				dispatch({
-					type: 'EDIT_STORE_NOTIFICATION',
+					type: 'EDIT_STATUS_STORE_NOTIFICATION',
 					payload: {
-						...storeNotification,
+						_id: storeNotification._id,
 						actionStatus: 'deleting',
 					},
 				});

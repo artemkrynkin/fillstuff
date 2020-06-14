@@ -70,7 +70,7 @@ export const editStoreNotification = io => {
 			},
 		]);
 
-		io.in(storeNotificationValues.studio).emit('editStoreNotification', storeNotification);
+		if (storeNotification) io.in(storeNotificationValues.studio).emit('editStoreNotification', storeNotification);
 	});
 };
 
@@ -78,6 +78,6 @@ export const deleteStoreNotification = io => {
 	Emitter.on('deleteStoreNotification', async storeNotificationValues => {
 		const storeNotification = await StoreNotification.findOneAndRemove(storeNotificationValues);
 
-		io.in(storeNotificationValues.studio).emit('deleteStoreNotification', storeNotification);
+		if (storeNotification) io.in(storeNotificationValues.studio).emit('deleteStoreNotification', storeNotification);
 	});
 };

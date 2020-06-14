@@ -7,6 +7,8 @@ import Studio from 'api/models/studio';
 import Position from 'api/models/position';
 import PositionGroup from 'api/models/positionGroup';
 import Receipt from 'api/models/receipt';
+import Emitter from '../../utils/emitter';
+import StoreNotification from '../../models/storeNotification';
 
 const positionsRouter = Router();
 
@@ -197,6 +199,7 @@ positionsRouter.post(
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
+			studioId,
 			params: { positionId },
 		} = req.body;
 
@@ -254,6 +257,12 @@ positionsRouter.post(
 			receipts,
 		} = position;
 
+		Emitter.emit('deleteStoreNotification', {
+			studio: studioId,
+			type: 'position-ends',
+			position: position._id,
+		});
+
 		const purchasePriceReceiptsPosition = receipts
 			.filter(receipt => /received|active/.test(receipt.status))
 			.reduce((sum, receipt) => sum + receipt.current.quantity * receipt.unitPurchasePrice, 0);
@@ -279,6 +288,7 @@ positionsRouter.post(
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
+			studioId,
 			params: { positionId },
 			data: { archivedAfterEnded },
 		} = req.body;
@@ -291,7 +301,7 @@ positionsRouter.post(
 		if (archivedAfterEnded) positionEdited.$set.archivedAfterEnded = archivedAfterEnded;
 		else positionEdited.$unset.archivedAfterEnded = 1;
 
-		Position.findByIdAndUpdate(positionId, positionEdited, { new: true })
+		const position = await Position.findByIdAndUpdate(positionId, positionEdited, { new: true })
 			.populate([
 				{
 					path: 'activeReceipt characteristics shops.shop',
@@ -304,8 +314,27 @@ positionsRouter.post(
 					},
 				},
 			])
-			.then(position => res.json(position))
 			.catch(err => next({ code: 2, err }));
+
+		const allQuantityReceipts = position.receipts
+			.filter(receipt => /received|active/.test(receipt.status))
+			.reduce((sum, receipt) => sum + receipt.current.quantity, 0);
+
+		if (allQuantityReceipts <= position.minimumBalance) {
+			const storeNotification = {
+				studio: studioId,
+				type: 'position-ends',
+				position: position._id,
+			};
+
+			if (archivedAfterEnded) {
+				Emitter.emit('deleteStoreNotification', storeNotification);
+			} else {
+				Emitter.emit('createStoreNotification', storeNotification);
+			}
+		}
+
+		res.json(position);
 	}
 );
 

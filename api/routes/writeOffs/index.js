@@ -278,7 +278,7 @@ writeOffsRouter.post(
 
 		await Promise.all(awaitingPromises);
 
-		if (remainingQuantityAfterWriteOff <= position.minimumBalance) {
+		if (remainingQuantityAfterWriteOff <= position.minimumBalance && !position.archivedAfterEnded) {
 			const newStoreNotification = {
 				studio: studioId,
 				type: 'position-ends',

@@ -67,7 +67,7 @@ Empty.defaultProps = {
 
 Empty.propTypes = {
 	imageSrc: PropTypes.string,
-	imageSize: PropTypes.oneOf(['md', 'sm', 'xs']),
+	imageSize: PropTypes.oneOf(['md', 'sm', 'xs', '']),
 	content: PropTypes.node,
 	actions: PropTypes.node,
 	style: PropTypes.object,

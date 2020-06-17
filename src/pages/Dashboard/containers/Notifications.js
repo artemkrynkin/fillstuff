@@ -41,9 +41,10 @@ const Notifications = props => {
 					content: styles.emptyContent,
 				}}
 				imageSrc={emptyImage}
+				imageSize=""
 				content={
 					<Fragment>
-						<Typography variant="h6">Событий нет.</Typography>
+						<Typography variant="h6">Событий нет</Typography>
 						<Typography variant="body1">Отдохните или займитесь другими делами :)</Typography>
 					</Fragment>
 				}

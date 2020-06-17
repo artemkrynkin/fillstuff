@@ -23,10 +23,6 @@
   max-height: initial;
 }
 
-.emptyContent {
-  margin-top: 15px;
-}
-
 .stickyHeader {
   background: linear-gradient(to bottom, var(--c-hex-br-4) 85%, rgba(255, 255, 255, 0) 100%);
   display: flex;

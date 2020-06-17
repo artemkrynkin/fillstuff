@@ -38,7 +38,6 @@ const Notifications = props => {
 				classNames={{
 					container: styles.empty,
 					image: styles.emptyImage,
-					content: styles.emptyContent,
 				}}
 				imageSrc={emptyImage}
 				imageSize=""

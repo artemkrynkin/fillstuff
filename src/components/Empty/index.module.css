@@ -31,8 +31,14 @@
 }
 
 .content {
-  margin-top: 32px;
+  margin-top: 15px;
   text-align: center;
+}
+
+.imageMd + .content,
+.imageSm + .content,
+.imageXs + .content {
+  margin-top: 32px;
 }
 
 .title {

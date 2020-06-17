@@ -29,15 +29,6 @@ const Empty = props => {
 		[styles.imageSm]: imageSize === 'sm',
 		[styles.imageXs]: imageSize === 'xs',
 	});
-	const contentClasses = ClassNames({
-		...Object.fromEntries(
-			classNames.content
-				.split(' ')
-				.filter(val => val)
-				.map(key => [key, true])
-		),
-		[styles.content]: true,
-	});
 
 	return (
 		<div className={containerClasses} style={style}>
@@ -47,7 +38,7 @@ const Empty = props => {
 				</div>
 			) : null}
 			{content || actions ? (
-				<div className={contentClasses}>
+				<div className={styles.content}>
 					{content}
 					{actions ? <div className={styles.actions}>{actions}</div> : null}
 				</div>
@@ -61,7 +52,6 @@ Empty.defaultProps = {
 	classNamesInitial: {
 		container: '',
 		image: '',
-		content: '',
 	},
 };
 
@@ -74,7 +64,6 @@ Empty.propTypes = {
 	classNames: PropTypes.shape({
 		container: PropTypes.string,
 		image: PropTypes.string,
-		content: PropTypes.string,
 	}),
 };
 

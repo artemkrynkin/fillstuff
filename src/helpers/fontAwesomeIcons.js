@@ -85,6 +85,7 @@ import {
 	faSearch as falSearch,
 	faChartLineDown as falChartLineDown,
 	faTruck as falTruck,
+	faRobot as falRobot,
 } from '@fortawesome/pro-light-svg-icons';
 
 import { faCheckCircle as fadCheckCircle, faExclamationCircle as fadExclamationCircle } from '@fortawesome/pro-duotone-svg-icons';
@@ -176,6 +177,7 @@ library.add(
 	falSearch,
 	falChartLineDown,
 	falTruck,
+	falRobot,
 
 	// Duotone
 	fadCheckCircle,

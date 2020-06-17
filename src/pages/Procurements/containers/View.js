@@ -31,7 +31,9 @@ const View = props => {
 	if (procurementsExpected && procurementsReceived && !procurementsExpected.paging.totalCount && !procurementsReceived.paging.totalCount) {
 		return (
 			<Empty
-				className={styles.empty}
+				classNames={{
+					container: styles.empty,
+				}}
 				imageSrc={emptyImage}
 				content={
 					<Typography variant="h6" gutterBottom>
@@ -60,7 +62,9 @@ const View = props => {
 			<Fragment>
 				<ProcurementsExpected onOpenDialogByName={onOpenDialogByName} procurementsExpected={procurementsExpected} />
 				<Empty
-					className={styles.empty2}
+					classNames={{
+						container: styles.empty2,
+					}}
 					imageSrc={emptyImage}
 					imageSize="sm"
 					content={

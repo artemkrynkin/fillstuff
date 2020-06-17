@@ -24,6 +24,12 @@
   max-height: 300px;
 }
 
+.imageXs img {
+  height: 25vh;
+  min-height: 150px;
+  max-height: 200px;
+}
+
 .content {
   margin-top: 32px;
   text-align: center;

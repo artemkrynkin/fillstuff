@@ -123,7 +123,7 @@ class SliderScroller extends Component {
 		const { shadows, children } = this.props;
 		const classNames = { ...this.props.classNamesInitial, ...this.props.classNames };
 
-		const classesContainer = ClassNames({
+		const containerClasses = ClassNames({
 			...Object.fromEntries(
 				classNames.container
 					.split(' ')
@@ -132,7 +132,7 @@ class SliderScroller extends Component {
 			),
 			[styles.container]: true,
 		});
-		const classesWrapOverflow = ClassNames({
+		const wrapOverflowClasses = ClassNames({
 			...Object.fromEntries(
 				classNames.wrapOverflow
 					.split(' ')
@@ -141,7 +141,7 @@ class SliderScroller extends Component {
 			),
 			[styles.wrapOverflow]: true,
 		});
-		const classesWrapScroll = ClassNames({
+		const wrapScrollClasses = ClassNames({
 			...Object.fromEntries(
 				classNames.wrapScroll
 					.split(' ')
@@ -150,7 +150,7 @@ class SliderScroller extends Component {
 			),
 			[styles.wrapScroll]: true,
 		});
-		const classesWrapContent = ClassNames({
+		const wrapContentClasses = ClassNames({
 			...Object.fromEntries(
 				classNames.wrapContent
 					.split(' ')
@@ -161,10 +161,10 @@ class SliderScroller extends Component {
 		});
 
 		return (
-			<div ref={this.sliderScrollRef} className={classesContainer}>
-				<div className={classesWrapOverflow}>
-					<div className={classesWrapScroll} onScroll={this.onScroll}>
-						<div className={classesWrapContent}>{children}</div>
+			<div ref={this.sliderScrollRef} className={containerClasses}>
+				<div className={wrapOverflowClasses}>
+					<div className={wrapScrollClasses} onScroll={this.onScroll}>
+						<div className={wrapContentClasses}>{children}</div>
 					</div>
 				</div>
 

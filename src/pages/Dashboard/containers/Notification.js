@@ -16,6 +16,7 @@ import MenuItem from 'src/components/MenuItem';
 import { editStatusDeliveryIsExpected } from 'src/actions/storeNotifications';
 
 import styles from './Notification.module.css';
+import Tooltip from '../../../components/Tooltip';
 
 const calendarFormat = {
 	sameDay: 'Сегодня',
@@ -118,9 +119,15 @@ const PositionEndsContent = props => {
 			<Typography className={styles.subtitle} variant="subtitle1">
 				{notification.position.name}
 			</Typography>
-			<div className={styles.details}>
+			<div>
 				<div className={styles.caption}>
 					Остаток: {remainingQuantity} {notification.position.unitRelease === 'pce' ? 'шт.' : 'уп.'}
+				</div>
+				<div className={styles.caption}>
+					Закончится через:
+					<Tooltip title="Для расчета не достаточно данных" className={styles.robotIcon} placement="bottom">
+						<FontAwesomeIcon icon={['fal', 'robot']} />
+					</Tooltip>
 				</div>
 			</div>
 		</Fragment>
@@ -159,7 +166,7 @@ const DeliveryIsExpectedContent = props => {
 			<Typography className={styles.subtitle} variant="subtitle1">
 				{moment(notification.procurement.deliveryDate).calendar(null, calendarFormat)} с {timeFrom} до {timeTo}
 			</Typography>
-			<div className={styles.details}>
+			<div>
 				<div className={styles.totalPrice}>
 					<Money value={notification.procurement.totalPrice} />
 				</div>

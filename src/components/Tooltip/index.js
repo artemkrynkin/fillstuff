@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
 import MuiTooltip from '@material-ui/core/Tooltip';
 // import ClickAwayListener from '@material-ui/core/ClickAwayListener';
@@ -27,7 +28,13 @@ const Tooltip = props => {
 };
 
 Tooltip.defaultProps = {
+	className: '',
 	open: false,
+};
+
+Tooltip.propTypes = {
+	className: PropTypes.string,
+	open: PropTypes.bool,
 };
 
 export default Tooltip;

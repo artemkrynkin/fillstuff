@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import ClassNames from 'classnames';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Grid from '@material-ui/core/Grid';
 import ButtonBase from '@material-ui/core/ButtonBase';
+import Typography from '@material-ui/core/Typography';
 
+import Empty from 'src/components/Empty';
 import { LoadingComponent } from 'src/components/Loading';
 
 import Notification from './Notification';
 
+import emptyImage from 'public/img/stubs/dashboard_events_empy.svg';
 import styles from './Notifications.module.css';
 
 const Notifications = props => {
@@ -29,7 +32,24 @@ const Notifications = props => {
 
 	if (isLoadingStoreNotifications) return <LoadingComponent />;
 
-	if (!storeNotifications.red.length && !storeNotifications.orange.length && !storeNotifications.green.length) return null;
+	if (!storeNotifications.red.length && !storeNotifications.orange.length && !storeNotifications.green.length) {
+		return (
+			<Empty
+				classNames={{
+					container: styles.empty,
+					image: styles.emptyImage,
+					content: styles.emptyContent,
+				}}
+				imageSrc={emptyImage}
+				content={
+					<Fragment>
+						<Typography variant="h6">Событий нет.</Typography>
+						<Typography variant="body1">Отдохните или займитесь другими делами :)</Typography>
+					</Fragment>
+				}
+			/>
+		);
+	}
 
 	const containerClasses = ClassNames({
 		[styles.container]: true,

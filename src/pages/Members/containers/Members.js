@@ -38,7 +38,9 @@ const Members = props => {
 				<Filter tabName={tabName} onChangeTab={onChangeTab} filterOptions={filterOptions} />
 				<FilteredComponent loading={isLoadingMembers}>
 					<Empty
-						className={styles.empty}
+						classNames={{
+							container: styles.empty,
+						}}
 						imageSrc={emptyImage}
 						content={
 							<Typography variant="h6" gutterBottom>

@@ -50,7 +50,7 @@ const PositionNameInList = props => {
 						</Tooltip>
 					) : null}
 					{archivedAfterEnded ? (
-						<Tooltip title={<div style={{ width: 200 }}>Позиция архивируется после списания последней единицы.</div>} placement="top">
+						<Tooltip title={<div style={{ width: 200 }}>Позиция архивируется после списания последней единицы</div>} placement="top">
 							<div className={styles.archivedAfterEnded}>
 								<span className="fa-layers fa-fw" style={{ width: '16px' }}>
 									<FontAwesomeIcon icon={['far', 'archive']} />

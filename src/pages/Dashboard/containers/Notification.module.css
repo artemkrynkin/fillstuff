@@ -177,12 +177,11 @@
   margin-bottom: 15px;
 }
 
-.details {}
-
 .caption {
   color: var(--c-hex-bg-300);
   font-size: 12px;
   font-weight: 600;
+  margin-top: 7px;
 }
 
 .totalPrice {
@@ -212,4 +211,11 @@
   font-size: 13px;
   font-weight: 600;
   content: '\00a0· ';
+}
+
+.robotIcon {
+  color: var(--c-hex-bg-500);
+  display: inline-block;
+  font-size: 16px;
+  margin: -4px 0 0 5px;
 }

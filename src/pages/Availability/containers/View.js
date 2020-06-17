@@ -28,7 +28,9 @@ const View = props => {
 	if (positions && !positions.length && !positionGroups.length) {
 		return (
 			<Empty
-				className={styles.empty}
+				classNames={{
+					container: styles.empty,
+				}}
 				imageSrc={emptyImage}
 				content={
 					<Typography variant="h6" gutterBottom>
@@ -47,7 +49,9 @@ const View = props => {
 	if (positions && positions.every(position => position.isArchived)) {
 		return (
 			<Empty
-				className={styles.empty}
+				classNames={{
+					container: styles.empty,
+				}}
 				imageSrc={emptyImage}
 				content={
 					<Typography variant="h6" gutterBottom>

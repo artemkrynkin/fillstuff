@@ -5,22 +5,38 @@ import ClassNames from 'classnames';
 import styles from './index.module.css';
 
 const Empty = props => {
-	const { imageSrc, imageSize, content, actions, className, style } = props;
+	const { imageSrc, imageSize, content, actions, style } = props;
+	const classNames = { ...props.classNamesInitial, ...props.classNames };
 
 	const containerClasses = ClassNames({
 		...Object.fromEntries(
-			className
+			classNames.container
 				.split(' ')
 				.filter(val => val)
 				.map(key => [key, true])
 		),
 		[styles.container]: true,
 	});
-
 	const imageClasses = ClassNames({
+		...Object.fromEntries(
+			classNames.image
+				.split(' ')
+				.filter(val => val)
+				.map(key => [key, true])
+		),
 		[styles.image]: true,
 		[styles.imageMd]: imageSize === 'md',
 		[styles.imageSm]: imageSize === 'sm',
+		[styles.imageXs]: imageSize === 'xs',
+	});
+	const contentClasses = ClassNames({
+		...Object.fromEntries(
+			classNames.content
+				.split(' ')
+				.filter(val => val)
+				.map(key => [key, true])
+		),
+		[styles.content]: true,
 	});
 
 	return (
@@ -31,7 +47,7 @@ const Empty = props => {
 				</div>
 			) : null}
 			{content || actions ? (
-				<div className={styles.content}>
+				<div className={contentClasses}>
 					{content}
 					{actions ? <div className={styles.actions}>{actions}</div> : null}
 				</div>
@@ -42,16 +58,24 @@ const Empty = props => {
 
 Empty.defaultProps = {
 	imageSize: 'md',
-	className: '',
+	classNamesInitial: {
+		container: '',
+		image: '',
+		content: '',
+	},
 };
 
 Empty.propTypes = {
 	imageSrc: PropTypes.string,
-	imageSize: PropTypes.oneOf(['md', 'sm']),
+	imageSize: PropTypes.oneOf(['md', 'sm', 'xs']),
 	content: PropTypes.node,
 	actions: PropTypes.node,
 	style: PropTypes.object,
-	className: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+	classNames: PropTypes.shape({
+		container: PropTypes.string,
+		image: PropTypes.string,
+		content: PropTypes.string,
+	}),
 };
 
 export default Empty;

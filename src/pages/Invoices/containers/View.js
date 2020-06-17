@@ -26,7 +26,9 @@ const View = props => {
 	if (!invoices.paging.totalCount && !invoices.paging.totalDocs) {
 		return (
 			<Empty
-				className={styles.empty}
+				classNames={{
+					container: styles.empty,
+				}}
 				imageSrc={emptyImage}
 				content={
 					<Typography variant="h6" gutterBottom>

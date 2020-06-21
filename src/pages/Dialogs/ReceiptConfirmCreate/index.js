@@ -21,14 +21,15 @@ const ReceiptConfirmCreate = props => {
 
 	return (
 		<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth="sm">
-			<DialogTitle onClose={onCloseDialog} theme="noTheme" />
+			<DialogTitle onClose={onCloseDialog} theme="noTheme">
+				Внимание!
+			</DialogTitle>
 			<DialogContent>
 				<Typography variant="body1" gutterBottom>
-					Если вы закупили новую позицию, создайте поступление при помощи кнопки «Оформить закупку».
+					Если вы&nbsp;закупили новую позицию создайте поступление при помощи кнопки &laquo;Оформить закупку&raquo;.
 				</Typography>
 				<Typography variant="body1">
-					Если вы приняли решение вести программный учет позиции, которая вами уже используется, но не была внесена в Blikside, продолжите
-					оформление здесь.
+					Если позиция уже используется вами, но&nbsp;не&nbsp;была внесена в&nbsp;Blikside, продолжите оформление здесь.
 				</Typography>
 				<DialogActions>
 					<Button

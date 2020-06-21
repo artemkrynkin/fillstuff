@@ -9,13 +9,14 @@ import { sleep, formatNumber } from 'shared/utils';
 
 import { DialogStickyFR, DialogTitle } from 'src/components/Dialog';
 
+import { procurementPositionTransform } from 'src/helpers/utils';
+
 import { getStudioStore } from 'src/actions/studio';
 import { getShops } from 'src/actions/shops';
 import { getPositions } from 'src/actions/positions';
 import { createProcurementReceived } from 'src/actions/procurements';
 import { enqueueSnackbar } from 'src/actions/snackbars';
 
-import { positionTransform } from './utils';
 import FormProcurementReceivedCreate from './FormProcurementReceivedCreate';
 import procurementSchema from './procurementSchema';
 
@@ -321,7 +322,7 @@ const mapStateToProps = state => {
 	const positions = { ...state.positions };
 
 	if (positions.data && positions.data.length > 0) {
-		positions.data = positions.data.filter(position => !position.isArchived).map(position => positionTransform(position));
+		positions.data = positions.data.filter(position => !position.isArchived).map(position => procurementPositionTransform(position));
 	}
 
 	return {

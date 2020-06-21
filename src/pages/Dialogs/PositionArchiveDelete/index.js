@@ -59,6 +59,19 @@ const PositionArchiveDelete = props => {
 			if (onCallback !== undefined) onCallback(response);
 
 			onCloseDialog();
+
+			if (response.status === 'success') {
+				props.enqueueSnackbar({
+					message: (
+						<div>
+							Позиция <b>{selectedPosition.name}</b> будет архивирована после реализации.
+						</div>
+					),
+					options: {
+						variant: 'success',
+					},
+				});
+			}
 		});
 	};
 

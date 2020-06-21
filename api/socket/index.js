@@ -1,10 +1,10 @@
 import { sessionReload } from './auth';
 import { joinStudio } from './studio';
-import { createStoreNotification, editStoreNotification, deleteStoreNotification } from './storeNotifications';
+import { newStoreNotification, editStoreNotification, deleteStoreNotification } from './storeNotifications';
 
 const socket = io => {
 	sessionReload(io);
-	createStoreNotification(io);
+	newStoreNotification(io);
 	editStoreNotification(io);
 	deleteStoreNotification(io);
 

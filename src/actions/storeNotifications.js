@@ -23,7 +23,31 @@ export const getStoreNotifications = () => {
 				return Promise.resolve({ status: 'success' });
 			})
 			.catch(error => {
-				console.error(error);
+				console.error(error.response);
+
+				return Promise.resolve({ status: 'error' });
+			});
+	};
+};
+
+export const getStoreNotification = ({ params }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+
+		return await axios
+			.post('/api/getStoreNotification', {
+				studioId,
+				memberId,
+				params,
+			})
+			.then(response => {
+				const { data: storeNotification } = response;
+
+				return Promise.resolve({ status: 'success', data: storeNotification });
+			})
+			.catch(error => {
+				console.error(error.response);
 
 				return Promise.resolve({ status: 'error' });
 			});

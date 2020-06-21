@@ -12,7 +12,7 @@ import Member from './Member';
 import Filter from './Filter';
 
 import styles from './Members.module.css';
-import emptyImage from 'public/img/stubs/procurements.svg';
+import emptyImage from 'public/img/stubs/procurements_empty.svg';
 
 const Members = props => {
 	const {
@@ -44,7 +44,7 @@ const Members = props => {
 						imageSrc={emptyImage}
 						content={
 							<Typography variant="h6" gutterBottom>
-								Похоже, у вас еще нет гостевых мастеров
+								У вас еще нет гостевых мастеров
 							</Typography>
 						}
 						actions={

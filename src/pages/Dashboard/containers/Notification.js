@@ -34,7 +34,7 @@ const calendarFormat = {
 };
 
 const Notification = props => {
-	const { index, reverseIndex, importance, notification } = props;
+	const { index, reverseIndex, importance, onOpenDialogByName, notification } = props;
 	const [actionStatus, setActionStatus] = useState(false);
 
 	const containerClasses = ClassNames({
@@ -56,7 +56,12 @@ const Notification = props => {
 		)
 			return;
 
-		// onOpenDialogProcurement('dialogProcurementExpectedView', 'procurementExpected', procurement);
+		switch (notification.type) {
+			case 'position-ends':
+				return onOpenDialogByName('dialogPositionEnded', 'storeNotification', notification);
+			default:
+				return;
+		}
 	};
 
 	useEffect(() => {
@@ -125,7 +130,7 @@ const PositionEndsContent = props => {
 				</div>
 				<div className={styles.caption}>
 					Закончится через:
-					<Tooltip title="Для расчета не достаточно данных" className={styles.robotIcon} placement="bottom">
+					<Tooltip title="Недостаточно данных для расчета" className={styles.robotIcon} placement="bottom">
 						<FontAwesomeIcon icon={['fal', 'robot']} />
 					</Tooltip>
 				</div>

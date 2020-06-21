@@ -12,7 +12,7 @@ import ProcurementsReceived from './received/ProcurementsReceived';
 
 import styles from './View.module.css';
 
-import emptyImage from 'public/img/stubs/procurements.svg';
+import emptyImage from 'public/img/stubs/procurements_empty.svg';
 import Filter from './Filter';
 
 const View = props => {
@@ -37,7 +37,7 @@ const View = props => {
 				imageSrc={emptyImage}
 				content={
 					<Typography variant="h6" gutterBottom>
-						Похоже, у вас еще нет заказов или закупок
+						У вас еще нет заказов или закупок
 					</Typography>
 				}
 				actions={
@@ -69,7 +69,7 @@ const View = props => {
 					imageSize="sm"
 					content={
 						<Typography variant="h6" gutterBottom>
-							Похоже, у вас еще нет закупок
+							У вас еще нет закупок
 						</Typography>
 					}
 					actions={

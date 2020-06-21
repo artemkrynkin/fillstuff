@@ -11,7 +11,7 @@ import Positions from './Positions';
 
 import styles from './View.module.css';
 
-import emptyImage from 'public/img/stubs/availability.svg';
+import emptyImage from 'public/img/stubs/availability_empty.svg';
 
 const View = props => {
 	const {
@@ -34,7 +34,7 @@ const View = props => {
 				imageSrc={emptyImage}
 				content={
 					<Typography variant="h6" gutterBottom>
-						Похоже, у вас еще нет позиций
+						У вас еще нет позиций
 					</Typography>
 				}
 				actions={
@@ -55,7 +55,7 @@ const View = props => {
 				imageSrc={emptyImage}
 				content={
 					<Typography variant="h6" gutterBottom>
-						Похоже, все ваши позиции находятся в архиве
+						Все ваши позиции находятся в архиве
 					</Typography>
 				}
 				actions={

@@ -108,7 +108,7 @@ procurementsRouter.post(
 
 		await Promise.all([newProcurement.save(), positionUpdated]);
 
-		Emitter.emit('createStoreNotification', {
+		Emitter.emit('newStoreNotification', {
 			studio: studioId,
 			type: 'delivery-is-expected',
 			procurement: newProcurement._id,

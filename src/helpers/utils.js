@@ -64,3 +64,15 @@ export const formErrorHelperText = (touched, errors, name, helperText = null) =>
 	const touch = getIn(touched, name);
 	return touch && typeof error === 'string' ? error : helperText;
 };
+
+export const procurementPositionTransform = position => ({
+	_id: position._id,
+	lastReceipt: position.receipts[position.receipts.length - 1],
+	unitRelease: position.unitRelease,
+	unitReceipt: position.unitReceipt,
+	isFree: position.isFree,
+	name: position.name,
+	characteristics: position.characteristics,
+	label: position.characteristics.reduce((fullName, characteristic) => `${fullName} ${characteristic.name}`, position.name),
+	value: position._id,
+});

@@ -91,6 +91,10 @@ const Position = new Schema({
 			numberReceipts: {
 				type: Number,
 			},
+			lastProcurement: {
+				type: Schema.Types.ObjectId,
+				ref: 'Procurement',
+			},
 		},
 	],
 	// Имеет поступления

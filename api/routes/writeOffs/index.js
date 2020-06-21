@@ -278,7 +278,7 @@ writeOffsRouter.post(
 
 		await Promise.all(awaitingPromises);
 
-		if (remainingQuantityAfterWriteOff <= position.minimumBalance && !position.archivedAfterEnded) {
+		if (remainingQuantityAfterWriteOff <= position.minimumBalance && !position.archivedAfterEnded && !position.deliveryIsExpected.length) {
 			const newStoreNotification = {
 				studio: studioId,
 				type: 'position-ends',
@@ -287,7 +287,7 @@ writeOffsRouter.post(
 
 			const isCreatedStoreNotification = await StoreNotification.findOne(newStoreNotification).catch(err => next({ code: 2, err }));
 
-			if (!isCreatedStoreNotification) Emitter.emit('createStoreNotification', newStoreNotification);
+			if (!isCreatedStoreNotification) Emitter.emit('newStoreNotification', newStoreNotification);
 			else Emitter.emit('editStoreNotification', newStoreNotification);
 		}
 
@@ -340,6 +340,7 @@ writeOffsRouter.post(
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
+			studioId,
 			memberId,
 			params: { writeOffId },
 			data: { cancellationRequestBy },
@@ -375,12 +376,12 @@ writeOffsRouter.post(
 			});
 		}
 
-		if (!writeOff.isFree && !member.billingPeriodWriteOffs.some(billingWriteOff => String(billingWriteOff._id) === String(writeOff._id))) {
-			return res.json({
-				code: 7,
-				message: 'Списание не может быть отменено, так как по нему уже был выставлен счет',
-			});
-		}
+		// if (!writeOff.isFree && !member.billingPeriodWriteOffs.some(billingWriteOff => String(billingWriteOff._id) === String(writeOff._id))) {
+		// 	return res.json({
+		// 		code: 7,
+		// 		message: 'Списание не может быть отменено, так как по нему уже был выставлен счет',
+		// 	});
+		// }
 
 		const awaitingPromises = [];
 
@@ -402,16 +403,15 @@ writeOffsRouter.post(
 			}).catch(err => next({ code: 2, err }))
 		);
 
-		const receiptCurrentSet = {
-			quantity: receipt.current.quantity + writeOff.quantity,
+		const receiptSet = {
+			current: {
+				quantity: receipt.current.quantity + writeOff.quantity,
+			},
 		};
-		const receiptSet = {};
 
 		if (writeOff.position.unitReceipt === 'nmp' && writeOff.position.unitRelease === 'pce') {
-			receiptCurrentSet.quantityPackages = (receipt.current.quantity + writeOff.quantity) / receipt.quantityInUnit;
+			receiptSet.current.quantityPackages = (receipt.current.quantity + writeOff.quantity) / receipt.quantityInUnit;
 		}
-
-		receiptSet.current = receiptCurrentSet;
 
 		if (receipt.status === 'closed') {
 			receiptSet.status = 'active';
@@ -430,6 +430,18 @@ writeOffsRouter.post(
 		);
 
 		await Promise.all(awaitingPromises);
+
+		const newStoreNotification = {
+			studio: studioId,
+			type: 'position-ends',
+			position: writeOff.position._id,
+		};
+
+		if (receiptSet.current.quantity > writeOff.position.minimumBalance) {
+			Emitter.emit('deleteStoreNotification', newStoreNotification);
+		} else {
+			Emitter.emit('editStoreNotification', newStoreNotification);
+		}
 
 		Member.findByIdAndUpdate(
 			memberId,

@@ -1,0 +1,21 @@
+.headerActions {
+  margin: -3px 0;
+  padding-right: 32px;
+}
+
+.archiveAfterEnded {
+  margin-left: auto;
+}
+
+.archiveAfterEndedButton {
+  color: rgba(var(--c-rgb-bg-300), 0.8);
+  height: 32px;
+  font-size: 16px;
+  padding: 0;
+  width: 32px;
+}
+
+.archiveAfterEndedButton:hover {
+  background-color: rgba(var(--c-rgb-o-1), 0.1);
+  color: var(--c-hex-o-1);
+}

@@ -16,6 +16,7 @@ import styles from './Notifications.module.css';
 
 const Notifications = props => {
 	const {
+		onOpenDialogByName,
 		storeNotifications: { data: storeNotifications, isFetching: isLoadingStoreNotifications },
 	} = props;
 	const [visibleAllNotifications, setVisibleAllNotifications] = useState(false);
@@ -80,6 +81,7 @@ const Notifications = props => {
 										index={index}
 										reverseIndex={storeNotifications[notificationType].length - index}
 										importance={notificationType}
+										onOpenDialogByName={onOpenDialogByName}
 										notification={notification}
 									/>
 								))}

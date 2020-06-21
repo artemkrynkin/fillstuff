@@ -1,0 +1,28 @@
+.title {
+  background-color: white;
+  position: sticky;
+  top: 59px;
+  padding: 10px 0;
+  z-index: 2;
+}
+
+.tableHeaderSticky th {
+  background-color: white;
+  border-bottom-color: transparent;
+  box-shadow: 0 1px 0 0 var(--c-hex-br-5);
+  position: sticky;
+  top: 94px;
+  z-index: 1;
+}
+
+.lastShop {
+  margin-top: 18px;
+}
+
+.otherShops {
+  margin-top: 5px;
+}
+
+.showShops {
+  margin-top: 25px;
+}

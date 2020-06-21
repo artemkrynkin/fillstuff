@@ -8,12 +8,13 @@ import { formatNumber } from 'shared/utils';
 
 import { DialogStickyFR, DialogTitle } from 'src/components/Dialog';
 
+import { procurementPositionTransform } from 'src/helpers/utils';
+
 import { getShops } from 'src/actions/shops';
 import { getPositions } from 'src/actions/positions';
 import { createProcurementExpected, editProcurementExpected } from 'src/actions/procurements';
 import { enqueueSnackbar } from 'src/actions/snackbars';
 
-import { positionTransform } from './utils';
 import FormProcurementExpectedCreateEdit from './FormProcurementExpectedCreateEdit';
 import procurementSchema from './procurementSchema';
 
@@ -103,10 +104,13 @@ class ProcurementExpectedCreateEdit extends Component {
 			initialValues = {
 				...initialValues,
 				...selectedProcurement,
-				deliveryDate: moment(selectedProcurement.deliveryDate).format(),
-				deliveryTimeFrom: moment(selectedProcurement.deliveryTimeFrom).format(),
-				deliveryTimeTo: moment(selectedProcurement.deliveryTimeTo).format(),
 			};
+
+			if (type === 'edit') {
+				initialValues.deliveryDate = moment(selectedProcurement.deliveryDate).format();
+				initialValues.deliveryTimeFrom = moment(selectedProcurement.deliveryTimeFrom).format();
+				initialValues.deliveryTimeTo = moment(selectedProcurement.deliveryTimeTo).format();
+			}
 		}
 
 		return (
@@ -155,7 +159,7 @@ const mapStateToProps = state => {
 	const positions = { ...state.positions };
 
 	if (positions.data && positions.data.length > 0) {
-		positions.data = positions.data.filter(position => !position.isArchived).map(position => positionTransform(position));
+		positions.data = positions.data.filter(position => !position.isArchived).map(position => procurementPositionTransform(position));
 	}
 
 	return {

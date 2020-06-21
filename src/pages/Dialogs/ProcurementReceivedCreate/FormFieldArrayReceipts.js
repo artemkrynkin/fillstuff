@@ -6,9 +6,10 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import FormHelperText from '@material-ui/core/FormHelperText';
 
+import { procurementPositionTransform } from 'src/helpers/utils';
+
 import { SelectAutocomplete } from 'src/components/selectAutocomplete';
 
-import { positionTransform } from './utils';
 import FormFieldArrayReceipt from './FormFieldArrayReceipt';
 
 import styles from './index.module.css';
@@ -122,7 +123,7 @@ const FormFieldArrayReceipts = props => {
 					if (response.status === 'success') {
 						const position = response.data;
 
-						push(receiptInitialValues(positionTransform(position)));
+						push(receiptInitialValues(procurementPositionTransform(position)));
 
 						setTimeout(() => {
 							dialogRef.current.querySelector('.sentinel-bottom').scrollIntoView({

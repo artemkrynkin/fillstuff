@@ -208,10 +208,12 @@ procurementsRouter.post(
 
 			if (positionShopIndex !== -1) {
 				positionInc[`shops.${positionShopIndex}.numberReceipts`] = 1;
+				positionSet[`shops.${positionShopIndex}.lastProcurement`] = newProcurement._id;
 			} else {
 				positionPush.shops = {
 					shop: newProcurement.shop,
 					numberReceipts: 1,
+					lastProcurement: newProcurement._id,
 				};
 			}
 

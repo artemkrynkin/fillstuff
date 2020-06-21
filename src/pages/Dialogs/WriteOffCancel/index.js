@@ -25,7 +25,7 @@ const DialogWriteOffCancel = props => {
 			if (response.status === 'success') props.getStudioStore();
 
 			if (response.status === 'error') {
-				this.props.enqueueSnackbar({
+				props.enqueueSnackbar({
 					message: response.message || 'Неизвестная ошибка.',
 					options: {
 						variant: 'error',

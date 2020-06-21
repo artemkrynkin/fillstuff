@@ -1,8 +1,8 @@
+import ColorConvert from 'color-convert';
+
 import MuiButton from '@material-ui/core/Button';
 import { red as redColor } from '@material-ui/core/colors';
 import { withStyles } from '@material-ui/core';
-
-import ColorConvert from 'color-convert';
 
 export const ButtonRed = withStyles({
 	root: {},
@@ -38,7 +38,7 @@ export const ButtonRed = withStyles({
 		color: redColor['600'],
 		border: `1px solid ${redColor['200']}`,
 		'&:hover': {
-			backgroundColor: redColor['50'],
+			backgroundColor: `rgba(${ColorConvert.hex.rgb(redColor['50'])}, 0.2)`,
 			border: `1px solid ${redColor['600']}`,
 		},
 	},

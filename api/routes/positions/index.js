@@ -330,7 +330,7 @@ positionsRouter.post(
 			if (archivedAfterEnded) {
 				Emitter.emit('deleteStoreNotification', storeNotification);
 			} else {
-				Emitter.emit('createStoreNotification', storeNotification);
+				Emitter.emit('newStoreNotification', storeNotification);
 			}
 		}
 

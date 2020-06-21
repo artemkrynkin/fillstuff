@@ -3,11 +3,11 @@ import React, { Fragment } from 'react';
 import Notifications from './Notifications';
 
 const View = props => {
-	const { storeNotifications } = props;
+	const { onOpenDialogByName, storeNotifications } = props;
 
 	return (
 		<Fragment>
-			<Notifications storeNotifications={storeNotifications} />
+			<Notifications onOpenDialogByName={onOpenDialogByName} storeNotifications={storeNotifications} />
 		</Fragment>
 	);
 };

@@ -9,7 +9,7 @@ import Invoices from './Invoices';
 
 import styles from './View.module.css';
 
-import emptyImage from 'public/img/stubs/procurements.svg';
+import emptyImage from 'public/img/stubs/procurements_empty.svg';
 
 const View = props => {
 	const {
@@ -32,7 +32,7 @@ const View = props => {
 				imageSrc={emptyImage}
 				content={
 					<Typography variant="h6" gutterBottom>
-						Похоже, у вас еще нет выставленных счетов
+						У вас еще нет выставленных счетов
 					</Typography>
 				}
 			/>

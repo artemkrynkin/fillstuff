@@ -2,8 +2,8 @@ import Emitter from 'api/utils/emitter';
 
 import StoreNotification from 'api/models/storeNotification';
 
-export const createStoreNotification = io => {
-	Emitter.on('createStoreNotification', async storeNotificationValues => {
+export const newStoreNotification = io => {
+	Emitter.on('newStoreNotification', async storeNotificationValues => {
 		const newStoreNotification = new StoreNotification(storeNotificationValues);
 
 		const newStoreNotificationErr = newStoreNotification.validateSync();

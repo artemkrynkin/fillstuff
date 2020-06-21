@@ -20,6 +20,7 @@ class DialogPositionEnded extends Component {
 		onCloseDialog: PropTypes.func.isRequired,
 		onExitedDialog: PropTypes.func,
 		selectedStoreNotificationId: PropTypes.string,
+		onOpenDialogByName: PropTypes.func,
 	};
 
 	initialState = {

@@ -43,12 +43,22 @@ const DialogReceiptActiveAddQuantity = loadable(() =>
 
 const DialogReceiptCreate = loadable(() => import('src/pages/Dialogs/ReceiptCreate' /* webpackChunkName: "Dialog_ReceiptCreate" */));
 
+const DialogReceiptConfirmCreate = loadable(() =>
+	import('src/pages/Dialogs/ReceiptConfirmCreate' /* webpackChunkName: "Dialog_ReceiptConfirmCreate" */)
+);
+
 const DialogWriteOffCreate = loadable(() => import('src/pages/Dialogs/WriteOffCreate' /* webpackChunkName: "Dialog_WriteOffCreate" */));
 
+const DialogProcurementReceivedCreate = loadable(() =>
+	import('src/pages/Dialogs/ProcurementReceivedCreate' /* webpackChunkName: "Dialog_ProcurementReceivedCreate" */)
+);
+
 const Index = props => {
+	const { currentStudio } = props;
 	const [dialogData, setDialogData] = useState({
 		positionGroup: null,
 		position: null,
+		procurementReceived: null,
 	});
 	const [dialogOpenedName, setDialogOpenedName] = useState('');
 	const [dialogs, setDialogs] = useState({
@@ -62,7 +72,9 @@ const Index = props => {
 		dialogPositionQRCode: false,
 		dialogReceiptActiveAddQuantity: false,
 		dialogReceiptCreate: false,
+		dialogReceiptConfirmCreate: false,
 		dialogWriteOffCreate: false,
+		dialogProcurementReceivedCreate: false,
 	});
 
 	const onOpenDialogByName = (dialogName, dataType, data) => {
@@ -180,11 +192,28 @@ const Index = props => {
 				selectedPosition={dialogOpenedName === 'dialogReceiptCreate' ? dialogData.position : null}
 			/>
 
+			<DialogReceiptConfirmCreate
+				dialogOpen={dialogs.dialogReceiptConfirmCreate}
+				onCloseDialog={() => onCloseDialogByName('dialogReceiptConfirmCreate')}
+				onExitedDialog={() => onExitedDialogByName('position')}
+				selectedPosition={dialogOpenedName === 'dialogReceiptConfirmCreate' ? dialogData.position : null}
+				onOpenDialogByName={onOpenDialogByName}
+			/>
+
 			<DialogWriteOffCreate
 				dialogOpen={dialogs.dialogWriteOffCreate}
 				onCloseDialog={() => onCloseDialogByName('dialogWriteOffCreate')}
 				onExitedDialog={() => onExitedDialogByName('position')}
 				selectedPosition={dialogOpenedName === 'dialogWriteOffCreate' ? dialogData.position : null}
+			/>
+
+			{/* Procurement */}
+			<DialogProcurementReceivedCreate
+				dialogOpen={dialogs.dialogProcurementReceivedCreate}
+				onCloseDialog={() => onCloseDialogByName('dialogProcurementReceivedCreate')}
+				currentStudio={currentStudio}
+				onExitedDialog={() => onExitedDialogByName('procurementReceived')}
+				selectedProcurement={dialogOpenedName === 'dialogProcurementReceivedCreate' ? dialogData.procurementReceived : null}
 			/>
 		</Container>
 	);

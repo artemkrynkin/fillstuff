@@ -79,7 +79,10 @@ const Position = props => {
 			) : null}
 			{!position.receipts.length ? (
 				<TableCell align="left" colSpan={2} width={280}>
-					<ButtonBase onClick={() => onOpenDialogPosition('dialogReceiptCreate', 'position', position)} className={styles.createReceipt}>
+					<ButtonBase
+						onClick={() => onOpenDialogPosition('dialogReceiptConfirmCreate', 'position', position)}
+						className={styles.createReceipt}
+					>
 						Создать поступление
 					</ButtonBase>
 				</TableCell>

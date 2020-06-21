@@ -142,6 +142,14 @@ procurementsRouter.post(
 			])
 			.catch(err => next({ code: 2, err }));
 
+		procurement.positions.forEach(position => {
+			Emitter.emit('deleteStoreNotification', {
+				studio: studioId,
+				type: 'position-ends',
+				position: position._id,
+			});
+		});
+
 		res.json(procurement);
 	}
 );

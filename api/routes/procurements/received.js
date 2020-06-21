@@ -9,6 +9,7 @@ import Studio from 'api/models/studio';
 import Position from 'api/models/position';
 import Receipt from 'api/models/receipt';
 import Procurement from 'api/models/procurement';
+import Emitter from '../../utils/emitter';
 
 const procurementsRouter = Router();
 
@@ -282,6 +283,14 @@ procurementsRouter.post(
 				},
 			])
 			.catch(err => next({ code: 2, err }));
+
+		procurement.positions.forEach(positionId => {
+			Emitter.emit('deleteStoreNotification', {
+				studio: studioId,
+				type: 'position-ends',
+				position: positionId,
+			});
+		});
 
 		const {
 			studio: {

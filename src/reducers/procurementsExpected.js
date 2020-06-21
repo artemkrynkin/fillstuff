@@ -28,6 +28,8 @@ const procurementsExpected = (
 		case 'CREATE_PROCUREMENT_EXPECTED': {
 			let stateData = { ...state }.data;
 
+			if (!stateData.data) stateData.data = [];
+
 			stateData.data.unshift(action.payload);
 			stateData.paging.totalCount += 1;
 

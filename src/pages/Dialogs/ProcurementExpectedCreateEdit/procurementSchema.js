@@ -6,15 +6,17 @@ const procurementSchema = (depopulate = false) => {
 		shop: Yup.mixed()
 			.required()
 			.transform((currentValue, originalValue) => (depopulate ? currentValue._id : currentValue)),
-		deliveryDate: Yup.mixed()
-			.required()
-			.transform((value, originalValue) => (moment(value).isValid() ? value : originalValue)),
-		deliveryTimeFrom: Yup.mixed()
-			.required()
-			.transform((value, originalValue) => (moment(value).isValid() ? value : originalValue)),
-		deliveryTimeTo: Yup.mixed()
-			.required()
-			.transform((value, originalValue) => (moment(value).isValid() ? value : originalValue)),
+		deliveryDate: Yup.mixed().when('isConfirmed', (isConfirmed, schema) => {
+			return isConfirmed
+				? schema.required().transform((value, originalValue) => (moment(value).isValid() ? value : originalValue))
+				: schema.strip();
+		}),
+		deliveryTimeFrom: Yup.mixed().when('isConfirmed', (isConfirmed, schema) => {
+			return isConfirmed ? schema.required() : schema.strip();
+		}),
+		deliveryTimeTo: Yup.mixed().when('isConfirmed', (isConfirmed, schema) => {
+			return isConfirmed ? schema.required() : schema.strip();
+		}),
 		costDelivery: Yup.number()
 			.transform(value => (isNaN(value) ? 0 : value))
 			.min(0),

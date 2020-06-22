@@ -78,36 +78,42 @@ const mapStateToProps = state => {
 			};
 
 			if (newStoreNotification.type === 'delivery-is-expected') {
-				const deliveryDateAndTime = moment(newStoreNotification.procurement.deliveryDate).set({
-					hour: moment(newStoreNotification.procurement.deliveryTimeTo).get('hour'),
-					minute: moment(newStoreNotification.procurement.deliveryTimeTo).get('minute'),
-					second: 0,
-				});
+				if (newStoreNotification.procurement.isConfirmed) {
+					const deliveryTimeToParse = newStoreNotification.procurement.deliveryTimeTo.split(':');
+					const deliveryTimeFromParse = newStoreNotification.procurement.deliveryTimeFrom.split(':');
+					const deliveryDateAndTime = moment(newStoreNotification.procurement.deliveryDate).set({
+						hour: deliveryTimeToParse[0],
+						minute: deliveryTimeToParse[1],
+						second: 0,
+					});
 
-				if (momentDate.isSameOrAfter(deliveryDateAndTime)) {
-					const deliveryDate = new Date(newStoreNotification.procurement.deliveryDate);
-					const deliveryTime = new Date(newStoreNotification.procurement.deliveryTimeTo);
+					if (momentDate.isSameOrAfter(deliveryDateAndTime)) {
+						const deliveryDate = new Date(newStoreNotification.procurement.deliveryDate);
 
-					deliveryDate.setHours(deliveryTime.getHours());
-					deliveryDate.setMinutes(deliveryTime.getMinutes());
+						deliveryDate.setHours(deliveryTimeToParse[0]);
+						deliveryDate.setMinutes(deliveryTimeToParse[1]);
+						deliveryDate.setSeconds(0);
 
-					newStoreNotification.sortDate = deliveryDate;
+						newStoreNotification.sortDate = deliveryDate;
 
-					newStoreNotificationsData.red.push(newStoreNotification);
-				} else {
-					const deliveryDate = new Date(newStoreNotification.procurement.deliveryDate);
-					const deliveryTime = new Date(newStoreNotification.procurement.deliveryTimeFrom);
-
-					deliveryDate.setHours(deliveryTime.getHours());
-					deliveryDate.setMinutes(deliveryTime.getMinutes());
-
-					newStoreNotification.sortDate = deliveryDate;
-
-					if (momentDate.isSame(deliveryDateAndTime, 'date')) {
-						newStoreNotificationsData.orange.push(newStoreNotification);
+						newStoreNotificationsData.red.push(newStoreNotification);
 					} else {
-						newStoreNotificationsData.green.push(newStoreNotification);
+						const deliveryDate = new Date(newStoreNotification.procurement.deliveryDate);
+
+						deliveryDate.setHours(deliveryTimeFromParse[0]);
+						deliveryDate.setMinutes(deliveryTimeFromParse[1]);
+						deliveryDate.setSeconds(0);
+
+						newStoreNotification.sortDate = deliveryDate;
+
+						if (momentDate.isSame(deliveryDateAndTime, 'date')) {
+							newStoreNotificationsData.orange.push(newStoreNotification);
+						} else {
+							newStoreNotificationsData.green.push(newStoreNotification);
+						}
 					}
+				} else {
+					newStoreNotificationsData.red.push(newStoreNotification);
 				}
 			} else {
 				newStoreNotification.sortDate = newStoreNotification.createdAt;
@@ -145,8 +151,8 @@ const mapStateToProps = state => {
 	};
 };
 
-const mapDispatchToProps = dispatch => {
-	return {};
-};
+// const mapDispatchToProps = dispatch => {
+// 	return {};
+// };
 
-export default compose(connect(mapStateToProps, mapDispatchToProps), withCurrentUser)(Dashboard);
+export default compose(connect(mapStateToProps, null), withCurrentUser)(Dashboard);

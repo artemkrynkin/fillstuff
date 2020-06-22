@@ -136,7 +136,7 @@ export const BliksideTheme = createMuiTheme({
 		},
 		MuiTypography: {
 			gutterBottom: {
-				marginBottom: '0.5rem',
+				marginBottom: '0.65rem',
 			},
 		},
 		MuiDivider: {
@@ -721,6 +721,9 @@ export const BliksideTheme = createMuiTheme({
 				paddingBottom: 10,
 				'&:focus': {
 					backgroundColor: null,
+				},
+				'&$disabled': {
+					color: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg600)}, 0.42)`,
 				},
 			},
 		},

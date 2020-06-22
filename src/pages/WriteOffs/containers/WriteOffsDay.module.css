@@ -49,9 +49,13 @@
   text-align: right;
 }
 
-.users {
+.usersContainer {
   display: flex;
   margin-left: -2px;
+}
+
+.users {
+  display: flex;
 }
 
 .user {
@@ -98,7 +102,7 @@
 }
 
 .allUsersPopup {
-  padding: 7px;
+  padding: 7px 40px 7px 7px;
 }
 
 .closePopup {

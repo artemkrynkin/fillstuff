@@ -91,6 +91,7 @@ class ProcurementExpectedCreateEdit extends Component {
 
 		let initialValues = {
 			shop: '',
+			isConfirmed: false,
 			deliveryDate: undefined,
 			deliveryTimeFrom: '',
 			deliveryTimeTo: '',
@@ -107,9 +108,7 @@ class ProcurementExpectedCreateEdit extends Component {
 			};
 
 			if (type === 'edit') {
-				initialValues.deliveryDate = moment(selectedProcurement.deliveryDate).format();
-				initialValues.deliveryTimeFrom = moment(selectedProcurement.deliveryTimeFrom).format();
-				initialValues.deliveryTimeTo = moment(selectedProcurement.deliveryTimeTo).format();
+				if (selectedProcurement.deliveryDate) initialValues.deliveryDate = moment(selectedProcurement.deliveryDate).format();
 			}
 		}
 

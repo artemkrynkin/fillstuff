@@ -65,13 +65,14 @@ const Notification = props => {
 	};
 
 	useEffect(() => {
-		if (notification.type === 'delivery-is-expected') {
+		if (notification.type === 'delivery-is-expected' && notification.procurement.isConfirmed) {
 			const momentDate = moment();
 
 			let interval;
+			const deliveryTimeToParse = notification.procurement.deliveryTimeTo.split(':');
 			const deliveryDateAndTime = moment(notification.procurement.deliveryDate).set({
-				hour: moment(notification.procurement.deliveryTimeTo).get('hour'),
-				minute: moment(notification.procurement.deliveryTimeTo).get('minute'),
+				hour: deliveryTimeToParse[0],
+				minute: deliveryTimeToParse[1],
 				second: 0,
 			});
 
@@ -146,9 +147,6 @@ const DeliveryIsExpectedContent = props => {
 
 	const onHandleDropdownActions = value => setDropdownActions(value === null || value === undefined ? prevValue => !prevValue : value);
 
-	const timeFrom = moment(notification.procurement.deliveryTimeFrom).format('HH:mm');
-	const timeTo = moment(notification.procurement.deliveryTimeTo).format('HH:mm');
-
 	return (
 		<Fragment>
 			<IconButton
@@ -165,12 +163,15 @@ const DeliveryIsExpectedContent = props => {
 			<div className={styles.header}>
 				<FontAwesomeIcon className={styles.notificationIcon} icon={['fal', 'truck']} />
 				<Typography className={styles.title} variant="h6">
-					Ожидается доставка
+					{notification.procurement.isConfirmed ? 'Ожидается доставка' : 'Ожидается подтверждение заказа'}
 				</Typography>
 			</div>
-			<Typography className={styles.subtitle} variant="subtitle1">
-				{moment(notification.procurement.deliveryDate).calendar(null, calendarFormat)} с {timeFrom} до {timeTo}
-			</Typography>
+			{notification.procurement.isConfirmed ? (
+				<Typography className={styles.subtitle} variant="subtitle1">
+					{moment(notification.procurement.deliveryDate).calendar(null, calendarFormat)} с {notification.procurement.deliveryTimeFrom} до{' '}
+					{notification.procurement.deliveryTimeTo}
+				</Typography>
+			) : null}
 			<div>
 				<div className={styles.totalPrice}>
 					<Money value={notification.procurement.totalPrice} />

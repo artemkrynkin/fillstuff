@@ -36,8 +36,6 @@ const ProcurementExpectedView = props => {
 
 	const isCurrentYear = momentDate.isSame(selectedProcurement.deliveryDate, 'year');
 	const deliveryDate = moment(selectedProcurement.deliveryDate).format(isCurrentYear ? 'D MMMM' : 'D MMMM YYYY');
-	const timeFrom = moment(selectedProcurement.deliveryTimeFrom).format('HH:mm');
-	const timeTo = moment(selectedProcurement.deliveryTimeTo).format('HH:mm');
 
 	return (
 		<DialogSticky open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth="md" scroll="body" stickyTitle>
@@ -82,7 +80,12 @@ const ProcurementExpectedView = props => {
 						}
 					/>
 					<DefinitionListItem term="Магазин" value={selectedProcurement.shop.name} />
-					<DefinitionListItem term="Дата доставки" value={`${deliveryDate} с ${timeFrom} до ${timeTo}`} />
+					{selectedProcurement.isConfirmed ? (
+						<DefinitionListItem
+							term="Дата доставки"
+							value={`${deliveryDate} с ${selectedProcurement.deliveryTimeFrom} до ${selectedProcurement.deliveryTimeTo}`}
+						/>
+					) : null}
 					<DefinitionListItem
 						term="Итого"
 						value={

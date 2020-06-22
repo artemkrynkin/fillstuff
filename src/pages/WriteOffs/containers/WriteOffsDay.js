@@ -80,38 +80,40 @@ const WriteOffsDay = props => {
 					<Grid container>
 						<Grid xs={6} item>
 							<div className={styles.title}>{moment(date).calendar(null, calendarFormat)}</div>
-							<div ref={refDropdownAllUsers} className={styles.users}>
-								{indicators.members.map((member, index) => {
-									if (index >= maxVisibleUsers) return null;
+							<div className={styles.usersContainer}>
+								<div ref={refDropdownAllUsers} className={styles.users}>
+									{indicators.members.map((member, index) => {
+										if (index >= maxVisibleUsers) return null;
 
-									return (
-										<Tooltip
-											key={member._id}
-											title={member.user.name}
-											className={ClassNames({
-												[styles.user]: true,
-											})}
-											style={{ zIndex: indicators.members.length - index }}
-											placement="top"
-											arrow={true}
-											enterDelay={150}
-											enterNextDelay={150}
-										>
-											<AvatarTitle
-												onClick={() => onChangeFilterRole(member._id)}
-												classNames={{
-													image: styles.userPhoto,
-												}}
-												imageSrc={member.user.avatar}
-											/>
-										</Tooltip>
-									);
-								})}
-								{indicators.members.length > maxVisibleUsers ? (
-									<div className={styles.remainingUsersButton} onClick={onHandleDropdownAllUsers}>
-										{`+${indicators.members.length - maxVisibleUsers}`}
-									</div>
-								) : null}
+										return (
+											<Tooltip
+												key={member._id}
+												title={member.user.name}
+												className={ClassNames({
+													[styles.user]: true,
+												})}
+												style={{ zIndex: indicators.members.length - index }}
+												placement="top"
+												arrow={true}
+												enterDelay={150}
+												enterNextDelay={150}
+											>
+												<AvatarTitle
+													onClick={() => onChangeFilterRole(member._id)}
+													classNames={{
+														image: styles.userPhoto,
+													}}
+													imageSrc={member.user.avatar}
+												/>
+											</Tooltip>
+										);
+									})}
+									{indicators.members.length > maxVisibleUsers ? (
+										<div className={styles.remainingUsersButton} onClick={onHandleDropdownAllUsers}>
+											{`+${indicators.members.length - maxVisibleUsers}`}
+										</div>
+									) : null}
+								</div>
 							</div>
 						</Grid>
 						<Grid xs={6} item>

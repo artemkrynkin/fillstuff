@@ -168,6 +168,7 @@ procurementsRouter.post(
 		const procurement = await Procurement.findById(procurementId).catch(err => next({ code: 2, err }));
 
 		procurement.shop = procurementEdited.shop;
+		procurement.isConfirmed = procurementEdited.isConfirmed;
 		procurement.deliveryDate = procurementEdited.deliveryDate;
 		procurement.deliveryTimeFrom = procurementEdited.deliveryTimeFrom;
 		procurement.deliveryTimeTo = procurementEdited.deliveryTimeTo;

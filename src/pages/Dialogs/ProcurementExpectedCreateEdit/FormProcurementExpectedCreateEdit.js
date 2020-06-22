@@ -17,15 +17,19 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import MomentUtils from '@material-ui/pickers/adapter/moment';
 import { StaticDatePicker, LocalizationProvider } from '@material-ui/pickers';
 
+import { timesInterval15Minutes } from 'shared/utils';
+
 import MenuItem from 'src/components/MenuItem';
 import { SelectAutocomplete } from 'src/components/selectAutocomplete';
 import NumberFormat, { moneyInputFormatProps } from 'src/components/NumberFormat';
 import Dropdown from 'src/components/Dropdown';
 
 import FormFieldArrayPositions from './FormFieldArrayPositions';
-import { times } from './utils';
 
 import stylesGlobal from 'src/styles/globals.module.css';
+import CheckboxWithLabel from '../../../components/CheckboxWithLabel';
+import styles from '../ProcurementReceivedCreate/index.module.css';
+import Tooltip from '../../../components/Tooltip';
 
 const DialogShopCreate = loadable(() => import('src/pages/Dialogs/ShopCreateEdit' /* webpackChunkName: "Dialog_ShopCreateEdit" */));
 
@@ -122,96 +126,107 @@ const FormProcurementExpectedCreateEdit = props => {
 					>
 						Дата доставки
 					</InputLabel>
-					<Grid wrap="nowrap" alignItems="flex-start" spacing={2} container>
-						<Grid style={{ width: 116 }} item>
-							<TextField
-								innerRef={refDropdownDeliveryDate}
-								name="deliveryDate"
-								placeholder={values.noInvoice ? '-' : 'Дата'}
-								error={Boolean(errors.deliveryDate && touched.deliveryDate)}
-								helperText={typeof errors.deliveryDate === 'string' && touched.deliveryDate ? errors.deliveryDate : null}
-								disabled={isSubmitting}
-								value={values.deliveryDate ? moment(values.deliveryDate).format('DD.MM.YYYY') : ''}
-								onFocus={() => {
-									setTimeout(() => {
-										onHandleDropdownDeliveryDate(true);
-									}, 100);
+					<Grid direction="column" container>
+						<Grid wrap="nowrap" alignItems="flex-start" spacing={2} container>
+							<Grid style={{ width: 116 }} item>
+								<TextField
+									innerRef={refDropdownDeliveryDate}
+									name="deliveryDate"
+									placeholder={!values.isConfirmed ? '-' : 'Дата'}
+									error={Boolean(errors.deliveryDate && touched.deliveryDate)}
+									helperText={typeof errors.deliveryDate === 'string' && touched.deliveryDate ? errors.deliveryDate : null}
+									disabled={isSubmitting || !values.isConfirmed}
+									value={values.deliveryDate ? moment(values.deliveryDate).format('DD.MM.YYYY') : ''}
+									onFocus={() => {
+										setTimeout(() => {
+											onHandleDropdownDeliveryDate(true);
+										}, 100);
+									}}
+									fullWidth
+								/>
+							</Grid>
+							<Grid style={{ width: 95 }} item>
+								<Grid alignItems="baseline" container>
+									<InputLabel style={{ marginLeft: -8, marginRight: 8 }} data-inline>
+										c
+									</InputLabel>
+									<Grid style={{ flex: '1 1' }} item>
+										<Field
+											name="deliveryTimeFrom"
+											as={Select}
+											error={Boolean(touched.deliveryTimeFrom && errors.deliveryTimeFrom)}
+											onChange={({ target: { value } }) => {
+												setFieldValue('deliveryTimeFrom', value);
+												const timeFromParse = value.split(':');
+												const timeToParse = values.deliveryTimeTo.split(':');
+												const deliveryTimeFromMoment = moment().set({ hour: timeFromParse[0], minute: timeFromParse[1], second: 0 });
+												const deliveryTimeToMoment = moment().set({ hour: timeToParse[0], minute: timeToParse[1], second: 0 });
+
+												if (deliveryTimeFromMoment.isAfter(deliveryTimeToMoment)) {
+													setFieldValue('deliveryTimeTo', value);
+												}
+											}}
+											renderValue={value => (value ? value : values.isConfirmed ? '' : '-')}
+											disabled={isSubmitting || !values.isConfirmed}
+											fullWidth
+										>
+											{timesInterval15Minutes.map((time, index) => (
+												<MenuItem key={index} value={time}>
+													{time}
+												</MenuItem>
+											))}
+										</Field>
+									</Grid>
+								</Grid>
+							</Grid>
+							<Grid style={{ width: 105 }} item>
+								<Grid alignItems="baseline" container>
+									<InputLabel style={{ marginLeft: -8, marginRight: 8 }} data-inline>
+										до
+									</InputLabel>
+									<Grid style={{ flex: '1 1' }} item>
+										<Field
+											name="deliveryTimeTo"
+											as={Select}
+											error={Boolean(touched.deliveryTimeFrom && errors.deliveryTimeFrom)}
+											renderValue={value => (value ? value : values.isConfirmed ? '' : '-')}
+											disabled={isSubmitting || !values.isConfirmed}
+											fullWidth
+										>
+											{timesInterval15Minutes.map((time, index) => {
+												const timeFromIndex = timesInterval15Minutes.findIndex(timeInterval => timeInterval === values.deliveryTimeFrom);
+
+												return (
+													<MenuItem key={index} value={time} hidden={index < timeFromIndex}>
+														{time}
+													</MenuItem>
+												);
+											})}
+										</Field>
+									</Grid>
+								</Grid>
+							</Grid>
+						</Grid>
+						<Grid alignItems="center" container>
+							<Field
+								type="checkbox"
+								name="isConfirmed"
+								Label={{ label: 'Указать дату и время доставки' }}
+								as={CheckboxWithLabel}
+								onChange={({ target: { checked } }) => {
+									setFieldValue('isConfirmed', checked);
+
+									if (!checked && values.deliveryDate) setFieldValue('deliveryDate', undefined);
+									if (!checked && values.deliveryTimeFrom) setFieldValue('deliveryTimeFrom', '');
+									if (!checked && values.deliveryTimeTo) setFieldValue('deliveryTimeTo', '');
 								}}
-								fullWidth
+								disabled={isSubmitting}
 							/>
-						</Grid>
-						<Grid style={{ width: 95 }} item>
-							<Grid alignItems="baseline" container>
-								<InputLabel style={{ marginLeft: -8, marginRight: 8 }} data-inline>
-									c
-								</InputLabel>
-								<Grid style={{ flex: '1 1' }} item>
-									<Field
-										name="deliveryTimeFrom"
-										as={Select}
-										error={Boolean(touched.deliveryTimeFrom && errors.deliveryTimeFrom)}
-										onChange={({ target: { value } }) => {
-											setFieldValue('deliveryTimeFrom', value);
-
-											if (moment(value).isAfter(values.deliveryTimeTo)) {
-												setFieldValue('deliveryTimeTo', value);
-											}
-										}}
-										renderValue={value => {
-											if (!value) return '';
-											else return moment(value).format('HH:mm');
-										}}
-										fullWidth
-									>
-										{times.map((time, index) => {
-											const date = moment(values.deliveryDate || new Date()).set({
-												hour: time.hour,
-												minute: time.minute,
-												second: 0,
-											});
-
-											return (
-												<MenuItem key={index} value={date.format()}>
-													{date.format('HH:mm')}
-												</MenuItem>
-											);
-										})}
-									</Field>
-								</Grid>
-							</Grid>
-						</Grid>
-						<Grid style={{ width: 105 }} item>
-							<Grid alignItems="baseline" container>
-								<InputLabel style={{ marginLeft: -8, marginRight: 8 }} data-inline>
-									до
-								</InputLabel>
-								<Grid style={{ flex: '1 1' }} item>
-									<Field
-										name="deliveryTimeTo"
-										as={Select}
-										error={Boolean(touched.deliveryTimeFrom && errors.deliveryTimeFrom)}
-										renderValue={value => {
-											if (!value) return '';
-											else return moment(value).format('HH:mm');
-										}}
-										fullWidth
-									>
-										{times.map((time, index) => {
-											const date = moment(values.deliveryDate || new Date()).set({
-												hour: time.hour,
-												minute: time.minute,
-												second: 0,
-											});
-
-											return (
-												<MenuItem key={index} value={date.format()} hidden={date.isSameOrBefore(values.deliveryTimeFrom)}>
-													{date.format('HH:mm')}
-												</MenuItem>
-											);
-										})}
-									</Field>
-								</Grid>
-							</Grid>
+							<Tooltip title={<div style={{ maxWidth: 200 }}>Описание</div>} placement="bottom" style={{ marginLeft: 5 }}>
+								<div className={styles.helpIcon}>
+									<FontAwesomeIcon icon={['fal', 'question-circle']} fixedWidth />
+								</div>
+							</Tooltip>
 						</Grid>
 					</Grid>
 				</Grid>

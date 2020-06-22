@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import i18n from 'i18n';
 
-import { formatNumber } from 'shared/utils';
+import { formatNumber, timesInterval15Minutes } from 'shared/utils';
 
 const Schema = mongoose.Schema;
 
@@ -34,29 +34,40 @@ const Procurement = new Schema({
 		ref: 'Shop',
 		required: [true, i18n.__('Обязательное поле')],
 	},
+	isConfirmed: {
+		type: Boolean,
+		required: [
+			function() {
+				return this.status === 'expected';
+			},
+			i18n.__('Обязательное поле'),
+		],
+	},
 	deliveryDate: {
 		type: Date,
 		required: [
 			function() {
-				return this.status === 'expected';
+				return this.status === 'expected' && this.isConfirmed;
 			},
 			i18n.__('Обязательное поле'),
 		],
 	},
 	deliveryTimeFrom: {
-		type: Date,
+		type: String,
+		enum: timesInterval15Minutes,
 		required: [
 			function() {
-				return this.status === 'expected';
+				return this.status === 'expected' && this.isConfirmed;
 			},
 			i18n.__('Обязательное поле'),
 		],
 	},
 	deliveryTimeTo: {
-		type: Date,
+		type: String,
+		enum: timesInterval15Minutes,
 		required: [
 			function() {
-				return this.status === 'expected';
+				return this.status === 'expected' && this.isConfirmed;
 			},
 			i18n.__('Обязательное поле'),
 		],

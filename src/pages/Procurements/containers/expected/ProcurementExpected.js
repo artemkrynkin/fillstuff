@@ -39,9 +39,6 @@ const ProcurementExpected = props => {
 
 	const onHandleDropdownActions = value => setDropdownActions(value === null || value === undefined ? prevValue => !prevValue : value);
 
-	const timeFrom = moment(procurement.deliveryTimeFrom).format('HH:mm');
-	const timeTo = moment(procurement.deliveryTimeTo).format('HH:mm');
-
 	const openViewDialog = event => {
 		if (
 			(event.target.closest('.' + styles.actionButton) &&
@@ -67,9 +64,12 @@ const ProcurementExpected = props => {
 				>
 					<FontAwesomeIcon icon={['far', 'ellipsis-v']} />
 				</IconButton>
-				<Typography className={styles.subtitle} variant="subtitle1">
-					{moment(procurement.deliveryDate).calendar(null, calendarFormat)} с {timeFrom} до {timeTo}
-				</Typography>
+				{procurement.isConfirmed ? (
+					<Typography className={styles.subtitle} variant="subtitle1">
+						{moment(procurement.deliveryDate).calendar(null, calendarFormat)} с {procurement.deliveryTimeFrom} до{' '}
+						{procurement.deliveryTimeTo}
+					</Typography>
+				) : null}
 				<AvatarTitle
 					classNames={{
 						container: styles.user,

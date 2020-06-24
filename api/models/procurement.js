@@ -43,11 +43,14 @@ const Procurement = new Schema({
 			i18n.__('Обязательное поле'),
 		],
 	},
+	isUnknownDeliveryDate: {
+		type: Boolean,
+	},
 	deliveryDate: {
 		type: Date,
 		required: [
 			function() {
-				return this.status === 'expected' && this.isConfirmed;
+				return this.status === 'expected' && this.isConfirmed && !this.isUnknownDeliveryDate;
 			},
 			i18n.__('Обязательное поле'),
 		],
@@ -57,7 +60,7 @@ const Procurement = new Schema({
 		enum: timesInterval15Minutes,
 		required: [
 			function() {
-				return this.status === 'expected' && this.isConfirmed;
+				return this.status === 'expected' && this.isConfirmed && !this.isUnknownDeliveryDate;
 			},
 			i18n.__('Обязательное поле'),
 		],
@@ -67,7 +70,7 @@ const Procurement = new Schema({
 		enum: timesInterval15Minutes,
 		required: [
 			function() {
-				return this.status === 'expected' && this.isConfirmed;
+				return this.status === 'expected' && this.isConfirmed && !this.isUnknownDeliveryDate;
 			},
 			i18n.__('Обязательное поле'),
 		],
@@ -144,6 +147,10 @@ const Procurement = new Schema({
 			ref: 'Receipt',
 		},
 	],
+	comment: {
+		type: String,
+		trim: true,
+	},
 	__v: {
 		type: Number,
 		select: false,

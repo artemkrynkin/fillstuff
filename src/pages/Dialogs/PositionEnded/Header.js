@@ -17,7 +17,7 @@ const DialogPositionArchiveDelete = loadable(() =>
 );
 
 const Header = props => {
-	const { onCloseDialog, archivePositionAfterEnded, enqueueSnackbar, onOpenDialogByNameIndex, storeNotification } = props;
+	const { onCloseDialog, onOpenDialogByNameIndex, storeNotification } = props;
 	const [dialogData, setDialogData] = useState({
 		position: null,
 	});
@@ -64,25 +64,6 @@ const Header = props => {
 		}
 	};
 
-	const onArchivedAfterEnded = () => {
-		archivePositionAfterEnded(storeNotification.position._id, { archivedAfterEnded: true }).then(response => {
-			onCloseDialog();
-
-			if (response.status === 'success') {
-				enqueueSnackbar({
-					message: (
-						<div>
-							Позиция <b>{storeNotification.position.name}</b> будет архивирована после реализации.
-						</div>
-					),
-					options: {
-						variant: 'success',
-					},
-				});
-			}
-		});
-	};
-
 	return (
 		<Grid className={styles.headerActions} alignItems="center" container>
 			<Button
@@ -102,26 +83,14 @@ const Header = props => {
 			>
 				Оформить закупку
 			</Button>
-			{storeNotification.position.receipts.length ? (
-				<Tooltip className={styles.archiveAfterEnded} title="Архивировать после реализации" placement="bottom">
-					<IconButton className={styles.archiveAfterEndedButton} onClick={() => onArchivedAfterEnded()}>
-						<span className="fa-layers fa-fw" style={{ width: '16px' }}>
-							<FontAwesomeIcon icon={['far', 'archive']} />
-							<FontAwesomeIcon icon={['fas', 'circle']} transform="shrink-5 down-2.5 right-7" inverse />
-							<FontAwesomeIcon icon={['fas', 'clock']} transform="shrink-7 down-2.5 right-7" />
-						</span>
-					</IconButton>
-				</Tooltip>
-			) : (
-				<Tooltip className={styles.archiveAfterEnded} title="Архивировать" placement="bottom">
-					<IconButton
-						className={styles.archiveAfterEndedButton}
-						onClick={() => onOpenDialogByName('dialogPositionArchiveDelete', 'position', storeNotification.position)}
-					>
-						<FontAwesomeIcon icon={['far', 'archive']} />
-					</IconButton>
-				</Tooltip>
-			)}
+			<Tooltip className={styles.archiveAfterEnded} title="Архивировать" placement="bottom">
+				<IconButton
+					className={styles.archiveAfterEndedButton}
+					onClick={() => onOpenDialogByName('dialogPositionArchiveDelete', 'position', storeNotification.position)}
+				>
+					<FontAwesomeIcon icon={['far', 'archive']} />
+				</IconButton>
+			</Tooltip>
 
 			<DialogPositionArchiveDelete
 				dialogOpen={dialogs.dialogPositionArchiveDelete}

@@ -40,7 +40,14 @@ const procurementsReceived = (
 		case 'CREATE_PROCUREMENT_RECEIVED': {
 			let stateData = { ...state }.data;
 
-			if (!stateData.data) stateData.data = [];
+			if (!stateData) {
+				stateData = {
+					data: [],
+					paging: {
+						totalCount: 0,
+					},
+				};
+			}
 
 			stateData.data.unshift(action.payload);
 			stateData.paging.totalDocs += 1;

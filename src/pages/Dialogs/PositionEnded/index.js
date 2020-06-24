@@ -8,8 +8,6 @@ import { DialogSticky, DialogTitle } from 'src/components/Dialog';
 import { LoadingComponent } from 'src/components/Loading';
 
 import { getStoreNotification } from 'src/actions/storeNotifications';
-import { archivePositionAfterEnded } from 'src/actions/positions';
-import { enqueueSnackbar } from 'src/actions/snackbars';
 
 import Header from './Header';
 import Content from './Content';
@@ -69,8 +67,6 @@ class DialogPositionEnded extends Component {
 					{storeNotificationData && storeNotificationData.data ? (
 						<Header
 							onCloseDialog={onCloseDialog}
-							archivePositionAfterEnded={this.props.archivePositionAfterEnded}
-							enqueueSnackbar={this.props.enqueueSnackbar}
 							onOpenDialogByNameIndex={onOpenDialogByName}
 							storeNotification={storeNotificationData.data}
 						/>
@@ -91,8 +87,6 @@ class DialogPositionEnded extends Component {
 const mapDispatchToProps = dispatch => {
 	return {
 		getStoreNotification: params => dispatch(getStoreNotification({ params })),
-		archivePositionAfterEnded: (positionId, data) => dispatch(archivePositionAfterEnded({ params: { positionId }, data })),
-		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
 	};
 };
 

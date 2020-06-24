@@ -16,6 +16,8 @@ import {
 	faCircle as fasCircle,
 	faClock as fasClock,
 	faRubleSign as fasRubleSign,
+	faCheckCircle as fasCheckCircle,
+	faQuestionCircle as fasQuestionCircle,
 } from '@fortawesome/pro-solid-svg-icons';
 
 import {
@@ -86,6 +88,7 @@ import {
 	faChartLineDown as falChartLineDown,
 	faTruck as falTruck,
 	faRobot as falRobot,
+	faComment as falComment,
 } from '@fortawesome/pro-light-svg-icons';
 
 import { faCheckCircle as fadCheckCircle, faExclamationCircle as fadExclamationCircle } from '@fortawesome/pro-duotone-svg-icons';
@@ -110,6 +113,8 @@ library.add(
 	fasCircle,
 	fasClock,
 	fasRubleSign,
+	fasCheckCircle,
+	fasQuestionCircle,
 
 	// Regular
 	farAngleLeft,
@@ -178,6 +183,7 @@ library.add(
 	falChartLineDown,
 	falTruck,
 	falRobot,
+	falComment,
 
 	// Duotone
 	fadCheckCircle,

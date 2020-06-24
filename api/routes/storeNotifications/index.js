@@ -34,6 +34,19 @@ storeNotificationsRouter.post(
 					path: 'procurement',
 					populate: [
 						{
+							path: 'orderedByMember',
+							populate: {
+								path: 'user',
+								select: 'avatar name email',
+							},
+						},
+						{
+							path: 'positions',
+							populate: {
+								path: 'characteristics',
+							},
+						},
+						{
 							path: 'shop',
 						},
 					],
@@ -86,11 +99,13 @@ storeNotificationsRouter.post(
 
 		if (storeNotification.type === 'position-ends') {
 			storeNotification.position.shops = storeNotification.position.shops.map(shop => {
-				shop.lastProcurement.receipt = storeNotification.position.receipts.find(
-					receipt =>
-						String(receipt._id) === String(shop.lastProcurement.receipts.find(receiptId => String(receiptId) === String(receipt._id)))
-				);
-				delete shop.lastProcurement.receipts;
+				if (shop.lastProcurement) {
+					shop.lastProcurement.receipt = storeNotification.position.receipts.find(
+						receipt =>
+							String(receipt._id) === String(shop.lastProcurement.receipts.find(receiptId => String(receiptId) === String(receipt._id)))
+					);
+					delete shop.lastProcurement.receipts;
+				}
 
 				return shop;
 			});

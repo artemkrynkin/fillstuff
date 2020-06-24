@@ -697,6 +697,7 @@ export const BliksideTheme = createMuiTheme({
 			},
 			multiline: {
 				padding: 0,
+				lineHeight: 1.35,
 			},
 		},
 		MuiInputAdornment: {

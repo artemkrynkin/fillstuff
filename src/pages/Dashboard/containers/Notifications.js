@@ -71,29 +71,31 @@ const Notifications = props => {
 				</ButtonBase>
 			</div>
 			<Grid className={styles.grids} spacing={2} container>
-				{Object.keys(storeNotifications).map(notificationType =>
-					storeNotifications[notificationType].length ? (
-						<Grid key={notificationType} className={styles.grid} xs={4} item>
-							<div className={styles.notifications}>
-								{storeNotifications[notificationType].map((notification, index) => (
-									<Notification
-										key={notification._id}
-										index={index}
-										reverseIndex={storeNotifications[notificationType].length - index}
-										importance={notificationType}
-										onOpenDialogByName={onOpenDialogByName}
-										notification={notification}
-									/>
-								))}
-							</div>
-							{storeNotifications[notificationType].length > 1 ? (
-								<ButtonBase className={showMoreButtonClasses} onClick={() => onHandleVisibleNotifications(true)}>
-									{`Еще ${storeNotifications[notificationType].length - 1}`}
-								</ButtonBase>
-							) : null}
-						</Grid>
-					) : null
-				)}
+				{Object.keys(storeNotifications).map(notificationType => (
+					<Grid key={notificationType} className={styles.grid} xs={4} item>
+						{storeNotifications[notificationType].length ? (
+							<Fragment>
+								<div className={styles.notifications}>
+									{storeNotifications[notificationType].map((notification, index) => (
+										<Notification
+											key={notification._id}
+											index={index}
+											reverseIndex={storeNotifications[notificationType].length - index}
+											importance={notificationType}
+											onOpenDialogByName={onOpenDialogByName}
+											notification={notification}
+										/>
+									))}
+								</div>
+								{storeNotifications[notificationType].length > 1 ? (
+									<ButtonBase className={showMoreButtonClasses} onClick={() => onHandleVisibleNotifications(true)}>
+										{`Еще ${storeNotifications[notificationType].length - 1}`}
+									</ButtonBase>
+								) : null}
+							</Fragment>
+						) : null}
+					</Grid>
+				))}
 			</Grid>
 		</div>
 	);

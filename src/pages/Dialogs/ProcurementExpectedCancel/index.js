@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
@@ -23,8 +23,6 @@ const DialogProcurementExpectedCancel = props => {
 
 	const isCurrentYear = momentDate.isSame(selectedProcurement.deliveryDate, 'year');
 	const deliveryDate = moment(selectedProcurement.deliveryDate).format(isCurrentYear ? 'D MMMM' : 'D MMMM YYYY');
-	const timeFrom = moment(selectedProcurement.deliveryTimeFrom).format('HH:mm');
-	const timeTo = moment(selectedProcurement.deliveryTimeTo).format('HH:mm');
 
 	const onSubmit = () => {
 		props.cancelProcurementExpected(selectedProcurement._id).then(response => {
@@ -48,10 +46,15 @@ const DialogProcurementExpectedCancel = props => {
 			</DialogTitle>
 			<DialogContent>
 				<Typography variant="body1">
-					Вы&nbsp;действительно хотите отменить заказ из&nbsp;магазина <b>{selectedProcurement.shop.name}</b> запланированный на&nbsp;
-					<b>
-						{deliveryDate} с&nbsp;{timeFrom} до&nbsp;{timeTo}
-					</b>
+					Вы&nbsp;действительно хотите отменить заказ из&nbsp;магазина <b>{selectedProcurement.shop.name}</b>
+					{selectedProcurement.isConfirmed ? (
+						<Fragment>
+							запланированный на&nbsp;
+							<b>
+								{deliveryDate} с&nbsp;{selectedProcurement.deliveryTimeFrom} до&nbsp;{selectedProcurement.deliveryTimeTo}
+							</b>
+						</Fragment>
+					) : null}
 					?
 				</Typography>
 				<DialogActions>

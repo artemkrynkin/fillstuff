@@ -37,14 +37,6 @@ procurementsRouter.post(
 					},
 				},
 				{
-					path: 'receivedByMember',
-					select: 'user',
-					populate: {
-						path: 'user',
-						select: 'avatar name email',
-					},
-				},
-				{
 					path: 'positions',
 					populate: {
 						path: 'characteristics',
@@ -124,13 +116,6 @@ procurementsRouter.post(
 					},
 				},
 				{
-					path: 'receivedByMember',
-					populate: {
-						path: 'user',
-						select: 'avatar name email',
-					},
-				},
-				{
 					path: 'positions',
 					populate: {
 						path: 'characteristics',
@@ -169,6 +154,7 @@ procurementsRouter.post(
 
 		procurement.shop = procurementEdited.shop;
 		procurement.isConfirmed = procurementEdited.isConfirmed;
+		procurement.isUnknownDeliveryDate = procurementEdited.isUnknownDeliveryDate;
 		procurement.deliveryDate = procurementEdited.deliveryDate;
 		procurement.deliveryTimeFrom = procurementEdited.deliveryTimeFrom;
 		procurement.deliveryTimeTo = procurementEdited.deliveryTimeTo;
@@ -176,6 +162,12 @@ procurementsRouter.post(
 		procurement.costDelivery = procurementEdited.costDelivery;
 		procurement.totalPrice = procurementEdited.totalPrice;
 		procurement.positions = procurementEdited.positions;
+		procurement.comment = procurementEdited.comment;
+
+		// const positionUpdated = Position.updateMany(
+		//   { _id: { $in: procurement.positions } },
+		//   { $addToSet: { deliveryIsExpected: procurement._id } }
+		// ).catch(err => next({ code: 2, err }));
 
 		const procurementErr = procurement.validateSync();
 
@@ -187,13 +179,6 @@ procurementsRouter.post(
 			.populate([
 				{
 					path: 'orderedByMember',
-					populate: {
-						path: 'user',
-						select: 'avatar name email',
-					},
-				},
-				{
-					path: 'receivedByMember',
 					populate: {
 						path: 'user',
 						select: 'avatar name email',

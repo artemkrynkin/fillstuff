@@ -7,7 +7,7 @@ import { Button } from './styles';
 import styles from './index.module.css';
 
 const DialogProcurementExpectedCreate = loadable(() =>
-	import('src/pages/Dialogs/ProcurementExpectedCreateEdit' /* webpackChunkName: "Dialog_ProcurementExpectedCreateEdit" */)
+	import('src/pages/Dialogs/ProcurementExpectedCreateConfirmEdit' /* webpackChunkName: "Dialog_ProcurementExpectedCreateConfirmEdit" */)
 );
 
 const DialogProcurementReceivedCreate = loadable(() =>

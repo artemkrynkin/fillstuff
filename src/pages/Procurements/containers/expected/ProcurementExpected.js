@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { Fragment, useRef, useState } from 'react';
 import ClassNames from 'classnames';
 import moment from 'moment';
 
@@ -14,6 +14,7 @@ import Money from 'src/components/Money';
 import MenuItem from 'src/components/MenuItem';
 import Dropdown from 'src/components/Dropdown';
 import AvatarTitle from 'src/components/AvatarTitle';
+import Tooltip from 'src/components/Tooltip';
 
 import styles from './ProcurementExpected.module.css';
 
@@ -43,7 +44,9 @@ const ProcurementExpected = props => {
 		if (
 			(event.target.closest('.' + styles.actionButton) &&
 				event.target.closest('.' + styles.actionButton).classList.contains(styles.actionButton)) ||
-			event.target.closest('[role="tooltip"]')
+			event.target.closest('[role="tooltip"]') ||
+			(event.target.closest('.' + styles.procurementComment) &&
+				event.target.closest('.' + styles.procurementComment).classList.contains(styles.procurementComment))
 		)
 			return;
 
@@ -64,10 +67,15 @@ const ProcurementExpected = props => {
 				>
 					<FontAwesomeIcon icon={['far', 'ellipsis-v']} />
 				</IconButton>
-				{procurement.isConfirmed ? (
+				{procurement.isConfirmed && !procurement.isUnknownDeliveryDate ? (
 					<Typography className={styles.subtitle} variant="subtitle1">
 						{moment(procurement.deliveryDate).calendar(null, calendarFormat)} с {procurement.deliveryTimeFrom} до{' '}
 						{procurement.deliveryTimeTo}
+					</Typography>
+				) : null}
+				{procurement.isUnknownDeliveryDate ? (
+					<Typography className={styles.subtitle} variant="subtitle1">
+						Дата доставки не известна
 					</Typography>
 				) : null}
 				<AvatarTitle
@@ -83,6 +91,14 @@ const ProcurementExpected = props => {
 				<div className={styles.info}>
 					<div className={styles.infoItem}>{procurement.shop.name}</div>
 					<div className={styles.infoItem}>{declensionNumber(procurement.positions.length, ['позиция', 'позиции', 'позиций'], true)}</div>
+					{procurement.comment ? (
+						<Fragment>
+							<div className={styles.infoItem}>&nbsp;</div>
+							<Tooltip title={procurement.comment} className={styles.procurementComment} placement="bottom" leaveDelay={500} interactive>
+								<FontAwesomeIcon icon={['fal', 'comment']} />
+							</Tooltip>
+						</Fragment>
+					) : null}
 				</div>
 
 				<Dropdown
@@ -93,24 +109,44 @@ const ProcurementExpected = props => {
 					disablePortal={true}
 				>
 					<MenuList>
-						<MenuItem
-							onClick={() => {
-								onHandleDropdownActions();
-								onOpenDialogProcurement('dialogProcurementReceivedCreate', 'procurementReceived', procurement);
-							}}
-							iconBefore={<FontAwesomeIcon icon={['far', 'truck-loading']} />}
-						>
-							Оформить закупку
-						</MenuItem>
-						<MenuItem
-							onClick={() => {
-								onHandleDropdownActions();
-								onOpenDialogProcurement('dialogProcurementExpectedEdit', 'procurementExpected', procurement);
-							}}
-							iconBefore={<FontAwesomeIcon icon={['far', 'pen']} />}
-						>
-							Редактировать
-						</MenuItem>
+						{procurement.isConfirmed ? (
+							<MenuItem
+								onClick={() => {
+									onHandleDropdownActions();
+									onOpenDialogProcurement('dialogProcurementReceivedCreate', 'procurementReceived', procurement);
+								}}
+								iconBefore={<FontAwesomeIcon icon={['far', 'truck-loading']} />}
+							>
+								Оформить закупку
+							</MenuItem>
+						) : (
+							<MenuItem
+								onClick={() => {
+									onHandleDropdownActions();
+									onOpenDialogProcurement('dialogProcurementExpectedConfirm', 'procurementExpected', procurement);
+								}}
+								iconBefore={
+									<span className="fa-layers fa-fw" style={{ width: '16px' }}>
+										<FontAwesomeIcon icon={['far', 'truck']} />
+										<FontAwesomeIcon icon={['fas', 'circle']} transform="shrink-5 up-4 left-6" inverse />
+										<FontAwesomeIcon icon={['fas', 'check-circle']} transform="shrink-7 up-4 left-6" />
+									</span>
+								}
+							>
+								Подтвердить заказ
+							</MenuItem>
+						)}
+						{procurement.isConfirmed ? (
+							<MenuItem
+								onClick={() => {
+									onHandleDropdownActions();
+									onOpenDialogProcurement('dialogProcurementExpectedEdit', 'procurementExpected', procurement);
+								}}
+								iconBefore={<FontAwesomeIcon icon={['far', 'pen']} />}
+							>
+								Редактировать
+							</MenuItem>
+						) : null}
 						<MenuItem
 							onClick={() => {
 								onHandleDropdownActions();

@@ -10,11 +10,15 @@ const DialogProcurementExpectedView = loadable(() =>
 );
 
 const DialogProcurementExpectedCreate = loadable(() =>
-	import('src/pages/Dialogs/ProcurementExpectedCreateEdit' /* webpackChunkName: "Dialog_ProcurementExpectedCreateEdit" */)
+	import('src/pages/Dialogs/ProcurementExpectedCreateConfirmEdit' /* webpackChunkName: "Dialog_ProcurementExpectedCreateConfirmEdit" */)
+);
+
+const DialogProcurementExpectedConfirm = loadable(() =>
+	import('src/pages/Dialogs/ProcurementExpectedCreateConfirmEdit' /* webpackChunkName: "Dialog_ProcurementExpectedCreateConfirmEdit" */)
 );
 
 const DialogProcurementExpectedEdit = loadable(() =>
-	import('src/pages/Dialogs/ProcurementExpectedCreateEdit' /* webpackChunkName: "Dialog_ProcurementExpectedCreateEdit" */)
+	import('src/pages/Dialogs/ProcurementExpectedCreateConfirmEdit' /* webpackChunkName: "Dialog_ProcurementExpectedCreateConfirmEdit" */)
 );
 
 const DialogProcurementExpectedCancel = loadable(() =>
@@ -35,6 +39,7 @@ const Index = props => {
 	const [dialogs, setDialogs] = useState({
 		dialogProcurementExpectedView: false,
 		dialogProcurementExpectedCreate: false,
+		dialogProcurementExpectedConfirm: false,
 		dialogProcurementExpectedEdit: false,
 		dialogProcurementExpectedCancel: false,
 		dialogProcurementReceivedCreate: false,
@@ -91,6 +96,14 @@ const Index = props => {
 				dialogOpen={dialogs.dialogProcurementExpectedCreate}
 				onCloseDialog={() => onCloseDialogByName('dialogProcurementExpectedCreate')}
 				onExitedDialog={() => onExitedDialogByName()}
+			/>
+
+			<DialogProcurementExpectedConfirm
+				type="confirm"
+				dialogOpen={dialogs.dialogProcurementExpectedConfirm}
+				onCloseDialog={() => onCloseDialogByName('dialogProcurementExpectedConfirm')}
+				onExitedDialog={() => onExitedDialogByName('procurementExpected')}
+				selectedProcurement={dialogOpenedName === 'dialogProcurementExpectedConfirm' ? dialogData.procurementExpected : null}
 			/>
 
 			<DialogProcurementExpectedEdit

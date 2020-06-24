@@ -23,17 +23,17 @@ import MenuItem from 'src/components/MenuItem';
 import { SelectAutocomplete } from 'src/components/selectAutocomplete';
 import NumberFormat, { moneyInputFormatProps } from 'src/components/NumberFormat';
 import Dropdown from 'src/components/Dropdown';
+import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
+import Tooltip from 'src/components/Tooltip';
 
 import FormFieldArrayPositions from './FormFieldArrayPositions';
 
 import stylesGlobal from 'src/styles/globals.module.css';
-import CheckboxWithLabel from '../../../components/CheckboxWithLabel';
-import styles from '../ProcurementReceivedCreate/index.module.css';
-import Tooltip from '../../../components/Tooltip';
+import styles from './index.module.css';
 
 const DialogShopCreate = loadable(() => import('src/pages/Dialogs/ShopCreateEdit' /* webpackChunkName: "Dialog_ShopCreateEdit" */));
 
-const FormProcurementExpectedCreateEdit = props => {
+const FormProcurementExpectedCreateConfirmEdit = props => {
 	const {
 		onCloseDialog,
 		dialogRef,
@@ -106,7 +106,7 @@ const FormProcurementExpectedCreateEdit = props => {
 								}
 								options={shops}
 								isClearable
-								autoFocus
+								autoFocus={type !== 'confirm'}
 							/>
 							{touched.shop && errors.shop ? <FormHelperText error>{errors.shop}</FormHelperText> : null}
 						</Grid>
@@ -132,16 +132,17 @@ const FormProcurementExpectedCreateEdit = props => {
 								<TextField
 									innerRef={refDropdownDeliveryDate}
 									name="deliveryDate"
-									placeholder={!values.isConfirmed ? '-' : 'Дата'}
+									placeholder={values.isConfirmed && !values.isUnknownDeliveryDate ? 'Дата' : '-'}
 									error={Boolean(errors.deliveryDate && touched.deliveryDate)}
 									helperText={typeof errors.deliveryDate === 'string' && touched.deliveryDate ? errors.deliveryDate : null}
-									disabled={isSubmitting || !values.isConfirmed}
+									disabled={isSubmitting || !values.isConfirmed || values.isUnknownDeliveryDate}
 									value={values.deliveryDate ? moment(values.deliveryDate).format('DD.MM.YYYY') : ''}
 									onFocus={() => {
 										setTimeout(() => {
 											onHandleDropdownDeliveryDate(true);
 										}, 100);
 									}}
+									autoFocus={type === 'confirm'}
 									fullWidth
 								/>
 							</Grid>
@@ -166,8 +167,8 @@ const FormProcurementExpectedCreateEdit = props => {
 													setFieldValue('deliveryTimeTo', value);
 												}
 											}}
-											renderValue={value => (value ? value : values.isConfirmed ? '' : '-')}
-											disabled={isSubmitting || !values.isConfirmed}
+											renderValue={value => (value ? value : values.isConfirmed && !values.isUnknownDeliveryDate ? '' : '-')}
+											disabled={isSubmitting || !values.isConfirmed || values.isUnknownDeliveryDate}
 											fullWidth
 										>
 											{timesInterval15Minutes.map((time, index) => (
@@ -189,8 +190,8 @@ const FormProcurementExpectedCreateEdit = props => {
 											name="deliveryTimeTo"
 											as={Select}
 											error={Boolean(touched.deliveryTimeFrom && errors.deliveryTimeFrom)}
-											renderValue={value => (value ? value : values.isConfirmed ? '' : '-')}
-											disabled={isSubmitting || !values.isConfirmed}
+											renderValue={value => (value ? value : values.isConfirmed && !values.isUnknownDeliveryDate ? '' : '-')}
+											disabled={isSubmitting || !values.isConfirmed || values.isUnknownDeliveryDate}
 											fullWidth
 										>
 											{timesInterval15Minutes.map((time, index) => {
@@ -207,31 +208,51 @@ const FormProcurementExpectedCreateEdit = props => {
 								</Grid>
 							</Grid>
 						</Grid>
-						<Grid alignItems="center" container>
-							<Field
-								type="checkbox"
-								name="isConfirmed"
-								Label={{ label: 'Указать дату и время доставки' }}
-								as={CheckboxWithLabel}
-								onChange={({ target: { checked } }) => {
-									setFieldValue('isConfirmed', checked);
+						{type === 'create' ? (
+							<Grid alignItems="center" container>
+								<Field
+									type="checkbox"
+									name="isConfirmed"
+									Label={{ label: 'Указать дату и время доставки' }}
+									as={CheckboxWithLabel}
+									onChange={({ target: { checked } }) => {
+										setFieldValue('isConfirmed', checked);
 
-									if (!checked && values.deliveryDate) setFieldValue('deliveryDate', undefined);
-									if (!checked && values.deliveryTimeFrom) setFieldValue('deliveryTimeFrom', '');
-									if (!checked && values.deliveryTimeTo) setFieldValue('deliveryTimeTo', '');
-								}}
-								disabled={isSubmitting}
-							/>
-							<Tooltip title={<div style={{ maxWidth: 200 }}>Описание</div>} placement="bottom" style={{ marginLeft: 5 }}>
-								<div className={styles.helpIcon}>
-									<FontAwesomeIcon icon={['fal', 'question-circle']} fixedWidth />
-								</div>
-							</Tooltip>
-						</Grid>
+										if (!checked && values.deliveryDate) setFieldValue('deliveryDate', undefined);
+										if (!checked && values.deliveryTimeFrom) setFieldValue('deliveryTimeFrom', '');
+										if (!checked && values.deliveryTimeTo) setFieldValue('deliveryTimeTo', '');
+									}}
+									disabled={isSubmitting}
+								/>
+								<Tooltip title={<div style={{ maxWidth: 200 }}>Описание</div>} placement="bottom" style={{ marginLeft: 5 }}>
+									<div className={styles.helpIcon}>
+										<FontAwesomeIcon icon={['fal', 'question-circle']} fixedWidth />
+									</div>
+								</Tooltip>
+							</Grid>
+						) : null}
+						{/confirm|edit/.test(type) ? (
+							<Grid alignItems="center" container>
+								<Field
+									type="checkbox"
+									name="isUnknownDeliveryDate"
+									Label={{ label: 'Дата доставки не известна' }}
+									as={CheckboxWithLabel}
+									onChange={({ target: { checked } }) => {
+										setFieldValue('isUnknownDeliveryDate', checked);
+
+										if (checked && values.deliveryDate) setFieldValue('deliveryDate', undefined);
+										if (checked && values.deliveryTimeFrom) setFieldValue('deliveryTimeFrom', '');
+										if (checked && values.deliveryTimeTo) setFieldValue('deliveryTimeTo', '');
+									}}
+									disabled={isSubmitting}
+								/>
+							</Grid>
+						) : null}
 					</Grid>
 				</Grid>
 
-				<Grid style={{ marginBottom: 10 }} wrap="nowrap" alignItems="flex-start" container>
+				<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 					<InputLabel error={Boolean(errors.pricePositions && touched.pricePositions)} style={{ marginTop: 32, ...labelStyle }} data-inline>
 						Итого
 					</InputLabel>
@@ -277,6 +298,25 @@ const FormProcurementExpectedCreateEdit = props => {
 					</Grid>
 				</Grid>
 
+				{/confirm|edit/.test(type) ? (
+					<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
+						<InputLabel style={{ ...labelStyle }} data-inline>
+							Комментарий
+						</InputLabel>
+						<Field
+							name="comment"
+							error={Boolean(touched.comment && errors.comment)}
+							helperText={(touched.comment && errors.comment) || ''}
+							as={TextField}
+							placeholder={`Номер телефона курьера, трек-номер заказа, любая полезная информация по доставке`}
+							rows={2}
+							rowsMax={4}
+							multiline
+							fullWidth
+						/>
+					</Grid>
+				) : null}
+
 				<FieldArray name="positions" validateOnChange={false}>
 					{props => (
 						<FormFieldArrayPositions
@@ -299,7 +339,7 @@ const FormProcurementExpectedCreateEdit = props => {
 						<Button type="submit" disabled={isSubmitting} variant="contained" color="primary" size="large" fullWidth>
 							{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
 							<span className="loading-button-label" style={{ opacity: Number(!isSubmitting) }}>
-								{type === 'create' ? 'Создать' : 'Сохранить'}
+								{type === 'create' ? 'Создать' : type === 'confirm' ? 'Подтвердить' : 'Сохранить'}
 							</span>
 						</Button>
 					</Grid>
@@ -352,4 +392,4 @@ const FormProcurementExpectedCreateEdit = props => {
 	);
 };
 
-export default FormProcurementExpectedCreateEdit;
+export default FormProcurementExpectedCreateConfirmEdit;

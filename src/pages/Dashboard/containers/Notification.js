@@ -12,11 +12,11 @@ import CardPaper from 'src/components/CardPaper';
 import Money from 'src/components/Money';
 import Dropdown from 'src/components/Dropdown';
 import MenuItem from 'src/components/MenuItem';
+import Tooltip from 'src/components/Tooltip';
 
 import { editStatusDeliveryIsExpected } from 'src/actions/storeNotifications';
 
 import styles from './Notification.module.css';
-import Tooltip from '../../../components/Tooltip';
 
 const calendarFormat = {
 	sameDay: 'Сегодня',
@@ -52,41 +52,47 @@ const Notification = props => {
 		if (
 			(event.target.closest('.' + styles.actionButton) &&
 				event.target.closest('.' + styles.actionButton).classList.contains(styles.actionButton)) ||
-			event.target.closest('[role="tooltip"]')
+			event.target.closest('[role="tooltip"]') ||
+			(event.target.closest('.' + styles.procurementComment) &&
+				event.target.closest('.' + styles.procurementComment).classList.contains(styles.procurementComment))
 		)
 			return;
 
 		switch (notification.type) {
 			case 'position-ends':
 				return onOpenDialogByName('dialogPositionEnded', 'storeNotification', notification);
+			case 'delivery-is-expected':
+				return onOpenDialogByName('dialogProcurementExpectedView', 'procurementExpected', notification.procurement);
 			default:
 				return;
 		}
 	};
 
 	useEffect(() => {
-		if (notification.type === 'delivery-is-expected' && notification.procurement.isConfirmed) {
-			const momentDate = moment();
+		if (notification.type === 'delivery-is-expected') {
+			if (notification.procurement.isConfirmed && !notification.procurement.isUnknownDeliveryDate) {
+				const momentDate = moment();
 
-			let interval;
-			const deliveryTimeToParse = notification.procurement.deliveryTimeTo.split(':');
-			const deliveryDateAndTime = moment(notification.procurement.deliveryDate).set({
-				hour: deliveryTimeToParse[0],
-				minute: deliveryTimeToParse[1],
-				second: 0,
-			});
+				let interval;
+				const deliveryTimeToParse = notification.procurement.deliveryTimeTo.split(':');
+				const deliveryDateAndTime = moment(notification.procurement.deliveryDate).set({
+					hour: deliveryTimeToParse[0],
+					minute: deliveryTimeToParse[1],
+					second: 0,
+				});
 
-			const intervalHandler = async () => {
-				if (moment().isSameOrAfter(deliveryDateAndTime)) {
-					setActionStatus('deleting');
-					clearInterval(interval);
+				const intervalHandler = async () => {
+					if (moment().isSameOrAfter(deliveryDateAndTime)) {
+						setActionStatus('deleting');
+						clearInterval(interval);
 
-					props.editStatusDeliveryIsExpected(notification);
+						props.editStatusDeliveryIsExpected(notification);
+					}
+				};
+
+				if (momentDate.isSameOrBefore(deliveryDateAndTime)) {
+					interval = setInterval(intervalHandler, 5000);
 				}
-			};
-
-			if (momentDate.isSameOrBefore(deliveryDateAndTime)) {
-				interval = setInterval(intervalHandler, 5000);
 			}
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -103,7 +109,7 @@ const Notification = props => {
 			{notification.type === 'position-ends' ? (
 				<PositionEndsContent notification={notification} importance={importance} />
 			) : notification.type === 'delivery-is-expected' ? (
-				<DeliveryIsExpectedContent notification={notification} importance={importance} />
+				<DeliveryIsExpectedContent notification={notification} importance={importance} onOpenDialogByName={onOpenDialogByName} />
 			) : null}
 		</CardPaper>
 	);
@@ -141,7 +147,7 @@ const PositionEndsContent = props => {
 };
 
 const DeliveryIsExpectedContent = props => {
-	const { notification } = props;
+	const { notification, onOpenDialogByName } = props;
 	const refDropdownActions = useRef(null);
 	const [dropdownActions, setDropdownActions] = useState(false);
 
@@ -161,15 +167,28 @@ const DeliveryIsExpectedContent = props => {
 				<FontAwesomeIcon icon={['far', 'ellipsis-v']} />
 			</IconButton>
 			<div className={styles.header}>
-				<FontAwesomeIcon className={styles.notificationIcon} icon={['fal', 'truck']} />
+				{notification.procurement.isConfirmed ? (
+					<FontAwesomeIcon className={styles.notificationIcon} icon={['fal', 'truck']} />
+				) : (
+					<span className={`${styles.notificationIcon} fa-layers fa-fw`} style={{ width: '1.9em' }}>
+						<FontAwesomeIcon icon={['fal', 'truck']} transform="right-1" />
+						<FontAwesomeIcon icon={['fas', 'circle']} transform="shrink-5 up-4 left-6.5" inverse />
+						<FontAwesomeIcon icon={['fas', 'question-circle']} transform="shrink-7 up-4 left-6.5" />
+					</span>
+				)}
 				<Typography className={styles.title} variant="h6">
 					{notification.procurement.isConfirmed ? 'Ожидается доставка' : 'Ожидается подтверждение заказа'}
 				</Typography>
 			</div>
-			{notification.procurement.isConfirmed ? (
+			{notification.procurement.isConfirmed && !notification.procurement.isUnknownDeliveryDate ? (
 				<Typography className={styles.subtitle} variant="subtitle1">
 					{moment(notification.procurement.deliveryDate).calendar(null, calendarFormat)} с {notification.procurement.deliveryTimeFrom} до{' '}
 					{notification.procurement.deliveryTimeTo}
+				</Typography>
+			) : null}
+			{notification.procurement.isUnknownDeliveryDate ? (
+				<Typography className={styles.subtitle} variant="subtitle1">
+					Дата доставки не известна
 				</Typography>
 			) : null}
 			<div>
@@ -178,6 +197,20 @@ const DeliveryIsExpectedContent = props => {
 				</div>
 				<div className={styles.info}>
 					<div className={styles.infoItem}>{notification.procurement.shop.name}</div>
+					{notification.procurement.comment ? (
+						<Fragment>
+							<div className={styles.infoItem}>&nbsp;</div>
+							<Tooltip
+								title={notification.procurement.comment}
+								className={styles.procurementComment}
+								placement="bottom"
+								leaveDelay={500}
+								interactive
+							>
+								<FontAwesomeIcon icon={['fal', 'comment']} />
+							</Tooltip>
+						</Fragment>
+					) : null}
 				</div>
 			</div>
 
@@ -189,28 +222,48 @@ const DeliveryIsExpectedContent = props => {
 				disablePortal={true}
 			>
 				<MenuList>
+					{notification.procurement.isConfirmed ? (
+						<MenuItem
+							onClick={() => {
+								onHandleDropdownActions();
+								onOpenDialogByName('dialogProcurementReceivedCreate', 'procurementReceived', notification.procurement);
+							}}
+							iconBefore={<FontAwesomeIcon icon={['far', 'truck-loading']} />}
+						>
+							Оформить закупку
+						</MenuItem>
+					) : (
+						<MenuItem
+							onClick={() => {
+								onHandleDropdownActions();
+								onOpenDialogByName('dialogProcurementExpectedConfirm', 'procurementExpected', notification.procurement);
+							}}
+							iconBefore={
+								<span className="fa-layers fa-fw" style={{ width: '16px' }}>
+									<FontAwesomeIcon icon={['far', 'truck']} />
+									<FontAwesomeIcon icon={['fas', 'circle']} transform="shrink-5 up-4 left-6" inverse />
+									<FontAwesomeIcon icon={['fas', 'check-circle']} transform="shrink-7 up-4 left-6" />
+								</span>
+							}
+						>
+							Подтвердить заказ
+						</MenuItem>
+					)}
+					{notification.procurement.isConfirmed ? (
+						<MenuItem
+							onClick={() => {
+								onHandleDropdownActions();
+								onOpenDialogByName('dialogProcurementExpectedEdit', 'procurementExpected', notification.procurement);
+							}}
+							iconBefore={<FontAwesomeIcon icon={['far', 'pen']} />}
+						>
+							Редактировать
+						</MenuItem>
+					) : null}
 					<MenuItem
 						onClick={() => {
 							onHandleDropdownActions();
-							// onOpenDialogProcurement('dialogProcurementReceivedCreate', 'procurementReceived', procurement);
-						}}
-						iconBefore={<FontAwesomeIcon icon={['far', 'truck-loading']} />}
-					>
-						Оформить закупку
-					</MenuItem>
-					<MenuItem
-						onClick={() => {
-							onHandleDropdownActions();
-							// onOpenDialogProcurement('dialogProcurementExpectedEdit', 'procurementExpected', procurement);
-						}}
-						iconBefore={<FontAwesomeIcon icon={['far', 'pen']} />}
-					>
-						Редактировать
-					</MenuItem>
-					<MenuItem
-						onClick={() => {
-							onHandleDropdownActions();
-							// onOpenDialogProcurement('dialogProcurementExpectedCancel', 'procurementExpected', procurement);
+							onOpenDialogByName('dialogProcurementExpectedCancel', 'procurementExpected', notification.procurement);
 						}}
 						iconBefore={<FontAwesomeIcon icon={['far', 'undo']} />}
 						destructive

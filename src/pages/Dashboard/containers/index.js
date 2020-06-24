@@ -7,8 +7,24 @@ import loadable from '@loadable/component';
 
 const DialogPositionEnded = loadable(() => import('src/pages/Dialogs/PositionEnded' /* webpackChunkName: "Dialog_PositionEnded" */));
 
+const DialogProcurementExpectedView = loadable(() =>
+	import('src/pages/Dialogs/ProcurementExpectedView' /* webpackChunkName: "Dialog_ProcurementExpectedView" */)
+);
+
 const DialogProcurementExpectedCreate = loadable(() =>
-	import('src/pages/Dialogs/ProcurementExpectedCreateEdit' /* webpackChunkName: "Dialog_ProcurementExpectedCreateEdit" */)
+	import('src/pages/Dialogs/ProcurementExpectedCreateConfirmEdit' /* webpackChunkName: "Dialog_ProcurementExpectedCreateConfirmEdit" */)
+);
+
+const DialogProcurementExpectedConfirm = loadable(() =>
+	import('src/pages/Dialogs/ProcurementExpectedCreateConfirmEdit' /* webpackChunkName: "Dialog_ProcurementExpectedCreateConfirmEdit" */)
+);
+
+const DialogProcurementExpectedEdit = loadable(() =>
+	import('src/pages/Dialogs/ProcurementExpectedCreateConfirmEdit' /* webpackChunkName: "Dialog_ProcurementExpectedCreateConfirmEdit" */)
+);
+
+const DialogProcurementExpectedCancel = loadable(() =>
+	import('src/pages/Dialogs/ProcurementExpectedCancel' /* webpackChunkName: "Dialog_ProcurementExpectedCancel" */)
 );
 
 const DialogProcurementReceivedCreate = loadable(() =>
@@ -25,7 +41,11 @@ const Index = props => {
 	const [dialogOpenedName, setDialogOpenedName] = useState('');
 	const [dialogs, setDialogs] = useState({
 		dialogPositionEnded: false,
+		dialogProcurementExpectedView: false,
 		dialogProcurementExpectedCreate: false,
+		dialogProcurementExpectedConfirm: false,
+		dialogProcurementExpectedEdit: false,
+		dialogProcurementExpectedCancel: false,
 		dialogProcurementReceivedCreate: false,
 	});
 
@@ -75,12 +95,43 @@ const Index = props => {
 				onOpenDialogByName={onOpenDialogByName}
 			/>
 
+			<DialogProcurementExpectedView
+				dialogOpen={dialogs.dialogProcurementExpectedView}
+				onCloseDialog={() => onCloseDialogByName('dialogProcurementExpectedView')}
+				onExitedDialog={() => onExitedDialogByName('procurementExpected')}
+				selectedProcurement={dialogOpenedName === 'dialogProcurementExpectedView' ? dialogData.procurementExpected : null}
+				onOpenDialogByName={onOpenDialogByName}
+			/>
+
 			<DialogProcurementExpectedCreate
 				type="create"
 				dialogOpen={dialogs.dialogProcurementExpectedCreate}
 				onCloseDialog={() => onCloseDialogByName('dialogProcurementExpectedCreate')}
 				onExitedDialog={() => onExitedDialogByName('procurementExpected')}
 				selectedProcurement={dialogOpenedName === 'dialogProcurementExpectedCreate' ? dialogData.procurementExpected : null}
+			/>
+
+			<DialogProcurementExpectedConfirm
+				type="confirm"
+				dialogOpen={dialogs.dialogProcurementExpectedConfirm}
+				onCloseDialog={() => onCloseDialogByName('dialogProcurementExpectedConfirm')}
+				onExitedDialog={() => onExitedDialogByName('procurementExpected')}
+				selectedProcurement={dialogOpenedName === 'dialogProcurementExpectedConfirm' ? dialogData.procurementExpected : null}
+			/>
+
+			<DialogProcurementExpectedEdit
+				type="edit"
+				dialogOpen={dialogs.dialogProcurementExpectedEdit}
+				onCloseDialog={() => onCloseDialogByName('dialogProcurementExpectedEdit')}
+				onExitedDialog={() => onExitedDialogByName('procurementExpected')}
+				selectedProcurement={dialogOpenedName === 'dialogProcurementExpectedEdit' ? dialogData.procurementExpected : null}
+			/>
+
+			<DialogProcurementExpectedCancel
+				dialogOpen={dialogs.dialogProcurementExpectedCancel}
+				onCloseDialog={() => onCloseDialogByName('dialogProcurementExpectedCancel')}
+				onExitedDialog={() => onExitedDialogByName('procurementExpected')}
+				selectedProcurement={dialogOpenedName === 'dialogProcurementExpectedCancel' ? dialogData.procurementExpected : null}
 			/>
 
 			<DialogProcurementReceivedCreate

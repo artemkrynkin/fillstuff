@@ -42,7 +42,7 @@
 
 :global(.visibleAllNotifications) .card {
   background-color: white;
-  transform: scale(1) translate(0, calc(100% * var(--cardIndex) + (16px * var(--cardIndex))));
+  transform: scale(1) translate(0, calc((100% + 16px) * var(--cardIndex)));
 }
 
 .card:nth-child(1).cardNew {
@@ -218,4 +218,17 @@
   display: inline-block;
   font-size: 16px;
   margin: -4px 0 0 5px;
+}
+
+.procurementComment {
+  color: var(--c-hex-bg-500);
+  transition: color 150ms ease-out;
+}
+
+.procurementComment:hover {
+  color: var(--c-hex-t-400);
+}
+
+.procurementComment svg {
+  font-size: 16px;
 }

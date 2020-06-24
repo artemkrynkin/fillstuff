@@ -1,3 +1,9 @@
+.helpIcon {
+  color: var(--c-hex-bg-300);
+  display: inline-block;
+  vertical-align: middle;
+}
+
 .positions {
   border-top: 1px solid var(--c-hex-br-5);
   margin: 0 -20px -12px;

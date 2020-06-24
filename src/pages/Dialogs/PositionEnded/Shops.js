@@ -22,13 +22,19 @@ const Shops = props => {
 	const onShowShops = length => setShowShops(length);
 
 	useEffect(() => {
-		const allShops = position.shops
-			.slice()
-			.sort((aShop, bShop) => new Date(bShop.lastProcurement.createdAt) - new Date(aShop.lastProcurement.createdAt));
+		if (position.shops.length) {
+			const allShops = position.shops
+				.slice()
+				.sort((aShop, bShop) =>
+					aShop.lastProcurement && bShop.lastProcurement
+						? new Date(bShop.lastProcurement.createdAt) - new Date(aShop.lastProcurement.createdAt)
+						: -1
+				);
 
-		setLastShop(allShops[0]);
-		allShops.splice(0, 1);
-		setOtherShops(allShops);
+			setLastShop(allShops[0]);
+			allShops.splice(0, 1);
+			setOtherShops(allShops);
+		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);

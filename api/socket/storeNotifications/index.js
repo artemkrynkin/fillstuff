@@ -29,6 +29,19 @@ export const newStoreNotification = io => {
 				path: 'procurement',
 				populate: [
 					{
+						path: 'orderedByMember',
+						populate: {
+							path: 'user',
+							select: 'avatar name email',
+						},
+					},
+					{
+						path: 'positions',
+						populate: {
+							path: 'characteristics',
+						},
+					},
+					{
 						path: 'shop',
 					},
 				],
@@ -60,6 +73,19 @@ export const editStoreNotification = io => {
 			{
 				path: 'procurement',
 				populate: [
+					{
+						path: 'orderedByMember',
+						populate: {
+							path: 'user',
+							select: 'avatar name email',
+						},
+					},
+					{
+						path: 'positions',
+						populate: {
+							path: 'characteristics',
+						},
+					},
 					{
 						path: 'shop',
 					},

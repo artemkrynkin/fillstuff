@@ -41,14 +41,25 @@ const ProcurementExpectedView = props => {
 		<DialogSticky open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth="md" scroll="body" stickyTitle>
 			<DialogTitle onClose={onCloseDialog} theme="white">
 				<Grid className={styles.headerActions} alignItems="center" container>
-					<Button
-						onClick={() => onOpenDialogByName('dialogProcurementReceivedCreate', 'procurementReceived', selectedProcurement)}
-						color="primary"
-						variant="contained"
-						size="small"
-					>
-						Оформить закупку
-					</Button>
+					{selectedProcurement.isConfirmed ? (
+						<Button
+							onClick={() => onOpenDialogByName('dialogProcurementReceivedCreate', 'procurementReceived', selectedProcurement)}
+							color="primary"
+							variant="contained"
+							size="small"
+						>
+							Оформить закупку
+						</Button>
+					) : (
+						<Button
+							onClick={() => onOpenDialogByName('dialogProcurementExpectedConfirm', 'procurementExpected', selectedProcurement)}
+							color="primary"
+							variant="contained"
+							size="small"
+						>
+							Подтвердить заказ
+						</Button>
+					)}
 					<IconButton
 						ref={refDropdownActions}
 						className={ClassNames({
@@ -83,7 +94,11 @@ const ProcurementExpectedView = props => {
 					{selectedProcurement.isConfirmed ? (
 						<DefinitionListItem
 							term="Дата доставки"
-							value={`${deliveryDate} с ${selectedProcurement.deliveryTimeFrom} до ${selectedProcurement.deliveryTimeTo}`}
+							value={
+								!selectedProcurement.isUnknownDeliveryDate
+									? `${deliveryDate} с ${selectedProcurement.deliveryTimeFrom} до ${selectedProcurement.deliveryTimeTo}`
+									: 'Дата доставки не известна'
+							}
 						/>
 					) : null}
 					<DefinitionListItem
@@ -119,6 +134,7 @@ const ProcurementExpectedView = props => {
 							/>
 						}
 					/>
+					<DefinitionListItem term="Комментарий" value={selectedProcurement.comment} />
 				</DefinitionList>
 
 				<Typography variant="h6" style={{ marginTop: 40 }} gutterBottom>
@@ -148,15 +164,17 @@ const ProcurementExpectedView = props => {
 				disablePortal={false}
 			>
 				<MenuList>
-					<MenuItem
-						onClick={() => {
-							onHandleDropdownActions();
-							onOpenDialogByName('dialogProcurementExpectedEdit', 'procurementExpected', selectedProcurement);
-						}}
-						iconBefore={<FontAwesomeIcon icon={['far', 'pen']} />}
-					>
-						Редактировать
-					</MenuItem>
+					{selectedProcurement.isConfirmed ? (
+						<MenuItem
+							onClick={() => {
+								onHandleDropdownActions();
+								onOpenDialogByName('dialogProcurementExpectedEdit', 'procurementExpected', selectedProcurement);
+							}}
+							iconBefore={<FontAwesomeIcon icon={['far', 'pen']} />}
+						>
+							Редактировать
+						</MenuItem>
+					) : null}
 					<MenuItem
 						onClick={() => {
 							onHandleDropdownActions();

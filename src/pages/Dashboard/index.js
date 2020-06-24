@@ -14,7 +14,7 @@ import { withCurrentUser } from 'src/components/withCurrentUser';
 import stylesPage from 'src/styles/page.module.css';
 import styles from './index.module.css';
 
-const Index = loadable(() => import('./containers/index' /* webpackChunkName: "Availability_Index" */), {
+const Index = loadable(() => import('./containers/index' /* webpackChunkName: "Dashboard_Index" */), {
 	fallback: <LoadingPage />,
 });
 
@@ -78,7 +78,7 @@ const mapStateToProps = state => {
 			};
 
 			if (newStoreNotification.type === 'delivery-is-expected') {
-				if (newStoreNotification.procurement.isConfirmed) {
+				if (newStoreNotification.procurement.isConfirmed && !newStoreNotification.procurement.isUnknownDeliveryDate) {
 					const deliveryTimeToParse = newStoreNotification.procurement.deliveryTimeTo.split(':');
 					const deliveryTimeFromParse = newStoreNotification.procurement.deliveryTimeFrom.split(':');
 					const deliveryDateAndTime = moment(newStoreNotification.procurement.deliveryDate).set({
@@ -113,7 +113,7 @@ const mapStateToProps = state => {
 						}
 					}
 				} else {
-					newStoreNotificationsData.red.push(newStoreNotification);
+					newStoreNotificationsData.orange.push(newStoreNotification);
 				}
 			} else {
 				newStoreNotification.sortDate = newStoreNotification.createdAt;

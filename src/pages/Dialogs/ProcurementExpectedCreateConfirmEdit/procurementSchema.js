@@ -12,10 +12,10 @@ const procurementSchema = (depopulate = false) => {
 				: schema.strip();
 		}),
 		deliveryTimeFrom: Yup.mixed().when(['isConfirmed', 'isUnknownDeliveryDate'], (isConfirmed, isUnknownDeliveryDate, schema) => {
-			return isConfirmed && !isUnknownDeliveryDate ? schema.required() : schema.strip();
+			return isConfirmed && !isUnknownDeliveryDate && !schema.isValidSync('') ? schema : schema.strip();
 		}),
 		deliveryTimeTo: Yup.mixed().when(['isConfirmed', 'isUnknownDeliveryDate'], (isConfirmed, isUnknownDeliveryDate, schema) => {
-			return isConfirmed && !isUnknownDeliveryDate ? schema.required() : schema.strip();
+			return isConfirmed && !isUnknownDeliveryDate && !schema.isValidSync('') ? schema : schema.strip();
 		}),
 		costDelivery: Yup.number()
 			.transform(value => (isNaN(value) ? 0 : value))

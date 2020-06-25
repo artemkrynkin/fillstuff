@@ -8,6 +8,8 @@ import MenuList from '@material-ui/core/MenuList';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 
+import { getDeliveryDateTimeMoment } from 'src/helpers/utils';
+
 import CardPaper from 'src/components/CardPaper';
 import Money from 'src/components/Money';
 import Dropdown from 'src/components/Dropdown';
@@ -70,28 +72,23 @@ const Notification = props => {
 
 	useEffect(() => {
 		if (notification.type === 'delivery-is-expected') {
-			if (notification.procurement.isConfirmed && !notification.procurement.isUnknownDeliveryDate) {
+			const { procurement } = notification;
+
+			if (procurement.isConfirmed && !procurement.isUnknownDeliveryDate) {
 				const momentDate = moment();
 
 				let interval;
-				const deliveryTimeToParse = notification.procurement.deliveryTimeTo.split(':');
-				const deliveryDateAndTime = moment(notification.procurement.deliveryDate).set({
-					hour: deliveryTimeToParse[0],
-					minute: deliveryTimeToParse[1],
-					second: 0,
-				});
+				const deliveryDateTo = getDeliveryDateTimeMoment(procurement.deliveryDate, procurement.deliveryTimeTo, 'to');
 
-				const intervalHandler = async () => {
-					if (moment().isSameOrAfter(deliveryDateAndTime)) {
-						setActionStatus('deleting');
-						clearInterval(interval);
+				if (momentDate.isSameOrBefore(deliveryDateTo)) {
+					interval = setInterval(() => {
+						if (moment().isSameOrAfter(deliveryDateTo)) {
+							setActionStatus('deleting');
+							clearInterval(interval);
 
-						props.editStatusDeliveryIsExpected(notification);
-					}
-				};
-
-				if (momentDate.isSameOrBefore(deliveryDateAndTime)) {
-					interval = setInterval(intervalHandler, 5000);
+							props.editStatusDeliveryIsExpected(notification);
+						}
+					}, 5000);
 				}
 			}
 		}
@@ -147,11 +144,22 @@ const PositionEndsContent = props => {
 };
 
 const DeliveryIsExpectedContent = props => {
-	const { notification, onOpenDialogByName } = props;
+	const {
+		notification: { procurement },
+		onOpenDialogByName,
+	} = props;
 	const refDropdownActions = useRef(null);
 	const [dropdownActions, setDropdownActions] = useState(false);
 
 	const onHandleDropdownActions = value => setDropdownActions(value === null || value === undefined ? prevValue => !prevValue : value);
+
+	const deliveryDateToExpired = moment().isAfter(getDeliveryDateTimeMoment(procurement.deliveryDate, procurement.deliveryTimeTo, 'to'));
+
+	const eventStatus = procurement.isConfirmed
+		? !procurement.isUnknownDeliveryDate && deliveryDateToExpired
+			? 'expired'
+			: 'expected'
+		: 'unconfirmed';
 
 	return (
 		<Fragment>
@@ -167,46 +175,53 @@ const DeliveryIsExpectedContent = props => {
 				<FontAwesomeIcon icon={['far', 'ellipsis-v']} />
 			</IconButton>
 			<div className={styles.header}>
-				{notification.procurement.isConfirmed ? (
+				{eventStatus === 'expected' ? (
 					<FontAwesomeIcon className={styles.notificationIcon} icon={['fal', 'truck']} />
-				) : (
-					<span className={`${styles.notificationIcon} fa-layers fa-fw`} style={{ width: '1.9em' }}>
+				) : eventStatus === 'unconfirmed' ? (
+					<span className={`${styles.notificationIcon} fa-layers fa-fw`} style={{ width: '30px' }}>
 						<FontAwesomeIcon icon={['fal', 'truck']} transform="right-1" />
 						<FontAwesomeIcon icon={['fas', 'circle']} transform="shrink-5 up-4 left-6.5" inverse />
 						<FontAwesomeIcon icon={['fas', 'question-circle']} transform="shrink-7 up-4 left-6.5" />
 					</span>
+				) : (
+					<span className={`${styles.notificationIcon} fa-layers fa-fw`} style={{ width: '30px' }}>
+						<FontAwesomeIcon icon={['fal', 'truck']} transform="right-1" />
+						<FontAwesomeIcon icon={['fas', 'circle']} transform="shrink-5 up-4 left-6.5" inverse />
+						<FontAwesomeIcon icon={['fas', 'exclamation-circle']} transform="shrink-7 up-4 left-6.5" />
+					</span>
 				)}
 				<Typography className={styles.title} variant="h6">
-					{notification.procurement.isConfirmed ? 'Ожидается доставка' : 'Ожидается подтверждение заказа'}
+					{eventStatus === 'expected'
+						? 'Ожидается доставка'
+						: eventStatus === 'unconfirmed'
+						? 'Ожидается подтверждение заказа'
+						: 'Доставка просрочена'}
 				</Typography>
 			</div>
-			{notification.procurement.isConfirmed && !notification.procurement.isUnknownDeliveryDate ? (
+			{!procurement.isUnknownDeliveryDate ? (
 				<Typography className={styles.subtitle} variant="subtitle1">
-					{moment(notification.procurement.deliveryDate).calendar(null, calendarFormat)} с {notification.procurement.deliveryTimeFrom} до{' '}
-					{notification.procurement.deliveryTimeTo}
+					{moment(procurement.deliveryDate).calendar(null, calendarFormat)}{' '}
+					{procurement.deliveryTimeFrom && procurement.deliveryTimeTo
+						? procurement.deliveryTimeFrom !== procurement.deliveryTimeTo
+							? `с ${procurement.deliveryTimeFrom} до ${procurement.deliveryTimeTo}`
+							: `в ${procurement.deliveryTimeFrom}`
+						: null}
 				</Typography>
-			) : null}
-			{notification.procurement.isUnknownDeliveryDate ? (
+			) : (
 				<Typography className={styles.subtitle} variant="subtitle1">
 					Дата доставки не известна
 				</Typography>
-			) : null}
+			)}
 			<div>
 				<div className={styles.totalPrice}>
-					<Money value={notification.procurement.totalPrice} />
+					<Money value={procurement.totalPrice} />
 				</div>
 				<div className={styles.info}>
-					<div className={styles.infoItem}>{notification.procurement.shop.name}</div>
-					{notification.procurement.comment ? (
+					<div className={styles.infoItem}>{procurement.shop.name}</div>
+					{procurement.comment ? (
 						<Fragment>
 							<div className={styles.infoItem}>&nbsp;</div>
-							<Tooltip
-								title={notification.procurement.comment}
-								className={styles.procurementComment}
-								placement="bottom"
-								leaveDelay={500}
-								interactive
-							>
+							<Tooltip title={procurement.comment} className={styles.procurementComment} placement="bottom" leaveDelay={500} interactive>
 								<FontAwesomeIcon icon={['fal', 'comment']} />
 							</Tooltip>
 						</Fragment>
@@ -222,11 +237,11 @@ const DeliveryIsExpectedContent = props => {
 				disablePortal={true}
 			>
 				<MenuList>
-					{notification.procurement.isConfirmed ? (
+					{procurement.isConfirmed ? (
 						<MenuItem
 							onClick={() => {
 								onHandleDropdownActions();
-								onOpenDialogByName('dialogProcurementReceivedCreate', 'procurementReceived', notification.procurement);
+								onOpenDialogByName('dialogProcurementReceivedCreate', 'procurementReceived', procurement);
 							}}
 							iconBefore={<FontAwesomeIcon icon={['far', 'truck-loading']} />}
 						>
@@ -236,7 +251,7 @@ const DeliveryIsExpectedContent = props => {
 						<MenuItem
 							onClick={() => {
 								onHandleDropdownActions();
-								onOpenDialogByName('dialogProcurementExpectedConfirm', 'procurementExpected', notification.procurement);
+								onOpenDialogByName('dialogProcurementExpectedConfirm', 'procurementExpected', procurement);
 							}}
 							iconBefore={
 								<span className="fa-layers fa-fw" style={{ width: '16px' }}>
@@ -249,11 +264,11 @@ const DeliveryIsExpectedContent = props => {
 							Подтвердить заказ
 						</MenuItem>
 					)}
-					{notification.procurement.isConfirmed ? (
+					{procurement.isConfirmed ? (
 						<MenuItem
 							onClick={() => {
 								onHandleDropdownActions();
-								onOpenDialogByName('dialogProcurementExpectedEdit', 'procurementExpected', notification.procurement);
+								onOpenDialogByName('dialogProcurementExpectedEdit', 'procurementExpected', procurement);
 							}}
 							iconBefore={<FontAwesomeIcon icon={['far', 'pen']} />}
 						>
@@ -263,7 +278,7 @@ const DeliveryIsExpectedContent = props => {
 					<MenuItem
 						onClick={() => {
 							onHandleDropdownActions();
-							onOpenDialogByName('dialogProcurementExpectedCancel', 'procurementExpected', notification.procurement);
+							onOpenDialogByName('dialogProcurementExpectedCancel', 'procurementExpected', procurement);
 						}}
 						iconBefore={<FontAwesomeIcon icon={['far', 'undo']} />}
 						destructive

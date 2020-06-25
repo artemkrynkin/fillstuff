@@ -6,6 +6,8 @@ import loadable from '@loadable/component';
 
 import generateMetaInfo from 'shared/generate-meta-info';
 
+import { getDeliveryDateTimeMoment } from 'src/helpers/utils';
+
 import Head from 'src/components/head';
 import HeaderPage from 'src/components/HeaderPage';
 import { LoadingPage } from 'src/components/Loading';
@@ -78,39 +80,22 @@ const mapStateToProps = state => {
 			};
 
 			if (newStoreNotification.type === 'delivery-is-expected') {
-				if (newStoreNotification.procurement.isConfirmed && !newStoreNotification.procurement.isUnknownDeliveryDate) {
-					const deliveryTimeToParse = newStoreNotification.procurement.deliveryTimeTo.split(':');
-					const deliveryTimeFromParse = newStoreNotification.procurement.deliveryTimeFrom.split(':');
-					const deliveryDateAndTime = moment(newStoreNotification.procurement.deliveryDate).set({
-						hour: deliveryTimeToParse[0],
-						minute: deliveryTimeToParse[1],
-						second: 0,
-					});
+				const { procurement } = newStoreNotification;
 
-					if (momentDate.isSameOrAfter(deliveryDateAndTime)) {
-						const deliveryDate = new Date(newStoreNotification.procurement.deliveryDate);
+				if (procurement.isConfirmed && !procurement.isUnknownDeliveryDate) {
+					const deliveryDateTo = getDeliveryDateTimeMoment(procurement.deliveryDate, procurement.deliveryTimeTo, 'to');
 
-						deliveryDate.setHours(deliveryTimeToParse[0]);
-						deliveryDate.setMinutes(deliveryTimeToParse[1]);
-						deliveryDate.setSeconds(0);
-
-						newStoreNotification.sortDate = deliveryDate;
+					if (momentDate.isSameOrAfter(deliveryDateTo)) {
+						newStoreNotification.sortDate = deliveryDateTo.format();
 
 						newStoreNotificationsData.red.push(newStoreNotification);
 					} else {
-						const deliveryDate = new Date(newStoreNotification.procurement.deliveryDate);
+						const notificationType = momentDate.isSame(deliveryDateTo, 'date') ? 'orange' : 'green';
+						const deliveryDateFrom = getDeliveryDateTimeMoment(procurement.deliveryDate, procurement.deliveryTimeFrom);
 
-						deliveryDate.setHours(deliveryTimeFromParse[0]);
-						deliveryDate.setMinutes(deliveryTimeFromParse[1]);
-						deliveryDate.setSeconds(0);
+						newStoreNotification.sortDate = deliveryDateFrom.format();
 
-						newStoreNotification.sortDate = deliveryDate;
-
-						if (momentDate.isSame(deliveryDateAndTime, 'date')) {
-							newStoreNotificationsData.orange.push(newStoreNotification);
-						} else {
-							newStoreNotificationsData.green.push(newStoreNotification);
-						}
+						newStoreNotificationsData[notificationType].push(newStoreNotification);
 					}
 				} else {
 					newStoreNotificationsData.orange.push(newStoreNotification);

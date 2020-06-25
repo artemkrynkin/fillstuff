@@ -47,11 +47,17 @@ const DialogProcurementExpectedCancel = props => {
 			<DialogContent>
 				<Typography variant="body1">
 					Вы&nbsp;действительно хотите отменить заказ из&nbsp;магазина <b>{selectedProcurement.shop.name}</b>
-					{selectedProcurement.isConfirmed ? (
+					{selectedProcurement.isConfirmed && !selectedProcurement.isUnknownDeliveryDate ? (
 						<Fragment>
+							{' '}
 							запланированный на&nbsp;
 							<b>
-								{deliveryDate} с&nbsp;{selectedProcurement.deliveryTimeFrom} до&nbsp;{selectedProcurement.deliveryTimeTo}
+								{deliveryDate}
+								{selectedProcurement.deliveryTimeFrom && selectedProcurement.deliveryTimeTo
+									? selectedProcurement.deliveryTimeFrom !== selectedProcurement.deliveryTimeTo
+										? ` с ${selectedProcurement.deliveryTimeFrom} до ${selectedProcurement.deliveryTimeTo}`
+										: `в ${selectedProcurement.deliveryTimeFrom}`
+									: null}
 							</b>
 						</Fragment>
 					) : null}

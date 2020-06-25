@@ -1,4 +1,5 @@
 import { getIn } from 'formik';
+import moment from 'moment';
 
 import theme from 'shared/theme';
 
@@ -76,3 +77,12 @@ export const procurementPositionTransform = position => ({
 	label: position.characteristics.reduce((fullName, characteristic) => `${fullName} ${characteristic.name}`, position.name),
 	value: position._id,
 });
+
+export const getDeliveryDateTimeMoment = (deliveryDate, deliveryTime, type = '') => {
+	const localTime = type === 'from' ? [0, 0, 0] : [23, 59, 0];
+	const deliveryTimeParse = deliveryTime ? [...deliveryTime.split(':'), 0] : localTime;
+
+	if (!deliveryDate) return null;
+
+	return moment(deliveryDate).set({ hour: deliveryTimeParse[0], minute: deliveryTimeParse[1], second: deliveryTimeParse[2] });
+};

@@ -224,7 +224,15 @@ const FormProcurementExpectedCreateConfirmEdit = props => {
 									}}
 									disabled={isSubmitting}
 								/>
-								<Tooltip title={<div style={{ maxWidth: 200 }}>Описание</div>} placement="bottom" style={{ marginLeft: 5 }}>
+								<Tooltip
+									title={
+										<div style={{ maxWidth: 210 }}>
+											Вы&nbsp;можете указать дату и&nbsp;время доставки сейчас или на&nbsp;этапе подтверждения заказа
+										</div>
+									}
+									placement="bottom"
+									style={{ marginLeft: 5 }}
+								>
 									<div className={styles.helpIcon}>
 										<FontAwesomeIcon icon={['fal', 'question-circle']} fixedWidth />
 									</div>

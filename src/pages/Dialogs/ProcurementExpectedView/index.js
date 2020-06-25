@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { Fragment, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import ClassNames from 'classnames';
 import moment from 'moment';
@@ -95,9 +95,18 @@ const ProcurementExpectedView = props => {
 						<DefinitionListItem
 							term="Дата доставки"
 							value={
-								!selectedProcurement.isUnknownDeliveryDate
-									? `${deliveryDate} с ${selectedProcurement.deliveryTimeFrom} до ${selectedProcurement.deliveryTimeTo}`
-									: 'Дата доставки не известна'
+								!selectedProcurement.isUnknownDeliveryDate ? (
+									<Fragment>
+										{deliveryDate}{' '}
+										{selectedProcurement.deliveryTimeFrom && selectedProcurement.deliveryTimeTo
+											? selectedProcurement.deliveryTimeFrom !== selectedProcurement.deliveryTimeTo
+												? `с ${selectedProcurement.deliveryTimeFrom} до ${selectedProcurement.deliveryTimeTo}`
+												: `в ${selectedProcurement.deliveryTimeFrom}`
+											: null}
+									</Fragment>
+								) : (
+									'Дата доставки не известна'
+								)
 							}
 						/>
 					) : null}
@@ -138,7 +147,7 @@ const ProcurementExpectedView = props => {
 				</DefinitionList>
 
 				<Typography variant="h6" style={{ marginTop: 40 }} gutterBottom>
-					Заказанные позиции
+					Позиции в заказе
 				</Typography>
 				{selectedProcurement.positions.length ? (
 					<div>

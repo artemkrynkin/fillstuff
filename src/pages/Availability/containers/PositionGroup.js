@@ -31,7 +31,7 @@ const PositionGroup = props => {
 
 	return (
 		<TableRow className={stylesPositions.positionGroup}>
-			<td colSpan={5} style={{ position: 'relative' }}>
+			<td colSpan={6} style={{ position: 'relative' }}>
 				<ExpansionPanel
 					TransitionProps={{
 						timeout: 300,

@@ -26,7 +26,7 @@ const ReceiptConfirmCreate = props => {
 			</DialogTitle>
 			<DialogContent>
 				<Typography variant="body1" gutterBottom>
-					Если вы&nbsp;закупили новую позицию создайте поступление при помощи кнопки &laquo;Оформить закупку&raquo;.
+					Если вы&nbsp;закупили новую позицию, создайте поступление при помощи кнопки &laquo;Оформить закупку&raquo;.
 				</Typography>
 				<Typography variant="body1">
 					Если позиция уже используется вами, но&nbsp;не&nbsp;была внесена в&nbsp;Blikside, продолжите оформление здесь.

@@ -58,22 +58,10 @@ const Procurement = new Schema({
 	deliveryTimeFrom: {
 		type: String,
 		enum: timesInterval15Minutes,
-		required: [
-			function() {
-				return this.status === 'expected' && this.isConfirmed && !this.isUnknownDeliveryDate;
-			},
-			i18n.__('Обязательное поле'),
-		],
 	},
 	deliveryTimeTo: {
 		type: String,
 		enum: timesInterval15Minutes,
-		required: [
-			function() {
-				return this.status === 'expected' && this.isConfirmed && !this.isUnknownDeliveryDate;
-			},
-			i18n.__('Обязательное поле'),
-		],
 	},
 	noInvoice: {
 		type: Boolean,

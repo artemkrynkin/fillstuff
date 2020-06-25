@@ -40,7 +40,7 @@ const Position = props => {
 
 	return (
 		<TableRow className={stylesPositions.position}>
-			<TableCell style={position.positionGroup ? { paddingLeft: 41 } : {}}>
+			<TableCell style={position.positionGroup ? { paddingLeft: 41 } : {}} width={310}>
 				<Link className={styles.positionLink} to={`/availability/${position._id}`}>
 					<PositionNameInList
 						name={position.name}
@@ -50,6 +50,7 @@ const Position = props => {
 					/>
 				</Link>
 			</TableCell>
+			<TableCell />
 			<TableCell align="right" width={240}>
 				{position.receipts.length ? (
 					<QuantityIndicator

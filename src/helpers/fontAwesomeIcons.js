@@ -18,6 +18,7 @@ import {
 	faRubleSign as fasRubleSign,
 	faCheckCircle as fasCheckCircle,
 	faQuestionCircle as fasQuestionCircle,
+	faExclamationCircle as fasExclamationCircle,
 } from '@fortawesome/pro-solid-svg-icons';
 
 import {
@@ -115,6 +116,7 @@ library.add(
 	fasRubleSign,
 	fasCheckCircle,
 	fasQuestionCircle,
+	fasExclamationCircle,
 
 	// Regular
 	farAngleLeft,

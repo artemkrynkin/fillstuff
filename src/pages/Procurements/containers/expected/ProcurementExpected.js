@@ -67,17 +67,20 @@ const ProcurementExpected = props => {
 				>
 					<FontAwesomeIcon icon={['far', 'ellipsis-v']} />
 				</IconButton>
-				{procurement.isConfirmed && !procurement.isUnknownDeliveryDate ? (
+				{!procurement.isUnknownDeliveryDate ? (
 					<Typography className={styles.subtitle} variant="subtitle1">
-						{moment(procurement.deliveryDate).calendar(null, calendarFormat)} с {procurement.deliveryTimeFrom} до{' '}
-						{procurement.deliveryTimeTo}
+						{moment(procurement.deliveryDate).calendar(null, calendarFormat)}{' '}
+						{procurement.deliveryTimeFrom && procurement.deliveryTimeTo
+							? procurement.deliveryTimeFrom !== procurement.deliveryTimeTo
+								? `с ${procurement.deliveryTimeFrom} до ${procurement.deliveryTimeTo}`
+								: `в ${procurement.deliveryTimeFrom}`
+							: null}
 					</Typography>
-				) : null}
-				{procurement.isUnknownDeliveryDate ? (
+				) : (
 					<Typography className={styles.subtitle} variant="subtitle1">
 						Дата доставки не известна
 					</Typography>
-				) : null}
+				)}
 				<AvatarTitle
 					classNames={{
 						container: styles.user,

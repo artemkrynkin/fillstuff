@@ -198,20 +198,22 @@ const DeliveryIsExpectedContent = props => {
 						: 'Доставка просрочена'}
 				</Typography>
 			</div>
-			{!procurement.isUnknownDeliveryDate ? (
-				<Typography className={styles.subtitle} variant="subtitle1">
-					{moment(procurement.deliveryDate).calendar(null, calendarFormat)}{' '}
-					{procurement.deliveryTimeFrom && procurement.deliveryTimeTo
-						? procurement.deliveryTimeFrom !== procurement.deliveryTimeTo
-							? `с ${procurement.deliveryTimeFrom} до ${procurement.deliveryTimeTo}`
-							: `в ${procurement.deliveryTimeFrom}`
-						: null}
-				</Typography>
-			) : (
-				<Typography className={styles.subtitle} variant="subtitle1">
-					Дата доставки не известна
-				</Typography>
-			)}
+			{procurement.isConfirmed ? (
+				!procurement.isUnknownDeliveryDate ? (
+					<Typography className={styles.subtitle} variant="subtitle1">
+						{moment(procurement.deliveryDate).calendar(null, calendarFormat)}{' '}
+						{procurement.deliveryTimeFrom && procurement.deliveryTimeTo
+							? procurement.deliveryTimeFrom !== procurement.deliveryTimeTo
+								? `с ${procurement.deliveryTimeFrom} до ${procurement.deliveryTimeTo}`
+								: `в ${procurement.deliveryTimeFrom}`
+							: null}
+					</Typography>
+				) : (
+					<Typography className={styles.subtitle} variant="subtitle1">
+						Дата доставки не известна
+					</Typography>
+				)
+			) : null}
 			<div>
 				<div className={styles.totalPrice}>
 					<Money value={procurement.totalPrice} />

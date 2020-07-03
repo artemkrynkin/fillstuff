@@ -3,13 +3,13 @@ import mongoose from 'mongoose';
 
 import { receiptCalc } from 'shared/checkPositionAndReceipt';
 
+import Emitter from 'api/utils/emitter';
 import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
 import Studio from 'api/models/studio';
 import Position from 'api/models/position';
 import Receipt from 'api/models/receipt';
 import Procurement from 'api/models/procurement';
-import Emitter from '../../utils/emitter';
 
 const procurementsRouter = Router();
 
@@ -252,6 +252,22 @@ procurementsRouter.post(
 
 		await Promise.all([newProcurement.save(), ...updatePositionsAndActiveReceipt, Receipt.insertMany(newProcurement.receipts)]);
 
+		if (procurementExist) {
+			Emitter.emit('deleteStoreNotification', {
+				studio: studioId,
+				type: 'delivery-is-expected',
+				procurement: procurementExist._id,
+			});
+		} else {
+			newProcurement.positions.forEach(positionId => {
+				Emitter.emit('deleteStoreNotification', {
+					studio: studioId,
+					type: 'position-ends',
+					position: positionId,
+				});
+			});
+		}
+
 		const procurement = await Procurement.findById(newProcurement._id)
 			.populate([
 				{
@@ -283,14 +299,6 @@ procurementsRouter.post(
 				},
 			])
 			.catch(err => next({ code: 2, err }));
-
-		procurement.positions.forEach(positionId => {
-			Emitter.emit('deleteStoreNotification', {
-				studio: studioId,
-				type: 'position-ends',
-				position: positionId,
-			});
-		});
 
 		const {
 			studio: {

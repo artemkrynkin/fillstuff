@@ -40,7 +40,7 @@ const WriteOffs = props => {
 	const filterOptions = {
 		params: checkQueryInFilter({
 			page: 1,
-			limit: 100,
+			limit: 150,
 			dateStart: null,
 			dateEnd: null,
 			position: 'all',

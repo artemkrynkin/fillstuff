@@ -152,6 +152,16 @@ procurementsRouter.post(
 
 		const procurement = await Procurement.findById(procurementId).catch(err => next({ code: 2, err }));
 
+		const positionRemoveDeliveryIsExpected = Position.updateMany(
+			{ _id: { $in: procurement.positions } },
+			{ $pull: { deliveryIsExpected: procurement._id } }
+		).catch(err => next({ code: 2, err }));
+
+		const positionAddDeliveryIsExpected = Position.updateMany(
+			{ _id: { $in: procurementEdited.positions } },
+			{ $push: { deliveryIsExpected: procurement._id } }
+		).catch(err => next({ code: 2, err }));
+
 		procurement.shop = procurementEdited.shop;
 		procurement.isConfirmed = procurementEdited.isConfirmed;
 		procurement.isUnknownDeliveryDate = procurementEdited.isUnknownDeliveryDate;
@@ -164,16 +174,11 @@ procurementsRouter.post(
 		procurement.positions = procurementEdited.positions;
 		procurement.comment = procurementEdited.comment;
 
-		// const positionUpdated = Position.updateMany(
-		//   { _id: { $in: procurement.positions } },
-		//   { $addToSet: { deliveryIsExpected: procurement._id } }
-		// ).catch(err => next({ code: 2, err }));
-
 		const procurementErr = procurement.validateSync();
 
 		if (procurementErr) return next({ code: procurementErr.errors ? 5 : 2, err: procurementErr });
 
-		await Promise.all([procurement.save()]);
+		await Promise.all([procurement.save(), positionRemoveDeliveryIsExpected, positionAddDeliveryIsExpected]);
 
 		Procurement.findById(procurement._id)
 			.populate([

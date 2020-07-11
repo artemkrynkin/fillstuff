@@ -129,7 +129,7 @@ const Invoice = props => {
 							</TableHead>
 							<TableBody>
 								{invoice.positions.map((writeOff, index) => (
-									<WriteOff key={writeOff._id} writeOff={writeOff} />
+									<WriteOff key={index} writeOff={writeOff} />
 								))}
 							</TableBody>
 						</Table>

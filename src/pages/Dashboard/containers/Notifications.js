@@ -6,12 +6,11 @@ import Grid from '@material-ui/core/Grid';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Typography from '@material-ui/core/Typography';
 
-import Empty from 'src/components/Empty';
 import { LoadingComponent } from 'src/components/Loading';
 
 import Notification from './Notification';
+import NotificationCardGridEmpty from './NotificationCardGridEmpty';
 
-import emptyImage from 'public/img/stubs/dashboard_events_empy.svg';
 import styles from './Notifications.module.css';
 
 const Notifications = props => {
@@ -28,29 +27,10 @@ const Notifications = props => {
 	useEffect(() => {
 		const mostNotifications = Math.max(storeNotifications.red.length, storeNotifications.orange.length, storeNotifications.green.length);
 
-		setHeight(mostNotifications * 168 + (mostNotifications - 1) * 16 + 40);
+		setHeight(mostNotifications * 168 + (mostNotifications - 1) * 16 + 40 + 36);
 	}, [storeNotifications]);
 
 	if (isLoadingStoreNotifications) return <LoadingComponent />;
-
-	if (!storeNotifications.red.length && !storeNotifications.orange.length && !storeNotifications.green.length) {
-		return (
-			<Empty
-				classNames={{
-					container: styles.empty,
-					image: styles.emptyImage,
-				}}
-				imageSrc={emptyImage}
-				imageSize=""
-				content={
-					<Fragment>
-						<Typography variant="h6">Событий нет</Typography>
-						<Typography variant="body1">Отдохните или займитесь другими делами :)</Typography>
-					</Fragment>
-				}
-			/>
-		);
-	}
 
 	const containerClasses = ClassNames({
 		[styles.container]: true,
@@ -70,6 +50,9 @@ const Notifications = props => {
 					Показать меньше
 				</ButtonBase>
 			</div>
+			<Typography className={styles.title} variant="h5" gutterBottom>
+				События
+			</Typography>
 			<Grid className={styles.grids} spacing={2} container>
 				{Object.keys(storeNotifications).map(notificationType => (
 					<Grid key={notificationType} className={styles.grid} xs={4} item>
@@ -93,7 +76,9 @@ const Notifications = props => {
 									</ButtonBase>
 								) : null}
 							</Fragment>
-						) : null}
+						) : (
+							<NotificationCardGridEmpty notificationType={notificationType} />
+						)}
 					</Grid>
 				))}
 			</Grid>

@@ -12,7 +12,9 @@ import Member from './Member';
 import Filter from './Filter';
 
 import styles from './Members.module.css';
-import emptyImage from 'public/img/stubs/procurements_empty.svg';
+
+import membersGuestsEmpty from 'public/img/stubs/members_guests_empty.svg';
+import searchNotFound from 'public/img/stubs/search_not_found.svg';
 
 const Members = props => {
 	const {
@@ -41,7 +43,7 @@ const Members = props => {
 						classNames={{
 							container: styles.empty,
 						}}
-						imageSrc={emptyImage}
+						imageSrc={membersGuestsEmpty}
 						content={
 							<Typography variant="h6" gutterBottom>
 								У вас еще нет гостевых мастеров
@@ -64,6 +66,7 @@ const Members = props => {
 				<Filter tabName={tabName} onChangeTab={onChangeTab} filterOptions={filterOptions} />
 				<FilteredComponent loading={isLoadingMembers}>
 					<Empty
+						imageSrc={searchNotFound}
 						content={
 							<div>
 								<Typography variant="h6" gutterBottom>

@@ -50,7 +50,7 @@ class Sidebar extends Component {
 								timeout: 300,
 							}}
 							className={styles.menuExpansion}
-							expanded={activePage === 'availability' || activePage === 'write-offs'}
+							expanded={activePage === 'availability' || activePage === 'write-offs' || activePage === 'stocktaking'}
 							onChange={() => this.onChangeUrl('availability')}
 						>
 							<ExpansionPanelSummary className={styles.menuExpansionSummary}>
@@ -74,9 +74,18 @@ class Sidebar extends Component {
 								<div className={styles.menuItem}>
 									<NavLink className={styles.menuLink} activeClassName={styles.menuLink_activeExpansion} to="/write-offs">
 										<div className={styles.menuIcon}>
-											<FontAwesomeIcon icon={['fal', 'clipboard-check']} />
+											<FontAwesomeIcon icon={['fal', 'scanner']} />
 										</div>
 										Списания
+									</NavLink>
+								</div>
+
+								<div className={styles.menuItem}>
+									<NavLink className={styles.menuLink} activeClassName={styles.menuLink_activeExpansion} to="/stocktaking">
+										<div className={styles.menuIcon}>
+											<FontAwesomeIcon icon={['fal', 'file-edit']} />
+										</div>
+										Инвентаризации
 									</NavLink>
 								</div>
 							</div>

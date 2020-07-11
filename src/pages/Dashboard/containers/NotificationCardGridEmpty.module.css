@@ -1,0 +1,35 @@
+.card {
+  align-items: center;
+  border: 2px dashed rgba(var(--c-rgb-bg-100), 0.7);
+  display: flex;
+  border-radius: 8px;
+  margin-top: -20px;
+  height: 168px;
+  justify-content: center;
+  will-change: transform;
+}
+
+.card.cardImportanceRed {
+  transition: transform 250ms cubic-bezier(0.3, 0, 0.2, 0.8);
+}
+
+.card.cardImportanceOrange {
+  transition: transform 300ms cubic-bezier(0.3, 0, 0.2, 0.8);
+}
+
+.card.cardImportanceGreen {
+  transition: transform 350ms cubic-bezier(0.3, 0, 0.2, 0.8);
+}
+
+:global(.visibleAllNotifications) .card {
+  transform: scale(1) translate(0, 20px);
+}
+
+.text {
+  color: var(--c-hex-bg-300);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: center;
+  white-space: break-spaces;
+}

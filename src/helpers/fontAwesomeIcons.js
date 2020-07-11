@@ -79,7 +79,6 @@ import {
 	faTachometer as falTachometer,
 	faWarehouse as falWarehouse,
 	faInventory as falInventory,
-	faClipboardCheck as falClipboardCheck,
 	faAnalytics as falAnalytics,
 	faShoppingBasket as falShoppingBasket,
 	faCog as falCog,
@@ -90,6 +89,8 @@ import {
 	faTruck as falTruck,
 	faRobot as falRobot,
 	faComment as falComment,
+	faScanner as falScanner,
+	faFileEdit as falFileEdit,
 } from '@fortawesome/pro-light-svg-icons';
 
 import { faCheckCircle as fadCheckCircle, faExclamationCircle as fadExclamationCircle } from '@fortawesome/pro-duotone-svg-icons';
@@ -174,7 +175,6 @@ library.add(
 	falTachometer,
 	falWarehouse,
 	falInventory,
-	falClipboardCheck,
 	falShoppingBasket,
 	falAnalytics,
 	falUsers,
@@ -186,6 +186,8 @@ library.add(
 	falTruck,
 	falRobot,
 	falComment,
+	falScanner,
+	falFileEdit,
 
 	// Duotone
 	fadCheckCircle,

@@ -12,8 +12,9 @@ import ProcurementsReceived from './received/ProcurementsReceived';
 
 import styles from './View.module.css';
 
-import emptyImage from 'public/img/stubs/procurements_empty.svg';
 import Filter from './Filter';
+
+import procurementsEmpty from 'public/img/stubs/procurements_empty.svg';
 
 const View = props => {
 	const {
@@ -34,7 +35,7 @@ const View = props => {
 				classNames={{
 					container: styles.empty,
 				}}
-				imageSrc={emptyImage}
+				imageSrc={procurementsEmpty}
 				content={
 					<Typography variant="h6" gutterBottom>
 						У вас еще нет заказов или закупок
@@ -65,7 +66,7 @@ const View = props => {
 					classNames={{
 						container: styles.empty2,
 					}}
-					imageSrc={emptyImage}
+					imageSrc={procurementsEmpty}
 					imageSize="sm"
 					content={
 						<Typography variant="h6" gutterBottom>

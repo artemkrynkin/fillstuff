@@ -30,6 +30,7 @@ import Dashboard from 'src/pages/Dashboard';
 import Availability from 'src/pages/Availability';
 import Position from 'src/pages/Position';
 import WriteOffs from 'src/pages/WriteOffs';
+import Stocktaking from 'src/pages/Stocktaking';
 import Procurements from 'src/pages/Procurements';
 import Procurement from 'src/pages/Procurement';
 import Invoices from 'src/pages/Invoices';
@@ -76,6 +77,11 @@ const PositionFallback = signedOutFallback(
 const WriteOffsFallback = signedOutFallback(
 	props => <Layout children={<WriteOffs match={props.match} />} authed />,
 	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/write-offs`} />} />
+);
+
+const StocktakingFallback = signedOutFallback(
+	props => <Layout children={<Stocktaking match={props.match} />} authed />,
+	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/stocktaking`} />} />
 );
 
 const ProcurementsFallback = signedOutFallback(
@@ -198,6 +204,7 @@ const Routes = props => {
 							<Route path="/availability" component={AvailabilityFallback} exact strict sensitive />
 							<Route path="/availability/:positionId" component={PositionFallback} exact strict sensitive />
 							<Route path="/write-offs" component={WriteOffsFallback} exact strict sensitive />
+							<Route path="/stocktaking" component={StocktakingFallback} exact strict sensitive />
 							<Route path="/procurements" component={ProcurementsFallback} exact strict sensitive />
 							<Route path="/procurements/:procurementId" component={ProcurementFallback} exact strict sensitive />
 							<Route path="/invoices" component={InvoicesFallback} exact strict sensitive />

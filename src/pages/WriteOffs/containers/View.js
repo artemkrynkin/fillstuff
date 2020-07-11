@@ -9,7 +9,7 @@ import WriteOffs from './WriteOffs';
 
 import styles from './View.module.css';
 
-import emptyImage from 'public/img/stubs/procurements_empty.svg';
+import writeOffsEmpty from 'public/img/stubs/write_offs_empty.svg';
 
 const View = props => {
 	const {
@@ -29,7 +29,7 @@ const View = props => {
 				classNames={{
 					container: styles.empty,
 				}}
-				imageSrc={emptyImage}
+				imageSrc={writeOffsEmpty}
 				content={
 					<Typography variant="h6" gutterBottom>
 						У вас еще нет списаний

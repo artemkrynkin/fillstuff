@@ -25,7 +25,7 @@ const Stock = props => {
 
 	const metaInfo = {
 		pageName: 'stock',
-		pageTitle: 'В наличии',
+		pageTitle: 'Склад',
 	};
 	const { title, description } = generateMetaInfo({
 		type: metaInfo.pageName,

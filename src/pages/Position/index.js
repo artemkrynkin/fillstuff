@@ -130,7 +130,7 @@ const Position = props => {
 		<div className={stylesPage.page}>
 			<Head title={title} description={description} />
 
-			<HeaderPage pageName={metaInfo.pageName} pageTitle="В наличии" pageParams={pageParams} />
+			<HeaderPage pageName={metaInfo.pageName} pageTitle="Склад" pageParams={pageParams} />
 			<div className={`${stylesPage.pageContent} ${styles.container}`}>
 				<Index
 					positionData={positionData}

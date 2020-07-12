@@ -17,7 +17,7 @@ const WriteOff = props => {
 	return (
 		<TableRow className={styles.writeOff}>
 			<TableCell width={280}>
-				<a className={styles.positionLink} href={`/availability/${writeOff.position._id}`} target="_blank" rel="noreferrer noopener">
+				<a className={styles.positionLink} href={`/stock/${writeOff.position._id}`} target="_blank" rel="noreferrer noopener">
 					<PositionNameInList name={writeOff.position.name} characteristics={writeOff.position.characteristics} />
 				</a>
 			</TableCell>

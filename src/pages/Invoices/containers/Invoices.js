@@ -18,6 +18,8 @@ import styles from './Invoices.module.css';
 
 import Filter from './Filter';
 
+import searchNotFound from 'public/img/stubs/search_not_found.svg';
+
 const calendarFormat = {
 	sameDay: 'Сегодня',
 	nextDay: 'Завтра',
@@ -62,6 +64,7 @@ const Invoices = props => {
 				<Filter filterOptions={filterOptions} paging={paging} />
 				<FilteredComponent loading={isLoadingInvoices}>
 					<Empty
+						imageSrc={searchNotFound}
 						content={
 							<div>
 								<Typography variant="h6" gutterBottom>

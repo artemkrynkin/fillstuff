@@ -17,6 +17,8 @@ import WriteOffsDay from './WriteOffsDay';
 
 import styles from './WriteOffs.module.css';
 
+import searchNotFound from 'public/img/stubs/search_not_found.svg';
+
 const momentDate = moment();
 
 const MonthDateTitle = ({ date }) => {
@@ -57,6 +59,7 @@ const WriteOffs = props => {
 				<Filter filterOptions={filterOptions} paging={paging} />
 				<FilteredComponent loading={isLoadingWriteOffs}>
 					<Empty
+						imageSrc={searchNotFound}
 						content={
 							<div>
 								<Typography variant="h6" gutterBottom>

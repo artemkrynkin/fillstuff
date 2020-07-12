@@ -12,7 +12,7 @@ const DialogPositionGroupCreate = loadable(() =>
 	import('src/pages/Dialogs/PositionGroupCreateEditAdd' /* webpackChunkName: "Dialog_PositionGroupCreateEditAdd" */)
 );
 
-const Availability = () => {
+const Stock = () => {
 	const [dialogPositionCreate, setDialogPositionCreate] = useState(false);
 	const [dialogPositionGroupCreate, setDialogPositionGroupCreate] = useState(false);
 
@@ -40,4 +40,4 @@ const Availability = () => {
 	);
 };
 
-export default Availability;
+export default Stock;

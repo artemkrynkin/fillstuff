@@ -17,6 +17,8 @@ import ProcurementReceived from './ProcurementReceived';
 
 import styles from './ProcurementsReceived.module.css';
 
+import searchNotFound from 'public/img/stubs/search_not_found.svg';
+
 const calendarFormat = {
 	sameDay: 'Сегодня',
 	nextDay: 'Завтра',
@@ -58,6 +60,7 @@ const ProcurementsReceived = props => {
 		return (
 			<FilteredComponent loading={isLoadingProcurementsReceived}>
 				<Empty
+					imageSrc={searchNotFound}
 					content={
 						<Fragment>
 							<Typography variant="h6" gutterBottom>

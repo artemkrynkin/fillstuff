@@ -109,7 +109,6 @@
   opacity: 0.9;
   padding: 12px 14px;
   text-decoration: none;
-  transition: background-color 150ms ease-out, color 150ms ease-out;
 }
 
 .menuLink:hover {
@@ -134,7 +133,6 @@
   margin-right: 14px;
   opacity: 0.5;
   text-align: center;
-  transition: opacity 150ms ease-out;
   width: 18px;
 }
 

@@ -41,7 +41,7 @@ const Position = props => {
 	return (
 		<TableRow className={stylesPositions.position}>
 			<TableCell style={position.positionGroup ? { paddingLeft: 41 } : {}} width={310}>
-				<Link className={styles.positionLink} to={`/availability/${position._id}`}>
+				<Link className={styles.positionLink} to={`/stock/${position._id}`}>
 					<PositionNameInList
 						name={position.name}
 						characteristics={position.characteristics}

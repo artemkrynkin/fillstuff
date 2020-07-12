@@ -19,7 +19,7 @@ const Receipt = props => {
 	return (
 		<TableRow>
 			<TableCell width={280}>
-				<Link className={styles.positionLink} to={`/availability/${receipt.position._id}`}>
+				<Link className={styles.positionLink} to={`/stock/${receipt.position._id}`}>
 					<PositionNameInList
 						name={receipt.position.name}
 						characteristics={receipt.position.characteristics}

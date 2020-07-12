@@ -21,7 +21,7 @@ const Receipt = props => {
 	return (
 		<TableRow classes={positionSameFilter ? { root: TableRowHighlightClasses.root } : {}}>
 			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} width={280}>
-				<Link className={styles.positionLink} to={`/availability/${receipt.position._id}`}>
+				<Link className={styles.positionLink} to={`/stock/${receipt.position._id}`}>
 					<PositionNameInList
 						name={receipt.position.name}
 						characteristics={receipt.position.characteristics}

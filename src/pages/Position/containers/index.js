@@ -73,9 +73,9 @@ const Index = props => {
 		}
 	};
 
-	const onBackAvailability = () => {
+	const onBackStock = () => {
 		history.push({
-			pathname: '/availability',
+			pathname: '/stock',
 		});
 	};
 
@@ -117,7 +117,7 @@ const Index = props => {
 					if (response.status === 'success' && response.data) {
 						getPosition();
 					} else {
-						onBackAvailability();
+						onBackStock();
 					}
 				}}
 				selectedPosition={dialogOpenedName === 'dialogPositionArchiveDelete' ? dialogData.position : null}

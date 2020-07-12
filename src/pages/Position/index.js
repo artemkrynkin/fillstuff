@@ -44,7 +44,7 @@ const Position = props => {
 	});
 
 	const pageParams = {
-		backToPage: '/availability',
+		backToPage: '/stock',
 	};
 
 	const getPosition = callback => {
@@ -55,7 +55,7 @@ const Position = props => {
 				if (callback !== undefined) callback(response);
 			} else {
 				history.push({
-					pathname: '/availability',
+					pathname: '/stock',
 				});
 			}
 		});

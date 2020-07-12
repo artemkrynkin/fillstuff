@@ -11,7 +11,7 @@ import Positions from './Positions';
 
 import styles from './View.module.css';
 
-import availabilityEmpty from 'public/img/stubs/availability_empty.svg';
+import stockEmpty from 'public/img/stubs/stock_empty.svg';
 
 const View = props => {
 	const {
@@ -31,7 +31,7 @@ const View = props => {
 				classNames={{
 					container: styles.empty,
 				}}
-				imageSrc={availabilityEmpty}
+				imageSrc={stockEmpty}
 				content={
 					<Typography variant="h6" gutterBottom>
 						У вас еще нет позиций
@@ -52,7 +52,7 @@ const View = props => {
 				classNames={{
 					container: styles.empty,
 				}}
-				imageSrc={availabilityEmpty}
+				imageSrc={stockEmpty}
 				content={
 					<Typography variant="h6" gutterBottom>
 						Все ваши позиции находятся в архиве

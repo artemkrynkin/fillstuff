@@ -34,6 +34,29 @@ const Members = props => {
 
 	const currentMembers = members.data[arrayName];
 
+	if (!currentMembers.activated.length && !currentMembers.deactivated.length) {
+		return (
+			<Fragment>
+				<Filter tabName={tabName} onChangeTab={onChangeTab} filterOptions={filterOptions} />
+				<FilteredComponent loading={isLoadingMembers}>
+					<Empty
+						imageSrc={searchNotFound}
+						content={
+							<div>
+								<Typography variant="h6" gutterBottom>
+									Ничего не нашлось
+								</Typography>
+								<Typography variant="body1" gutterBottom>
+									Попробуйте изменить параметры поиска
+								</Typography>
+							</div>
+						}
+					/>
+				</FilteredComponent>
+			</Fragment>
+		);
+	}
+
 	if (tabName === 'guests' && !members.paging.totalGuests) {
 		return (
 			<Fragment>
@@ -53,29 +76,6 @@ const Members = props => {
 							<Button variant="contained" color="primary">
 								Добавить мастера
 							</Button>
-						}
-					/>
-				</FilteredComponent>
-			</Fragment>
-		);
-	}
-
-	if (!currentMembers.activated.length && !currentMembers.deactivated.length) {
-		return (
-			<Fragment>
-				<Filter tabName={tabName} onChangeTab={onChangeTab} filterOptions={filterOptions} />
-				<FilteredComponent loading={isLoadingMembers}>
-					<Empty
-						imageSrc={searchNotFound}
-						content={
-							<div>
-								<Typography variant="h6" gutterBottom>
-									Ничего не нашлось
-								</Typography>
-								<Typography variant="body1" gutterBottom>
-									Попробуйте изменить параметры поиска
-								</Typography>
-							</div>
 						}
 					/>
 				</FilteredComponent>

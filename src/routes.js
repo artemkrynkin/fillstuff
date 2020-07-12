@@ -27,7 +27,7 @@ import Login from 'src/pages/Login';
 import PageNotFound from 'src/pages/PageNotFound';
 import PasswordRecovery from 'src/pages/PasswordRecovery';
 import Dashboard from 'src/pages/Dashboard';
-import Availability from 'src/pages/Availability';
+import Stock from 'src/pages/Stock';
 import Position from 'src/pages/Position';
 import WriteOffs from 'src/pages/WriteOffs';
 import Stocktaking from 'src/pages/Stocktaking';
@@ -64,14 +64,14 @@ const DashboardFallback = signedOutFallback(
 	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/dashboard`} />} />
 );
 
-const AvailabilityFallback = signedOutFallback(
-	props => <Layout children={<Availability match={props.match} />} authed />,
-	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/availability`} />} />
+const StockFallback = signedOutFallback(
+	props => <Layout children={<Stock match={props.match} />} authed />,
+	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/stock`} />} />
 );
 
 const PositionFallback = signedOutFallback(
 	props => <Layout children={<Position match={props.match} />} authed />,
-	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/availability/${match.params.positionId}`} />} />
+	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/stock/${match.params.positionId}`} />} />
 );
 
 const WriteOffsFallback = signedOutFallback(
@@ -201,8 +201,8 @@ const Routes = props => {
 							<Route path="/password-recovery" component={PasswordRecoveryFallback} exact strict sensitive />
 
 							<Route path="/dashboard" component={DashboardFallback} exact strict sensitive />
-							<Route path="/availability" component={AvailabilityFallback} exact strict sensitive />
-							<Route path="/availability/:positionId" component={PositionFallback} exact strict sensitive />
+							<Route path="/stock" component={StockFallback} exact strict sensitive />
+							<Route path="/stock/:positionId" component={PositionFallback} exact strict sensitive />
 							<Route path="/write-offs" component={WriteOffsFallback} exact strict sensitive />
 							<Route path="/stocktaking" component={StocktakingFallback} exact strict sensitive />
 							<Route path="/procurements" component={ProcurementsFallback} exact strict sensitive />

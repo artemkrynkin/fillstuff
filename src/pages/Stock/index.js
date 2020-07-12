@@ -16,15 +16,15 @@ import { getPositionGroups } from 'src/actions/positionGroups';
 import stylesPage from 'src/styles/page.module.css';
 import styles from './index.module.css';
 
-const Index = loadable(() => import('./containers/index' /* webpackChunkName: "Availability_Index" */), {
+const Index = loadable(() => import('./containers/index' /* webpackChunkName: "Stock_Index" */), {
 	fallback: <LoadingPage />,
 });
 
-const Availability = props => {
+const Stock = props => {
 	const { currentStudio, positions, positionGroups } = props;
 
 	const metaInfo = {
-		pageName: 'availability',
+		pageName: 'stock',
 		pageTitle: 'В наличии',
 	};
 	const { title, description } = generateMetaInfo({
@@ -66,4 +66,4 @@ const mapDispatchToProps = dispatch => {
 	};
 };
 
-export default compose(connect(mapStateToProps, mapDispatchToProps), withCurrentUser)(Availability);
+export default compose(connect(mapStateToProps, mapDispatchToProps), withCurrentUser)(Stock);

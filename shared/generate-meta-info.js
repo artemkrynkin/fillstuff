@@ -58,7 +58,7 @@ function generateMetaInfo(input) {
 		case 'registration':
 		case 'password-recovery':
 		case 'dashboard':
-		case 'availability':
+		case 'stock':
 		case 'position':
 		case 'write-offs':
 		case 'stocktaking':

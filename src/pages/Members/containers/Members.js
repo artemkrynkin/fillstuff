@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
+import { startCase } from 'lodash';
 
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -33,34 +34,12 @@ const Members = props => {
 	if (!members) return <LoadingPage className={styles.loadingPage} />;
 
 	const currentMembers = members.data[arrayName];
-
-	if (!currentMembers.activated.length && !currentMembers.deactivated.length) {
-		return (
-			<Fragment>
-				<Filter tabName={tabName} onChangeTab={onChangeTab} filterOptions={filterOptions} />
-				<FilteredComponent loading={isLoadingMembers}>
-					<Empty
-						imageSrc={searchNotFound}
-						content={
-							<div>
-								<Typography variant="h6" gutterBottom>
-									Ничего не нашлось
-								</Typography>
-								<Typography variant="body1" gutterBottom>
-									Попробуйте изменить параметры поиска
-								</Typography>
-							</div>
-						}
-					/>
-				</FilteredComponent>
-			</Fragment>
-		);
-	}
+	const currentMembersCount = members.paging[`total${startCase(arrayName)}`];
 
 	if (tabName === 'guests' && !members.paging.totalGuests) {
 		return (
 			<Fragment>
-				<Filter tabName={tabName} onChangeTab={onChangeTab} filterOptions={filterOptions} />
+				<Filter tabName={tabName} onChangeTab={onChangeTab} filterOptions={filterOptions} currentMembersCount={currentMembersCount} />
 				<FilteredComponent loading={isLoadingMembers}>
 					<Empty
 						classNames={{
@@ -83,10 +62,33 @@ const Members = props => {
 		);
 	}
 
+	if (!currentMembers.activated.length && !currentMembers.deactivated.length) {
+		return (
+			<Fragment>
+				<Filter tabName={tabName} onChangeTab={onChangeTab} filterOptions={filterOptions} currentMembersCount={currentMembersCount} />
+				<FilteredComponent loading={isLoadingMembers}>
+					<Empty
+						imageSrc={searchNotFound}
+						content={
+							<div>
+								<Typography variant="h6" gutterBottom>
+									Ничего не нашлось
+								</Typography>
+								<Typography variant="body1" gutterBottom>
+									Попробуйте изменить параметры поиска
+								</Typography>
+							</div>
+						}
+					/>
+				</FilteredComponent>
+			</Fragment>
+		);
+	}
+
 	if (currentMembers.activated.length || currentMembers.deactivated.length) {
 		return (
 			<Fragment>
-				<Filter tabName={tabName} onChangeTab={onChangeTab} filterOptions={filterOptions} />
+				<Filter tabName={tabName} onChangeTab={onChangeTab} filterOptions={filterOptions} currentMembersCount={currentMembersCount} />
 				<FilteredComponent loading={isLoadingMembers}>
 					{currentMembers.activated.length ? (
 						<Grid spacing={2} container>

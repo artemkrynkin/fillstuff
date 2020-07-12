@@ -109,6 +109,7 @@ class Filter extends Component {
 			tabName,
 			onChangeTab,
 			filterOptions: { params: filterParams },
+			currentMembersCount,
 		} = this.props;
 		const { dropdownRole } = this.state;
 
@@ -120,30 +121,32 @@ class Filter extends Component {
 					<Tab value="" label="Постоянные" id="regular-members" />
 					<Tab value="guests" label="Гостевые" id="guest-members" />
 				</Tabs>
-				<Formik
-					initialValues={initialValues}
-					validationSchema={filterSchema}
-					validateOnBlur={false}
-					validateOnChange={false}
-					enableReinitialize
-					onSubmit={(values, actions) => this.onSubmit(values, actions)}
-				>
-					{props => (
-						<FormFilter
-							handlerDropdown={this.handlerDropdown}
-							onChangeFilterName={this.onChangeFilterName}
-							onClearFilterName={this.onClearFilterName}
-							onChangeFilterRole={this.onChangeFilterRole}
-							onResetAllFilters={this.onResetAllFilters}
-							refFilterNameInput={this.refFilterNameInput}
-							dropdownRole={{
-								state: dropdownRole,
-								ref: this.refDropdownRole,
-							}}
-							formikProps={props}
-						/>
-					)}
-				</Formik>
+				{currentMembersCount ? (
+					<Formik
+						initialValues={initialValues}
+						validationSchema={filterSchema}
+						validateOnBlur={false}
+						validateOnChange={false}
+						enableReinitialize
+						onSubmit={(values, actions) => this.onSubmit(values, actions)}
+					>
+						{props => (
+							<FormFilter
+								handlerDropdown={this.handlerDropdown}
+								onChangeFilterName={this.onChangeFilterName}
+								onClearFilterName={this.onClearFilterName}
+								onChangeFilterRole={this.onChangeFilterRole}
+								onResetAllFilters={this.onResetAllFilters}
+								refFilterNameInput={this.refFilterNameInput}
+								dropdownRole={{
+									state: dropdownRole,
+									ref: this.refDropdownRole,
+								}}
+								formikProps={props}
+							/>
+						)}
+					</Formik>
+				) : null}
 			</Paper>
 		);
 	}

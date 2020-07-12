@@ -143,7 +143,7 @@ const ProcurementExpectedView = props => {
 							/>
 						}
 					/>
-					<DefinitionListItem term="Комментарий" value={selectedProcurement.comment} />
+					{selectedProcurement.comment ? <DefinitionListItem term="Комментарий" value={selectedProcurement.comment} /> : null}
 				</DefinitionList>
 
 				<Typography variant="h6" style={{ marginTop: 40 }} gutterBottom>

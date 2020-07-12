@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Divider from '@material-ui/core/Divider';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
+import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 
 import Dropdown from 'src/components/Dropdown';
@@ -31,14 +32,18 @@ const HelpPanel = props => {
 			<Grid className={styles.wrapper} direction="column" justify="space-between" alignItems="center" container>
 				<Link className={styles.logo} to="/" />
 				<div className={styles.profile} ref={refDropdownProfile} onClick={() => onHandleDropdownProfile()}>
-					<div
+					<Avatar
 						className={ClassNames({
-							[styles.avatar]: true,
-							[styles.avatarActive]: dropdownProfile,
+							[styles.avatarImage]: true,
+							[styles.avatarImageActive]: dropdownProfile,
 						})}
+						src={currentUser.avatar}
+						alt={currentUser.name}
 					>
-						{currentUser.avatar ? <img src={currentUser.avatar} alt="" /> : <FontAwesomeIcon icon={['fas', 'user-alt']} />}
-					</div>
+						<div className={styles.avatarUserIcon}>
+							<FontAwesomeIcon icon={['fas', 'user-alt']} />
+						</div>
+					</Avatar>
 				</div>
 			</Grid>
 

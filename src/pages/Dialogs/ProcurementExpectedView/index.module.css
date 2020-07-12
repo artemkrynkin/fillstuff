@@ -26,6 +26,10 @@
   width: 22px;
 }
 
+.avatarImage svg {
+  font-size: 14px;
+}
+
 .avatarTitle {
   color: var(--c-hex-bg-700);
   font-size: 13px;

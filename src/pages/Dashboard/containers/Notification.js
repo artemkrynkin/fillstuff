@@ -1,39 +1,19 @@
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import ClassNames from 'classnames';
 import moment from 'moment';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import MenuList from '@material-ui/core/MenuList';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-
 import { getDeliveryDateTimeMoment } from 'src/helpers/utils';
 
 import CardPaper from 'src/components/CardPaper';
-import Money from 'src/components/Money';
-import Dropdown from 'src/components/Dropdown';
-import MenuItem from 'src/components/MenuItem';
-import Tooltip from 'src/components/Tooltip';
 
 import { editStatusDeliveryIsExpected } from 'src/actions/storeNotifications';
 
-import styles from './Notification.module.css';
+import PositionEnds from '../components/notificationsContent/PositionEnds';
+import DeliveryIsExpected from '../components/notificationsContent/DeliveryIsExpected';
+import MemberInvoice from '../components/notificationsContent/MemberInvoice';
 
-const calendarFormat = {
-	sameDay: 'Сегодня',
-	nextDay: 'Завтра',
-	lastDay: 'Вчера',
-	sameElse: function(now) {
-		return this.isSame(now, 'year') ? 'D MMMM' : 'D MMMM YYYY';
-	},
-	nextWeek: function(now) {
-		return this.isSame(now, 'year') ? 'D MMMM' : 'D MMMM YYYY';
-	},
-	lastWeek: function(now) {
-		return this.isSame(now, 'year') ? 'D MMMM' : 'D MMMM YYYY';
-	},
-};
+import styles from './Notification.module.css';
 
 const Notification = props => {
 	const { index, reverseIndex, importance, onOpenDialogByName, notification } = props;
@@ -48,6 +28,7 @@ const Notification = props => {
 		[styles.cardDeleting]: actionStatus === 'deleting' || notification.actionStatus === 'deleting',
 		[styles.cardPositionEnds]: notification.type === 'position-ends',
 		[styles.cardDeliveryIsExpected]: notification.type === 'delivery-is-expected',
+		[styles.cardMemberInvoice]: notification.type === 'member-invoice',
 	});
 
 	const openViewDialog = event => {
@@ -104,192 +85,13 @@ const Notification = props => {
 			style={{ zIndex: reverseIndex, '--cardIndex': index, '--cardReverseIndex': reverseIndex }}
 		>
 			{notification.type === 'position-ends' ? (
-				<PositionEndsContent notification={notification} importance={importance} />
+				<PositionEnds notification={notification} importance={importance} />
 			) : notification.type === 'delivery-is-expected' ? (
-				<DeliveryIsExpectedContent notification={notification} importance={importance} onOpenDialogByName={onOpenDialogByName} />
+				<DeliveryIsExpected notification={notification} importance={importance} onOpenDialogByName={onOpenDialogByName} />
+			) : notification.type === 'member-invoice' ? (
+				<MemberInvoice notification={notification} importance={importance} onOpenDialogByName={onOpenDialogByName} />
 			) : null}
 		</CardPaper>
-	);
-};
-
-const PositionEndsContent = props => {
-	const { notification } = props;
-
-	const remainingQuantity = notification.position.receipts.reduce((sum, receipt) => sum + receipt.current.quantity, 0);
-
-	return (
-		<Fragment>
-			<div className={styles.header}>
-				<FontAwesomeIcon className={styles.notificationIcon} icon={['fal', 'chart-line-down']} />
-				<Typography className={styles.title} variant="h6">
-					Заканчивается позиция
-				</Typography>
-			</div>
-			<Typography className={styles.subtitle} variant="subtitle1">
-				{notification.position.name}
-			</Typography>
-			<div>
-				<div className={styles.caption}>
-					Остаток: {remainingQuantity} {notification.position.unitRelease === 'pce' ? 'шт.' : 'уп.'}
-				</div>
-				<div className={styles.caption}>
-					Закончится через:
-					<Tooltip title="Недостаточно данных для расчета" className={styles.robotIcon} placement="bottom">
-						<FontAwesomeIcon icon={['fal', 'robot']} />
-					</Tooltip>
-				</div>
-			</div>
-		</Fragment>
-	);
-};
-
-const DeliveryIsExpectedContent = props => {
-	const {
-		notification: { procurement },
-		onOpenDialogByName,
-	} = props;
-	const refDropdownActions = useRef(null);
-	const [dropdownActions, setDropdownActions] = useState(false);
-
-	const onHandleDropdownActions = value => setDropdownActions(value === null || value === undefined ? prevValue => !prevValue : value);
-
-	const deliveryDateToExpired = moment().isAfter(getDeliveryDateTimeMoment(procurement.deliveryDate, procurement.deliveryTimeTo, 'to'));
-
-	const eventStatus = procurement.isConfirmed
-		? !procurement.isUnknownDeliveryDate && deliveryDateToExpired
-			? 'expired'
-			: 'expected'
-		: 'unconfirmed';
-
-	return (
-		<Fragment>
-			<IconButton
-				ref={refDropdownActions}
-				className={ClassNames({
-					[styles.actionButton]: true,
-					[styles.actionButtonActive]: dropdownActions,
-				})}
-				onClick={() => onHandleDropdownActions()}
-				size="small"
-			>
-				<FontAwesomeIcon icon={['far', 'ellipsis-v']} />
-			</IconButton>
-			<div className={styles.header}>
-				{eventStatus === 'expected' ? (
-					<FontAwesomeIcon className={styles.notificationIcon} icon={['fal', 'truck']} />
-				) : eventStatus === 'unconfirmed' ? (
-					<span className={`${styles.notificationIcon} fa-layers fa-fw`} style={{ width: '30px' }}>
-						<FontAwesomeIcon icon={['fal', 'truck']} transform="right-1" />
-						<FontAwesomeIcon icon={['fas', 'circle']} transform="shrink-5 up-4 left-6.5" inverse />
-						<FontAwesomeIcon icon={['fas', 'question-circle']} transform="shrink-7 up-4 left-6.5" />
-					</span>
-				) : (
-					<span className={`${styles.notificationIcon} fa-layers fa-fw`} style={{ width: '30px' }}>
-						<FontAwesomeIcon icon={['fal', 'truck']} transform="right-1" />
-						<FontAwesomeIcon icon={['fas', 'circle']} transform="shrink-5 up-4 left-6.5" inverse />
-						<FontAwesomeIcon icon={['fas', 'exclamation-circle']} transform="shrink-7 up-4 left-6.5" />
-					</span>
-				)}
-				<Typography className={styles.title} variant="h6">
-					{eventStatus === 'expected'
-						? 'Ожидается доставка'
-						: eventStatus === 'unconfirmed'
-						? 'Ожидается подтверждение заказа'
-						: 'Доставка просрочена'}
-				</Typography>
-			</div>
-			{procurement.isConfirmed ? (
-				!procurement.isUnknownDeliveryDate ? (
-					<Typography className={styles.subtitle} variant="subtitle1">
-						{moment(procurement.deliveryDate).calendar(null, calendarFormat)}{' '}
-						{procurement.deliveryTimeFrom && procurement.deliveryTimeTo
-							? procurement.deliveryTimeFrom !== procurement.deliveryTimeTo
-								? `с ${procurement.deliveryTimeFrom} до ${procurement.deliveryTimeTo}`
-								: `в ${procurement.deliveryTimeFrom}`
-							: null}
-					</Typography>
-				) : (
-					<Typography className={styles.subtitle} variant="subtitle1">
-						Дата доставки не известна
-					</Typography>
-				)
-			) : null}
-			<div>
-				<div className={styles.totalPrice}>
-					<Money value={procurement.totalPrice} />
-				</div>
-				<div className={styles.info}>
-					<div className={styles.infoItem}>{procurement.shop.name}</div>
-					{procurement.comment ? (
-						<Fragment>
-							<div className={styles.infoItem}>&nbsp;</div>
-							<Tooltip title={procurement.comment} className={styles.procurementComment} placement="bottom" leaveDelay={500} interactive>
-								<FontAwesomeIcon icon={['fal', 'comment']} />
-							</Tooltip>
-						</Fragment>
-					) : null}
-				</div>
-			</div>
-
-			<Dropdown
-				anchor={refDropdownActions}
-				open={dropdownActions}
-				onClose={() => onHandleDropdownActions(false)}
-				placement="bottom-end"
-				disablePortal={true}
-			>
-				<MenuList>
-					{procurement.isConfirmed ? (
-						<MenuItem
-							onClick={() => {
-								onHandleDropdownActions();
-								onOpenDialogByName('dialogProcurementReceivedCreate', 'procurementReceived', procurement);
-							}}
-							iconBefore={<FontAwesomeIcon icon={['far', 'truck-loading']} />}
-						>
-							Оформить закупку
-						</MenuItem>
-					) : (
-						<MenuItem
-							onClick={() => {
-								onHandleDropdownActions();
-								onOpenDialogByName('dialogProcurementExpectedConfirm', 'procurementExpected', procurement);
-							}}
-							iconBefore={
-								<span className="fa-layers fa-fw" style={{ width: '16px' }}>
-									<FontAwesomeIcon icon={['far', 'truck']} />
-									<FontAwesomeIcon icon={['fas', 'circle']} transform="shrink-5 up-4 left-6" inverse />
-									<FontAwesomeIcon icon={['fas', 'check-circle']} transform="shrink-7 up-4 left-6" />
-								</span>
-							}
-						>
-							Подтвердить заказ
-						</MenuItem>
-					)}
-					{procurement.isConfirmed ? (
-						<MenuItem
-							onClick={() => {
-								onHandleDropdownActions();
-								onOpenDialogByName('dialogProcurementExpectedEdit', 'procurementExpected', procurement);
-							}}
-							iconBefore={<FontAwesomeIcon icon={['far', 'pen']} />}
-						>
-							Редактировать
-						</MenuItem>
-					) : null}
-					<MenuItem
-						onClick={() => {
-							onHandleDropdownActions();
-							onOpenDialogByName('dialogProcurementExpectedCancel', 'procurementExpected', procurement);
-						}}
-						iconBefore={<FontAwesomeIcon icon={['far', 'undo']} />}
-						destructive
-					>
-						Отменить заказ
-					</MenuItem>
-				</MenuList>
-			</Dropdown>
-		</Fragment>
 	);
 };
 

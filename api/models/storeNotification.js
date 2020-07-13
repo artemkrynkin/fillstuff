@@ -16,7 +16,7 @@ const StoreNotification = new Schema({
 	},
 	type: {
 		type: String,
-		enum: ['position-ends', 'delivery-is-expected', 'cancel-write-off'],
+		enum: ['position-ends', 'delivery-is-expected', 'member-invoice', 'cancel-write-off'],
 		required: [true, i18n.__('Обязательное поле')],
 	},
 	position: {
@@ -35,6 +35,16 @@ const StoreNotification = new Schema({
 		required: [
 			function() {
 				return this.type === 'delivery-is-expected';
+			},
+			i18n.__('Обязательное поле'),
+		],
+	},
+	invoice: {
+		type: Schema.Types.ObjectId,
+		ref: 'Invoice',
+		required: [
+			function() {
+				return this.type === 'invoice-paid-positions';
 			},
 			i18n.__('Обязательное поле'),
 		],

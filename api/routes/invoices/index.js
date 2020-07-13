@@ -6,6 +6,8 @@ import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
 import { formatNumber } from 'shared/utils';
 
+import Emitter from 'api/utils/emitter';
+
 import Member from 'api/models/member';
 import Invoice from 'api/models/Invoice';
 
@@ -52,12 +54,9 @@ invoicesRouter.post(
 					},
 				},
 				{
-					path: 'writeOffs',
+					path: 'positions.position',
 					populate: {
-						path: 'position',
-						populate: {
-							path: 'characteristics',
-						},
+						path: 'characteristics',
 					},
 				},
 				{
@@ -81,30 +80,7 @@ invoicesRouter.post(
 		const invoicesResult = await invoicesPromise;
 		const invoicesCount = await invoicesCountPromise;
 
-		let { data: invoices, paging } = invoicesResult;
-
-		invoices.forEach(invoice => {
-			if (invoice.payments.length) invoice.payments.reverse();
-
-			invoice.positions = _.chain(invoice.writeOffs)
-				.groupBy(writeOff => {
-					return String(writeOff.position._id) && writeOff.unitSellingPrice;
-				})
-				.map(writeOffs => ({
-					position: writeOffs[0].position,
-					quantity: writeOffs.reduce((sum, writeOff) => sum + writeOff.quantity, 0),
-					unitSellingPrice: writeOffs[0].unitSellingPrice,
-					sellingPrice: formatNumber(writeOffs.reduce((sum, writeOff) => sum + writeOff.sellingPrice, 0)),
-				}))
-				.value();
-
-			invoice.positions.sort(
-				(writeOffsA, writeOffsB) =>
-					writeOffsA.position.name.localeCompare(writeOffsB.position.name) || +writeOffsB.sellingPrice - +writeOffsA.sellingPrice
-			);
-
-			delete invoice.writeOffs;
-		});
+		const { data: invoices, paging } = invoicesResult;
 
 		res.json({
 			data: invoices,
@@ -117,7 +93,7 @@ invoicesRouter.post(
 );
 
 invoicesRouter.post(
-	'/getInvoicesMember',
+	'/getMemberInvoices',
 	isAuthedResolver,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
@@ -153,12 +129,9 @@ invoicesRouter.post(
 					},
 				},
 				{
-					path: 'writeOffs',
+					path: 'positions.position',
 					populate: {
-						path: 'position',
-						populate: {
-							path: 'characteristics',
-						},
+						path: 'characteristics',
 					},
 				},
 				{
@@ -171,24 +144,6 @@ invoicesRouter.post(
 				},
 			])
 			.catch(err => next({ code: 2, err }));
-
-		if (invoice.payments.length) invoice.payments.reverse();
-
-		invoice.positions = _.chain(invoice.writeOffs)
-			.groupBy(writeOff => {
-				return String(writeOff.position._id) && writeOff.unitSellingPrice;
-			})
-			.map(writeOffs => ({
-				position: writeOffs[0].position,
-				quantity: writeOffs.reduce((sum, writeOff) => sum + writeOff.quantity, 0),
-				unitSellingPrice: writeOffs[0].unitSellingPrice,
-				sellingPrice: formatNumber(writeOffs.reduce((sum, writeOff) => sum + writeOff.sellingPrice, 0)),
-			}))
-			.value();
-
-		invoice.positions.sort((a, b) => a.position.name.localeCompare(b.position.name) || +b.sellingPrice - +a.sellingPrice);
-
-		delete invoice.writeOffs;
 
 		res.json(invoice);
 	}
@@ -207,7 +162,20 @@ invoicesRouter.post(
 		const memberPromise = Member.findById(
 			memberId,
 			'billingFrequency lastBillingDate nextBillingDate billingDebt billingPeriodDebt billingPeriodWriteOffs'
-		).catch(err => next({ code: 2, err }));
+		)
+			.populate([
+				{
+					path: 'billingPeriodWriteOffs',
+					populate: {
+						path: 'position',
+						populate: {
+							path: 'characteristics',
+						},
+					},
+				},
+			])
+			.lean()
+			.catch(err => next({ code: 2, err }));
 
 		const member = await memberPromise;
 
@@ -218,13 +186,23 @@ invoicesRouter.post(
 			});
 		}
 
+		const invoicePositions = _.chain(member.billingPeriodWriteOffs)
+			.groupBy(writeOff => writeOff.position._id && writeOff.unitSellingPrice)
+			.map(writeOffs => ({
+				position: writeOffs[0].position,
+				quantity: writeOffs.reduce((sum, writeOff) => sum + writeOff.quantity, 0),
+				unitSellingPrice: writeOffs[0].unitSellingPrice,
+				sellingPrice: writeOffs.reduce((sum, writeOff) => sum + writeOff.sellingPrice, 0),
+			}))
+			.value();
+
 		const newInvoice = new Invoice({
 			fromDate: member.lastBillingDate,
-			toDate: new Date(),
 			studio: studioId,
 			member: member._id,
 			amount: member.billingPeriodDebt,
 			writeOffs: member.billingPeriodWriteOffs,
+			positions: invoicePositions,
 		});
 
 		const newInvoiceErr = newInvoice.validateSync();
@@ -232,6 +210,12 @@ invoicesRouter.post(
 		if (newInvoiceErr) return next({ code: newInvoiceErr.errors ? 5 : 2, err: newInvoiceErr });
 
 		newInvoice.save();
+
+		Emitter.emit('newStoreNotification', {
+			studio: studioId,
+			type: 'member-invoice',
+			invoice: newInvoice._id,
+		});
 
 		await Member.findByIdAndUpdate(
 			member._id,
@@ -264,6 +248,7 @@ invoicesRouter.post(
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
+			studioId,
 			memberId,
 			params: { invoiceId },
 			data: { amount },
@@ -325,12 +310,9 @@ invoicesRouter.post(
 					},
 				},
 				{
-					path: 'writeOffs',
+					path: 'positions.position',
 					populate: {
-						path: 'position',
-						populate: {
-							path: 'characteristics',
-						},
+						path: 'characteristics',
 					},
 				},
 				{
@@ -344,23 +326,14 @@ invoicesRouter.post(
 			])
 			.catch(err => next({ code: 2, err }));
 
-		if (invoicePayable.payments.length) invoicePayable.payments.reverse();
+		const storeNotification = {
+			studio: studioId,
+			type: 'member-invoice',
+			invoice: invoice._id,
+		};
 
-		invoicePayable.positions = _.chain(invoicePayable.writeOffs)
-			.groupBy(writeOff => {
-				return String(writeOff.position._id) && writeOff.unitSellingPrice;
-			})
-			.map(writeOffs => ({
-				position: writeOffs[0].position,
-				quantity: writeOffs.reduce((sum, writeOff) => sum + writeOff.quantity, 0),
-				unitSellingPrice: writeOffs[0].unitSellingPrice,
-				sellingPrice: formatNumber(writeOffs.reduce((sum, writeOff) => sum + writeOff.sellingPrice, 0)),
-			}))
-			.value();
-
-		invoicePayable.positions.sort((a, b) => a.position.name.localeCompare(b.position.name) || +b.sellingPrice - +a.sellingPrice);
-
-		delete invoicePayable.writeOffs;
+		if (invoice.status === 'paid') Emitter.emit('deleteStoreNotification', storeNotification);
+		else Emitter.emit('editStoreNotification', storeNotification);
 
 		res.json(invoicePayable);
 	}

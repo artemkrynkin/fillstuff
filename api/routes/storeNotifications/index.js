@@ -52,6 +52,18 @@ storeNotificationsRouter.post(
 					],
 				},
 				{
+					path: 'invoice',
+					populate: [
+						{
+							path: 'member',
+							populate: {
+								path: 'user',
+								select: 'avatar name email',
+							},
+						},
+					],
+				},
+				{
 					path: 'writeOff',
 				},
 			])
@@ -87,6 +99,18 @@ storeNotificationsRouter.post(
 					populate: [
 						{
 							path: 'shop',
+						},
+					],
+				},
+				{
+					path: 'invoice',
+					populate: [
+						{
+							path: 'member',
+							populate: {
+								path: 'user',
+								select: 'avatar name email',
+							},
 						},
 					],
 				},

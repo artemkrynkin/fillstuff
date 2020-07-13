@@ -108,7 +108,14 @@ const mapStateToProps = state => {
 					})
 					.format(moment.HTML5_FMT.DATETIME_LOCAL_MS);
 			})
-			.map((invoices, date) => ({ date, invoices }))
+			.map((invoices, date) => {
+				invoices.forEach(invoice => {
+					invoice.positions.sort((a, b) => a.position.name.localeCompare(b.position.name) || +b.sellingPrice - +a.sellingPrice);
+					if (invoice.payments.length) invoice.payments.reverse();
+				});
+
+				return { date, invoices };
+			})
 			.value();
 
 		invoices.data = {

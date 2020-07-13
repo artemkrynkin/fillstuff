@@ -279,16 +279,16 @@ writeOffsRouter.post(
 		await Promise.all(awaitingPromises);
 
 		if (remainingQuantityAfterWriteOff <= position.minimumBalance && !position.archivedAfterEnded && !position.deliveryIsExpected.length) {
-			const newStoreNotification = {
+			const storeNotification = {
 				studio: studioId,
 				type: 'position-ends',
 				position: position._id,
 			};
 
-			const isCreatedStoreNotification = await StoreNotification.findOne(newStoreNotification).catch(err => next({ code: 2, err }));
+			const isCreatedStoreNotification = await StoreNotification.findOne(storeNotification).catch(err => next({ code: 2, err }));
 
-			if (!isCreatedStoreNotification) Emitter.emit('newStoreNotification', newStoreNotification);
-			else Emitter.emit('editStoreNotification', newStoreNotification);
+			if (!isCreatedStoreNotification) Emitter.emit('newStoreNotification', storeNotification);
+			else Emitter.emit('editStoreNotification', storeNotification);
 		}
 
 		Member.findByIdAndUpdate(
@@ -431,16 +431,16 @@ writeOffsRouter.post(
 
 		await Promise.all(awaitingPromises);
 
-		const newStoreNotification = {
+		const storeNotification = {
 			studio: studioId,
 			type: 'position-ends',
 			position: writeOff.position._id,
 		};
 
 		if (receiptSet.current.quantity > writeOff.position.minimumBalance) {
-			Emitter.emit('deleteStoreNotification', newStoreNotification);
+			Emitter.emit('deleteStoreNotification', storeNotification);
 		} else {
-			Emitter.emit('editStoreNotification', newStoreNotification);
+			Emitter.emit('editStoreNotification', storeNotification);
 		}
 
 		Member.findByIdAndUpdate(

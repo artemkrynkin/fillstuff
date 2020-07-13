@@ -19,7 +19,7 @@ import Money from 'src/components/Money';
 import AvatarTitle from 'src/components/AvatarTitle';
 import Tooltip from 'src/components/Tooltip';
 
-import WriteOff from './WriteOff';
+import Position from './Position';
 import Payment from './Payment';
 
 import { TableCell } from './styles';
@@ -28,7 +28,7 @@ import styles from './Invoice.module.css';
 const Invoice = props => {
 	const { invoice, onOpenDialogInvoice } = props;
 	const [expanded, setExpanded] = useState(false);
-	const [tabName, setTabName] = useState('writeOffs');
+	const [tabName, setTabName] = useState('positions');
 
 	const onChangeTab = (event, tabName) => setTabName(tabName);
 
@@ -41,7 +41,7 @@ const Invoice = props => {
 		)
 			return;
 
-		if (!expanded && tabName === 'payments') onChangeTab(null, 'writeOffs');
+		if (!expanded && tabName === 'payments') onChangeTab(null, 'positions');
 
 		setExpanded(!expanded);
 	};
@@ -107,10 +107,10 @@ const Invoice = props => {
 				</div>
 				<Collapse in={expanded} timeout={300} unmountOnExit>
 					<Tabs className={styles.tabs} value={tabName} onChange={onChangeTab}>
-						<Tab value="writeOffs" label="Позиции" id="invoices" />
-						{invoice.payments.length ? <Tab value="payments" label="Платежи" id="settings" /> : null}
+						<Tab value="positions" label="Позиции" id="positions" />
+						{invoice.payments.length ? <Tab value="payments" label="Платежи" id="payments" /> : null}
 					</Tabs>
-					{tabName === 'writeOffs' ? (
+					{tabName === 'positions' ? (
 						<Table style={{ tableLayout: 'fixed' }}>
 							<TableHead>
 								<TableRow>
@@ -128,8 +128,8 @@ const Invoice = props => {
 								</TableRow>
 							</TableHead>
 							<TableBody>
-								{invoice.positions.map((writeOff, index) => (
-									<WriteOff key={index} writeOff={writeOff} />
+								{invoice.positions.map(position => (
+									<Position key={position._id} position={position} />
 								))}
 							</TableBody>
 						</Table>
@@ -146,7 +146,7 @@ const Invoice = props => {
 								</TableRow>
 							</TableHead>
 							<TableBody>
-								{invoice.payments.map((payment, index) => (
+								{invoice.payments.map(payment => (
 									<Payment key={payment._id} payment={payment} />
 								))}
 							</TableBody>

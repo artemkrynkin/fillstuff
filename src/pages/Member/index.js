@@ -13,7 +13,7 @@ import { LoadingPage } from 'src/components/Loading';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 
 import { getMember } from 'src/actions/members';
-import { getInvoicesMember } from 'src/actions/invoices';
+import { getMemberInvoices } from 'src/actions/invoices';
 
 import stylesPage from 'src/styles/page.module.css';
 import styles from './index.module.css';
@@ -64,7 +64,7 @@ const Members = props => {
 	};
 
 	const getInvoices = () => {
-		props.getInvoicesMember().then(response => {
+		props.getMemberInvoices().then(response => {
 			setInvoicesData(response);
 		});
 	};
@@ -103,7 +103,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 	return {
 		getMember: () => dispatch(getMember({ params: { memberId } })),
-		getInvoicesMember: () => dispatch(getInvoicesMember({ params: { memberId } })),
+		getMemberInvoices: () => dispatch(getMemberInvoices({ params: { memberId } })),
 	};
 };
 

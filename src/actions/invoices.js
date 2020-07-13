@@ -67,13 +67,13 @@ export const getInvoice = ({ params }) => {
 	};
 };
 
-export const getInvoicesMember = ({ params }) => {
+export const getMemberInvoices = ({ params }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
 
 		return await axios
-			.post('/api/getInvoicesMember', {
+			.post('/api/getMemberInvoices', {
 				studioId,
 				memberId,
 				params,

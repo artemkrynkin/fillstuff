@@ -112,6 +112,10 @@
   }
 }
 
+.cardMemberInvoice {
+  cursor: default;
+}
+
 .cardImportanceRed {
   border-left: 16px solid rgba(244, 67, 54, 0.75);
 }
@@ -154,6 +158,11 @@
 
 .cardDeliveryIsExpected .notificationIcon {
   font-size: 22px;
+}
+
+.cardMemberInvoice .notificationIcon {
+  font-size: 22px;
+  margin-top: 2px;
 }
 
 .cardImportanceRed .notificationIcon,

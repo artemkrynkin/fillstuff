@@ -42,7 +42,15 @@ const Invoice = props => {
 	const getInvoice = () => {
 		props.getInvoice().then(response => {
 			if (response.status === 'success') {
-				setInvoiceData(response);
+				const { data: invoice, ...remainingData } = response;
+
+				invoice.positions.sort((a, b) => a.position.name.localeCompare(b.position.name) || +b.sellingPrice - +a.sellingPrice);
+				if (invoice.payments.length) invoice.payments.reverse();
+
+				setInvoiceData({
+					data: invoice,
+					...remainingData,
+				});
 			} else {
 				history.push({
 					pathname: '/invoices',

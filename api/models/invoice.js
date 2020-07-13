@@ -29,6 +29,7 @@ const Invoice = new Schema({
 	toDate: {
 		type: Date,
 		required: [true, i18n.__('Обязательное поле')],
+		default: Date.now,
 	},
 	status: {
 		type: String,
@@ -68,10 +69,40 @@ const Invoice = new Schema({
 		default: 0,
 		set: value => formatNumber(value),
 	},
-	writeOffs: [
+	writeOffs: {
+		type: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: 'WriteOff',
+			},
+		],
+		select: false,
+	},
+	positions: [
 		{
-			type: Schema.Types.ObjectId,
-			ref: 'WriteOff',
+			position: {
+				type: Schema.Types.ObjectId,
+				ref: 'Position',
+				required: [true, i18n.__('Обязательное поле')],
+			},
+			quantity: {
+				type: Number,
+				min: [0, 'Не может быть меньше 0'],
+				required: [true, i18n.__('Обязательное поле')],
+				set: value => formatNumber(value, { fractionDigits: 0 }),
+			},
+			unitSellingPrice: {
+				type: Number,
+				min: [0, 'Не может быть меньше 0'],
+				required: [true, i18n.__('Обязательное поле')],
+				set: value => formatNumber(value),
+			},
+			sellingPrice: {
+				type: Number,
+				min: [0, 'Не может быть меньше 0'],
+				required: [true, i18n.__('Обязательное поле')],
+				set: value => formatNumber(value),
+			},
 		},
 	],
 	__v: {

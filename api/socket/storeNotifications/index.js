@@ -47,6 +47,18 @@ export const newStoreNotification = io => {
 				],
 			},
 			{
+				path: 'invoice',
+				populate: [
+					{
+						path: 'member',
+						populate: {
+							path: 'user',
+							select: 'avatar name email',
+						},
+					},
+				],
+			},
+			{
 				path: 'writeOff',
 			},
 		]);
@@ -88,6 +100,18 @@ export const editStoreNotification = io => {
 					},
 					{
 						path: 'shop',
+					},
+				],
+			},
+			{
+				path: 'invoice',
+				populate: [
+					{
+						path: 'member',
+						populate: {
+							path: 'user',
+							select: 'avatar name email',
+						},
 					},
 				],
 			},

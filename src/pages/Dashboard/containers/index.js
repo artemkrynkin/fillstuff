@@ -31,12 +31,17 @@ const DialogProcurementReceivedCreate = loadable(() =>
 	import('src/pages/Dialogs/ProcurementReceivedCreate' /* webpackChunkName: "Dialog_ProcurementReceivedCreate" */)
 );
 
+const DialogInvoicePaymentCreate = loadable(() =>
+	import('src/pages/Dialogs/InvoicePaymentCreate' /* webpackChunkName: "Dialog_InvoicePaymentCreate" */)
+);
+
 const Index = props => {
 	const { currentStudio } = props;
 	const [dialogData, setDialogData] = useState({
 		storeNotification: null,
 		procurementExpected: null,
 		procurementReceived: null,
+		invoice: null,
 	});
 	const [dialogOpenedName, setDialogOpenedName] = useState('');
 	const [dialogs, setDialogs] = useState({
@@ -47,6 +52,7 @@ const Index = props => {
 		dialogProcurementExpectedEdit: false,
 		dialogProcurementExpectedCancel: false,
 		dialogProcurementReceivedCreate: false,
+		dialogInvoicePaymentCreate: false,
 	});
 
 	const onOpenDialogByName = (dialogName, dataType, data) => {
@@ -140,6 +146,13 @@ const Index = props => {
 				currentStudio={currentStudio}
 				onExitedDialog={() => onExitedDialogByName('procurementReceived')}
 				selectedProcurement={dialogOpenedName === 'dialogProcurementReceivedCreate' ? dialogData.procurementReceived : null}
+			/>
+
+			<DialogInvoicePaymentCreate
+				dialogOpen={dialogs.dialogInvoicePaymentCreate}
+				onCloseDialog={() => onCloseDialogByName('dialogInvoicePaymentCreate')}
+				onExitedDialog={() => onExitedDialogByName('invoice')}
+				selectedInvoice={dialogOpenedName === 'dialogInvoicePaymentCreate' ? dialogData.invoice : null}
 			/>
 		</Container>
 	);

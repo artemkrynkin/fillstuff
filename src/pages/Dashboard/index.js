@@ -124,7 +124,7 @@ const mapStateToProps = state => {
 						return sortDateA - sortDateB;
 					}
 				} else {
-					return sortDateB - sortDateA;
+					return sortDateA - sortDateB;
 				}
 			});
 		});

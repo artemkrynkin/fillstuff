@@ -4,8 +4,6 @@ import mongoose from 'mongoose';
 
 import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
-import { formatNumber } from 'shared/utils';
-
 import Emitter from 'api/utils/emitter';
 
 import Member from 'api/models/member';

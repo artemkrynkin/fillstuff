@@ -60,6 +60,9 @@ const ProcurementsReceived = props => {
 		return (
 			<FilteredComponent loading={isLoadingProcurementsReceived}>
 				<Empty
+					classNames={{
+						container: styles.empty,
+					}}
 					imageSrc={searchNotFound}
 					content={
 						<Fragment>

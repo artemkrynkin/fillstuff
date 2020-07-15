@@ -1,3 +1,7 @@
+.empty {
+  min-height: calc(100vh - 172px);
+}
+
 .date {
   margin-bottom: 40px;
 }

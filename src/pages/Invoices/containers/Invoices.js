@@ -64,6 +64,9 @@ const Invoices = props => {
 				<Filter filterOptions={filterOptions} paging={paging} />
 				<FilteredComponent loading={isLoadingInvoices}>
 					<Empty
+						classNames={{
+							container: styles.empty,
+						}}
 						imageSrc={searchNotFound}
 						content={
 							<div>

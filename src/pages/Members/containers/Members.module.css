@@ -6,6 +6,10 @@
   min-height: calc(100vh - 175px);
 }
 
+.empty2 {
+  min-height: calc(100vh - 256px);
+}
+
 .title {
   color: var(--c-hex-bg-500);
   font-size: 18px;

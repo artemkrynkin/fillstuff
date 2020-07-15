@@ -59,6 +59,9 @@ const WriteOffs = props => {
 				<Filter filterOptions={filterOptions} paging={paging} />
 				<FilteredComponent loading={isLoadingWriteOffs}>
 					<Empty
+						classNames={{
+							container: styles.empty,
+						}}
 						imageSrc={searchNotFound}
 						content={
 							<div>

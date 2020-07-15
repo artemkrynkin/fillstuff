@@ -68,6 +68,9 @@ const Members = props => {
 				<Filter tabName={tabName} onChangeTab={onChangeTab} filterOptions={filterOptions} currentMembersCount={currentMembersCount} />
 				<FilteredComponent loading={isLoadingMembers}>
 					<Empty
+						classNames={{
+							container: styles.empty2,
+						}}
 						imageSrc={searchNotFound}
 						content={
 							<div>

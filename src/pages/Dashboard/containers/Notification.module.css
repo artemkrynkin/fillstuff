@@ -37,7 +37,7 @@
 
 .card:nth-child(n+4) {
   background-color: var(--c-hex-br-4);
-  transform: scale(calc(1 - (0.05 * var(--cardIndex)))) translate(0, 20px);
+  transform: scale(calc(1 - (0.05 * var(--cardIndex)))) translate(0, 0);
 }
 
 :global(.visibleAllNotifications) .card {

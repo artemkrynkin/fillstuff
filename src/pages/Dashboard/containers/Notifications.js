@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import { LoadingComponent } from 'src/components/Loading';
 
 import Notification from './Notification';
-import NotificationCardGridEmpty from './NotificationCardGridEmpty';
+import NotificationCardGridEmpty from '../components/NotificationCardGridEmpty';
 
 import styles from './Notifications.module.css';
 
@@ -27,7 +27,7 @@ const Notifications = props => {
 	useEffect(() => {
 		const mostNotifications = Math.max(storeNotifications.red.length, storeNotifications.orange.length, storeNotifications.green.length);
 
-		setHeight(mostNotifications * 168 + (mostNotifications - 1) * 16 + 40 + 36);
+		setHeight(mostNotifications * 168 + (mostNotifications - 1) * 16 + 48);
 	}, [storeNotifications]);
 
 	if (isLoadingStoreNotifications) return <LoadingComponent />;
@@ -42,17 +42,24 @@ const Notifications = props => {
 		[styles.showMoreButton]: true,
 	});
 
+	const showLessButtonClasses = ClassNames({
+		[styles.showButton]: true,
+		[styles.showLessButton]: true,
+	});
+
 	return (
 		<div className={containerClasses} style={visibleAllNotifications ? { height } : {}}>
-			<div className={styles.stickyHeader}>
-				<ButtonBase className={styles.showButton} onClick={() => onHandleVisibleNotifications(false)}>
-					<FontAwesomeIcon icon={['far', 'angle-up']} />
-					Показать меньше
-				</ButtonBase>
-			</div>
-			<Typography className={styles.title} variant="h5" gutterBottom>
-				События
-			</Typography>
+			<Grid className={styles.stickyHeader} justify="space-between" alignItems="center" container>
+				<Grid item>
+					<Typography variant="h5">События</Typography>
+				</Grid>
+				<Grid item>
+					<ButtonBase className={showLessButtonClasses} onClick={() => onHandleVisibleNotifications(false)}>
+						<FontAwesomeIcon icon={['far', 'angle-up']} />
+						Показать меньше
+					</ButtonBase>
+				</Grid>
+			</Grid>
 			<Grid className={styles.grids} spacing={2} container>
 				{Object.keys(storeNotifications).map(notificationType => (
 					<Grid key={notificationType} className={styles.grid} xs={4} item>

@@ -103,7 +103,13 @@ const ProcurementExpected = props => {
 					{procurement.comment ? (
 						<Fragment>
 							<div className={styles.infoItem}>&nbsp;</div>
-							<Tooltip title={procurement.comment} className={styles.procurementComment} placement="bottom" leaveDelay={500} interactive>
+							<Tooltip
+								title={<div style={{ maxWidth: 300, whiteSpace: 'break-spaces' }}>{procurement.comment}</div>}
+								className={styles.procurementComment}
+								placement="bottom"
+								leaveDelay={500}
+								interactive
+							>
 								<FontAwesomeIcon icon={['fal', 'comment']} />
 							</Tooltip>
 						</Fragment>

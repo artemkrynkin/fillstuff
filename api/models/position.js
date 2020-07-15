@@ -17,7 +17,7 @@ const Position = new Schema({
 		type: Date,
 		default: Date.now,
 	},
-	// Архивированый
+	// Архивированный
 	isArchived: {
 		type: Boolean,
 		default: false,

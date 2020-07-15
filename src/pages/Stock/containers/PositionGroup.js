@@ -57,7 +57,9 @@ const PositionGroup = props => {
 									<TableCellExpansionPanel align="right" width={240}>
 										<QuantityIndicator
 											type="positionGroup"
-											positions={positionGroup.positions.filter(position => position.activeReceipt && position.receipts.length)}
+											positions={positionGroup.positions.filter(
+												position => position.activeReceipt && position.receipts.length && !position.archivedAfterEnded
+											)}
 										/>
 									</TableCellExpansionPanel>
 									<TableCellExpansionPanel width={280} />

@@ -22,7 +22,7 @@ const MemberInvoice = props => {
 			<div className={stylesGlobal.header}>
 				<FontAwesomeIcon className={stylesGlobal.notificationIcon} icon={['fal', 'receipt']} />
 				<Typography className={stylesGlobal.title} variant="h6">
-					Счет на оплату платных позиций
+					Счет за платные позиции
 				</Typography>
 			</div>
 			<div>

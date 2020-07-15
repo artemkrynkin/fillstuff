@@ -11,6 +11,9 @@ import statisticsEmpty from 'public/img/stubs/statistics_empty.svg';
 const Statistics = () => {
 	return (
 		<div className={styles.container}>
+			<Typography variant="h5" gutterBottom>
+				Статистика
+			</Typography>
 			<Empty
 				classNames={{
 					container: styles.empty,
@@ -19,10 +22,7 @@ const Statistics = () => {
 				content={
 					<Fragment>
 						<Typography variant="h6" gutterBottom>
-							Недостаточно данных для вывода показателей эффективности
-						</Typography>
-						<Typography variant="body1">
-							Делайте больше списаний, выставляйте счета, закупайте позиции и тогда мы сможем показать Вам эти метрики.
+							Недостаточно данных для показа статистики
 						</Typography>
 					</Fragment>
 				}

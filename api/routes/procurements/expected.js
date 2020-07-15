@@ -152,15 +152,8 @@ procurementsRouter.post(
 
 		const procurement = await Procurement.findById(procurementId).catch(err => next({ code: 2, err }));
 
-		const positionRemoveDeliveryIsExpected = Position.updateMany(
-			{ _id: { $in: procurement.positions } },
-			{ $pull: { deliveryIsExpected: procurement._id } }
-		).catch(err => next({ code: 2, err }));
-
-		const positionAddDeliveryIsExpected = Position.updateMany(
-			{ _id: { $in: procurementEdited.positions } },
-			{ $push: { deliveryIsExpected: procurement._id } }
-		).catch(err => next({ code: 2, err }));
+		const oldPositions = procurement.positions.slice();
+		const newPositions = procurementEdited.positions.slice();
 
 		procurement.shop = procurementEdited.shop;
 		procurement.isConfirmed = procurementEdited.isConfirmed;
@@ -178,7 +171,14 @@ procurementsRouter.post(
 
 		if (procurementErr) return next({ code: procurementErr.errors ? 5 : 2, err: procurementErr });
 
-		await Promise.all([procurement.save(), positionRemoveDeliveryIsExpected, positionAddDeliveryIsExpected]);
+		await Promise.all([procurement.save()]);
+
+		await Position.updateMany({ _id: { $in: oldPositions } }, { $pull: { deliveryIsExpected: procurement._id } }).catch(err =>
+			next({ code: 2, err })
+		);
+		await Position.updateMany({ _id: { $in: newPositions } }, { $push: { deliveryIsExpected: procurement._id } }).catch(err =>
+			next({ code: 2, err })
+		);
 
 		Procurement.findById(procurement._id)
 			.populate([

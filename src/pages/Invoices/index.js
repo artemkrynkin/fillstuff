@@ -23,7 +23,7 @@ const Index = loadable(() => import('./containers/index' /* webpackChunkName: "I
 });
 
 const Invoices = props => {
-	const { invoices } = props;
+	const { currentStudio, invoices } = props;
 	const [page, setPage] = useState(1);
 
 	const metaInfo = {
@@ -69,6 +69,7 @@ const Invoices = props => {
 			<HeaderPage pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
 			<div className={`${stylesPage.pageContent} ${styles.container}`}>
 				<Index
+					currentStudio={currentStudio}
 					invoices={invoices}
 					filterOptions={filterOptions}
 					paging={{

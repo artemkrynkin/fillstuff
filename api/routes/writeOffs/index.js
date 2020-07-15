@@ -34,8 +34,8 @@ writeOffsRouter.post(
 
 		if (dateStart && dateEnd) {
 			conditions.createdAt = {
-				$gte: new Date(Number(dateStart)),
-				$lte: new Date(Number(dateEnd)),
+				$gte: dateStart,
+				$lte: dateEnd,
 			};
 		}
 

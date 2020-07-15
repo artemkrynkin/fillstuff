@@ -13,6 +13,7 @@ import writeOffsEmpty from 'public/img/stubs/write_offs_empty.svg';
 
 const View = props => {
 	const {
+		currentStudio,
 		onOpenDialogByName,
 		filterOptions,
 		paging,
@@ -42,7 +43,13 @@ const View = props => {
 	if (writeOffs && writeOffs.paging.totalCount) {
 		return (
 			<Fragment>
-				<WriteOffs filterOptions={filterOptions} paging={paging} onOpenDialogByName={onOpenDialogByName} writeOffs={props.writeOffs} />
+				<WriteOffs
+					filterOptions={filterOptions}
+					paging={paging}
+					currentStudio={currentStudio}
+					onOpenDialogByName={onOpenDialogByName}
+					writeOffs={props.writeOffs}
+				/>
 			</Fragment>
 		);
 	}

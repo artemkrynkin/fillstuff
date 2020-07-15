@@ -181,6 +181,8 @@ class Filter extends Component {
 		if (initialValues.dateStart) initialValues.dateStartView = initialValues.dateStart;
 		if (initialValues.dateEnd) initialValues.dateEndView = initialValues.dateEnd;
 
+		console.log(currentStudio);
+
 		return (
 			<Paper className={styles.container}>
 				<Formik

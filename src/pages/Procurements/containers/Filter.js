@@ -178,6 +178,7 @@ class Filter extends Component {
 			members,
 			positions,
 			filterOptions: { params: filterParams },
+			currentStudio,
 		} = this.props;
 		const { dropdownDate, dropdownDateRange, dropdownPosition, dropdownMember } = this.state;
 
@@ -198,6 +199,7 @@ class Filter extends Component {
 				>
 					{props => (
 						<FormFilter
+							currentStudio={currentStudio}
 							handlerDropdown={this.handlerDropdown}
 							onChangeFilterInvoiceNumber={this.onChangeFilterInvoiceNumber}
 							onClearFilterInvoiceNumber={this.onClearFilterInvoiceNumber}

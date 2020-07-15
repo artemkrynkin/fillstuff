@@ -18,6 +18,7 @@ import procurementsEmpty from 'public/img/stubs/procurements_empty.svg';
 
 const View = props => {
 	const {
+		currentStudio,
 		onOpenDialogByName,
 		filterOptions,
 		paging,
@@ -86,7 +87,7 @@ const View = props => {
 	if (procurementsExpected && procurementsReceived && !procurementsExpected.paging.totalCount && procurementsReceived.paging.totalCount) {
 		return (
 			<Fragment>
-				<Filter filterOptions={filterOptions} paging={paging} />
+				<Filter filterOptions={filterOptions} paging={paging} currentStudio={currentStudio} />
 				<ProcurementsReceived filterOptions={filterOptions} paging={paging} procurementsReceived={props.procurementsReceived} />
 			</Fragment>
 		);
@@ -95,7 +96,7 @@ const View = props => {
 	if (procurementsExpected && procurementsReceived && procurementsExpected.paging.totalCount && procurementsReceived.paging.totalCount) {
 		return (
 			<Fragment>
-				<Filter filterOptions={filterOptions} paging={paging} />
+				<Filter filterOptions={filterOptions} paging={paging} currentStudio={currentStudio} />
 				<ProcurementsExpected onOpenDialogByName={onOpenDialogByName} procurementsExpected={procurementsExpected} />
 				<ProcurementsReceived filterOptions={filterOptions} paging={paging} procurementsReceived={props.procurementsReceived} />
 			</Fragment>

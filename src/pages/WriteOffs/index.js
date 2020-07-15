@@ -23,7 +23,7 @@ const Index = loadable(() => import('./containers/index' /* webpackChunkName: "W
 });
 
 const WriteOffs = props => {
-	const { writeOffs } = props;
+	const { currentStudio, writeOffs } = props;
 	const [page, setPage] = useState(1);
 
 	const metaInfo = {
@@ -72,6 +72,7 @@ const WriteOffs = props => {
 			<HeaderPage pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
 			<div className={`${stylesPage.pageContent} ${styles.container}`}>
 				<Index
+					currentStudio={currentStudio}
 					writeOffs={writeOffs}
 					filterOptions={filterOptions}
 					paging={{

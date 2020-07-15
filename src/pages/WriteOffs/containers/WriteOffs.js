@@ -32,6 +32,7 @@ const WriteOffs = props => {
 	const {
 		filterOptions,
 		paging,
+		currentStudio,
 		onOpenDialogByName,
 		writeOffs: { data: writeOffs, isFetching: isLoadingWriteOffs },
 	} = props;
@@ -56,7 +57,7 @@ const WriteOffs = props => {
 	if (!writeOffs.data.length || !writeOffs.paging.totalDocs) {
 		return (
 			<Fragment>
-				<Filter filterOptions={filterOptions} paging={paging} />
+				<Filter filterOptions={filterOptions} paging={paging} currentStudio={currentStudio} />
 				<FilteredComponent loading={isLoadingWriteOffs}>
 					<Empty
 						classNames={{
@@ -81,7 +82,7 @@ const WriteOffs = props => {
 
 	return (
 		<Fragment>
-			<Filter filterOptions={filterOptions} paging={paging} />
+			<Filter filterOptions={filterOptions} paging={paging} currentStudio={currentStudio} />
 			<FilteredComponent loading={isLoadingWriteOffs}>
 				{writeOffs.data.map(writeOffsMonth => (
 					<div className={styles.date} key={writeOffsMonth.date}>

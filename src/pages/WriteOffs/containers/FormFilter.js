@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import ClassNames from 'classnames';
 import moment from 'moment';
+import momentTz from 'moment-timezone';
 import { Form } from 'formik';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -118,6 +119,7 @@ const DropdownFooter = props => {
 
 const FormFilter = props => {
 	const {
+		currentStudio,
 		handlerDropdown,
 		onChangeFilterDate,
 		onChangeFilterPosition,
@@ -358,10 +360,20 @@ const FormFilter = props => {
 							calendars={1}
 							displayStaticWrapperAs="desktop"
 							reduceAnimations
-							value={[moment(values.dateStart), moment(values.dateEnd)]}
+							value={[values.dateStart, values.dateEnd]}
 							onChange={date => {
-								const dateStartValue = date[0] ? date[0].valueOf() : null;
-								const dateEndValue = date[1] ? date[1].valueOf() : null;
+								const dateStartValue = date[0]
+									? momentTz
+											.tz(date[0], currentStudio.timezone)
+											.set({ hour: 0, minute: 0, second: 0 })
+											.valueOf()
+									: null;
+								const dateEndValue = date[1]
+									? momentTz
+											.tz(date[1], currentStudio.timezone)
+											.set({ hour: 23, minute: 59, second: 59 })
+											.valueOf()
+									: null;
 
 								setFieldValue('dateStart', dateStartValue);
 								setFieldValue('dateEnd', dateEndValue);

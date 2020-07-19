@@ -51,7 +51,7 @@
     "i18n": "0.8.5",
     "jsdom": "^16.2.0",
     "jss": "10.0.4",
-    "lodash": "4.17.15",
+    "lodash": "4.17.19",
     "method-override": "^3.0.0",
     "moment": "^2.24.0",
     "moment-timezone": "0.5.27",

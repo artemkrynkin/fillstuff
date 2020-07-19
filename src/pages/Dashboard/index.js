@@ -116,15 +116,17 @@ const mapStateToProps = state => {
 			newStoreNotificationsData[type] = newStoreNotificationsData[type].sort((a, b) => {
 				const sortDateA = new Date(a.sortDate);
 				const sortDateB = new Date(b.sortDate);
+				const createdAtA = new Date(a.createdAt);
+				const createdAtB = new Date(b.createdAt);
 
 				if (a.type === 'delivery-is-expected' && b.type === 'delivery-is-expected') {
 					if (type === 'red') {
-						return sortDateB - sortDateA;
+						return sortDateA - sortDateB && createdAtA - createdAtB;
 					} else {
-						return sortDateA - sortDateB;
+						return sortDateB - sortDateA && createdAtB - createdAtA;
 					}
 				} else {
-					return sortDateA - sortDateB;
+					return sortDateB - sortDateA && createdAtB - createdAtA;
 				}
 			});
 		});

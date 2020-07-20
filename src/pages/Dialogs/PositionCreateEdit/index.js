@@ -40,59 +40,41 @@ class DialogPositionCreateEdit extends Component {
 		const { type, onCloseDialog, onCallback } = this.props;
 		const position = positionSchema(true).cast(values);
 
+		const handleSuccess = response => {
+			if (onCallback !== undefined) onCallback(response);
+
+			actions.setSubmitting(false);
+
+			if (response.status === 'success') {
+				this.props.enqueueSnackbar({
+					message: (
+						<div>
+							Позиция <b>{position.name}</b> успешно {type === 'create' ? 'создана' : 'отредактирована'}.
+						</div>
+					),
+					options: {
+						variant: 'success',
+					},
+				});
+
+				this.props.getStudioStore();
+				onCloseDialog();
+			}
+
+			if (response.status === 'error' && !response.data) {
+				this.props.enqueueSnackbar({
+					message: response.message || 'Неизвестная ошибка.',
+					options: {
+						variant: 'error',
+					},
+				});
+			}
+		};
+
 		if (type === 'create') {
-			this.props.createPosition(position).then(response => {
-				if (onCallback !== undefined) onCallback(response);
-
-				actions.setSubmitting(false);
-
-				if (response.status === 'success') {
-					const { data: position } = response;
-
-					this.props.enqueueSnackbar({
-						message: (
-							<div>
-								Позиция <b>{position.name}</b> успешно создана.
-							</div>
-						),
-						options: {
-							variant: 'success',
-						},
-					});
-
-					this.props.getStudioStore();
-					onCloseDialog();
-				}
-
-				if (response.status === 'error' && !response.data) {
-					this.props.enqueueSnackbar({
-						message: response.message || 'Неизвестная ошибка.',
-						options: {
-							variant: 'error',
-						},
-					});
-				}
-			});
+			this.props.createPosition(position).then(response => handleSuccess(response));
 		} else {
-			this.props.editPosition(position._id, position).then(response => {
-				if (onCallback !== undefined) onCallback(response);
-
-				actions.setSubmitting(false);
-
-				if (response.status === 'success') {
-					this.props.getStudioStore();
-					onCloseDialog();
-				}
-
-				if (response.status === 'error' && !response.data) {
-					this.props.enqueueSnackbar({
-						message: response.message || 'Неизвестная ошибка.',
-						options: {
-							variant: 'error',
-						},
-					});
-				}
-			});
+			this.props.editPosition(position._id, position).then(response => handleSuccess(response));
 		}
 	};
 

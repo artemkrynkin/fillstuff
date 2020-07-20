@@ -180,6 +180,12 @@ procurementsRouter.post(
 			next({ code: 2, err })
 		);
 
+		Emitter.emit('editStoreNotification', {
+			studio: studioId,
+			type: 'delivery-is-expected',
+			procurement: procurement._id,
+		});
+
 		Procurement.findById(procurement._id)
 			.populate([
 				{
@@ -199,15 +205,7 @@ procurementsRouter.post(
 					path: 'shop',
 				},
 			])
-			.then(procurement => {
-				Emitter.emit('editStoreNotification', {
-					studio: studioId,
-					type: 'delivery-is-expected',
-					procurement: procurement._id,
-				});
-
-				return res.json(procurement);
-			})
+			.then(procurement => res.json(procurement))
 			.catch(err => next({ code: 2, err }));
 	}
 );

@@ -106,7 +106,7 @@ export const editPosition = ({ params, data }) => {
 					},
 				});
 
-				return Promise.resolve({ status: 'success' });
+				return Promise.resolve({ status: 'success', data: position });
 			})
 			.catch(error => {
 				if (error.response) {

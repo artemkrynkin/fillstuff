@@ -3,11 +3,10 @@ import ColorConvert from 'color-convert';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { createMuiTheme } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
 import Fade from '@material-ui/core/Fade';
 
 import theme from 'shared/theme';
-
-import stylesGlobal from 'src/styles/globals.module.css';
 
 export const BliksideTheme = createMuiTheme({
 	props: {
@@ -23,13 +22,20 @@ export const BliksideTheme = createMuiTheme({
 			autoComplete: 'off',
 		},
 		MuiSelect: {
-			IconComponent: () => <FontAwesomeIcon icon={['far', 'angle-down']} className={stylesGlobal.MuiSelectIcon} />,
+			IconComponent: props => <FontAwesomeIcon {...props} icon={['far', 'angle-down']} />,
 			MenuProps: {
 				elevation: 3,
 				transitionDuration: 150,
 				TransitionComponent: Fade,
 			},
 			displayEmpty: true,
+		},
+		MuiAutocomplete: {
+			PaperComponent: props => <Paper {...props} elevation={3} />,
+			closeIcon: <FontAwesomeIcon icon={['fal', 'times']} />,
+			popupIcon: <FontAwesomeIcon icon={['far', 'angle-down']} />,
+			loadingText: 'Загрузка...',
+			noOptionsText: 'Нет результатов для выбора',
 		},
 		MuiCheckbox: {
 			color: 'primary',
@@ -665,6 +671,7 @@ export const BliksideTheme = createMuiTheme({
 				boxSizing: 'border-box',
 				color: theme.blueGrey.cBg700,
 				fontSize: 13,
+				lineHeight: 1.3,
 				minHeight: 36,
 				transition: 'background-color 150ms ease-out, box-shadow 150ms ease-out',
 				'[readonly] > &, [readonly] > &$focused:not($error)': {
@@ -697,7 +704,6 @@ export const BliksideTheme = createMuiTheme({
 			},
 			multiline: {
 				padding: 0,
-				lineHeight: 1.35,
 			},
 		},
 		MuiInputAdornment: {
@@ -726,6 +732,50 @@ export const BliksideTheme = createMuiTheme({
 				'&$disabled': {
 					color: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg600)}, 0.42)`,
 				},
+			},
+			icon: {
+				color: theme.blueGrey.cBg300,
+				fontSize: 16,
+				flexShrink: 0,
+				right: '10px',
+				top: 'calc(50% - 8px)',
+				userSelect: 'none',
+				pointerEvents: 'none',
+			},
+		},
+		MuiAutocomplete: {
+			input: {
+				'$inputRoot[class*="MuiInput-root"] &': {
+					padding: '5px 10px',
+				},
+				'$inputRoot[class*="MuiInput-root"] &:first-child': {
+					padding: '5px 10px',
+				},
+			},
+			endAdornment: {
+				top: 0,
+				padding: '0 10px',
+			},
+			clearIndicator: {
+				color: theme.blueGrey.cBg300,
+				fontSize: 16,
+				marginRight: 5,
+				padding: 10,
+				'&:hover': {
+					backgroundColor: 'transparent',
+					color: theme.teal.cT300,
+				},
+			},
+			clearIndicatorDirty: {
+				visibility: 'visible',
+			},
+			popupIndicator: {
+				color: theme.blueGrey.cBg300,
+				fontSize: 16,
+				marginRight: 0,
+				padding: 0,
+				userSelect: 'none',
+				pointerEvents: 'none',
 			},
 		},
 		MuiSwitch: {
@@ -844,6 +894,11 @@ export const BliksideTheme = createMuiTheme({
 				'&:first-child': {
 					paddingTop: null,
 				},
+			},
+			dividers: {
+				padding: null,
+				borderBottom: `1px solid ${theme.brightness.cBr5}`,
+				borderTop: `1px solid ${theme.brightness.cBr5}`,
 			},
 		},
 		MuiDialogContentText: {

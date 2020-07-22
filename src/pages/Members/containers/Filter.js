@@ -117,7 +117,7 @@ class Filter extends Component {
 
 		return (
 			<Paper className={styles.container}>
-				<Tabs className={styles.tabs} value={tabName} onChange={onChangeTab} aria-label="simple tabs example">
+				<Tabs className={styles.tabs} value={tabName} onChange={onChangeTab}>
 					<Tab value="" label="Постоянные" id="regular-members" />
 					<Tab value="guests" label="Гостевые" id="guest-members" />
 				</Tabs>

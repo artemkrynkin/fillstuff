@@ -190,6 +190,7 @@
   color: var(--c-hex-bg-300);
   font-size: 12px;
   font-weight: 600;
+  line-height: 1.2;
   margin-top: 7px;
 }
 

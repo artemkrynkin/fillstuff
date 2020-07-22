@@ -1,0 +1,39 @@
+.container {
+  border-bottom: 1px solid var(--c-hex-br-5);
+  padding: 8px 0;
+}
+
+.shopName,
+.shopComment {
+  padding: 10px 0;
+}
+
+.shopName {
+  overflow: hidden;
+  padding-right: 8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shopComment {
+  white-space: break-spaces;
+  padding-left: 10px;
+}
+
+.actions {
+  padding: 2px 0;
+}
+
+.actionButton {
+  color: var(--c-hex-bg-300);
+  padding: 9px;
+  width: 32px;
+}
+
+.actionButton:hover {
+  color: var(--c-hex-t-400);
+}
+
+.actionButton svg {
+  font-size: 14px;
+}

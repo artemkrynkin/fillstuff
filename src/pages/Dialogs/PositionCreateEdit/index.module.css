@@ -1,3 +1,16 @@
+.tabs {
+  margin-top: 10px;
+  padding: 0 20px;
+}
+
+.minHeightContent {
+  min-height: 300px;
+}
+
+.emptyText {
+  margin-bottom: 10px;
+}
+
 .iconHelp {
   color: var(--c-hex-bg-300);
   font-size: 16px;

@@ -88,8 +88,19 @@ const Position = new Schema({
 				type: Schema.Types.ObjectId,
 				ref: 'Shop',
 			},
+			link: {
+				type: String,
+				trim: true,
+				default: '',
+			},
+			comment: {
+				type: String,
+				trim: true,
+				default: '',
+			},
 			numberReceipts: {
 				type: Number,
+				default: 0,
 			},
 			lastProcurement: {
 				type: Schema.Types.ObjectId,

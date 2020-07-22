@@ -20,7 +20,7 @@ export const getShops = () => {
 					payload: shops,
 				});
 
-				return Promise.resolve({ status: 'success' });
+				return Promise.resolve({ status: 'success', data: shops });
 			})
 			.catch(error => {
 				console.error(error);

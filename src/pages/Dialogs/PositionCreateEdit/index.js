@@ -1,18 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { Formik } from 'formik';
 
-import { DialogSticky, DialogTitle } from 'src/components/Dialog';
+import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs';
 
-import { getStudioStore } from 'src/actions/studio';
-import { getCharacteristics, createCharacteristic } from 'src/actions/characteristics';
-import { getShops } from 'src/actions/shops';
-import { createPosition, editPosition } from 'src/actions/positions';
-import { enqueueSnackbar } from 'src/actions/snackbars';
+import { Dialog, DialogTitle } from 'src/components/Dialog';
 
-import FormPositionCreateEdit from './FormPositionCreateEdit';
-import positionSchema from './positionSchema';
+import PositionForm from './PositionForm';
+
+import styles from './index.module.css';
 
 class DialogPositionCreateEdit extends Component {
 	static propTypes = {
@@ -24,139 +20,41 @@ class DialogPositionCreateEdit extends Component {
 		selectedPosition: PropTypes.object,
 	};
 
-	onGetCharacteristics = characteristicType => this.props.getCharacteristics({ type: characteristicType });
-
-	onCreateCharacteristic = (characteristic, callback) => {
-		this.props.createCharacteristic(characteristic).then(response => {
-			if (response.status === 'success') {
-				const characteristic = response.data;
-
-				if (callback) callback(characteristic);
-			}
-		});
+	initialState = {
+		tabName: 'position',
 	};
 
-	onSubmit = (values, actions) => {
-		const { type, onCloseDialog, onCallback } = this.props;
-		const position = positionSchema(true).cast(values);
+	state = this.initialState;
 
-		const handleSuccess = response => {
-			if (onCallback !== undefined) onCallback(response);
-
-			actions.setSubmitting(false);
-
-			if (response.status === 'success') {
-				this.props.enqueueSnackbar({
-					message: (
-						<div>
-							Позиция <b>{position.name}</b> успешно {type === 'create' ? 'создана' : 'отредактирована'}.
-						</div>
-					),
-					options: {
-						variant: 'success',
-					},
-				});
-
-				this.props.getStudioStore();
-				onCloseDialog();
-			}
-
-			if (response.status === 'error' && !response.data) {
-				this.props.enqueueSnackbar({
-					message: response.message || 'Неизвестная ошибка.',
-					options: {
-						variant: 'error',
-					},
-				});
-			}
-		};
-
-		if (type === 'create') {
-			this.props.createPosition(position).then(response => handleSuccess(response));
-		} else {
-			this.props.editPosition(position._id, position).then(response => handleSuccess(response));
-		}
-	};
-
-	onEnterDialog = () => {
-		this.props.getShops();
-	};
+	onChangeTab = (event, tabName) => this.setState({ tabName });
 
 	onExitedDialog = () => {
 		const { onExitedDialog } = this.props;
 
-		if (onExitedDialog) onExitedDialog();
+		this.setState(this.initialState, () => {
+			if (onExitedDialog) onExitedDialog();
+		});
 	};
 
 	render() {
-		const { type, dialogOpen, onCloseDialog, characteristics, shops, selectedPosition } = this.props;
+		const { type, dialogOpen, onCloseDialog, selectedPosition } = this.props;
+		const { tabName } = this.state;
 
 		if (type === 'edit' && !selectedPosition) return null;
 
-		let initialValues = {
-			name: '',
-			unitReceipt: '',
-			unitRelease: '',
-			minimumBalance: '',
-			isFree: '',
-			characteristics: [],
-			shops: [],
-		};
-
-		if (selectedPosition) initialValues = { ...initialValues, ...selectedPosition };
-
 		return (
-			<DialogSticky
-				open={dialogOpen}
-				onEnter={this.onEnterDialog}
-				onClose={onCloseDialog}
-				onExited={this.onExitedDialog}
-				maxWidth="lg"
-				scroll="body"
-				stickyActions
-			>
-				<DialogTitle onClose={onCloseDialog}>{type === 'create' ? 'Создание позиции' : 'Редактирование позиции'}</DialogTitle>
-				<Formik
-					initialValues={initialValues}
-					validationSchema={positionSchema}
-					validateOnBlur={false}
-					validateOnChange={false}
-					onSubmit={(values, actions) => this.onSubmit(values, actions)}
-				>
-					{props => (
-						<FormPositionCreateEdit
-							onCloseDialog={onCloseDialog}
-							onGetCharacteristics={this.onGetCharacteristics}
-							onCreateCharacteristic={this.onCreateCharacteristic}
-							characteristics={characteristics}
-							shops={shops}
-							type={type}
-							formikProps={props}
-						/>
-					)}
-				</Formik>
-			</DialogSticky>
+			<Dialog open={dialogOpen} onEnter={this.onEnterDialog} onClose={onCloseDialog} onExited={this.onExitedDialog} maxWidth="lg">
+				<DialogTitle onClose={onCloseDialog} theme="noTheme">
+					{type === 'create' ? 'Создание позиции' : 'Редактирование позиции'}
+				</DialogTitle>
+				<Tabs className={styles.tabs} value={tabName} onChange={this.onChangeTab}>
+					<Tab value="position" label="Позиция" id="position" />
+					<Tab value="shops" label="Магазины" id="shops" />
+				</Tabs>
+				<PositionForm {...this.props} tabName={tabName} />
+			</Dialog>
 		);
 	}
 }
 
-const mapStateToProps = state => {
-	return {
-		characteristics: state.characteristics,
-		shops: state.shops,
-	};
-};
-
-const mapDispatchToProps = dispatch => {
-	return {
-		getStudioStore: () => dispatch(getStudioStore()),
-		getCharacteristics: params => dispatch(getCharacteristics({ params })),
-		createCharacteristic: characteristic => dispatch(createCharacteristic({ data: { characteristic } })),
-		getShops: () => dispatch(getShops()),
-		createPosition: position => dispatch(createPosition({ data: { position } })),
-		editPosition: (positionId, position) => dispatch(editPosition({ params: { positionId }, data: { position } })),
-		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
-	};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(DialogPositionCreateEdit);
+export default DialogPositionCreateEdit;

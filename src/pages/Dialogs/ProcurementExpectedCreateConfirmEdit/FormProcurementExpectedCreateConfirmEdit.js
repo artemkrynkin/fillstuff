@@ -94,7 +94,7 @@ const FormProcurementExpectedCreateConfirmEdit = props => {
 									}
 								}}
 								onKeyDown={event => {
-									if (event.keyCode === 13 && !setShopTempName) return event.preventDefault();
+									if (event.keyCode === 13 && !shopTempName) return event.preventDefault();
 								}}
 								getOptionValue={option => option._id}
 								getOptionLabel={option => option.name}
@@ -316,7 +316,7 @@ const FormProcurementExpectedCreateConfirmEdit = props => {
 							error={Boolean(touched.comment && errors.comment)}
 							helperText={(touched.comment && errors.comment) || ''}
 							as={TextField}
-							placeholder={`Номер телефона курьера, трек-номер заказа, любая полезная информация по доставке`}
+							placeholder="Номер телефона курьера, трек-номер заказа, любая полезная информация по доставке"
 							rows={2}
 							rowsMax={4}
 							multiline

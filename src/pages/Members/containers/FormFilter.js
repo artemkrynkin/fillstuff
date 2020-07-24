@@ -5,10 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import MenuList from '@material-ui/core/MenuList';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import Dropdown from 'src/components/Dropdown';
 import MenuItem from 'src/components/MenuItem';
-import Tooltip from 'src/components/Tooltip';
 
 import { SearchTextField, IconButtonRed } from './Filter.styles';
 import styles from './Filter.module.css';

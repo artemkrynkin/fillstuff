@@ -21,6 +21,11 @@
   font-weight: 600;
 }
 
+.tooltipContainer {
+  cursor: pointer;
+  display: inline-block;
+}
+
 .tooltipInfo {
   color: var(--c-hex-bg-600);
   margin-top: 20px;

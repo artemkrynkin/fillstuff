@@ -13,6 +13,7 @@ import Divider from '@material-ui/core/Divider';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
+import Tooltip from '@material-ui/core/Tooltip';
 import MomentUtils from '@material-ui/pickers/adapter/moment';
 import { StaticDateRangePicker, LocalizationProvider } from '@material-ui/pickers';
 
@@ -21,7 +22,6 @@ import { memberRoleTransform } from 'shared/roles-access-rights';
 import { weekActive, monthActive, paginationCalendarFormat } from 'src/components/Pagination/utils';
 import Dropdown from 'src/components/Dropdown';
 import PositionNameInList from 'src/components/PositionNameInList';
-import Tooltip from 'src/components/Tooltip';
 import MenuItem from 'src/components/MenuItem';
 
 import { SearchTextField, FilterSearchTextField, IconButtonRed } from './Filter.styles';
@@ -68,11 +68,7 @@ const FilterPositionTransform = (positionSelected, positions, loading) => {
 const findPositionByFullName = (position, searchText) => {
 	const searchTextLowercase = String(searchText).toLowerCase();
 
-	const positionName = position.characteristics
-		.reduce((fullName, characteristic) => `${fullName} ${characteristic.name}`, position.name)
-		.toLowerCase();
-
-	return positionName.indexOf(searchTextLowercase) !== -1;
+	return position.name.indexOf(searchTextLowercase) !== -1;
 };
 
 const DropdownFooter = props => {
@@ -429,12 +425,7 @@ const FormFilter = props => {
 									onClick={() => onChangeFilterPosition(position._id, setFieldValue, submitForm)}
 									tabIndex={0}
 								>
-									<PositionNameInList
-										className={styles.positionName}
-										name={position.name}
-										characteristics={position.characteristics}
-										isArchived={position.isArchived}
-									/>
+									<PositionNameInList className={styles.positionName} name={position.name} isArchived={position.isArchived} />
 								</MenuItem>
 							);
 						})}

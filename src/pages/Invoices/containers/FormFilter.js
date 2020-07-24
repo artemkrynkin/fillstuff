@@ -13,6 +13,7 @@ import Divider from '@material-ui/core/Divider';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
+import Tooltip from '@material-ui/core/Tooltip';
 import MomentUtils from '@material-ui/pickers/adapter/moment';
 import { StaticDateRangePicker, LocalizationProvider } from '@material-ui/pickers';
 
@@ -20,7 +21,6 @@ import { memberRoleTransform } from 'shared/roles-access-rights';
 
 import { weekActive, monthActive, paginationCalendarFormat } from 'src/components/Pagination/utils';
 import Dropdown from 'src/components/Dropdown';
-import Tooltip from 'src/components/Tooltip';
 import MenuItem from 'src/components/MenuItem';
 
 import { FilterSearchTextField, IconButtonRed } from './Filter.styles';

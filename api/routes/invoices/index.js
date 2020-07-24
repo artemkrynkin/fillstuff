@@ -165,9 +165,9 @@ invoicesRouter.post(
 				{
 					path: 'billingPeriodWriteOffs',
 					populate: {
-						path: 'position',
+						path: 'receipt',
 						populate: {
-							path: 'characteristics',
+							path: 'position characteristics',
 						},
 					},
 				},
@@ -185,9 +185,10 @@ invoicesRouter.post(
 		}
 
 		const invoicePositions = _.chain(member.billingPeriodWriteOffs)
-			.groupBy(writeOff => writeOff.position._id && writeOff.unitSellingPrice)
+			.groupBy(writeOff => writeOff.position._id && writeOff.receipt && writeOff.unitSellingPrice)
 			.map(writeOffs => ({
 				position: writeOffs[0].position,
+				receipt: writeOffs[0].receipt,
 				quantity: writeOffs.reduce((sum, writeOff) => sum + writeOff.quantity, 0),
 				unitSellingPrice: writeOffs[0].unitSellingPrice,
 				sellingPrice: writeOffs.reduce((sum, writeOff) => sum + writeOff.sellingPrice, 0),

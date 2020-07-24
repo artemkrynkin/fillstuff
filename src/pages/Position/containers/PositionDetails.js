@@ -7,7 +7,7 @@ import MenuList from '@material-ui/core/MenuList';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 
-import { characteristicTypeTransform, unitTypeTransform } from 'shared/checkPositionAndReceipt';
+import { unitTypeTransform } from 'shared/checkPositionAndReceipt';
 
 import CardPaper from 'src/components/CardPaper';
 import Dropdown from 'src/components/Dropdown';
@@ -48,7 +48,7 @@ const PositionDetails = props => {
 				<DefinitionListItem term="Минимальный остаток" value={position.minimumBalance} />
 			</DefinitionList>
 
-			{position.characteristics.length || position.shops.length ? (
+			{position.shops.length ? (
 				<div style={{ marginTop: 40 }}>
 					<Typography variant="h6" gutterBottom>
 						Информация для закупок
@@ -75,22 +75,6 @@ const PositionDetails = props => {
 												<span>{value.shop.name}</span>
 											)
 										}
-										onRemoveChip={null}
-									/>
-								}
-							/>
-						) : null}
-						{position.characteristics.length ? (
-							<DefinitionListItem
-								term="Характеристики"
-								value={
-									<Chips
-										chips={position.characteristics}
-										onRenderChipLabel={value => (
-											<span>
-												<span style={{ fontWeight: 600 }}>{characteristicTypeTransform(value.type)}</span>: {value.name}
-											</span>
-										)}
 										onRemoveChip={null}
 									/>
 								}

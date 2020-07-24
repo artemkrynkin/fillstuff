@@ -67,10 +67,7 @@ procurementsRouter.post(
 				{
 					path: 'receipts',
 					populate: {
-						path: 'position',
-						populate: {
-							path: 'characteristics',
-						},
+						path: 'characteristics position',
 					},
 				},
 			],
@@ -129,10 +126,7 @@ procurementsRouter.post(
 				{
 					path: 'receipts',
 					populate: {
-						path: 'position',
-						populate: {
-							path: 'characteristics',
-						},
+						path: 'characteristics position',
 					},
 				},
 			])
@@ -291,10 +285,7 @@ procurementsRouter.post(
 				{
 					path: 'receipts',
 					populate: {
-						path: 'position',
-						populate: {
-							path: 'characteristics',
-						},
+						path: 'characteristics position',
 					},
 				},
 			])

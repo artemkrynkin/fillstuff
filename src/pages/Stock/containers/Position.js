@@ -44,7 +44,7 @@ const Position = props => {
 				<Link className={styles.positionLink} to={`/stock/${position._id}`}>
 					<PositionNameInList
 						name={position.name}
-						characteristics={position.characteristics}
+						characteristics={position.activeReceipt ? position.activeReceipt.characteristics : []}
 						archivedAfterEnded={position.archivedAfterEnded}
 						deliveryIsExpected={Boolean(position.deliveryIsExpected.length)}
 					/>

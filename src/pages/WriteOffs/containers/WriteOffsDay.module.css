@@ -119,6 +119,7 @@
 }
 
 .userPopup {
+  cursor: pointer;
   margin: 3px;
 }
 

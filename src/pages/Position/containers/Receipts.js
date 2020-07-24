@@ -39,10 +39,9 @@ const Receipts = props => {
 					<Table style={{ tableLayout: 'fixed', margin: '-20px 0' }}>
 						<TableHead>
 							<TableRow>
+								<TableCell>Характеристики</TableCell>
 								<TableCell>Дата поступления</TableCell>
-								<TableCell>Закупка</TableCell>
-								<TableCell>Статус</TableCell>
-								<TableCell align="right" width={200}>
+								<TableCell align="right" width={220}>
 									В наличии / Поступило
 								</TableCell>
 								<TableCell align="right" width={140}>

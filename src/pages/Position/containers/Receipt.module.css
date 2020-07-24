@@ -1,6 +1,7 @@
 .buttonLink {
   background: none;
   border: none;
+  display: inline-block;
   color: var(--c-hex-t-500);
   font-size: 13px;
   font-weight: 500;
@@ -10,27 +11,41 @@
   color: var(--c-hex-t-400);
 }
 
+.quantity {
+  display: inline-flex;
+}
+
 .status {
+  border-radius: 100%;
+  display: inline-block;
   font-size: 13px;
   font-weight: 600;
+  height: 10px;
+  margin-right: 10px;
+  width: 10px;
 }
 
 .statusRed {
-  color: var(--c-hex-o-1);
+  background-color: var(--c-hex-o-1);
 }
 
 .statusGreen {
-  color: var(--c-hex-t-A700);
+  background-color: var(--c-hex-t-A700);
 }
 
 .statusYellow {
-  color: var(--c-hex-o-15);
+  background-color: var(--c-hex-o-15);
 }
 
 .caption {
   color: var(--c-hex-bg-300);
   font-size: 11px;
   font-weight: 600;
+}
+
+.tooltipContainer {
+  cursor: pointer;
+  display: inline-block;
 }
 
 .sellingPrice {

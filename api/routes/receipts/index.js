@@ -26,7 +26,7 @@ receiptsRouter.post(
 			.sort('-createdAt')
 			.populate([
 				{
-					path: 'procurement',
+					path: 'procurement characteristics',
 				},
 			])
 			.then(receipts => res.json(receipts))
@@ -92,7 +92,7 @@ receiptsRouter.post(
 		Receipt.findById(newReceipt._id)
 			.populate([
 				{
-					path: 'procurement',
+					path: 'procurement characteristics',
 				},
 			])
 			.then(receipt => res.json(receipt))
@@ -112,11 +112,9 @@ receiptsRouter.post(
 
 		const receipt = await Receipt.findById(receiptId).catch(err => next({ code: 2, err }));
 
-		receipt.sellingPrice = receiptEdited.sellingPrice;
-		receipt.unitSellingPrice = receiptEdited.unitSellingPrice;
-		receipt.markupPercent = receiptEdited.markupPercent;
-		receipt.markup = receiptEdited.markup;
-		receipt.unitMarkup = receiptEdited.unitMarkup;
+		Object.keys(receiptEdited).forEach(receiptParameterEdited => {
+			receipt[receiptParameterEdited] = receiptEdited[receiptParameterEdited];
+		});
 
 		const receiptErr = receipt.validateSync();
 
@@ -127,7 +125,7 @@ receiptsRouter.post(
 		Receipt.findById(receipt._id)
 			.populate([
 				{
-					path: 'procurement',
+					path: 'procurement characteristics',
 				},
 			])
 			.then(receipt => res.json(receipt))

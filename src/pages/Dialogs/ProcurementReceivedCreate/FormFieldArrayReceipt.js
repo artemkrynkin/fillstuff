@@ -12,13 +12,8 @@ import { formatNumber } from 'shared/utils';
 
 import { formError, formErrorHelperText } from 'src/helpers/utils';
 
-import NumberFormat, {
-	moneyInputFormatProps,
-	// currencyMoneyFormatProps
-} from 'src/components/NumberFormat';
+import NumberFormat, { moneyInputFormatProps } from 'src/components/NumberFormat';
 import PositionNameInList from 'src/components/PositionNameInList';
-// import Tooltip from 'src/components/Tooltip';
-// import { DefinitionList, DefinitionListItem } from 'src/components/Definition';
 
 import styles from './index.module.css';
 
@@ -226,66 +221,6 @@ const FormFieldArrayReceipt = props => {
 									fullWidth
 								/>
 							) : (
-								// <Grid wrap="nowrap" alignItems="flex-start" container>
-								//   <Grid item>
-								//
-								//   </Grid>
-								//   <Grid style={{ marginTop: 32 }} item>
-								//     <Tooltip
-								//       title={
-								//         <DefinitionList style={{ width: 240 }}>
-								//           <DefinitionListItem
-								//             term="Цена покупки"
-								//             value={
-								//               <NumberFormat
-								//                 value={formatNumber(receipt.unitPurchasePrice, { toString: true })}
-								//                 renderText={value => value}
-								//                 displayType="text"
-								//                 {...currencyMoneyFormatProps}
-								//               />
-								//             }
-								//           />
-								//           {receipt.unitCostDelivery ? (
-								//             <DefinitionListItem
-								//               term="Стоимость доставки"
-								//               value={
-								//                 <NumberFormat
-								//                   value={formatNumber(receipt.unitCostDelivery, { toString: true })}
-								//                   renderText={value => value}
-								//                   displayType="text"
-								//                   {...currencyMoneyFormatProps}
-								//                 />
-								//               }
-								//             />
-								//           ) : null}
-								//           {receipt.unitMarkup ? (
-								//             <DefinitionListItem
-								//               term="Наценка"
-								//               value={
-								//                 <NumberFormat
-								//                   value={formatNumber(receipt.unitMarkup, { toString: true })}
-								//                   renderText={value => value}
-								//                   displayType="text"
-								//                   {...currencyMoneyFormatProps}
-								//                 />
-								//               }
-								//             />
-								//           ) : null}
-								//         </DefinitionList>
-								//       }
-								//       placement="top-end"
-								//       style={{ marginLeft: 8 }}
-								//       interactive
-								//     >
-								//       <div className={styles.searchSellingPrice}>
-								//         <span className="fa-layers fa-fw">
-								//           <FontAwesomeIcon icon={['fal', 'search']} />
-								//           <FontAwesomeIcon icon={['fas', 'ruble-sign']} transform="shrink-9 down--1.5 right--1.5" />
-								//         </span>
-								//       </div>
-								//     </Tooltip>
-								//   </Grid>
-								// </Grid>
 								<TextField
 									label={isNmpNmp ? 'Цена продажи уп.' : 'Цена продажи шт.'}
 									defaultValue="Бесплатно"

@@ -15,6 +15,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import Button from '@material-ui/core/Button';
 import DialogActions from '@material-ui/core/DialogActions';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Tooltip from '@material-ui/core/Tooltip';
 import MomentUtils from '@material-ui/pickers/adapter/moment';
 import { StaticDatePicker, LocalizationProvider } from '@material-ui/pickers';
 
@@ -24,7 +25,6 @@ import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
 import { SelectAutocomplete } from 'src/components/selectAutocomplete';
 import NumberFormat, { moneyInputFormatProps } from 'src/components/NumberFormat';
 import Dropdown from 'src/components/Dropdown';
-import Tooltip from 'src/components/Tooltip';
 
 import FormFieldArrayReceipts from './FormFieldArrayReceipts';
 
@@ -291,7 +291,6 @@ const FormProcurementReceivedCreate = props => {
 										</div>
 									}
 									placement="bottom"
-									style={{ marginLeft: 5 }}
 								>
 									<div className={styles.helpIcon}>
 										<FontAwesomeIcon icon={['fal', 'question-circle']} fixedWidth />

@@ -2,8 +2,7 @@ import React, { Fragment } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Typography from '@material-ui/core/Typography';
-
-// import Tooltip from 'src/components/Tooltip';
+// import Tooltip from '@material-ui/core/Tooltip';
 
 import styles from '../../containers/Notification.module.css';
 
@@ -31,7 +30,7 @@ const PositionEnds = props => {
 				</div>
 				{/*<div className={styles.caption}>*/}
 				{/*  Закончится через:*/}
-				{/*  <Tooltip title="Недостаточно данных для расчета" className={styles.robotIcon} placement="bottom">*/}
+				{/*  <Tooltip title="Недостаточно данных для расчета" placement="bottom">*/}
 				{/*    <FontAwesomeIcon icon={['fal', 'robot']} />*/}
 				{/*  </Tooltip>*/}
 				{/*</div>*/}

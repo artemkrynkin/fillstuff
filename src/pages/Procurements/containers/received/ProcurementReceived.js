@@ -12,11 +12,11 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Collapse from '@material-ui/core/Collapse';
 import Typography from '@material-ui/core/Typography';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import CardPaper from 'src/components/CardPaper';
 import Money from 'src/components/Money';
 import AvatarTitle from 'src/components/AvatarTitle';
-import Tooltip from 'src/components/Tooltip';
 
 import Receipt from './Receipt';
 
@@ -71,7 +71,8 @@ const ProcurementReceived = props => {
 											</div>
 										}
 										placement="top-start"
-										style={{ display: 'inline-block' }}
+										enterDelay={150}
+										enterNextDelay={150}
 									>
 										<div className={styles.users}>
 											<AvatarTitle

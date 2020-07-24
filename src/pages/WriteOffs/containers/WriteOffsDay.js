@@ -12,13 +12,13 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { history } from 'src/helpers/history';
 
 import CardPaper from 'src/components/CardPaper';
 import AvatarTitle from 'src/components/AvatarTitle';
 import Money from 'src/components/Money';
-import Tooltip from 'src/components/Tooltip';
 import Dropdown from 'src/components/Dropdown';
 import { deleteParamsCoincidence } from 'src/components/Pagination/utils';
 
@@ -86,25 +86,16 @@ const WriteOffsDay = props => {
 										if (index >= maxVisibleUsers) return null;
 
 										return (
-											<Tooltip
-												key={member._id}
-												title={member.user.name}
-												className={ClassNames({
-													[styles.user]: true,
-												})}
-												style={{ zIndex: indicators.members.length - index }}
-												placement="top"
-												arrow={true}
-												enterDelay={150}
-												enterNextDelay={150}
-											>
-												<AvatarTitle
-													onClick={() => onChangeFilterRole(member._id)}
-													classNames={{
-														image: styles.userPhoto,
-													}}
-													imageSrc={member.user.avatar}
-												/>
+											<Tooltip key={member._id} title={member.user.name} placement="top" enterDelay={150} enterNextDelay={150}>
+												<div className={styles.user} style={{ zIndex: indicators.members.length - index }}>
+													<AvatarTitle
+														onClick={() => onChangeFilterRole(member._id)}
+														classNames={{
+															image: styles.userPhoto,
+														}}
+														imageSrc={member.user.avatar}
+													/>
+												</div>
 											</Tooltip>
 										);
 									})}
@@ -192,16 +183,10 @@ const WriteOffsDay = props => {
 						</IconButton>
 						<div className={styles.usersPopup}>
 							{indicators.members.map(member => (
-								<Tooltip
-									key={member._id}
-									title={member.user.name}
-									className={ClassNames({
-										[styles.userPopup]: true,
-									})}
-									placement="top"
-									arrow={true}
-								>
-									<AvatarTitle onClick={() => onChangeFilterRole(member._id)} imageSrc={member.user.avatar} />
+								<Tooltip key={member._id} title={member.user.name} placement="top">
+									<div className={styles.userPopup}>
+										<AvatarTitle onClick={() => onChangeFilterRole(member._id)} imageSrc={member.user.avatar} />
+									</div>
 								</Tooltip>
 							))}
 						</div>

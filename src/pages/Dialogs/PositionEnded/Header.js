@@ -5,10 +5,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { procurementPositionTransform } from 'src/helpers/utils';
-
-import Tooltip from 'src/components/Tooltip';
 
 import styles from './Header.module.css';
 

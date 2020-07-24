@@ -1,6 +1,9 @@
 .helpIcon {
   color: var(--c-hex-bg-300);
+  cursor: pointer;
   display: inline-block;
+  font-size: 16px;
+  margin-left: 5px;
   vertical-align: middle;
 }
 

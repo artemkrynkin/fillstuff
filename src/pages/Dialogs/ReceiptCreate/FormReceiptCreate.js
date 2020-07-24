@@ -1,22 +1,27 @@
 import React from 'react';
-import { Field, Form } from 'formik';
+import { Field, Form, FieldArray } from 'formik';
 
 import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import DialogActions from '@material-ui/core/DialogActions';
 
 import { receiptCalc } from 'shared/checkPositionAndReceipt';
 
 import NumberFormat, { moneyInputFormatProps } from 'src/components/NumberFormat';
 import PositionNameInList from 'src/components/PositionNameInList';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import DialogActions from '@material-ui/core/DialogActions';
+
+import Characteristics from './Characteristics';
 
 const FormReceiptCreate = props => {
 	const {
 		onCloseDialog,
+		onGetCharacteristics,
+		onCreateCharacteristic,
+		characteristics,
 		checkSellingPrice,
 		formikProps: { errors, isSubmitting, submitForm, setFieldValue, touched, values },
 	} = props;
@@ -27,9 +32,21 @@ const FormReceiptCreate = props => {
 	return (
 		<Form>
 			<DialogContent>
-				<PositionNameInList name={values.position.name} characteristics={values.position.characteristics} size="md" />
+				<PositionNameInList name={values.position.name} size="md" />
 
-				<Grid alignItems="flex-start" spacing={2} style={{ marginTop: 20 }} container>
+				<FieldArray name="characteristics" validateOnChange={false}>
+					{props => (
+						<Characteristics
+							onGetCharacteristics={onGetCharacteristics}
+							onCreateCharacteristic={onCreateCharacteristic}
+							characteristics={characteristics}
+							arrayHelpers={props}
+							formikProps={{ errors, isSubmitting, setFieldValue, touched, values }}
+						/>
+					)}
+				</FieldArray>
+
+				<Grid alignItems="flex-start" spacing={2} container>
 					<Grid xs={3} item>
 						{values.position.unitReceipt === 'pce' || values.position.unitRelease === 'nmp' ? (
 							<Field

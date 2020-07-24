@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import ClassNames from 'classnames';
 import moment from 'moment';
@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TableRow from '@material-ui/core/TableRow';
 import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { formatNumber } from 'shared/utils';
 
@@ -14,7 +15,6 @@ import QuantityIndicator from 'src/components/QuantityIndicator';
 import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
 import { DefinitionList, DefinitionListItem } from 'src/components/Definition';
 import Dropdown from 'src/components/Dropdown';
-import Tooltip from 'src/components/Tooltip';
 
 import FormChangeSellingPrice from './FormChangeSellingPrice';
 
@@ -52,44 +52,56 @@ const Receipt = props => {
 
 	const isCurrentYear = momentDate.isSame(receipt.createdAt, 'year');
 
+	const dateFormat = moment(receipt.createdAt).format(isCurrentYear ? 'D MMMM в HH:mm' : 'D MMMM YYYY');
+
 	return (
 		<TableRow>
-			<TableCell>{moment(receipt.createdAt).format(isCurrentYear ? 'D MMMM в HH:mm' : 'D MMMM YYYY')}</TableCell>
 			<TableCell>
-				{receipt.procurement ? (
-					<Link className={styles.buttonLink} to={`/procurements/${receipt.procurement._id}`}>
-						{!receipt.procurement.noInvoice ? (
-							<div>
-								<span>№</span>
-								{receipt.procurement.invoiceNumber}
-							</div>
-						) : (
-							'Чек/накладная отсутствует'
-						)}
-					</Link>
+				{receipt.characteristics.length ? (
+					receipt.characteristics.reduce((fullName, characteristic) => `${fullName ? `${fullName} ` : ''}${characteristic.name}`, '')
 				) : (
-					<span className={styles.caption}>Данные отсутствуют</span>
+					<span className={styles.caption}>-</span>
 				)}
 			</TableCell>
 			<TableCell>
-				<span className={statusColorClasses(receipt.status)}>{statusTransform(receipt.status)}</span>
+				{receipt.procurement ? (
+					<Tooltip
+						title={!receipt.procurement.noInvoice ? <Fragment>№{receipt.procurement.invoiceNumber}</Fragment> : 'Чек/накладная отсутствует'}
+						placement="top"
+					>
+						<Link className={styles.buttonLink} to={`/procurements/${receipt.procurement._id}`}>
+							{dateFormat}
+						</Link>
+					</Tooltip>
+				) : (
+					dateFormat
+				)}
 			</TableCell>
-			<TableCell align="right" width={200}>
-				<Grid alignItems="flex-end" justify="flex-end" container>
-					<QuantityIndicator
-						type="receipt"
-						unitReceipt={position.unitReceipt}
-						unitRelease={position.unitRelease}
-						receipts={[!receipt.quantityInUnit ? { ...receipt.current } : { ...receipt.current, quantityInUnit: receipt.quantityInUnit }]}
-					/>
-					<span style={{ margin: '0 5px' }}>/</span>
-					<QuantityIndicator
-						type="receipt"
-						unitReceipt={position.unitReceipt}
-						unitRelease={position.unitRelease}
-						receipts={[!receipt.quantityInUnit ? { ...receipt.initial } : { ...receipt.initial, quantityInUnit: receipt.quantityInUnit }]}
-					/>
-				</Grid>
+			<TableCell align="right" width={220}>
+				<Tooltip title={statusTransform(receipt.status)} placement="top">
+					<div className={styles.quantity}>
+						<Grid alignItems="center" justify="flex-end" container>
+							<span className={statusColorClasses(receipt.status)} />
+							<QuantityIndicator
+								type="receipt"
+								unitReceipt={position.unitReceipt}
+								unitRelease={position.unitRelease}
+								receipts={[
+									!receipt.quantityInUnit ? { ...receipt.current } : { ...receipt.current, quantityInUnit: receipt.quantityInUnit },
+								]}
+							/>
+							<span style={{ margin: '0 5px' }}>/</span>
+							<QuantityIndicator
+								type="receipt"
+								unitReceipt={position.unitReceipt}
+								unitRelease={position.unitRelease}
+								receipts={[
+									!receipt.quantityInUnit ? { ...receipt.initial } : { ...receipt.initial, quantityInUnit: receipt.quantityInUnit },
+								]}
+							/>
+						</Grid>
+					</div>
+				</Tooltip>
 			</TableCell>
 			<TableCell align="right" width={140}>
 				<NumberFormat
@@ -147,12 +159,15 @@ const Receipt = props => {
 							placement="left"
 							interactive
 						>
-							<NumberFormat
-								value={formatNumber(receipt.unitSellingPrice, { toString: true })}
-								renderText={value => value}
-								displayType="text"
-								{...currencyMoneyFormatProps}
-							/>
+							<span className={styles.tooltipContainer}>
+								<NumberFormat
+									value={formatNumber(receipt.unitSellingPrice, { toString: true })}
+									renderText={value => value}
+									displayType="text"
+									customInput="span"
+									{...currencyMoneyFormatProps}
+								/>
+							</span>
 						</Tooltip>
 
 						{receipt.status !== 'closed' ? (

@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import MenuList from '@material-ui/core/MenuList';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { declensionNumber } from 'src/helpers/utils';
 
@@ -14,7 +15,6 @@ import Money from 'src/components/Money';
 import MenuItem from 'src/components/MenuItem';
 import Dropdown from 'src/components/Dropdown';
 import AvatarTitle from 'src/components/AvatarTitle';
-import Tooltip from 'src/components/Tooltip';
 
 import styles from './ProcurementExpected.module.css';
 
@@ -105,12 +105,13 @@ const ProcurementExpected = props => {
 							<div className={styles.infoItem}>&nbsp;</div>
 							<Tooltip
 								title={<div style={{ maxWidth: 300, whiteSpace: 'break-spaces' }}>{procurement.comment}</div>}
-								className={styles.procurementComment}
 								placement="bottom"
 								leaveDelay={500}
 								interactive
 							>
-								<FontAwesomeIcon icon={['fal', 'comment']} />
+								<span className={styles.procurementComment}>
+									<FontAwesomeIcon icon={['fal', 'comment']} />
+								</span>
 							</Tooltip>
 						</Fragment>
 					) : null}

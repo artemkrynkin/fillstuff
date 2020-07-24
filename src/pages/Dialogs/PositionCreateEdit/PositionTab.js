@@ -8,10 +8,10 @@ import TextField from '@material-ui/core/TextField';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import DialogContent from '@material-ui/core/DialogContent';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { unitTypes, unitTypeTransform } from 'shared/checkPositionAndReceipt';
 
-import Tooltip from 'src/components/Tooltip';
 import NumberFormat from 'src/components/NumberFormat';
 
 import stylesGlobal from 'src/styles/globals.module.css';
@@ -182,10 +182,10 @@ const PositionTab = props => {
 									</div>
 								}
 								placement="top"
-								style={{ marginLeft: 8 }}
-								interactive
 							>
-								<FontAwesomeIcon className={styles.iconHelp} icon={['fal', 'question-circle']} />
+								<span className={styles.helpIcon}>
+									<FontAwesomeIcon icon={['fal', 'question-circle']} />
+								</span>
 							</Tooltip>
 						</Grid>
 					</Grid>

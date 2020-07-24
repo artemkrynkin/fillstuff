@@ -42,9 +42,9 @@ storeNotificationsRouter.post(
 						},
 						{
 							path: 'positions',
-							populate: {
-								path: 'characteristics',
-							},
+							// populate: {
+							// 	path: 'characteristics',
+							// },
 						},
 						{
 							path: 'shop',
@@ -87,7 +87,7 @@ storeNotificationsRouter.post(
 					path: 'position',
 					populate: [
 						{
-							path: 'characteristics shops.shop shops.lastProcurement',
+							path: 'shops.shop shops.lastProcurement',
 						},
 						{
 							path: 'receipts',

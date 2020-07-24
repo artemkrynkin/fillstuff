@@ -1,12 +1,12 @@
 import React from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { formatNumber } from 'shared/utils';
 
 import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
 import { DefinitionList, DefinitionListItem } from 'src/components/Definition';
-import Tooltip from 'src/components/Tooltip';
 
 import stylesPositions from '../containers/Positions.module.css';
 import styles from './SellingPriceDisplay.module.css';
@@ -100,22 +100,23 @@ const SellingPriceDisplay = props => {
 				</div>
 			}
 			placement="left"
-			style={{ display: 'inline-block' }}
 			interactive
 		>
-			<NumberFormat
-				value={formatNumber(activeReceipt.unitSellingPrice, { toString: true })}
-				renderText={value => value}
-				displayType="text"
-				{...currencyMoneyFormatProps}
-			/>
-			{nextReceipt ? (
-				nextReceipt.unitSellingPrice > activeReceipt.unitSellingPrice ? (
-					<FontAwesomeIcon className={styles.changePriceIconUp} icon={['far', 'chevron-up']} />
-				) : nextReceipt.unitSellingPrice < activeReceipt.unitSellingPrice ? (
-					<FontAwesomeIcon className={styles.changePriceIconDown} icon={['far', 'chevron-down']} />
-				) : null
-			) : null}
+			<span className={styles.tooltipContainer}>
+				<NumberFormat
+					value={formatNumber(activeReceipt.unitSellingPrice, { toString: true })}
+					renderText={value => value}
+					displayType="text"
+					{...currencyMoneyFormatProps}
+				/>
+				{nextReceipt ? (
+					nextReceipt.unitSellingPrice > activeReceipt.unitSellingPrice ? (
+						<FontAwesomeIcon className={styles.changePriceIconUp} icon={['far', 'chevron-up']} />
+					) : nextReceipt.unitSellingPrice < activeReceipt.unitSellingPrice ? (
+						<FontAwesomeIcon className={styles.changePriceIconDown} icon={['far', 'chevron-down']} />
+					) : null
+				) : null}
+			</span>
 		</Tooltip>
 	);
 };

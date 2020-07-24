@@ -7,10 +7,9 @@ import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { formError, formErrorHelperText } from 'src/helpers/utils';
-
-import Tooltip from 'src/components/Tooltip';
 
 import styles from './ShopItem.module.css';
 

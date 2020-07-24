@@ -24,7 +24,7 @@ const Receipt = props => {
 				<Link className={styles.positionLink} to={`/stock/${receipt.position._id}`}>
 					<PositionNameInList
 						name={receipt.position.name}
-						characteristics={receipt.position.characteristics}
+						characteristics={receipt.characteristics}
 						isArchived={receipt.position.isArchived}
 					/>
 				</Link>

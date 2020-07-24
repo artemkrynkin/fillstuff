@@ -85,6 +85,11 @@ const Invoice = new Schema({
 				ref: 'Position',
 				required: [true, i18n.__('Обязательное поле')],
 			},
+			receipt: {
+				type: Schema.Types.ObjectId,
+				ref: 'Receipt',
+				required: [true, i18n.__('Обязательное поле')],
+			},
 			quantity: {
 				type: Number,
 				min: [0, 'Не может быть меньше 0'],

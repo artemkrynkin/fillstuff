@@ -25,7 +25,7 @@
     ],
     "ios": {
       "bundleIdentifier": "blikside.com.blikside",
-      "buildNumber": "5"
+      "buildNumber": "6"
     },
     "description": "",
     "githubUrl": "https://github.com/artemkrynkin/bliksidemobile"

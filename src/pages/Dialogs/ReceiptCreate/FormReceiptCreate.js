@@ -40,6 +40,7 @@ const FormReceiptCreate = props => {
 							onGetCharacteristics={onGetCharacteristics}
 							onCreateCharacteristic={onCreateCharacteristic}
 							characteristics={characteristics}
+							checkSellingPrice={checkSellingPrice}
 							arrayHelpers={props}
 							formikProps={{ errors, isSubmitting, setFieldValue, touched, values }}
 						/>

@@ -313,7 +313,7 @@ class PositionScanningScreen extends Component {
 													{position.characteristics.length ? (
 														<Text style={styles.modalSubtitle}>
 															{position.characteristics.reduce(
-																(fullCharacteristics, characteristic) => `${fullCharacteristics}${characteristic.label} `,
+																(fullCharacteristics, characteristic) => `${fullCharacteristics}${characteristic.name} `,
 																''
 															)}
 														</Text>
@@ -422,7 +422,7 @@ class PositionScanningScreen extends Component {
 																		<Text style={styles.modalPositionListItemText}>
 																			{position.name}
 																			{position.characteristics.reduce(
-																				(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.label}`,
+																				(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.name}`,
 																				''
 																			)}
 																		</Text>

@@ -21,6 +21,7 @@ const Characteristics = props => {
 			isFetching: isLoadingCharacteristics,
 			// error: errorCharacteristics
 		},
+		checkSellingPrice,
 		arrayHelpers: { push, remove },
 		formikProps: { isSubmitting, values },
 	} = props;
@@ -70,13 +71,13 @@ const Characteristics = props => {
 										<span style={{ fontWeight: 600 }}>{characteristicTypeTransform(value.type)}</span>: {value.name}
 									</span>
 								)}
-								onRemoveChip={(chips, index) => remove(index)}
+								onRemoveChip={!checkSellingPrice ? (chips, index) => remove(index) : null}
 								disabled={isSubmitting}
 							/>
 						</Grid>
 					) : null}
 
-					{allCharacteristicsTypesUsed ? (
+					{!checkSellingPrice && allCharacteristicsTypesUsed ? (
 						<Grid alignItems="center" spacing={2} container>
 							<Grid xs={4} item>
 								<Select

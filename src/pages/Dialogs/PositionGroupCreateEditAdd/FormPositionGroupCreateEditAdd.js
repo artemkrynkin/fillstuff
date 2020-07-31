@@ -33,9 +33,11 @@ const findPositionByFullName = (position, searchText) => {
 
 	const searchTextLowercase = String(searchText).toLowerCase();
 
-	const positionName = position.characteristics
-		.reduce((fullName, characteristic) => `${fullName} ${characteristic.name}`, position.name)
-		.toLowerCase();
+	const positionName = position.activeReceipt
+		? position.activeReceipt.characteristics
+				.reduce((fullName, characteristic) => `${fullName} ${characteristic.name}`, position.name)
+				.toLowerCase()
+		: position.name.toLowerCase();
 
 	return positionName.indexOf(searchTextLowercase) !== -1;
 };
@@ -131,7 +133,7 @@ const FormPositionGroupCreateEditAdd = props => {
 													<PositionNameInList
 														className={styles.positionName}
 														name={position.name}
-														characteristics={position.characteristics}
+														characteristics={position.activeReceipt ? position.activeReceipt.characteristics : []}
 													/>
 												</div>
 											))
@@ -153,10 +155,11 @@ const FormPositionGroupCreateEditAdd = props => {
 											chips={values.positions}
 											onRenderChipLabel={position => (
 												<span>
-													{position.characteristics.reduce(
-														(fullName, characteristic) => `${fullName} ${characteristic.name}`,
-														position.name
-													)}
+													{position.name}
+													{/*{position.characteristics.reduce(*/}
+													{/*	(fullName, characteristic) => `${fullName} ${characteristic.name}`,*/}
+													{/*	position.name*/}
+													{/*)}*/}
 												</span>
 											)}
 											onRemoveChip={(chips, index) => arrayHelpers.remove(index)}

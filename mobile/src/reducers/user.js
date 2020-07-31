@@ -2,38 +2,36 @@ const user = (
 	state = {
 		isFetching: false,
 		data: null,
+		isAuthorized: false,
 	},
 	action
 ) => {
 	switch (action.type) {
 		case 'REQUEST_USER':
-			// case 'REQUEST_USER_ACTIVE_STOCK':
 			return {
 				...state,
 				isFetching: true,
 			};
-		case 'RECEIVE_USER':
+		case 'USER_LOGIN':
 			return {
 				...state,
-				data: action.payload,
 				isFetching: false,
+				data: action.payload,
+				isAuthorized: true,
 			};
-		case 'UNAUTHORIZED_USER':
+		case 'USER_LOGOUT':
 			return {
 				...state,
-				data: action.payload,
 				isFetching: false,
-				error: 'unauthorized',
+				data: null,
+				isAuthorized: false,
 			};
-		// case 'RECEIVE_USER_ACTIVE_STOCK':
-		// 	return {
-		// 		...state,
-		// 		data: {
-		// 			...state.data,
-		// 			activeStockId: action.payload.stockId,
-		// 		},
-		// 		isFetching: false,
-		// 	};
+		case 'USER_RESTORE':
+			return {
+				...state,
+				isFetching: false,
+				data: action.payload,
+			};
 		default:
 			return state;
 	}

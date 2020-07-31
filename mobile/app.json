@@ -3,13 +3,12 @@
     "name": "Blikside",
     "slug": "blikside",
     "privacy": "public",
-    "sdkVersion": "35.0.0",
     "platforms": [
       "ios",
       "android",
       "web"
     ],
-    "version": "0.0.2",
+    "version": "0.0.3",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "splash": {
@@ -25,7 +24,7 @@
     ],
     "ios": {
       "bundleIdentifier": "blikside.com.blikside",
-      "buildNumber": "6"
+      "buildNumber": "2"
     },
     "description": "",
     "githubUrl": "https://github.com/artemkrynkin/bliksidemobile"

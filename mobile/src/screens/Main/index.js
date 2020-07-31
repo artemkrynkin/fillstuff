@@ -1,20 +1,20 @@
 import React, { Component, createRef } from 'react';
 import { connect } from 'react-redux';
 import {
-	AsyncStorage,
 	StyleSheet,
 	Text,
 	View,
 	TouchableHighlight,
 	TouchableOpacity,
 	FlatList,
-	ScrollView,
 	AppState,
 	Vibration,
 	ImageBackground,
 	TextInput,
 	Alert,
 } from 'react-native';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import AsyncStorage from '@react-native-community/async-storage';
 import { Asset } from 'expo-asset';
 import Constants from 'expo-constants';
 import { Camera } from 'expo-camera';
@@ -23,17 +23,15 @@ import * as Permissions from 'expo-permissions';
 import * as Haptics from 'expo-haptics';
 import { Audio } from 'expo-av';
 import Modal from 'react-native-modal';
-import { SafeAreaConsumer } from 'react-native-safe-area-context';
+import { SafeAreaView, SafeAreaInsetsContext } from 'react-native-safe-area-context';
 
-import theme from '../constants/theme';
+import theme from '../../constants/theme';
 
-import { percentOfNumber } from '../helpers/utils';
+import { getPosition, getPositionGroup, createWriteOff } from '../../actions/positions';
 
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import styles from './styles';
 
-import { getPosition, getPositionGroup, createWriteOff } from '../actions/positions';
-
-class PositionScanningScreen extends Component {
+class PositionScanning extends Component {
 	initialRemainingState = {
 		barCodeScanned: 'ready',
 		position: null,
@@ -221,7 +219,7 @@ class PositionScanningScreen extends Component {
 				try {
 					const soundObject = new Audio.Sound();
 
-					await soundObject.loadAsync(require('../../assets/sounds/write-off_confirmation.aac'));
+					await soundObject.loadAsync(require('../../../assets/sounds/write-off_confirmation.aac'));
 
 					await Promise.all([soundObject.playAsync(), Haptics.notificationAsync('success')]);
 				} catch {}
@@ -276,23 +274,34 @@ class PositionScanningScreen extends Component {
 			);
 		} else {
 			return (
-				<View style={{ flex: 1 }}>
-					<Camera
-						ref={ref => (this.cameraRef = ref)}
-						barCodeScannerSettings={{
-							barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
-						}}
-						onBarCodeScanned={barCodeScanned === 'ready' ? this.onBarCodeScanned : undefined}
-						style={StyleSheet.absoluteFillObject}
-					/>
-					<View style={styles.scanningContainer}>
-						<ImageBackground
-							source={Asset.fromModule(require('../../assets/images/cameraDetect.png'))}
-							style={{ ...styles.scanningContainerBox, opacity: Number(barCodeScanned !== 'scanned') }}
+				<>
+					<View style={{ flex: 1 }}>
+						<Camera
+							ref={ref => (this.cameraRef = ref)}
+							barCodeScannerSettings={{
+								barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
+							}}
+							onBarCodeScanned={barCodeScanned === 'ready' ? this.onBarCodeScanned : undefined}
+							style={StyleSheet.absoluteFillObject}
 						/>
 					</View>
+					<SafeAreaView style={styles.safeAreaContent}>
+						<View style={{ flex: 1 }}>
+							<View style={styles.scanningContainer}>
+								<ImageBackground
+									source={Asset.fromModule(require('../../../assets/images/cameraDetect.png'))}
+									style={{ ...styles.scanningContainerBox, opacity: Number(barCodeScanned !== 'scanned') }}
+								/>
+								<TouchableOpacity
+									style={styles.settingsButton}
+									onPress={() => this.props.navigation.push('Settings')}
+									children={<FontAwesomeIcon style={styles.settingsIcon} icon={['fal', 'cog']} size={24} />}
+								/>
+							</View>
+						</View>
+					</SafeAreaView>
 
-					<SafeAreaConsumer>
+					<SafeAreaInsetsContext.Consumer>
 						{insets => (
 							<View>
 								<Modal
@@ -310,14 +319,14 @@ class PositionScanningScreen extends Component {
 											<View>
 												<View style={styles.modalHeader1}>
 													<Text style={styles.modalTitle}>{position.name}</Text>
-													{position.characteristics.length ? (
-														<Text style={styles.modalSubtitle}>
-															{position.characteristics.reduce(
-																(fullCharacteristics, characteristic) => `${fullCharacteristics}${characteristic.name} `,
-																''
-															)}
-														</Text>
-													) : null}
+													{/*{position.activeReceipt && position.activeReceipt.characteristics.length ? (*/}
+													{/*  <Text style={styles.modalSubtitle}>*/}
+													{/*    {position.activeReceipt.characteristics.reduce(*/}
+													{/*      (fullCharacteristics, characteristic) => `${fullCharacteristics}${characteristic.name} `,*/}
+													{/*      ''*/}
+													{/*    )}*/}
+													{/*  </Text>*/}
+													{/*) : null}*/}
 													<TouchableOpacity
 														style={styles.modalClose}
 														onPress={() => this.onHandlerModalPosition(false)}
@@ -333,10 +342,6 @@ class PositionScanningScreen extends Component {
 																	{position.activeReceipt.unitSellingPrice}
 																	{' ₽'}
 																</Text>
-															</Text>
-															<Text style={styles.sellingPriceSubtitle}>
-																C учётом стоимости доставки{' '}
-																<Text style={{ fontWeight: '600' }}>{position.activeReceipt.unitCostDelivery} ₽</Text>
 															</Text>
 														</View>
 													) : (
@@ -406,31 +411,29 @@ class PositionScanningScreen extends Component {
 													/>
 												</View>
 												<View style={{ maxHeight: 500 }}>
-													<ScrollView>
-														<FlatList
-															data={positionGroup.positions}
-															keyExtractor={position => position._id}
-															renderItem={({ item: position }) => (
-																<TouchableHighlight
-																	onPress={() => {
-																		this.onSavePosition(position);
-																		this.onHandlerModalPosition(true);
-																	}}
-																	underlayColor={theme.brightness.cBr4}
-																>
-																	<View style={styles.modalPositionListItem}>
-																		<Text style={styles.modalPositionListItemText}>
-																			{position.name}
-																			{position.characteristics.reduce(
-																				(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.name}`,
-																				''
-																			)}
-																		</Text>
-																	</View>
-																</TouchableHighlight>
-															)}
-														/>
-													</ScrollView>
+													<FlatList
+														data={positionGroup.positions}
+														keyExtractor={position => position._id}
+														renderItem={({ item: position }) => (
+															<TouchableHighlight
+																onPress={() => {
+																	this.onSavePosition(position);
+																	this.onHandlerModalPosition(true);
+																}}
+																underlayColor={theme.brightness.cBr4}
+															>
+																<View style={styles.modalPositionListItem}>
+																	<Text style={styles.modalPositionListItemText}>
+																		{position.name}
+																		{/*{position.activeReceipt.characteristics.reduce(*/}
+																		{/*  (fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.name}`,*/}
+																		{/*  ''*/}
+																		{/*)}*/}
+																	</Text>
+																</View>
+															</TouchableHighlight>
+														)}
+													/>
 												</View>
 											</View>
 										) : null}
@@ -438,149 +441,12 @@ class PositionScanningScreen extends Component {
 								</Modal>
 							</View>
 						)}
-					</SafeAreaConsumer>
-				</View>
+					</SafeAreaInsetsContext.Consumer>
+				</>
 			);
 		}
 	}
 }
-
-const styles = StyleSheet.create({
-	scanningContainer: {
-		height: '100%',
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
-	scanningContainerBox: {
-		height: 250,
-		width: 250,
-	},
-	modal: {
-		justifyContent: 'flex-end',
-		margin: 0,
-		marginTop: Constants.statusBarHeight,
-	},
-	modalContainer: {
-		backgroundColor: 'white',
-		borderTopLeftRadius: 12,
-		borderTopRightRadius: 12,
-	},
-	modalHeader1: {
-		paddingTop: 15,
-		paddingBottom: 0,
-		paddingLeft: 15,
-		paddingRight: 15,
-		position: 'relative',
-	},
-	modalHeader2: {
-		borderBottomColor: theme.brightness.cBr5,
-		borderBottomWidth: StyleSheet.hairlineWidth,
-		paddingTop: 15,
-		paddingBottom: 15,
-		paddingLeft: 15,
-		paddingRight: 15,
-		position: 'relative',
-	},
-	modalTitle: {
-		color: theme.blueGrey.cBg700,
-		fontSize: 28,
-		fontWeight: '600',
-	},
-	modalSubtitle: {
-		color: theme.blueGrey.cBg400,
-		fontSize: 15,
-	},
-	modalClose: {
-		alignItems: 'center',
-		backgroundColor: theme.blueGrey.cBg50,
-		borderRadius: 30,
-		justifyContent: 'center',
-		height: 30,
-		position: 'absolute',
-		right: 20,
-		top: 15,
-		width: 30,
-	},
-	modalCloseIcon: {
-		color: theme.blueGrey.cBg600,
-	},
-	modalContent: {
-		paddingTop: 20,
-		paddingBottom: 20,
-		paddingLeft: 15,
-		paddingRight: 15,
-	},
-	sellingPrice: {
-		color: theme.blueGrey.cBg400,
-		fontSize: 15,
-		fontWeight: '500',
-	},
-	sellingPriceBold: {
-		color: theme.blueGrey.cBg500,
-		fontSize: 17,
-		fontWeight: '700',
-		marginLeft: 5,
-	},
-	sellingPriceSubtitle: {
-		color: theme.blueGrey.cBg400,
-		fontSize: 11,
-		marginTop: 5,
-	},
-	form: {
-		marginTop: 20,
-	},
-	inputLabel: {
-		color: theme.blueGrey.cBg400,
-		fontSize: 15,
-		fontWeight: '500',
-		marginBottom: 5,
-	},
-	textField: {
-		backgroundColor: theme.brightness.cBr4,
-		borderColor: theme.brightness.cBr5,
-		borderWidth: 2,
-		borderRadius: 5,
-		height: 44,
-		fontSize: 15,
-		paddingLeft: 10,
-		paddingRight: 10,
-	},
-	buttonSubmit: {
-		backgroundColor: theme.teal.cT300,
-		borderRadius: 8,
-		marginTop: 20,
-		paddingTop: 10,
-		paddingBottom: 10,
-		paddingLeft: 15,
-		paddingRight: 15,
-	},
-	buttonSubmitDisabled: {
-		backgroundColor: theme.blueGrey.cBg50,
-	},
-	buttonSubmitText: {
-		color: 'white',
-		fontSize: 18,
-		fontWeight: '600',
-		letterSpacing: 0.25,
-		textAlign: 'center',
-	},
-	buttonSubmitTextDisabled: {
-		color: theme.blueGrey.cBg300,
-	},
-	modalPositionListItem: {
-		borderBottomColor: theme.brightness.cBr5,
-		borderBottomWidth: StyleSheet.hairlineWidth,
-		paddingTop: 20,
-		paddingBottom: 20,
-		paddingLeft: 15,
-		paddingRight: 15,
-	},
-	modalPositionListItemHighlight: {},
-	modalPositionListItemText: {
-		color: theme.blueGrey.cBg700,
-		fontSize: 16,
-	},
-});
 
 const mapDispatchToProps = dispatch => {
 	return {
@@ -590,4 +456,4 @@ const mapDispatchToProps = dispatch => {
 	};
 };
 
-export default connect(null, mapDispatchToProps)(PositionScanningScreen);
+export default connect(null, mapDispatchToProps)(PositionScanning);

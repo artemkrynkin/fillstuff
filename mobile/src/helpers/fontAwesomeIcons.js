@@ -7,7 +7,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 
 import { faTimes as farTimes } from '@fortawesome/pro-regular-svg-icons';
 
-import { faTimes as falTimes, faBug as falBug } from '@fortawesome/pro-light-svg-icons';
+import { faTimes as falTimes, faBug as falBug, faCog as falCog } from '@fortawesome/pro-light-svg-icons';
 
 library.add(
 	// Brands
@@ -17,5 +17,6 @@ library.add(
 
 	// Light
 	falTimes,
-	falBug
+	falBug,
+	falCog
 );

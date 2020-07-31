@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { ActivityIndicator, AsyncStorage, StatusBar, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StatusBar, StyleSheet, View } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
-class AuthLoadingScreen extends Component {
+class AuthLoading extends Component {
 	constructor(props) {
 		super(props);
 		this.bootstrapAsync();
@@ -31,4 +32,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default AuthLoadingScreen;
+export default AuthLoading;

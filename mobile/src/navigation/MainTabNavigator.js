@@ -3,9 +3,9 @@ import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/HomeScreen';
+import Home from '../screens/HomeScreen';
 import PositionScanningScreen from '../screens/PositionScanningScreen';
-import SettingsScreen from '../screens/SettingsScreen';
+import Settings from '../screens/SettingsScreen';
 
 const PositionScanningStack = createStackNavigator(
 	{
@@ -27,7 +27,7 @@ PositionScanningStack.navigationOptions = {
 };
 
 const HomeStack = createStackNavigator({
-	Home: HomeScreen,
+	Home: Home,
 });
 
 HomeStack.navigationOptions = {
@@ -41,7 +41,7 @@ HomeStack.navigationOptions = {
 };
 
 const SettingsStack = createStackNavigator({
-	Settings: SettingsScreen,
+	Settings: Settings,
 });
 
 SettingsStack.navigationOptions = {

@@ -2,7 +2,7 @@ import * as WebBrowser from 'expo-web-browser';
 import React, { Component } from 'react';
 import { Platform, StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
 
-class HomeScreen extends Component {
+class HomeOLD extends Component {
 	render() {
 		return (
 			<View style={styles.container}>
@@ -153,4 +153,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default HomeScreen;
+export default HomeOLD;

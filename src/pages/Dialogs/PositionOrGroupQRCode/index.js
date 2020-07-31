@@ -40,11 +40,11 @@ const QRNameClasses = QRCodeSize =>
 		[styles.qrNameHide]: QRCodeSize <= 2,
 	});
 
-const QRCharacteristicsClasses = QRCodeSize =>
-	ClassNames({
-		[styles.qrCharacteristics]: true,
-		[styles.qrCharacteristicsHide]: QRCodeSize <= 2,
-	});
+// const QRCharacteristicsClasses = QRCodeSize =>
+// 	ClassNames({
+// 		[styles.qrCharacteristics]: true,
+// 		[styles.qrCharacteristicsHide]: QRCodeSize <= 2,
+// 	});
 
 class DialogPositionOrGroupQRCode extends Component {
 	static propTypes = {
@@ -142,21 +142,16 @@ class DialogPositionOrGroupQRCode extends Component {
 								text: selectedPositionOrGroup.name,
 								fontSize: QRSettings.fontSizePdf,
 								bold: true,
-								margin: [
-									0,
-									0,
-									0,
-									type === 'position' && selectedPositionOrGroup.characteristics.length ? QRSettings.marginPdf - 5 : QRSettings.marginPdf,
-								],
+								margin: [0, 0, 0, QRSettings.marginPdf],
 								alignment: 'center',
 							});
 
 						if (type === 'position' && QRCodeSize > 2)
 							contentColumn.push({
-								text: selectedPositionOrGroup.characteristics.reduce(
-									(fullName, characteristic) => `${fullName} ${characteristic.name}`,
-									''
-								),
+								// text: selectedPositionOrGroup.characteristics.reduce(
+								// 	(fullName, characteristic) => `${fullName} ${characteristic.name}`,
+								// 	''
+								// ),
 								fontSize: QRSettings.fontSizePdf - 2,
 								margin: [0, 0, 0, QRSettings.marginPdf],
 								alignment: 'center',
@@ -279,26 +274,25 @@ class DialogPositionOrGroupQRCode extends Component {
 										className={QRNameClasses(QRCodeSize)}
 										style={{
 											fontSize: QRSettings.fontSize,
-											marginBottom:
-												type === 'position' && selectedPositionOrGroup.characteristics.length ? QRSettings.margin - 5 : QRSettings.margin,
+											marginBottom: QRSettings.margin,
 										}}
 									>
 										{selectedPositionOrGroup.name}
 									</div>
-									{type === 'position' && selectedPositionOrGroup.characteristics.length ? (
-										<div
-											className={QRCharacteristicsClasses(QRCodeSize)}
-											style={{
-												fontSize: QRSettings.fontSize - 2,
-												marginBottom: QRSettings.margin,
-											}}
-										>
-											{selectedPositionOrGroup.characteristics.reduce(
-												(fullName, characteristic) => `${fullName} ${characteristic.name}`,
-												''
-											)}
-										</div>
-									) : null}
+									{/*{type === 'position' && selectedPositionOrGroup.characteristics.length ? (*/}
+									{/*	<div*/}
+									{/*		className={QRCharacteristicsClasses(QRCodeSize)}*/}
+									{/*		style={{*/}
+									{/*			fontSize: QRSettings.fontSize - 2,*/}
+									{/*			marginBottom: QRSettings.margin,*/}
+									{/*		}}*/}
+									{/*	>*/}
+									{/*		{selectedPositionOrGroup.characteristics.reduce(*/}
+									{/*			(fullName, characteristic) => `${fullName} ${characteristic.name}`,*/}
+									{/*			''*/}
+									{/*		)}*/}
+									{/*	</div>*/}
+									{/*) : null}*/}
 									<img className={styles.qrCode} src={QRCodeDataUrl} width={QRWidth} height={QRWidth} alt="" />
 								</div>
 							</DialogContent>

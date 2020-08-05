@@ -40,11 +40,11 @@ const QRNameClasses = QRCodeSize =>
 		[styles.qrNameHide]: QRCodeSize <= 2,
 	});
 
-// const QRCharacteristicsClasses = QRCodeSize =>
-// 	ClassNames({
-// 		[styles.qrCharacteristics]: true,
-// 		[styles.qrCharacteristicsHide]: QRCodeSize <= 2,
-// 	});
+const QRCharacteristicsClasses = QRCodeSize =>
+	ClassNames({
+		[styles.qrCharacteristics]: true,
+		[styles.qrCharacteristicsHide]: QRCodeSize <= 2,
+	});
 
 class DialogPositionOrGroupQRCode extends Component {
 	static propTypes = {
@@ -148,10 +148,10 @@ class DialogPositionOrGroupQRCode extends Component {
 
 						if (type === 'position' && QRCodeSize > 2)
 							contentColumn.push({
-								// text: selectedPositionOrGroup.characteristics.reduce(
-								// 	(fullName, characteristic) => `${fullName} ${characteristic.name}`,
-								// 	''
-								// ),
+								text: selectedPositionOrGroup.characteristics.reduce(
+									(fullName, characteristic) => `${fullName} ${characteristic.name}`,
+									''
+								),
 								fontSize: QRSettings.fontSizePdf - 2,
 								margin: [0, 0, 0, QRSettings.marginPdf],
 								alignment: 'center',
@@ -207,12 +207,7 @@ class DialogPositionOrGroupQRCode extends Component {
 	};
 
 	render() {
-		const {
-			// type,
-			dialogOpen,
-			onCloseDialog,
-			selectedPositionOrGroup,
-		} = this.props;
+		const { type, dialogOpen, onCloseDialog, selectedPositionOrGroup } = this.props;
 		const { QRCodeDataUrl, QRCodeSize, pixelsPerCentimeter } = this.state;
 		const QRSettings = marks[QRCodeSize - 1].settings;
 
@@ -284,20 +279,20 @@ class DialogPositionOrGroupQRCode extends Component {
 									>
 										{selectedPositionOrGroup.name}
 									</div>
-									{/*{type === 'position' && selectedPositionOrGroup.characteristics.length ? (*/}
-									{/*	<div*/}
-									{/*		className={QRCharacteristicsClasses(QRCodeSize)}*/}
-									{/*		style={{*/}
-									{/*			fontSize: QRSettings.fontSize - 2,*/}
-									{/*			marginBottom: QRSettings.margin,*/}
-									{/*		}}*/}
-									{/*	>*/}
-									{/*		{selectedPositionOrGroup.characteristics.reduce(*/}
-									{/*			(fullName, characteristic) => `${fullName} ${characteristic.name}`,*/}
-									{/*			''*/}
-									{/*		)}*/}
-									{/*	</div>*/}
-									{/*) : null}*/}
+									{type === 'position' && selectedPositionOrGroup.characteristics.length ? (
+										<div
+											className={QRCharacteristicsClasses(QRCodeSize)}
+											style={{
+												fontSize: QRSettings.fontSize - 2,
+												marginBottom: QRSettings.margin,
+											}}
+										>
+											{selectedPositionOrGroup.characteristics.reduce(
+												(fullName, characteristic) => `${fullName} ${characteristic.name}`,
+												''
+											)}
+										</div>
+									) : null}
 									<img className={styles.qrCode} src={QRCodeDataUrl} width={QRWidth} height={QRWidth} alt="" />
 								</div>
 							</DialogContent>

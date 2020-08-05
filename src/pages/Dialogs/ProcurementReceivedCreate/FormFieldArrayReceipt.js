@@ -16,10 +16,12 @@ import NumberFormat, { moneyInputFormatProps } from 'src/components/NumberFormat
 import PositionNameInList from 'src/components/PositionNameInList';
 
 import styles from './index.module.css';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const FormFieldArrayReceipt = props => {
 	const {
-		receipt,
+		onOpenDialogByName,
+		receipt: { position, ...receipt },
 		index,
 		formEditable,
 		arrayHelpers: { remove },
@@ -27,11 +29,17 @@ const FormFieldArrayReceipt = props => {
 	} = props;
 	const sellingPriceFieldRef = useRef(null);
 
-	const isNmpPce = receipt.position.unitReceipt === 'nmp' && receipt.position.unitRelease === 'pce';
-	const isNmpNmp = receipt.position.unitReceipt === 'nmp' && receipt.position.unitRelease === 'nmp';
+	const isNmpPce = position.unitReceipt === 'nmp' && position.unitRelease === 'pce';
+	const isNmpNmp = position.unitReceipt === 'nmp' && position.unitRelease === 'nmp';
 
 	const autoGenUnitSellingPrice =
-		!formEditable && !receipt.position.isFree ? formatNumber(receipt.unitPurchasePrice + receipt.unitCostDelivery + receipt.unitMarkup) : 0;
+		!formEditable && !position.isFree ? formatNumber(receipt.unitPurchasePrice + receipt.unitCostDelivery + receipt.unitMarkup) : 0;
+
+	const name = receipt.positionChanges.name ? receipt.positionChanges.name : position.name;
+	const characteristics =
+		receipt.positionChanges.characteristics && receipt.positionChanges.characteristics.length
+			? receipt.positionChanges.characteristics
+			: position.characteristics;
 
 	return (
 		<Grid className={styles.receiptItem} wrap="nowrap" alignItems="baseline" container>
@@ -41,19 +49,36 @@ const FormFieldArrayReceipt = props => {
 			<Grid className={styles.receiptItemContent} direction="column" container>
 				<Grid wrap="nowrap" alignItems="flex-start" style={{ marginBottom: 15 }} container>
 					<Grid style={{ flex: '1 1' }} zeroMinWidth item>
-						<PositionNameInList name={receipt.position.name} characteristics={receipt.position.characteristics} size="md" />
+						<PositionNameInList name={name} characteristics={characteristics} size="md" />
 					</Grid>
 					{formEditable && values.status !== 'expected' ? (
-						<Grid className={styles.removeReceipt} item>
-							<IconButton className={styles.removeReceiptButton} onClick={() => remove(index)} tabIndex={-1}>
-								<FontAwesomeIcon icon={['fal', 'times']} />
-							</IconButton>
+						<Grid className={styles.actionButtons} item>
+							<Tooltip title="Изменить характеристики" placement="top">
+								<IconButton
+									className={styles.editActionButton}
+									onClick={() => {
+										onOpenDialogByName('dialogProcurementPositionEdit', 'procurementPosition', {
+											positionIndexInProcurement: index,
+											name,
+											characteristics,
+										});
+									}}
+									tabIndex={-1}
+								>
+									<FontAwesomeIcon icon={['far', 'pen']} />
+								</IconButton>
+							</Tooltip>
+							<Tooltip title="Удалить" placement="top">
+								<IconButton className={styles.deleteActionButton} onClick={() => remove(index)} tabIndex={-1}>
+									<FontAwesomeIcon icon={['fal', 'times']} />
+								</IconButton>
+							</Tooltip>
 						</Grid>
 					) : null}
 				</Grid>
 				<Grid alignItems="flex-start" spacing={2} container>
 					<Grid xs={3} item>
-						{receipt.position.unitReceipt === 'pce' || receipt.position.unitRelease === 'nmp' ? (
+						{position.unitReceipt === 'pce' || position.unitRelease === 'nmp' ? (
 							<Field
 								name={`receipts.${index}.quantity`}
 								label={isNmpNmp ? 'Количество уп.' : 'Количество шт.'}
@@ -114,7 +139,7 @@ const FormFieldArrayReceipt = props => {
 					<Grid xs={3} item>
 						<Field
 							name={`receipts.${index}.purchasePrice`}
-							label={receipt.position.unitReceipt === 'nmp' ? 'Цена покупки уп.' : 'Цена покупки шт.'}
+							label={position.unitReceipt === 'nmp' ? 'Цена покупки уп.' : 'Цена покупки шт.'}
 							placeholder="0"
 							as={TextField}
 							error={formError(touched, errors, `receipts.${index}.purchasePrice`)}
@@ -133,7 +158,7 @@ const FormFieldArrayReceipt = props => {
 
 					{formEditable ? (
 						<Grid xs={3} item>
-							{!receipt.position.isFree ? (
+							{!position.isFree ? (
 								<Field
 									name={`receipts.${index}.markupPercent`}
 									label="Наценка"
@@ -156,7 +181,7 @@ const FormFieldArrayReceipt = props => {
 						</Grid>
 					) : (
 						<Grid xs={3} item>
-							{!receipt.position.isFree ? (
+							{!position.isFree ? (
 								<Field
 									innerRef={sellingPriceFieldRef}
 									name={isNmpPce ? `receipts.${index}.unitSellingPrice` : `receipts.${index}.sellingPrice`}
@@ -195,12 +220,12 @@ const FormFieldArrayReceipt = props => {
 
 												const newReceiptValues = {
 													...receiptCalc.markupPercent(receiptValues, {
-														isFree: receipt.position.isFree,
-														unitReceipt: receipt.position.unitReceipt,
-														unitRelease: receipt.position.unitRelease,
+														isFree: position.isFree,
+														unitReceipt: position.unitReceipt,
+														unitRelease: position.unitRelease,
 													}),
 													...receiptCalc.sellingPrice(receiptValues, {
-														isFree: receipt.position.isFree,
+														isFree: position.isFree,
 													}),
 												};
 

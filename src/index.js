@@ -9,7 +9,7 @@ import 'moment/locale/ru';
 import { StylesProvider } from '@material-ui/core/styles';
 
 import { SERVER_URL } from 'src/api/constants';
-import { history } from 'src/helpers/history';
+import history from 'src/helpers/history';
 import { initStore } from 'src/store';
 
 import Routes from 'src/routes';

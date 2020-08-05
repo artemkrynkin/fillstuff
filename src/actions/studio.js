@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// import { history } from 'src/helpers/history';
+// import history from 'src/helpers/history';
 // import { changeStudioCurrentUrl } from 'src/helpers/utils';
 
 // import { changeActiveStudio } from './user';

@@ -6,8 +6,6 @@ import Typography from '@material-ui/core/Typography';
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 
-import { procurementPositionTransform } from 'src/helpers/utils';
-
 import { Dialog, DialogTitle } from 'src/components/Dialog';
 
 const ReceiptConfirmCreate = props => {
@@ -16,7 +14,11 @@ const ReceiptConfirmCreate = props => {
 	if (!selectedPosition) return null;
 
 	const procurement = {
-		positions: [procurementPositionTransform(selectedPosition)],
+		receiptsTempPositions: [
+			{
+				position: selectedPosition,
+			},
+		],
 	};
 
 	return (

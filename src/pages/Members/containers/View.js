@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { history } from 'src/helpers/history';
+import history from 'src/helpers/history';
 
 import { LoadingPage } from 'src/components/Loading';
 

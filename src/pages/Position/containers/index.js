@@ -3,7 +3,7 @@ import loadable from '@loadable/component';
 
 import Container from '@material-ui/core/Container';
 
-import { history } from 'src/helpers/history';
+import history from 'src/helpers/history';
 
 import View from './View';
 
@@ -25,10 +25,19 @@ const DialogPositionArchiveDelete = loadable(() =>
 
 const DialogReceiptCreate = loadable(() => import('src/pages/Dialogs/ReceiptCreate' /* webpackChunkName: "Dialog_ReceiptCreate" */));
 
+const DialogReceiptConfirmCreate = loadable(() =>
+	import('src/pages/Dialogs/ReceiptConfirmCreate' /* webpackChunkName: "Dialog_ReceiptConfirmCreate" */)
+);
+
+const DialogProcurementReceivedCreate = loadable(() =>
+	import('src/pages/Dialogs/ProcurementReceivedCreate' /* webpackChunkName: "Dialog_ProcurementReceivedCreate" */)
+);
+
 const Index = props => {
-	const { getPosition, getReceipts, onReceiptCreate } = props;
+	const { currentStudio, getPosition, getReceipts, onReceiptCreate } = props;
 	const [dialogData, setDialogData] = useState({
 		position: null,
+		procurementReceived: null,
 	});
 	const [dialogOpenedName, setDialogOpenedName] = useState('');
 	const [dialogs, setDialogs] = useState({
@@ -37,6 +46,8 @@ const Index = props => {
 		dialogPositionArchiveDelete: false,
 		dialogPositionQRCode: false,
 		dialogReceiptCreate: false,
+		dialogReceiptConfirmCreate: false,
+		dialogProcurementReceivedCreate: false,
 	});
 
 	const onOpenDialogByName = (dialogName, dataType, data) => {
@@ -83,6 +94,7 @@ const Index = props => {
 		<Container>
 			<View onOpenDialogByName={onOpenDialogByName} {...props} />
 
+			{/* Dialogs Positions */}
 			<DialogPositionEdit
 				type="edit"
 				dialogOpen={dialogs.dialogPositionEdit}
@@ -137,6 +149,23 @@ const Index = props => {
 				onExitedDialog={() => onExitedDialogByName('position')}
 				onCallback={onReceiptCreate}
 				selectedPosition={dialogOpenedName === 'dialogReceiptCreate' ? dialogData.position : null}
+			/>
+
+			<DialogReceiptConfirmCreate
+				dialogOpen={dialogs.dialogReceiptConfirmCreate}
+				onCloseDialog={() => onCloseDialogByName('dialogReceiptConfirmCreate')}
+				onExitedDialog={() => onExitedDialogByName('position')}
+				selectedPosition={dialogOpenedName === 'dialogReceiptConfirmCreate' ? dialogData.position : null}
+				onOpenDialogByName={onOpenDialogByName}
+			/>
+
+			{/* Procurement */}
+			<DialogProcurementReceivedCreate
+				dialogOpen={dialogs.dialogProcurementReceivedCreate}
+				onCloseDialog={() => onCloseDialogByName('dialogProcurementReceivedCreate')}
+				currentStudio={currentStudio}
+				onExitedDialog={() => onExitedDialogByName('procurementReceived')}
+				selectedProcurement={dialogOpenedName === 'dialogProcurementReceivedCreate' ? dialogData.procurementReceived : null}
 			/>
 		</Container>
 	);

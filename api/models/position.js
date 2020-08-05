@@ -74,6 +74,13 @@ const Position = new Schema({
 		type: Boolean,
 		default: false,
 	},
+	// Характеристики
+	characteristics: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: 'Characteristic',
+		},
+	],
 	// Магазины
 	shops: [
 		{

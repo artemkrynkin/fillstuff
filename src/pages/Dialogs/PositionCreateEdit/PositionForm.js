@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Formik } from 'formik';
 
@@ -24,6 +24,7 @@ const PositionForm = props => {
 		unitRelease: '',
 		minimumBalance: '',
 		isFree: '',
+		characteristics: [],
 		shops: [],
 	};
 
@@ -87,7 +88,7 @@ const PositionForm = props => {
 				const { isSubmitting, submitForm } = formikProps;
 
 				return (
-					<Fragment>
+					<>
 						{tabName === 'position' ? (
 							<PositionTab type={type} formikProps={formikProps} />
 						) : (
@@ -110,7 +111,7 @@ const PositionForm = props => {
 								</Grid>
 							</Grid>
 						</DialogActions>
-					</Fragment>
+					</>
 				);
 			}}
 		</Formik>

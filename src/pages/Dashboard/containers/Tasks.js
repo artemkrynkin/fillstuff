@@ -4,15 +4,15 @@ import Typography from '@material-ui/core/Typography';
 
 import Empty from 'src/components/Empty';
 
-import styles from './Statistics.module.css';
+import styles from './Tasks.module.css';
 
 import statisticsEmpty from 'public/img/stubs/statistics_empty.svg';
 
-const Statistics = () => {
+const Tasks = () => {
 	return (
 		<div className={styles.container}>
 			<Typography variant="h5" gutterBottom>
-				Статистика
+				Задачи
 			</Typography>
 			<Empty
 				classNames={{
@@ -22,7 +22,7 @@ const Statistics = () => {
 				content={
 					<Fragment>
 						<Typography variant="h6" gutterBottom>
-							Недостаточно данных для показа статистики
+							У вас еще нет задач
 						</Typography>
 					</Fragment>
 				}
@@ -31,4 +31,4 @@ const Statistics = () => {
 	);
 };
 
-export default Statistics;
+export default Tasks;

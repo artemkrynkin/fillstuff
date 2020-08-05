@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { Field } from 'formik';
 import validator from 'validator';
 
@@ -63,96 +63,94 @@ const ShopItem = props => {
 	const link = shop.link || shop.shop.link;
 
 	return (
-		<div className={styles.container}>
-			<Grid alignItems="flex-start" spacing={2} container>
-				<Grid xs={6} item>
-					<Grid alignItems="flex-start" container>
-						<Grid xs={toggleVisibleForm ? 5 : 12} item>
-							<Typography className={styles.shopName} variant="body2">
-								{link ? (
-									<a
-										// eslint-disable-next-line
-										href={!~link.search(/^http[s]?\:\/\//) ? `//${link}` : `${link}`}
-										target="_blank"
-										rel="noreferrer noopener"
-									>
-										{shop.shop.name}
-									</a>
-								) : (
-									<Fragment>{shop.shop.name}</Fragment>
-								)}
-							</Typography>
-						</Grid>
-						{toggleVisibleForm ? (
-							<Grid xs={7} item>
-								<Field
-									name={`shops.${index}.link`}
-									error={formError(touched, errors, `shops.${index}.link`)}
-									helperText={formErrorHelperText(touched, errors, `shops.${index}.link`, null)}
-									placeholder="Ссылка на товар"
-									as={TextField}
-									validate={value => {
-										if (value !== '' && !validator.isURL(value)) return 'Некорректная ссылка';
-									}}
-									fullWidth
-								/>
-							</Grid>
-						) : null}
-					</Grid>
-				</Grid>
-				<Grid style={{ flex: '1 1' }} item>
-					{!toggleVisibleForm ? (
-						<Typography className={styles.shopComment} variant="body2">
-							{shop.comment}
+		<Grid className={styles.container} alignItems="flex-start" spacing={2} container>
+			<Grid xs={6} item>
+				<Grid alignItems="flex-start" container>
+					<Grid xs={toggleVisibleForm ? 5 : 12} item>
+						<Typography className={styles.shopName} variant="body2">
+							{link ? (
+								<a
+									// eslint-disable-next-line
+									href={!~link.search(/^http[s]?\:\/\//) ? `//${link}` : `${link}`}
+									target="_blank"
+									rel="noreferrer noopener"
+								>
+									{shop.shop.name}
+								</a>
+							) : (
+								shop.shop.name
+							)}
 						</Typography>
-					) : (
-						<Field
-							name={`shops.${index}.comment`}
-							error={formError(touched, errors, `shops.${index}.comment`)}
-							as={TextField}
-							placeholder="Информация о скидке на позицию, номер менеджера, любая полезная информация"
-							rows={1}
-							rowsMax={4}
-							multiline
-							fullWidth
-						/>
-					)}
-				</Grid>
-				<Grid item>
-					<Grid className={styles.actions} justify="flex-end" container>
-						{!toggleVisibleForm ? (
-							<Fragment>
-								{!shop.numberReceipts ? (
-									<Tooltip title="Удалить" placement="top" style={{ marginRight: 8 }}>
-										<IconButton type="button" onClick={() => arrayHelpers.remove(index)} className={styles.actionButton}>
-											<FontAwesomeIcon icon={['far', 'trash']} />
-										</IconButton>
-									</Tooltip>
-								) : null}
-								<Tooltip title="Изменить" placement="top">
-									<IconButton type="button" onClick={() => onToggleVisibleForm(true)} className={styles.actionButton}>
-										<FontAwesomeIcon icon={['far', 'pen']} />
-									</IconButton>
-								</Tooltip>
-							</Fragment>
-						) : (
-							<Fragment>
-								<Tooltip title="Отменить" placement="top" style={{ marginRight: 8 }}>
-									<IconButton onClick={() => resetChanges()} className={styles.actionButton}>
-										<FontAwesomeIcon icon={['far', 'times']} />
-									</IconButton>
-								</Tooltip>
-								<Tooltip title="Сохранить" placement="top">
-									<IconButton type="submit" onClick={() => saveChanges()} className={styles.actionButton}>
-										<FontAwesomeIcon icon={['far', 'check']} />
-									</IconButton>
-								</Tooltip>
-							</Fragment>
-						)}
 					</Grid>
+					{toggleVisibleForm ? (
+						<Grid xs={7} item>
+							<Field
+								name={`shops.${index}.link`}
+								error={formError(touched, errors, `shops.${index}.link`)}
+								helperText={formErrorHelperText(touched, errors, `shops.${index}.link`, null)}
+								placeholder="Ссылка на товар"
+								as={TextField}
+								validate={value => {
+									if (value !== '' && !validator.isURL(value)) return 'Некорректная ссылка';
+								}}
+								fullWidth
+							/>
+						</Grid>
+					) : null}
 				</Grid>
 			</Grid>
-		</div>
+			<Grid style={{ flex: '1 1' }} item>
+				{!toggleVisibleForm ? (
+					<Typography className={styles.shopComment} variant="body2">
+						{shop.comment}
+					</Typography>
+				) : (
+					<Field
+						name={`shops.${index}.comment`}
+						error={formError(touched, errors, `shops.${index}.comment`)}
+						as={TextField}
+						placeholder="Информация о скидке на позицию, номер менеджера, любая полезная информация"
+						rows={1}
+						rowsMax={4}
+						multiline
+						fullWidth
+					/>
+				)}
+			</Grid>
+			<Grid item>
+				<Grid className={styles.actions} justify="flex-end" container>
+					{!toggleVisibleForm ? (
+						<>
+							{!shop.numberReceipts ? (
+								<Tooltip title="Удалить" placement="top" style={{ marginRight: 8 }}>
+									<IconButton type="button" onClick={() => arrayHelpers.remove(index)} className={styles.actionButton}>
+										<FontAwesomeIcon icon={['far', 'trash']} />
+									</IconButton>
+								</Tooltip>
+							) : null}
+							<Tooltip title="Изменить" placement="top">
+								<IconButton type="button" onClick={() => onToggleVisibleForm(true)} className={styles.actionButton}>
+									<FontAwesomeIcon icon={['far', 'pen']} />
+								</IconButton>
+							</Tooltip>
+						</>
+					) : (
+						<>
+							<Tooltip title="Отменить" placement="top" style={{ marginRight: 8 }}>
+								<IconButton onClick={() => resetChanges()} className={styles.actionButton}>
+									<FontAwesomeIcon icon={['far', 'times']} />
+								</IconButton>
+							</Tooltip>
+							<Tooltip title="Сохранить" placement="top">
+								<IconButton type="submit" onClick={() => saveChanges()} className={styles.actionButton}>
+									<FontAwesomeIcon icon={['far', 'check']} />
+								</IconButton>
+							</Tooltip>
+						</>
+					)}
+				</Grid>
+			</Grid>
+		</Grid>
 	);
 };
 

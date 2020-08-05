@@ -1,6 +1,7 @@
 import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { isEmpty } from 'lodash';
 
 import { Formik } from 'formik';
 
@@ -22,21 +23,32 @@ import procurementSchema from './procurementSchema';
 
 import styles from './index.module.css';
 
-const receiptInitialValues = position => ({
-	position,
-	quantity: '',
-	quantityPackages: '',
-	quantityInUnit: '',
-	purchasePrice: '',
-	unitPurchasePrice: '',
-	sellingPrice: '',
-	unitSellingPrice: '',
-	costDelivery: '',
-	unitCostDelivery: '',
-	markupPercent: position.lastReceipt ? position.lastReceipt.markupPercent : '',
-	markup: '',
-	unitMarkup: '',
-});
+const receiptInitialValues = ({ position, name, characteristics, quantity }) => {
+	const receiptInitialValues = {
+		position,
+		positionChanges: {
+			name: '',
+			characteristics: [],
+		},
+		quantity: position.unitReceipt === 'pce' || position.unitRelease === 'nmp' ? quantity || '' : '',
+		quantityPackages: position.unitReceipt === 'pce' || position.unitRelease === 'nmp' ? '' : quantity || '',
+		quantityInUnit: '',
+		purchasePrice: '',
+		unitPurchasePrice: '',
+		sellingPrice: '',
+		unitSellingPrice: '',
+		costDelivery: '',
+		unitCostDelivery: '',
+		markupPercent: position.lastReceipt ? position.lastReceipt.markupPercent : '',
+		markup: '',
+		unitMarkup: '',
+	};
+
+	if (name) receiptInitialValues.positionChanges.name = name;
+	if (characteristics && characteristics.length) receiptInitialValues.positionChanges.characteristics = characteristics;
+
+	return receiptInitialValues;
+};
 
 class ProcurementReceivedCreate extends Component {
 	static propTypes = {
@@ -68,12 +80,8 @@ class ProcurementReceivedCreate extends Component {
 
 			await sleep(500);
 
-			if (
-				procurement.totalPrice !== indicators.pricePositions &&
-				procurement.totalPrice - procurement.costDelivery !== indicators.pricePositions
-			) {
+			if (procurement.pricePositions !== indicators.pricePositions) {
 				actions.setErrors({
-					totalPrice: true,
 					pricePositions: <span>Проверьте правильность внесённых данных в выделенных полях.</span>,
 					receipts: procurement.receipts.map(receipt => ({
 						[receipt.position.unitReceipt === 'nmp' && receipt.position.unitRelease === 'pce' ? 'quantityPackages' : 'quantity']: true,
@@ -91,7 +99,7 @@ class ProcurementReceivedCreate extends Component {
 				return;
 			}
 
-			actions.setFieldValue('pricePositions', indicators.pricePositions);
+			actions.setFieldValue('totalPrice', indicators.pricePositions);
 
 			// Если есть платные позиции и стоимость доставки компенсируется за счет платных позиций
 			if (indicators.selling.positionsCount && procurement.compensateCostDelivery) {
@@ -195,8 +203,16 @@ class ProcurementReceivedCreate extends Component {
 				procurement.totalPrice = formatNumber(procurement.pricePositions + procurement.costDelivery);
 			}
 
+			procurement.positions = [];
+
 			procurement.receipts = procurement.receipts.map(receipt => {
 				const { position, quantity, quantityPackages, ...remainingValues } = receipt;
+
+				if (isEmpty(remainingValues.positionChanges.name)) delete remainingValues.positionChanges.name;
+				if (isEmpty(remainingValues.positionChanges.characteristics)) delete remainingValues.positionChanges.characteristics;
+				if (isEmpty(remainingValues.positionChanges.name) && isEmpty(remainingValues.positionChanges.characteristics)) {
+					delete remainingValues.positionChanges;
+				}
 
 				const newReceipt = {
 					position: position._id,
@@ -255,7 +271,7 @@ class ProcurementReceivedCreate extends Component {
 			invoiceNumber: '',
 			invoiceDate: undefined,
 			costDelivery: '',
-			pricePositions: 0,
+			pricePositions: '',
 			totalPrice: '',
 			compensateCostDelivery: true,
 			receipts: [],
@@ -270,9 +286,18 @@ class ProcurementReceivedCreate extends Component {
 			initialValues = {
 				...initialValues,
 				...selectedProcurement,
-				receipts: selectedProcurement.positions.map(position => receiptInitialValues(position)),
+				receipts: selectedProcurement.receiptsTempPositions.map(position =>
+					receiptInitialValues({
+						position: position.position,
+						name: position.name,
+						characteristics: position.characteristics,
+						quantity: position.quantity,
+					})
+				),
 				positions: [],
 			};
+
+			delete initialValues.receiptsTempPositions;
 		}
 
 		return (
@@ -293,7 +318,9 @@ class ProcurementReceivedCreate extends Component {
 				]}
 				stickyActions
 			>
-				<DialogTitle onClose={onCloseDialog}>Создание закупки</DialogTitle>
+				<DialogTitle onClose={onCloseDialog} theme="white">
+					Создание закупки
+				</DialogTitle>
 				<Formik
 					initialValues={initialValues}
 					validationSchema={procurementSchema()}

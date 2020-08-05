@@ -7,8 +7,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { procurementPositionTransform } from 'src/helpers/utils';
-
 import styles from './Header.module.css';
 
 const DialogPositionArchiveDelete = loadable(() =>
@@ -26,7 +24,11 @@ const Header = props => {
 	});
 
 	const procurement = {
-		positions: [procurementPositionTransform(storeNotification.position)],
+		receiptsTempPositions: [
+			{
+				position: storeNotification.position,
+			},
+		],
 	};
 
 	const onOpenDialogByName = (dialogName, dataType, data) => {

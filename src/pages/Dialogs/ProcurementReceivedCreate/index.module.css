@@ -66,18 +66,24 @@
   padding-bottom: 0;
 }
 
-.removeReceipt {
+.actionButtons {
   margin-left: auto;
 }
 
-.removeReceiptButton {
+.editActionButton,
+.deleteActionButton {
   height: 32px;
   padding: 0;
+  margin-left: 5px;
   width: 32px;
 }
 
-.removeReceiptButton svg {
-  width: 20px !important;
+.editActionButton {
+  font-size: 16px;
+}
+
+.deleteActionButton svg {
+  font-size: 20px;
 }
 
 .headerInfo {

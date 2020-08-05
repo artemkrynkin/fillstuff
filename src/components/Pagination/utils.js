@@ -1,7 +1,7 @@
 import moment from 'moment';
 import queryString from 'query-string';
 
-import { history } from 'src/helpers/history';
+import history from 'src/helpers/history';
 
 export const checkQueryInFilter = (initialQuery = {}) => {
 	const query = queryString.parse(history.location.search, { parseBooleans: true });
@@ -29,8 +29,6 @@ export const checkQueryInFilter = (initialQuery = {}) => {
 			delete query.dateEnd;
 		}
 	}
-
-	// console.log(Object.assign(initialQuery, query), query);
 
 	return Object.assign(initialQuery, query);
 };

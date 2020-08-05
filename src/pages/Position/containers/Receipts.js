@@ -26,7 +26,12 @@ const Receipts = props => {
 			leftContent="Поступления"
 			rightContent={
 				!position.receipts.length ? (
-					<Button onClick={() => onOpenDialogReceipt('dialogReceiptCreate', position)} variant="outlined" color="primary" size="small">
+					<Button
+						onClick={() => onOpenDialogReceipt('dialogReceiptConfirmCreate', 'position', position)}
+						variant="outlined"
+						color="primary"
+						size="small"
+					>
 						Создать поступление
 					</Button>
 				) : null
@@ -39,9 +44,9 @@ const Receipts = props => {
 					<Table style={{ tableLayout: 'fixed', margin: '-20px 0' }}>
 						<TableHead>
 							<TableRow>
-								<TableCell>Характеристики</TableCell>
 								<TableCell>Дата поступления</TableCell>
-								<TableCell align="right" width={220}>
+								<TableCell>Статус</TableCell>
+								<TableCell align="right" width={200}>
 									В наличии / Поступило
 								</TableCell>
 								<TableCell align="right" width={140}>

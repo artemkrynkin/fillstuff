@@ -19,7 +19,8 @@ import MenuItem from 'src/components/MenuItem';
 import Dropdown from 'src/components/Dropdown';
 import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
 import AvatarTitle from 'src/components/AvatarTitle';
-import PositionNameInList from 'src/components/PositionNameInList';
+
+import ReceiptTempPosition from './ReceiptTempPosition';
 
 import styles from './index.module.css';
 
@@ -154,20 +155,11 @@ const ProcurementExpectedView = props => {
 				<Typography variant="h6" style={{ marginTop: 40 }} gutterBottom>
 					Позиции в заказе
 				</Typography>
-				{selectedProcurement.positions.length ? (
-					<div>
-						{selectedProcurement.positions.map((position, index) => (
-							<Grid className={styles.positionItem} key={position._id} wrap="nowrap" alignItems="baseline" container>
-								<Grid className={styles.positionItemNumber} item>
-									{index + 1}
-								</Grid>
-								<Grid className={styles.positionItemContent} style={{ flex: '1 1' }} zeroMinWidth item>
-									<PositionNameInList name={position.name} characteristics={position.characteristics} size="md" />
-								</Grid>
-							</Grid>
-						))}
-					</div>
-				) : null}
+				{selectedProcurement.receiptsTempPositions.length
+					? selectedProcurement.receiptsTempPositions.map((receiptTempPosition, index) => (
+							<ReceiptTempPosition key={receiptTempPosition.position._id} index={index} receiptTempPosition={receiptTempPosition} />
+					  ))
+					: null}
 			</DialogContent>
 
 			<Dropdown

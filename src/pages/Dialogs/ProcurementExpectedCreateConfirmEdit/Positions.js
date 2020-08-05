@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import ClassNames from 'classnames';
 import loadable from '@loadable/component';
+import { isEqual } from 'lodash';
 
 import FormHelperText from '@material-ui/core/FormHelperText';
 
@@ -8,10 +8,9 @@ import { procurementPositionTransform } from 'src/helpers/utils';
 
 import { SelectAutocompleteCreate } from 'src/components/selectAutocomplete';
 
-import FormFieldArrayReceipt from './FormFieldArrayReceipt';
+import ReceiptTempPosition from './ReceiptTempPosition';
 
 import styles from './index.module.css';
-import { isEqual } from 'lodash';
 
 const DialogPositionCreate = loadable(() =>
 	import('src/pages/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateEdit" */)
@@ -21,24 +20,16 @@ const ProcurementPositionEdit = loadable(() =>
 	import('src/pages/Dialogs/ProcurementPositionEdit' /* webpackChunkName: "Dialog_ProcurementPositionEdit" */)
 );
 
-const addPositionContainerClasses = (formEditable, status) =>
-	ClassNames({
-		[styles.addPositionContainer]: true,
-		[styles.disabled]: !formEditable || status === 'expected',
-	});
-
-const FormFieldArrayReceipts = props => {
+const FormFieldArrayPositions = props => {
 	const {
 		dialogRef,
-		receiptInitialValues,
 		positions: {
 			data: positions,
 			isFetching: isLoadingPositions,
 			// error: errorPositions
 		},
-		formEditable,
-		arrayHelpers: { push, remove, replace },
-		formikProps: { errors, isSubmitting, setFieldValue, touched, values },
+		arrayHelpers: { push, replace },
+		formikProps: { errors, isSubmitting, touched, values },
 	} = props;
 	const [textSearchPosition, setTextSearchPosition] = useState('');
 	const [dialogData, setDialogData] = useState({
@@ -89,24 +80,29 @@ const FormFieldArrayReceipts = props => {
 
 	const positionsAvailable =
 		!isLoadingPositions && positions
-			? positions.filter(position => !values.receipts.some(receipt => receipt.position._id === position._id))
+			? positions.filter(position => !values.receiptsTempPositions.some(selectedPosition => selectedPosition.position._id === position._id))
 			: [];
 
 	return (
-		<div className={styles.receipts}>
+		<div className={styles.positions}>
 			<div className="sentinel-topAddPositionContainer" />
-			<div className={addPositionContainerClasses(formEditable, values.status)}>
+			<div className={styles.addPositionContainer}>
 				<div className={styles.addPositionWrap}>
 					<SelectAutocompleteCreate
 						TextFieldProps={{
 							error: Boolean(touched.receiptsTempPositions && errors.receiptsTempPositions),
 						}}
-						isDisabled={isSubmitting || !formEditable}
+						isDisabled={isSubmitting}
 						isLoading={isLoadingPositions}
 						value={textSearchPosition}
 						onChange={(option, { action }) => {
 							if (action === 'select-option') {
-								push(receiptInitialValues({ position: option }));
+								push({
+									position: option,
+									name: '',
+									characteristics: [],
+									quantity: '',
+								});
 								onChangeTextSearchPosition(textSearchPosition);
 
 								setTimeout(() => {
@@ -141,21 +137,20 @@ const FormFieldArrayReceipts = props => {
 						options={positionsAvailable}
 						isClearable
 					/>
-					{typeof errors.receipts === 'string' ? <FormHelperText error>{errors.receipts}</FormHelperText> : null}
+					{typeof errors.receiptsTempPositions === 'string' ? <FormHelperText error>{errors.receiptsTempPositions}</FormHelperText> : null}
 				</div>
 			</div>
 
-			{values.receipts.length ? (
-				<div className={styles.receiptsItems}>
-					{values.receipts.map((receipt, index) => (
-						<FormFieldArrayReceipt
-							key={receipt.position._id}
+			{values.receiptsTempPositions.length ? (
+				<div className={styles.positionsItems}>
+					{values.receiptsTempPositions.map((receiptTempPosition, index) => (
+						<ReceiptTempPosition
+							key={receiptTempPosition.position._id}
 							onOpenDialogByName={onOpenDialogByName}
-							receipt={receipt}
 							index={index}
-							formEditable={formEditable}
-							arrayHelpers={{ remove }}
-							formikProps={{ errors, isSubmitting, setFieldValue, touched, values }}
+							receiptTempPosition={receiptTempPosition}
+							arrayHelpers={props.arrayHelpers}
+							formikProps={props.formikProps}
 						/>
 					))}
 				</div>
@@ -165,11 +160,16 @@ const FormFieldArrayReceipts = props => {
 				type="create"
 				dialogOpen={dialogs.dialogPositionCreate}
 				onCloseDialog={() => onCloseDialogByName('dialogPositionCreate')}
-				onCallback={response => {
-					if (response.status === 'success') {
-						const position = response.data;
+				onCallback={({ status, data: position }) => {
+					if (status === 'success') {
+						const positionTransform = procurementPositionTransform(position);
 
-						push(receiptInitialValues(procurementPositionTransform({ position })));
+						push({
+							position: positionTransform,
+							name: '',
+							characteristics: [],
+							quantity: '',
+						});
 
 						setTimeout(() => {
 							dialogRef.current.querySelector('.sentinel-bottom').scrollIntoView({
@@ -187,22 +187,20 @@ const FormFieldArrayReceipts = props => {
 				dialogOpen={dialogs.dialogProcurementPositionEdit}
 				onCloseDialog={() => onCloseDialogByName('dialogProcurementPositionEdit')}
 				onCallback={({ positionIndexInProcurement: index, ...positionEdited }) => {
-					const receipt = values.receipts[index];
+					const position = values.receiptsTempPositions[index];
 
-					const name = positionEdited.name && positionEdited.name !== receipt.position.name ? positionEdited.name : '';
+					const name = positionEdited.name && positionEdited.name !== position.position.name ? positionEdited.name : '';
 					const characteristics =
 						positionEdited.characteristics &&
 						positionEdited.characteristics.length &&
-						!isEqual(receipt.position.characteristics, positionEdited.characteristics)
+						!isEqual(position.position.characteristics, positionEdited.characteristics)
 							? positionEdited.characteristics
 							: '';
 
 					replace(index, {
-						...receipt,
-						positionChanges: {
-							name,
-							characteristics,
-						},
+						...position,
+						name,
+						characteristics,
 					});
 				}}
 				onExitedDialog={() => onExitedDialogByName('procurementPosition')}
@@ -212,4 +210,4 @@ const FormFieldArrayReceipts = props => {
 	);
 };
 
-export default FormFieldArrayReceipts;
+export default FormFieldArrayPositions;

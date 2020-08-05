@@ -26,7 +26,7 @@ receiptsRouter.post(
 			.sort('-createdAt')
 			.populate([
 				{
-					path: 'procurement characteristics',
+					path: 'procurement',
 				},
 			])
 			.then(receipts => res.json(receipts))
@@ -92,7 +92,7 @@ receiptsRouter.post(
 		Receipt.findById(newReceipt._id)
 			.populate([
 				{
-					path: 'procurement characteristics',
+					path: 'procurement',
 				},
 			])
 			.then(receipt => res.json(receipt))
@@ -125,7 +125,7 @@ receiptsRouter.post(
 		Receipt.findById(receipt._id)
 			.populate([
 				{
-					path: 'procurement characteristics',
+					path: 'procurement',
 				},
 			])
 			.then(receipt => res.json(receipt))
@@ -201,7 +201,7 @@ receiptsRouter.post(
 		Position.findById(position._id)
 			.populate([
 				{
-					path: 'activeReceipt characteristics',
+					path: 'procurement',
 				},
 				{
 					path: 'receipts',

@@ -68,7 +68,11 @@ const FilterPositionTransform = (positionSelected, positions, loading) => {
 const findPositionByFullName = (position, searchText) => {
 	const searchTextLowercase = String(searchText).toLowerCase();
 
-	return position.name.indexOf(searchTextLowercase) !== -1;
+	const positionName = position.characteristics
+		.reduce((fullName, characteristic) => `${fullName} ${characteristic.name}`, position.name)
+		.toLowerCase();
+
+	return positionName.indexOf(searchTextLowercase) !== -1;
 };
 
 const DropdownFooter = props => {
@@ -425,7 +429,12 @@ const FormFilter = props => {
 									onClick={() => onChangeFilterPosition(position._id, setFieldValue, submitForm)}
 									tabIndex={0}
 								>
-									<PositionNameInList className={styles.positionName} name={position.name} isArchived={position.isArchived} />
+									<PositionNameInList
+										className={styles.positionName}
+										name={position.name}
+										characteristics={position.characteristics}
+										isArchived={position.isArchived}
+									/>
 								</MenuItem>
 							);
 						})}

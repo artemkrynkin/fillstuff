@@ -29,7 +29,9 @@ const PositionNameInList = props => {
 				<span className={styles.name}>{name}</span>
 				{characteristics && characteristics.length ? (
 					<span className={styles.characteristics}>
-						{characteristics.reduce((characteristics, characteristic) => `${characteristics}${characteristic.name} `, '').trim()}
+						{characteristics.reduce((characteristics, characteristic) => {
+							return (characteristics ? `${characteristics}, ` : '') + characteristic.name;
+						}, '')}
 					</span>
 				) : null}
 			</div>

@@ -67,7 +67,10 @@ procurementsRouter.post(
 				{
 					path: 'receipts',
 					populate: {
-						path: 'characteristics position',
+						path: 'position',
+						populate: {
+							path: 'characteristics',
+						},
 					},
 				},
 			],
@@ -126,7 +129,10 @@ procurementsRouter.post(
 				{
 					path: 'receipts',
 					populate: {
-						path: 'characteristics position',
+						path: 'position',
+						populate: {
+							path: 'characteristics',
+						},
 					},
 				},
 			])
@@ -164,10 +170,32 @@ procurementsRouter.post(
 			  })
 			: procurementExist;
 
+		const positionsCloningErr = [];
+		const receiptsErr = [];
 		const updatePositionsAndActiveReceipt = [];
 
-		newProcurement.receipts = newProcurementValues.receipts.map(receipt => {
-			const position = positions.find(position => String(position._id) === receipt.position);
+		newProcurement.positions = [];
+		newProcurement.receipts = newProcurementValues.receipts.map(({ positionChanges, ...receipt }) => {
+			const initialPosition = positions.find(position => String(position._id) === receipt.position);
+			const position = !positionChanges
+				? initialPosition
+				: new Position({
+						name: initialPosition.name,
+						characteristics: initialPosition.characteristics.map(characteristic => characteristic._id),
+						studio: studioId,
+						unitReceipt: initialPosition.unitReceipt,
+						unitRelease: initialPosition.unitRelease,
+						minimumBalance: initialPosition.minimumBalance,
+						isFree: initialPosition.isFree,
+						...positionChanges,
+				  });
+
+			if (positionChanges) {
+				const newPositionErr = position.validateSync();
+
+				if (newPositionErr) positionsCloningErr.push(newPositionErr);
+				else updatePositionsAndActiveReceipt.push(position.save());
+			}
 
 			const newReceipt = new Receipt({
 				...receipt,
@@ -217,15 +245,23 @@ procurementsRouter.post(
 					$set: positionSet,
 					$inc: positionInc,
 					$push: positionPush,
-					$pull: positionPull,
+					$pull: !positionChanges ? positionPull : {},
 				}).catch(err => next({ code: 2, err }))
 			);
 
-			if (position.activeReceipt && position.activeReceipt.current.quantity === 0) {
+			if (positionChanges) {
 				updatePositionsAndActiveReceipt.push(
-					Receipt.findByIdAndUpdate(position.activeReceipt, { $set: { status: 'closed' } }).catch(err => next({ code: 2, err }))
+					Position.findByIdAndUpdate(initialPosition, {
+						$pull: positionPull,
+					}).catch(err => next({ code: 2, err }))
 				);
 			}
+
+			newProcurement.positions.push(position._id);
+
+			const newReceiptErr = newReceipt.validateSync();
+
+			if (newReceiptErr) receiptsErr.push(newReceiptErr);
 
 			return newReceipt;
 		});
@@ -240,11 +276,14 @@ procurementsRouter.post(
 			if (newProcurementValues.invoiceDate) newProcurement.invoiceDate = newProcurementValues.invoiceDate;
 		}
 
+		if (positionsCloningErr.length || receiptsErr.length) return next({ code: 2 });
+
 		const newProcurementErr = newProcurement.validateSync();
 
 		if (newProcurementErr) return next({ code: newProcurementErr.errors ? 5 : 2, err: newProcurementErr });
 
-		await Promise.all([newProcurement.save(), ...updatePositionsAndActiveReceipt, Receipt.insertMany(newProcurement.receipts)]);
+		await Promise.all([Receipt.insertMany(newProcurement.receipts)]);
+		await Promise.all([newProcurement.save(), ...updatePositionsAndActiveReceipt]);
 
 		if (procurementExist) {
 			Emitter.emit('deleteStoreNotification', {
@@ -285,7 +324,10 @@ procurementsRouter.post(
 				{
 					path: 'receipts',
 					populate: {
-						path: 'characteristics position',
+						path: 'position',
+						populate: {
+							path: 'characteristics',
+						},
 					},
 				},
 			])

@@ -36,6 +36,7 @@ export const BliksideTheme = createMuiTheme({
 			popupIcon: <FontAwesomeIcon icon={['far', 'angle-down']} />,
 			loadingText: 'Загрузка...',
 			noOptionsText: 'Нет результатов для выбора',
+			clearText: '',
 		},
 		MuiCheckbox: {
 			color: 'primary',
@@ -763,7 +764,7 @@ export const BliksideTheme = createMuiTheme({
 				padding: 10,
 				'&:hover': {
 					backgroundColor: 'transparent',
-					color: theme.teal.cT300,
+					color: theme.blueGrey.cBg600,
 				},
 			},
 			clearIndicatorDirty: {
@@ -934,11 +935,11 @@ export const BliksideTheme = createMuiTheme({
 				borderBottomColor: theme.brightness.cBr4,
 			},
 		},
-		MuiPickersStaticWrapper: {
-			staticWrapperRoot: {
-				backgroundColor: null,
-			},
-		},
+		// MuiPickersStaticWrapper: {
+		// 	staticWrapperRoot: {
+		// 		backgroundColor: null,
+		// 	},
+		// },
 		// MuiPickersCalendarHeader: {
 		// 	switchHeader: {
 		// 		paddingRight: 5,
@@ -978,74 +979,74 @@ export const BliksideTheme = createMuiTheme({
 		// 		},
 		// 	},
 		// },
-		MuiPickersArrowSwitcher: {
-			iconButton: {
-				color: theme.blueGrey.cBg300,
-				width: 26,
-				'& svg': {
-					fontSize: 20,
-				},
-				'&:hover': {
-					backgroundColor: theme.blueGrey.cBg50,
-				},
-				'&:disabled': {
-					color: theme.blueGrey.cBg100,
-				},
-			},
-			previousMonthButtonMargin: {
-				marginRight: null,
-			},
-		},
-		MuiPickersDay: {
-			day: {
-				color: theme.blueGrey.cBg600,
-				height: 28,
-				margin: '4px 8px',
-				width: 28,
-				'& p': {
-					fontWeight: 600,
-				},
-				'&:hover, focus': {
-					backgroundColor: theme.blueGrey.cBg50,
-				},
-			},
-			today: {
-				'&:not($daySelected)': {
-					border: `1px solid ${theme.teal.cT300}`,
-				},
-			},
-			daySelected: {
-				border: `1px solid ${theme.teal.cT300}`,
-				color: 'white',
-			},
-			dayDisabled: {
-				color: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg600)}, 0.2)`,
-			},
-			dayWithMargin: {
-				margin: null,
-			},
-		},
-		MuiPickersDateRangeDay: {
-			day: {
-				transform: null,
-			},
-			dayInsideRangeInterval: {
-				color: theme.blueGrey.cBg700,
-			},
-			dayOutsideRangeInterval: {
-				'&:hover': {
-					border: null,
-				},
-			},
-		},
-		MuiPickersDesktopDateRangeCalendar: {
-			arrowSwitcher: {
-				padding: null,
-			},
-			calendar: {
-				minHeight: 'auto',
-			},
-		},
+		// MuiPickersArrowSwitcher: {
+		// 	iconButton: {
+		// 		color: theme.blueGrey.cBg300,
+		// 		width: 26,
+		// 		'& svg': {
+		// 			fontSize: 20,
+		// 		},
+		// 		'&:hover': {
+		// 			backgroundColor: theme.blueGrey.cBg50,
+		// 		},
+		// 		'&:disabled': {
+		// 			color: theme.blueGrey.cBg100,
+		// 		},
+		// 	},
+		// 	previousMonthButtonMargin: {
+		// 		marginRight: null,
+		// 	},
+		// },
+		// MuiPickersDay: {
+		// 	day: {
+		// 		color: theme.blueGrey.cBg600,
+		// 		height: 28,
+		// 		margin: '4px 8px',
+		// 		width: 28,
+		// 		'& p': {
+		// 			fontWeight: 600,
+		// 		},
+		// 		'&:hover, focus': {
+		// 			backgroundColor: theme.blueGrey.cBg50,
+		// 		},
+		// 	},
+		// 	today: {
+		// 		'&:not($daySelected)': {
+		// 			border: `1px solid ${theme.teal.cT300}`,
+		// 		},
+		// 	},
+		// 	daySelected: {
+		// 		border: `1px solid ${theme.teal.cT300}`,
+		// 		color: 'white',
+		// 	},
+		// 	dayDisabled: {
+		// 		color: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg600)}, 0.2)`,
+		// 	},
+		// 	dayWithMargin: {
+		// 		margin: null,
+		// 	},
+		// },
+		// MuiPickersDateRangeDay: {
+		// 	day: {
+		// 		transform: null,
+		// 	},
+		// 	dayInsideRangeInterval: {
+		// 		color: theme.blueGrey.cBg700,
+		// 	},
+		// 	dayOutsideRangeInterval: {
+		// 		'&:hover': {
+		// 			border: null,
+		// 		},
+		// 	},
+		// },
+		// MuiPickersDesktopDateRangeCalendar: {
+		// 	arrowSwitcher: {
+		// 		padding: null,
+		// 	},
+		// 	calendar: {
+		// 		minHeight: 'auto',
+		// 	},
+		// },
 		MuiTabs: {
 			root: {
 				minHeight: 44,
@@ -1088,6 +1089,7 @@ export const BliksideTheme = createMuiTheme({
 			root: {
 				backgroundColor: 'white',
 				color: theme.blueGrey.cBg700,
+				fontSize: 14,
 				padding: '10px 20px',
 			},
 			action: {

@@ -42,6 +42,15 @@ const PositionDetails = props => {
 			title
 		>
 			<DefinitionList>
+				{position.characteristics.length ? (
+					<DefinitionListItem
+						term="Характеристики"
+						value={position.characteristics.reduce(
+							(fullName, characteristic) => (fullName ? `${fullName}, ` : '') + characteristic.name,
+							''
+						)}
+					/>
+				) : null}
 				<DefinitionListItem term="Единица поступления" value={unitTypeTransform(position.unitReceipt)} />
 				<DefinitionListItem term="Единица отпуска" value={unitTypeTransform(position.unitRelease)} />
 				<DefinitionListItem term="Вид реализации" value={position.isFree ? 'Бесплатный' : 'Платный'} />

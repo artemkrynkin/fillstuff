@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { FieldArray, Formik } from 'formik';
 
 import DialogContent from '@material-ui/core/DialogContent';
@@ -21,16 +21,16 @@ const ShopsTab = props => {
 
 	const onToggleVisibleShopAddingForm = value => setVisibleShopAddingForm(value);
 
-	const initialValues = {
-		shop: undefined,
-		link: '',
-		comment: '',
-	};
-
 	const onSubmit = (values, actions, arrayHelpers) => {
 		arrayHelpers.push(values);
 
 		onToggleVisibleShopAddingForm(false);
+	};
+
+	const initialValues = {
+		shop: null,
+		link: '',
+		comment: '',
 	};
 
 	return (
@@ -38,7 +38,7 @@ const ShopsTab = props => {
 			<div className={styles.minHeightContent}>
 				<FieldArray name="shops" validateOnChange={false}>
 					{arrayHelpers => (
-						<Fragment>
+						<>
 							{visibleShopAddingForm ? (
 								<Formik
 									initialValues={initialValues}
@@ -57,7 +57,7 @@ const ShopsTab = props => {
 									)}
 								</Formik>
 							) : (
-								<Fragment>
+								<>
 									{!values.shops.length ? (
 										<Grid direction="column" alignItems="center" container>
 											<Typography className={styles.emptyText} variant="caption">
@@ -72,10 +72,10 @@ const ShopsTab = props => {
 											Добавить магазин
 										</Button>
 									)}
-								</Fragment>
+								</>
 							)}
 							{values.shops.length ? <ShopsList formikProps={props.formikProps} arrayHelpers={arrayHelpers} /> : null}
-						</Fragment>
+						</>
 					)}
 				</FieldArray>
 			</div>

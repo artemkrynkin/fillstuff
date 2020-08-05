@@ -207,7 +207,12 @@ class DialogPositionOrGroupQRCode extends Component {
 	};
 
 	render() {
-		const { type, dialogOpen, onCloseDialog, selectedPositionOrGroup } = this.props;
+		const {
+			// type,
+			dialogOpen,
+			onCloseDialog,
+			selectedPositionOrGroup,
+		} = this.props;
 		const { QRCodeDataUrl, QRCodeSize, pixelsPerCentimeter } = this.state;
 		const QRSettings = marks[QRCodeSize - 1].settings;
 

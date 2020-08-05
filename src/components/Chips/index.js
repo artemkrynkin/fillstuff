@@ -33,7 +33,7 @@ Chip.propTypes = {
 };
 
 const Chips = props => {
-	const { className, chips, onRenderChip, onRenderChipLabel, onRemoveChip, disabled } = props;
+	const { className, chips, onRenderChip, onRenderChipLabel, onRemoveChip, disabled, ...remainingProps } = props;
 
 	const classes = ClassNames({
 		...Object.fromEntries(
@@ -46,7 +46,7 @@ const Chips = props => {
 	});
 
 	return (
-		<div className={classes}>
+		<div className={classes} {...remainingProps}>
 			{chips.map((chip, index) => {
 				if (onRenderChip) return onRenderChip(chips, chip, index);
 

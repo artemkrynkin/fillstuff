@@ -66,16 +66,22 @@
   padding-bottom: 0;
 }
 
-.removePosition {
+.actionButtons {
   margin-left: auto;
 }
 
-.removePositionButton {
+.editActionButton,
+.deleteActionButton {
   height: 32px;
   padding: 0;
+  margin-left: 5px;
   width: 32px;
 }
 
-.removePositionButton svg {
-  width: 20px !important;
+.editActionButton {
+  font-size: 16px;
+}
+
+.deleteActionButton svg {
+  font-size: 20px;
 }

@@ -18,11 +18,22 @@ const procurementSchema = (depopulate = false) => {
 			.transform(value => (isNaN(value) ? 0 : value))
 			.min(0),
 		pricePositions: Yup.number().min(0),
-		totalPrice: Yup.number()
-			.min(0)
-			.required(),
 		receipts: Yup.array(
 			Yup.object().shape({
+				positionChanges: Yup.object().shape({
+					name: Yup.string(),
+					characteristics: Yup.array()
+						.when('$other', (other, schema) => (depopulate ? schema.of(Yup.string()) : schema))
+						.transform(currentValue => {
+							return depopulate
+								? currentValue
+									? currentValue
+											.sort((characteristicA, characteristicB) => characteristicA.type.localeCompare(characteristicB.type))
+											.map(characteristic => characteristic._id)
+									: []
+								: currentValue;
+						}),
+				}),
 				quantity: Yup.number()
 					.nullable(true)
 					.transform(value => (isNaN(value) ? null : value))
@@ -77,7 +88,6 @@ const procurementSchema = (depopulate = false) => {
 		)
 			// eslint-disable-next-line
 			.min(1, 'Необходимо выбрать минимум ${min} позицию'),
-		positions: Yup.array().of(Yup.string()),
 	});
 };
 

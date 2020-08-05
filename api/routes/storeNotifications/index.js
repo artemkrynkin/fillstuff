@@ -41,13 +41,13 @@ storeNotificationsRouter.post(
 							},
 						},
 						{
-							path: 'positions',
-							// populate: {
-							// 	path: 'characteristics',
-							// },
+							path: 'receiptsTempPositions.position',
+							populate: {
+								path: 'characteristics',
+							},
 						},
 						{
-							path: 'shop',
+							path: 'receiptsTempPositions.characteristics shop',
 						},
 					],
 				},
@@ -87,10 +87,7 @@ storeNotificationsRouter.post(
 					path: 'position',
 					populate: [
 						{
-							path: 'shops.shop shops.lastProcurement',
-						},
-						{
-							path: 'receipts',
+							path: 'characteristics shops.shop shops.lastProcurement receipts',
 						},
 					],
 				},
@@ -98,7 +95,20 @@ storeNotificationsRouter.post(
 					path: 'procurement',
 					populate: [
 						{
-							path: 'shop',
+							path: 'orderedByMember',
+							populate: {
+								path: 'user',
+								select: 'avatar name email',
+							},
+						},
+						{
+							path: 'receiptsTempPositions.position',
+							populate: {
+								path: 'characteristics',
+							},
+						},
+						{
+							path: 'receiptsTempPositions.characteristics shop',
 						},
 					],
 				},

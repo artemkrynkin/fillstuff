@@ -14,7 +14,7 @@ import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { history } from 'src/helpers/history';
+import history from 'src/helpers/history';
 
 import CardPaper from 'src/components/CardPaper';
 import AvatarTitle from 'src/components/AvatarTitle';

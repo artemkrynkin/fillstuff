@@ -9,7 +9,7 @@ import Paper from '@material-ui/core/Paper';
 
 import { sleep } from 'shared/utils';
 
-import { history } from 'src/helpers/history';
+import history from 'src/helpers/history';
 
 import { deleteParamsCoincidence } from 'src/components/Pagination/utils';
 

@@ -20,7 +20,7 @@ const Positions = props => {
 			<Table style={{ tableLayout: 'fixed' }}>
 				<TableHead className={styles.tableHeaderSticky}>
 					<TableRow>
-						<TableCell width={310}>Позиция</TableCell>
+						<TableCell width={330}>Позиция</TableCell>
 						<TableCell />
 						<TableCell align="right" width={240}>
 							Количество

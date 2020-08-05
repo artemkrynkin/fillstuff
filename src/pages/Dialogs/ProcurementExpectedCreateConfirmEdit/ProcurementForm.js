@@ -26,14 +26,14 @@ import NumberFormat, { moneyInputFormatProps } from 'src/components/NumberFormat
 import Dropdown from 'src/components/Dropdown';
 import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
 
-import FormFieldArrayPositions from './FormFieldArrayPositions';
+import Positions from './Positions';
 
 import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
 
 const DialogShopCreate = loadable(() => import('src/pages/Dialogs/ShopCreateEdit' /* webpackChunkName: "Dialog_ShopCreateEdit" */));
 
-const FormProcurementExpectedCreateConfirmEdit = props => {
+const ProcurementForm = props => {
 	const {
 		onCloseDialog,
 		dialogRef,
@@ -324,9 +324,9 @@ const FormProcurementExpectedCreateConfirmEdit = props => {
 					</Grid>
 				) : null}
 
-				<FieldArray name="positions" validateOnChange={false}>
+				<FieldArray name="receiptsTempPositions" validateOnChange={false}>
 					{props => (
-						<FormFieldArrayPositions
+						<Positions
 							dialogRef={dialogRef}
 							positions={positions}
 							arrayHelpers={props}
@@ -399,4 +399,4 @@ const FormProcurementExpectedCreateConfirmEdit = props => {
 	);
 };
 
-export default FormProcurementExpectedCreateConfirmEdit;
+export default ProcurementForm;

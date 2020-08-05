@@ -16,7 +16,7 @@ import QuantityIndicator from 'src/components/QuantityIndicator';
 import Dropdown from 'src/components/Dropdown';
 import MenuItem from 'src/components/MenuItem';
 
-import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, TableCellExpansionPanel } from './styles';
+import { Accordion, AccordionSummary, AccordionDetails, TableCellAccordion } from './styles';
 import stylesPositions from './Positions.module.css';
 import styles from './PositionGroup.module.css';
 
@@ -32,14 +32,14 @@ const PositionGroup = props => {
 	return (
 		<TableRow className={stylesPositions.positionGroup}>
 			<td colSpan={6} style={{ position: 'relative' }}>
-				<ExpansionPanel
+				<Accordion
 					TransitionProps={{
 						timeout: 300,
 						unmountOnExit: true,
 					}}
 					defaultExpanded={true}
 				>
-					<ExpansionPanelSummary
+					<AccordionSummary
 						expandIcon={<FontAwesomeIcon icon={['far', 'angle-down']} />}
 						IconButtonProps={{
 							size: 'small',
@@ -48,29 +48,29 @@ const PositionGroup = props => {
 						<Table>
 							<TableBody>
 								<TableRow>
-									<TableCellExpansionPanel style={{ paddingLeft: 41 }}>
+									<TableCellAccordion style={{ paddingLeft: 41 }}>
 										<span className={styles.positionGroupName}>{positionGroup.name}</span>
 										<span className={stylesPositions.caption} style={{ marginLeft: 5 }}>
 											{declensionNumber(positionGroup.positions.length, ['позиция', 'позиции', 'позиций'], true)}
 										</span>
-									</TableCellExpansionPanel>
-									<TableCellExpansionPanel align="right" width={240}>
+									</TableCellAccordion>
+									<TableCellAccordion align="right" width={240}>
 										<QuantityIndicator
 											type="positionGroup"
 											positions={positionGroup.positions.filter(
 												position => position.activeReceipt && position.receipts.length && !position.archivedAfterEnded
 											)}
 										/>
-									</TableCellExpansionPanel>
-									<TableCellExpansionPanel width={280} />
-									<TableCellExpansionPanel width={50} />
+									</TableCellAccordion>
+									<TableCellAccordion width={280} />
+									<TableCellAccordion width={50} />
 								</TableRow>
 							</TableBody>
 						</Table>
-					</ExpansionPanelSummary>
+					</AccordionSummary>
 
 					{positionGroup.positions.length ? (
-						<ExpansionPanelDetails>
+						<AccordionDetails>
 							<Table style={{ tableLayout: 'fixed' }}>
 								<TableBody>
 									{positionGroup.positions.map(position => {
@@ -80,9 +80,9 @@ const PositionGroup = props => {
 									})}
 								</TableBody>
 							</Table>
-						</ExpansionPanelDetails>
+						</AccordionDetails>
 					) : null}
-				</ExpansionPanel>
+				</Accordion>
 				<div className={styles.positionGroupActions}>
 					<IconButton
 						ref={refDropdownActions}

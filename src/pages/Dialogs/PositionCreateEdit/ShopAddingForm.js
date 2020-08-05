@@ -7,12 +7,15 @@ import loadable from '@loadable/component';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+// import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 
 import { SelectAutocompleteCreate } from 'src/components/selectAutocomplete';
 
 import { getShops } from 'src/actions/shops';
 
 const DialogShopCreate = loadable(() => import('src/pages/Dialogs/ShopCreateEdit' /* webpackChunkName: "Dialog_ShopCreateEdit" */));
+
+// const filter = createFilterOptions();
 
 const ShopAddingForm = props => {
 	const {
@@ -59,6 +62,31 @@ const ShopAddingForm = props => {
 				<Grid item>
 					<Grid alignItems="center" spacing={2} container>
 						<Grid style={{ flex: '1 1' }} item>
+							{/*<Autocomplete*/}
+							{/*  value={values.shop}*/}
+							{/*  onChange={(event, newShop) => {*/}
+							{/*    if (typeof newShop === 'string') {*/}
+							{/*      setFieldValue('shop', newShop);*/}
+							{/*    } else if (newShop && newShop.inputValue) {*/}
+							{/*      setFieldValue('shop', newShop);*/}
+							{/*    } else {*/}
+							{/*      setFieldValue('shop', newShop);*/}
+							{/*    }*/}
+							{/*  }}*/}
+							{/*  filterOptions={(options, params) => {*/}
+							{/*    const filtered = filter(options, params);*/}
+
+							{/*    if (params.inputValue !== '') {*/}
+							{/*      console.log(params);*/}
+							{/*    }*/}
+
+							{/*    return filtered;*/}
+							{/*  }}*/}
+							{/*  options={shopsAvailable}*/}
+							{/*  getOptionLabel={option => option.name}*/}
+							{/*  renderInput={params => <TextField {...params} />}*/}
+							{/*  autoHighlight*/}
+							{/*/>*/}
 							<SelectAutocompleteCreate
 								TextFieldProps={{
 									error: Boolean(touched.shop && errors.shop),

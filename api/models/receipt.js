@@ -25,13 +25,6 @@ const Receipt = new Schema({
 		ref: 'Position',
 		required: [true, i18n.__('Обязательное поле')],
 	},
-	// Характеристики
-	characteristics: [
-		{
-			type: Schema.Types.ObjectId,
-			ref: 'Characteristic',
-		},
-	],
 	status: {
 		type: String,
 		enum: ['received', 'active', 'closed'],

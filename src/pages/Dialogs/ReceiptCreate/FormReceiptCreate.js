@@ -1,5 +1,5 @@
 import React from 'react';
-import { Field, Form, FieldArray } from 'formik';
+import { Field, Form } from 'formik';
 
 import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
@@ -14,14 +14,9 @@ import { receiptCalc } from 'shared/checkPositionAndReceipt';
 import NumberFormat, { moneyInputFormatProps } from 'src/components/NumberFormat';
 import PositionNameInList from 'src/components/PositionNameInList';
 
-import Characteristics from './Characteristics';
-
 const FormReceiptCreate = props => {
 	const {
 		onCloseDialog,
-		onGetCharacteristics,
-		onCreateCharacteristic,
-		characteristics,
 		checkSellingPrice,
 		formikProps: { errors, isSubmitting, submitForm, setFieldValue, touched, values },
 	} = props;
@@ -32,20 +27,12 @@ const FormReceiptCreate = props => {
 	return (
 		<Form>
 			<DialogContent>
-				<PositionNameInList name={values.position.name} size="md" />
-
-				<FieldArray name="characteristics" validateOnChange={false}>
-					{props => (
-						<Characteristics
-							onGetCharacteristics={onGetCharacteristics}
-							onCreateCharacteristic={onCreateCharacteristic}
-							characteristics={characteristics}
-							checkSellingPrice={checkSellingPrice}
-							arrayHelpers={props}
-							formikProps={{ errors, isSubmitting, setFieldValue, touched, values }}
-						/>
-					)}
-				</FieldArray>
+				<PositionNameInList
+					name={values.position.name}
+					characteristics={values.position.characteristics}
+					size="md"
+					style={{ marginBottom: 12 }}
+				/>
 
 				<Grid alignItems="flex-start" spacing={2} container>
 					<Grid xs={3} item>

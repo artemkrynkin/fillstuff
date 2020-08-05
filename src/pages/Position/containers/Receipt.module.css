@@ -16,25 +16,20 @@
 }
 
 .status {
-  border-radius: 100%;
-  display: inline-block;
   font-size: 13px;
   font-weight: 600;
-  height: 10px;
-  margin-right: 10px;
-  width: 10px;
 }
 
 .statusRed {
-  background-color: var(--c-hex-o-1);
+  color: var(--c-hex-o-1);
 }
 
 .statusGreen {
-  background-color: var(--c-hex-t-A700);
+  color: var(--c-hex-t-A700);
 }
 
 .statusYellow {
-  background-color: var(--c-hex-o-15);
+  color: var(--c-hex-o-15);
 }
 
 .caption {

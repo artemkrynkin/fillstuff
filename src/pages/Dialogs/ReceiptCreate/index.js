@@ -9,7 +9,6 @@ import { receiptCalc } from 'shared/checkPositionAndReceipt';
 import { Dialog, DialogTitle } from 'src/components/Dialog';
 
 import { getStudioStore } from 'src/actions/studio';
-import { getCharacteristics, createCharacteristic } from 'src/actions/characteristics';
 import { createReceipt } from 'src/actions/receipts';
 import { enqueueSnackbar } from 'src/actions/snackbars';
 
@@ -30,18 +29,6 @@ class DialogReceiptCreate extends Component {
 	};
 
 	state = this.initialState;
-
-	onGetCharacteristics = characteristicType => this.props.getCharacteristics({ type: characteristicType });
-
-	onCreateCharacteristic = (characteristic, callback) => {
-		this.props.createCharacteristic(characteristic).then(response => {
-			if (response.status === 'success') {
-				const characteristic = response.data;
-
-				if (callback) callback(characteristic);
-			}
-		});
-	};
 
 	onSubmit = async (values, actions) => {
 		const { onCloseDialog, onCallback } = this.props;
@@ -116,14 +103,13 @@ class DialogReceiptCreate extends Component {
 	};
 
 	render() {
-		const { dialogOpen, onCloseDialog, characteristics, selectedPosition } = this.props;
+		const { dialogOpen, onCloseDialog, selectedPosition } = this.props;
 		const { checkSellingPrice } = this.state;
 
 		if (!selectedPosition) return null;
 
 		const initialValues = {
 			position: selectedPosition,
-			characteristics: [],
 			quantity: '',
 			quantityPackages: '',
 			quantityInUnit: '',
@@ -150,36 +136,19 @@ class DialogReceiptCreate extends Component {
 					validateOnChange={false}
 					onSubmit={(values, actions) => this.onSubmit(values, actions)}
 				>
-					{props => (
-						<FormReceiptCreate
-							onCloseDialog={onCloseDialog}
-							onGetCharacteristics={this.onGetCharacteristics}
-							onCreateCharacteristic={this.onCreateCharacteristic}
-							characteristics={characteristics}
-							checkSellingPrice={checkSellingPrice}
-							formikProps={props}
-						/>
-					)}
+					{props => <FormReceiptCreate onCloseDialog={onCloseDialog} checkSellingPrice={checkSellingPrice} formikProps={props} />}
 				</Formik>
 			</Dialog>
 		);
 	}
 }
 
-const mapStateToProps = state => {
-	return {
-		characteristics: state.characteristics,
-	};
-};
-
 const mapDispatchToProps = dispatch => {
 	return {
 		getStudioStore: () => dispatch(getStudioStore()),
-		getCharacteristics: params => dispatch(getCharacteristics({ params })),
-		createCharacteristic: characteristic => dispatch(createCharacteristic({ data: { characteristic } })),
 		createReceipt: receipt => dispatch(createReceipt({ data: receipt })),
 		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
 	};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DialogReceiptCreate);
+export default connect(null, mapDispatchToProps)(DialogReceiptCreate);

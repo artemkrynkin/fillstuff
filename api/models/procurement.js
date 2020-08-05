@@ -123,6 +123,32 @@ const Procurement = new Schema({
 			i18n.__('Обязательное поле'),
 		],
 	},
+	receiptsTempPositions: [
+		{
+			position: {
+				type: Schema.Types.ObjectId,
+				ref: 'Position',
+			},
+			name: {
+				type: String,
+				minlength: [2, i18n.__('Не может быть короче 2 символов')],
+				maxlength: [60, i18n.__('Не может превышать 60 символов')],
+				trim: true,
+			},
+			characteristics: [
+				{
+					type: Schema.Types.ObjectId,
+					ref: 'Characteristic',
+				},
+			],
+			quantity: {
+				type: Number,
+				min: [0, 'Не может быть меньше 0'],
+				required: [true, i18n.__('Обязательное поле')],
+				set: value => formatNumber(value, { fractionDigits: 0 }),
+			},
+		},
+	],
 	positions: [
 		{
 			type: Schema.Types.ObjectId,

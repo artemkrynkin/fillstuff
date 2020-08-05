@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 
 import Grid from '@material-ui/core/Grid';
 import Select from '@material-ui/core/Select';
@@ -10,18 +11,15 @@ import { SelectAutocompleteCreate } from 'src/components/selectAutocomplete';
 import Chips from 'src/components/Chips';
 import MenuItem from 'src/components/MenuItem';
 
-import stylesGlobal from 'src/styles/globals.module.css';
+import { createCharacteristic, getCharacteristics } from 'src/actions/characteristics';
 
 const Characteristics = props => {
 	const {
-		onGetCharacteristics,
-		onCreateCharacteristic,
 		characteristics: {
 			data: characteristics,
 			isFetching: isLoadingCharacteristics,
 			// error: errorCharacteristics
 		},
-		checkSellingPrice,
 		arrayHelpers: { push, remove },
 		formikProps: { isSubmitting, values },
 	} = props;
@@ -31,6 +29,16 @@ const Characteristics = props => {
 	});
 	const [characteristicsTypes, setCharacteristicsTypes] = useState([]);
 	const [allCharacteristicsTypesUsed, setAllCharacteristicsTypesUsed] = useState(false);
+
+	const onGetCharacteristics = characteristicType => props.getCharacteristics({ type: characteristicType });
+
+	const onCreateCharacteristic = (characteristic, callback) => {
+		props.createCharacteristic(characteristic).then(({ status, data: characteristic }) => {
+			if (status === 'success' && callback) {
+				callback(characteristic);
+			}
+		});
+	};
 
 	useEffect(() => {
 		setCharacteristicsTypes(
@@ -54,30 +62,29 @@ const Characteristics = props => {
 	}, [characteristicsTypes]);
 
 	return (
-		<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" spacing={2} alignItems="flex-start" container>
+		<>
 			<Grid xs={3} item>
 				<InputLabel data-inline>Характеристики</InputLabel>
 			</Grid>
 			<Grid xs={9} item>
 				<Grid direction="column" container>
 					{values.characteristics.length ? (
-						<Grid style={{ marginTop: 7, marginBottom: allCharacteristicsTypesUsed ? 10 : 0 }} container>
-							<Chips
-								chips={values.characteristics.sort((characteristicA, characteristicB) =>
-									characteristicA.type.localeCompare(characteristicB.type)
-								)}
-								onRenderChipLabel={value => (
-									<span>
-										<span style={{ fontWeight: 600 }}>{characteristicTypeTransform(value.type)}</span>: {value.name}
-									</span>
-								)}
-								onRemoveChip={!checkSellingPrice ? (chips, index) => remove(index) : null}
-								disabled={isSubmitting}
-							/>
-						</Grid>
+						<Chips
+							chips={values.characteristics.sort((characteristicA, characteristicB) =>
+								characteristicA.type.localeCompare(characteristicB.type)
+							)}
+							onRenderChipLabel={value => (
+								<>
+									<span style={{ fontWeight: 600 }}>{characteristicTypeTransform(value.type)}</span>: {value.name}
+								</>
+							)}
+							onRemoveChip={(chips, index) => remove(index)}
+							disabled={isSubmitting}
+							style={{ marginTop: 7, marginBottom: allCharacteristicsTypesUsed ? 10 : -5 }}
+						/>
 					) : null}
 
-					{!checkSellingPrice && allCharacteristicsTypesUsed ? (
+					{allCharacteristicsTypesUsed ? (
 						<Grid alignItems="center" spacing={2} container>
 							<Grid xs={4} item>
 								<Select
@@ -166,8 +173,21 @@ const Characteristics = props => {
 					) : null}
 				</Grid>
 			</Grid>
-		</Grid>
+		</>
 	);
 };
 
-export default Characteristics;
+const mapStateToProps = state => {
+	return {
+		characteristics: state.characteristics,
+	};
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		getCharacteristics: params => dispatch(getCharacteristics({ params })),
+		createCharacteristic: characteristic => dispatch(createCharacteristic({ data: { characteristic } })),
+	};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Characteristics);

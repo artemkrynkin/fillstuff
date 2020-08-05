@@ -1,4 +1,4 @@
-import React, { useRef, useState, Fragment } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ClassNames from 'classnames';
 import moment from 'moment';
@@ -57,16 +57,9 @@ const Receipt = props => {
 	return (
 		<TableRow>
 			<TableCell>
-				{receipt.characteristics.length ? (
-					receipt.characteristics.reduce((fullName, characteristic) => `${fullName ? `${fullName} ` : ''}${characteristic.name}`, '')
-				) : (
-					<span className={styles.caption}>-</span>
-				)}
-			</TableCell>
-			<TableCell>
 				{receipt.procurement ? (
 					<Tooltip
-						title={!receipt.procurement.noInvoice ? <Fragment>№{receipt.procurement.invoiceNumber}</Fragment> : 'Чек/накладная отсутствует'}
+						title={!receipt.procurement.noInvoice ? <>№{receipt.procurement.invoiceNumber}</> : 'Чек/накладная отсутствует'}
 						placement="top"
 					>
 						<Link className={styles.buttonLink} to={`/procurements/${receipt.procurement._id}`}>
@@ -77,31 +70,27 @@ const Receipt = props => {
 					dateFormat
 				)}
 			</TableCell>
-			<TableCell align="right" width={220}>
-				<Tooltip title={statusTransform(receipt.status)} placement="top">
-					<div className={styles.quantity}>
-						<Grid alignItems="center" justify="flex-end" container>
-							<span className={statusColorClasses(receipt.status)} />
-							<QuantityIndicator
-								type="receipt"
-								unitReceipt={position.unitReceipt}
-								unitRelease={position.unitRelease}
-								receipts={[
-									!receipt.quantityInUnit ? { ...receipt.current } : { ...receipt.current, quantityInUnit: receipt.quantityInUnit },
-								]}
-							/>
-							<span style={{ margin: '0 5px' }}>/</span>
-							<QuantityIndicator
-								type="receipt"
-								unitReceipt={position.unitReceipt}
-								unitRelease={position.unitRelease}
-								receipts={[
-									!receipt.quantityInUnit ? { ...receipt.initial } : { ...receipt.initial, quantityInUnit: receipt.quantityInUnit },
-								]}
-							/>
-						</Grid>
-					</div>
-				</Tooltip>
+			<TableCell>
+				<span className={statusColorClasses(receipt.status)}>{statusTransform(receipt.status)}</span>
+			</TableCell>
+			<TableCell align="right" width={200}>
+				<div className={styles.quantity}>
+					<Grid alignItems="center" justify="flex-end" container>
+						<QuantityIndicator
+							type="receipt"
+							unitReceipt={position.unitReceipt}
+							unitRelease={position.unitRelease}
+							receipts={[!receipt.quantityInUnit ? { ...receipt.current } : { ...receipt.current, quantityInUnit: receipt.quantityInUnit }]}
+						/>
+						<span style={{ margin: '0 5px' }}>/</span>
+						<QuantityIndicator
+							type="receipt"
+							unitReceipt={position.unitReceipt}
+							unitRelease={position.unitRelease}
+							receipts={[!receipt.quantityInUnit ? { ...receipt.initial } : { ...receipt.initial, quantityInUnit: receipt.quantityInUnit }]}
+						/>
+					</Grid>
+				</div>
 			</TableCell>
 			<TableCell align="right" width={140}>
 				<NumberFormat

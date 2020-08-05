@@ -25,11 +25,7 @@ positionsRouter.post(
 			.sort({ isArchived: 1, name: 1 })
 			.populate([
 				{
-					path: 'shops.shop',
-				},
-				{
-					path: 'activeReceipt',
-					populate: 'characteristics',
+					path: 'activeReceipt characteristics shops.shop',
 				},
 				{
 					path: 'receipts',
@@ -59,11 +55,7 @@ positionsRouter.post(
 		Position.findById(positionId)
 			.populate([
 				{
-					path: 'shops.shop',
-				},
-				{
-					path: 'activeReceipt',
-					populate: 'characteristics',
+					path: 'activeReceipt characteristics shops.shop',
 				},
 				{
 					path: 'receipts',
@@ -106,11 +98,7 @@ positionsRouter.post(
 					select: 'store',
 				},
 				{
-					path: 'shops.shop',
-				},
-				{
-					path: 'activeReceipt',
-					populate: 'characteristics',
+					path: 'activeReceipt characteristics shops.shop',
 				},
 			])
 			.catch(err => next({ code: 2, err }));
@@ -155,6 +143,7 @@ positionsRouter.post(
 		position.minimumBalance = positionEdited.minimumBalance;
 		position.shopName = positionEdited.shopName;
 		position.shopLink = positionEdited.shopLink;
+		position.characteristics = positionEdited.characteristics;
 		position.shops = positionEdited.shops;
 
 		if (!position.activeReceipt) {
@@ -189,11 +178,7 @@ positionsRouter.post(
 		Position.findById(position._id)
 			.populate([
 				{
-					path: 'shops.shop',
-				},
-				{
-					path: 'activeReceipt',
-					populate: 'characteristics',
+					path: 'activeReceipt characteristics shops.shop',
 				},
 				{
 					path: 'receipts',
@@ -319,11 +304,7 @@ positionsRouter.post(
 		const position = await Position.findByIdAndUpdate(positionId, positionEdited, { new: true })
 			.populate([
 				{
-					path: 'shops.shop',
-				},
-				{
-					path: 'activeReceipt',
-					populate: 'characteristics',
+					path: 'activeReceipt characteristics shops.shop',
 				},
 				{
 					path: 'receipts',

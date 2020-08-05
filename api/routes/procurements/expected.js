@@ -37,13 +37,13 @@ procurementsRouter.post(
 					},
 				},
 				{
-					path: 'positions',
+					path: 'receiptsTempPositions.position',
 					populate: {
 						path: 'characteristics',
 					},
 				},
 				{
-					path: 'shop',
+					path: 'receiptsTempPositions.characteristics shop',
 				},
 			])
 			.catch(err => next({ code: 2, err }));
@@ -116,13 +116,13 @@ procurementsRouter.post(
 					},
 				},
 				{
-					path: 'positions',
+					path: 'receiptsTempPositions.position',
 					populate: {
 						path: 'characteristics',
 					},
 				},
 				{
-					path: 'shop',
+					path: 'receiptsTempPositions.characteristics shop',
 				},
 			])
 			.catch(err => next({ code: 2, err }));
@@ -164,6 +164,7 @@ procurementsRouter.post(
 		procurement.pricePositions = procurementEdited.pricePositions;
 		procurement.costDelivery = procurementEdited.costDelivery;
 		procurement.totalPrice = procurementEdited.totalPrice;
+		procurement.receiptsTempPositions = procurementEdited.receiptsTempPositions;
 		procurement.positions = procurementEdited.positions;
 		procurement.comment = procurementEdited.comment;
 
@@ -196,13 +197,13 @@ procurementsRouter.post(
 					},
 				},
 				{
-					path: 'positions',
+					path: 'receiptsTempPositions.position',
 					populate: {
 						path: 'characteristics',
 					},
 				},
 				{
-					path: 'shop',
+					path: 'receiptsTempPositions.characteristics shop',
 				},
 			])
 			.then(procurement => res.json(procurement))

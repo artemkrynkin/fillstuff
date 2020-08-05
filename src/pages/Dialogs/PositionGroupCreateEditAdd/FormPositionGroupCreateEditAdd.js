@@ -33,11 +33,9 @@ const findPositionByFullName = (position, searchText) => {
 
 	const searchTextLowercase = String(searchText).toLowerCase();
 
-	const positionName = position.activeReceipt
-		? position.activeReceipt.characteristics
-				.reduce((fullName, characteristic) => `${fullName} ${characteristic.name}`, position.name)
-				.toLowerCase()
-		: position.name.toLowerCase();
+	const positionName = position.characteristics
+		.reduce((fullName, characteristic) => `${fullName} ${characteristic.name}`, position.name)
+		.toLowerCase();
 
 	return positionName.indexOf(searchTextLowercase) !== -1;
 };
@@ -133,7 +131,7 @@ const FormPositionGroupCreateEditAdd = props => {
 													<PositionNameInList
 														className={styles.positionName}
 														name={position.name}
-														characteristics={position.activeReceipt ? position.activeReceipt.characteristics : []}
+														characteristics={position.characteristics}
 													/>
 												</div>
 											))

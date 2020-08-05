@@ -5,7 +5,7 @@ import loadable from '@loadable/component';
 
 import generateMetaInfo from 'shared/generate-meta-info';
 
-import { history } from 'src/helpers/history';
+import history from 'src/helpers/history';
 
 import Head from 'src/components/head';
 import HeaderPage from 'src/components/HeaderPage';
@@ -24,6 +24,7 @@ const Index = loadable(() => import('./containers/index' /* webpackChunkName: "P
 });
 
 const Position = props => {
+	const { currentStudio } = props;
 	const [positionData, setPositionData] = useState(null);
 	const [receiptsData, setReceiptsData] = useState(null);
 
@@ -133,6 +134,7 @@ const Position = props => {
 			<HeaderPage pageName={metaInfo.pageName} pageTitle="Склад" pageParams={pageParams} />
 			<div className={`${stylesPage.pageContent} ${styles.container}`}>
 				<Index
+					currentStudio={currentStudio}
 					positionData={positionData}
 					receiptsData={receiptsData}
 					getPosition={getPosition}

@@ -5,7 +5,7 @@ import loadable from '@loadable/component';
 
 import generateMetaInfo from 'shared/generate-meta-info';
 
-import { history } from 'src/helpers/history';
+import history from 'src/helpers/history';
 
 import Head from 'src/components/head';
 import HeaderPage from 'src/components/HeaderPage';

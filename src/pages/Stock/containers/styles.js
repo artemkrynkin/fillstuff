@@ -1,12 +1,12 @@
 import MuiTableCell from '@material-ui/core/TableCell';
-import MuiExpansionPanel from '@material-ui/core/ExpansionPanel';
-import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import MuiAccordion from '@material-ui/core/Accordion';
+import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
+import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import { withStyles } from '@material-ui/core';
 
 import theme from 'shared/theme';
 
-export const ExpansionPanel = withStyles({
+export const Accordion = withStyles({
 	root: {
 		backgroundColor: 'transparent',
 		boxShadow: 'none',
@@ -32,9 +32,9 @@ export const ExpansionPanel = withStyles({
 	},
 	expanded: {},
 	disabled: {},
-})(MuiExpansionPanel);
+})(MuiAccordion);
 
-export const ExpansionPanelSummary = withStyles({
+export const AccordionSummary = withStyles({
 	root: {
 		backgroundColor: theme.brightness.cBr2,
 		minHeight: 'initial',
@@ -82,15 +82,15 @@ export const ExpansionPanelSummary = withStyles({
 	expanded: {},
 	focused: {},
 	disabled: {},
-})(MuiExpansionPanelSummary);
+})(MuiAccordionSummary);
 
-export const ExpansionPanelDetails = withStyles({
+export const AccordionDetails = withStyles({
 	root: {
 		padding: 0,
 	},
-})(MuiExpansionPanelDetails);
+})(MuiAccordionDetails);
 
-export const TableCellExpansionPanel = withStyles({
+export const TableCellAccordion = withStyles({
 	root: {
 		padding: '16px 15px',
 	},

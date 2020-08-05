@@ -233,18 +233,18 @@ const FormProcurementReceivedCreate = props => {
 				</Grid>
 
 				<Grid style={{ marginBottom: formEditable ? 10 : 20 }} wrap="nowrap" alignItems="flex-start" container>
-					<InputLabel error={Boolean(errors.totalPrice && touched.totalPrice)} style={{ marginTop: 32, ...labelStyle }} data-inline>
+					<InputLabel error={Boolean(errors.pricePositions && touched.pricePositions)} style={{ marginTop: 32, ...labelStyle }} data-inline>
 						Итого
 					</InputLabel>
 					<Grid direction="column" container>
 						<Grid wrap="nowrap" alignItems="flex-start" spacing={2} container>
 							<Grid style={{ width: 158 }} item>
 								<Field
-									name="totalPrice"
+									name="pricePositions"
 									placeholder="0"
 									label="Стоимость позиций"
-									error={Boolean(errors.totalPrice && touched.totalPrice)}
-									helperText={typeof errors.totalPrice === 'string' && touched.totalPrice ? errors.totalPrice : null}
+									error={Boolean(errors.pricePositions && touched.pricePositions)}
+									helperText={typeof errors.pricePositions === 'string' && touched.pricePositions ? errors.pricePositions : null}
 									as={TextField}
 									InputProps={{
 										endAdornment: <InputAdornment position="end">₽</InputAdornment>,

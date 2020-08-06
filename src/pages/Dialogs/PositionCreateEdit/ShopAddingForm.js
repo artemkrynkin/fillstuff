@@ -133,7 +133,7 @@ const ShopAddingForm = props => {
 							<Field
 								name="link"
 								error={Boolean(touched.link && errors.link)}
-								placeholder="Ссылка на товар"
+								placeholder="Ссылка на позицию в магазине"
 								as={TextField}
 								validate={value => {
 									if (value !== '' && !validator.isURL(value)) return 'Некорректная ссылка';

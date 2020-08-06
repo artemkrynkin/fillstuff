@@ -170,16 +170,17 @@ procurementsRouter.post(
 			  })
 			: procurementExist;
 
-		const positionsCloningErr = [];
+		const positionsInsert = [];
+		const positionsErr = [];
 		const receiptsErr = [];
-		const updatePositionsAndActiveReceipt = [];
+		let awaitingPromises = [];
 
 		newProcurement.positions = [];
+
 		newProcurement.receipts = newProcurementValues.receipts.map(({ positionChanges, ...receipt }) => {
 			const initialPosition = positions.find(position => String(position._id) === receipt.position);
-			const position = !positionChanges
-				? initialPosition
-				: new Position({
+			const position = positionChanges
+				? new Position({
 						name: initialPosition.name,
 						characteristics: initialPosition.characteristics.map(characteristic => characteristic._id),
 						studio: studioId,
@@ -188,14 +189,17 @@ procurementsRouter.post(
 						minimumBalance: initialPosition.minimumBalance,
 						isFree: initialPosition.isFree,
 						...positionChanges,
-				  });
+				  })
+				: initialPosition;
 
 			if (positionChanges) {
 				const newPositionErr = position.validateSync();
 
-				if (newPositionErr) positionsCloningErr.push(newPositionErr);
-				else updatePositionsAndActiveReceipt.push(position.save());
+				if (newPositionErr) positionsErr.push(newPositionErr);
+				else positionsInsert.push(position);
 			}
+
+			newProcurement.positions.push(position._id);
 
 			const newReceipt = new Receipt({
 				...receipt,
@@ -211,57 +215,51 @@ procurementsRouter.post(
 				unitRelease: position.unitRelease,
 			});
 
-			const positionSet = {
-				hasReceipts: true,
+			const newReceiptErr = newReceipt.validateSync();
+
+			if (newReceiptErr) receiptsErr.push(newReceiptErr);
+
+			const initialPositionUpdate = {
+				$pull: {},
 			};
-			const positionInc = {};
-			const positionPush = {
-				receipts: newReceipt,
+			const positionUpdate = {
+				$set: {
+					hasReceipts: true,
+				},
+				$inc: {},
+				$push: {
+					receipts: newReceipt,
+				},
+				$pull: {},
 			};
-			const positionPull = {};
 			const positionShopIndex = position.shops.findIndex(shop => String(shop.shop) === String(newProcurement.shop));
 
-			if (!position.activeReceipt || position.activeReceipt.current.quantity === 0) {
-				positionSet.activeReceipt = newReceipt;
+			if (!position.activeReceipt) {
+				positionUpdate.$set.activeReceipt = newReceipt;
 			}
 
 			if (newProcurement.status === 'expected') {
-				positionPull.deliveryIsExpected = newProcurement._id;
+				const positionUpdateObject = !positionChanges ? positionUpdate : initialPositionUpdate;
+
+				positionUpdateObject.$pull.deliveryIsExpected = newProcurement._id;
 			}
 
-			if (positionShopIndex !== -1) {
-				positionInc[`shops.${positionShopIndex}.numberReceipts`] = 1;
-				positionSet[`shops.${positionShopIndex}.lastProcurement`] = newProcurement._id;
+			if (!!~positionShopIndex) {
+				positionUpdate.$inc[`shops.${positionShopIndex}.numberReceipts`] = 1;
+				positionUpdate.$set[`shops.${positionShopIndex}.lastProcurement`] = newProcurement._id;
 			} else {
-				positionPush.shops = {
+				positionUpdate.$push.shops = {
 					shop: newProcurement.shop,
 					numberReceipts: 1,
 					lastProcurement: newProcurement._id,
 				};
 			}
 
-			updatePositionsAndActiveReceipt.push(
-				Position.findByIdAndUpdate(position, {
-					$set: positionSet,
-					$inc: positionInc,
-					$push: positionPush,
-					$pull: !positionChanges ? positionPull : {},
-				}).catch(err => next({ code: 2, err }))
-			);
+			awaitingPromises.push([position._id, positionUpdate]);
 
 			if (positionChanges) {
-				updatePositionsAndActiveReceipt.push(
-					Position.findByIdAndUpdate(initialPosition, {
-						$pull: positionPull,
-					}).catch(err => next({ code: 2, err }))
-				);
+				awaitingPromises.push([initialPosition._id, initialPositionUpdate]);
 			}
-
-			newProcurement.positions.push(position._id);
-
-			const newReceiptErr = newReceipt.validateSync();
-
-			if (newReceiptErr) receiptsErr.push(newReceiptErr);
 
 			return newReceipt;
 		});
@@ -272,18 +270,32 @@ procurementsRouter.post(
 			newProcurement.createdAt = Date.now();
 			newProcurement.compensateCostDelivery = newProcurementValues.compensateCostDelivery;
 			newProcurement.noInvoice = newProcurementValues.noInvoice;
-			if (newProcurementValues.invoiceNumber) newProcurement.invoiceNumber = newProcurementValues.invoiceNumber;
-			if (newProcurementValues.invoiceDate) newProcurement.invoiceDate = newProcurementValues.invoiceDate;
+			if (newProcurementValues.invoiceNumber) {
+				newProcurement.invoiceNumber = newProcurementValues.invoiceNumber;
+			}
+			if (newProcurementValues.invoiceDate) {
+				newProcurement.invoiceDate = newProcurementValues.invoiceDate;
+			}
+			newProcurement.receiptsTempPositions = [];
 		}
 
-		if (positionsCloningErr.length || receiptsErr.length) return next({ code: 2 });
+		if (positionsErr.length || receiptsErr.length) return next({ code: 2 });
 
 		const newProcurementErr = newProcurement.validateSync();
 
 		if (newProcurementErr) return next({ code: newProcurementErr.errors ? 5 : 2, err: newProcurementErr });
 
-		await Promise.all([Receipt.insertMany(newProcurement.receipts)]);
-		await Promise.all([newProcurement.save(), ...updatePositionsAndActiveReceipt]);
+		if (positionsInsert.length) {
+			await Position.insertMany(positionsInsert).catch(err => next({ code: 2, err }));
+		}
+
+		await Receipt.insertMany(newProcurement.receipts).catch(err => next({ code: 2, err }));
+
+		await newProcurement.save().catch(err => next({ code: 2, err }));
+
+		awaitingPromises = awaitingPromises.map(promiseItem => Position.findByIdAndUpdate(promiseItem[0], promiseItem[1]));
+
+		await Promise.all(awaitingPromises);
 
 		if (procurementExist) {
 			Emitter.emit('deleteStoreNotification', {

@@ -155,7 +155,18 @@ procurementsRouter.post(
 		const procurementPromise = Procurement.findById(newProcurementValues._id).catch(err => next({ code: 2, err }));
 
 		const positionsPromise = Position.find({ _id: { $in: newProcurementValues.positions } })
-			.populate('activeReceipt')
+			.populate([
+				{
+					path: 'activeReceipt',
+				},
+				{
+					path: 'receipts',
+					match: { status: /received|active/ },
+					options: {
+						sort: { createdAt: 1 },
+					},
+				},
+			])
 			.catch(err => next({ code: 2, err }));
 
 		const positions = await positionsPromise;
@@ -220,6 +231,7 @@ procurementsRouter.post(
 			if (newReceiptErr) receiptsErr.push(newReceiptErr);
 
 			const initialPositionUpdate = {
+				$set: {},
 				$pull: {},
 			};
 			const positionUpdate = {
@@ -258,6 +270,10 @@ procurementsRouter.post(
 			awaitingPromises.push([position._id, positionUpdate]);
 
 			if (positionChanges) {
+				const allQuantityReceipts = initialPosition.receipts.reduce((sum, receipt) => sum + receipt.current.quantity, 0);
+
+				initialPositionUpdate.$set[allQuantityReceipts ? 'archivedAfterEnded' : 'isArchived'] = true;
+
 				awaitingPromises.push([initialPosition._id, initialPositionUpdate]);
 			}
 

@@ -131,7 +131,7 @@ const snackbarSettings = {
 		horizontal: 'left',
 	},
 	preventDuplicate: true,
-	autoHideDuration: 7000,
+	autoHideDuration: 700000,
 	iconVariant: {
 		success: <FontAwesomeIcon icon={['fal', 'check-circle']} />,
 		error: <FontAwesomeIcon icon={['fal', 'times-circle']} />,

@@ -146,9 +146,7 @@ writeOffsRouter.post(
 			receipts = position.receipts.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)),
 		} = position;
 
-		const allQuantityReceipts = receipts
-			.filter(receipt => /received|active/.test(receipt.status))
-			.reduce((sum, receipt) => sum + receipt.current.quantity, 0);
+		const allQuantityReceipts = receipts.reduce((sum, receipt) => sum + receipt.current.quantity, 0);
 		const remainingQuantityAfterWriteOff = allQuantityReceipts - quantity;
 
 		if (allQuantityReceipts === 0 || remainingQuantityAfterWriteOff < 0) {

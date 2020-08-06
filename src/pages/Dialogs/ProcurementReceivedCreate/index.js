@@ -10,7 +10,7 @@ import { sleep, formatNumber } from 'shared/utils';
 
 import { DialogStickyFR, DialogTitle } from 'src/components/Dialog';
 
-import { procurementPositionTransform } from 'src/helpers/utils';
+import { procurementPositionTransform, declensionNumber } from 'src/helpers/utils';
 
 import { getStudioStore } from 'src/actions/studio';
 import { getShops } from 'src/actions/shops';
@@ -198,6 +198,7 @@ class ProcurementReceivedCreate extends Component {
 			actions.setSubmitting(false);
 		} else {
 			const procurement = procurementSchema(true).cast(values);
+			let positionsChanged = 0;
 
 			if (procurement.totalPrice === procurement.pricePositions) {
 				procurement.totalPrice = formatNumber(procurement.pricePositions + procurement.costDelivery);
@@ -208,10 +209,15 @@ class ProcurementReceivedCreate extends Component {
 			procurement.receipts = procurement.receipts.map(receipt => {
 				const { position, quantity, quantityPackages, ...remainingValues } = receipt;
 
-				if (isEmpty(remainingValues.positionChanges.name)) delete remainingValues.positionChanges.name;
-				if (isEmpty(remainingValues.positionChanges.characteristics)) delete remainingValues.positionChanges.characteristics;
-				if (isEmpty(remainingValues.positionChanges.name) && isEmpty(remainingValues.positionChanges.characteristics)) {
-					delete remainingValues.positionChanges;
+				if (remainingValues.positionChanges) {
+					if (isEmpty(remainingValues.positionChanges.name)) delete remainingValues.positionChanges.name;
+					if (isEmpty(remainingValues.positionChanges.characteristics)) delete remainingValues.positionChanges.characteristics;
+					if (isEmpty(remainingValues.positionChanges.name) && isEmpty(remainingValues.positionChanges.characteristics)) {
+						delete remainingValues.positionChanges;
+					}
+					if (!isEmpty(remainingValues.positionChanges.name) || !isEmpty(remainingValues.positionChanges.characteristics)) {
+						positionsChanged += 1;
+					}
 				}
 
 				const newReceipt = {
@@ -234,6 +240,29 @@ class ProcurementReceivedCreate extends Component {
 				if (response.status === 'success') {
 					this.props.getStudioStore();
 					onCloseDialog();
+
+					if (positionsChanged) {
+						this.props.enqueueSnackbar({
+							message: (
+								<div>
+									<b>
+										{declensionNumber(positionsChanged, ['Создана позиция', 'Созданы позиции', 'Созданы позиции'])} с новыми
+										характеристиками.
+									</b>
+									<br />
+									{declensionNumber(positionsChanged, [
+										'Действующая позиция будет архивирована',
+										'Действующие позиции будут архивированы',
+										'Действующие позиции будут архивированы',
+									])}{' '}
+									после реализации.
+								</div>
+							),
+							options: {
+								variant: 'warning',
+							},
+						});
+					}
 				}
 
 				if (response.status === 'error') {

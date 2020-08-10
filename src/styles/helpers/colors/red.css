@@ -1,0 +1,17 @@
+:root {
+  --c-hex-red-50: #ffebee;
+  --c-hex-red-100: #ffcdd2;
+  --c-hex-red-200: #ef9a9a;
+  --c-hex-red-300: #e57373;
+  --c-hex-red-400: #ef5350;
+  --c-hex-red-500: #f44336;
+  --c-hex-red-600: #e53935;
+  --c-hex-red-700: #d32f2f;
+  --c-hex-red-800: #c62828;
+  --c-hex-red-900: #b71c1c;
+  --c-hex-red-A100: #ff8a80;
+  --c-hex-red-A200: #ff5252;
+  --c-hex-red-A400: #ff1744;
+  --c-hex-red-A700: #d50000;
+}
+

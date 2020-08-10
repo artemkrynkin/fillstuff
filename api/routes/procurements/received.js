@@ -181,6 +181,7 @@ procurementsRouter.post(
 			  })
 			: procurementExist;
 
+		const deleteNotificationsPositionEnds = [];
 		const positionsInsert = [];
 		const positionsErr = [];
 		const receiptsErr = [];
@@ -210,6 +211,7 @@ procurementsRouter.post(
 				else positionsInsert.push(position);
 			}
 
+			deleteNotificationsPositionEnds.push(initialPosition._id);
 			newProcurement.positions.push(position._id);
 
 			const newReceipt = new Receipt({
@@ -320,7 +322,7 @@ procurementsRouter.post(
 				procurement: procurementExist._id,
 			});
 		} else {
-			newProcurement.positions.forEach(positionId => {
+			deleteNotificationsPositionEnds.forEach(positionId => {
 				Emitter.emit('deleteStoreNotification', {
 					studio: studioId,
 					type: 'position-ends',

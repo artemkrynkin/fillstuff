@@ -28,15 +28,15 @@
 }
 
 .card:nth-child(2) {
-  background-color: var(--c-hex-br-2);
+  background-color: var(--c-hex-brightness-2);
 }
 
 .card:nth-child(3) {
-  background-color: var(--c-hex-br-3);
+  background-color: var(--c-hex-brightness-3);
 }
 
 .card:nth-child(n+4) {
-  background-color: var(--c-hex-br-4);
+  background-color: var(--c-hex-brightness-4);
   transform: scale(calc(1 - (0.05 * var(--cardIndex)))) translate(0, 0);
 }
 
@@ -125,21 +125,14 @@
 }
 
 .cardImportanceGreen {
-  border-left: 16px solid rgba(var(--c-rgb-t-300), 0.75);
+  border-left: 16px solid rgba(var(--c-rgb-teal-300), 0.75);
 }
 
 .actionButton {
-  color: var(--c-hex-bg-200);
   position: absolute;
   padding: 4px;
   right: 10px;
   top: 10px;
-}
-
-.actionButtonActive,
-.actionButtonActive:hover {
-  background-color: rgba(var(--c-rgb-bg-100), 0.4);
-  color: var(--c-hex-bg-300);
 }
 
 .header {
@@ -177,17 +170,17 @@
 
 .cardImportanceGreen .notificationIcon,
 .cardImportanceGreen .title {
-  color: var(--c-hex-t-300);
+  color: var(--c-hex-teal-300);
 }
 
 .subtitle {
-  color: var(--c-hex-bg-600);
+  color: var(--c-hex-blueGrey-600);
   font-weight: 500;
   margin-bottom: 15px;
 }
 
 .caption {
-  color: var(--c-hex-bg-300);
+  color: var(--c-hex-blueGrey-300);
   font-size: 12px;
   font-weight: 600;
   line-height: 1.2;
@@ -195,7 +188,7 @@
 }
 
 .totalPrice {
-  color: var(--c-hex-bg-700);
+  color: var(--c-hex-blueGrey-700);
   font-size: 18px;
   font-weight: 700;
 }
@@ -207,7 +200,7 @@
 }
 
 .infoItem {
-  color: var(--c-hex-bg-300);
+  color: var(--c-hex-blueGrey-300);
   font-size: 12px;
   font-weight: 600;
   max-width: 90%;
@@ -217,28 +210,31 @@
 }
 
 .infoItem:not(:first-child):before {
-  color: var(--c-hex-bg-400);
+  color: var(--c-hex-blueGrey-400);
   font-size: 13px;
   font-weight: 600;
   content: '\00a0· ';
 }
 
 .robotIcon {
-  color: var(--c-hex-bg-500);
+  color: var(--c-hex-blueGrey-500);
   display: inline-block;
   font-size: 16px;
   margin: -4px 0 0 5px;
 }
 
-.procurementComment {
-  color: var(--c-hex-bg-500);
+.commentIcon {
+  color: var(--c-hex-blueGrey-500);
+  font-size: 16px;
   transition: color 150ms ease-out;
 }
 
-.procurementComment:hover {
-  color: var(--c-hex-t-400);
+.commentIcon:hover {
+  color: var(--c-hex-teal-400);
 }
 
-.procurementComment svg {
-  font-size: 16px;
+.commentText {
+  max-width: 300px;
+  white-space: break-spaces;
+  word-break: break-word;
 }

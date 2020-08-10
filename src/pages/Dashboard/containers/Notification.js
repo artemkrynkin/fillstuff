@@ -36,8 +36,8 @@ const Notification = props => {
 			(event.target.closest('.' + styles.actionButton) &&
 				event.target.closest('.' + styles.actionButton).classList.contains(styles.actionButton)) ||
 			event.target.closest('[role="tooltip"]') ||
-			(event.target.closest('.' + styles.procurementComment) &&
-				event.target.closest('.' + styles.procurementComment).classList.contains(styles.procurementComment))
+			(event.target.closest('.' + styles.commentIcon) &&
+				event.target.closest('.' + styles.commentIcon).classList.contains(styles.commentIcon))
 		)
 			return;
 
@@ -45,7 +45,9 @@ const Notification = props => {
 			case 'position-ends':
 				return onOpenDialogByName('dialogPositionEnded', 'storeNotification', notification);
 			case 'delivery-is-expected':
-				return onOpenDialogByName('dialogProcurementExpectedView', 'procurementExpected', notification.procurement);
+				const { procurement } = notification;
+
+				return onOpenDialogByName('dialogProcurementExpectedView', 'procurementExpected', procurement);
 			default:
 				return;
 		}

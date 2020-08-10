@@ -4,20 +4,20 @@
 }
 
 .titlePrimary {
-  background-color: var(--c-hex-t-300);
+  background-color: var(--c-hex-teal-300);
   color: white;
 }
 
 .titleWhite {
   background-color: white;
-  border-bottom: 1px solid var(--c-hex-br-5);
-  color: var(--c-hex-bg-700);
+  border-bottom: 1px solid var(--c-hex-brightness-5);
+  color: var(--c-hex-blueGrey-700);
 }
 
 .titleNoTheme {
   background-color: white;
   border-bottom: none;
-  color: var(--c-hex-bg-700);
+  color: var(--c-hex-blueGrey-700);
   padding-bottom: 5px;
 }
 
@@ -32,7 +32,7 @@
 }
 
 :global(.stickyTitle) .title:global(.stuck) {
-  border-bottom: 1px solid var(--c-hex-bg-50);
+  border-bottom: 1px solid var(--c-hex-blueGrey-50);
   border-radius: 0;
 }
 
@@ -50,26 +50,24 @@
 }
 
 .titleWhite .titleText {
-  color: var(--c-hex-bg-700);
+  color: var(--c-hex-blueGrey-700);
 }
 
 .titleNoTheme .titleText {
-  color: var(--c-hex-bg-700);
+  color: var(--c-hex-blueGrey-700);
 }
 
 .close {
   bottom: 0;
-  height: 32px;
   margin: auto 0;
   padding: 0;
   position: absolute;
   right: 10px;
   top: 0;
-  width: 32px;
 }
 
 .close svg {
-  width: 20px !important;
+  font-size: 20px;
 }
 
 .titlePrimary .close {
@@ -78,18 +76,6 @@
 
 .titlePrimary .close:hover {
   color: white;
-}
-
-.titleWhite .close,
-.titleNoTheme .close,
-.titleNoContent .close {
-  color: rgba(var(--c-rgb-bg-300), 0.8);
-}
-
-.titleWhite .close:hover,
-.titleNoTheme .close:hover,
-.titleNoContent .close:hover {
-  color: var(--c-hex-bg-300);
 }
 
 .titleNoTheme .close {

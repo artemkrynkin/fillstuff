@@ -7,7 +7,7 @@ export const TableCell = withStyles({
 	root: {},
 	head: {},
 	body: {
-		borderTop: `1px solid ${theme.brightness.cBr4}`,
+		borderTop: `1px solid ${theme.brightness['4']}`,
 		borderBottom: 'none',
 		padding: '9px 15px',
 	},

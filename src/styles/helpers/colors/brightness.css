@@ -1,0 +1,15 @@
+:root {
+  /* HEX */
+  --c-hex-brightness-1: #FCFDFE;
+  --c-hex-brightness-2: #FBFCFD;
+  --c-hex-brightness-3: #FAFBFC;
+  --c-hex-brightness-4: #F5F7F8;
+  --c-hex-brightness-5: #E8ECEE;
+
+  /* RGB */
+  --c-rgb-brightness-1: 252, 253, 254;
+  --c-rgb-brightness-2: 251, 252, 253;
+  --c-rgb-brightness-3: 250, 251, 252;
+  --c-rgb-brightness-4: 245, 247, 248;
+  --c-rgb-brightness-5: 232, 236, 238;
+}

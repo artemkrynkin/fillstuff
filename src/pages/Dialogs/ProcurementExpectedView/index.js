@@ -1,198 +1,138 @@
-import React, { Fragment, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import ClassNames from 'classnames';
-import moment from 'moment';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import DialogContent from '@material-ui/core/DialogContent';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import MenuList from '@material-ui/core/MenuList';
-import Typography from '@material-ui/core/Typography';
-
-import { formatNumber } from 'shared/utils';
 
 import { DialogSticky, DialogTitle } from 'src/components/Dialog';
-import { DefinitionList, DefinitionListItem } from 'src/components/Definition';
 import MenuItem from 'src/components/MenuItem';
 import Dropdown from 'src/components/Dropdown';
-import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
-import AvatarTitle from 'src/components/AvatarTitle';
 
-import ReceiptTempPosition from './ReceiptTempPosition';
+import { getProcurementExpected } from 'src/actions/procurements';
+
+import Content from './Content';
 
 import styles from './index.module.css';
 
-const momentDate = moment();
-
 const ProcurementExpectedView = props => {
-	const { dialogOpen, onCloseDialog, onExitedDialog, selectedProcurement, onOpenDialogByName } = props;
+	const { dialogOpen, onCloseDialog, selectedProcurementId, onOpenDialogByName } = props;
 	const refDropdownActions = useRef(null);
 	const [dropdownActions, setDropdownActions] = useState(false);
+	const [selectedProcurement, setSelectedProcurement] = useState(null);
 
-	if (!selectedProcurement) return null;
+	if (!selectedProcurementId) return null;
+
+	const onEnterDialog = () => {
+		const { onCloseDialog } = props;
+
+		if (selectedProcurementId) {
+			props.getProcurementExpected({ procurementId: selectedProcurementId }).then(response => {
+				if (response.status === 'success') {
+					setSelectedProcurement(response.data);
+				} else {
+					onCloseDialog();
+				}
+			});
+		} else {
+			setSelectedProcurement(null);
+		}
+	};
+
+	const onExitedDialog = () => {
+		const { onExitedDialog } = props;
+
+		if (selectedProcurement) setSelectedProcurement(null);
+		if (onExitedDialog) onExitedDialog();
+	};
 
 	const onHandleDropdownActions = value => setDropdownActions(value === null || value === undefined ? prevValue => !prevValue : value);
 
-	const isCurrentYear = momentDate.isSame(selectedProcurement.deliveryDate, 'year');
-	const deliveryDate = moment(selectedProcurement.deliveryDate).format(isCurrentYear ? 'D MMMM' : 'D MMMM YYYY');
-
 	return (
-		<DialogSticky open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth="md" scroll="body" stickyTitle>
+		<DialogSticky
+			open={dialogOpen}
+			onEnter={onEnterDialog}
+			onClose={onCloseDialog}
+			onExited={onExitedDialog}
+			maxWidth="md"
+			scroll="body"
+			stickyTitle
+		>
 			<DialogTitle onClose={onCloseDialog} theme="white">
-				<Grid className={styles.headerActions} alignItems="center" container>
-					{selectedProcurement.isConfirmed ? (
-						<Button
-							onClick={() => onOpenDialogByName('dialogProcurementReceivedCreate', 'procurementReceived', selectedProcurement)}
-							color="primary"
-							variant="contained"
-							size="small"
+				{selectedProcurement ? (
+					<Grid className={styles.headerActions} alignItems="center" container>
+						{selectedProcurement.isConfirmed ? (
+							<Button
+								onClick={() => onOpenDialogByName('dialogProcurementReceivedCreate', 'procurementReceived', selectedProcurement)}
+								color="primary"
+								variant="contained"
+								size="small"
+							>
+								Оформить закупку
+							</Button>
+						) : (
+							<Button
+								onClick={() => onOpenDialogByName('dialogProcurementExpectedConfirm', 'procurementExpected', selectedProcurement)}
+								color="primary"
+								variant="contained"
+								size="small"
+							>
+								Подтвердить заказ
+							</Button>
+						)}
+						<IconButton
+							ref={refDropdownActions}
+							className={ClassNames({
+								[styles.otherActionsButton]: true,
+								activeAction: dropdownActions,
+							})}
+							onClick={() => onHandleDropdownActions()}
 						>
-							Оформить закупку
-						</Button>
-					) : (
-						<Button
-							onClick={() => onOpenDialogByName('dialogProcurementExpectedConfirm', 'procurementExpected', selectedProcurement)}
-							color="primary"
-							variant="contained"
-							size="small"
-						>
-							Подтвердить заказ
-						</Button>
-					)}
-					<IconButton
-						ref={refDropdownActions}
-						className={ClassNames({
-							[styles.otherActionsButton]: true,
-							[styles.otherActionsButtonActive]: dropdownActions,
-						})}
-						onClick={() => onHandleDropdownActions()}
-					>
-						<FontAwesomeIcon icon={['far', 'ellipsis-v']} />
-					</IconButton>
-				</Grid>
+							<FontAwesomeIcon icon={['far', 'ellipsis-h']} />
+						</IconButton>
+					</Grid>
+				) : null}
 			</DialogTitle>
-			<DialogContent style={{ overflow: 'initial' }}>
-				<Typography variant="h6" gutterBottom>
-					Информация по заказу
-				</Typography>
-				<DefinitionList>
-					<DefinitionListItem
-						term="Заказал"
-						value={
-							<AvatarTitle
-								classNames={{
-									image: styles.avatarImage,
-									title: styles.avatarTitle,
-								}}
-								imageSrc={selectedProcurement.orderedByMember.user.avatar}
-								title={selectedProcurement.orderedByMember.user.name}
-							/>
-						}
-					/>
-					<DefinitionListItem term="Магазин" value={selectedProcurement.shop.name} />
-					{selectedProcurement.isConfirmed ? (
-						<DefinitionListItem
-							term="Дата доставки"
-							value={
-								!selectedProcurement.isUnknownDeliveryDate ? (
-									<Fragment>
-										{deliveryDate}{' '}
-										{selectedProcurement.deliveryTimeFrom && selectedProcurement.deliveryTimeTo
-											? selectedProcurement.deliveryTimeFrom !== selectedProcurement.deliveryTimeTo
-												? `с ${selectedProcurement.deliveryTimeFrom} до ${selectedProcurement.deliveryTimeTo}`
-												: `в ${selectedProcurement.deliveryTimeFrom}`
-											: null}
-									</Fragment>
-								) : (
-									'Дата доставки не известна'
-								)
-							}
-						/>
-					) : null}
-					<DefinitionListItem
-						term="Итого"
-						value={
-							<NumberFormat
-								value={formatNumber(selectedProcurement.totalPrice, { toString: true })}
-								renderText={value => value}
-								displayType="text"
-								{...currencyMoneyFormatProps}
-							/>
-						}
-					/>
-					<DefinitionListItem
-						term="Стоимость позиций"
-						value={
-							<NumberFormat
-								value={formatNumber(selectedProcurement.pricePositions, { toString: true })}
-								renderText={value => value}
-								displayType="text"
-								{...currencyMoneyFormatProps}
-							/>
-						}
-					/>
-					<DefinitionListItem
-						term="Стоимость доставки"
-						value={
-							<NumberFormat
-								value={formatNumber(selectedProcurement.costDelivery, { toString: true })}
-								renderText={value => value}
-								displayType="text"
-								{...currencyMoneyFormatProps}
-							/>
-						}
-					/>
-					{selectedProcurement.comment ? (
-						<DefinitionListItem
-							term="Комментарий"
-							value={<div style={{ whiteSpace: 'break-spaces' }}>{selectedProcurement.comment}</div>}
-						/>
-					) : null}
-				</DefinitionList>
-
-				<Typography variant="h6" style={{ marginTop: 40 }} gutterBottom>
-					Позиции в заказе
-				</Typography>
-				{selectedProcurement.receiptsTempPositions.length
-					? selectedProcurement.receiptsTempPositions.map((receiptTempPosition, index) => (
-							<ReceiptTempPosition key={receiptTempPosition.position._id} index={index} receiptTempPosition={receiptTempPosition} />
-					  ))
-					: null}
-			</DialogContent>
-
-			<Dropdown
-				anchor={refDropdownActions}
-				open={dropdownActions}
-				onClose={() => onHandleDropdownActions(false)}
-				placement="bottom-end"
-				disablePortal={false}
-			>
-				<MenuList>
-					{selectedProcurement.isConfirmed ? (
-						<MenuItem
-							onClick={() => {
-								onHandleDropdownActions();
-								onOpenDialogByName('dialogProcurementExpectedEdit', 'procurementExpected', selectedProcurement);
-							}}
-							iconBefore={<FontAwesomeIcon icon={['far', 'pen']} />}
-						>
-							Редактировать
-						</MenuItem>
-					) : null}
-					<MenuItem
-						onClick={() => {
-							onHandleDropdownActions();
-							onOpenDialogByName('dialogProcurementExpectedCancel', 'procurementExpected', selectedProcurement);
-						}}
-						iconBefore={<FontAwesomeIcon icon={['far', 'undo']} />}
-						destructive
+			{selectedProcurement ? (
+				<>
+					<Content procurement={selectedProcurement} />
+					<Dropdown
+						anchor={refDropdownActions}
+						open={dropdownActions}
+						onClose={() => onHandleDropdownActions(false)}
+						placement="bottom-end"
+						disablePortal={false}
 					>
-						Отменить заказ
-					</MenuItem>
-				</MenuList>
-			</Dropdown>
+						<MenuList>
+							{selectedProcurement.isConfirmed ? (
+								<MenuItem
+									onClick={() => {
+										onHandleDropdownActions();
+										onOpenDialogByName('dialogProcurementExpectedEdit', 'procurementExpected', selectedProcurement);
+									}}
+									iconBefore={<FontAwesomeIcon icon={['far', 'pen']} />}
+								>
+									Редактировать
+								</MenuItem>
+							) : null}
+							<MenuItem
+								onClick={() => {
+									onHandleDropdownActions();
+									onOpenDialogByName('dialogProcurementExpectedCancel', 'procurementExpected', selectedProcurement);
+								}}
+								iconBefore={<FontAwesomeIcon icon={['far', 'undo']} />}
+								destructive
+							>
+								Отменить заказ
+							</MenuItem>
+						</MenuList>
+					</Dropdown>
+				</>
+			) : null}
 		</DialogSticky>
 	);
 };
@@ -205,4 +145,10 @@ ProcurementExpectedView.propTypes = {
 	onOpenDialogByName: PropTypes.func,
 };
 
-export default ProcurementExpectedView;
+const mapDispatchToProps = dispatch => {
+	return {
+		getProcurementExpected: params => dispatch(getProcurementExpected({ params })),
+	};
+};
+
+export default connect(null, mapDispatchToProps)(ProcurementExpectedView);

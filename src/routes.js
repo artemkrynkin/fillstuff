@@ -42,7 +42,6 @@ import Registration from 'src/pages/Registration';
 import UserSettings from 'src/pages/UserSettings';
 
 import stylesPage from 'src/styles/page.module.css';
-import stylesAppShell from 'src/styles/appShell.module.css';
 
 const LoginFallback = signedOutFallback(
 	() => <Redirect to="/dashboard" />,
@@ -131,7 +130,7 @@ const snackbarSettings = {
 		horizontal: 'left',
 	},
 	preventDuplicate: true,
-	autoHideDuration: 700000,
+	autoHideDuration: 7000,
 	iconVariant: {
 		success: <FontAwesomeIcon icon={['fal', 'check-circle']} />,
 		error: <FontAwesomeIcon icon={['fal', 'times-circle']} />,
@@ -170,7 +169,7 @@ const Routes = props => {
          */}
 				<AuthViewHandler>{() => null}</AuthViewHandler>
 
-				<div className={stylesAppShell.container}>
+				<div>
 					<div className={stylesPage.pageWrapper}>
 						{currentUser && currentUser._id && currentStudio && currentStudio._id && currentMember && currentMember._id ? (
 							<HelpPanel />

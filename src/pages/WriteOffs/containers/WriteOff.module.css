@@ -3,7 +3,7 @@
 }
 
 .writeOff:hover {
-  background-color: var(--c-hex-br-2);
+  background-color: var(--c-hex-brightness-2);
 }
 
 .moneyContainer {
@@ -20,40 +20,28 @@
 }
 
 .moneyLarge {
-  color: var(--c-hex-bg-700);
+  color: var(--c-hex-blueGrey-700);
   font-size: 13px;
   font-weight: 400;
 }
 
 .moneySmall {
-  color: var(--c-hex-bg-300);
+  color: var(--c-hex-blueGrey-300);
   font-size: 11px;
   font-weight: 600;
   margin-top: 4px;
 }
 
 .caption {
-  color: var(--c-hex-bg-300);
+  color: var(--c-hex-blueGrey-300);
   font-size: 11px;
   font-weight: 600;
 }
 
 .cancelWriteOffButton {
-  color: var(--c-hex-bg-200);
-  height: 32px;
+  font-size: 14px;
   padding: 0;
   opacity: 0;
-  transition: color 150ms ease-out, opacity 150ms ease-out;
-  width: 32px;
-}
-
-.cancelWriteOffButton:hover {
-  background-color: rgba(var(--c-rgb-bg-100), 0.2);
-  color: var(--c-hex-bg-300);
-}
-
-.cancelWriteOffButton svg {
-  font-size: 14px;
 }
 
 .writeOff:hover .cancelWriteOffButton {

@@ -8,7 +8,7 @@
 
 .photoImg {
   border-radius: 8px;
-  box-shadow: 0 0 0 5px var(--c-hex-bg-100);
+  box-shadow: 0 0 0 5px var(--c-hex-blueGrey-100);
   display: flex;
   justify-content: center;
   height: 150px;
@@ -24,7 +24,7 @@
 
 .photoImg_null {
   align-items: flex-end;
-  background-color: var(--c-hex-br-5);
+  background-color: var(--c-hex-brightness-5);
 }
 
 .photoImg_null svg {
@@ -36,11 +36,11 @@
 .buttonLink {
   background: none;
   border: none;
-  color: var(--c-hex-t-500);
+  color: var(--c-hex-teal-500);
   font-size: 13px;
   font-weight: 500;
 }
 
 .buttonLink:hover {
-  color: var(--c-hex-t-400);
+  color: var(--c-hex-teal-400);
 }

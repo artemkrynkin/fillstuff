@@ -16,6 +16,7 @@ import Chips from 'src/components/Chips';
 import { DefinitionList, DefinitionListItem } from 'src/components/Definition';
 
 import styles from './PositionDetails.module.css';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const PositionDetails = props => {
 	const { position, onOpenDialogPosition, onCancelArchivePositionAfterEnded } = props;
@@ -32,7 +33,7 @@ const PositionDetails = props => {
 					ref={refDropdownActions}
 					className={ClassNames({
 						[styles.actionButton]: true,
-						[styles.actionButtonActive]: dropdownActions,
+						activeAction: dropdownActions,
 					})}
 					onClick={() => onHandleDropdownActions()}
 				>
@@ -69,21 +70,39 @@ const PositionDetails = props => {
 								value={
 									<Chips
 										chips={position.shops}
-										onRenderChipLabel={value =>
-											value.shop.link ? (
-												<a
-													// eslint-disable-next-line
-													href={!~value.shop.link.search(/^http[s]?\:\/\//) ? `//${value.shop.link}` : `${value.shop.link}`}
-													target="_blank"
-													rel="noreferrer noopener"
-													style={{ margin: '-5px -12px -6px', padding: '5px 12px 6px' }}
-												>
-													{value.shop.name}
-												</a>
-											) : (
-												<span>{value.shop.name}</span>
-											)
-										}
+										onRenderChipLabel={shop => {
+											const link = shop.link || shop.shop.link;
+
+											return (
+												<>
+													{link ? (
+														<a
+															// eslint-disable-next-line
+															href={!~link.search(/^http[s]?\:\/\//) ? `//${link}` : `${link}`}
+															target="_blank"
+															rel="noreferrer noopener"
+															style={{ margin: '-5px -12px -6px', padding: '5px 12px 6px' }}
+														>
+															{shop.shop.name}
+														</a>
+													) : (
+														<span>{shop.shop.name}</span>
+													)}
+													{shop.comment ? (
+														<Tooltip
+															title={<div className={styles.commentText}>{shop.comment}</div>}
+															placement="bottom"
+															leaveDelay={500}
+															interactive
+														>
+															<span className={styles.comment}>
+																<FontAwesomeIcon icon={['far', 'comment']} />
+															</span>
+														</Tooltip>
+													) : null}
+												</>
+											);
+										}}
 										onRemoveChip={null}
 									/>
 								}

@@ -72,6 +72,40 @@ procurementsRouter.post(
 );
 
 procurementsRouter.post(
+	'/getProcurementExpected',
+	isAuthedResolver,
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
+	async (req, res, next) => {
+		const {
+			params: { procurementId },
+		} = req.body;
+
+		Procurement.findById(procurementId)
+			.populate([
+				{
+					path: 'orderedByMember',
+					select: 'user',
+					populate: {
+						path: 'user',
+						select: 'avatar name email',
+					},
+				},
+				{
+					path: 'receiptsTempPositions.position',
+					populate: {
+						path: 'characteristics',
+					},
+				},
+				{
+					path: 'receiptsTempPositions.characteristics shop',
+				},
+			])
+			.then(procurement => res.json(procurement))
+			.catch(err => next({ code: 2, err }));
+	}
+);
+
+procurementsRouter.post(
 	'/createProcurementExpected',
 	isAuthedResolver,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),

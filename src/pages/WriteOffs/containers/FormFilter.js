@@ -14,6 +14,7 @@ import Divider from '@material-ui/core/Divider';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
+import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import MomentUtils from '@material-ui/pickers/adapter/moment';
 import { StaticDateRangePicker, LocalizationProvider } from '@material-ui/pickers';
@@ -25,7 +26,7 @@ import Dropdown from 'src/components/Dropdown';
 import PositionNameInList from 'src/components/PositionNameInList';
 import MenuItem from 'src/components/MenuItem';
 
-import { FilterSearchTextField, IconButtonRed } from './Filter.styles';
+import { FilterSearchTextField } from './Filter.styles';
 import styles from './Filter.module.css';
 
 const roles = ['all', 'owners', 'admins', 'artists'];
@@ -263,7 +264,7 @@ const FormFilter = props => {
 				{/* Filter Only Canceled */}
 				<div className={styles.bottomContainerItem}>
 					<Tooltip title="Показывать только отменённые списания">
-						<ButtonBase
+						<IconButton
 							className={ClassNames({
 								[styles.filterButtonOnlyCanceled]: true,
 								[styles.filterButtonOnlyCanceledActive]: values.onlyCanceled,
@@ -272,7 +273,7 @@ const FormFilter = props => {
 							disableRipple
 						>
 							<FontAwesomeIcon icon={['far', 'undo']} />
-						</ButtonBase>
+						</IconButton>
 					</Tooltip>
 				</div>
 
@@ -283,13 +284,15 @@ const FormFilter = props => {
 					values.role !== 'all' ||
 					values.onlyCanceled !== false ? (
 						<Tooltip title="Сбросить все фильтры">
-							<IconButtonRed
-								className={styles.filterButtonResetAll}
+							<IconButton
+								className={ClassNames({
+									[styles.filterButtonResetAll]: true,
+									destructiveAction: true,
+								})}
 								onClick={() => onResetAllFilters(setFieldValue, submitForm)}
-								color="primary"
 							>
 								<FontAwesomeIcon icon={['fal', 'times']} />
-							</IconButtonRed>
+							</IconButton>
 						</Tooltip>
 					) : null}
 				</div>

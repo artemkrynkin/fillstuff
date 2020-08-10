@@ -1,0 +1,16 @@
+:root {
+  --c-hex-blue-50: #e3f2fd;
+  --c-hex-blue-100: #bbdefb;
+  --c-hex-blue-200: #90caf9;
+  --c-hex-blue-300: #64b5f6;
+  --c-hex-blue-400: #42a5f5;
+  --c-hex-blue-500: #2196f3;
+  --c-hex-blue-600: #1e88e5;
+  --c-hex-blue-700: #1976d2;
+  --c-hex-blue-800: #1565c0;
+  --c-hex-blue-900: #0d47a1;
+  --c-hex-blue-A100: #82b1ff;
+  --c-hex-blue-A200: #448aff;
+  --c-hex-blue-A400: #2979ff;
+  --c-hex-blue-A700: #2962ff;
+}

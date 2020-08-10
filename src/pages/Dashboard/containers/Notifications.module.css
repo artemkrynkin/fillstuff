@@ -14,8 +14,8 @@
 }
 
 .stickyHeader {
-  background-color: var(--c-hex-br-4);
-  box-shadow: 0 0 5px 5px var(--c-hex-br-4);
+  background-color: var(--c-hex-brightness-4);
+  box-shadow: 0 0 5px 5px var(--c-hex-brightness-4);
   margin-bottom: 8px;
   padding: 7px 0;
   position: sticky;
@@ -39,9 +39,9 @@
 }
 
 .showButton {
-  background-color: var(--c-hex-br-5);
+  background-color: var(--c-hex-brightness-5);
   border-radius: 20px;
-  color: var(--c-hex-bg-300);
+  color: var(--c-hex-blueGrey-300);
   font-size: 12px;
   font-weight: 600;
   line-height: 1.5;
@@ -51,8 +51,8 @@
 }
 
 .showButton:hover {
-  background-color: var(--c-hex-bg-100);
-  color: var(--c-hex-bg-500);
+  background-color: var(--c-hex-blueGrey-100);
+  color: var(--c-hex-blueGrey-500);
 }
 
 .showButton svg {

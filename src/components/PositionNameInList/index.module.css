@@ -20,25 +20,25 @@
 }
 
 .sizeSm .name {
-  color: var(--c-hex-bg-700);
+  color: var(--c-hex-blueGrey-700);
   font-size: 13px;
   font-weight: 400;
 }
 
 .sizeMd .name {
-  color: var(--c-hex-bg-600);
+  color: var(--c-hex-blueGrey-600);
   font-size: 16px;
   font-weight: 600;
 }
 
 .sizeLg .name {
-  color: var(--c-hex-bg-700);
+  color: var(--c-hex-blueGrey-700);
   font-size: 18px;
   font-weight: 500;
 }
 
 .characteristics {
-  color: var(--c-hex-bg-300);
+  color: var(--c-hex-blueGrey-300);
   font-weight: 600;
 }
 
@@ -77,17 +77,17 @@
 }
 
 .deliveryIsExpected {
-  color: var(--c-hex-t-300);
+  color: var(--c-hex-teal-300);
 }
 
 .archive {
-  color: var(--c-hex-o-1);
+  color: var(--c-hex-red-500);
 }
 
 .archivedAfterEnded {
-  color: var(--c-hex-o-15);
+  color: var(--c-hex-orange-500);
 }
 
 .writeOffUndo {
-  color: var(--c-hex-o-1);
+  color: var(--c-hex-red-500);
 }

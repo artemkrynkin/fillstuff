@@ -1,13 +1,13 @@
 .buttonLink {
   background: none;
   border: none;
-  color: var(--c-hex-t-500);
+  color: var(--c-hex-teal-500);
   font-size: 13px;
   font-weight: 500;
 }
 
 .buttonLink:hover {
-  color: var(--c-hex-t-400);
+  color: var(--c-hex-teal-400);
 }
 
 .status {
@@ -16,13 +16,13 @@
 }
 
 .statusRed {
-  color: var(--c-hex-o-1);
+  color: var(--c-hex-red-500);
 }
 
 .statusYellow {
-  color: var(--c-hex-o-15);
+  color: var(--c-hex-orange-500);
 }
 
 .statusGreen {
-  color: var(--c-hex-t-A700);
+  color: var(--c-hex-teal-A700);
 }

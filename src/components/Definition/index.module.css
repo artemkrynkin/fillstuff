@@ -19,7 +19,7 @@
 }
 
 .term {
-  color: var(--c-hex-bg-400);
+  color: var(--c-hex-blueGrey-400);
   font-size: 13px;
   font-weight: 500;
   flex: 0 1 auto;
@@ -31,7 +31,7 @@
 .dots {
   flex: 1 0 20px;
   margin: 0 2px;
-  border-bottom: 1px dotted rgba(var(--c-rgb-bg-100), 0.8);
+  border-bottom: 1px dotted rgba(var(--c-rgb-blueGrey-100), 0.8);
 }
 
 .definitionContainer {
@@ -41,7 +41,7 @@
 }
 
 .definitionValue {
-  color: var(--c-hex-bg-700);
+  color: var(--c-hex-blueGrey-700);
   font-size: 13px;
   line-height: 1.3;
   overflow: hidden;

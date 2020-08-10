@@ -5,14 +5,14 @@ body {
 }
 
 body {
-  background-color: var(--c-hex-br-4);
-  color: var(--c-hex-bg-700);
+  background-color: var(--c-hex-brightness-4);
+  color: var(--c-hex-blueGrey-700);
   margin: 0;
   min-width: 1280px;
 }
 
 ::selection {
-  background: var(--c-hex-t-A700);
+  background: var(--c-hex-teal-A700);
   color: white;
 }
 
@@ -32,6 +32,6 @@ img {
 }
 
 a {
-  color: var(--c-hex-t-500);
+  color: var(--c-hex-teal-500);
   text-decoration: none;
 }

@@ -1,5 +1,5 @@
 .container {
-  background-color: var(--c-hex-sg-4);
+  background-color: var(--c-hex-slateGrey-4);
   width: 256px;
 }
 
@@ -45,7 +45,7 @@
 .menuLink {
   align-items: center;
   border-radius: 8px;
-  color: var(--c-hex-sg-2);
+  color: var(--c-hex-slateGrey-2);
   display: flex;
   font-size: 14px;
   opacity: 0.9;
@@ -55,14 +55,14 @@
 }
 
 .menuLink:hover {
-  background-color: rgba(var(--c-rgb-sg-2), 0.1);
+  background-color: rgba(var(--c-rgb-slateGrey-2), 0.1);
   opacity: 1;
 }
 
 .menuLink_active,
 .menuLink_active:hover {
-  background-color: var(--c-hex-sg-5);
-  color: var(--c-hex-t-A100);
+  background-color: var(--c-hex-slateGrey-5);
+  color: var(--c-hex-teal-A100);
   opacity: 1;
 }
 

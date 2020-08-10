@@ -35,11 +35,11 @@
 }
 
 .filterButtonLink {
-  color: var(--c-hex-t-500);
+  color: var(--c-hex-teal-500);
 }
 
 .filterButtonLink:hover {
-  color: var(--c-hex-t-400);
+  color: var(--c-hex-teal-400);
 }
 
 .filterButtonLink span {
@@ -51,7 +51,7 @@
 }
 
 .filterButtonLink > svg {
-  color: var(--c-hex-t-300);
+  color: var(--c-hex-teal-300);
   font-size: 12px;
   margin: 2px 0 0 5px;
   transform: rotate(0deg);
@@ -59,7 +59,7 @@
 }
 
 .filterButtonLinkReset {
-  color: var(--c-hex-bg-300);
+  color: var(--c-hex-blueGrey-300);
   font-size: 13px;
   margin-left: -6px;
   padding: 13px 6px 13px 0;
@@ -67,13 +67,12 @@
 }
 
 .filterButtonLinkReset:hover {
-  color: var(--c-hex-bg-600);
+  color: var(--c-hex-blueGrey-600);
 }
 
 .filterButtonResetAll {
-  height: 32px;
+  color: var(--c-hex-red-500);
   padding: 6px;
-  width: 32px;
 }
 
 .filterSearchTextFieldContainer {
@@ -83,7 +82,7 @@
 }
 
 .filterSearchTextFieldClear {
-  color: var(--c-hex-bg-300);
+  color: var(--c-hex-blueGrey-300);
   font-size: 16px;
   padding: 12px 10px;
   position: absolute;
@@ -93,7 +92,7 @@
 }
 
 .filterSearchTextFieldClear:hover {
-  color: var(--c-hex-bg-600);
+  color: var(--c-hex-blueGrey-600);
 }
 
 .dropdownContent {
@@ -101,7 +100,7 @@
 }
 
 .dropdownFooter {
-  border-top: 1px solid var(--c-hex-br-5);
+  border-top: 1px solid var(--c-hex-brightness-5);
   padding: 10px 15px;
 }
 
@@ -123,7 +122,7 @@
 }
 
 .isArchived {
-  color: var(--c-hex-o-15);
+  color: var(--c-hex-orange-500);
   font-size: 11px;
   font-weight: 600;
   margin-left: 5px;
@@ -135,7 +134,7 @@
 }
 
 .userPhoto {
-  background-color: var(--c-hex-br-5);
+  background-color: var(--c-hex-brightness-5);
   height: 32px;
   margin-right: 10px;
   width: 32px;
@@ -148,7 +147,7 @@
 .userIcon {
   align-items: flex-end;
   justify-content: center;
-  border: 2px solid var(--c-hex-bg-100);
+  border: 2px solid var(--c-hex-blueGrey-100);
   border-radius: 50%;
   display: flex;
   height: 100%;
@@ -162,7 +161,7 @@
 }
 
 .userTitle {
-  color: var(--c-hex-bg-600);
+  color: var(--c-hex-blueGrey-600);
   font-size: 13px;
   font-weight: 600;
   line-height: 1.1;
@@ -173,7 +172,7 @@
 }
 
 .userCaption {
-  color: var(--c-hex-bg-400);
+  color: var(--c-hex-blueGrey-400);
   font-size: 11px;
   line-height: 1.3;
   margin-top: 4px;

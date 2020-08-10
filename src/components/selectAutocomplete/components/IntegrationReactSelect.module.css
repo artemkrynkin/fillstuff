@@ -6,7 +6,7 @@
 }
 
 .optionSelected {
-  background-color: var(--c-hex-t-300);
+  background-color: var(--c-hex-teal-300);
   color: white;
   margin: -7px -8px;
   padding: 7px 8px;

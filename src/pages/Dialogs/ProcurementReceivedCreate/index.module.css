@@ -1,5 +1,5 @@
 .helpIcon {
-  color: var(--c-hex-bg-300);
+  color: var(--c-hex-blueGrey-300);
   cursor: pointer;
   display: inline-block;
   font-size: 16px;
@@ -8,7 +8,7 @@
 }
 
 .receipts {
-  border-top: 1px solid var(--c-hex-br-5);
+  border-top: 1px solid var(--c-hex-brightness-5);
   margin: 0 -20px -12px;
   padding-top: 20px;
 }
@@ -34,7 +34,7 @@
 }
 
 .addPositionContainer:global(.stuck) .addPositionWrap {
-  box-shadow: 0 2px 2px 0 rgba(var(--c-rgb-bg-300), 0.2);
+  box-shadow: 0 2px 2px 0 rgba(var(--c-rgb-blueGrey-300), 0.2);
 }
 
 .receiptsItems {
@@ -50,14 +50,14 @@
 }
 
 .receiptItemNumber {
-  color: var(--c-hex-bg-300);
+  color: var(--c-hex-blueGrey-300);
   font-size: 14px;
   font-weight: 600;
   width: 35px;
 }
 
 .receiptItemContent {
-  border-bottom: 1px solid var(--c-hex-br-5);
+  border-bottom: 1px solid var(--c-hex-brightness-5);
   padding-bottom: 20px;
 }
 
@@ -72,17 +72,15 @@
 
 .editActionButton,
 .deleteActionButton {
-  height: 32px;
   padding: 0;
   margin-left: 5px;
-  width: 32px;
 }
 
 .editActionButton {
   font-size: 16px;
 }
 
-.deleteActionButton svg {
+.deleteActionButton {
   font-size: 20px;
 }
 
@@ -93,11 +91,11 @@
 
 .headerInfoRed .headerInfoIcon,
 .headerInfoRed .headerInfoText {
-  color: var(--c-hex-o-1);
+  color: var(--c-hex-red-500);
 }
 
 .headerInfoBlueGrey .headerInfoIcon {
-  color: var(--c-hex-bg-300);
+  color: var(--c-hex-blueGrey-300);
 }
 
 .headerInfoIcon {
@@ -110,6 +108,6 @@
 }
 
 .searchSellingPrice {
-  color: var(--c-hex-bg-300);
+  color: var(--c-hex-blueGrey-300);
   font-size: 16px;
 }

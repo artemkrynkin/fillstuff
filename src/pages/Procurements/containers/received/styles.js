@@ -14,14 +14,14 @@ export const TableCell = withStyles({
 		paddingBottom: 18,
 	},
 	body: {
-		borderTop: `1px solid ${theme.brightness.cBr4}`,
+		borderTop: `1px solid ${theme.brightness['4']}`,
 		borderBottom: 'none',
 	},
 })(MuiTableCell);
 
 export const TableRowHighlight = makeStyles({
 	root: {
-		backgroundColor: `rgba(${ColorConvert.hex.rgb(theme.teal.cT50)}, 0.6)`,
+		backgroundColor: `rgba(${ColorConvert.hex.rgb(theme.teal['50'])}, 0.6)`,
 	},
 });
 

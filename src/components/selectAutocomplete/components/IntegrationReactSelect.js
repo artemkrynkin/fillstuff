@@ -41,7 +41,7 @@ const useStyles = makeStyles(DefaultTheme => ({
 	},
 	chipFocused: {
 		backgroundColor: emphasize(
-			DefaultTheme.palette.type === 'light' ? DefaultTheme.palette.grey[300] : DefaultTheme.palette.grey[700],
+			DefaultTheme.palette.type === 'light' ? DefaultTheme.palette.grey['300'] : DefaultTheme.palette.grey['700'],
 			0.08
 		),
 	},
@@ -49,14 +49,14 @@ const useStyles = makeStyles(DefaultTheme => ({
 		padding: DefaultTheme.spacing(1, 2),
 	},
 	singleValue: {
-		color: theme.blueGrey.cBg700,
+		color: theme.blueGrey['700'],
 		fontSize: 13,
 	},
 	singleValueDisabled: {
 		fontSize: 13,
 	},
 	placeholder: {
-		color: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg700)}, 0.42)`,
+		color: `rgba(${ColorConvert.hex.rgb(theme.blueGrey['700'])}, 0.42)`,
 		fontSize: 13,
 		position: 'absolute',
 	},
@@ -81,32 +81,32 @@ const selectStyles = {
 	}),
 	clearIndicator: base => ({
 		...base,
-		color: theme.blueGrey.cBg300,
+		color: theme.blueGrey['300'],
 		cursor: 'pointer',
 		fontSize: 16,
 		'&:hover': {
-			color: theme.blueGrey.cBg600,
+			color: theme.blueGrey['600'],
 		},
 	}),
 	dropdownIndicator: base => ({
 		...base,
-		color: theme.blueGrey.cBg300,
+		color: theme.blueGrey['300'],
 		cursor: 'pointer',
 		fontSize: 16,
 		'&:hover': {
-			color: theme.blueGrey.cBg300,
+			color: theme.blueGrey['300'],
 		},
 	}),
 	indicatorSeparator: base => ({
 		...base,
-		backgroundColor: theme.blueGrey.cBg100,
+		backgroundColor: theme.blueGrey['100'],
 		marginBottom: 4,
 		marginTop: 4,
 	}),
 	input: base => ({
 		...base,
 		margin: 0,
-		color: theme.blueGrey.cBg700,
+		color: theme.blueGrey['700'],
 		'& input': {
 			font: 'inherit',
 		},
@@ -114,9 +114,9 @@ const selectStyles = {
 	menu: base => ({
 		...base,
 		boxShadow: [
-			`0 1px 8px 0 rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg600)}, 0.2)`,
-			`0 3px 4px 0 rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg600)}, 0.14)`,
-			`0 3px 3px -2px rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg600)}, 0.12)`,
+			`0 1px 8px 0 rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2)`,
+			`0 3px 4px 0 rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14)`,
+			`0 3px 3px -2px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
 		].join(),
 		borderRadius: 8,
 	}),

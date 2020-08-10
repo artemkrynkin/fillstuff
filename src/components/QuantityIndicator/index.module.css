@@ -5,7 +5,7 @@
 }
 
 .minimumBalance {
-  color: var(--c-hex-bg-300);
+  color: var(--c-hex-blueGrey-300);
   display: inline-block;
   font-size: 11px;
   font-weight: 600;
@@ -26,13 +26,13 @@
 }
 
 .quantityLarge {
-  color: var(--c-hex-bg-700);
+  color: var(--c-hex-blueGrey-700);
   font-size: 13px;
   font-weight: 400;
 }
 
 .quantitySmall {
-  color: var(--c-hex-bg-300);
+  color: var(--c-hex-blueGrey-300);
   font-size: 11px;
   font-weight: 600;
   margin-top: 4px;
@@ -46,15 +46,15 @@
 }
 
 .circle_red {
-  background-color: var(--c-hex-o-1);
+  background-color: var(--c-hex-red-500);
 }
 
 .circle_yellow {
-  background-color: var(--c-hex-o-14);
+  background-color: var(--c-hex-orange-500);
 }
 
 .circle_green {
-  background-color: var(--c-hex-t-A700);
+  background-color: var(--c-hex-teal-A700);
 }
 
 [aria-expanded] .disappearing .circle {

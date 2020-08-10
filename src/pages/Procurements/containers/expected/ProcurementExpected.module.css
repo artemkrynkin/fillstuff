@@ -17,21 +17,14 @@
 }
 
 .actionButton {
-  color: var(--c-hex-bg-200);
   position: absolute;
   padding: 4px;
   right: 10px;
   top: 10px;
 }
 
-.actionButtonActive,
-.actionButtonActive:hover {
-  background-color: rgba(var(--c-rgb-bg-100), 0.4);
-  color: var(--c-hex-bg-300);
-}
-
 .subtitle {
-  color: var(--c-hex-bg-600);
+  color: var(--c-hex-blueGrey-600);
   font-weight: 500;
   margin-bottom: 15px;
 }
@@ -41,7 +34,7 @@
 }
 
 .totalPrice {
-  color: var(--c-hex-bg-700);
+  color: var(--c-hex-blueGrey-700);
   font-size: 18px;
   font-weight: 700;
 }
@@ -53,7 +46,7 @@
 }
 
 .infoItem {
-  color: var(--c-hex-bg-300);
+  color: var(--c-hex-blueGrey-300);
   font-size: 12px;
   font-weight: 600;
   max-width: 90%;
@@ -63,21 +56,24 @@
 }
 
 .infoItem:not(:first-child):before {
-  color: var(--c-hex-bg-400);
+  color: var(--c-hex-blueGrey-400);
   font-size: 13px;
   font-weight: 600;
   content: '\00a0· ';
 }
 
-.procurementComment {
-  color: var(--c-hex-bg-500);
+.commentIcon {
+  color: var(--c-hex-blueGrey-500);
+  font-size: 16px;
   transition: color 150ms ease-out;
 }
 
-.procurementComment:hover {
-  color: var(--c-hex-t-400);
+.commentIcon:hover {
+  color: var(--c-hex-teal-400);
 }
 
-.procurementComment svg {
-  font-size: 16px;
+.commentText {
+  max-width: 300px;
+  white-space: break-spaces;
+  word-break: break-word;
 }

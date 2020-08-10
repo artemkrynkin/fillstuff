@@ -128,8 +128,8 @@ class DialogPositionOrGroupQRCode extends Component {
 						paddingRight: () => 20,
 						paddingTop: () => 20,
 						paddingBottom: () => 20,
-						hLineColor: () => theme.blueGrey.cBg100,
-						vLineColor: () => theme.blueGrey.cBg100,
+						hLineColor: () => theme.blueGrey['100'],
+						vLineColor: () => theme.blueGrey['100'],
 					},
 				});
 

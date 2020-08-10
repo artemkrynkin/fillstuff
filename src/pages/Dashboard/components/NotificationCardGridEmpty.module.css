@@ -1,6 +1,6 @@
 .card {
   align-items: center;
-  border: 2px dashed rgba(var(--c-rgb-bg-100), 0.7);
+  border: 2px dashed rgba(var(--c-rgb-blueGrey-100), 0.7);
   display: flex;
   border-radius: 8px;
   height: 168px;
@@ -8,7 +8,7 @@
 }
 
 .text {
-  color: var(--c-hex-bg-300);
+  color: var(--c-hex-blueGrey-300);
   font-size: 16px;
   font-weight: 600;
   line-height: 1.4;

@@ -9,7 +9,7 @@
 .tableHeaderSticky th {
   background-color: white;
   border-bottom-color: transparent;
-  box-shadow: 0 1px 0 0 var(--c-hex-br-5);
+  box-shadow: 0 1px 0 0 var(--c-hex-brightness-5);
   position: sticky;
   top: 94px;
   z-index: 1;

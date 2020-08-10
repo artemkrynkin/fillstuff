@@ -8,12 +8,12 @@
 
 .changePriceUp,
 .changePriceIconUp {
-  color: var(--c-hex-t-A700);
+  color: var(--c-hex-teal-A700);
 }
 
 .changePriceDown,
 .changePriceIconDown {
-  color: var(--c-hex-o-1);
+  color: var(--c-hex-red-500);
 }
 
 .changePriceUp,
@@ -27,6 +27,6 @@
 }
 
 .tooltipInfo {
-  color: var(--c-hex-bg-600);
+  color: var(--c-hex-blueGrey-600);
   margin-top: 20px;
 }

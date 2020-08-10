@@ -11,7 +11,7 @@
 }
 
 .dateTitle {
-  color: var(--c-hex-bg-500);
+  color: var(--c-hex-blueGrey-500);
   font-size: 18px;
   font-weight: 500;
   margin-bottom: 24px;

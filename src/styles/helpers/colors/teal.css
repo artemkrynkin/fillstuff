@@ -1,0 +1,34 @@
+:root {
+  /* HEX */
+  --c-hex-teal-50: #e0f2f1;
+  --c-hex-teal-100: #b2dfdb;
+  --c-hex-teal-200: #80cbc4;
+  --c-hex-teal-300: #4db6ac;
+  --c-hex-teal-400: #26a69a;
+  --c-hex-teal-500: #009688;
+  --c-hex-teal-600: #00897b;
+  --c-hex-teal-700: #00796b;
+  --c-hex-teal-800: #00695c;
+  --c-hex-teal-900: #004d40;
+  --c-hex-teal-A100: #a7ffeb;
+  --c-hex-teal-A200: #64ffda;
+  --c-hex-teal-A400: #1de9b6;
+  --c-hex-teal-A700: #00bfa5;
+
+  /* RGB */
+  --c-rgb-teal-50: 224, 242, 241;
+  --c-rgb-teal-100: 178, 223, 219;
+  --c-rgb-teal-200: 128, 203, 196;
+  --c-rgb-teal-300: 77, 182, 172;
+  --c-rgb-teal-400: 38, 166, 154;
+  --c-rgb-teal-500: 0, 150, 136;
+  --c-rgb-teal-600: 0, 137, 123;
+  --c-rgb-teal-700: 0, 121, 107;
+  --c-rgb-teal-800: 0, 105, 92;
+  --c-rgb-teal-900: 0, 77, 64;
+  --c-rgb-teal-A100: 167, 255, 235;
+  --c-rgb-teal-A200: 100, 255, 218;
+  --c-rgb-teal-A400: 29, 233, 182;
+  --c-rgb-teal-A700: 0, 191, 165;
+}
+

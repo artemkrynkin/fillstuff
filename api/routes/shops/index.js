@@ -16,6 +16,7 @@ shopsRouter.post(
 		const { studioId } = req.body;
 
 		Shop.find({ studio: studioId })
+			.sort({ name: 1 })
 			.then(shops => res.json(shops))
 			.catch(err => next(err));
 	}

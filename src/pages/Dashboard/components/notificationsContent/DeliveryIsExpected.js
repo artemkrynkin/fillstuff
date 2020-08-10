@@ -55,7 +55,7 @@ const DeliveryIsExpected = props => {
 				ref={refDropdownActions}
 				className={ClassNames({
 					[styles.actionButton]: true,
-					[styles.actionButtonActive]: dropdownActions,
+					activeAction: dropdownActions,
 				})}
 				onClick={() => onHandleDropdownActions()}
 				size="small"
@@ -112,12 +112,12 @@ const DeliveryIsExpected = props => {
 						<Fragment>
 							<div className={styles.infoItem}>&nbsp;</div>
 							<Tooltip
-								title={<div style={{ maxWidth: 300, whiteSpace: 'break-spaces' }}>{procurement.comment}</div>}
+								title={<div className={styles.commentText}>{procurement.comment}</div>}
 								placement="bottom"
 								leaveDelay={500}
 								interactive
 							>
-								<span className={styles.procurementComment}>
+								<span className={styles.commentIcon}>
 									<FontAwesomeIcon icon={['fal', 'comment']} />
 								</span>
 							</Tooltip>
@@ -141,6 +141,7 @@ const DeliveryIsExpected = props => {
 								onOpenDialogByName('dialogProcurementReceivedCreate', 'procurementReceived', procurement);
 							}}
 							iconBefore={<FontAwesomeIcon icon={['far', 'truck-loading']} />}
+							positive
 						>
 							Оформить закупку
 						</MenuItem>
@@ -157,6 +158,7 @@ const DeliveryIsExpected = props => {
 									<FontAwesomeIcon icon={['fas', 'check-circle']} transform="shrink-7 up-4 left-6" />
 								</span>
 							}
+							positive
 						>
 							Подтвердить заказ
 						</MenuItem>

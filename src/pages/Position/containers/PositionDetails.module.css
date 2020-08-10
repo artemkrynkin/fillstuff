@@ -1,12 +1,21 @@
 .actionButton {
-  color: var(--c-hex-bg-200);
-  height: 32px;
   padding: 0;
-  width: 32px;
 }
 
-.actionButtonActive,
-.actionButtonActive:hover {
-  background-color: rgba(var(--c-rgb-bg-100), 0.4);
-  color: var(--c-hex-bg-300);
+.comment {
+  color: var(--c-hex-blueGrey-500);
+  cursor: pointer;
+  font-size: 12px;
+  margin-left: 10px;
+  transition: color 150ms ease-out;
+}
+
+.comment:hover {
+  color: var(--c-hex-teal-400);
+}
+
+.commentText {
+  max-width: 300px;
+  white-space: break-spaces;
+  word-break: break-word;
 }

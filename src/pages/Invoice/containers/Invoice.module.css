@@ -11,7 +11,7 @@
 }
 
 .title {
-  color: var(--c-hex-bg-600);
+  color: var(--c-hex-blueGrey-600);
   display: inline-block;
   font-size: 16px;
   font-weight: 600;
@@ -23,14 +23,14 @@
 }
 
 .indicatorsTitle {
-  color: var(--c-hex-bg-700);
+  color: var(--c-hex-blueGrey-700);
   font-size: 18px;
   font-weight: 700;
   text-align: right;
 }
 
 .indicatorsTitle2 {
-  color: var(--c-hex-bg-700);
+  color: var(--c-hex-blueGrey-700);
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 1px;
@@ -38,7 +38,7 @@
 }
 
 .indicatorsSubtitle {
-  color: var(--c-hex-bg-300);
+  color: var(--c-hex-blueGrey-300);
   font-size: 12px;
   font-weight: 600;
   margin-top: 7px;
@@ -46,7 +46,7 @@
 }
 
 .indicatorsSubtitle2 {
-  color: var(--c-hex-bg-500);
+  color: var(--c-hex-blueGrey-500);
   font-size: 12px;
   font-weight: 700;
   text-align: right;
@@ -59,7 +59,7 @@
 .acceptPayment {
   background: none;
   border: none;
-  color: var(--c-hex-t-300);
+  color: var(--c-hex-teal-300);
   display: inline-block;
   font-size: 18px;
   line-height: 1;
@@ -68,11 +68,11 @@
 }
 
 .acceptPayment:hover {
-  color: var(--c-hex-t-400);
+  color: var(--c-hex-teal-400);
 }
 
 .invoicePaidIcon {
-  color: var(--c-hex-t-300);
+  color: var(--c-hex-teal-300);
   font-size: 20px;
   line-height: 1;
   margin-right: 10px;
@@ -82,6 +82,6 @@
 }
 
 .tabs {
-  border-bottom: 1px solid var(--c-hex-br-4);
+  border-bottom: 1px solid var(--c-hex-brightness-4);
   padding: 0 15px;
 }

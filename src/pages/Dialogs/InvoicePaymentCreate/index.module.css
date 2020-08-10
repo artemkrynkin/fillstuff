@@ -21,14 +21,14 @@
 }
 
 .indicatorsTitle {
-  color: var(--c-hex-bg-700);
+  color: var(--c-hex-blueGrey-700);
   font-size: 24px;
   font-weight: 700;
   text-align: center;
 }
 
 .indicatorsSubtitle {
-  color: var(--c-hex-bg-300);
+  color: var(--c-hex-blueGrey-300);
   font-size: 12px;
   font-weight: 600;
   margin: 7px auto 0;

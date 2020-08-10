@@ -45,8 +45,8 @@ const ProcurementExpected = props => {
 			(event.target.closest('.' + styles.actionButton) &&
 				event.target.closest('.' + styles.actionButton).classList.contains(styles.actionButton)) ||
 			event.target.closest('[role="tooltip"]') ||
-			(event.target.closest('.' + styles.procurementComment) &&
-				event.target.closest('.' + styles.procurementComment).classList.contains(styles.procurementComment))
+			(event.target.closest('.' + styles.commentIcon) &&
+				event.target.closest('.' + styles.commentIcon).classList.contains(styles.commentIcon))
 		)
 			return;
 
@@ -60,7 +60,7 @@ const ProcurementExpected = props => {
 					ref={refDropdownActions}
 					className={ClassNames({
 						[styles.actionButton]: true,
-						[styles.actionButtonActive]: dropdownActions,
+						activeAction: dropdownActions,
 					})}
 					onClick={() => onHandleDropdownActions()}
 					size="small"
@@ -104,12 +104,12 @@ const ProcurementExpected = props => {
 						<Fragment>
 							<div className={styles.infoItem}>&nbsp;</div>
 							<Tooltip
-								title={<div style={{ maxWidth: 300, whiteSpace: 'break-spaces' }}>{procurement.comment}</div>}
+								title={<div className={styles.commentText}>{procurement.comment}</div>}
 								placement="bottom"
 								leaveDelay={500}
 								interactive
 							>
-								<span className={styles.procurementComment}>
+								<span className={styles.commentIcon}>
 									<FontAwesomeIcon icon={['fal', 'comment']} />
 								</span>
 							</Tooltip>
@@ -132,6 +132,7 @@ const ProcurementExpected = props => {
 									onOpenDialogProcurement('dialogProcurementReceivedCreate', 'procurementReceived', procurement);
 								}}
 								iconBefore={<FontAwesomeIcon icon={['far', 'truck-loading']} />}
+								positive
 							>
 								Оформить закупку
 							</MenuItem>
@@ -148,6 +149,7 @@ const ProcurementExpected = props => {
 										<FontAwesomeIcon icon={['fas', 'check-circle']} transform="shrink-7 up-4 left-6" />
 									</span>
 								}
+								positive
 							>
 								Подтвердить заказ
 							</MenuItem>

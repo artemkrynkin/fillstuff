@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import i18n from 'i18n';
 
+import { extractHostname } from 'shared/utils';
+
 const Schema = mongoose.Schema;
 
 const Shop = new Schema({
@@ -16,6 +18,7 @@ const Shop = new Schema({
 	},
 	link: {
 		type: String,
+		set: value => extractHostname(value),
 	},
 	__v: {
 		type: Number,

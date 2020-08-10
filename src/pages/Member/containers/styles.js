@@ -20,7 +20,7 @@ export const TableCell = withStyles({
 		paddingBottom: 18,
 	},
 	body: {
-		borderTop: `1px solid ${theme.brightness.cBr4}`,
+		borderTop: `1px solid ${theme.brightness['4']}`,
 		borderBottom: 'none',
 	},
 })(MuiTableCell);

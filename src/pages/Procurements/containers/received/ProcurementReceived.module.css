@@ -23,13 +23,13 @@
 }
 
 .title {
-  color: var(--c-hex-t-500);
+  color: var(--c-hex-teal-500);
   display: inline-block;
   margin-bottom: 10px;
 }
 
 .title:hover {
-  color: var(--c-hex-t-400);
+  color: var(--c-hex-teal-400);
 }
 
 .title span {
@@ -38,14 +38,14 @@
 }
 
 .indicatorsTitle {
-  color: var(--c-hex-bg-700);
+  color: var(--c-hex-blueGrey-700);
   font-size: 18px;
   font-weight: 700;
   text-align: right;
 }
 
 .indicatorsSubtitle {
-  color: var(--c-hex-bg-300);
+  color: var(--c-hex-blueGrey-300);
   font-size: 12px;
   font-weight: 600;
   margin-top: 7px;
@@ -53,7 +53,7 @@
 }
 
 .indicatorsSubtitle2 {
-  color: var(--c-hex-bg-500);
+  color: var(--c-hex-blueGrey-500);
   font-size: 12px;
   font-weight: 700;
   text-align: right;
@@ -89,7 +89,7 @@
 .detailsButton {
   background: none;
   border: none;
-  color: var(--c-hex-bg-200);
+  color: var(--c-hex-blueGrey-200);
   display: flex;
   margin-top: -3px;
   padding-bottom: 5px;
@@ -114,6 +114,6 @@
 }
 
 .receipts {
-  border-top: 1px solid var(--c-hex-br-5);
+  border-top: 1px solid var(--c-hex-brightness-5);
   margin-top: 20px;
 }

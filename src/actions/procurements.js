@@ -42,6 +42,30 @@ export const getProcurementsExpected = (
 	};
 };
 
+export const getProcurementExpected = ({ params }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+
+		return await axios
+			.post('/api/getProcurementExpected', {
+				studioId,
+				memberId,
+				params,
+			})
+			.then(response => {
+				const { data: procurement } = response;
+
+				return Promise.resolve({ status: 'success', data: procurement });
+			})
+			.catch(error => {
+				console.error(error.response);
+
+				return Promise.resolve({ status: 'error' });
+			});
+	};
+};
+
 export const createProcurementExpected = ({ data }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;

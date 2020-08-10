@@ -30,6 +30,7 @@ import FormFieldArrayReceipts from './FormFieldArrayReceipts';
 
 import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
+import Collapse from '@material-ui/core/Collapse';
 
 const DialogShopCreate = loadable(() => import('src/pages/Dialogs/ShopCreateEdit' /* webpackChunkName: "Dialog_ShopCreateEdit" */));
 
@@ -174,44 +175,44 @@ const FormProcurementReceivedCreate = props => {
 						Чек/накладная
 					</InputLabel>
 					<Grid direction="column" container>
-						<Grid wrap="nowrap" alignItems="flex-start" spacing={2} container>
-							<Grid style={{ width: 186 }} item>
-								<Field
-									name="invoiceNumber"
-									placeholder={values.noInvoice ? '-' : 'Номер'}
-									error={Boolean(errors.invoiceNumber && touched.invoiceNumber)}
-									helperText={typeof errors.invoiceNumber === 'string' && touched.invoiceNumber ? errors.invoiceNumber : null}
-									as={TextField}
-									disabled={isSubmitting || !formEditable || values.noInvoice}
-									autoFocus={values.status === 'expected'}
-									fullWidth
-								/>
-							</Grid>
-							<Grid style={{ width: 130 }} item>
-								<Grid alignItems="baseline" container>
-									<InputLabel style={{ marginLeft: -8, marginRight: 8 }} data-inline>
-										от
-									</InputLabel>
-									<Grid style={{ flex: '1 1' }} item>
-										<TextField
-											innerRef={refDropdownInvoiceDate}
-											name="invoiceDate"
-											placeholder={values.noInvoice ? '-' : 'Дата'}
-											error={Boolean(errors.invoiceDate && touched.invoiceDate)}
-											helperText={typeof errors.invoiceDate === 'string' && touched.invoiceDate ? errors.invoiceDate : null}
-											disabled={isSubmitting || !formEditable || values.noInvoice}
-											value={values.invoiceDate ? moment(values.invoiceDate).format('DD.MM.YYYY') : ''}
-											onFocus={() => {
-												setTimeout(() => {
-													onHandleDropdownInvoiceDate(true);
-												}, 100);
-											}}
-											fullWidth
-										/>
+						<Collapse in={!values.noInvoice} timeout="auto" unmountOnExit>
+							<Grid wrap="nowrap" alignItems="flex-start" spacing={2} container>
+								<Grid style={{ width: 186 }} item>
+									<Field
+										name="invoiceNumber"
+										placeholder="Номер"
+										error={Boolean(errors.invoiceNumber && touched.invoiceNumber)}
+										helperText={typeof errors.invoiceNumber === 'string' && touched.invoiceNumber ? errors.invoiceNumber : null}
+										as={TextField}
+										disabled={isSubmitting || !formEditable}
+										autoFocus={values.status === 'expected'}
+										fullWidth
+									/>
+								</Grid>
+								<Grid style={{ width: 130 }} item>
+									<Grid alignItems="baseline" container>
+										<InputLabel style={{ marginLeft: -8, marginRight: 8 }} data-inline>
+											от
+										</InputLabel>
+										<Grid style={{ flex: '1 1' }} item>
+											<TextField
+												innerRef={refDropdownInvoiceDate}
+												name="invoiceDate"
+												placeholder="Дата"
+												error={Boolean(errors.invoiceDate && touched.invoiceDate)}
+												helperText={typeof errors.invoiceDate === 'string' && touched.invoiceDate ? errors.invoiceDate : null}
+												disabled={isSubmitting || !formEditable}
+												value={values.invoiceDate ? moment(values.invoiceDate).format('DD.MM.YYYY') : ''}
+												onFocus={() => {
+													setTimeout(() => onHandleDropdownInvoiceDate(true), 100);
+												}}
+												fullWidth
+											/>
+										</Grid>
 									</Grid>
 								</Grid>
 							</Grid>
-						</Grid>
+						</Collapse>
 						{formEditable ? (
 							<Grid item>
 								<Field

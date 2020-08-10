@@ -11,7 +11,7 @@
 }
 
 .title {
-  color: var(--c-hex-bg-600);
+  color: var(--c-hex-blueGrey-600);
   display: inline-block;
   font-size: 16px;
   font-weight: 600;
@@ -24,7 +24,7 @@
 }
 
 .indicatorsTitle {
-  color: var(--c-hex-bg-700);
+  color: var(--c-hex-blueGrey-700);
   font-size: 18px;
   font-weight: 700;
   margin-bottom: 15px;
@@ -32,7 +32,7 @@
 }
 
 .indicatorsSubtitle {
-  color: var(--c-hex-bg-300);
+  color: var(--c-hex-blueGrey-300);
   font-size: 12px;
   font-weight: 600;
   margin-top: 7px;
@@ -40,7 +40,7 @@
 }
 
 .indicatorsSubtitle2 {
-  color: var(--c-hex-bg-500);
+  color: var(--c-hex-blueGrey-500);
   font-size: 12px;
   font-weight: 700;
   text-align: right;
@@ -51,5 +51,5 @@
 }
 
 .receipts {
-  border-top: 1px solid var(--c-hex-br-5);
+  border-top: 1px solid var(--c-hex-brightness-5);
 }

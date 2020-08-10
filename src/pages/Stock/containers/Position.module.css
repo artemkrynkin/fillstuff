@@ -5,8 +5,8 @@
 }
 
 .createReceipt {
-  background-color: var(--c-hex-br-4);
-  color: var(--c-hex-bg-400);
+  background-color: var(--c-hex-brightness-4);
+  color: var(--c-hex-blueGrey-400);
   border-radius: 8px;
   font-size: 11px;
   font-weight: 600;
@@ -16,6 +16,6 @@
 }
 
 .createReceipt:hover {
-  background-color: var(--c-hex-br-5);
-  color: var(--c-hex-bg-500);
+  background-color: var(--c-hex-brightness-5);
+  color: var(--c-hex-blueGrey-500);
 }

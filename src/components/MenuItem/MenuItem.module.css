@@ -1,6 +1,11 @@
+.container.positive:hover {
+  background-color: var(--c-hex-teal-50);
+  color: var(--c-hex-teal-500);
+}
+
 .container.destructive:hover {
-  background-color: rgba(var(--c-rgb-o-1), 0.1);
-  color: var(--c-hex-o-1);
+  background-color: var(--c-hex-red-50);
+  color: var(--c-hex-red-500);
 }
 
 .content {
@@ -10,7 +15,7 @@
 
 .iconBefore,
 .iconAfter {
-  color: var(--c-hex-bg-400);
+  color: var(--c-hex-blueGrey-400);
   font-size: 14px;
   transition: background-color 50ms ease-out;
   text-align: center;
@@ -19,12 +24,17 @@
 
 .container:hover .iconBefore,
 .container:hover .iconAfter {
-  color: var(--c-hex-bg-700);
+  color: var(--c-hex-blueGrey-700);
+}
+
+.container.positive:hover .iconBefore,
+.container.positive:hover .iconAfter {
+  color: var(--c-hex-teal-500);
 }
 
 .container.destructive:hover .iconBefore,
 .container.destructive:hover .iconAfter {
-  color: var(--c-hex-o-1);
+  color: var(--c-hex-red-500);
 }
 
 .iconBefore {
@@ -36,7 +46,7 @@
 }
 
 .iconAfter svg[data-icon="check"] {
-  color: var(--c-hex-t-300);
+  color: var(--c-hex-teal-300);
   opacity: 0;
 }
 

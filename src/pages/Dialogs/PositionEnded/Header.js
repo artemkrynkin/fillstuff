@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import loadable from '@loadable/component';
+import ClassNames from 'classnames';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
@@ -86,7 +87,10 @@ const Header = props => {
 			</Button>
 			<Tooltip className={styles.archiveAfterEnded} title="Архивировать" placement="bottom">
 				<IconButton
-					className={styles.archiveAfterEndedButton}
+					className={ClassNames({
+						[styles.archiveAfterEndedButton]: true,
+						destructiveAction: true,
+					})}
 					onClick={() => onOpenDialogByName('dialogPositionArchiveDelete', 'position', storeNotification.position)}
 				>
 					<FontAwesomeIcon icon={['far', 'archive']} />

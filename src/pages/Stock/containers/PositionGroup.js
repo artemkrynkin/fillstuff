@@ -88,11 +88,11 @@ const PositionGroup = props => {
 						ref={refDropdownActions}
 						className={ClassNames({
 							[stylesPositions.actionButton]: true,
-							[stylesPositions.actionButtonActive]: dropdownActions,
+							activeAction: dropdownActions,
 						})}
 						onClick={() => onHandleDropdownActions()}
 					>
-						<FontAwesomeIcon icon={['far', 'ellipsis-v']} />
+						<FontAwesomeIcon icon={['far', 'ellipsis-h']} />
 					</IconButton>
 				</div>
 			</td>

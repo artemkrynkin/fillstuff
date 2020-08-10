@@ -5,8 +5,8 @@ import theme from 'shared/theme';
 
 export const SearchTextField = withStyles({
 	root: {
-		borderBottom: `1px solid ${theme.brightness.cBr5}`,
-		borderTop: `1px solid ${theme.brightness.cBr5}`,
+		borderBottom: `1px solid ${theme.brightness['5']}`,
+		borderTop: `1px solid ${theme.brightness['5']}`,
 		boxShadow: 'none !important',
 		borderRadius: 0,
 		minHeight: 42,

@@ -12,7 +12,7 @@
 }
 
 .helpIcon {
-  color: var(--c-hex-bg-300);
+  color: var(--c-hex-blueGrey-300);
   cursor: pointer;
   display: inline-block;
   font-size: 16px;

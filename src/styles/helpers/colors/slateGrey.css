@@ -1,0 +1,15 @@
+:root {
+  /* HEX */
+  --c-hex-slateGrey-1: #96A5BD;
+  --c-hex-slateGrey-2: #808DA2;
+  --c-hex-slateGrey-3: #303845;
+  --c-hex-slateGrey-4: #2B3544;
+  --c-hex-slateGrey-5: #1A222F;
+
+  /* RGB */
+  --c-rgb-slateGrey-1: 150, 165, 189;
+  --c-rgb-slateGrey-2: 128, 141, 162;
+  --c-rgb-slateGrey-3: 48, 56, 69;
+  --c-rgb-slateGrey-4: 43, 53, 68;
+  --c-rgb-slateGrey-5: 26, 34, 47;
+}

@@ -1,7 +1,7 @@
 .tableHeaderSticky th {
   background-color: white;
   border-bottom-color: transparent;
-  box-shadow: 0 1px 0 0 var(--c-hex-br-5);
+  box-shadow: 0 1px 0 0 var(--c-hex-brightness-5);
   position: sticky;
   top: 50px;
   z-index: 1;
@@ -24,7 +24,7 @@
 }
 
 .caption {
-  color: var(--c-hex-bg-300);
+  color: var(--c-hex-blueGrey-300);
   font-size: 11px;
   font-weight: 600;
 }
@@ -34,21 +34,16 @@
 }
 
 .position:hover {
-  background-color: var(--c-hex-br-2);
+  background-color: var(--c-hex-brightness-2);
 }
 
 .actionButton {
-  color: var(--c-hex-bg-200);
-  height: 32px;
   padding: 0;
   opacity: 0;
-  width: 32px;
 }
 
-.actionButtonActive,
-.actionButtonActive:hover {
-  background-color: rgba(var(--c-rgb-bg-100), 0.4);
-  color: var(--c-hex-bg-300);
+.actionButton:global(.activeAction),
+.actionButton:global(.activeAction):hover {
   opacity: 1;
 }
 

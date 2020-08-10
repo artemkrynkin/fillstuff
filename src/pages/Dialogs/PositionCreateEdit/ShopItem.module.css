@@ -1,5 +1,5 @@
 .container {
-  border-bottom: 1px solid var(--c-hex-br-5);
+  border-bottom: 1px solid var(--c-hex-brightness-5);
   padding: 8px 0;
 }
 
@@ -16,8 +16,9 @@
 }
 
 .shopComment {
-  white-space: break-spaces;
   padding-left: 10px;
+  white-space: break-spaces;
+  word-break: break-word;
 }
 
 .actions {
@@ -25,13 +26,8 @@
 }
 
 .actionButton {
-  color: var(--c-hex-bg-300);
   padding: 9px;
   width: 32px;
-}
-
-.actionButton:hover {
-  color: var(--c-hex-t-400);
 }
 
 .actionButton svg {

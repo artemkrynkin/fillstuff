@@ -87,7 +87,7 @@ const Index = props => {
 				dialogOpen={dialogs.dialogProcurementExpectedView}
 				onCloseDialog={() => onCloseDialogByName('dialogProcurementExpectedView')}
 				onExitedDialog={() => onExitedDialogByName('procurementExpected')}
-				selectedProcurement={dialogOpenedName === 'dialogProcurementExpectedView' ? dialogData.procurementExpected : null}
+				selectedProcurementId={dialogOpenedName === 'dialogProcurementExpectedView' ? dialogData.procurementExpected._id : null}
 				onOpenDialogByName={onOpenDialogByName}
 			/>
 

@@ -3,25 +3,25 @@
 }
 
 .debtTitle {
-  color: var(--c-hex-bg-300);
+  color: var(--c-hex-blueGrey-300);
   font-size: 13px;
   font-weight: 600;
 }
 
 .debtContent {
-  color: var(--c-hex-bg-700);
+  color: var(--c-hex-blueGrey-700);
   font-size: 18px;
   font-weight: 700;
   margin-top: 5px;
 }
 
 .infoSmall {
-  color: var(--c-hex-bg-500);
+  color: var(--c-hex-blueGrey-500);
   font-size: 13px;
 }
 
 .separator {
-  color: var(--c-hex-bg-500);
+  color: var(--c-hex-blueGrey-500);
   font-size: 10px;
   padding: 0 4px;
 }
@@ -29,12 +29,12 @@
 .buttonLink {
   background: none;
   border: none;
-  color: var(--c-hex-t-500);
+  color: var(--c-hex-teal-500);
   font-size: 13px;
 }
 
 .buttonLink:hover {
-  color: var(--c-hex-t-400);
+  color: var(--c-hex-teal-400);
 }
 
 .infoItem {
@@ -42,7 +42,7 @@
 }
 
 .infoItem:not(:first-child):before {
-  color: var(--c-hex-bg-400);
+  color: var(--c-hex-blueGrey-400);
   font-size: 13px;
   font-weight: 600;
   content: '\00a0· ';

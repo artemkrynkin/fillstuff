@@ -1,8 +1,10 @@
 import React from 'react';
 import { Field, Form } from 'formik';
+import ClassNames from 'classnames';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ButtonBase from '@material-ui/core/ButtonBase';
+import IconButton from '@material-ui/core/IconButton';
 import MenuList from '@material-ui/core/MenuList';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -10,7 +12,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Dropdown from 'src/components/Dropdown';
 import MenuItem from 'src/components/MenuItem';
 
-import { SearchTextField, IconButtonRed } from './Filter.styles';
+import { SearchTextField } from './Filter.styles';
 import styles from './Filter.module.css';
 
 const roles = ['all', 'owners', 'admins', 'artists'];
@@ -93,13 +95,16 @@ const FormFilter = props => {
 				<div className={styles.bottomContainerItem} style={{ marginLeft: 'auto', marginRight: 10 }}>
 					{values.name || values.role !== 'all' ? (
 						<Tooltip title="Сбросить все фильтры">
-							<IconButtonRed
-								className={styles.filterButtonResetAll}
+							<IconButton
+								className={ClassNames({
+									[styles.filterButtonResetAll]: true,
+									destructiveAction: true,
+								})}
 								onClick={() => onResetAllFilters(setFieldValue, submitForm)}
 								color="primary"
 							>
 								<FontAwesomeIcon icon={['fal', 'times']} />
-							</IconButtonRed>
+							</IconButton>
 						</Tooltip>
 					) : null}
 				</div>

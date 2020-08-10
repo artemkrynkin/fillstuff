@@ -5,9 +5,9 @@ import theme from 'shared/theme';
 
 export const Button = withStyles({
 	containedPrimary: {
-		backgroundColor: theme.teal.cT400,
+		backgroundColor: theme.teal['400'],
 		'&:hover': {
-			backgroundColor: theme.teal.cT500,
+			backgroundColor: theme.teal['500'],
 		},
 	},
 })(MuiButton);

@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import moment from 'moment';
 import momentTz from 'moment-timezone';
 import { Form } from 'formik';
+import ClassNames from 'classnames';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Grid from '@material-ui/core/Grid';
@@ -13,6 +14,7 @@ import Divider from '@material-ui/core/Divider';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
+import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import MomentUtils from '@material-ui/pickers/adapter/moment';
 import { StaticDateRangePicker, LocalizationProvider } from '@material-ui/pickers';
@@ -23,7 +25,7 @@ import { weekActive, monthActive, paginationCalendarFormat } from 'src/component
 import Dropdown from 'src/components/Dropdown';
 import MenuItem from 'src/components/MenuItem';
 
-import { FilterSearchTextField, IconButtonRed } from './Filter.styles';
+import { FilterSearchTextField } from './Filter.styles';
 import styles from './Filter.module.css';
 
 const statusList = ['all', 'unpaid', 'partially-paid', 'paid'];
@@ -214,13 +216,16 @@ const FormFilter = props => {
 				<div className={styles.bottomContainerItem} style={{ marginLeft: 'auto', marginRight: 10 }}>
 					{values.dateStartView || values.dateEndView || values.status !== 'all' || values.member !== 'all' ? (
 						<Tooltip title="Сбросить все фильтры">
-							<IconButtonRed
-								className={styles.filterButtonResetAll}
+							<IconButton
+								className={ClassNames({
+									[styles.filterButtonResetAll]: true,
+									destructiveAction: true,
+								})}
 								onClick={() => onResetAllFilters(setFieldValue, submitForm)}
 								color="primary"
 							>
 								<FontAwesomeIcon icon={['fal', 'times']} />
-							</IconButtonRed>
+							</IconButton>
 						</Tooltip>
 					) : null}
 				</div>

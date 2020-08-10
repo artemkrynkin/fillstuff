@@ -210,13 +210,13 @@ class ProcurementReceivedCreate extends Component {
 				const { position, quantity, quantityPackages, ...remainingValues } = receipt;
 
 				if (remainingValues.positionChanges) {
+					if (!isEmpty(remainingValues.positionChanges.name) || !isEmpty(remainingValues.positionChanges.characteristics)) {
+						positionsChanged += 1;
+					}
 					if (isEmpty(remainingValues.positionChanges.name)) delete remainingValues.positionChanges.name;
 					if (isEmpty(remainingValues.positionChanges.characteristics)) delete remainingValues.positionChanges.characteristics;
 					if (isEmpty(remainingValues.positionChanges.name) && isEmpty(remainingValues.positionChanges.characteristics)) {
 						delete remainingValues.positionChanges;
-					}
-					if (!isEmpty(remainingValues.positionChanges.name) || !isEmpty(remainingValues.positionChanges.characteristics)) {
-						positionsChanged += 1;
 					}
 				}
 

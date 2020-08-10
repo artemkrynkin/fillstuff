@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import Collapse from '@material-ui/core/Collapse';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -127,87 +128,89 @@ const ProcurementForm = props => {
 						Дата доставки
 					</InputLabel>
 					<Grid direction="column" container>
-						<Grid wrap="nowrap" alignItems="flex-start" spacing={2} container>
-							<Grid style={{ width: 116 }} item>
-								<TextField
-									innerRef={refDropdownDeliveryDate}
-									name="deliveryDate"
-									placeholder={values.isConfirmed && !values.isUnknownDeliveryDate ? 'Дата' : '-'}
-									error={Boolean(errors.deliveryDate && touched.deliveryDate)}
-									helperText={typeof errors.deliveryDate === 'string' && touched.deliveryDate ? errors.deliveryDate : null}
-									disabled={isSubmitting || !values.isConfirmed || values.isUnknownDeliveryDate}
-									value={values.deliveryDate ? moment(values.deliveryDate).format('DD.MM.YYYY') : ''}
-									onFocus={() => {
-										setTimeout(() => {
-											onHandleDropdownDeliveryDate(true);
-										}, 100);
-									}}
-									autoFocus={type === 'confirm'}
-									fullWidth
-								/>
-							</Grid>
-							<Grid style={{ width: 95 }} item>
-								<Grid alignItems="baseline" container>
-									<InputLabel style={{ marginLeft: -8, marginRight: 8 }} data-inline>
-										c
-									</InputLabel>
-									<Grid style={{ flex: '1 1' }} item>
-										<Field
-											name="deliveryTimeFrom"
-											as={Select}
-											error={Boolean(touched.deliveryTimeFrom && errors.deliveryTimeFrom)}
-											onChange={({ target: { value } }) => {
-												setFieldValue('deliveryTimeFrom', value);
-												const timeFromParse = value.split(':');
-												const timeToParse = values.deliveryTimeTo.split(':');
-												const deliveryTimeFromMoment = moment().set({ hour: timeFromParse[0], minute: timeFromParse[1], second: 0 });
-												const deliveryTimeToMoment = moment().set({ hour: timeToParse[0], minute: timeToParse[1], second: 0 });
-
-												if (deliveryTimeFromMoment.isAfter(deliveryTimeToMoment)) {
-													setFieldValue('deliveryTimeTo', value);
-												}
-											}}
-											renderValue={value => (value ? value : values.isConfirmed && !values.isUnknownDeliveryDate ? '' : '-')}
-											disabled={isSubmitting || !values.isConfirmed || values.isUnknownDeliveryDate}
-											fullWidth
-										>
-											{timesInterval15Minutes.map((time, index) => (
-												<MenuItem key={index} value={time}>
-													{time}
-												</MenuItem>
-											))}
-										</Field>
-									</Grid>
+						<Collapse in={values.isConfirmed && !values.isUnknownDeliveryDate} timeout="auto" unmountOnExit>
+							<Grid wrap="nowrap" alignItems="flex-start" spacing={2} container>
+								<Grid style={{ width: 116 }} item>
+									<TextField
+										innerRef={refDropdownDeliveryDate}
+										name="deliveryDate"
+										placeholder="Дата"
+										error={Boolean(errors.deliveryDate && touched.deliveryDate)}
+										helperText={typeof errors.deliveryDate === 'string' && touched.deliveryDate ? errors.deliveryDate : null}
+										disabled={isSubmitting}
+										value={values.deliveryDate ? moment(values.deliveryDate).format('DD.MM.YYYY') : ''}
+										onFocus={() => {
+											setTimeout(() => {
+												onHandleDropdownDeliveryDate(true);
+											}, 100);
+										}}
+										autoFocus={type === 'confirm'}
+										fullWidth
+									/>
 								</Grid>
-							</Grid>
-							<Grid style={{ width: 105 }} item>
-								<Grid alignItems="baseline" container>
-									<InputLabel style={{ marginLeft: -8, marginRight: 8 }} data-inline>
-										до
-									</InputLabel>
-									<Grid style={{ flex: '1 1' }} item>
-										<Field
-											name="deliveryTimeTo"
-											as={Select}
-											error={Boolean(touched.deliveryTimeFrom && errors.deliveryTimeFrom)}
-											renderValue={value => (value ? value : values.isConfirmed && !values.isUnknownDeliveryDate ? '' : '-')}
-											disabled={isSubmitting || !values.isConfirmed || values.isUnknownDeliveryDate}
-											fullWidth
-										>
-											{timesInterval15Minutes.map((time, index) => {
-												const timeFromIndex = timesInterval15Minutes.findIndex(timeInterval => timeInterval === values.deliveryTimeFrom);
+								<Grid style={{ width: 95 }} item>
+									<Grid alignItems="baseline" container>
+										<InputLabel style={{ marginLeft: -8, marginRight: 8 }} data-inline>
+											c
+										</InputLabel>
+										<Grid style={{ flex: '1 1' }} item>
+											<Field
+												name="deliveryTimeFrom"
+												as={Select}
+												error={Boolean(touched.deliveryTimeFrom && errors.deliveryTimeFrom)}
+												onChange={({ target: { value } }) => {
+													setFieldValue('deliveryTimeFrom', value);
+													const timeFromParse = value.split(':');
+													const timeToParse = values.deliveryTimeTo.split(':');
+													const deliveryTimeFromMoment = moment().set({ hour: timeFromParse[0], minute: timeFromParse[1], second: 0 });
+													const deliveryTimeToMoment = moment().set({ hour: timeToParse[0], minute: timeToParse[1], second: 0 });
 
-												return (
-													<MenuItem key={index} value={time} hidden={index < timeFromIndex}>
+													if (deliveryTimeFromMoment.isAfter(deliveryTimeToMoment)) {
+														setFieldValue('deliveryTimeTo', value);
+													}
+												}}
+												renderValue={value => value || ''}
+												disabled={isSubmitting}
+												fullWidth
+											>
+												{timesInterval15Minutes.map((time, index) => (
+													<MenuItem key={index} value={time}>
 														{time}
 													</MenuItem>
-												);
-											})}
-										</Field>
+												))}
+											</Field>
+										</Grid>
+									</Grid>
+								</Grid>
+								<Grid style={{ width: 105 }} item>
+									<Grid alignItems="baseline" container>
+										<InputLabel style={{ marginLeft: -8, marginRight: 8 }} data-inline>
+											до
+										</InputLabel>
+										<Grid style={{ flex: '1 1' }} item>
+											<Field
+												name="deliveryTimeTo"
+												as={Select}
+												error={Boolean(touched.deliveryTimeFrom && errors.deliveryTimeFrom)}
+												renderValue={value => value || ''}
+												disabled={isSubmitting}
+												fullWidth
+											>
+												{timesInterval15Minutes.map((time, index) => {
+													const timeFromIndex = timesInterval15Minutes.findIndex(timeInterval => timeInterval === values.deliveryTimeFrom);
+
+													return (
+														<MenuItem key={index} value={time} hidden={index < timeFromIndex}>
+															{time}
+														</MenuItem>
+													);
+												})}
+											</Field>
+										</Grid>
 									</Grid>
 								</Grid>
 							</Grid>
-						</Grid>
+						</Collapse>
 						{type === 'create' ? (
 							<Grid alignItems="center" container>
 								<Field
@@ -307,7 +310,7 @@ const ProcurementForm = props => {
 
 				{/confirm|edit/.test(type) ? (
 					<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
-						<InputLabel style={{ ...labelStyle }} data-inline>
+						<InputLabel style={labelStyle} data-inline>
 							Комментарий
 						</InputLabel>
 						<Field

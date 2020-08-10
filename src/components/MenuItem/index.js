@@ -8,7 +8,7 @@ import styles from './MenuItem.module.css';
 import PropTypes from 'prop-types';
 
 const MenuItem = forwardRef((props, ref) => {
-	const { className, children, destructive, iconBefore, iconAfter, ...remainingProps } = props;
+	const { className, children, positive, destructive, iconBefore, iconAfter, ...remainingProps } = props;
 
 	const classes = ClassNames({
 		...Object.fromEntries(
@@ -18,6 +18,7 @@ const MenuItem = forwardRef((props, ref) => {
 				.map(key => [key, true])
 		),
 		[styles.container]: true,
+		[styles.positive]: positive,
 		[styles.destructive]: destructive,
 	});
 
@@ -38,10 +39,12 @@ const MenuItem = forwardRef((props, ref) => {
 
 MenuItem.defaultProps = {
 	className: '',
+	positive: false,
 	destructive: false,
 };
 
 MenuItem.propTypes = {
+	positive: PropTypes.bool,
 	destructive: PropTypes.bool,
 	selected: PropTypes.bool,
 	iconBefore: PropTypes.node,

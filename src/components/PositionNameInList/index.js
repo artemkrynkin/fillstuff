@@ -84,6 +84,7 @@ PositionNameInList.defaultProps = {
 };
 
 PositionNameInList.propTypes = {
+	className: PropTypes.string,
 	name: PropTypes.string.isRequired,
 	characteristics: PropTypes.arrayOf(
 		PropTypes.shape({

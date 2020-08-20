@@ -27,6 +27,8 @@ import { TableCell } from './styles';
 import stylesPositions from './Positions.module.css';
 import styles from './Position.module.css';
 
+import { ReactComponent as QrCodeIcon } from 'public/img/other/qrcode.svg';
+
 const Position = props => {
 	const { position, onOpenDialogPosition } = props;
 	const refDropdownActions = useRef(null);
@@ -135,7 +137,7 @@ const Position = props => {
 							onHandleDropdownActions();
 							onOpenDialogPosition('dialogPositionQRCode', 'position', position);
 						}}
-						iconBefore={<FontAwesomeIcon icon={['fal', 'qrcode']} style={{ fontSize: 16 }} />}
+						iconBefore={<QrCodeIcon style={{ height: 14, verticalAlign: '-0.125em', width: 14 }} />}
 					>
 						Печать QR-кода
 					</MenuItem>

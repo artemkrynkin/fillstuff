@@ -425,6 +425,10 @@ export const BliksideTheme = createMuiTheme({
 					color: null,
 				},
 			},
+			labelPlacementStart: {
+				marginLeft: 0,
+				marginRight: -9,
+			},
 		},
 		MuiFormHelperText: {
 			root: {
@@ -791,6 +795,97 @@ export const BliksideTheme = createMuiTheme({
 				pointerEvents: 'none',
 			},
 		},
+		MuiSlider: {
+			root: {
+				height: 6,
+				padding: '13px 0 7px',
+				transition: 'color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+				'&$disabled': {
+					color: theme.blueGrey['100'],
+				},
+			},
+			rail: {
+				borderRadius: 3,
+				height: 6,
+			},
+			track: {
+				borderRadius: 3,
+				height: 6,
+			},
+			mark: {
+				display: 'none',
+			},
+			markLabel: {
+				color: theme.blueGrey['400'],
+				fontSize: 13,
+				fontWeight: 500,
+				lineHeight: 1.3,
+				'&$disabled': {
+					color: theme.blueGrey['400'],
+				},
+			},
+			markLabelActive: {
+				color: null,
+			},
+			valueLabel: {
+				left: null,
+				top: -20,
+				'& > span': {
+					borderRadius: '8px',
+					height: 'auto',
+					padding: '4px 8px',
+					transform: 'none',
+					width: 'auto',
+				},
+				'& > span > span': {
+					transform: 'none',
+				},
+			},
+			thumb: {
+				boxShadow: [
+					`0 2px 1px -1px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2)`,
+					`0 1px 1px 0 rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14)`,
+					`0 1px 3px 0px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
+				].join(),
+				height: 16,
+				marginLeft: -8,
+				width: 16,
+				'&.Mui-focusVisible, &:hover, &$active': {
+					boxShadow: [
+						`0 2px 1px -1px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2)`,
+						`0 1px 1px 0 rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14)`,
+						`0 1px 3px 0px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
+					].join(),
+				},
+				'&$disabled': {
+					height: null,
+					marginTop: null,
+					marginLeft: null,
+					width: null,
+				},
+			},
+			thumbColorPrimary: {
+				boxShadow: [
+					`0 2px 5px 0 rgba(${ColorConvert.hex.rgb(theme.teal['600'])}, 0.25)`,
+					`0 2px 2px 0 rgba(${ColorConvert.hex.rgb(theme.teal['600'])}, 0.14)`,
+					`0 3px 1px -2px rgba(${ColorConvert.hex.rgb(theme.teal['600'])}, 0.12)`,
+				].join(),
+				'&.Mui-focusVisible, &:hover, &$active': {
+					boxShadow: [
+						`0 2px 5px 0 rgba(${ColorConvert.hex.rgb(theme.teal['600'])}, 0.25)`,
+						`0 2px 2px 0 rgba(${ColorConvert.hex.rgb(theme.teal['600'])}, 0.14)`,
+						`0 3px 1px -2px rgba(${ColorConvert.hex.rgb(theme.teal['600'])}, 0.12)`,
+					].join(),
+				},
+				'&$disabled': {
+					boxShadow: [
+						`0 2px 1px -1px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2)`,
+						`0 1px 1px 0 rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14)`,
+						`0 1px 3px 0px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
+					].join(),
+				},
+			},
+		},
 		MuiSwitch: {
 			switchBase: {
 				color: theme.brightness['1'],
@@ -798,6 +893,7 @@ export const BliksideTheme = createMuiTheme({
 				width: 'initial',
 				'&:hover': {
 					backgroundColor: 'transparent !important',
+					color: theme.brightness['1'],
 				},
 			},
 			track: {
@@ -829,11 +925,20 @@ export const BliksideTheme = createMuiTheme({
 		},
 		MuiRadio: {
 			root: {
-				color: `rgba(${ColorConvert.hex.rgb(theme.blueGrey['300'])}, 0.5)`,
+				color: theme.blueGrey['300'],
 				padding: 10,
 				'& svg': {
 					height: 20,
 					width: '20px !important',
+				},
+				'&:hover': {
+					backgroundColor: 'transparent !important',
+					color: theme.blueGrey['300'],
+				},
+			},
+			colorPrimary: {
+				'&$disabled': {
+					color: theme.blueGrey['100'],
 				},
 			},
 		},

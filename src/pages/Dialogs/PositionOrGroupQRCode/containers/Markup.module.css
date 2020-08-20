@@ -1,0 +1,118 @@
+.container {
+  background-color: var(--c-hex-brightness-5);
+  border-left: 1px solid var(--c-hex-brightness-5);
+  border-radius: 0 0 8px 0;
+  height: inherit;
+  padding: 0;
+  position: relative;
+}
+
+.containerInner {
+  height: 100%;
+}
+
+.markup {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  flex: 1 0 0;
+  overflow: hidden;
+  width: 100%;
+}
+
+.markupScroll {
+  display: flex;
+  overflow: scroll;
+  width: 100%;
+}
+
+.stickerContainer {
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 0 20px var(--c-hex-blueGrey-100);
+  margin: auto;
+  padding: 20px;
+}
+
+.stickerContainer:not(.stickerOrientationLandscape) {
+  display: flex;
+  flex-direction: column;
+}
+
+.stickerContainer.stickerOrientationLandscape {
+  display: table;
+}
+
+.stickerContainer.stickerColorBlackWhite {}
+
+.titleContainer {
+  font-family: var(--nunito);
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  word-break: break-word;
+}
+
+/* Colored  */
+.stickerContainer:not(.stickerColorBlackWhite) .titleContainer {
+  color: var(--c-hex-slateGrey-3);
+}
+
+/* Black and White */
+.stickerContainer.stickerColorBlackWhite .titleContainer {
+  color: #000000;
+}
+
+/* portrait */
+.stickerContainer:not(.stickerOrientationLandscape) .titleContainer {
+  display: table-row;
+  margin-bottom: 20px;
+  order: -1;
+}
+
+/* landscape */
+.stickerOrientationLandscape .titleContainer {
+  display: table-cell;
+  padding-left: 20px;
+  vertical-align: top;
+}
+
+.qrContainer {
+  margin: auto;
+}
+
+/* portrait */
+.stickerContainer:not(.stickerOrientationLandscape) .qrContainer {
+  width: 100%;
+}
+
+/* landscape */
+.stickerOrientationLandscape .qrContainer {
+  vertical-align: top;
+}
+
+.footer {
+  align-items: flex-end;
+  bottom: 0;
+  display: flex;
+  flex: 0 1 auto;
+  margin-top: auto;
+  justify-content: flex-end;
+  padding: 10px;
+  position: sticky;
+  user-select: none;
+  user-focus: none;
+  pointer-events: none;
+  width: 100%;
+}
+
+.positionName {
+  text-align: right;
+}
+
+.actualSize {
+  color: var(--c-hex-blueGrey-300);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+}

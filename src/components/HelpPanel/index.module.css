@@ -29,12 +29,8 @@
   box-sizing: content-box;
   color: var(--c-hex-slateGrey-2);
   display: flex;
-  font-size: 26px;
-  font-weight: 700;
-  height: 32px;
-  margin: 9px 0 9px -6px;
-  position: relative;
-  text-decoration: none;
+  height: 34px;
+  margin: 8px 0 8px -6px;
   transition: opacity 250ms ease-in-out;
   width: 34px;
 }

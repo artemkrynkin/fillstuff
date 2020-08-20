@@ -87,7 +87,7 @@ class PositionScanning extends Component {
 				}
 
 				switch (qrData.type) {
-					case 'positionGroup':
+					case 'pg':
 						return this.props.getPositionGroup(studioId, qrData.id).then(response => {
 							if (response.status === 'error') return this.onSetInitialRemainingState();
 
@@ -106,7 +106,7 @@ class PositionScanning extends Component {
 								}
 							);
 						});
-					case 'position':
+					case 'p':
 						return this.props.getPosition(studioId, qrData.id).then(response => {
 							if (response.status === 'error') return this.onSetInitialRemainingState();
 

@@ -113,7 +113,7 @@ const ProcurementReceived = props => {
 						</Grid>
 					</Grid>
 				</div>
-				<Collapse in={expanded} timeout={300} unmountOnExit>
+				<Collapse in={expanded} timeout="auto" unmountOnExit>
 					<div className={styles.receipts}>
 						<Table style={{ tableLayout: 'fixed' }}>
 							<TableHead>

@@ -10,10 +10,6 @@
   --c-hex-blueGrey-700: #455a64;
   --c-hex-blueGrey-800: #37474f;
   --c-hex-blueGrey-900: #263238;
-  --c-hex-blueGrey-A100: #cfd8dc;
-  --c-hex-blueGrey-A200: #b0bec5;
-  --c-hex-blueGrey-A400: #78909c;
-  --c-hex-blueGrey-A700: #455a64;
 
   /* RGB */
   --c-rgb-blueGrey-50: 236, 239, 241;
@@ -26,8 +22,4 @@
   --c-rgb-blueGrey-700: 69, 90, 100;
   --c-rgb-blueGrey-800: 55, 71, 79;
   --c-rgb-blueGrey-900: 38, 50, 56;
-  --c-rgb-blueGrey-A100: 207, 216, 220;
-  --c-rgb-blueGrey-A200: 176, 190, 197;
-  --c-rgb-blueGrey-A400: 120, 144, 156;
-  --c-rgb-blueGrey-A700: 69, 90, 100;
 }

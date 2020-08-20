@@ -175,7 +175,7 @@ const FormProcurementReceivedCreate = props => {
 						Чек/накладная
 					</InputLabel>
 					<Grid direction="column" container>
-						<Collapse in={!values.noInvoice} timeout="auto" unmountOnExit>
+						<Collapse in={!values.noInvoice} timeout="auto">
 							<Grid wrap="nowrap" alignItems="flex-start" spacing={2} container>
 								<Grid style={{ width: 186 }} item>
 									<Field
@@ -185,7 +185,7 @@ const FormProcurementReceivedCreate = props => {
 										helperText={typeof errors.invoiceNumber === 'string' && touched.invoiceNumber ? errors.invoiceNumber : null}
 										as={TextField}
 										disabled={isSubmitting || !formEditable}
-										autoFocus={values.status === 'expected'}
+										// autoFocus={values.status === 'expected'}
 										fullWidth
 									/>
 								</Grid>

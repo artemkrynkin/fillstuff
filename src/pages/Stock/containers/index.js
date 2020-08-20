@@ -60,7 +60,7 @@ const Index = props => {
 		position: null,
 		procurementReceived: null,
 	});
-	const [dialogOpenedName, setDialogOpenedName] = useState('');
+	const [dialogOpenedName, setDialogOpenedName] = useState('dialogPositionQRCode');
 	const [dialogs, setDialogs] = useState({
 		dialogPositionGroupEdit: false,
 		dialogPositionGroupAdd: false,
@@ -69,7 +69,7 @@ const Index = props => {
 		dialogPositionEdit: false,
 		dialogPositionRemoveFromGroup: false,
 		dialogPositionArchiveDelete: false,
-		dialogPositionQRCode: false,
+		dialogPositionQRCode: true,
 		dialogReceiptActiveAddQuantity: false,
 		dialogReceiptCreate: false,
 		dialogReceiptConfirmCreate: false,

@@ -10,5 +10,5 @@
 }
 
 :global(.stickyActions) :global(.MuiDialogActions-root.stuck) {
-  border-top: 1px solid var(--c-hex-blueGrey-50);
+  border-top: 1px solid var(--c-hex-brightness-5);
 }

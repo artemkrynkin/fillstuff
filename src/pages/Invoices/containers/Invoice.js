@@ -105,7 +105,7 @@ const Invoice = props => {
 						</Grid>
 					</Grid>
 				</div>
-				<Collapse in={expanded} timeout={300} unmountOnExit>
+				<Collapse in={expanded} timeout="auto" unmountOnExit>
 					<Tabs className={styles.tabs} value={tabName} onChange={onChangeTab}>
 						<Tab value="positions" label="Позиции" id="positions" />
 						{invoice.payments.length ? <Tab value="payments" label="Платежи" id="payments" /> : null}

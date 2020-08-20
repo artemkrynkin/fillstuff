@@ -128,7 +128,7 @@ const ProcurementForm = props => {
 						Дата доставки
 					</InputLabel>
 					<Grid direction="column" container>
-						<Collapse in={values.isConfirmed && !values.isUnknownDeliveryDate} timeout="auto" unmountOnExit>
+						<Collapse in={values.isConfirmed && !values.isUnknownDeliveryDate} timeout="auto">
 							<Grid wrap="nowrap" alignItems="flex-start" spacing={2} container>
 								<Grid style={{ width: 116 }} item>
 									<TextField

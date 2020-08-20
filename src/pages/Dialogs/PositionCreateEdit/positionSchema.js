@@ -14,7 +14,7 @@ const positionSchema = (depopulate = false) => {
 			.required(),
 		minimumBalance: Yup.number()
 			.nullable(true)
-			.transform(value => (isNaN(value) ? null : value))
+			.transform(currentValue => (isNaN(currentValue) ? null : currentValue))
 			.min(1)
 			.required(),
 		isFree: Yup.bool().required(),

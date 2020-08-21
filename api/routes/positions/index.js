@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import mongoose from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
 import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
@@ -49,10 +50,15 @@ positionsRouter.post(
 	// (req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	(req, res, next) => {
 		const {
-			params: { positionId },
+			params: { positionId, qrcodeId },
 		} = req.body;
 
-		Position.findById(positionId)
+		const conditions = {};
+
+		if (positionId) conditions._id = positionId;
+		if (qrcodeId) conditions.qrcodeId = qrcodeId;
+
+		Position.findOne(conditions)
 			.populate([
 				{
 					path: 'activeReceipt characteristics shops.shop',

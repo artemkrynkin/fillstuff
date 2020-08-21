@@ -1,10 +1,11 @@
-const helmet = require('helmet');
-const hpp = require('hpp');
-const uuid = require('uuid');
+import helmet from 'helmet';
+import hpp from 'hpp';
+import { v4 as uuidv4 } from 'uuid';
+
 // const hsts = require('hsts');
 // const express_enforces_ssl = require('express-enforces-ssl');
 
-function securityMiddleware(server, { enableNonce, enableCSP }) {
+const securityMiddleware = (server, { enableNonce, enableCSP }) => {
 	// Don't expose any software information to hackers.
 	server.disable('x-powered-by');
 
@@ -53,7 +54,7 @@ function securityMiddleware(server, { enableNonce, enableCSP }) {
 		// inline scripts as being safe for execution against our content security policy.
 		// @see https://helmetjs.github.io/docs/csp/
 		server.use((request, response, next) => {
-			response.locals.nonce = uuid.v4();
+			response.locals.nonce = uuidv4();
 			next();
 		});
 	}
@@ -117,6 +118,6 @@ function securityMiddleware(server, { enableNonce, enableCSP }) {
 	if (enableCSP) {
 		server.use(helmet.contentSecurityPolicy(cspConfig));
 	}
-}
+};
 
-module.exports = securityMiddleware;
+export default securityMiddleware;

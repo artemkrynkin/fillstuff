@@ -8,7 +8,7 @@ import qrRender from 'src/helpers/qrRender';
 
 import PositionNameInList from 'src/components/PositionNameInList';
 
-import { getDiagonalSize, calculatePPI, calculateCmPerPx } from './renderOptions';
+import { getDiagonalSize, calculatePPI, calculateCmPerPx } from '../helpers/renderOptions';
 
 import styles from './Markup.module.css';
 
@@ -37,7 +37,7 @@ const Markup = props => {
 
 	useLayoutEffect(() => {
 		const options = { color: stickerColorMemoized };
-		const qrSvg = qrRender(QRCode.create(JSON.stringify(qrData)), options);
+		const qrSvg = qrRender(QRCode.create(qrData), options);
 
 		setQrCodeSvg(qrSvg);
 		// eslint-disable-next-line react-hooks/exhaustive-deps

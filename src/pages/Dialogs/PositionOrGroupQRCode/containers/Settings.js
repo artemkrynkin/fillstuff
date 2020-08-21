@@ -1,5 +1,6 @@
 import React, { memo, useMemo } from 'react';
 import { Field } from 'formik';
+import ClassNames from 'classnames';
 
 import Slider from '@material-ui/core/Slider';
 import TextField from '@material-ui/core/TextField';
@@ -25,7 +26,7 @@ import renderOptions, {
 	titleSizeMax,
 	titleSizeOptimal,
 	renderOptionsTranslate,
-} from './renderOptions';
+} from '../helpers/renderOptions';
 
 import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './Settings.module.css';
@@ -33,8 +34,14 @@ import styles from './Settings.module.css';
 import { ReactComponent as EachUnitIcon } from 'public/img/other/each_unit.svg';
 import { ReactComponent as StorageIcon } from 'public/img/other/storage.svg';
 
+const printDestinationContainer = ClassNames({
+	[styles.printDestinationContainer]: true,
+	[stylesGlobal.formLabelControl]: true,
+});
+
 const Settings = props => {
 	const {
+		type,
 		formikProps: { errors, touched, isSubmitting, setFieldValue, values },
 	} = props;
 
@@ -69,18 +76,20 @@ const Settings = props => {
 		<Grid className={styles.container} xs={4} item>
 			<Grid className={styles.containerInner} wrap="nowrap" direction="column" container>
 				<div className={styles.formFields}>
-					<Grid className={stylesGlobal.formLabelControl} justify="space-around" container>
-						{renderOptions.printDestination.map(destination => (
-							<CheckboxIcon
-								key={destination}
-								onClick={() => changeDestination(destination)}
-								icon={destination === 'storage' ? <StorageIcon /> : <EachUnitIcon />}
-								label={renderOptionsTranslate.printDestination[destination]}
-								checked={values.printDestination === destination}
-								disabled={isSubmitting}
-							/>
-						))}
-					</Grid>
+					{type === 'position' ? (
+						<Grid className={printDestinationContainer} justify="space-around" container>
+							{renderOptions.printDestination.map(destination => (
+								<CheckboxIcon
+									key={destination}
+									onClick={() => changeDestination(destination)}
+									icon={destination === 'storage' ? <StorageIcon /> : <EachUnitIcon />}
+									label={renderOptionsTranslate.printDestination[destination]}
+									checked={values.printDestination === destination}
+									disabled={isSubmitting}
+								/>
+							))}
+						</Grid>
+					) : null}
 
 					<Collapse className={styles.collapse} in={values.printDestination === 'eachUnit'} timeout={350}>
 						<Grid className={stylesGlobal.formLabelControl}>

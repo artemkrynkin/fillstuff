@@ -8,8 +8,7 @@
     "husky": "^4.2.5",
     "lint-staged": "^10.2.11",
     "prettier": "1.19.1",
-    "react-scripts": "3.4.1",
-    "uuid": "8.3.0"
+    "react-scripts": "3.4.1"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "1.2.30",
@@ -90,7 +89,8 @@
     "toobusy-js": "^0.5.1",
     "validator": "13.1.1",
     "winston": "3.3.3",
-    "yup": "0.29.2"
+    "yup": "0.29.2",
+    "uuid": "^8.3.0"
   },
   "scripts": {
     "dev:web": "cross-env NODE_PATH=./ react-scripts start",

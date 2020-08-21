@@ -50,10 +50,15 @@ positionGroupsRouter.post(
 	// (req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	(req, res, next) => {
 		const {
-			params: { positionGroupId },
+			params: { positionGroupId, qrcodeId },
 		} = req.body;
 
-		PositionGroup.findById(positionGroupId)
+		const conditions = {};
+
+		if (positionGroupId) conditions._id = positionGroupId;
+		if (qrcodeId) conditions.qrcodeId = qrcodeId;
+
+		PositionGroup.findOne(conditions)
 			.populate({
 				path: 'positions',
 				options: {

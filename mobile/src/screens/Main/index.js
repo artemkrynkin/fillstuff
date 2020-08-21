@@ -73,9 +73,8 @@ class PositionScanning extends Component {
 
 	onBarCodeScanned = async ({ data }) => {
 		try {
-			const qrData = JSON.parse(data);
-
-			const studioId = await AsyncStorage.getItem('studioId');
+			const { studioId } = JSON.parse(await AsyncStorage.getItem('user'));
+			const { type, id: qrcodeId } = JSON.parse(data);
 
 			this.setState({ barCodeScanned: 'scanning' }, () => {
 				if (
@@ -86,9 +85,9 @@ class PositionScanning extends Component {
 					Vibration.vibrate();
 				}
 
-				switch (qrData.type) {
-					case 'pg':
-						return this.props.getPositionGroup(studioId, qrData.id).then(response => {
+				switch (type) {
+					case 's-pg':
+						return this.props.getPositionGroup(studioId, { qrcodeId }).then(response => {
 							if (response.status === 'error') return this.onSetInitialRemainingState();
 
 							const positionGroup = response.data;
@@ -106,8 +105,8 @@ class PositionScanning extends Component {
 								}
 							);
 						});
-					case 'p':
-						return this.props.getPosition(studioId, qrData.id).then(response => {
+					case 's-p':
+						return this.props.getPosition(studioId, { qrcodeId }).then(response => {
 							if (response.status === 'error') return this.onSetInitialRemainingState();
 
 							const position = response.data;
@@ -195,8 +194,7 @@ class PositionScanning extends Component {
 	onChangeQuantity = value => this.setState({ quantity: value });
 
 	writeOffConfirm = async (positionId, quantity) => {
-		const studioId = await AsyncStorage.getItem('studioId');
-		const memberId = await AsyncStorage.getItem('memberId');
+		const { memberId, studioId } = JSON.parse(await AsyncStorage.getItem('user'));
 
 		this.props.createWriteOff(studioId, memberId, positionId, quantity).then(async response => {
 			if (response.data.code === 7) {
@@ -319,14 +317,14 @@ class PositionScanning extends Component {
 											<View>
 												<View style={styles.modalHeader1}>
 													<Text style={styles.modalTitle}>{position.name}</Text>
-													{/*{position.activeReceipt && position.activeReceipt.characteristics.length ? (*/}
-													{/*  <Text style={styles.modalSubtitle}>*/}
-													{/*    {position.activeReceipt.characteristics.reduce(*/}
-													{/*      (fullCharacteristics, characteristic) => `${fullCharacteristics}${characteristic.name} `,*/}
-													{/*      ''*/}
-													{/*    )}*/}
-													{/*  </Text>*/}
-													{/*) : null}*/}
+													{position.characteristics.length ? (
+														<Text style={styles.modalSubtitle}>
+															{position.characteristics.reduce(
+																(fullCharacteristics, characteristic) => `${fullCharacteristics}${characteristic.name} `,
+																''
+															)}
+														</Text>
+													) : null}
 													<TouchableOpacity
 														style={styles.modalClose}
 														onPress={() => this.onHandlerModalPosition(false)}
@@ -425,10 +423,10 @@ class PositionScanning extends Component {
 																<View style={styles.modalPositionListItem}>
 																	<Text style={styles.modalPositionListItemText}>
 																		{position.name}
-																		{/*{position.activeReceipt.characteristics.reduce(*/}
-																		{/*  (fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.name}`,*/}
-																		{/*  ''*/}
-																		{/*)}*/}
+																		{position.characteristics.reduce(
+																			(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.name}`,
+																			''
+																		)}
 																	</Text>
 																</View>
 															</TouchableHighlight>
@@ -450,8 +448,8 @@ class PositionScanning extends Component {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		getPosition: (studioId, positionId) => dispatch(getPosition(studioId, positionId)),
-		getPositionGroup: (studioId, positionGroupId) => dispatch(getPositionGroup(studioId, positionGroupId)),
+		getPosition: (studioId, params) => dispatch(getPosition(studioId, params)),
+		getPositionGroup: (studioId, params) => dispatch(getPositionGroup(studioId, params)),
 		createWriteOff: (studioId, memberId, positionId, quantity) => dispatch(createWriteOff(studioId, memberId, positionId, quantity)),
 	};
 };

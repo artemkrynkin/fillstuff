@@ -1,12 +1,10 @@
 import axios from 'axios';
 
-export const getPosition = (studioId, positionId) => {
+export const getPosition = (studioId, params) => {
 	return async dispatch => {
 		return await axios
 			.post('/getPosition', {
-				params: {
-					positionId,
-				},
+				params,
 			})
 			.then(response => {
 				const position = response.data;
@@ -22,13 +20,11 @@ export const getPosition = (studioId, positionId) => {
 	};
 };
 
-export const getPositionGroup = (studioId, positionGroupId) => {
+export const getPositionGroup = (studioId, params) => {
 	return async dispatch => {
 		return await axios
 			.post('/getPositionGroup', {
-				params: {
-					positionGroupId,
-				},
+				params,
 			})
 			.then(response => {
 				const positionGroup = response.data;

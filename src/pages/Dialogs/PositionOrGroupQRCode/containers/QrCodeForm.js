@@ -9,9 +9,9 @@ import { sleep } from 'shared/utils';
 
 import Settings from './Settings';
 import Markup from './Markup';
-import qrCodeSchema from './qrCodeSchema';
-import docDefinitionRender from './docDefinitionRender';
-import { renderOptionsTranslate, stickerWidthMax, stickerWidthOptimal, titleSizeMax, titleSizeOptimal } from './renderOptions';
+import qrCodeSchema from '../helpers/qrCodeSchema';
+import docDefinitionRender from '../helpers/docDefinitionRender';
+import { renderOptionsTranslate, stickerWidthMax, stickerWidthOptimal, titleSizeMax, titleSizeOptimal } from '../helpers/renderOptions';
 
 import { CLIENT_URL } from 'src/api/constants';
 
@@ -64,10 +64,10 @@ const QrCodeForm = props => {
 
 	const quantity = type === 'position' ? selectedPositionOrGroup.receipts.reduce((sum, receipt) => sum + receipt.current.quantity, 0) : 0;
 
-	const qrData = {
-		type: type === 'position' ? 'p' : type === 'positionGroup' ? 'pg' : '',
-		id: selectedPositionOrGroup._id,
-	};
+	const qrData = JSON.stringify({
+		type: type === 'position' ? 's-p' : type === 'positionGroup' ? 's-pg' : '',
+		id: selectedPositionOrGroup.qrcodeId,
+	});
 
 	const initialValues = {
 		printDestination: 'storage',
@@ -97,7 +97,7 @@ const QrCodeForm = props => {
 				return (
 					<Form>
 						<Grid className={styles.container} container>
-							<Settings formikProps={formikProps} />
+							<Settings type={type} formikProps={formikProps} />
 							<Markup
 								selectedPositionOrGroup={selectedPositionOrGroup}
 								qrData={qrData}

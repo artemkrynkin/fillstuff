@@ -37,7 +37,7 @@ const Markup = props => {
 
 	useLayoutEffect(() => {
 		const options = { color: stickerColorMemoized };
-		const qrSvg = qrRender(QRCode.create(qrData), options);
+		const qrSvg = qrRender(QRCode.create(qrData, { errorCorrectionLevel: 'Q' }), options);
 
 		setQrCodeSvg(qrSvg);
 		// eslint-disable-next-line react-hooks/exhaustive-deps

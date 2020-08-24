@@ -1,5 +1,7 @@
 import { formatNumber, percentOfNumber } from 'shared/utils';
 
+export const printDestination = ['storage', 'eachUnit'];
+
 export const unitTypes = ['pce', 'nmp'];
 
 export const unitTypeTransform = unitType => {

@@ -42,7 +42,7 @@ const ReceiptTempPosition = props => {
 						<PositionNameInList name={name} characteristics={characteristics} size="md" />
 					</Grid>
 					<Grid className={styles.actionButtons} item>
-						<Tooltip title="Изменить характеристики" placement="top">
+						<Tooltip title="Изменить позицию" placement="top">
 							<IconButton
 								className={styles.editActionButton}
 								onClick={() => {

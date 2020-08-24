@@ -143,22 +143,18 @@ positionsRouter.post(
 
 		const position = await Position.findById(positionId).catch(err => next({ code: 2, err }));
 
-		const promisesAwaits = [];
+		Object.keys(positionEdited).forEach(receiptParameterEdited => {
+			if (receiptParameterEdited || (/unitReceipt|unitRelease/.test(receiptParameterEdited) && !position.hasReceipts)) {
+				position[receiptParameterEdited] = positionEdited[receiptParameterEdited];
+			}
+		});
 
-		position.name = positionEdited.name;
-		position.minimumBalance = positionEdited.minimumBalance;
-		position.shopName = positionEdited.shopName;
-		position.shopLink = positionEdited.shopLink;
-		position.characteristics = positionEdited.characteristics;
-		position.shops = positionEdited.shops;
+		const positionErr = position.validateSync();
 
-		if (!position.activeReceipt) {
-			position.unitReceipt = positionEdited.unitReceipt;
-			position.unitRelease = positionEdited.unitRelease;
-		}
+		if (positionErr) return next({ code: positionErr.errors ? 5 : 2, err: positionErr });
 
-		if (position.isFree !== positionEdited.isFree) {
-			Receipt.updateMany(
+		if (positionEdited.isFree !== undefined && position.isFree !== positionEdited.isFree) {
+			await Receipt.updateMany(
 				{
 					position: mongoose.Types.ObjectId(positionId),
 					status: /received|active/,
@@ -169,17 +165,9 @@ positionsRouter.post(
 					},
 				}
 			).catch(err => next({ code: 2, err }));
-
-			position.isFree = positionEdited.isFree;
 		}
 
-		const positionErr = position.validateSync();
-
-		if (positionErr) return next({ code: positionErr.errors ? 5 : 2, err: positionErr });
-
-		promisesAwaits.push(position.save());
-
-		await Promise.all(promisesAwaits);
+		await position.save();
 
 		Position.findById(position._id)
 			.populate([

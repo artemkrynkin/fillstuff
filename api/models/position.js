@@ -2,15 +2,11 @@ import mongoose from 'mongoose';
 import i18n from 'i18n';
 import { v4 as uuidv4 } from 'uuid';
 
-import { unitTypes } from 'shared/checkPositionAndReceipt';
+import { printDestination, unitTypes } from 'shared/checkPositionAndReceipt';
 
 const Schema = mongoose.Schema;
 
 const Position = new Schema({
-	qrcodeId: {
-		type: 'String',
-		default: () => uuidv4(),
-	},
 	name: {
 		type: String,
 		minlength: [2, i18n.__('Не может быть короче 2 символов')],
@@ -21,6 +17,14 @@ const Position = new Schema({
 	createdAt: {
 		type: Date,
 		default: Date.now,
+	},
+	qrcodeId: {
+		type: String,
+		default: () => uuidv4(),
+	},
+	printDestination: {
+		type: String,
+		enum: printDestination,
 	},
 	// Архивированный
 	isArchived: {

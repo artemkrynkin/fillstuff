@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { Form, Formik } from 'formik';
 import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
 
 import Grid from '@material-ui/core/Grid';
 
 import { sleep } from 'shared/utils';
+
+import { CLIENT_URL } from 'src/api/constants';
 
 import Settings from './Settings';
 import Markup from './Markup';
@@ -13,7 +15,8 @@ import qrCodeSchema from '../helpers/qrCodeSchema';
 import docDefinitionRender from '../helpers/docDefinitionRender';
 import { renderOptionsTranslate, stickerWidthMax, stickerWidthOptimal, titleSizeMax, titleSizeOptimal } from '../helpers/renderOptions';
 
-import { CLIENT_URL } from 'src/api/constants';
+import { editPosition } from 'src/actions/positions';
+import { enqueueSnackbar } from 'src/actions/snackbars';
 
 import styles from './QrCodeForm.module.css';
 
@@ -21,9 +24,17 @@ const QrCodeForm = props => {
 	const { type, selectedPositionOrGroup } = props;
 	const [qrCodeSvg, setQrCodeSvg] = useState(null);
 
-	const onSubmit = async (values, actions) => {
-		const { type, selectedPositionOrGroup } = props;
+	const onSubmit = async values => {
+		const { type, selectedPositionOrGroup: position } = props;
 		const formSettings = qrCodeSchema.cast(values);
+
+		const infoMetaGenerate = (printDestination, printDestinationEnabled) => {
+			const qrCountText = `QR ${printDestination === 'storage' ? 'код ' : 'коды '}`;
+			const printDestinationText = printDestinationEnabled ? `${renderOptionsTranslate.printDestination[printDestination]} ` : '';
+			const forText = `для ${type === 'position' ? 'позиции' : 'группы'} "${position.name}"`;
+
+			return `${qrCountText}${printDestinationText.toLowerCase()}${forText}`;
+		};
 
 		const fonts = {
 			Nunito: {
@@ -33,18 +44,12 @@ const QrCodeForm = props => {
 				bolditalics: `${CLIENT_URL}/fonts/Nunito/Nunito-BoldItalic.ttf`,
 			},
 		};
-		const definition = docDefinitionRender({ title: selectedPositionOrGroup.name, ...formSettings, qrCodeSvg });
-
-		pdfMake.vfs = pdfFonts.pdfMake.vfs;
+		const definition = docDefinitionRender({ title: position.name, ...formSettings, qrCodeSvg });
 
 		const docDefinition = {
 			info: {
-				title: `QR ${formSettings.printDestination === 'storage' ? 'код' : 'коды'} для ${type === 'position' ? 'позиции' : 'группы'} "${
-					selectedPositionOrGroup.name
-				}"`,
-				subject: `QR ${formSettings.printDestination === 'storage' ? 'код' : 'коды'} ${renderOptionsTranslate.printDestination[
-					formSettings.printDestination
-				].toLowerCase()} для ${type === 'position' ? 'позиции' : 'группы'} "${selectedPositionOrGroup.name}"`,
+				title: infoMetaGenerate(formSettings.printDestination),
+				subject: infoMetaGenerate(formSettings.printDestination, true),
 				creator: 'Blikside',
 				producer: 'Blikside',
 			},
@@ -54,6 +59,21 @@ const QrCodeForm = props => {
 			},
 			...definition,
 		};
+
+		await props
+			.editPosition(position._id, {
+				printDestination: formSettings.printDestination,
+			})
+			.then(response => {
+				if (response.status === 'error' && !response.data) {
+					props.enqueueSnackbar({
+						message: response.message || 'Неизвестная ошибка.',
+						options: {
+							variant: 'error',
+						},
+					});
+				}
+			});
 
 		await sleep(300);
 
@@ -113,4 +133,11 @@ const QrCodeForm = props => {
 	);
 };
 
-export default QrCodeForm;
+const mapDispatchToProps = dispatch => {
+	return {
+		editPosition: (positionId, position) => dispatch(editPosition({ params: { positionId }, data: { position } })),
+		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
+	};
+};
+
+export default connect(null, mapDispatchToProps)(QrCodeForm);

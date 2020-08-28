@@ -450,7 +450,7 @@ export const BliksideTheme = createMuiTheme({
 					color: null,
 				},
 				'&$disabled': {
-					color: theme.blueGrey['400'],
+					color: theme.blueGrey['300'],
 				},
 			},
 		},
@@ -657,6 +657,9 @@ export const BliksideTheme = createMuiTheme({
 				'&.destructiveAction.activeAction, &.destructiveAction:hover': {
 					backgroundColor: theme.red['50'],
 					color: theme.red['500'],
+				},
+				'&$disabled': {
+					color: theme.blueGrey['200'],
 				},
 			},
 			sizeSmall: {

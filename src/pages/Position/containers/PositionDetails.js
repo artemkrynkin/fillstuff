@@ -18,8 +18,6 @@ import { DefinitionList, DefinitionListItem } from 'src/components/Definition';
 import styles from './PositionDetails.module.css';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { ReactComponent as QrCodeIcon } from 'public/img/other/qrcode.svg';
-
 const PositionDetails = props => {
 	const { position, onOpenDialogPosition, onCancelArchivePositionAfterEnded } = props;
 	const refDropdownActions = useRef(null);
@@ -127,7 +125,7 @@ const PositionDetails = props => {
 							onHandleDropdownActions();
 							onOpenDialogPosition('dialogPositionQRCode', 'position', position);
 						}}
-						iconBefore={<QrCodeIcon style={{ height: 14, verticalAlign: '-0.125em', width: 14 }} />}
+						iconBefore={<FontAwesomeIcon icon={['far-c', 'qr-code']} />}
 					>
 						Печать QR-кода
 					</MenuItem>

@@ -10,14 +10,37 @@ import PositionForm from './PositionForm';
 
 import styles from './index.module.css';
 
+const dialogTitle = type => {
+	switch (type) {
+		case 'create':
+			return 'Создание позиции';
+		case 'edit':
+			return 'Редактирование позиции';
+		case 'create-replacement':
+			return 'Создание позиции на замену';
+		case 'edit-replacement':
+			return 'Редактирование позиции на замену';
+		default:
+			return 'Unknown dialog type';
+	}
+};
+
 class DialogPositionCreateEdit extends Component {
 	static propTypes = {
-		type: PropTypes.oneOf(['create', 'edit']).isRequired,
+		type: PropTypes.oneOf(['create', 'edit', 'create-replacement', 'edit-replacement']).isRequired,
 		dialogOpen: PropTypes.bool.isRequired,
 		onCloseDialog: PropTypes.func.isRequired,
 		onExitedDialog: PropTypes.func,
 		onCallback: PropTypes.func,
 		selectedPosition: PropTypes.object,
+		sendRequest: PropTypes.bool,
+	};
+
+	static defaultProps = {
+		onExitedDialog: undefined,
+		onCallback: undefined,
+		selectedPosition: null,
+		sendRequest: true,
 	};
 
 	initialState = {
@@ -45,12 +68,14 @@ class DialogPositionCreateEdit extends Component {
 		return (
 			<Dialog open={dialogOpen} onEnter={this.onEnterDialog} onClose={onCloseDialog} onExited={this.onExitedDialog} maxWidth="lg">
 				<DialogTitle onClose={onCloseDialog} theme="noTheme">
-					{type === 'create' ? 'Создание позиции' : 'Редактирование позиции'}
+					{dialogTitle(type)}
 				</DialogTitle>
-				<Tabs className={styles.tabs} value={tabName} onChange={this.onChangeTab}>
-					<Tab value="position" label="Позиция" id="position" />
-					<Tab value="shops" label="Магазины" id="shops" />
-				</Tabs>
+				{/^(create|edit)$/.test(type) ? (
+					<Tabs className={styles.tabs} value={tabName} onChange={this.onChangeTab}>
+						<Tab value="position" label="Позиция" id="position" />
+						<Tab value="shops" label="Магазины" id="shops" />
+					</Tabs>
+				) : null}
 				<PositionForm {...this.props} tabName={tabName} />
 			</Dialog>
 		);

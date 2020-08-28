@@ -28,7 +28,7 @@ const Characteristics = props => {
 		name: '',
 	});
 	const [characteristicsTypes, setCharacteristicsTypes] = useState([]);
-	const [allCharacteristicsTypesUsed, setAllCharacteristicsTypesUsed] = useState(false);
+	const [allCharacteristicsTypesUsed, setAllCharacteristicsTypesUsed] = useState(true);
 
 	const onGetCharacteristics = characteristicType => props.getCharacteristics({ type: characteristicType });
 

@@ -86,13 +86,8 @@ export const formErrorHelperText = (touched, errors, name, helperText = null) =>
 };
 
 export const procurementPositionTransform = position => ({
-	_id: position._id,
+	...position,
 	lastReceipt: position.receipts[position.receipts.length - 1],
-	unitRelease: position.unitRelease,
-	unitReceipt: position.unitReceipt,
-	isFree: position.isFree,
-	name: position.name,
-	characteristics: position.characteristics,
 	label: position.characteristics.reduce(
 		(fullName, characteristic) => `${fullName ? `${fullName} ` : ''}${characteristic.name}`,
 		position.name

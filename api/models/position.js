@@ -18,6 +18,14 @@ const Position = new Schema({
 		type: Date,
 		default: Date.now,
 	},
+	parentPosition: {
+		type: Schema.Types.ObjectId,
+		ref: 'Position',
+	},
+	childPosition: {
+		type: Schema.Types.ObjectId,
+		ref: 'Position',
+	},
 	qrcodeId: {
 		type: String,
 		default: () => uuidv4(),

@@ -14,6 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import { unitTypes, unitTypeTransform } from 'shared/checkPositionAndReceipt';
 
 import NumberFormat from 'src/components/NumberFormat';
+import PositionNameInList from 'src/components/PositionNameInList';
 
 import Characteristics from './Characteristics';
 
@@ -26,10 +27,25 @@ const PositionTab = props => {
 		formikProps: { errors, setFieldValue, touched, values },
 	} = props;
 
+	const typeIsCreateOrEdit = /^(create|edit)$/.test(type);
+
 	return (
-		<DialogContent dividers={true}>
+		<DialogContent dividers={typeIsCreateOrEdit}>
 			<div className={styles.minHeightContent}>
 				<Form>
+					{!typeIsCreateOrEdit ? (
+						<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
+							<Grid xs={3} item>
+								<InputLabel style={{ marginTop: 0 }} data-inline>
+									Заменяемая позиция
+								</InputLabel>
+							</Grid>
+							<Grid xs={9} item>
+								<PositionNameInList name={values.childPosition.name} characteristics={values.childPosition.characteristics} size="sm" />
+							</Grid>
+						</Grid>
+					) : null}
+
 					<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 						<Grid xs={3} item>
 							<InputLabel error={Boolean(touched.name && errors.name)} data-inline>
@@ -37,18 +53,29 @@ const PositionTab = props => {
 							</InputLabel>
 						</Grid>
 						<Grid xs={9} item>
-							<Field
-								name="name"
-								error={Boolean(touched.name && errors.name)}
-								helperText={(touched.name && errors.name) || ''}
-								as={TextField}
-								placeholder="Держатели одноразовые, перчатки, салфетки, ватные диски…"
-								inputProps={{
-									maxLength: 60,
-								}}
-								autoFocus
-								fullWidth
-							/>
+							<Tooltip
+								disableFocusListener={typeIsCreateOrEdit}
+								disableHoverListener={typeIsCreateOrEdit}
+								disableTouchListener={typeIsCreateOrEdit}
+								title={<div style={{ textAlign: 'center', width: 220 }}>Можно изменить только при&nbsp;создании новой позиции</div>}
+								placement="bottom"
+							>
+								<div>
+									<Field
+										name="name"
+										error={Boolean(touched.name && errors.name)}
+										helperText={(touched.name && errors.name) || ''}
+										as={TextField}
+										placeholder="Держатели одноразовые, перчатки, салфетки, ватные диски…"
+										inputProps={{
+											maxLength: 60,
+										}}
+										disabled={!typeIsCreateOrEdit}
+										autoFocus
+										fullWidth
+									/>
+								</div>
+							</Tooltip>
 						</Grid>
 					</Grid>
 
@@ -65,41 +92,47 @@ const PositionTab = props => {
 							</InputLabel>
 						</Grid>
 						<Grid xs={9} item>
-							<>
-								{type === 'create' || !values.hasReceipts ? (
-									<ToggleButtonGroup
-										value={values.unitReceipt}
-										onChange={(event, value) => {
-											if (value === null) return;
+							{type === 'create' || !values.hasReceipts ? (
+								<ToggleButtonGroup
+									value={values.unitReceipt}
+									onChange={(event, value) => {
+										if (value === null) return;
 
-											setFieldValue('unitReceipt', value);
+										setFieldValue('unitReceipt', value);
 
-											if (value === 'pce') setFieldValue('unitRelease', 'pce');
-										}}
-										size="small"
-										exclusive
-									>
+										if (value === 'pce') setFieldValue('unitRelease', 'pce');
+									}}
+									size="small"
+									exclusive
+								>
+									{unitTypes.map(unitType => (
+										<ToggleButton key={unitType} value={unitType}>
+											{unitTypeTransform(unitType)}
+										</ToggleButton>
+									))}
+								</ToggleButtonGroup>
+							) : (
+								<Tooltip
+									title={
+										<div style={{ textAlign: 'center', width: 220 }}>
+											{typeIsCreateOrEdit ? (
+												<>Можно изменить только до&nbsp;внесения первого поступления</>
+											) : (
+												<>Можно изменить только при создании новой позиции</>
+											)}
+										</div>
+									}
+									placement="bottom"
+								>
+									<ToggleButtonGroup value={values.unitReceipt} size="small" exclusive>
 										{unitTypes.map(unitType => (
-											<ToggleButton key={unitType} value={unitType}>
+											<ToggleButton key={unitType} value={unitType} disabled={true}>
 												{unitTypeTransform(unitType)}
 											</ToggleButton>
 										))}
 									</ToggleButtonGroup>
-								) : (
-									<Tooltip
-										title={<div style={{ width: 250 }}>Можно изменять только до&nbsp;внесения первого поступления.</div>}
-										placement="bottom"
-									>
-										<ToggleButtonGroup value={values.unitReceipt} size="small" exclusive>
-											{unitTypes.map(unitType => (
-												<ToggleButton key={unitType} value={unitType} disabled={true}>
-													{unitTypeTransform(unitType)}
-												</ToggleButton>
-											))}
-										</ToggleButtonGroup>
-									</Tooltip>
-								)}
-							</>
+								</Tooltip>
+							)}
 						</Grid>
 					</Grid>
 
@@ -110,43 +143,49 @@ const PositionTab = props => {
 							</InputLabel>
 						</Grid>
 						<Grid xs={9} item>
-							<>
-								{type === 'create' || !values.hasReceipts ? (
-									<ToggleButtonGroup
-										value={values.unitRelease}
-										onChange={(event, value) => {
-											if (value === null) return;
+							{type === 'create' || !values.hasReceipts ? (
+								<ToggleButtonGroup
+									value={values.unitRelease}
+									onChange={(event, value) => {
+										if (value === null) return;
 
-											setFieldValue('unitRelease', value);
+										setFieldValue('unitRelease', value);
 
-											if (value === 'nmp') {
-												setFieldValue('unitReceipt', 'nmp');
-											}
-										}}
-										size="small"
-										exclusive
-									>
+										if (value === 'nmp') {
+											setFieldValue('unitReceipt', 'nmp');
+										}
+									}}
+									size="small"
+									exclusive
+								>
+									{unitTypes.map(unitType => (
+										<ToggleButton key={unitType} value={unitType}>
+											{unitTypeTransform(unitType)}
+										</ToggleButton>
+									))}
+								</ToggleButtonGroup>
+							) : (
+								<Tooltip
+									title={
+										<div style={{ textAlign: 'center', width: 220 }}>
+											{typeIsCreateOrEdit ? (
+												<>Можно изменить только до&nbsp;внесения первого поступления</>
+											) : (
+												<>Можно изменить только при создании новой позиции</>
+											)}
+										</div>
+									}
+									placement="bottom"
+								>
+									<ToggleButtonGroup value={values.unitRelease} size="small" exclusive>
 										{unitTypes.map(unitType => (
-											<ToggleButton key={unitType} value={unitType}>
+											<ToggleButton key={unitType} value={unitType} disabled={true}>
 												{unitTypeTransform(unitType)}
 											</ToggleButton>
 										))}
 									</ToggleButtonGroup>
-								) : (
-									<Tooltip
-										title={<div style={{ width: 250 }}>Можно изменять только до&nbsp;внесения первого поступления.</div>}
-										placement="bottom"
-									>
-										<ToggleButtonGroup value={values.unitRelease} size="small" exclusive>
-											{unitTypes.map(unitType => (
-												<ToggleButton key={unitType} value={unitType} disabled={true}>
-													{unitTypeTransform(unitType)}
-												</ToggleButton>
-											))}
-										</ToggleButtonGroup>
-									</Tooltip>
-								)}
-							</>
+								</Tooltip>
+							)}
 						</Grid>
 					</Grid>
 

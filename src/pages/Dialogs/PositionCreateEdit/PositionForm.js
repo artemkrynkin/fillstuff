@@ -31,22 +31,26 @@ const PositionForm = props => {
 	if (selectedPosition) initialValues = { ...initialValues, ...selectedPosition };
 
 	const onSubmit = (values, actions) => {
-		const { type } = props;
+		const { type, sendRequest } = props;
 		const position = positionSchema(true).cast(values);
 
+		if (!sendRequest) return handleSuccess(sendRequest, position, actions);
+
 		if (type === 'create') {
-			props.createPosition(position).then(response => handleSuccess(response, actions));
+			props.createPosition(position).then(response => handleSuccess(sendRequest, response, actions));
 		} else {
-			props.editPosition(position._id, position).then(response => handleSuccess(response, actions));
+			props.editPosition(position._id, position).then(response => handleSuccess(sendRequest, response, actions));
 		}
 	};
 
-	const handleSuccess = (response, actions) => {
+	const handleSuccess = (sendRequest, response, actions) => {
 		const { type, onCloseDialog, onCallback } = props;
 
 		actions.setSubmitting(false);
 
 		if (onCallback !== undefined) onCallback(response);
+
+		if (!sendRequest) return onCloseDialog();
 
 		if (response.status === 'success') {
 			const { data: position } = response;
@@ -105,7 +109,7 @@ const PositionForm = props => {
 									<Button onClick={() => submitForm()} disabled={isSubmitting} variant="contained" color="primary" size="large" fullWidth>
 										{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
 										<span className="loading-button-label" style={{ opacity: Number(!isSubmitting) }}>
-											{type === 'create' ? 'Создать' : 'Сохранить'}
+											{/^(create|create-replacement)$/.test(type) ? 'Создать' : 'Сохранить'}
 										</span>
 									</Button>
 								</Grid>

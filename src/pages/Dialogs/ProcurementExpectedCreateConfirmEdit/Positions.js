@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import loadable from '@loadable/component';
-import { isEqual } from 'lodash';
+// import { isEqual } from 'lodash';
 
 import FormHelperText from '@material-ui/core/FormHelperText';
 
@@ -12,12 +12,10 @@ import ReceiptTempPosition from './ReceiptTempPosition';
 
 import styles from './index.module.css';
 
-const DialogPositionCreate = loadable(() =>
-	import('src/pages/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateEdit" */)
-);
+const DialogPositionCreate = loadable(() => import('src/pages/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreate" */));
 
-const ProcurementPositionEdit = loadable(() =>
-	import('src/pages/Dialogs/ProcurementPositionEdit' /* webpackChunkName: "Dialog_ProcurementPositionEdit" */)
+const DialogPositionCreateReplacement = loadable(() =>
+	import('src/pages/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateReplacement" */)
 );
 
 const FormFieldArrayPositions = props => {
@@ -34,12 +32,12 @@ const FormFieldArrayPositions = props => {
 	const [textSearchPosition, setTextSearchPosition] = useState('');
 	const [dialogData, setDialogData] = useState({
 		position: null,
-		procurementPosition: null,
+		positionReplacement: null,
 	});
 	const [dialogOpenedName, setDialogOpenedName] = useState('');
 	const [dialogs, setDialogs] = useState({
 		dialogPositionCreate: false,
-		dialogProcurementPositionEdit: false,
+		dialogPositionCreateReplacement: false,
 	});
 
 	const onOpenDialogByName = (dialogName, dataType, data) => {
@@ -183,29 +181,37 @@ const FormFieldArrayPositions = props => {
 				selectedPosition={dialogOpenedName === 'dialogPositionCreate' ? dialogData.position : null}
 			/>
 
-			<ProcurementPositionEdit
-				dialogOpen={dialogs.dialogProcurementPositionEdit}
-				onCloseDialog={() => onCloseDialogByName('dialogProcurementPositionEdit')}
-				onCallback={({ positionIndexInProcurement: index, ...positionEdited }) => {
-					const position = values.receiptsTempPositions[index];
-
-					const name = positionEdited.name && positionEdited.name !== position.position.name ? positionEdited.name : '';
-					const characteristics =
-						positionEdited.characteristics &&
-						positionEdited.characteristics.length &&
-						!isEqual(position.position.characteristics, positionEdited.characteristics)
-							? positionEdited.characteristics
-							: '';
-
-					replace(index, {
-						...position,
-						name,
-						characteristics,
-					});
-				}}
-				onExitedDialog={() => onExitedDialogByName('procurementPosition')}
-				selectedPosition={dialogOpenedName === 'dialogProcurementPositionEdit' ? dialogData.procurementPosition : null}
+			<DialogPositionCreateReplacement
+				type="create-replacement"
+				dialogOpen={dialogs.dialogPositionCreateReplacement}
+				onCloseDialog={() => onCloseDialogByName('dialogPositionCreateReplacement')}
+				onExitedDialog={() => onExitedDialogByName('positionReplacement')}
+				selectedPosition={dialogOpenedName === 'dialogPositionCreateReplacement' ? dialogData.positionReplacement : null}
 			/>
+
+			{/*<ProcurementPositionEdit*/}
+			{/*	dialogOpen={dialogs.dialogProcurementPositionEdit}*/}
+			{/*	onCloseDialog={() => onCloseDialogByName('dialogProcurementPositionEdit')}*/}
+			{/*	onCallback={({ positionIndexInProcurement: index, ...positionEdited }) => {*/}
+			{/*		const position = values.receiptsTempPositions[index];*/}
+
+			{/*		const name = positionEdited.name && positionEdited.name !== position.position.name ? positionEdited.name : '';*/}
+			{/*		const characteristics =*/}
+			{/*			positionEdited.characteristics &&*/}
+			{/*			positionEdited.characteristics.length &&*/}
+			{/*			!isEqual(position.position.characteristics, positionEdited.characteristics)*/}
+			{/*				? positionEdited.characteristics*/}
+			{/*				: '';*/}
+
+			{/*		replace(index, {*/}
+			{/*			...position,*/}
+			{/*			name,*/}
+			{/*			characteristics,*/}
+			{/*		});*/}
+			{/*	}}*/}
+			{/*	onExitedDialog={() => onExitedDialogByName('procurementPosition')}*/}
+			{/*	selectedPosition={dialogOpenedName === 'dialogProcurementPositionEdit' ? dialogData.procurementPosition : null}*/}
+			{/*/>*/}
 		</div>
 	);
 };

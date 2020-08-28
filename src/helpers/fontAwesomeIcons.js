@@ -1,4 +1,7 @@
 import { library } from '@fortawesome/fontawesome-svg-core';
+
+import { farQrCode as farcQrCode, farPositionReplacement as farcPositionReplacement } from './fontAwecomeCustomIcons';
+
 import { faVk, faInstagram } from '@fortawesome/free-brands-svg-icons';
 
 import {
@@ -68,7 +71,6 @@ import {
 	faExclamationCircle as falExclamationCircle,
 	faVideo as falVideo,
 	faPlus as falPlus,
-	faQrcode as falQrcode,
 	faClipboardListCheck as falClipboardListCheck,
 	faCheckCircle as falCheckCircle,
 	faPlusCircle as falPlusCircle,
@@ -98,6 +100,10 @@ import {
 import { faCheckCircle as fadCheckCircle, faExclamationCircle as fadExclamationCircle } from '@fortawesome/pro-duotone-svg-icons';
 
 library.add(
+	// Custom
+	farcQrCode,
+	farcPositionReplacement,
+
 	// Brands
 	faVk,
 	faInstagram,
@@ -167,7 +173,6 @@ library.add(
 	falExclamationCircle,
 	falVideo,
 	falPlus,
-	falQrcode,
 	falClipboardListCheck,
 	falCheckCircle,
 	falPlusCircle,

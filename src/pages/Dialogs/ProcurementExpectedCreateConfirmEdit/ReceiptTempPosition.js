@@ -1,5 +1,6 @@
 import React from 'react';
 import { Field } from 'formik';
+import ClassNames from 'classnames';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import IconButton from '@material-ui/core/IconButton';
@@ -23,12 +24,6 @@ const ReceiptTempPosition = props => {
 		formikProps: { errors, isSubmitting, touched },
 	} = props;
 
-	const name = receiptTempPosition.name ? receiptTempPosition.name : receiptTempPosition.position.name;
-	const characteristics =
-		receiptTempPosition.characteristics && receiptTempPosition.characteristics.length
-			? receiptTempPosition.characteristics
-			: receiptTempPosition.position.characteristics;
-
 	const isNmpNmp = receiptTempPosition.position.unitReceipt === 'nmp' && receiptTempPosition.position.unitRelease === 'nmp';
 
 	return (
@@ -39,26 +34,46 @@ const ReceiptTempPosition = props => {
 			<Grid className={styles.positionItemContent} direction="column" container>
 				<Grid wrap="nowrap" alignItems="flex-start" style={{ marginBottom: 15 }} container>
 					<Grid style={{ flex: '1 1' }} zeroMinWidth item>
-						<PositionNameInList name={name} characteristics={characteristics} size="md" />
+						<PositionNameInList
+							name={receiptTempPosition.position.name}
+							characteristics={receiptTempPosition.position.characteristics}
+							size="md"
+						/>
 					</Grid>
 					<Grid className={styles.actionButtons} item>
-						<Tooltip title="Изменить позицию" placement="top">
+						<Tooltip title="Создать позицию на замену" placement="top">
 							<IconButton
 								className={styles.editActionButton}
 								onClick={() => {
-									onOpenDialogByName('dialogProcurementPositionEdit', 'procurementPosition', {
+									const positionReplacement = {
+										...receiptTempPosition.position,
+										childPosition: receiptTempPosition.position,
 										positionIndexInProcurement: index,
-										name,
-										characteristics,
-									});
+									};
+
+									delete positionReplacement._id;
+
+									onOpenDialogByName('dialogPositionCreateReplacement', 'positionReplacement', positionReplacement);
 								}}
 								tabIndex={-1}
 							>
+								<FontAwesomeIcon icon={['far-c', 'position-replacement']} style={{ fontSize: 18 }} />
+							</IconButton>
+						</Tooltip>
+						<Tooltip title="Редактировать" placement="top">
+							<IconButton className={styles.editActionButton} tabIndex={-1}>
 								<FontAwesomeIcon icon={['far', 'pen']} />
 							</IconButton>
 						</Tooltip>
-						<Tooltip title="Удалить" placement="top">
-							<IconButton className={styles.deleteActionButton} onClick={() => remove(index)} tabIndex={-1}>
+						<Tooltip title="Удалить из заказа" placement="top">
+							<IconButton
+								className={ClassNames({
+									[styles.deleteActionButton]: true,
+									destructiveAction: true,
+								})}
+								onClick={() => remove(index)}
+								tabIndex={-1}
+							>
 								<FontAwesomeIcon icon={['fal', 'times']} />
 							</IconButton>
 						</Tooltip>

@@ -169,7 +169,7 @@ const FormFieldArrayReceipts = props => {
 					if (response.status === 'success') {
 						const position = response.data;
 
-						push(receiptInitialValues(procurementPositionTransform({ position })));
+						push(receiptInitialValues(procurementPositionTransform(position, true)));
 
 						setTimeout(() => {
 							dialogRef.current.querySelector('.sentinel-bottom').scrollIntoView({

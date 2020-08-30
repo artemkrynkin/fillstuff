@@ -1,7 +1,18 @@
 .container {
   display: flex;
-  align-items: center;
+}
+
+.minHeight {
   min-height: 32px;
+}
+
+.sizeSm {
+  align-items: center;
+}
+
+.sizeMd,
+.sizeLg {
+  align-items: flex-start;
 }
 
 .names {
@@ -12,6 +23,7 @@
 }
 
 .name,
+.nameText,
 .characteristics {
   line-height: 1.3;
   overflow: hidden;
@@ -35,6 +47,11 @@
   color: var(--c-hex-blueGrey-700);
   font-size: 18px;
   font-weight: 500;
+}
+
+:not(.sizeSm) .name {
+  display: flex;
+  align-items: flex-start;
 }
 
 .characteristics {
@@ -68,10 +85,7 @@
   margin-left: 0;
 }
 
-.deliveryIsExpected,
-.archive,
-.archivedAfterEnded,
-.writeOffUndo {
+.symbolIcon {
   font-size: 13px;
   margin-left: 8px;
 }
@@ -90,4 +104,8 @@
 
 .writeOffUndo {
   color: var(--c-hex-red-500);
+}
+
+.positionReplacement {
+  color: var(--c-hex-teal-300);
 }

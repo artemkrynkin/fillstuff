@@ -25,18 +25,16 @@ const procurementSchema = (depopulate = false) => {
 			Yup.object().shape({
 				position: Yup.mixed()
 					.required()
-					.transform(value => (depopulate ? value._id : value)),
-				name: Yup.string(),
-				characteristics: Yup.array()
-					.when('$other', (other, schema) => (depopulate ? schema.of(Yup.string()) : schema))
-					.transform(currentValue => {
-						return depopulate
-							? currentValue
-								? currentValue
-										.sort((characteristicA, characteristicB) => characteristicA.type.localeCompare(characteristicB.type))
-										.map(characteristic => characteristic._id)
-								: []
-							: currentValue;
+					.transform(position => {
+						const { _id, notCreated, childPosition, ...remainingParams } = position;
+
+						const positionReplacement = {
+							...remainingParams,
+							childPosition: _id,
+							notCreated,
+						};
+
+						return depopulate ? (notCreated ? positionReplacement : _id) : position;
 					}),
 				quantity: Yup.number()
 					.nullable(true)

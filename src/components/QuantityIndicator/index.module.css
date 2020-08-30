@@ -45,15 +45,15 @@
   width: 10px;
 }
 
-.circle_red {
+.circleRed {
   background-color: var(--c-hex-red-500);
 }
 
-.circle_yellow {
-  background-color: var(--c-hex-orange-500);
+.circleYellow {
+  background-color: var(--c-hex-orange-300);
 }
 
-.circle_green {
+.circleGreen {
   background-color: var(--c-hex-teal-A700);
 }
 

@@ -374,11 +374,15 @@ class ProcurementReceivedCreate extends Component {
 	}
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
+	const { dialogOpen } = ownProps;
+
+	if (!dialogOpen) return {};
+
 	const positions = { ...state.positions };
 
 	if (positions.data && positions.data.length > 0) {
-		positions.data = positions.data.filter(position => !position.isArchived).map(position => procurementPositionTransform(position));
+		positions.data = positions.data.filter(position => !position.isArchived).map(position => procurementPositionTransform(position, true));
 	}
 
 	return {

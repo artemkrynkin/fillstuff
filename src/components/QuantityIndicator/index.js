@@ -12,9 +12,9 @@ const qiClasses = ClassNames({
 const qiCircleClasses = (quantity, minimumBalance) =>
 	ClassNames({
 		[styles.circle]: true,
-		[styles.circle_red]: (quantity / minimumBalance) * 100 <= 100,
-		[styles.circle_yellow]: (quantity / minimumBalance) * 100 > 100 && (quantity / minimumBalance) * 100 <= 150,
-		[styles.circle_green]: (quantity / minimumBalance) * 100 > 150,
+		[styles.circleRed]: (quantity / minimumBalance) * 100 <= 100,
+		[styles.circleYellow]: (quantity / minimumBalance) * 100 > 100 && (quantity / minimumBalance) * 100 <= 150,
+		[styles.circleGreen]: (quantity / minimumBalance) * 100 > 150,
 	});
 
 const compareQuantity = (a, b) => {

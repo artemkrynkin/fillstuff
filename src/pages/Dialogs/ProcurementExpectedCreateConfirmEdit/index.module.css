@@ -49,37 +49,39 @@
   margin-bottom: 0;
 }
 
-.positionItemNumber {
+.positionNumber {
   color: var(--c-hex-blueGrey-300);
   font-size: 14px;
   font-weight: 600;
   width: 35px;
 }
 
-.positionItemContent {
+.positionContent {
   border-bottom: 1px solid var(--c-hex-brightness-5);
+  flex: 1 1;
   padding-bottom: 20px;
+  min-width: 0;
 }
 
-.positionItem:last-child .positionItemContent {
+.positionItem:last-child .positionContent {
   border-bottom: none;
   padding-bottom: 0;
 }
 
-.actionButtons {
-  margin-left: auto;
+.positionSelected {
+  flex: 1 1;
 }
 
-.editActionButton,
-.deleteActionButton {
+.actionButtons {
+  margin-left: auto;
+  padding-left: 20px;
+}
+
+.actionButton {
   padding: 0;
   margin-left: 5px;
 }
 
-.editActionButton {
+.actionButton svg {
   font-size: 16px;
-}
-
-.deleteActionButton {
-  font-size: 20px;
 }

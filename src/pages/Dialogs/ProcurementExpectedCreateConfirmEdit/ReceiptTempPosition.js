@@ -17,6 +17,7 @@ import styles from './index.module.css';
 
 const ReceiptTempPosition = props => {
 	const {
+		setPositionIndexInProcurement,
 		onOpenDialogByName,
 		index,
 		receiptTempPosition,
@@ -26,55 +27,64 @@ const ReceiptTempPosition = props => {
 
 	const isNmpNmp = receiptTempPosition.position.unitReceipt === 'nmp' && receiptTempPosition.position.unitRelease === 'nmp';
 
+	const onOpenDialogPositionCreateReplacement = () => {
+		const { createdAt, isArchived, archivedAfterEnded, deliveryIsExpected, hasReceipts, ...remainingProps } = receiptTempPosition.position;
+
+		const positionReplacement = {
+			...remainingProps,
+			childPosition: receiptTempPosition.position,
+		};
+
+		setPositionIndexInProcurement(index);
+		onOpenDialogByName('dialogPositionCreateReplacement', 'positionReplacement', positionReplacement);
+	};
+
+	const onOpenDialogPositionEditReplacement = () => {
+		setPositionIndexInProcurement(index);
+		onOpenDialogByName('dialogPositionEditReplacement', 'positionReplacement', receiptTempPosition.position);
+	};
+
 	return (
 		<Grid className={styles.positionItem} wrap="nowrap" alignItems="baseline" container>
-			<Grid className={styles.positionItemNumber} item>
+			<Grid className={styles.positionNumber} item>
 				{index + 1}
 			</Grid>
-			<Grid className={styles.positionItemContent} direction="column" container>
-				<Grid wrap="nowrap" alignItems="flex-start" style={{ marginBottom: 15 }} container>
-					<Grid style={{ flex: '1 1' }} zeroMinWidth item>
+			<Grid className={styles.positionContent} direction="column" container>
+				<Grid alignItems="center" style={{ marginBottom: 15 }} container>
+					<Grid className={styles.positionSelected} zeroMinWidth item>
 						<PositionNameInList
 							name={receiptTempPosition.position.name}
 							characteristics={receiptTempPosition.position.characteristics}
 							size="md"
+							positionReplaced={receiptTempPosition.position.childPosition}
+							minHeight={false}
 						/>
 					</Grid>
 					<Grid className={styles.actionButtons} item>
-						<Tooltip title="Создать позицию на замену" placement="top">
-							<IconButton
-								className={styles.editActionButton}
-								onClick={() => {
-									const positionReplacement = {
-										...receiptTempPosition.position,
-										childPosition: receiptTempPosition.position,
-										positionIndexInProcurement: index,
-									};
-
-									delete positionReplacement._id;
-
-									onOpenDialogByName('dialogPositionCreateReplacement', 'positionReplacement', positionReplacement);
-								}}
-								tabIndex={-1}
-							>
-								<FontAwesomeIcon icon={['far-c', 'position-replacement']} style={{ fontSize: 18 }} />
-							</IconButton>
-						</Tooltip>
-						<Tooltip title="Редактировать" placement="top">
-							<IconButton className={styles.editActionButton} tabIndex={-1}>
-								<FontAwesomeIcon icon={['far', 'pen']} />
-							</IconButton>
-						</Tooltip>
+						{!receiptTempPosition.position.childPosition ? (
+							<Tooltip title="Создать позицию на замену" placement="top">
+								<IconButton className={styles.actionButton} onClick={onOpenDialogPositionCreateReplacement} tabIndex={-1}>
+									<FontAwesomeIcon icon={['far-c', 'position-replacement']} />
+								</IconButton>
+							</Tooltip>
+						) : null}
+						{receiptTempPosition.position.notCreated ? (
+							<Tooltip title="Редактировать" placement="top">
+								<IconButton className={styles.actionButton} onClick={onOpenDialogPositionEditReplacement} tabIndex={-1}>
+									<FontAwesomeIcon icon={['far', 'pen']} />
+								</IconButton>
+							</Tooltip>
+						) : null}
 						<Tooltip title="Удалить из заказа" placement="top">
 							<IconButton
 								className={ClassNames({
-									[styles.deleteActionButton]: true,
+									[styles.actionButton]: true,
 									destructiveAction: true,
 								})}
 								onClick={() => remove(index)}
 								tabIndex={-1}
 							>
-								<FontAwesomeIcon icon={['fal', 'times']} />
+								<FontAwesomeIcon icon={['far', 'trash']} />
 							</IconButton>
 						</Tooltip>
 					</Grid>

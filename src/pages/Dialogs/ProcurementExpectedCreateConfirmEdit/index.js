@@ -19,7 +19,6 @@ import ProcurementForm from './ProcurementForm';
 import procurementSchema from './procurementSchema';
 
 import styles from './index.module.css';
-import { isEmpty } from 'lodash';
 
 class ProcurementExpectedCreateConfirmEdit extends Component {
 	static propTypes = {
@@ -36,16 +35,7 @@ class ProcurementExpectedCreateConfirmEdit extends Component {
 		const procurement = procurementSchema(true).cast(values);
 
 		procurement.totalPrice = formatNumber(procurement.pricePositions + procurement.costDelivery);
-		procurement.positions = [];
-
-		procurement.receiptsTempPositions = procurement.receiptsTempPositions.map(receiptTempPosition => {
-			procurement.positions.push(receiptTempPosition.position);
-
-			if (isEmpty(receiptTempPosition.name)) delete receiptTempPosition.name;
-			if (isEmpty(receiptTempPosition.characteristics)) delete receiptTempPosition.characteristics;
-
-			return receiptTempPosition;
-		});
+		procurement.positions = procurement.receiptsTempPositions.map(receiptTempPosition => receiptTempPosition.position);
 
 		if (type === 'create') {
 			this.props.createProcurementExpected(procurement).then(response => {

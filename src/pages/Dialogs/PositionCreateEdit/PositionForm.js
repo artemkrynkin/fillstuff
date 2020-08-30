@@ -18,6 +18,8 @@ import positionSchema from './positionSchema';
 const PositionForm = props => {
 	const { onCloseDialog, type, selectedPosition, tabName } = props;
 
+	const typeIsCreateOrEdit = /^(create|edit)$/.test(type);
+
 	let initialValues = {
 		name: '',
 		unitReceipt: '',
@@ -32,13 +34,19 @@ const PositionForm = props => {
 
 	const onSubmit = (values, actions) => {
 		const { type, sendRequest } = props;
-		const position = positionSchema(true).cast(values);
+		const position = positionSchema(typeIsCreateOrEdit).cast(values);
 
-		if (!sendRequest) return handleSuccess(sendRequest, position, actions);
+		if (!sendRequest) {
+			position.notCreated = true;
+
+			return handleSuccess(sendRequest, position, actions);
+		}
 
 		if (type === 'create') {
 			props.createPosition(position).then(response => handleSuccess(sendRequest, response, actions));
-		} else {
+		}
+
+		if (type === 'edit') {
 			props.editPosition(position._id, position).then(response => handleSuccess(sendRequest, response, actions));
 		}
 	};

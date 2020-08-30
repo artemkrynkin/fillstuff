@@ -14,12 +14,11 @@ const dialogTitle = type => {
 	switch (type) {
 		case 'create':
 			return 'Создание позиции';
-		case 'edit':
-			return 'Редактирование позиции';
 		case 'create-replacement':
 			return 'Создание позиции на замену';
+		case 'edit':
 		case 'edit-replacement':
-			return 'Редактирование позиции на замену';
+			return 'Редактирование позиции';
 		default:
 			return 'Unknown dialog type';
 	}
@@ -32,15 +31,15 @@ class DialogPositionCreateEdit extends Component {
 		onCloseDialog: PropTypes.func.isRequired,
 		onExitedDialog: PropTypes.func,
 		onCallback: PropTypes.func,
-		selectedPosition: PropTypes.object,
 		sendRequest: PropTypes.bool,
+		selectedPosition: PropTypes.object,
 	};
 
 	static defaultProps = {
 		onExitedDialog: undefined,
 		onCallback: undefined,
-		selectedPosition: null,
 		sendRequest: true,
+		selectedPosition: null,
 	};
 
 	initialState = {

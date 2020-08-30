@@ -41,7 +41,12 @@ const PositionTab = props => {
 								</InputLabel>
 							</Grid>
 							<Grid xs={9} item>
-								<PositionNameInList name={values.childPosition.name} characteristics={values.childPosition.characteristics} size="sm" />
+								<PositionNameInList
+									name={values.childPosition.name}
+									characteristics={values.childPosition.characteristics}
+									size="sm"
+									minHeight={false}
+								/>
 							</Grid>
 						</Grid>
 					) : null}
@@ -92,7 +97,7 @@ const PositionTab = props => {
 							</InputLabel>
 						</Grid>
 						<Grid xs={9} item>
-							{type === 'create' || !values.hasReceipts ? (
+							{typeIsCreateOrEdit && !values.hasReceipts ? (
 								<ToggleButtonGroup
 									value={values.unitReceipt}
 									onChange={(event, value) => {
@@ -143,7 +148,7 @@ const PositionTab = props => {
 							</InputLabel>
 						</Grid>
 						<Grid xs={9} item>
-							{type === 'create' || !values.hasReceipts ? (
+							{typeIsCreateOrEdit && !values.hasReceipts ? (
 								<ToggleButtonGroup
 									value={values.unitRelease}
 									onChange={(event, value) => {

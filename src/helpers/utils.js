@@ -85,15 +85,24 @@ export const formErrorHelperText = (touched, errors, name, helperText = null) =>
 	return touch && typeof error === 'string' ? error : helperText;
 };
 
-export const procurementPositionTransform = position => ({
-	...position,
-	lastReceipt: position.receipts[position.receipts.length - 1],
-	label: position.characteristics.reduce(
-		(fullName, characteristic) => `${fullName ? `${fullName} ` : ''}${characteristic.name}`,
-		position.name
-	),
-	value: position._id,
-});
+export const procurementPositionTransform = (position, setLastReceipt = false, index) => {
+	const { parentPosition, childPosition, activeReceipt, receipts, ...remainingParams } = position;
+
+	const positionTransformed = {
+		...remainingParams,
+		label: position.characteristics.reduce(
+			(fullName, characteristic) => `${fullName ? `${fullName} ` : ''}${characteristic.name}`,
+			position.name
+		),
+		value: position._id,
+	};
+
+	if (setLastReceipt) {
+		positionTransformed.lastReceipt = receipts[receipts.length - 1];
+	}
+
+	return positionTransformed;
+};
 
 export const getDeliveryDateTimeMoment = (deliveryDate, deliveryTime, type = '') => {
 	const localTime = type === 'from' ? [0, 0, 0] : [23, 59, 0];

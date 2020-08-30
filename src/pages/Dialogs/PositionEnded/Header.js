@@ -8,6 +8,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid';
 import Tooltip from '@material-ui/core/Tooltip';
 
+import { procurementPositionTransform } from 'src/helpers/utils';
+
 import styles from './Header.module.css';
 
 const DialogPositionArchiveDelete = loadable(() =>
@@ -24,13 +26,13 @@ const Header = props => {
 		dialogPositionArchiveDelete: false,
 	});
 
-	const procurement = {
+	const procurement = setLastReceipt => ({
 		receiptsTempPositions: [
 			{
-				position: storeNotification.position,
+				position: procurementPositionTransform(storeNotification.position, setLastReceipt),
 			},
 		],
-	};
+	});
 
 	const onOpenDialogByName = (dialogName, dataType, data) => {
 		setDialogOpenedName(dialogName);
@@ -69,7 +71,7 @@ const Header = props => {
 	return (
 		<Grid className={styles.headerActions} alignItems="center" container>
 			<Button
-				onClick={() => onOpenDialogByNameIndex('dialogProcurementExpectedCreate', 'procurementExpected', procurement)}
+				onClick={() => onOpenDialogByNameIndex('dialogProcurementExpectedCreate', 'procurementExpected', procurement(false))}
 				variant="contained"
 				color="primary"
 				size="small"
@@ -78,7 +80,7 @@ const Header = props => {
 				Создать заказ
 			</Button>
 			<Button
-				onClick={() => onOpenDialogByNameIndex('dialogProcurementReceivedCreate', 'procurementReceived', procurement)}
+				onClick={() => onOpenDialogByNameIndex('dialogProcurementReceivedCreate', 'procurementReceived', procurement(true))}
 				variant="outlined"
 				color="primary"
 				size="small"

@@ -18,24 +18,24 @@ positionGroupsRouter.post(
 
 		const positionGroupsPromise = PositionGroup.find({ studio: studioId })
 			.sort({ name: 1 })
-			.populate({
-				path: 'positions',
-				options: {
-					sort: { name: 1 },
-				},
-				populate: [
-					{
-						path: 'activeReceipt characteristics shops.shop',
-					},
-					{
-						path: 'receipts',
-						match: { status: /received|active/ },
-						options: {
-							sort: { createdAt: 1 },
-						},
-					},
-				],
-			})
+			// .populate({
+			// 	path: 'positions',
+			// 	options: {
+			// 		sort: { name: 1 },
+			// 	},
+			// 	populate: [
+			// 		{
+			// 			path: 'activeReceipt characteristics shops.shop',
+			// 		},
+			// 		{
+			// 			path: 'receipts',
+			// 			match: { status: /received|active/ },
+			// 			options: {
+			// 				sort: { createdAt: 1 },
+			// 			},
+			// 		},
+			// 	],
+			// })
 			.catch(err => next({ code: 2, err }));
 
 		const positionGroups = await positionGroupsPromise;
@@ -104,24 +104,24 @@ positionGroupsRouter.post(
 		]);
 
 		PositionGroup.findById(newPositionGroup._id)
-			.populate({
-				path: 'positions',
-				options: {
-					sort: { name: 1 },
-				},
-				populate: [
-					{
-						path: 'activeReceipt characteristics shops.shop',
-					},
-					{
-						path: 'receipts',
-						match: { status: /received|active/ },
-						options: {
-							sort: { createdAt: 1 },
-						},
-					},
-				],
-			})
+			// .populate({
+			// 	path: 'positions',
+			// 	options: {
+			// 		sort: { name: 1 },
+			// 	},
+			// 	populate: [
+			// 		{
+			// 			path: 'activeReceipt characteristics shops.shop',
+			// 		},
+			// 		{
+			// 			path: 'receipts',
+			// 			match: { status: /received|active/ },
+			// 			options: {
+			// 				sort: { createdAt: 1 },
+			// 			},
+			// 		},
+			// 	],
+			// })
 			.then(positionGroup => res.json(positionGroup))
 			.catch(err => next({ code: 2, err }));
 	}
@@ -150,24 +150,24 @@ positionGroupsRouter.post(
 		await Promise.all([positionGroup.save()]);
 
 		PositionGroup.findById(positionGroup._id)
-			.populate({
-				path: 'positions',
-				options: {
-					sort: { name: 1 },
-				},
-				populate: [
-					{
-						path: 'activeReceipt characteristics shops.shop',
-					},
-					{
-						path: 'receipts',
-						match: { status: /received|active/ },
-						options: {
-							sort: { createdAt: 1 },
-						},
-					},
-				],
-			})
+			// .populate({
+			// 	path: 'positions',
+			// 	options: {
+			// 		sort: { name: 1 },
+			// 	},
+			// 	populate: [
+			// 		{
+			// 			path: 'activeReceipt characteristics shops.shop',
+			// 		},
+			// 		{
+			// 			path: 'receipts',
+			// 			match: { status: /received|active/ },
+			// 			options: {
+			// 				sort: { createdAt: 1 },
+			// 			},
+			// 		},
+			// 	],
+			// })
 			.then(positionGroup => res.json(positionGroup))
 			.catch(err => next({ code: 2, err }));
 	}
@@ -199,24 +199,24 @@ positionGroupsRouter.post(
 		).catch(err => next({ code: 2, err }));
 
 		PositionGroup.findById(positionGroup._id)
-			.populate({
-				path: 'positions',
-				options: {
-					sort: { name: 1 },
-				},
-				populate: [
-					{
-						path: 'activeReceipt characteristics shops.shop',
-					},
-					{
-						path: 'receipts',
-						match: { status: /received|active/ },
-						options: {
-							sort: { createdAt: 1 },
-						},
-					},
-				],
-			})
+			// .populate({
+			// 	path: 'positions',
+			// 	options: {
+			// 		sort: { name: 1 },
+			// 	},
+			// 	populate: [
+			// 		{
+			// 			path: 'activeReceipt characteristics shops.shop',
+			// 		},
+			// 		{
+			// 			path: 'receipts',
+			// 			match: { status: /received|active/ },
+			// 			options: {
+			// 				sort: { createdAt: 1 },
+			// 			},
+			// 		},
+			// 	],
+			// })
 			.then(positionGroup => res.json(positionGroup))
 			.catch(err => next({ code: 2, err }));
 	}

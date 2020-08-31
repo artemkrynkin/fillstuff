@@ -99,7 +99,7 @@ const FormFieldArrayReceipts = props => {
 				<div className={styles.addPositionWrap}>
 					<SelectAutocompleteCreate
 						TextFieldProps={{
-							error: Boolean(touched.receiptsTempPositions && errors.receiptsTempPositions),
+							error: Boolean(touched.positions && errors.positions),
 						}}
 						isDisabled={isSubmitting || !formEditable}
 						isLoading={isLoadingPositions}

@@ -27,7 +27,7 @@ const Header = props => {
 	});
 
 	const procurement = setLastReceipt => ({
-		receiptsTempPositions: [
+		positionsTemp: [
 			{
 				position: procurementPositionTransform(storeNotification.position, setLastReceipt),
 			},

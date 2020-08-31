@@ -36,13 +36,13 @@ export const newStoreNotification = io => {
 						},
 					},
 					{
-						path: 'receiptsTempPositions.position',
+						path: 'orderedReceiptsPositions.position',
 						populate: {
 							path: 'characteristics',
 						},
 					},
 					{
-						path: 'receiptsTempPositions.characteristics shop',
+						path: 'orderedReceiptsPositions.characteristics shop',
 					},
 				],
 			},
@@ -93,13 +93,13 @@ export const editStoreNotification = io => {
 						},
 					},
 					{
-						path: 'receiptsTempPositions.position',
+						path: 'orderedReceiptsPositions.position',
 						populate: {
 							path: 'characteristics',
 						},
 					},
 					{
-						path: 'receiptsTempPositions.characteristics shop',
+						path: 'orderedReceiptsPositions.characteristics shop',
 					},
 				],
 			},

@@ -85,8 +85,8 @@ export const formErrorHelperText = (touched, errors, name, helperText = null) =>
 	return touch && typeof error === 'string' ? error : helperText;
 };
 
-export const procurementPositionTransform = (position, setLastReceipt = false, index) => {
-	const { parentPosition, childPosition, activeReceipt, receipts, ...remainingParams } = position;
+export const procurementPositionTransform = (position, setLastReceipt = false) => {
+	const { deliveryIsExpected, shops, activeReceipt, receipts, ...remainingParams } = position;
 
 	const positionTransformed = {
 		...remainingParams,

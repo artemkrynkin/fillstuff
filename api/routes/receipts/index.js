@@ -112,8 +112,8 @@ receiptsRouter.post(
 
 		const receipt = await Receipt.findById(receiptId).catch(err => next({ code: 2, err }));
 
-		Object.keys(receiptEdited).forEach(receiptParameterEdited => {
-			receipt[receiptParameterEdited] = receiptEdited[receiptParameterEdited];
+		Object.keys(receiptEdited).forEach(receiptParamEdited => {
+			receipt[receiptParamEdited] = receiptEdited[receiptParamEdited];
 		});
 
 		const receiptErr = receipt.validateSync();
@@ -201,7 +201,7 @@ receiptsRouter.post(
 		Position.findById(position._id)
 			.populate([
 				{
-					path: 'procurement',
+					path: 'activeReceipt characteristics shops.shop',
 				},
 				{
 					path: 'receipts',

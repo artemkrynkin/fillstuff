@@ -294,7 +294,7 @@ procurementsRouter.post(
 			if (newProcurementValues.invoiceDate) {
 				newProcurement.invoiceDate = newProcurementValues.invoiceDate;
 			}
-			newProcurement.receiptsTempPositions = [];
+			newProcurement.orderedReceiptsPositions = [];
 		}
 
 		if (positionsErr.length || receiptsErr.length) return next({ code: 2 });

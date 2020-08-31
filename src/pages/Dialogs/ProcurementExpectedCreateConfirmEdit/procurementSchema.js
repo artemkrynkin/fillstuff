@@ -20,18 +20,21 @@ const procurementSchema = (depopulate = false) => {
 		costDelivery: Yup.number()
 			.transform(value => (isNaN(value) ? 0 : value))
 			.min(0),
-		pricePositions: Yup.number().min(0),
-		receiptsTempPositions: Yup.array(
+		pricePositions: Yup.number()
+			.transform(value => (isNaN(value) ? 0 : value))
+			.min(0),
+		orderedReceiptsPositions: Yup.array(
 			Yup.object().shape({
 				position: Yup.mixed()
 					.required()
 					.transform(position => {
-						const { _id, notCreated, childPosition, ...remainingParams } = position;
+						const { _id, notCreated, childPosition, characteristics, ...remainingParams } = position;
 
 						const positionReplacement = {
 							...remainingParams,
 							childPosition: _id,
 							notCreated,
+							characteristics: characteristics.map(characteristic => characteristic._id),
 						};
 
 						return depopulate ? (notCreated ? positionReplacement : _id) : position;
@@ -45,7 +48,6 @@ const procurementSchema = (depopulate = false) => {
 		)
 			// eslint-disable-next-line
 			.min(1, 'Необходимо выбрать минимум ${min} позицию'),
-		positions: Yup.array().of(Yup.string()),
 	});
 };
 

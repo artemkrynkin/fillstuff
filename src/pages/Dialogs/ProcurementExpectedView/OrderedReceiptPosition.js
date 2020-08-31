@@ -6,14 +6,14 @@ import PositionNameInList from 'src/components/PositionNameInList';
 
 import styles from './index.module.css';
 
-const ReceiptTempPosition = props => {
-	const { index, receiptTempPosition } = props;
+const OrderedReceiptPosition = props => {
+	const { index, orderedReceiptPosition } = props;
 
-	const name = receiptTempPosition.name ? receiptTempPosition.name : receiptTempPosition.position.name;
+	const name = orderedReceiptPosition.name ? orderedReceiptPosition.name : orderedReceiptPosition.position.name;
 	const characteristics =
-		receiptTempPosition.characteristics && receiptTempPosition.characteristics.length
-			? receiptTempPosition.characteristics
-			: receiptTempPosition.position.characteristics;
+		orderedReceiptPosition.characteristics && orderedReceiptPosition.characteristics.length
+			? orderedReceiptPosition.characteristics
+			: orderedReceiptPosition.position.characteristics;
 
 	return (
 		<Grid className={styles.positionItem} wrap="nowrap" alignItems="baseline" container>
@@ -27,4 +27,4 @@ const ReceiptTempPosition = props => {
 	);
 };
 
-export default ReceiptTempPosition;
+export default OrderedReceiptPosition;

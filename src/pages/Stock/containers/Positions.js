@@ -8,6 +8,7 @@ import Paper from '@material-ui/core/Paper';
 
 import { TableCell } from './styles';
 import Position from './Position';
+import ParentPosition from './ParentPosition';
 import PositionGroup from './PositionGroup';
 
 import styles from './Positions.module.css';
@@ -44,9 +45,22 @@ const Positions = props => {
 						/>
 					))}
 					{positions.map(position => {
-						if (position.positionGroup || position.isArchived) return null;
+						if (position.positionGroup || position.parentPosition || position.isArchived) return null;
 
-						return <Position key={position._id} position={position} onOpenDialogPosition={onOpenDialogByName} />;
+						const childPosition = position.childPosition ? positions.find(({ _id }) => _id === position.childPosition) : null;
+
+						if (!childPosition) {
+							return <Position key={position._id} position={position} onOpenDialogPosition={onOpenDialogByName} />;
+						} else {
+							return (
+								<ParentPosition
+									key={position._id}
+									position={position}
+									childPosition={childPosition}
+									onOpenDialogPosition={onOpenDialogByName}
+								/>
+							);
+						}
 					})}
 				</TableBody>
 			</Table>

@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import loadable from '@loadable/component';
 
-import FormHelperText from '@material-ui/core/FormHelperText';
-
 import { procurementPositionTransform } from 'src/helpers/utils';
 
 import { SelectAutocompleteCreate } from 'src/components/selectAutocomplete';
 
-import ReceiptTempPosition from './ReceiptTempPosition';
+import OrderedReceiptPosition from './OrderedReceiptPosition';
 
 import styles from './index.module.css';
 
@@ -21,7 +19,7 @@ const DialogPositionEditReplacement = loadable(() =>
 	import('src/pages/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionEditReplacement" */)
 );
 
-const FormFieldArrayPositions = props => {
+const OrderedReceiptsPositions = props => {
 	const {
 		dialogRef,
 		positions: {
@@ -30,7 +28,7 @@ const FormFieldArrayPositions = props => {
 			// error: errorPositions
 		},
 		arrayHelpers: { push, replace },
-		formikProps: { errors, isSubmitting, touched, values },
+		formikProps: { errors, isSubmitting, values },
 	} = props;
 	const [textSearchPosition, setTextSearchPosition] = useState('');
 	const [positionIndexInProcurement, setPositionIndexInProcurement] = useState(undefined);
@@ -83,7 +81,9 @@ const FormFieldArrayPositions = props => {
 
 	const positionsAvailable =
 		!isLoadingPositions && positions
-			? positions.filter(position => !values.receiptsTempPositions.some(selectedPosition => selectedPosition.position._id === position._id))
+			? positions.filter(
+					position => !values.orderedReceiptsPositions.some(selectedPosition => selectedPosition.position._id === position._id)
+			  )
 			: [];
 
 	return (
@@ -93,7 +93,8 @@ const FormFieldArrayPositions = props => {
 				<div className={styles.addPositionWrap}>
 					<SelectAutocompleteCreate
 						TextFieldProps={{
-							error: Boolean(touched.receiptsTempPositions && errors.receiptsTempPositions),
+							error: typeof errors.orderedReceiptsPositions === 'string',
+							helperText: typeof errors.orderedReceiptsPositions === 'string' && errors.orderedReceiptsPositions,
 						}}
 						isDisabled={isSubmitting}
 						isLoading={isLoadingPositions}
@@ -138,19 +139,18 @@ const FormFieldArrayPositions = props => {
 						options={positionsAvailable}
 						isClearable
 					/>
-					{typeof errors.receiptsTempPositions === 'string' ? <FormHelperText error>{errors.receiptsTempPositions}</FormHelperText> : null}
 				</div>
 			</div>
 
-			{values.receiptsTempPositions.length ? (
+			{values.orderedReceiptsPositions.length ? (
 				<div className={styles.positionsItems}>
-					{values.receiptsTempPositions.map((receiptTempPosition, index) => (
-						<ReceiptTempPosition
-							key={receiptTempPosition.position._id}
+					{values.orderedReceiptsPositions.map((orderedReceiptPosition, index) => (
+						<OrderedReceiptPosition
+							key={orderedReceiptPosition.position._id}
 							setPositionIndexInProcurement={setPositionIndexInProcurement}
 							onOpenDialogByName={onOpenDialogByName}
 							index={index}
-							receiptTempPosition={receiptTempPosition}
+							orderedReceiptPosition={orderedReceiptPosition}
 							arrayHelpers={props.arrayHelpers}
 							formikProps={props.formikProps}
 						/>
@@ -189,7 +189,9 @@ const FormFieldArrayPositions = props => {
 				onCloseDialog={() => onCloseDialogByName('dialogPositionCreateReplacement')}
 				onExitedDialog={() => onExitedDialogByName('positionReplacement')}
 				onCallback={position => {
-					replace(positionIndexInProcurement, { position });
+					const orderedReceiptPosition = values.orderedReceiptsPositions[positionIndexInProcurement];
+
+					replace(positionIndexInProcurement, { ...orderedReceiptPosition, position });
 
 					setPositionIndexInProcurement(undefined);
 				}}
@@ -203,7 +205,9 @@ const FormFieldArrayPositions = props => {
 				onCloseDialog={() => onCloseDialogByName('dialogPositionEditReplacement')}
 				onExitedDialog={() => onExitedDialogByName('positionReplacement')}
 				onCallback={position => {
-					replace(positionIndexInProcurement, { position });
+					const orderedReceiptPosition = values.orderedReceiptsPositions[positionIndexInProcurement];
+
+					replace(positionIndexInProcurement, { ...orderedReceiptPosition, position });
 
 					setPositionIndexInProcurement(undefined);
 				}}
@@ -214,4 +218,4 @@ const FormFieldArrayPositions = props => {
 	);
 };
 
-export default FormFieldArrayPositions;
+export default OrderedReceiptsPositions;

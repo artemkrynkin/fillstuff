@@ -123,7 +123,7 @@ const Procurement = new Schema({
 			i18n.__('Обязательное поле'),
 		],
 	},
-	receiptsTempPositions: [
+	orderedReceiptsPositions: [
 		{
 			position: {
 				type: Schema.Types.ObjectId,

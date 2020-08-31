@@ -41,13 +41,13 @@ storeNotificationsRouter.post(
 							},
 						},
 						{
-							path: 'receiptsTempPositions.position',
+							path: 'orderedReceiptsPositions.position',
 							populate: {
 								path: 'characteristics',
 							},
 						},
 						{
-							path: 'receiptsTempPositions.characteristics shop',
+							path: 'orderedReceiptsPositions.characteristics shop',
 						},
 					],
 				},
@@ -102,13 +102,13 @@ storeNotificationsRouter.post(
 							},
 						},
 						{
-							path: 'receiptsTempPositions.position',
+							path: 'orderedReceiptsPositions.position',
 							populate: {
 								path: 'characteristics',
 							},
 						},
 						{
-							path: 'receiptsTempPositions.characteristics shop',
+							path: 'orderedReceiptsPositions.characteristics shop',
 						},
 					],
 				},

@@ -312,10 +312,12 @@ class ProcurementReceivedCreate extends Component {
 		}
 
 		if (selectedProcurement) {
+			const { positionsTemp, ...selectedProcurementRemainingParams } = selectedProcurement;
+
 			initialValues = {
 				...initialValues,
-				...selectedProcurement,
-				receipts: selectedProcurement.receiptsTempPositions.map(position =>
+				...selectedProcurementRemainingParams,
+				receipts: positionsTemp.map(position =>
 					receiptInitialValues({
 						position: position.position,
 						name: position.name,
@@ -325,8 +327,6 @@ class ProcurementReceivedCreate extends Component {
 				),
 				positions: [],
 			};
-
-			delete initialValues.receiptsTempPositions;
 		}
 
 		return (
@@ -374,11 +374,7 @@ class ProcurementReceivedCreate extends Component {
 	}
 }
 
-const mapStateToProps = (state, ownProps) => {
-	const { dialogOpen } = ownProps;
-
-	if (!dialogOpen) return {};
-
+const mapStateToProps = state => {
 	const positions = { ...state.positions };
 
 	if (positions.data && positions.data.length > 0) {

@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import ClassNames from 'classnames';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -21,9 +22,10 @@ import stylesPositions from './Positions.module.css';
 import styles from './PositionGroup.module.css';
 
 import Position from './Position';
+import ParentPosition from './ParentPosition';
 
 const PositionGroup = props => {
-	const { positionGroup, onOpenDialogPositionGroup, onOpenDialogPosition } = props;
+	const { positions, positionsInGroup, positionGroup, onOpenDialogPositionGroup, onOpenDialogPosition } = props;
 	const refDropdownActions = useRef(null);
 	const [dropdownActions, setDropdownActions] = useState(false);
 
@@ -51,13 +53,13 @@ const PositionGroup = props => {
 									<TableCellAccordion style={{ paddingLeft: 41 }}>
 										<span className={styles.positionGroupName}>{positionGroup.name}</span>
 										<span className={stylesPositions.caption} style={{ marginLeft: 5 }}>
-											{declensionNumber(positionGroup.positions.length, ['позиция', 'позиции', 'позиций'], true)}
+											{declensionNumber(positionsInGroup.length, ['позиция', 'позиции', 'позиций'], true)}
 										</span>
 									</TableCellAccordion>
 									<TableCellAccordion align="right" width={240}>
 										<QuantityIndicator
 											type="positionGroup"
-											positions={positionGroup.positions.filter(
+											positions={positionsInGroup.filter(
 												position => position.activeReceipt && position.receipts.length && !position.archivedAfterEnded
 											)}
 										/>
@@ -69,14 +71,25 @@ const PositionGroup = props => {
 						</Table>
 					</AccordionSummary>
 
-					{positionGroup.positions.length ? (
+					{positionsInGroup.length ? (
 						<AccordionDetails>
 							<Table style={{ tableLayout: 'fixed' }}>
 								<TableBody>
-									{positionGroup.positions.map(position => {
-										if (position.isArchived) return null;
+									{positionsInGroup.map(position => {
+										const childPosition = position.childPosition ? positions.find(({ _id }) => _id === position.childPosition) : null;
 
-										return <Position key={position._id} position={position} onOpenDialogPosition={onOpenDialogPosition} />;
+										if (!childPosition) {
+											return <Position key={position._id} position={position} onOpenDialogPosition={onOpenDialogPosition} />;
+										} else {
+											return (
+												<ParentPosition
+													key={position._id}
+													position={position}
+													childPosition={childPosition}
+													onOpenDialogPosition={onOpenDialogPosition}
+												/>
+											);
+										}
 									})}
 								</TableBody>
 							</Table>
@@ -145,4 +158,20 @@ PositionGroup.propTypes = {
 	positionGroup: PropTypes.object.isRequired,
 };
 
-export default PositionGroup;
+const mapStateToProps = (state, ownProps) => {
+	const positions = state.positions.data;
+	const { positionGroup } = ownProps;
+
+	const positionsInGroup = positions
+		? positionGroup.positions.map(positionIdGroup => {
+				return positions.find(({ _id }) => _id === positionIdGroup);
+		  })
+		: [];
+
+	return {
+		positions,
+		positionsInGroup,
+	};
+};
+
+export default connect(mapStateToProps, null)(PositionGroup);

@@ -37,13 +37,13 @@ procurementsRouter.post(
 					},
 				},
 				{
-					path: 'receiptsTempPositions.position',
+					path: 'orderedReceiptsPositions.position',
 					populate: {
 						path: 'characteristics',
 					},
 				},
 				{
-					path: 'receiptsTempPositions.characteristics shop',
+					path: 'orderedReceiptsPositions.characteristics shop',
 				},
 			])
 			.catch(err => next({ code: 2, err }));
@@ -91,13 +91,13 @@ procurementsRouter.post(
 					},
 				},
 				{
-					path: 'receiptsTempPositions.position',
+					path: 'orderedReceiptsPositions.position',
 					populate: {
 						path: 'characteristics',
 					},
 				},
 				{
-					path: 'receiptsTempPositions.characteristics shop',
+					path: 'orderedReceiptsPositions.characteristics shop',
 				},
 			])
 			.then(procurement => res.json(procurement))
@@ -121,18 +121,61 @@ procurementsRouter.post(
 			studio: studioId,
 			orderedByMember: memberId,
 			status: 'expected',
+			positions: [],
 		});
 
-		const positionUpdated = Position.updateMany(
-			{ _id: { $in: newProcurement.positions } },
-			{ $push: { deliveryIsExpected: newProcurement._id } }
-		).catch(err => next({ code: 2, err }));
+		const positionsInsert = [];
+		const positionsErr = [];
+		const positionsDeleteStoreNotification = [];
+		let replacementPositionsUpdate = [];
+
+		newProcurement.orderedReceiptsPositions = newProcurementValues.orderedReceiptsPositions.map(orderedReceiptsPositions => {
+			const { position: positionTemp, ...remainingParams } = orderedReceiptsPositions;
+
+			const position = positionTemp.notCreated ? new Position(positionTemp) : positionTemp;
+			const positionId = positionTemp.notCreated ? position._id : position;
+
+			if (positionTemp.notCreated) {
+				const newPositionErr = position.validateSync();
+
+				if (newPositionErr) positionsErr.push(newPositionErr);
+				else positionsInsert.push(position);
+
+				replacementPositionsUpdate.push([
+					position.childPosition,
+					{
+						$set: {
+							parentPosition: positionId,
+						},
+					},
+				]);
+			}
+
+			newProcurement.positions.push(positionId);
+
+			positionsDeleteStoreNotification.push(positionTemp.notCreated ? position.childPosition : positionId);
+
+			return { ...remainingParams, position };
+		});
+
+		if (positionsErr.length) return next({ code: 2 });
 
 		const newProcurementErr = newProcurement.validateSync();
 
 		if (newProcurementErr) return next({ code: newProcurementErr.errors ? 5 : 2, err: newProcurementErr });
 
-		await Promise.all([newProcurement.save(), positionUpdated]);
+		if (positionsInsert.length) {
+			await Position.insertMany(positionsInsert).catch(err => next({ code: 2, err }));
+		}
+
+		const positionsUpdate = Position.updateMany(
+			{ _id: { $in: newProcurement.positions } },
+			{ $push: { deliveryIsExpected: newProcurement._id } }
+		).catch(err => next({ code: 2, err }));
+
+		replacementPositionsUpdate = replacementPositionsUpdate.map(promiseItem => Position.findByIdAndUpdate(promiseItem[0], promiseItem[1]));
+
+		await Promise.all([newProcurement.save(), positionsUpdate, ...replacementPositionsUpdate]);
 
 		Emitter.emit('newStoreNotification', {
 			studio: studioId,
@@ -140,7 +183,15 @@ procurementsRouter.post(
 			procurement: newProcurement._id,
 		});
 
-		const procurement = await Procurement.findById(newProcurement._id)
+		positionsDeleteStoreNotification.forEach(position => {
+			Emitter.emit('deleteStoreNotification', {
+				studio: studioId,
+				type: 'position-ends',
+				position: position,
+			});
+		});
+
+		Procurement.findById(newProcurement._id)
 			.populate([
 				{
 					path: 'orderedByMember',
@@ -150,26 +201,17 @@ procurementsRouter.post(
 					},
 				},
 				{
-					path: 'receiptsTempPositions.position',
+					path: 'orderedReceiptsPositions.position',
 					populate: {
 						path: 'characteristics',
 					},
 				},
 				{
-					path: 'receiptsTempPositions.characteristics shop',
+					path: 'orderedReceiptsPositions.characteristics shop',
 				},
 			])
+			.then(procurement => res.json(procurement))
 			.catch(err => next({ code: 2, err }));
-
-		procurement.positions.forEach(position => {
-			Emitter.emit('deleteStoreNotification', {
-				studio: studioId,
-				type: 'position-ends',
-				position: position._id,
-			});
-		});
-
-		res.json(procurement);
 	}
 );
 
@@ -186,27 +228,47 @@ procurementsRouter.post(
 
 		const procurement = await Procurement.findById(procurementId).catch(err => next({ code: 2, err }));
 
-		const oldPositions = procurement.positions.slice();
-		const newPositions = procurementEdited.positions.slice();
+		Object.keys(procurementEdited).forEach(procurementParamEdited => {
+			if (!/^(orderedReceiptsPositions|positions)$/.test(procurementParamEdited)) {
+				procurement[procurementParamEdited] = procurementEdited[procurementParamEdited];
+			}
+		});
 
-		procurement.shop = procurementEdited.shop;
-		procurement.isConfirmed = procurementEdited.isConfirmed;
-		procurement.isUnknownDeliveryDate = procurementEdited.isUnknownDeliveryDate;
-		procurement.deliveryDate = procurementEdited.deliveryDate;
-		procurement.deliveryTimeFrom = procurementEdited.deliveryTimeFrom;
-		procurement.deliveryTimeTo = procurementEdited.deliveryTimeTo;
-		procurement.pricePositions = procurementEdited.pricePositions;
-		procurement.costDelivery = procurementEdited.costDelivery;
-		procurement.totalPrice = procurementEdited.totalPrice;
-		procurement.receiptsTempPositions = procurementEdited.receiptsTempPositions;
-		procurement.positions = procurementEdited.positions;
-		procurement.comment = procurementEdited.comment;
+		const positionsInsert = [];
+		const positionsErr = [];
+		const oldPositions = procurement.positions.slice();
+		const newPositions = [];
+
+		procurement.positions = [];
+
+		procurement.orderedReceiptsPositions = procurementEdited.orderedReceiptsPositions.map(orderedReceiptsPositions => {
+			const { position: positionTemp, ...remainingParams } = orderedReceiptsPositions;
+
+			const position = positionTemp.notCreated ? new Position(positionTemp) : positionTemp;
+			const positionId = positionTemp.notCreated ? position._id : position;
+
+			if (positionTemp.notCreated) {
+				const newPositionErr = position.validateSync();
+
+				if (newPositionErr) positionsErr.push(newPositionErr);
+				else positionsInsert.push(position);
+			}
+
+			procurement.positions.push(positionId);
+			newPositions.push(positionId);
+
+			return { ...remainingParams, position };
+		});
+
+		if (positionsErr.length) return next({ code: 2 });
 
 		const procurementErr = procurement.validateSync();
 
 		if (procurementErr) return next({ code: procurementErr.errors ? 5 : 2, err: procurementErr });
 
-		await Promise.all([procurement.save()]);
+		if (positionsInsert.length) {
+			await Position.insertMany(positionsInsert).catch(err => next({ code: 2, err }));
+		}
 
 		await Position.updateMany({ _id: { $in: oldPositions } }, { $pull: { deliveryIsExpected: procurement._id } }).catch(err =>
 			next({ code: 2, err })
@@ -214,6 +276,8 @@ procurementsRouter.post(
 		await Position.updateMany({ _id: { $in: newPositions } }, { $push: { deliveryIsExpected: procurement._id } }).catch(err =>
 			next({ code: 2, err })
 		);
+
+		await procurement.save();
 
 		Emitter.emit('editStoreNotification', {
 			studio: studioId,
@@ -231,13 +295,13 @@ procurementsRouter.post(
 					},
 				},
 				{
-					path: 'receiptsTempPositions.position',
+					path: 'orderedReceiptsPositions.position',
 					populate: {
 						path: 'characteristics',
 					},
 				},
 				{
-					path: 'receiptsTempPositions.characteristics shop',
+					path: 'orderedReceiptsPositions.characteristics shop',
 				},
 			])
 			.then(procurement => res.json(procurement))

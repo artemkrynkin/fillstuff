@@ -68,6 +68,10 @@
   padding-bottom: 0;
 }
 
+.positionContentHeader {
+  margin-bottom: 15px;
+}
+
 .positionSelected {
   flex: 1 1;
 }

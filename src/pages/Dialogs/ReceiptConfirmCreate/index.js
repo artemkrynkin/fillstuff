@@ -14,7 +14,7 @@ const ReceiptConfirmCreate = props => {
 	if (!selectedPosition) return null;
 
 	const procurement = {
-		receiptsTempPositions: [
+		orderedReceiptsPositions: [
 			{
 				position: selectedPosition,
 			},

@@ -20,6 +20,11 @@ import procurementSchema from './procurementSchema';
 
 import styles from './index.module.css';
 
+const receiptInitialValues = ({ position }) => ({
+	position,
+	quantity: '',
+});
+
 class ProcurementExpectedCreateConfirmEdit extends Component {
 	static propTypes = {
 		type: PropTypes.oneOf(['create', 'confirm', 'edit']).isRequired,
@@ -35,7 +40,9 @@ class ProcurementExpectedCreateConfirmEdit extends Component {
 		const procurement = procurementSchema(true).cast(values);
 
 		procurement.totalPrice = formatNumber(procurement.pricePositions + procurement.costDelivery);
-		procurement.positions = procurement.receiptsTempPositions.map(receiptTempPosition => receiptTempPosition.position);
+		procurement.positions = procurement.orderedReceiptsPositions
+			.filter(orderedReceiptPosition => typeof orderedReceiptPosition.position === 'string')
+			.map(orderedReceiptPosition => orderedReceiptPosition.position);
 
 		if (type === 'create') {
 			this.props.createProcurementExpected(procurement).then(response => {
@@ -100,15 +107,18 @@ class ProcurementExpectedCreateConfirmEdit extends Component {
 			costDelivery: '',
 			pricePositions: '',
 			totalPrice: '',
-			receiptsTempPositions: [],
+			orderedReceiptsPositions: [],
 			positions: [],
 			comment: '',
 		};
 
 		if (selectedProcurement) {
+			const { positionsTemp, deliveryDate, ...remainingParamsSelectedProcurement } = selectedProcurement;
+
 			initialValues = {
 				...initialValues,
-				...selectedProcurement,
+				...remainingParamsSelectedProcurement,
+				orderedReceiptsPositions: positionsTemp.map(position => receiptInitialValues({ position: position.position })),
 			};
 
 			if (type === 'confirm') {
@@ -116,7 +126,7 @@ class ProcurementExpectedCreateConfirmEdit extends Component {
 			}
 
 			if (type === 'edit') {
-				if (selectedProcurement.deliveryDate) initialValues.deliveryDate = moment(selectedProcurement.deliveryDate).format();
+				if (deliveryDate) initialValues.deliveryDate = moment(deliveryDate).format();
 			}
 		}
 

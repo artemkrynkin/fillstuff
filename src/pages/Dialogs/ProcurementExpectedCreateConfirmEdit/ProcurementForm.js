@@ -27,7 +27,7 @@ import NumberFormat, { moneyInputFormatProps } from 'src/components/NumberFormat
 import Dropdown from 'src/components/Dropdown';
 import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
 
-import Positions from './Positions';
+import OrderedReceiptsPositions from './OrderedReceiptsPositions';
 
 import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
@@ -112,7 +112,7 @@ const ProcurementForm = props => {
 							{touched.shop && errors.shop ? <FormHelperText error>{errors.shop}</FormHelperText> : null}
 						</Grid>
 						<Grid item>
-							<Button onClick={onOpenDialogShopCreate} variant="outlined" color="primary" tabIndex={-1}>
+							<Button onClick={onOpenDialogShopCreate} disabled={isSubmitting} variant="outlined" color="primary" tabIndex={-1}>
 								Новый магазин
 							</Button>
 						</Grid>
@@ -327,9 +327,9 @@ const ProcurementForm = props => {
 					</Grid>
 				) : null}
 
-				<FieldArray name="receiptsTempPositions" validateOnChange={false}>
+				<FieldArray name="orderedReceiptsPositions" validateOnChange={false}>
 					{props => (
-						<Positions
+						<OrderedReceiptsPositions
 							dialogRef={dialogRef}
 							positions={positions}
 							arrayHelpers={props}

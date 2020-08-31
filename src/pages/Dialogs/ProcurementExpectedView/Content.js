@@ -10,7 +10,7 @@ import { DefinitionList, DefinitionListItem } from 'src/components/Definition';
 import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
 import AvatarTitle from 'src/components/AvatarTitle';
 
-import ReceiptTempPosition from './ReceiptTempPosition';
+import OrderedReceiptPosition from './OrderedReceiptPosition';
 
 import styles from './index.module.css';
 
@@ -102,9 +102,13 @@ const Content = props => {
 			<Typography variant="h6" style={{ marginTop: 40 }} gutterBottom>
 				Позиции в заказе
 			</Typography>
-			{procurement.receiptsTempPositions.length
-				? procurement.receiptsTempPositions.map((receiptTempPosition, index) => (
-						<ReceiptTempPosition key={receiptTempPosition.position._id} index={index} receiptTempPosition={receiptTempPosition} />
+			{procurement.orderedReceiptsPositions.length
+				? procurement.orderedReceiptsPositions.map((orderedReceiptPosition, index) => (
+						<OrderedReceiptPosition
+							key={orderedReceiptPosition.position._id}
+							index={index}
+							orderedReceiptPosition={orderedReceiptPosition}
+						/>
 				  ))
 				: null}
 		</DialogContent>

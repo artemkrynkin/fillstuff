@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import mongoose from 'mongoose';
-import { v4 as uuidv4 } from 'uuid';
 
 import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
@@ -143,9 +142,9 @@ positionsRouter.post(
 
 		const position = await Position.findById(positionId).catch(err => next({ code: 2, err }));
 
-		Object.keys(positionEdited).forEach(receiptParameterEdited => {
-			if (receiptParameterEdited || (/unitReceipt|unitRelease/.test(receiptParameterEdited) && !position.hasReceipts)) {
-				position[receiptParameterEdited] = positionEdited[receiptParameterEdited];
+		Object.keys(positionEdited).forEach(receiptParamEdited => {
+			if (receiptParamEdited || (/unitReceipt|unitRelease/.test(receiptParamEdited) && !position.hasReceipts)) {
+				position[receiptParamEdited] = positionEdited[receiptParamEdited];
 			}
 		});
 
@@ -219,7 +218,7 @@ positionsRouter.post(
 		if (position.deliveryIsExpected.length) {
 			return res.json({
 				code: 400,
-				message: 'Позиция не может быть архивирована пока ожидается доставка',
+				message: `Позиция не может быть ${position.hasReceipts ? 'архивирована' : 'удалена'} пока ожидается доставка`,
 			});
 		}
 

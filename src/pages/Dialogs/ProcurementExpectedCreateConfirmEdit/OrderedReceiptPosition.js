@@ -15,24 +15,24 @@ import NumberFormat from 'src/components/NumberFormat';
 
 import styles from './index.module.css';
 
-const ReceiptTempPosition = props => {
+const OrderedReceiptPosition = props => {
 	const {
 		setPositionIndexInProcurement,
 		onOpenDialogByName,
 		index,
-		receiptTempPosition,
+		orderedReceiptPosition,
 		arrayHelpers: { remove },
 		formikProps: { errors, isSubmitting, touched },
 	} = props;
 
-	const isNmpNmp = receiptTempPosition.position.unitReceipt === 'nmp' && receiptTempPosition.position.unitRelease === 'nmp';
+	const isNmpNmp = orderedReceiptPosition.position.unitReceipt === 'nmp' && orderedReceiptPosition.position.unitRelease === 'nmp';
 
 	const onOpenDialogPositionCreateReplacement = () => {
-		const { createdAt, isArchived, archivedAfterEnded, deliveryIsExpected, hasReceipts, ...remainingProps } = receiptTempPosition.position;
+		const { createdAt, isArchived, archivedAfterEnded, hasReceipts, ...remainingProps } = orderedReceiptPosition.position;
 
 		const positionReplacement = {
 			...remainingProps,
-			childPosition: receiptTempPosition.position,
+			childPosition: orderedReceiptPosition.position,
 		};
 
 		setPositionIndexInProcurement(index);
@@ -41,7 +41,7 @@ const ReceiptTempPosition = props => {
 
 	const onOpenDialogPositionEditReplacement = () => {
 		setPositionIndexInProcurement(index);
-		onOpenDialogByName('dialogPositionEditReplacement', 'positionReplacement', receiptTempPosition.position);
+		onOpenDialogByName('dialogPositionEditReplacement', 'positionReplacement', orderedReceiptPosition.position);
 	};
 
 	return (
@@ -50,27 +50,37 @@ const ReceiptTempPosition = props => {
 				{index + 1}
 			</Grid>
 			<Grid className={styles.positionContent} direction="column" container>
-				<Grid alignItems="center" style={{ marginBottom: 15 }} container>
+				<Grid className={styles.positionContentHeader} alignItems="center" container>
 					<Grid className={styles.positionSelected} zeroMinWidth item>
 						<PositionNameInList
-							name={receiptTempPosition.position.name}
-							characteristics={receiptTempPosition.position.characteristics}
+							name={orderedReceiptPosition.position.name}
+							characteristics={orderedReceiptPosition.position.characteristics}
 							size="md"
-							positionReplaced={receiptTempPosition.position.childPosition}
+							positionReplaced={orderedReceiptPosition.position.childPosition}
 							minHeight={false}
 						/>
 					</Grid>
 					<Grid className={styles.actionButtons} item>
-						{!receiptTempPosition.position.childPosition ? (
+						{!orderedReceiptPosition.position.childPosition ? (
 							<Tooltip title="Создать позицию на замену" placement="top">
-								<IconButton className={styles.actionButton} onClick={onOpenDialogPositionCreateReplacement} tabIndex={-1}>
+								<IconButton
+									className={styles.actionButton}
+									onClick={onOpenDialogPositionCreateReplacement}
+									disabled={isSubmitting}
+									tabIndex={-1}
+								>
 									<FontAwesomeIcon icon={['far-c', 'position-replacement']} />
 								</IconButton>
 							</Tooltip>
 						) : null}
-						{receiptTempPosition.position.notCreated ? (
+						{orderedReceiptPosition.position.notCreated ? (
 							<Tooltip title="Редактировать" placement="top">
-								<IconButton className={styles.actionButton} onClick={onOpenDialogPositionEditReplacement} tabIndex={-1}>
+								<IconButton
+									className={styles.actionButton}
+									onClick={onOpenDialogPositionEditReplacement}
+									disabled={isSubmitting}
+									tabIndex={-1}
+								>
 									<FontAwesomeIcon icon={['far', 'pen']} />
 								</IconButton>
 							</Tooltip>
@@ -82,6 +92,7 @@ const ReceiptTempPosition = props => {
 									destructiveAction: true,
 								})}
 								onClick={() => remove(index)}
+								disabled={isSubmitting}
 								tabIndex={-1}
 							>
 								<FontAwesomeIcon icon={['far', 'trash']} />
@@ -92,11 +103,11 @@ const ReceiptTempPosition = props => {
 				<Grid alignItems="flex-start" spacing={2} container>
 					<Grid xs={3} item>
 						<Field
-							name={`receiptsTempPositions.${index}.quantity`}
+							name={`orderedReceiptsPositions.${index}.quantity`}
 							label={isNmpNmp ? 'Количество уп.' : 'Количество шт.'}
 							placeholder="0"
-							error={formError(touched, errors, `receiptsTempPositions.${index}.quantity`)}
-							helperText={formErrorHelperText(touched, errors, `receiptsTempPositions.${index}.quantity`, null)}
+							error={formError(touched, errors, `orderedReceiptsPositions.${index}.quantity`)}
+							helperText={formErrorHelperText(touched, errors, `orderedReceiptsPositions.${index}.quantity`, null)}
 							as={TextField}
 							InputProps={{
 								inputComponent: NumberFormat,
@@ -114,4 +125,4 @@ const ReceiptTempPosition = props => {
 	);
 };
 
-export default ReceiptTempPosition;
+export default OrderedReceiptPosition;

@@ -114,7 +114,7 @@ const ProcurementExpectedView = props => {
 										onHandleDropdownActions();
 										onOpenDialogByName('dialogProcurementExpectedEdit', 'procurementExpected', selectedProcurement);
 									}}
-									iconBefore={<FontAwesomeIcon icon={['far', 'pen']} />}
+									iconBefore={<FontAwesomeIcon icon={['far', 'pen']} fixedWidth />}
 								>
 									Редактировать
 								</MenuItem>
@@ -124,7 +124,7 @@ const ProcurementExpectedView = props => {
 									onHandleDropdownActions();
 									onOpenDialogByName('dialogProcurementExpectedCancel', 'procurementExpected', selectedProcurement);
 								}}
-								iconBefore={<FontAwesomeIcon icon={['far', 'undo']} />}
+								iconBefore={<FontAwesomeIcon icon={['far', 'undo']} fixedWidth />}
 								destructive
 							>
 								Отменить заказ

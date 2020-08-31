@@ -34,24 +34,14 @@
   height: calc(100% - 50px);
 }
 
-.menuItem {
-  padding: 0 10px;
-}
-
-.menuItem_down {
-  margin-top: auto;
-}
-
 .menuLink {
-  align-items: center;
   border-radius: 8px;
   color: var(--c-hex-slateGrey-2);
   display: flex;
   font-size: 14px;
-  opacity: 0.9;
+  margin: 0 10px;
   padding: 12px 14px;
   transition: background-color 50ms ease-out;
-  text-decoration: none;
 }
 
 .menuLink:hover {
@@ -66,23 +56,17 @@
   opacity: 1;
 }
 
-.menuIcon {
-  margin-right: 14px;
+.menuLink svg {
+  font-size: 16px;
   opacity: 0.5;
-  text-align: center;
-  width: 18px;
+  margin-right: 12px;
 }
 
-.menuIcon svg {
-  font-size: 18px;
-  max-width: 100%;
-}
-
-.menuLink:hover .menuIcon {
+.menuLink:hover svg {
   opacity: 0.7;
 }
 
-.menuLink_active .menuIcon,
-.menuLink_active:hover .menuIcon {
+.menuLink_active svg,
+.menuLink_active:hover svg {
   opacity: 1;
 }

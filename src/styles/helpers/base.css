@@ -1,12 +1,10 @@
-html,
-body {
-  font-family: var(--fontStack);
-  font-weight: 400;
-}
-
 body {
   background-color: var(--c-hex-brightness-4);
   color: var(--c-hex-blueGrey-700);
+  font-family: var(--fontStack);
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.3;
   margin: 0;
   min-width: 1280px;
 }

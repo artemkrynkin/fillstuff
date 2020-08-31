@@ -125,7 +125,7 @@ const PositionDetails = props => {
 							onHandleDropdownActions();
 							onOpenDialogPosition('dialogPositionQRCode', 'position', position);
 						}}
-						iconBefore={<FontAwesomeIcon icon={['far-c', 'qr-code']} />}
+						iconBefore={<FontAwesomeIcon icon={['far-c', 'qr-code']} fixedWidth />}
 					>
 						Печать QR-кода
 					</MenuItem>
@@ -138,7 +138,7 @@ const PositionDetails = props => {
 								onHandleDropdownActions();
 								onOpenDialogPosition('dialogPositionRemoveFromGroup', 'position', position);
 							}}
-							iconBefore={<FontAwesomeIcon icon={['far', 'folder-minus']} style={{ fontSize: 16 }} />}
+							iconBefore={<FontAwesomeIcon icon={['far', 'folder-minus']} fixedWidth />}
 						>
 							Открепить от группы
 						</MenuItem>
@@ -148,7 +148,7 @@ const PositionDetails = props => {
 							onHandleDropdownActions();
 							onOpenDialogPosition('dialogPositionEdit', 'position', position);
 						}}
-						iconBefore={<FontAwesomeIcon icon={['far', 'pen']} />}
+						iconBefore={<FontAwesomeIcon icon={['far', 'pen']} fixedWidth />}
 					>
 						Редактировать
 					</MenuItem>
@@ -175,7 +175,11 @@ const PositionDetails = props => {
 							onOpenDialogPosition('dialogPositionArchiveDelete', 'position', position);
 						}}
 						iconBefore={
-							position.hasReceipts ? <FontAwesomeIcon icon={['far', 'archive']} /> : <FontAwesomeIcon icon={['far', 'trash-alt']} />
+							position.hasReceipts ? (
+								<FontAwesomeIcon icon={['far', 'archive']} fixedWidth />
+							) : (
+								<FontAwesomeIcon icon={['far', 'trash-alt']} fixedWidth />
+							)
 						}
 						destructive
 					>

@@ -8,19 +8,16 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import IconButton from '@material-ui/core/IconButton';
-import MenuList from '@material-ui/core/MenuList';
-import Divider from '@material-ui/core/Divider';
 
 import { declensionNumber } from 'src/helpers/utils';
 
 import QuantityIndicator from 'src/components/QuantityIndicator';
-import Dropdown from 'src/components/Dropdown';
-import MenuItem from 'src/components/MenuItem';
 
 import { Accordion, AccordionSummary, AccordionDetails, TableCellAccordion } from './styles';
 import stylesPositions from './Positions.module.css';
 import styles from './PositionGroup.module.css';
 
+import PositionGroupDropdown from '../components/PositionGroupDropdown';
 import Position from './Position';
 import ParentPosition from './ParentPosition';
 
@@ -29,7 +26,7 @@ const PositionGroup = props => {
 	const refDropdownActions = useRef(null);
 	const [dropdownActions, setDropdownActions] = useState(false);
 
-	const onHandleDropdownActions = value => setDropdownActions(value === null || value === undefined ? prevValue => !prevValue : value);
+	const onToggleDropdownActions = value => setDropdownActions(value === null || value === undefined ? prevValue => !prevValue : value);
 
 	return (
 		<TableRow className={stylesPositions.positionGroup}>
@@ -76,6 +73,8 @@ const PositionGroup = props => {
 							<Table style={{ tableLayout: 'fixed' }}>
 								<TableBody>
 									{positionsInGroup.map(position => {
+										if (!position.positionGroup || position.parentPosition || position.isArchived) return null;
+
 										const childPosition = position.childPosition ? positions.find(({ _id }) => _id === position.childPosition) : null;
 
 										if (!childPosition) {
@@ -103,53 +102,20 @@ const PositionGroup = props => {
 							[stylesPositions.actionButton]: true,
 							activeAction: dropdownActions,
 						})}
-						onClick={() => onHandleDropdownActions()}
+						onClick={() => onToggleDropdownActions()}
 					>
 						<FontAwesomeIcon icon={['far', 'ellipsis-h']} />
 					</IconButton>
 				</div>
 			</td>
 
-			<Dropdown
-				anchor={refDropdownActions}
-				open={dropdownActions}
-				onClose={() => onHandleDropdownActions(false)}
-				placement="bottom-end"
-				disablePortal={false}
-			>
-				<MenuList>
-					<MenuItem
-						onClick={() => {
-							onHandleDropdownActions();
-							onOpenDialogPositionGroup('dialogPositionGroupQRCode', 'positionGroup', positionGroup);
-						}}
-						iconBefore={<FontAwesomeIcon icon={['far-c', 'qr-code']} />}
-					>
-						Печать QR-кода
-					</MenuItem>
-				</MenuList>
-				<Divider />
-				<MenuList>
-					<MenuItem
-						onClick={() => {
-							onHandleDropdownActions();
-							onOpenDialogPositionGroup('dialogPositionGroupAdd', 'positionGroup', positionGroup);
-						}}
-						iconBefore={<FontAwesomeIcon icon={['far', 'folder-plus']} style={{ fontSize: 16 }} />}
-					>
-						Добавить позиции
-					</MenuItem>
-					<MenuItem
-						onClick={() => {
-							onHandleDropdownActions();
-							onOpenDialogPositionGroup('dialogPositionGroupEdit', 'positionGroup', positionGroup);
-						}}
-						iconBefore={<FontAwesomeIcon icon={['far', 'pen']} />}
-					>
-						Редактировать
-					</MenuItem>
-				</MenuList>
-			</Dropdown>
+			<PositionGroupDropdown
+				refDropdownActions={refDropdownActions}
+				dropdownActions={dropdownActions}
+				onToggleDropdownActions={onToggleDropdownActions}
+				onOpenDialogPositionGroup={onOpenDialogPositionGroup}
+				positionGroup={positionGroup}
+			/>
 		</TableRow>
 	);
 };

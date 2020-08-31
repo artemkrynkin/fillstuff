@@ -187,6 +187,37 @@ positionsRouter.post(
 );
 
 positionsRouter.post(
+	'/removePositionFromGroup',
+	isAuthedResolver,
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
+	async (req, res, next) => {
+		const {
+			params: { positionId },
+		} = req.body;
+
+		const position = await Position.findById(positionId)
+			.populate('positionGroup')
+			.catch(err => next({ code: 2, err }));
+
+		Position.findByIdAndUpdate(position._id, {
+			$unset: { positionGroup: 1 },
+		}).catch(err => next({ code: 2, err }));
+
+		if (position.positionGroup.positions.length > 1) {
+			PositionGroup.findByIdAndUpdate(position.positionGroup._id, { $pull: { positions: position._id } }).catch(err =>
+				next({ code: 2, err })
+			);
+		} else {
+			PositionGroup.findByIdAndRemove(position.positionGroup._id, { $pull: { positions: position._id } }).catch(err =>
+				next({ code: 2, err })
+			);
+		}
+
+		res.json();
+	}
+);
+
+positionsRouter.post(
 	'/archivePosition',
 	isAuthedResolver,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),

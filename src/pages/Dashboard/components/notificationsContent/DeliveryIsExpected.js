@@ -140,7 +140,7 @@ const DeliveryIsExpected = props => {
 								onHandleDropdownActions();
 								onOpenDialogByName('dialogProcurementReceivedCreate', 'procurementReceived', procurement);
 							}}
-							iconBefore={<FontAwesomeIcon icon={['far', 'truck-loading']} />}
+							iconBefore={<FontAwesomeIcon icon={['far', 'truck-loading']} fixedWidth />}
 							positive
 						>
 							Оформить закупку
@@ -169,7 +169,7 @@ const DeliveryIsExpected = props => {
 								onHandleDropdownActions();
 								onOpenDialogByName('dialogProcurementExpectedEdit', 'procurementExpected', procurement);
 							}}
-							iconBefore={<FontAwesomeIcon icon={['far', 'pen']} />}
+							iconBefore={<FontAwesomeIcon icon={['far', 'pen']} fixedWidth />}
 						>
 							Редактировать
 						</MenuItem>
@@ -179,7 +179,7 @@ const DeliveryIsExpected = props => {
 							onHandleDropdownActions();
 							onOpenDialogByName('dialogProcurementExpectedCancel', 'procurementExpected', procurement);
 						}}
-						iconBefore={<FontAwesomeIcon icon={['far', 'undo']} />}
+						iconBefore={<FontAwesomeIcon icon={['far', 'undo']} fixedWidth />}
 						destructive
 					>
 						Отменить заказ

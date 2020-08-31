@@ -18,8 +18,6 @@
   color: var(--c-hex-blueGrey-400);
   font-size: 14px;
   transition: background-color 50ms ease-out;
-  text-align: center;
-  width: 16px;
 }
 
 .container:hover .iconBefore,

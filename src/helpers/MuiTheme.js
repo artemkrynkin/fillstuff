@@ -433,7 +433,7 @@ export const BliksideTheme = createMuiTheme({
 		MuiFormHelperText: {
 			root: {
 				fontSize: 13,
-				lineHeight: 1.2,
+				lineHeight: 1.3,
 				marginLeft: 2,
 				'&$disabled': {
 					color: null,

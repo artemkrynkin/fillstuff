@@ -18,24 +18,6 @@ positionGroupsRouter.post(
 
 		const positionGroupsPromise = PositionGroup.find({ studio: studioId })
 			.sort({ name: 1 })
-			// .populate({
-			// 	path: 'positions',
-			// 	options: {
-			// 		sort: { name: 1 },
-			// 	},
-			// 	populate: [
-			// 		{
-			// 			path: 'activeReceipt characteristics shops.shop',
-			// 		},
-			// 		{
-			// 			path: 'receipts',
-			// 			match: { status: /received|active/ },
-			// 			options: {
-			// 				sort: { createdAt: 1 },
-			// 			},
-			// 		},
-			// 	],
-			// })
 			.catch(err => next({ code: 2, err }));
 
 		const positionGroups = await positionGroupsPromise;
@@ -104,24 +86,6 @@ positionGroupsRouter.post(
 		]);
 
 		PositionGroup.findById(newPositionGroup._id)
-			// .populate({
-			// 	path: 'positions',
-			// 	options: {
-			// 		sort: { name: 1 },
-			// 	},
-			// 	populate: [
-			// 		{
-			// 			path: 'activeReceipt characteristics shops.shop',
-			// 		},
-			// 		{
-			// 			path: 'receipts',
-			// 			match: { status: /received|active/ },
-			// 			options: {
-			// 				sort: { createdAt: 1 },
-			// 			},
-			// 		},
-			// 	],
-			// })
 			.then(positionGroup => res.json(positionGroup))
 			.catch(err => next({ code: 2, err }));
 	}
@@ -150,24 +114,6 @@ positionGroupsRouter.post(
 		await Promise.all([positionGroup.save()]);
 
 		PositionGroup.findById(positionGroup._id)
-			// .populate({
-			// 	path: 'positions',
-			// 	options: {
-			// 		sort: { name: 1 },
-			// 	},
-			// 	populate: [
-			// 		{
-			// 			path: 'activeReceipt characteristics shops.shop',
-			// 		},
-			// 		{
-			// 			path: 'receipts',
-			// 			match: { status: /received|active/ },
-			// 			options: {
-			// 				sort: { createdAt: 1 },
-			// 			},
-			// 		},
-			// 	],
-			// })
 			.then(positionGroup => res.json(positionGroup))
 			.catch(err => next({ code: 2, err }));
 	}
@@ -199,57 +145,8 @@ positionGroupsRouter.post(
 		).catch(err => next({ code: 2, err }));
 
 		PositionGroup.findById(positionGroup._id)
-			// .populate({
-			// 	path: 'positions',
-			// 	options: {
-			// 		sort: { name: 1 },
-			// 	},
-			// 	populate: [
-			// 		{
-			// 			path: 'activeReceipt characteristics shops.shop',
-			// 		},
-			// 		{
-			// 			path: 'receipts',
-			// 			match: { status: /received|active/ },
-			// 			options: {
-			// 				sort: { createdAt: 1 },
-			// 			},
-			// 		},
-			// 	],
-			// })
 			.then(positionGroup => res.json(positionGroup))
 			.catch(err => next({ code: 2, err }));
-	}
-);
-
-positionGroupsRouter.post(
-	'/removePositionFromGroup',
-	isAuthedResolver,
-	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
-	async (req, res, next) => {
-		const {
-			params: { positionId },
-		} = req.body;
-
-		const position = await Position.findById(positionId)
-			.populate('positionGroup')
-			.catch(err => next({ code: 2, err }));
-
-		Position.findByIdAndUpdate(position._id, {
-			$unset: { positionGroup: 1 },
-		}).catch(err => next({ code: 2, err }));
-
-		if (position.positionGroup.positions.length > 1) {
-			PositionGroup.findByIdAndUpdate(position.positionGroup._id, { $pull: { positions: position._id } }).catch(err =>
-				next({ code: 2, err })
-			);
-		} else {
-			PositionGroup.findByIdAndRemove(position.positionGroup._id, { $pull: { positions: position._id } }).catch(err =>
-				next({ code: 2, err })
-			);
-		}
-
-		res.json();
 	}
 );
 

@@ -8,124 +8,7 @@ import Fade from '@material-ui/core/Fade';
 
 import theme from 'shared/theme';
 
-export const BliksideTheme = createMuiTheme({
-	props: {
-		MuiInputLabel: {
-			disableAnimation: true,
-			shrink: true,
-			component: 'div',
-		},
-		MuiInput: {
-			autoComplete: 'off',
-		},
-		MuiInputBase: {
-			autoComplete: 'off',
-		},
-		MuiSelect: {
-			IconComponent: props => <FontAwesomeIcon {...props} icon={['far', 'angle-down']} />,
-			MenuProps: {
-				elevation: 3,
-				transitionDuration: 150,
-				TransitionComponent: Fade,
-			},
-			displayEmpty: true,
-		},
-		MuiAutocomplete: {
-			PaperComponent: props => <Paper {...props} elevation={3} />,
-			closeIcon: <FontAwesomeIcon icon={['fal', 'times']} />,
-			popupIcon: <FontAwesomeIcon icon={['far', 'angle-down']} />,
-			loadingText: 'Загрузка...',
-			noOptionsText: 'Нет результатов для выбора',
-			clearText: '',
-		},
-		MuiCheckbox: {
-			color: 'primary',
-			icon: <FontAwesomeIcon icon={['far', 'square']} />,
-			checkedIcon: <FontAwesomeIcon icon={['fas', 'check-square']} />,
-		},
-		MuiButtonBase: {
-			disableRipple: true,
-		},
-		MuiButtonGroup: {
-			disableRipple: true,
-		},
-		MuiToggleButton: {
-			disableRipple: true,
-		},
-		MuiTooltip: {
-			enterDelay: 50,
-			leaveDelay: 100,
-			TransitionComponent: Fade,
-			TransitionProps: {
-				timeout: 150,
-			},
-			arrow: true,
-		},
-	},
-	palette: {
-		primary: {
-			main: theme.teal['300'],
-			light: theme.teal['200'],
-			dark: theme.teal['400'],
-			contrastText: '#ffffff',
-		},
-	},
-	shape: {
-		borderRadius: 8,
-	},
-	typography: {
-		useNextVariants: true,
-		fontFamily: '-apple-system, BlinkMacSystemFont, Helvetica, Segoe, sans-serif',
-		h1: {
-			color: theme.blueGrey['700'],
-			fontSize: 92,
-		},
-		h2: {
-			color: theme.blueGrey['700'],
-			fontSize: 56,
-		},
-		h3: {
-			color: theme.blueGrey['700'],
-			fontSize: 44,
-		},
-		h4: {
-			color: theme.blueGrey['700'],
-			fontSize: 30,
-		},
-		h5: {
-			color: theme.blueGrey['700'],
-			fontSize: 20,
-			fontWeight: 500,
-		},
-		h6: {
-			color: theme.blueGrey['600'],
-			fontSize: 16,
-			fontWeight: 600,
-		},
-		subtitle1: {
-			color: theme.blueGrey['700'],
-			fontSize: 14,
-		},
-		subtitle2: {
-			color: theme.blueGrey['700'],
-			fontSize: 13,
-		},
-		body1: {
-			color: theme.blueGrey['600'],
-			fontSize: 14,
-			lineHeight: 1.3,
-		},
-		body2: {
-			color: theme.blueGrey['600'],
-			fontSize: 13,
-			lineHeight: 1.3,
-		},
-		caption: {
-			color: theme.blueGrey['300'],
-			fontSize: 14,
-			lineHeight: 1.3,
-		},
-	},
+export default createMuiTheme({
 	overrides: {
 		MuiContainer: {
 			root: {
@@ -144,11 +27,6 @@ export const BliksideTheme = createMuiTheme({
 		MuiTypography: {
 			gutterBottom: {
 				marginBottom: '0.65rem',
-			},
-		},
-		MuiDivider: {
-			root: {
-				backgroundColor: theme.brightness['5'],
 			},
 		},
 		MuiTooltip: {
@@ -235,126 +113,6 @@ export const BliksideTheme = createMuiTheme({
 		MuiPaper: {
 			root: {
 				color: theme.blueGrey['700'],
-			},
-			elevation1: {
-				boxShadow: `0 1px 3px 0 rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2),
-					0 1px 1px 0 rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14),
-					0 2px 1px -1px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
-			},
-			elevation2: {
-				boxShadow: `0 1px 5px 0 rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2),
-					0 2px 2px 0 rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14),
-					0 3px 1px -2px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
-			},
-			elevation3: {
-				boxShadow: `0 1px 8px 0 rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2),
-					0 3px 4px 0 rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14),
-					0 3px 3px -2px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
-			},
-			elevation4: {
-				boxShadow: `0 2px 4px -1px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2),
-					0 4px 5px 0 rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14),
-					0 1px 10px 0 rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
-			},
-			elevation5: {
-				boxShadow: `0 3px 5px -1px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2),
-					0 5px 8px 0 rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14),
-					0 1px 14px 0 rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
-			},
-			elevation6: {
-				boxShadow: `0 3px 5px -1px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2),
-					0 6px 10px 0 rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14),
-					0 1px 18px 0 rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
-			},
-			elevation7: {
-				boxShadow: `0 4px 5px -2px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2),
-					0 7px 10px 1px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14),
-					0 2px 16px 1px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
-			},
-			elevation8: {
-				boxShadow: `0 5px 5px -3px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2),
-					0 8px 10px 1px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14),
-					0 3px 14px 2px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
-			},
-			elevation9: {
-				boxShadow: `0 5px 6px -3px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2),
-					0 9px 12px 1px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14),
-					0 3px 16px 2px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
-			},
-			elevation10: {
-				boxShadow: `0 6px 6px -3px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2),
-					0 10px 14px 1px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14),
-					0 4px 18px 3px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
-			},
-			elevation11: {
-				boxShadow: `0 6px 7px -4px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2),
-					0 11px 15px 1px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14),
-					0 4px 20px 3px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
-			},
-			elevation12: {
-				boxShadow: `0 7px 8px -4px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2),
-					0 12px 17px 2px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14),
-					0 5px 22px 4px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
-			},
-			elevation13: {
-				boxShadow: `0 7px 8px -4px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2),
-					0 13px 19px 2px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14),
-					0 5px 24px 4px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
-			},
-			elevation14: {
-				boxShadow: `0 7px 9px -4px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2),
-					0 14px 21px 2px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14),
-					0 5px 26px 4px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
-			},
-			elevation15: {
-				boxShadow: `0 8px 9px -5px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2),
-					0 15px 22px 2px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14),
-					0 6px 28px 5px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
-			},
-			elevation16: {
-				boxShadow: `0 8px 10px -5px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2),
-					0 16px 24px 2px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14),
-					0 6px 30px 5px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
-			},
-			elevation17: {
-				boxShadow: `0 8px 11px -5px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2),
-					0 17px 26px 2px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14),
-					0 6px 32px 5px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
-			},
-			elevation18: {
-				boxShadow: `0 9px 11px -5px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2),
-					0 18px 28px 2px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14),
-					0 7px 34px 6px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
-			},
-			elevation19: {
-				boxShadow: `0 9px 12px -6px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2),
-					0 19px 29px 2px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14),
-					0 7px 36px 6px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
-			},
-			elevation20: {
-				boxShadow: `0 10px 13px -6px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2),
-					0 20px 31px 3px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14),
-					0 8px 38px 7px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
-			},
-			elevation21: {
-				boxShadow: `0 10px 13px -6px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2),
-					0 21px 33px 3px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14),
-					0 8px 40px 7px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
-			},
-			elevation22: {
-				boxShadow: `0 10px 14px -6px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2),
-					0 22px 35px 3px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14),
-					0 8px 42px 7px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
-			},
-			elevation23: {
-				boxShadow: `0 11px 14px -7px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2),
-					0 23px 36px 3px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14),
-					0 9px 44px 8px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
-			},
-			elevation24: {
-				boxShadow: `0 11px 15px -7px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.2),
-					0 24px 38px 3px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.14),
-					0 9px 46px 8px rgba(${ColorConvert.hex.rgb(theme.blueGrey['600'])}, 0.12)`,
 			},
 		},
 		MuiList: {
@@ -1059,119 +817,10 @@ export const BliksideTheme = createMuiTheme({
 				color: theme.blueGrey['700'],
 				borderBottomColor: theme.brightness['4'],
 			},
+			stickyHeader: {
+				backgroundColor: 'white',
+			},
 		},
-		// MuiPickersStaticWrapper: {
-		// 	staticWrapperRoot: {
-		// 		backgroundColor: null,
-		// 	},
-		// },
-		// MuiPickersCalendarHeader: {
-		// 	switchHeader: {
-		// 		paddingRight: 5,
-		// 	},
-		// 	transitionContainer: {
-		// 		height: 24,
-		// 		order: -1,
-		// 		'& > p': {
-		// 			color: theme.blueGrey.cBg200,
-		// 			fontSize: 13,
-		// 			fontWeight: 600,
-		// 			lineHeight: 1.4,
-		// 			padding: '3px 0 3px 14px',
-		// 			textAlign: 'left',
-		// 			textTransform: 'capitalize',
-		// 		},
-		// 	},
-		// 	dayLabel: {
-		// 		color: theme.blueGrey.cBg300,
-		// 		fontSize: 13,
-		// 		fontWeight: 600,
-		// 		margin: '0 4px',
-		// 		textTransform: 'capitalize',
-		// 	},
-		// 	iconButton: {
-		// 		color: theme.blueGrey.cBg300,
-		// 		margin: '0',
-		// 		'& svg': {
-		// 			fontSize: 20,
-		// 			width: '20px !important',
-		// 		},
-		// 		'&:hover': {
-		// 			backgroundColor: theme.blueGrey.cBg50,
-		// 		},
-		// 		'&:disabled': {
-		// 			color: theme.blueGrey.cBg100,
-		// 		},
-		// 	},
-		// },
-		// MuiPickersArrowSwitcher: {
-		// 	iconButton: {
-		// 		color: theme.blueGrey.cBg300,
-		// 		width: 26,
-		// 		'& svg': {
-		// 			fontSize: 20,
-		// 		},
-		// 		'&:hover': {
-		// 			backgroundColor: theme.blueGrey.cBg50,
-		// 		},
-		// 		'&:disabled': {
-		// 			color: theme.blueGrey.cBg100,
-		// 		},
-		// 	},
-		// 	previousMonthButtonMargin: {
-		// 		marginRight: null,
-		// 	},
-		// },
-		// MuiPickersDay: {
-		// 	day: {
-		// 		color: theme.blueGrey.cBg600,
-		// 		height: 28,
-		// 		margin: '4px 8px',
-		// 		width: 28,
-		// 		'& p': {
-		// 			fontWeight: 600,
-		// 		},
-		// 		'&:hover, focus': {
-		// 			backgroundColor: theme.blueGrey.cBg50,
-		// 		},
-		// 	},
-		// 	today: {
-		// 		'&:not($daySelected)': {
-		// 			border: `1px solid ${theme.teal.cT300}`,
-		// 		},
-		// 	},
-		// 	daySelected: {
-		// 		border: `1px solid ${theme.teal.cT300}`,
-		// 		color: 'white',
-		// 	},
-		// 	dayDisabled: {
-		// 		color: `rgba(${ColorConvert.hex.rgb(theme.blueGrey.cBg600)}, 0.2)`,
-		// 	},
-		// 	dayWithMargin: {
-		// 		margin: null,
-		// 	},
-		// },
-		// MuiPickersDateRangeDay: {
-		// 	day: {
-		// 		transform: null,
-		// 	},
-		// 	dayInsideRangeInterval: {
-		// 		color: theme.blueGrey.cBg700,
-		// 	},
-		// 	dayOutsideRangeInterval: {
-		// 		'&:hover': {
-		// 			border: null,
-		// 		},
-		// 	},
-		// },
-		// MuiPickersDesktopDateRangeCalendar: {
-		// 	arrowSwitcher: {
-		// 		padding: null,
-		// 	},
-		// 	calendar: {
-		// 		minHeight: 'auto',
-		// 	},
-		// },
 		MuiTabs: {
 			root: {
 				minHeight: 44,
@@ -1226,5 +875,199 @@ export const BliksideTheme = createMuiTheme({
 				},
 			},
 		},
+	},
+	palette: {
+		primary: {
+			main: theme.teal['300'],
+			light: theme.teal['200'],
+			dark: theme.teal['400'],
+			contrastText: '#ffffff',
+		},
+		divider: theme.brightness['5'],
+	},
+	props: {
+		MuiInputLabel: {
+			disableAnimation: true,
+			shrink: true,
+			component: 'div',
+		},
+		MuiInput: {
+			autoComplete: 'off',
+		},
+		MuiInputBase: {
+			autoComplete: 'off',
+		},
+		MuiSelect: {
+			IconComponent: props => <FontAwesomeIcon {...props} icon={['far', 'angle-down']} />,
+			MenuProps: {
+				elevation: 3,
+				transitionDuration: 150,
+				TransitionComponent: Fade,
+			},
+			displayEmpty: true,
+		},
+		MuiAutocomplete: {
+			PaperComponent: props => <Paper {...props} elevation={3} />,
+			closeIcon: <FontAwesomeIcon icon={['fal', 'times']} />,
+			popupIcon: <FontAwesomeIcon icon={['far', 'angle-down']} />,
+			loadingText: 'Загрузка...',
+			noOptionsText: 'Нет результатов для выбора',
+			clearText: '',
+		},
+		MuiCheckbox: {
+			color: 'primary',
+			icon: <FontAwesomeIcon icon={['far', 'square']} />,
+			checkedIcon: <FontAwesomeIcon icon={['fas', 'check-square']} />,
+		},
+		MuiButtonBase: {
+			disableRipple: true,
+		},
+		MuiButtonGroup: {
+			disableRipple: true,
+		},
+		MuiToggleButton: {
+			disableRipple: true,
+		},
+		MuiTooltip: {
+			enterDelay: 50,
+			leaveDelay: 100,
+			TransitionComponent: Fade,
+			TransitionProps: {
+				timeout: 150,
+			},
+			arrow: true,
+		},
+	},
+	shadows: [
+		'none',
+		`0px 1px 1px 0px rgba(${ColorConvert.hex.rgb(theme.blueGrey['500'])}, 0.14), 0px 1px 3px 0px rgba(${ColorConvert.hex.rgb(
+			theme.blueGrey['500']
+		)}, 0.12)`,
+		`0px 2px 2px 0px rgba(${ColorConvert.hex.rgb(theme.blueGrey['500'])}, 0.14), 0px 1px 5px 0px rgba(${ColorConvert.hex.rgb(
+			theme.blueGrey['500']
+		)}, 0.12)`,
+		`0px 3px 4px 0px rgba(${ColorConvert.hex.rgb(theme.blueGrey['500'])}, 0.14), 0px 1px 8px 0px rgba(${ColorConvert.hex.rgb(
+			theme.blueGrey['500']
+		)}, 0.12)`,
+		`0px 4px 5px 0px rgba(${ColorConvert.hex.rgb(theme.blueGrey['500'])}, 0.14), 0px 1px 10px 0px rgba(${ColorConvert.hex.rgb(
+			theme.blueGrey['500']
+		)}, 0.12)`,
+		`0px 5px 8px 0px rgba(${ColorConvert.hex.rgb(theme.blueGrey['500'])}, 0.14), 0px 1px 14px 0px rgba(${ColorConvert.hex.rgb(
+			theme.blueGrey['500']
+		)}, 0.12)`,
+		`0px 6px 10px 0px rgba(${ColorConvert.hex.rgb(theme.blueGrey['500'])}, 0.14), 0px 1px 18px 0px rgba(${ColorConvert.hex.rgb(
+			theme.blueGrey['500']
+		)}, 0.12)`,
+		`0px 7px 10px 1px rgba(${ColorConvert.hex.rgb(theme.blueGrey['500'])}, 0.14), 0px 2px 16px 1px rgba(${ColorConvert.hex.rgb(
+			theme.blueGrey['500']
+		)}, 0.12)`,
+		`0px 8px 10px 1px rgba(${ColorConvert.hex.rgb(theme.blueGrey['500'])}, 0.14), 0px 3px 14px 2px rgba(${ColorConvert.hex.rgb(
+			theme.blueGrey['500']
+		)}, 0.12)`,
+		`0px 9px 12px 1px rgba(${ColorConvert.hex.rgb(theme.blueGrey['500'])}, 0.14), 0px 3px 16px 2px rgba(${ColorConvert.hex.rgb(
+			theme.blueGrey['500']
+		)}, 0.12)`,
+		`0px 10px 14px 1px rgba(${ColorConvert.hex.rgb(theme.blueGrey['500'])}, 0.14), 0px 4px 18px 3px rgba(${ColorConvert.hex.rgb(
+			theme.blueGrey['500']
+		)}, 0.12)`,
+		`0px 11px 15px 1px rgba(${ColorConvert.hex.rgb(theme.blueGrey['500'])}, 0.14), 0px 4px 20px 3px rgba(${ColorConvert.hex.rgb(
+			theme.blueGrey['500']
+		)}, 0.12)`,
+		`0px 12px 17px 2px rgba(${ColorConvert.hex.rgb(theme.blueGrey['500'])}, 0.14), 0px 5px 22px 4px rgba(${ColorConvert.hex.rgb(
+			theme.blueGrey['500']
+		)}, 0.12)`,
+		`0px 13px 19px 2px rgba(${ColorConvert.hex.rgb(theme.blueGrey['500'])}, 0.14), 0px 5px 24px 4px rgba(${ColorConvert.hex.rgb(
+			theme.blueGrey['500']
+		)}, 0.12)`,
+		`0px 14px 21px 2px rgba(${ColorConvert.hex.rgb(theme.blueGrey['500'])}, 0.14), 0px 5px 26px 4px rgba(${ColorConvert.hex.rgb(
+			theme.blueGrey['500']
+		)}, 0.12)`,
+		`0px 15px 22px 2px rgba(${ColorConvert.hex.rgb(theme.blueGrey['500'])}, 0.14), 0px 6px 28px 5px rgba(${ColorConvert.hex.rgb(
+			theme.blueGrey['500']
+		)}, 0.12)`,
+		`0px 16px 24px 2px rgba(${ColorConvert.hex.rgb(theme.blueGrey['500'])}, 0.14), 0px 6px 30px 5px rgba(${ColorConvert.hex.rgb(
+			theme.blueGrey['500']
+		)}, 0.12)`,
+		`0px 17px 26px 2px rgba(${ColorConvert.hex.rgb(theme.blueGrey['500'])}, 0.14), 0px 6px 32px 5px rgba(${ColorConvert.hex.rgb(
+			theme.blueGrey['500']
+		)}, 0.12)`,
+		`0px 18px 28px 2px rgba(${ColorConvert.hex.rgb(theme.blueGrey['500'])}, 0.14), 0px 7px 34px 6px rgba(${ColorConvert.hex.rgb(
+			theme.blueGrey['500']
+		)}, 0.12)`,
+		`0px 19px 29px 2px rgba(${ColorConvert.hex.rgb(theme.blueGrey['500'])}, 0.14), 0px 7px 36px 6px rgba(${ColorConvert.hex.rgb(
+			theme.blueGrey['500']
+		)}, 0.12)`,
+		`0px 20px 31px 3px rgba(${ColorConvert.hex.rgb(theme.blueGrey['500'])}, 0.14), 0px 8px 38px 7px rgba(${ColorConvert.hex.rgb(
+			theme.blueGrey['500']
+		)}, 0.12)`,
+		`0px 21px 33px 3px rgba(${ColorConvert.hex.rgb(theme.blueGrey['500'])}, 0.14), 0px 8px 40px 7px rgba(${ColorConvert.hex.rgb(
+			theme.blueGrey['500']
+		)}, 0.12)`,
+		`0px 22px 35px 3px rgba(${ColorConvert.hex.rgb(theme.blueGrey['500'])}, 0.14), 0px 8px 42px 7px rgba(${ColorConvert.hex.rgb(
+			theme.blueGrey['500']
+		)}, 0.12)`,
+		`0px 23px 36px 3px rgba(${ColorConvert.hex.rgb(theme.blueGrey['500'])}, 0.14), 0px 9px 44px 8px rgba(${ColorConvert.hex.rgb(
+			theme.blueGrey['500']
+		)}, 0.12)`,
+		`0px 24px 38px 3px rgba(${ColorConvert.hex.rgb(theme.blueGrey['500'])}, 0.14), 0px 9px 46px 8px rgba(${ColorConvert.hex.rgb(
+			theme.blueGrey['500']
+		)}, 0.12)`,
+	],
+	typography: {
+		useNextVariants: true,
+		fontFamily: '-apple-system, BlinkMacSystemFont, Helvetica, Segoe, sans-serif',
+		fontSize: 14,
+		h1: {
+			color: theme.blueGrey['700'],
+			fontSize: 92,
+		},
+		h2: {
+			color: theme.blueGrey['700'],
+			fontSize: 56,
+		},
+		h3: {
+			color: theme.blueGrey['700'],
+			fontSize: 44,
+		},
+		h4: {
+			color: theme.blueGrey['700'],
+			fontSize: 30,
+		},
+		h5: {
+			color: theme.blueGrey['700'],
+			fontSize: 20,
+			fontWeight: 500,
+		},
+		h6: {
+			color: theme.blueGrey['600'],
+			fontSize: 16,
+			fontWeight: 600,
+		},
+		subtitle1: {
+			color: theme.blueGrey['700'],
+			fontSize: 14,
+		},
+		subtitle2: {
+			color: theme.blueGrey['700'],
+			fontSize: 13,
+		},
+		body1: {
+			color: theme.blueGrey['600'],
+			fontSize: 14,
+			lineHeight: 1.3,
+		},
+		body2: {
+			color: theme.blueGrey['600'],
+			fontSize: 13,
+			lineHeight: 1.3,
+		},
+		caption: {
+			color: theme.blueGrey['300'],
+			fontSize: 14,
+			lineHeight: 1.3,
+		},
+	},
+	shape: {
+		borderRadius: 8,
 	},
 });

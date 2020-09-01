@@ -10,7 +10,7 @@ import generateMetaInfo from 'shared/generate-meta-info';
 
 import { CLIENT_URL } from 'src/api/constants';
 
-import { BliksideTheme } from 'src/helpers/MuiTheme';
+import theme from 'src/helpers/BliksideMuiTheme';
 import useStylesSnackbar from 'src/helpers/snackbarStyles';
 import signedOutFallback from 'src/helpers/signed-out-fallback';
 
@@ -145,7 +145,7 @@ const Routes = props => {
 	const classesSnackbar = useStylesSnackbar();
 
 	return (
-		<ThemeProvider theme={BliksideTheme}>
+		<ThemeProvider theme={theme}>
 			<SnackbarProvider
 				classes={{
 					message: classesSnackbar.message,

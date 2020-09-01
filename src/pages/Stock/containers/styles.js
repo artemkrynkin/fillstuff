@@ -36,7 +36,7 @@ export const Accordion = withStyles({
 
 export const AccordionSummary = withStyles({
 	root: {
-		backgroundColor: theme.brightness['2'],
+		// backgroundColor: theme.brightness['2'],
 		minHeight: 'initial',
 		padding: 0,
 		'&$expanded': {
@@ -50,9 +50,6 @@ export const AccordionSummary = withStyles({
 		},
 		'&$disabled $expandIcon': {
 			opacity: 0,
-		},
-		'&:hover': {
-			backgroundColor: theme.brightness['3'],
 		},
 		'tr:first-child &': {
 			borderTop: 'none',
@@ -72,6 +69,9 @@ export const AccordionSummary = withStyles({
 		padding: 8,
 		transform: 'rotate(-90deg)',
 		width: 36,
+		'&:hover': {
+			color: theme.blueGrey['200'],
+		},
 		'&$expanded': {
 			transform: 'rotate(0deg)',
 		},
@@ -92,7 +92,7 @@ export const AccordionDetails = withStyles({
 
 export const TableCellAccordion = withStyles({
 	root: {
-		padding: '16px 15px',
+		padding: '19px 15px',
 	},
 	body: {
 		borderTop: `1px solid ${theme.brightness['4']}`,
@@ -102,11 +102,12 @@ export const TableCellAccordion = withStyles({
 
 export const TableCell = withStyles({
 	root: {
-		padding: '9px 15px',
+		padding: '11px 15px',
 	},
 	head: {
 		paddingTop: 18,
 		paddingBottom: 18,
+		borderBottom: 'none',
 	},
 	body: {
 		borderTop: `1px solid ${theme.brightness['4']}`,

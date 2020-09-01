@@ -1,7 +1,22 @@
-.positionLink {
-  display: block;
-  margin: -9px 0;
-  padding: 9px 0;
+.position {
+  cursor: pointer;
+  transition: background-color 150ms ease-out;
+}
+
+.position:hover {
+  background-color: var(--c-hex-brightness-4);
+}
+
+.positionInGroup {
+  background-color: var(--c-hex-brightness-2);
+}
+
+.positionGroupAndChild {
+  padding-left: 67px;
+}
+
+.positionGroupOrChild {
+  padding-left: 26px;
 }
 
 .createReceipt {
@@ -15,7 +30,11 @@
   transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
+.position:hover .createReceipt {
+  background-color: var(--c-hex-brightness-5);
+}
+
 .createReceipt:hover {
   background-color: var(--c-hex-brightness-5);
-  color: var(--c-hex-blueGrey-500);
+  color: var(--c-hex-blueGrey-600);
 }

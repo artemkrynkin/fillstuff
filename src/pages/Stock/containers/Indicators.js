@@ -5,13 +5,14 @@ import Grid from '@material-ui/core/Grid';
 import CardPaper from 'src/components/CardPaper';
 import Money from 'src/components/Money';
 
+import theme from 'src/helpers/BliksideMuiTheme';
 import styles from './Indicators.module.css';
 
 const Indicators = props => {
 	const { currentStudio } = props;
 
 	return (
-		<CardPaper header={false} style={{ marginBottom: 16 }}>
+		<CardPaper header={false} style={{ marginBottom: theme.spacing(2) }}>
 			<Grid container>
 				<Grid item xs={6}>
 					<Grid alignItems="flex-end" justify="flex-start" container>

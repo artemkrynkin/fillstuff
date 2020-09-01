@@ -38,7 +38,6 @@
   border-radius: 8px;
   color: var(--c-hex-slateGrey-2);
   display: flex;
-  font-size: 14px;
   margin: 0 10px;
   padding: 12px 14px;
   transition: background-color 50ms ease-out;
@@ -46,14 +45,12 @@
 
 .menuLink:hover {
   background-color: rgba(var(--c-rgb-slateGrey-2), 0.1);
-  opacity: 1;
 }
 
 .menuLink_active,
 .menuLink_active:hover {
   background-color: var(--c-hex-slateGrey-5);
   color: var(--c-hex-teal-A100);
-  opacity: 1;
 }
 
 .menuLink svg {
@@ -66,7 +63,14 @@
   opacity: 0.7;
 }
 
+.menuText {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
 .menuLink_active svg,
-.menuLink_active:hover svg {
+.menuLink_active:hover svg,
+.menuLink_active .menuText,
+.menuLink_active:hover .menuText {
   opacity: 1;
 }

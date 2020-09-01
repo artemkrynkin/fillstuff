@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ClassNames from 'classnames';
 
@@ -10,6 +9,8 @@ import TableRow from '@material-ui/core/TableRow';
 import IconButton from '@material-ui/core/IconButton';
 
 import { formatNumber } from 'shared/utils';
+
+import history from 'src/helpers/history';
 
 import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
 import PositionNameInList from 'src/components/PositionNameInList';
@@ -31,17 +32,35 @@ const Position = props => {
 
 	const onToggleDropdownActions = value => setDropdownActions(value === null || value === undefined ? prevValue => !prevValue : value);
 
+	const openPositionPage = event => {
+		if (event.target.closest('[role="button"]') || event.target.closest('[role="tooltip"]')) return;
+
+		const positionLink = `/stock/${position._id}`;
+
+		return event.ctrlKey || event.shiftKey || event.metaKey ? window.open(positionLink) : history.push(positionLink);
+	};
+
+	const containerClasses = ClassNames({
+		[stylesPositions.position]: true,
+		[styles.position]: true,
+		[styles.positionInGroup]: position.positionGroup,
+	});
+
+	const positionNameClasses = ClassNames({
+		[styles.positionGroupAndChild]: position.positionGroup && position.parentPosition,
+		[styles.positionGroupOrChild]: position.positionGroup || position.parentPosition,
+	});
+
 	return (
-		<TableRow className={stylesPositions.position}>
-			<TableCell style={position.positionGroup ? { paddingLeft: 41 } : {}} width={330}>
-				<Link className={styles.positionLink} to={`/stock/${position._id}`}>
-					<PositionNameInList
-						name={position.name}
-						characteristics={position.characteristics}
-						archivedAfterEnded={position.archivedAfterEnded}
-						deliveryIsExpected={Boolean(position.deliveryIsExpected.length)}
-					/>
-				</Link>
+		<TableRow onClick={openPositionPage} className={containerClasses}>
+			<TableCell width={330}>
+				<PositionNameInList
+					className={positionNameClasses}
+					name={position.name}
+					characteristics={position.characteristics}
+					archivedAfterEnded={position.archivedAfterEnded}
+					deliveryIsExpected={Boolean(position.deliveryIsExpected.length)}
+				/>
 			</TableCell>
 			<TableCell />
 			<TableCell align="right" width={240}>
@@ -74,8 +93,9 @@ const Position = props => {
 			{!position.receipts.length ? (
 				<TableCell align="left" colSpan={2} width={280}>
 					<ButtonBase
-						onClick={() => onOpenDialogPosition('dialogReceiptConfirmCreate', 'position', position)}
 						className={styles.createReceipt}
+						onClick={() => onOpenDialogPosition('dialogReceiptConfirmCreate', 'position', position)}
+						role="button"
 					>
 						Создать поступление
 					</ButtonBase>
@@ -89,6 +109,7 @@ const Position = props => {
 						activeAction: dropdownActions,
 					})}
 					onClick={() => onToggleDropdownActions()}
+					role="button"
 				>
 					<FontAwesomeIcon icon={['far', 'ellipsis-h']} />
 				</IconButton>

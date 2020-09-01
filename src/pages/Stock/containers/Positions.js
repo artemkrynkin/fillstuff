@@ -18,7 +18,7 @@ const Positions = props => {
 
 	return (
 		<Paper>
-			<Table style={{ tableLayout: 'fixed' }}>
+			<Table stickyHeader style={{ tableLayout: 'fixed' }}>
 				<TableHead className={styles.tableHeaderSticky}>
 					<TableRow>
 						<TableCell width={330}>Позиция</TableCell>

@@ -62,7 +62,6 @@ export const editPositionGroup = ({ params, data }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
-		const { positionGroupId } = params;
 
 		return await axios
 			.post('/api/editPositionGroup', {
@@ -74,10 +73,7 @@ export const editPositionGroup = ({ params, data }) => {
 			.then(response => {
 				dispatch({
 					type: 'EDIT_POSITION_GROUP',
-					payload: {
-						positionGroupId,
-						positionGroup: response.data,
-					},
+					payload: response.data,
 				});
 
 				return Promise.resolve({ status: 'success' });
@@ -98,7 +94,6 @@ export const addPositionInGroup = ({ params, data }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
-		const { positionGroupId } = params;
 
 		return await axios
 			.post('/api/addPositionInGroup', {
@@ -110,11 +105,7 @@ export const addPositionInGroup = ({ params, data }) => {
 			.then(response => {
 				dispatch({
 					type: 'ADD_POSITION_IN_GROUP',
-					payload: {
-						positionGroupId,
-						positionGroup: response.data,
-						positionsAdded: data.positions,
-					},
+					payload: response.data,
 				});
 
 				return Promise.resolve({ status: 'success' });
@@ -135,8 +126,6 @@ export const removePositionFromGroup = ({ params, data }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
-		const { positionId } = params;
-		const { positionGroupId } = data;
 
 		return await axios
 			.post('/api/removePositionFromGroup', {
@@ -147,10 +136,7 @@ export const removePositionFromGroup = ({ params, data }) => {
 			.then(response => {
 				dispatch({
 					type: 'REMOVE_POSITION_FROM_GROUP',
-					payload: {
-						positionGroupId,
-						positionId,
-					},
+					payload: response.data,
 				});
 
 				return Promise.resolve({ status: 'success' });

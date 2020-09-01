@@ -38,9 +38,9 @@ const positionGroups = (
 		}
 		case 'EDIT_POSITION_GROUP': {
 			let stateData = { ...state }.data;
-			const positionGroupIndex = stateData.findIndex(positionGroup => positionGroup._id === action.payload.positionGroupId);
+			const positionGroupIndex = stateData.findIndex(positionGroup => positionGroup._id === action.payload._id);
 
-			stateData[positionGroupIndex] = action.payload.positionGroup;
+			stateData[positionGroupIndex] = action.payload;
 
 			return {
 				...state,
@@ -50,9 +50,43 @@ const positionGroups = (
 		}
 		case 'ADD_POSITION_IN_GROUP': {
 			let stateData = { ...state }.data;
-			const positionGroupIndex = stateData.findIndex(positionGroup => positionGroup._id === action.payload.positionGroupId);
+			const positionGroupIndex = stateData.findIndex(positionGroup => positionGroup._id === action.payload._id);
 
-			stateData[positionGroupIndex].positions = action.payload.positionGroup.positions;
+			stateData[positionGroupIndex].positions.push(...action.payload.positions);
+
+			return {
+				...state,
+				isFetching: false,
+				data: stateData,
+			};
+		}
+		case 'REMOVE_POSITION_FROM_GROUP':
+		case 'ARCHIVE_POSITION': {
+			let stateData;
+
+			if (state.data) {
+				stateData = { ...state }.data;
+
+				const positionNumbers = action.type === 'REMOVE_POSITION_FROM_GROUP' ? action.payload.positions.length : 1;
+				const positionGroupIndex = stateData.findIndex(positionGroup => positionGroup._id === action.payload._id);
+				const positionGroup = stateData[positionGroupIndex];
+
+				if (positionGroup.positions.length > positionNumbers) {
+					if (action.type === 'REMOVE_POSITION_FROM_GROUP') {
+						action.payload.positions.forEach(positionId => {
+							const positionIndex = positionGroup.positions.findIndex(positionIdInGroup => positionIdInGroup === positionId);
+
+							positionGroup.positions.splice(positionIndex, 1);
+						});
+					} else {
+						const positionIndex = positionGroup.positions.findIndex(positionIdInGroup => positionIdInGroup === action.payload.positionId);
+
+						positionGroup.positions.splice(positionIndex, 1);
+					}
+				} else {
+					stateData.splice(positionGroupIndex, 1);
+				}
+			}
 
 			return {
 				...state,

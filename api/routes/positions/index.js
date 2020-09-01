@@ -187,37 +187,6 @@ positionsRouter.post(
 );
 
 positionsRouter.post(
-	'/removePositionFromGroup',
-	isAuthedResolver,
-	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
-	async (req, res, next) => {
-		const {
-			params: { positionId },
-		} = req.body;
-
-		const position = await Position.findById(positionId)
-			.populate('positionGroup')
-			.catch(err => next({ code: 2, err }));
-
-		Position.findByIdAndUpdate(position._id, {
-			$unset: { positionGroup: 1 },
-		}).catch(err => next({ code: 2, err }));
-
-		if (position.positionGroup.positions.length > 1) {
-			PositionGroup.findByIdAndUpdate(position.positionGroup._id, { $pull: { positions: position._id } }).catch(err =>
-				next({ code: 2, err })
-			);
-		} else {
-			PositionGroup.findByIdAndRemove(position.positionGroup._id, { $pull: { positions: position._id } }).catch(err =>
-				next({ code: 2, err })
-			);
-		}
-
-		res.json();
-	}
-);
-
-positionsRouter.post(
 	'/archivePosition',
 	isAuthedResolver,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -238,7 +207,7 @@ positionsRouter.post(
 				},
 				{
 					path: 'receipts',
-					match: { status: /received|active|closed/ },
+					match: { status: /received|active/ },
 					options: {
 						sort: { createdAt: 1 },
 					},
@@ -253,11 +222,17 @@ positionsRouter.post(
 			});
 		}
 
-		if (position.receipts.length) {
+		if (position.hasReceipts) {
 			Position.findByIdAndUpdate(position._id, {
 				$set: { isArchived: true },
-				$unset: { positionGroup: 1 },
+				$unset: { positionGroup: 1, childPosition: 1, parentPosition: 1 },
 			}).catch(err => next({ code: 2, err }));
+
+			if (position.childPosition) {
+				Position.findByIdAndUpdate(position._id, {
+					$unset: { parentPosition: 1 },
+				}).catch(err => next({ code: 2, err }));
+			}
 		} else {
 			Position.findByIdAndRemove(position._id).catch(err => next({ code: 2, err }));
 		}
@@ -268,15 +243,13 @@ positionsRouter.post(
 					next({ code: 2, err })
 				);
 			} else {
-				PositionGroup.findByIdAndRemove(position.positionGroup._id, { $pull: { positions: position._id } }).catch(err =>
-					next({ code: 2, err })
-				);
+				PositionGroup.findByIdAndRemove(position.positionGroup._id).catch(err => next({ code: 2, err }));
 			}
 		}
 
 		const {
 			studio: {
-				store: { numberPositions: numberPositionsOld, storePrice: storePriceOld },
+				store: { numberPositions, storePrice },
 			},
 			receipts,
 		} = position;
@@ -287,16 +260,14 @@ positionsRouter.post(
 			position: position._id,
 		});
 
-		const purchasePriceReceiptsPosition = receipts
-			.filter(receipt => /received|active/.test(receipt.status))
-			.reduce((sum, receipt) => sum + receipt.current.quantity * receipt.unitPurchasePrice, 0);
+		const purchasePriceReceiptsPosition = receipts.reduce((sum, receipt) => sum + receipt.current.quantity * receipt.unitPurchasePrice, 0);
 
 		Studio.findByIdAndUpdate(
 			position.studio._id,
 			{
 				$set: {
-					'store.numberPositions': numberPositionsOld - 1,
-					'store.storePrice': storePriceOld - purchasePriceReceiptsPosition,
+					'store.numberPositions': numberPositions - 1,
+					'store.storePrice': storePrice - purchasePriceReceiptsPosition,
 				},
 			},
 			{ runValidators: true }

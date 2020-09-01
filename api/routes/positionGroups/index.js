@@ -64,9 +64,22 @@ positionGroupsRouter.post(
 	async (req, res, next) => {
 		const { studioId, data: newPositionGroupValues } = req.body;
 
+		const positionsUpdate = [];
+
+		const positions = await Position.find({ _id: { $in: newPositionGroupValues.positions }, studio: studioId }).catch(err =>
+			next({ code: 2, err })
+		);
+
+		positions.forEach(position => {
+			positionsUpdate.push(position._id);
+
+			if (position.childPosition) positionsUpdate.push(position.childPosition);
+		});
+
 		const newPositionGroup = new PositionGroup({
 			...newPositionGroupValues,
 			studio: studioId,
+			positions: positionsUpdate,
 		});
 
 		const newPositionGroupErr = newPositionGroup.validateSync();
@@ -125,28 +138,68 @@ positionGroupsRouter.post(
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
+			studioId,
 			params: { positionGroupId },
-			data: { positions },
+			data: { positions: positionsEdited },
 		} = req.body;
 
-		const positionGroup = await PositionGroup.findByIdAndUpdate(
-			positionGroupId,
-			{ $push: { positions: { $each: positions } } },
-			{ new: true }
-		).catch(err => next({ code: 2, err }));
+		const positionsUpdate = [];
 
-		Position.updateMany(
-			{ _id: { $in: positions } },
-			{
-				$set: {
-					positionGroup: positionGroup._id,
-				},
-			}
-		).catch(err => next({ code: 2, err }));
+		const positions = await Position.find({ _id: { $in: positionsEdited }, studio: studioId }).catch(err => next({ code: 2, err }));
 
-		PositionGroup.findById(positionGroup._id)
-			.then(positionGroup => res.json(positionGroup))
+		positions.forEach(position => {
+			positionsUpdate.push(position._id);
+
+			if (position.parentPosition) positionsUpdate.push(position.parentPosition);
+			if (position.childPosition) positionsUpdate.push(position.childPosition);
+		});
+
+		await PositionGroup.findByIdAndUpdate(positionGroupId, { $push: { positions: { $each: positionsUpdate } } }).catch(err =>
+			next({ code: 2, err })
+		);
+
+		Position.updateMany({ _id: { $in: positionsUpdate } }, { $set: { positionGroup: positionGroupId } }).catch(err =>
+			next({ code: 2, err })
+		);
+
+		res.json({
+			_id: positionGroupId,
+			positions: positionsUpdate,
+		});
+	}
+);
+
+positionGroupsRouter.post(
+	'/removePositionFromGroup',
+	isAuthedResolver,
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
+	async (req, res, next) => {
+		const {
+			params: { positionId },
+		} = req.body;
+
+		const position = await Position.findById(positionId)
+			.populate('positionGroup')
 			.catch(err => next({ code: 2, err }));
+
+		const positionsUpdate = [position._id];
+
+		if (position.childPosition) positionsUpdate.push(position.childPosition);
+
+		Position.updateMany({ _id: { $in: positionsUpdate } }, { $unset: { positionGroup: 1 } }).catch(err => next({ code: 2, err }));
+
+		if (position.positionGroup.positions.length > positionsUpdate.length) {
+			PositionGroup.findByIdAndUpdate(position.positionGroup._id, { $pull: { positions: { $in: positionsUpdate } } }).catch(err =>
+				next({ code: 2, err })
+			);
+		} else {
+			PositionGroup.findByIdAndRemove(position.positionGroup._id).catch(err => next({ code: 2, err }));
+		}
+
+		res.json({
+			_id: position.positionGroup._id,
+			positions: positionsUpdate,
+		});
 	}
 );
 

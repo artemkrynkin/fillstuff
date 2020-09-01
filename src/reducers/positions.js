@@ -71,36 +71,8 @@ const positions = (
 				data: stateData,
 			};
 		}
-		case 'CREATE_POSITION_GROUP': {
-			let stateData = { ...state }.data;
-
-			stateData.forEach(position => {
-				if (action.payload.positions.some(positionInGroup => position._id === positionInGroup._id)) {
-					position.positionGroup = action.payload._id;
-				}
-			});
-
-			return {
-				...state,
-				isFetching: false,
-				data: stateData,
-			};
-		}
-		case 'ADD_POSITION_IN_GROUP': {
-			let stateData = { ...state }.data;
-
-			stateData.forEach(position => {
-				if (action.payload.positionsAdded.some(positionAddedId => position._id === positionAddedId)) {
-					position.positionGroup = action.payload.positionGroupId;
-				}
-			});
-
-			return {
-				...state,
-				isFetching: false,
-				data: stateData,
-			};
-		}
+		case 'CREATE_POSITION_GROUP':
+		case 'ADD_POSITION_IN_GROUP':
 		case 'REMOVE_POSITION_FROM_GROUP': {
 			let stateData;
 
@@ -108,8 +80,12 @@ const positions = (
 				stateData = { ...state }.data;
 
 				stateData.forEach(position => {
-					if (position._id === action.payload.positionId) {
-						delete position.positionGroup;
+					if (action.payload.positions.some(positionIdInGroup => positionIdInGroup === position._id)) {
+						if (/^(CREATE_POSITION_GROUP|ADD_POSITION_IN_GROUP)$/.test(action.type)) {
+							position.positionGroup = action.payload._id;
+						} else {
+							delete position.positionGroup;
+						}
 					}
 				});
 			}

@@ -48,7 +48,8 @@ const Position = props => {
 
 	const positionNameClasses = ClassNames({
 		[styles.positionGroupAndChild]: position.positionGroup && position.parentPosition,
-		[styles.positionGroupOrChild]: position.positionGroup || position.parentPosition,
+		[styles.positionGroupOrChild]:
+			(position.positionGroup && !position.parentPosition) || (!position.positionGroup && position.parentPosition),
 	});
 
 	return (

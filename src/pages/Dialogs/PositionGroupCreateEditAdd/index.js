@@ -130,7 +130,7 @@ const mapStateToProps = state => {
 	const positions = { ...state.positions };
 
 	if (positions.data && positions.data.length > 0) {
-		positions.data = positions.data.filter(position => !position.isArchived);
+		positions.data = positions.data.filter(position => !position.isArchived && !position.parentPosition);
 	}
 
 	return {

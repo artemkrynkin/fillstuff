@@ -20,7 +20,8 @@ const PositionGroupDropdown = props => {
 		>
 			<MenuList>
 				<MenuItem
-					onClick={() => {
+					onClick={event => {
+						event.stopPropagation();
 						onToggleDropdownActions();
 						onOpenDialogPositionGroup('dialogPositionGroupQRCode', 'positionGroup', positionGroup);
 					}}
@@ -32,7 +33,8 @@ const PositionGroupDropdown = props => {
 			<Divider />
 			<MenuList>
 				<MenuItem
-					onClick={() => {
+					onClick={event => {
+						event.stopPropagation();
 						onToggleDropdownActions();
 						onOpenDialogPositionGroup('dialogPositionGroupAdd', 'positionGroup', positionGroup);
 					}}
@@ -41,7 +43,8 @@ const PositionGroupDropdown = props => {
 					Добавить позиции
 				</MenuItem>
 				<MenuItem
-					onClick={() => {
+					onClick={event => {
+						event.stopPropagation();
 						onToggleDropdownActions();
 						onOpenDialogPositionGroup('dialogPositionGroupEdit', 'positionGroup', positionGroup);
 					}}

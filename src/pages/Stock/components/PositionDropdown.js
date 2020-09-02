@@ -25,7 +25,8 @@ const PositionDropdown = props => {
 			{position.receipts.length ? (
 				<MenuList>
 					<MenuItem
-						onClick={() => {
+						onClick={event => {
+							event.stopPropagation();
 							onToggleDropdownActions();
 							onOpenDialogPosition('dialogReceiptActiveAddQuantity', 'position', position);
 						}}
@@ -33,7 +34,8 @@ const PositionDropdown = props => {
 						Добавить количество
 					</MenuItem>
 					<MenuItem
-						onClick={() => {
+						onClick={event => {
+							event.stopPropagation();
 							onToggleDropdownActions();
 							onOpenDialogPosition('dialogWriteOffCreate', 'position', position);
 						}}
@@ -45,7 +47,8 @@ const PositionDropdown = props => {
 			{position.receipts.length ? <Divider /> : null}
 			<MenuList>
 				<MenuItem
-					onClick={() => {
+					onClick={event => {
+						event.stopPropagation();
 						onToggleDropdownActions();
 						onOpenDialogPosition('dialogPositionQRCode', 'position', position);
 					}}
@@ -58,7 +61,8 @@ const PositionDropdown = props => {
 			<MenuList>
 				{position.positionGroup ? (
 					<MenuItem
-						onClick={() => {
+						onClick={event => {
+							event.stopPropagation();
 							onToggleDropdownActions();
 							onOpenDialogPosition('dialogPositionRemoveFromGroup', 'position', position);
 						}}
@@ -68,7 +72,8 @@ const PositionDropdown = props => {
 					</MenuItem>
 				) : null}
 				<MenuItem
-					onClick={() => {
+					onClick={event => {
+						event.stopPropagation();
 						onToggleDropdownActions();
 						onOpenDialogPosition('dialogPositionEdit', 'position', position);
 					}}
@@ -78,7 +83,8 @@ const PositionDropdown = props => {
 				</MenuItem>
 				{position.archivedAfterEnded ? (
 					<MenuItem
-						onClick={() => {
+						onClick={event => {
+							event.stopPropagation();
 							onToggleDropdownActions();
 							onArchivedAfterEnded();
 						}}
@@ -94,7 +100,8 @@ const PositionDropdown = props => {
 					</MenuItem>
 				) : null}
 				<MenuItem
-					onClick={() => {
+					onClick={event => {
+						event.stopPropagation();
 						onToggleDropdownActions();
 						onOpenDialogPosition('dialogPositionArchiveDelete', 'position', position);
 					}}

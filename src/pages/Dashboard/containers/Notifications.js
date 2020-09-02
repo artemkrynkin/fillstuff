@@ -32,29 +32,17 @@ const Notifications = props => {
 
 	if (isLoadingStoreNotifications) return <LoadingComponent />;
 
-	const containerClasses = ClassNames({
-		[styles.container]: true,
-		visibleAllNotifications: visibleAllNotifications,
-	});
-
-	const showMoreButtonClasses = ClassNames({
-		[styles.showButton]: true,
-		[styles.showMoreButton]: true,
-	});
-
-	const showLessButtonClasses = ClassNames({
-		[styles.showButton]: true,
-		[styles.showLessButton]: true,
-	});
-
 	return (
-		<div className={containerClasses} style={visibleAllNotifications ? { height } : {}}>
+		<div
+			className={ClassNames(styles.container, { visibleAllNotifications: visibleAllNotifications })}
+			style={visibleAllNotifications ? { height } : {}}
+		>
 			<Grid className={styles.stickyHeader} justify="space-between" alignItems="center" container>
 				<Grid item>
 					<Typography variant="h5">События</Typography>
 				</Grid>
 				<Grid item>
-					<ButtonBase className={showLessButtonClasses} onClick={() => onHandleVisibleNotifications(false)}>
+					<ButtonBase className={ClassNames(styles.showButton, styles.showLessButton)} onClick={() => onHandleVisibleNotifications(false)}>
 						<FontAwesomeIcon icon={['far', 'angle-up']} />
 						Показать меньше
 					</ButtonBase>
@@ -78,7 +66,10 @@ const Notifications = props => {
 									))}
 								</div>
 								{storeNotifications[notificationType].length > 1 ? (
-									<ButtonBase className={showMoreButtonClasses} onClick={() => onHandleVisibleNotifications(true)}>
+									<ButtonBase
+										className={ClassNames(styles.showButton, styles.showMoreButton)}
+										onClick={() => onHandleVisibleNotifications(true)}
+									>
 										{`Еще ${storeNotifications[notificationType].length - 1}`}
 									</ButtonBase>
 								) : null}

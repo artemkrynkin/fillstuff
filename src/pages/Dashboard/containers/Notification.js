@@ -19,8 +19,7 @@ const Notification = props => {
 	const { index, reverseIndex, importance, onOpenDialogByName, notification } = props;
 	const [actionStatus, setActionStatus] = useState(false);
 
-	const containerClasses = ClassNames({
-		[styles.card]: true,
+	const containerClasses = ClassNames(styles.card, {
 		[styles.cardImportanceRed]: importance === 'red',
 		[styles.cardImportanceOrange]: importance === 'orange',
 		[styles.cardImportanceGreen]: importance === 'green',

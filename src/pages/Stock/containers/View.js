@@ -25,7 +25,7 @@ const View = props => {
 		return <LoadingPage />;
 	}
 
-	if (positions && !positions.length && !positionGroups.length) {
+	if (positions && !positions.length) {
 		return (
 			<Empty
 				classNames={{

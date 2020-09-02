@@ -4,19 +4,31 @@
 }
 
 .position:hover {
-  background-color: var(--c-hex-brightness-4);
+  background-color: var(--c-hex-brightness-3);
 }
 
 .positionInGroup {
-  background-color: var(--c-hex-brightness-2);
+  background-color: var(--c-hex-brightness-1);
 }
 
-.positionGroupAndChild {
-  padding-left: 52px;
+.childPosition td {
+  border-top: none;
 }
 
-.positionGroupOrChild {
-  padding-left: 26px;
+.positionName {
+  position: relative;
+}
+
+.unifierPosition {
+  color: var(--c-hex-blueGrey-200);
+  height: 35px;
+  position: absolute;
+  left: 1px;
+  top: -17px;
+}
+
+.childPosition .unifierPosition + div {
+  margin-left: 28px;
 }
 
 .createReceipt {
@@ -28,10 +40,6 @@
   line-height: 1.1;
   padding: 9px;
   transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-}
-
-.position:hover .createReceipt {
-  background-color: var(--c-hex-brightness-5);
 }
 
 .createReceipt:hover {

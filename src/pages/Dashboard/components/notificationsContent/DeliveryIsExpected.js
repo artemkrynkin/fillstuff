@@ -57,7 +57,10 @@ const DeliveryIsExpected = props => {
 					[styles.actionButton]: true,
 					activeAction: dropdownActions,
 				})}
-				onClick={() => onHandleDropdownActions()}
+				onClick={event => {
+					event.stopPropagation();
+					onHandleDropdownActions();
+				}}
 				size="small"
 			>
 				<FontAwesomeIcon icon={['far', 'ellipsis-v']} />
@@ -111,12 +114,7 @@ const DeliveryIsExpected = props => {
 					{procurement.comment ? (
 						<Fragment>
 							<div className={styles.infoItem}>&nbsp;</div>
-							<Tooltip
-								title={<div className={styles.commentText}>{procurement.comment}</div>}
-								placement="bottom"
-								leaveDelay={500}
-								interactive
-							>
+							<Tooltip title={<div className={styles.commentText}>{procurement.comment}</div>} placement="bottom" interactive>
 								<span className={styles.commentIcon}>
 									<FontAwesomeIcon icon={['fal', 'comment']} />
 								</span>
@@ -126,17 +124,12 @@ const DeliveryIsExpected = props => {
 				</div>
 			</div>
 
-			<Dropdown
-				anchor={refDropdownActions}
-				open={dropdownActions}
-				onClose={() => onHandleDropdownActions(false)}
-				placement="bottom-end"
-				disablePortal={true}
-			>
+			<Dropdown anchor={refDropdownActions} open={dropdownActions} onClose={() => onHandleDropdownActions(false)} placement="bottom-end">
 				<MenuList>
 					{procurement.isConfirmed ? (
 						<MenuItem
-							onClick={() => {
+							onClick={event => {
+								event.stopPropagation();
 								onHandleDropdownActions();
 								onOpenDialogByName('dialogProcurementReceivedCreate', 'procurementReceived', procurement);
 							}}
@@ -147,7 +140,8 @@ const DeliveryIsExpected = props => {
 						</MenuItem>
 					) : (
 						<MenuItem
-							onClick={() => {
+							onClick={event => {
+								event.stopPropagation();
 								onHandleDropdownActions();
 								onOpenDialogByName('dialogProcurementExpectedConfirm', 'procurementExpected', procurement);
 							}}
@@ -165,7 +159,8 @@ const DeliveryIsExpected = props => {
 					)}
 					{procurement.isConfirmed ? (
 						<MenuItem
-							onClick={() => {
+							onClick={event => {
+								event.stopPropagation();
 								onHandleDropdownActions();
 								onOpenDialogByName('dialogProcurementExpectedEdit', 'procurementExpected', procurement);
 							}}
@@ -175,7 +170,8 @@ const DeliveryIsExpected = props => {
 						</MenuItem>
 					) : null}
 					<MenuItem
-						onClick={() => {
+						onClick={event => {
+							event.stopPropagation();
 							onHandleDropdownActions();
 							onOpenDialogByName('dialogProcurementExpectedCancel', 'procurementExpected', procurement);
 						}}

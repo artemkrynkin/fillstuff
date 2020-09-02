@@ -3,7 +3,7 @@ import ColorConvert from 'color-convert';
 import MuiTableCell from '@material-ui/core/TableCell';
 import { withStyles, makeStyles } from '@material-ui/core';
 
-import theme from 'shared/theme';
+import colorTheme from 'shared/colorTheme';
 
 export const TableCell = withStyles({
 	root: {
@@ -14,14 +14,14 @@ export const TableCell = withStyles({
 		paddingBottom: 18,
 	},
 	body: {
-		borderTop: `1px solid ${theme.brightness['4']}`,
+		borderTop: `1px solid ${colorTheme.brightness['4']}`,
 		borderBottom: 'none',
 	},
 })(MuiTableCell);
 
 export const TableRowHighlight = makeStyles({
 	root: {
-		backgroundColor: `rgba(${ColorConvert.hex.rgb(theme.teal['50'])}, 0.6)`,
+		backgroundColor: `rgba(${ColorConvert.hex.rgb(colorTheme.teal['50'])}, 0.6)`,
 	},
 });
 

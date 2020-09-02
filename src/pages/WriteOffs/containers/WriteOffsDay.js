@@ -49,9 +49,7 @@ const WriteOffsDay = props => {
 
 	const onHandleDropdownAllUsers = () => setDropdownAllUsers(prevValue => !prevValue);
 
-	const onHandleExpand = event => {
-		if (!event.target.closest(`.${styles.users}`)) setExpanded(!expanded);
-	};
+	const onHandleExpand = () => setExpanded(!expanded);
 
 	const onChangeFilterRole = role => {
 		const {
@@ -81,7 +79,7 @@ const WriteOffsDay = props => {
 						<Grid xs={6} item>
 							<div className={styles.title}>{moment(date).calendar(null, calendarFormat)}</div>
 							<div className={styles.usersContainer}>
-								<div ref={refDropdownAllUsers} className={styles.users}>
+								<div ref={refDropdownAllUsers} onClick={event => event.stopPropagation()} className={styles.users}>
 									{indicators.members.map((member, index) => {
 										if (index >= maxVisibleUsers) return null;
 
@@ -155,14 +153,7 @@ const WriteOffsDay = props => {
 						</Table>
 					</div>
 				</Collapse>
-				<ButtonBase
-					className={ClassNames({
-						[styles.detailsButton]: true,
-						open: expanded,
-					})}
-					onClick={onHandleExpand}
-					disableRipple
-				>
+				<ButtonBase className={ClassNames(styles.detailsButton, { open: expanded })} onClick={onHandleExpand} disableRipple>
 					<FontAwesomeIcon icon={['far', 'angle-down']} className={expanded ? 'open' : ''} />
 				</ButtonBase>
 			</div>

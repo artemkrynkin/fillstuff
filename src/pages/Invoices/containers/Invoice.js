@@ -32,15 +32,7 @@ const Invoice = props => {
 
 	const onChangeTab = (event, tabName) => setTabName(tabName);
 
-	const onHandleExpand = event => {
-		if (
-			event.target.classList.contains(styles.title) ||
-			event.target.classList.contains(styles.acceptPayment) ||
-			(event.target.closest('.' + styles.acceptPayment) &&
-				event.target.closest('.' + styles.acceptPayment).classList.contains(styles.acceptPayment))
-		)
-			return;
-
+	const onHandleExpand = () => {
 		if (!expanded && tabName === 'payments') onChangeTab(null, 'positions');
 
 		setExpanded(!expanded);
@@ -52,7 +44,7 @@ const Invoice = props => {
 				<div className={styles.header} onClick={onHandleExpand}>
 					<Grid container>
 						<Grid xs={6} item>
-							<Link className={styles.title} to={`/invoices/${invoice._id}`}>
+							<Link className={styles.title} onClick={event => event.stopPropagation()} to={`/invoices/${invoice._id}`}>
 								Счет за {moment(invoice.fromDate).format('DD.MM.YYYY')} &ndash; {moment(invoice.toDate).format('DD.MM.YYYY')}
 							</Link>
 							<AvatarTitle imageSrc={invoice.member.user.avatar} title={invoice.member.user.name} />
@@ -62,7 +54,13 @@ const Invoice = props => {
 								{invoice.status !== 'paid' ? (
 									<div className={styles.indicatorsTitle}>
 										<Tooltip title="Погасить счет" placement="top">
-											<button onClick={() => onOpenDialogInvoice('dialogInvoicePaymentCreate', invoice)} className={styles.acceptPayment}>
+											<button
+												onClick={event => {
+													event.stopPropagation();
+													onOpenDialogInvoice('dialogInvoicePaymentCreate', invoice);
+												}}
+												className={styles.acceptPayment}
+											>
 												<FontAwesomeIcon icon={['fas', 'wallet']} />
 											</button>
 										</Tooltip>
@@ -153,13 +151,7 @@ const Invoice = props => {
 						</Table>
 					) : null}
 				</Collapse>
-				<ButtonBase
-					className={ClassNames({
-						[styles.detailsButton]: true,
-						open: expanded,
-					})}
-					onClick={onHandleExpand}
-				>
+				<ButtonBase className={ClassNames(styles.detailsButton, { open: expanded })} onClick={onHandleExpand}>
 					<FontAwesomeIcon icon={['far', 'angle-down']} className={expanded ? 'open' : ''} />
 				</ButtonBase>
 			</div>

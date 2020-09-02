@@ -4,7 +4,7 @@ import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import { withStyles } from '@material-ui/core';
 
-import theme from 'shared/theme';
+import colorTheme from 'shared/colorTheme';
 
 export const Accordion = withStyles({
 	root: {
@@ -36,7 +36,6 @@ export const Accordion = withStyles({
 
 export const AccordionSummary = withStyles({
 	root: {
-		// backgroundColor: theme.brightness['2'],
 		minHeight: 'initial',
 		padding: 0,
 		'&$expanded': {
@@ -62,7 +61,7 @@ export const AccordionSummary = withStyles({
 		},
 	},
 	expandIcon: {
-		color: theme.blueGrey['200'],
+		color: colorTheme.blueGrey['200'],
 		order: -1,
 		marginLeft: 5,
 		marginRight: '0 !important',
@@ -70,7 +69,7 @@ export const AccordionSummary = withStyles({
 		transform: 'rotate(-90deg)',
 		width: 36,
 		'&:hover': {
-			color: theme.blueGrey['200'],
+			color: colorTheme.blueGrey['200'],
 		},
 		'&$expanded': {
 			transform: 'rotate(0deg)',
@@ -92,17 +91,17 @@ export const AccordionDetails = withStyles({
 
 export const TableCellAccordion = withStyles({
 	root: {
-		padding: '19px 15px',
+		padding: '19px 16px',
 	},
 	body: {
-		borderTop: `1px solid ${theme.brightness['4']}`,
+		borderTop: `1px solid ${colorTheme.brightness['4']}`,
 		borderBottom: 'none',
 	},
 })(MuiTableCell);
 
 export const TableCell = withStyles({
 	root: {
-		padding: '11px 15px',
+		padding: '11px 16px',
 	},
 	head: {
 		paddingTop: 18,
@@ -110,7 +109,7 @@ export const TableCell = withStyles({
 		borderBottom: 'none',
 	},
 	body: {
-		borderTop: `1px solid ${theme.brightness['4']}`,
+		borderTop: `1px solid ${colorTheme.brightness['4']}`,
 		borderBottom: 'none',
 	},
 })(MuiTableCell);

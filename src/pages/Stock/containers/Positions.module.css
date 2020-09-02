@@ -1,14 +1,16 @@
-.tableHeaderSticky th {
+.tableHeaderSticky {
+  background-color: white;
+  border-radius: 8px 8px 0 0;
   box-shadow: 0 1px 0 0 var(--c-hex-brightness-4);
+  position: sticky;
   top: 50px;
+  z-index: 2;
 }
 
-.tableHeaderSticky th:first-child {
-  border-radius: 8px 0 0 0;
-}
-
-.tableHeaderSticky th:last-child {
-  border-radius: 0 8px 0 0;
+.positions,
+.positionGroupsRounded {
+  border-radius: 0 0 8px 8px;
+  overflow: hidden;
 }
 
 .caption {

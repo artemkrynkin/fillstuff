@@ -31,16 +31,7 @@ const Notification = props => {
 		[styles.cardMemberInvoice]: notification.type === 'member-invoice',
 	});
 
-	const openViewDialog = event => {
-		if (
-			(event.target.closest('.' + styles.actionButton) &&
-				event.target.closest('.' + styles.actionButton).classList.contains(styles.actionButton)) ||
-			event.target.closest('[role="tooltip"]') ||
-			(event.target.closest('.' + styles.commentIcon) &&
-				event.target.closest('.' + styles.commentIcon).classList.contains(styles.commentIcon))
-		)
-			return;
-
+	const openViewDialog = () => {
 		switch (notification.type) {
 			case 'position-ends':
 				return onOpenDialogByName('dialogPositionEnded', 'storeNotification', notification);

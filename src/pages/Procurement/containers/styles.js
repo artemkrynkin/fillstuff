@@ -1,7 +1,7 @@
 import MuiTableCell from '@material-ui/core/TableCell';
 import { withStyles } from '@material-ui/core';
 
-import theme from 'shared/theme';
+import colorTheme from 'shared/colorTheme';
 
 export const TableCell = withStyles({
 	root: {
@@ -12,7 +12,7 @@ export const TableCell = withStyles({
 		paddingBottom: 18,
 	},
 	body: {
-		borderTop: `1px solid ${theme.brightness['4']}`,
+		borderTop: `1px solid ${colorTheme.brightness['4']}`,
 		borderBottom: 'none',
 	},
 })(MuiTableCell);

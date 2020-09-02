@@ -1,4 +1,4 @@
-import theme from 'shared/theme';
+import colorTheme from 'shared/colorTheme';
 
 export default ({
 	title,
@@ -36,8 +36,8 @@ export default ({
 				paddingRight: () => STICKER_PADDING,
 				paddingTop: () => STICKER_PADDING,
 				paddingBottom: () => STICKER_PADDING,
-				hLineColor: () => theme.blueGrey['200'],
-				vLineColor: () => theme.blueGrey['200'],
+				hLineColor: () => colorTheme.blueGrey['200'],
+				vLineColor: () => colorTheme.blueGrey['200'],
 				hLineStyle: () => ({ dash: { length: 5, space: 5 } }),
 				vLineStyle: () => ({ dash: { length: 5, space: 5 } }),
 			},
@@ -70,7 +70,7 @@ export default ({
 				const titleObj = {
 					alignment: 'center',
 					bold: true,
-					color: stickerColor === 'colored' ? theme.slateGrey[3] : '#000000',
+					color: stickerColor === 'colored' ? colorTheme.slateGrey[3] : '#000000',
 					fontSize: titleSize,
 					margin: stickerOrientation === 'portrait' ? [0, 0, 0, 15] : [15, 0, 15, 0],
 					text: title,

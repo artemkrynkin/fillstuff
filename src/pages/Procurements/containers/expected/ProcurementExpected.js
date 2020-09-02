@@ -16,6 +16,7 @@ import MenuItem from 'src/components/MenuItem';
 import Dropdown from 'src/components/Dropdown';
 import AvatarTitle from 'src/components/AvatarTitle';
 
+import { useStyles } from './styles';
 import styles from './ProcurementExpected.module.css';
 
 const calendarFormat = {
@@ -37,32 +38,22 @@ const ProcurementExpected = props => {
 	const { procurement, onOpenDialogProcurement } = props;
 	const refDropdownActions = useRef(null);
 	const [dropdownActions, setDropdownActions] = useState(false);
+	const classes = useStyles();
 
 	const onHandleDropdownActions = value => setDropdownActions(value === null || value === undefined ? prevValue => !prevValue : value);
 
-	const openViewDialog = event => {
-		if (
-			(event.target.closest('.' + styles.actionButton) &&
-				event.target.closest('.' + styles.actionButton).classList.contains(styles.actionButton)) ||
-			event.target.closest('[role="tooltip"]') ||
-			(event.target.closest('.' + styles.commentIcon) &&
-				event.target.closest('.' + styles.commentIcon).classList.contains(styles.commentIcon))
-		)
-			return;
-
-		onOpenDialogProcurement('dialogProcurementExpectedView', 'procurementExpected', procurement);
-	};
+	const openViewDialog = () => onOpenDialogProcurement('dialogProcurementExpectedView', 'procurementExpected', procurement);
 
 	return (
 		<div className={styles.container}>
-			<CardPaper className={styles.card} onClick={openViewDialog} header={false} elevation={1}>
+			<CardPaper className={classes.card} onClick={openViewDialog} header={false} elevation={1}>
 				<IconButton
 					ref={refDropdownActions}
-					className={ClassNames({
-						[styles.actionButton]: true,
-						activeAction: dropdownActions,
-					})}
-					onClick={() => onHandleDropdownActions()}
+					className={ClassNames(styles.actionButton, { activeAction: dropdownActions })}
+					onClick={event => {
+						event.stopPropagation();
+						onHandleDropdownActions();
+					}}
 					size="small"
 				>
 					<FontAwesomeIcon icon={['far', 'ellipsis-v']} />
@@ -127,7 +118,8 @@ const ProcurementExpected = props => {
 					<MenuList>
 						{procurement.isConfirmed ? (
 							<MenuItem
-								onClick={() => {
+								onClick={event => {
+									event.stopPropagation();
 									onHandleDropdownActions();
 									onOpenDialogProcurement('dialogProcurementReceivedCreate', 'procurementReceived', procurement);
 								}}
@@ -138,7 +130,8 @@ const ProcurementExpected = props => {
 							</MenuItem>
 						) : (
 							<MenuItem
-								onClick={() => {
+								onClick={event => {
+									event.stopPropagation();
 									onHandleDropdownActions();
 									onOpenDialogProcurement('dialogProcurementExpectedConfirm', 'procurementExpected', procurement);
 								}}
@@ -156,7 +149,8 @@ const ProcurementExpected = props => {
 						)}
 						{procurement.isConfirmed ? (
 							<MenuItem
-								onClick={() => {
+								onClick={event => {
+									event.stopPropagation();
 									onHandleDropdownActions();
 									onOpenDialogProcurement('dialogProcurementExpectedEdit', 'procurementExpected', procurement);
 								}}
@@ -166,7 +160,8 @@ const ProcurementExpected = props => {
 							</MenuItem>
 						) : null}
 						<MenuItem
-							onClick={() => {
+							onClick={event => {
+								event.stopPropagation();
 								onHandleDropdownActions();
 								onOpenDialogProcurement('dialogProcurementExpectedCancel', 'procurementExpected', procurement);
 							}}

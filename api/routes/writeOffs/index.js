@@ -242,11 +242,15 @@ writeOffsRouter.post(
 						awaitingPromises.push(
 							Position.findByIdAndUpdate(position._id, {
 								$set: { isArchived: true },
-								$unset: { archivedAfterEnded: 1, positionGroup: 1 },
+								$unset: { childPosition: 1, parentPosition: 1, archivedAfterEnded: 1, positionGroup: 1 },
 							}).catch(err => next({ code: 2, err }))
 						);
 
-						numberArchivedPosition += 1;
+						if (position.childPosition) {
+							Position.findByIdAndUpdate(position.childPosition, {
+								$unset: { parentPosition: 1 },
+							}).catch(err => next({ code: 2, err }));
+						}
 
 						if (position.positionGroup) {
 							if (position.positionGroup.positions.length > 1) {
@@ -256,13 +260,11 @@ writeOffsRouter.post(
 									)
 								);
 							} else {
-								awaitingPromises.push(
-									PositionGroup.findByIdAndRemove(position.positionGroup._id, { $pull: { positions: position._id } }).catch(err =>
-										next({ code: 2, err })
-									)
-								);
+								awaitingPromises.push(PositionGroup.findByIdAndRemove(position.positionGroup._id).catch(err => next({ code: 2, err })));
 							}
 						}
+
+						numberArchivedPosition += 1;
 					}
 				}
 

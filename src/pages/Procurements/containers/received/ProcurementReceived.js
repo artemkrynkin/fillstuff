@@ -27,9 +27,7 @@ const ProcurementReceived = props => {
 	const { procurement, filterParams } = props;
 	const [expanded, setExpanded] = useState(filterParams.position !== 'all');
 
-	const onHandleExpand = event => {
-		if (!event.target.classList.contains(styles.title)) setExpanded(!expanded);
-	};
+	const onHandleExpand = () => setExpanded(!expanded);
 
 	useEffect(() => {
 		setExpanded(filterParams.position !== 'all');
@@ -41,7 +39,7 @@ const ProcurementReceived = props => {
 				<div className={styles.header} onClick={onHandleExpand}>
 					<Grid container>
 						<Grid xs={6} item>
-							<Link className={styles.title} to={`/procurements/${procurement._id}`}>
+							<Link className={styles.title} onClick={event => event.stopPropagation()} to={`/procurements/${procurement._id}`}>
 								{!procurement.noInvoice ? (
 									<div>
 										<span>№</span>
@@ -132,20 +130,14 @@ const ProcurementReceived = props => {
 								</TableRow>
 							</TableHead>
 							<TableBody>
-								{procurement.receipts.map((receipt, index) => (
+								{procurement.receipts.map(receipt => (
 									<Receipt key={receipt._id} receipt={receipt} positionSameFilter={receipt.position._id === filterParams.position} />
 								))}
 							</TableBody>
 						</Table>
 					</div>
 				</Collapse>
-				<ButtonBase
-					className={ClassNames({
-						[styles.detailsButton]: true,
-						open: expanded,
-					})}
-					onClick={onHandleExpand}
-				>
+				<ButtonBase className={ClassNames(styles.detailsButton, { open: expanded })} onClick={onHandleExpand}>
 					<FontAwesomeIcon icon={['far', 'angle-down']} className={expanded ? 'open' : ''} />
 				</ButtonBase>
 			</div>

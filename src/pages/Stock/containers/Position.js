@@ -25,6 +25,8 @@ import { TableCell } from './styles';
 import stylesPositions from './Positions.module.css';
 import styles from './Position.module.css';
 
+import { ReactComponent as UnifierPosition } from 'public/img/other/unifier_position.svg';
+
 const Position = props => {
 	const { position, onOpenDialogPosition } = props;
 	const refDropdownActions = useRef(null);
@@ -33,35 +35,28 @@ const Position = props => {
 	const onToggleDropdownActions = value => setDropdownActions(value === null || value === undefined ? prevValue => !prevValue : value);
 
 	const openPositionPage = event => {
-		if (event.target.closest('[role="button"]') || event.target.closest('[role="tooltip"]')) return;
-
 		const positionLink = `/stock/${position._id}`;
 
 		return event.ctrlKey || event.shiftKey || event.metaKey ? window.open(positionLink) : history.push(positionLink);
 	};
 
-	const containerClasses = ClassNames({
-		[stylesPositions.position]: true,
-		[styles.position]: true,
+	const containerClasses = ClassNames(stylesPositions.position, styles.position, {
 		[styles.positionInGroup]: position.positionGroup,
-	});
-
-	const positionNameClasses = ClassNames({
-		[styles.positionGroupAndChild]: position.positionGroup && position.parentPosition,
-		[styles.positionGroupOrChild]:
-			(position.positionGroup && !position.parentPosition) || (!position.positionGroup && position.parentPosition),
+		[styles.childPosition]: position.parentPosition,
 	});
 
 	return (
 		<TableRow onClick={openPositionPage} className={containerClasses}>
-			<TableCell width={330}>
-				<PositionNameInList
-					className={positionNameClasses}
-					name={position.name}
-					characteristics={position.characteristics}
-					archivedAfterEnded={position.archivedAfterEnded}
-					deliveryIsExpected={Boolean(position.deliveryIsExpected.length)}
-				/>
+			<TableCell width={330} style={position.positionGroup ? { paddingLeft: 41 } : {}}>
+				<div className={styles.positionName}>
+					{position.parentPosition ? <UnifierPosition className={styles.unifierPosition} /> : null}
+					<PositionNameInList
+						name={position.name}
+						characteristics={position.characteristics}
+						archivedAfterEnded={position.archivedAfterEnded}
+						deliveryIsExpected={Boolean(position.deliveryIsExpected.length)}
+					/>
+				</div>
 			</TableCell>
 			<TableCell />
 			<TableCell align="right" width={240}>
@@ -95,22 +90,23 @@ const Position = props => {
 				<TableCell align="left" colSpan={2} width={280}>
 					<ButtonBase
 						className={styles.createReceipt}
-						onClick={() => onOpenDialogPosition('dialogReceiptConfirmCreate', 'position', position)}
-						role="button"
+						onClick={event => {
+							event.stopPropagation();
+							onOpenDialogPosition('dialogReceiptConfirmCreate', 'position', position);
+						}}
 					>
 						Создать поступление
 					</ButtonBase>
 				</TableCell>
 			) : null}
-			<TableCell align="right" width={50} style={{ padding: '0 7px' }}>
+			<TableCell align="center" width={48} padding="none">
 				<IconButton
 					ref={refDropdownActions}
-					className={ClassNames({
-						[stylesPositions.actionButton]: true,
-						activeAction: dropdownActions,
-					})}
-					onClick={() => onToggleDropdownActions()}
-					role="button"
+					className={ClassNames(stylesPositions.actionButton, { activeAction: dropdownActions })}
+					onClick={event => {
+						event.stopPropagation();
+						onToggleDropdownActions();
+					}}
 				>
 					<FontAwesomeIcon icon={['far', 'ellipsis-h']} />
 				</IconButton>

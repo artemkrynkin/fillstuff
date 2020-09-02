@@ -225,16 +225,16 @@ positionsRouter.post(
 		if (position.hasReceipts) {
 			Position.findByIdAndUpdate(position._id, {
 				$set: { isArchived: true },
-				$unset: { positionGroup: 1, childPosition: 1, parentPosition: 1 },
+				$unset: { childPosition: 1, parentPosition: 1, positionGroup: 1 },
 			}).catch(err => next({ code: 2, err }));
-
-			if (position.childPosition) {
-				Position.findByIdAndUpdate(position._id, {
-					$unset: { parentPosition: 1 },
-				}).catch(err => next({ code: 2, err }));
-			}
 		} else {
 			Position.findByIdAndRemove(position._id).catch(err => next({ code: 2, err }));
+		}
+
+		if (position.childPosition) {
+			Position.findByIdAndUpdate(position.childPosition, {
+				$unset: { parentPosition: 1 },
+			}).catch(err => next({ code: 2, err }));
 		}
 
 		if (position.positionGroup) {
@@ -288,15 +288,15 @@ positionsRouter.post(
 			data: { archivedAfterEnded },
 		} = req.body;
 
-		const positionEdited = {
+		const positionUpdate = {
 			$set: {},
 			$unset: {},
 		};
 
-		if (archivedAfterEnded) positionEdited.$set.archivedAfterEnded = archivedAfterEnded;
-		else positionEdited.$unset.archivedAfterEnded = 1;
+		if (archivedAfterEnded) positionUpdate.$set.archivedAfterEnded = archivedAfterEnded;
+		else positionUpdate.$unset.archivedAfterEnded = 1;
 
-		const position = await Position.findByIdAndUpdate(positionId, positionEdited, { new: true })
+		const position = await Position.findByIdAndUpdate(positionId, positionUpdate, { new: true })
 			.populate([
 				{
 					path: 'activeReceipt characteristics shops.shop',
@@ -311,9 +311,7 @@ positionsRouter.post(
 			])
 			.catch(err => next({ code: 2, err }));
 
-		const allQuantityReceipts = position.receipts
-			.filter(receipt => /received|active/.test(receipt.status))
-			.reduce((sum, receipt) => sum + receipt.current.quantity, 0);
+		const allQuantityReceipts = position.receipts.reduce((sum, receipt) => sum + receipt.current.quantity, 0);
 
 		if (allQuantityReceipts <= position.minimumBalance) {
 			const storeNotification = {

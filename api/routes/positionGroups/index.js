@@ -184,6 +184,7 @@ positionGroupsRouter.post(
 
 		const positionsUpdate = [position._id];
 
+		if (position.parentPosition) positionsUpdate.push(position.parentPosition);
 		if (position.childPosition) positionsUpdate.push(position.childPosition);
 
 		Position.updateMany({ _id: { $in: positionsUpdate } }, { $unset: { positionGroup: 1 } }).catch(err => next({ code: 2, err }));

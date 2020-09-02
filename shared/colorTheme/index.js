@@ -1,4 +1,4 @@
-export const theme = {
+export default {
 	blue: {
 		50: '#e3f2fd',
 		100: '#bbdefb',
@@ -90,5 +90,3 @@ export const theme = {
 		5: '#e8ecee',
 	},
 };
-
-export default theme;

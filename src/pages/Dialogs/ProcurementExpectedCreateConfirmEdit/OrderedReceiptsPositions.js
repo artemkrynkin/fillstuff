@@ -22,6 +22,7 @@ const DialogPositionEditReplacement = loadable(() =>
 const OrderedReceiptsPositions = props => {
 	const {
 		dialogRef,
+		receiptInitialValues,
 		positions: {
 			data: positions,
 			isFetching: isLoadingPositions,
@@ -101,10 +102,7 @@ const OrderedReceiptsPositions = props => {
 						value={textSearchPosition}
 						onChange={(option, { action }) => {
 							if (action === 'select-option') {
-								push({
-									position: option,
-									quantity: '',
-								});
+								push(receiptInitialValues({ position: option }));
 								onChangeTextSearchPosition(textSearchPosition);
 
 								setTimeout(() => {
@@ -164,12 +162,7 @@ const OrderedReceiptsPositions = props => {
 				onCloseDialog={() => onCloseDialogByName('dialogPositionCreate')}
 				onCallback={({ status, data: position }) => {
 					if (status === 'success') {
-						const positionTransform = procurementPositionTransform(position);
-
-						push({
-							position: positionTransform,
-							quantity: '',
-						});
+						push(receiptInitialValues(procurementPositionTransform(position)));
 
 						setTimeout(() => {
 							dialogRef.current.querySelector('.sentinel-bottom').scrollIntoView({
@@ -191,7 +184,7 @@ const OrderedReceiptsPositions = props => {
 				onCallback={position => {
 					const orderedReceiptPosition = values.orderedReceiptsPositions[positionIndexInProcurement];
 
-					replace(positionIndexInProcurement, { ...orderedReceiptPosition, position });
+					replace(positionIndexInProcurement, { ...orderedReceiptPosition, position: procurementPositionTransform(position) });
 
 					setPositionIndexInProcurement(undefined);
 				}}
@@ -207,7 +200,7 @@ const OrderedReceiptsPositions = props => {
 				onCallback={position => {
 					const orderedReceiptPosition = values.orderedReceiptsPositions[positionIndexInProcurement];
 
-					replace(positionIndexInProcurement, { ...orderedReceiptPosition, position });
+					replace(positionIndexInProcurement, { ...orderedReceiptPosition, position: procurementPositionTransform(position) });
 
 					setPositionIndexInProcurement(undefined);
 				}}

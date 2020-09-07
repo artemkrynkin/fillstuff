@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
 import mongoose from 'mongoose';
 
@@ -117,9 +118,6 @@ writeOffsRouter.post(
 				{
 					path: 'studio',
 					select: 'store',
-				},
-				{
-					path: 'positionGroup',
 				},
 				{
 					path: 'activeReceipt',
@@ -241,26 +239,28 @@ writeOffsRouter.post(
 					if (position.archivedAfterEnded && !position.deliveryIsExpected.length && currentReceiptSet.current.quantity === 0) {
 						awaitingPromises.push(
 							Position.findByIdAndUpdate(position._id, {
-								$set: { isArchived: true },
+								$set: position.parentPosition ? { qrcodeId: uuidv4(), isArchived: true } : { isArchived: true },
 								$unset: { childPosition: 1, parentPosition: 1, archivedAfterEnded: 1, positionGroup: 1 },
 							}).catch(err => next({ code: 2, err }))
 						);
 
+						if (position.parentPosition) {
+							Position.findByIdAndUpdate(position.parentPosition, { $unset: { childPosition: 1 } }).catch(err => next({ code: 2, err }));
+						}
+
 						if (position.childPosition) {
-							Position.findByIdAndUpdate(position.childPosition, {
-								$unset: { parentPosition: 1 },
-							}).catch(err => next({ code: 2, err }));
+							Position.findByIdAndUpdate(position.childPosition, { $unset: { parentPosition: 1 } }).catch(err => next({ code: 2, err }));
 						}
 
 						if (position.positionGroup) {
 							if (position.positionGroup.positions.length > 1) {
 								awaitingPromises.push(
-									PositionGroup.findByIdAndUpdate(position.positionGroup._id, { $pull: { positions: position._id } }).catch(err =>
+									PositionGroup.findByIdAndUpdate(position.positionGroup, { $pull: { positions: position._id } }).catch(err =>
 										next({ code: 2, err })
 									)
 								);
 							} else {
-								awaitingPromises.push(PositionGroup.findByIdAndRemove(position.positionGroup._id).catch(err => next({ code: 2, err })));
+								awaitingPromises.push(PositionGroup.findByIdAndRemove(position.positionGroup).catch(err => next({ code: 2, err })));
 							}
 						}
 

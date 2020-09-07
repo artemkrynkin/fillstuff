@@ -125,7 +125,7 @@ const Position = props => {
 		getPosition();
 		getReceipts();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [props.match.params.positionId]);
 
 	return (
 		<div className={stylesPage.page}>

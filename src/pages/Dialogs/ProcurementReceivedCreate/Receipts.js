@@ -2,32 +2,32 @@ import React, { useState } from 'react';
 import ClassNames from 'classnames';
 import loadable from '@loadable/component';
 
-import FormHelperText from '@material-ui/core/FormHelperText';
-
 import { procurementPositionTransform } from 'src/helpers/utils';
 
 import { SelectAutocompleteCreate } from 'src/components/selectAutocomplete';
 
-import FormFieldArrayReceipt from './FormFieldArrayReceipt';
+import Receipt from './Receipt';
 
 import styles from './index.module.css';
-import { isEqual } from 'lodash';
 
 const DialogPositionCreate = loadable(() =>
 	import('src/pages/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateEdit" */)
 );
 
-const ProcurementPositionEdit = loadable(() =>
-	import('src/pages/Dialogs/ProcurementPositionEdit' /* webpackChunkName: "Dialog_ProcurementPositionEdit" */)
+const DialogPositionCreateReplacement = loadable(() =>
+	import('src/pages/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateReplacement" */)
+);
+
+const DialogPositionEditReplacement = loadable(() =>
+	import('src/pages/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionEditReplacement" */)
 );
 
 const addPositionContainerClasses = (formEditable, status) =>
-	ClassNames({
-		[styles.addPositionContainer]: true,
+	ClassNames(styles.addPositionContainer, {
 		[styles.disabled]: !formEditable || status === 'expected',
 	});
 
-const FormFieldArrayReceipts = props => {
+const Receipts = props => {
 	const {
 		dialogRef,
 		receiptInitialValues,
@@ -37,18 +37,20 @@ const FormFieldArrayReceipts = props => {
 			// error: errorPositions
 		},
 		formEditable,
-		arrayHelpers: { push, remove, replace },
-		formikProps: { errors, isSubmitting, setFieldValue, touched, values },
+		arrayHelpers: { push, replace },
+		formikProps: { errors, isSubmitting, values },
 	} = props;
 	const [textSearchPosition, setTextSearchPosition] = useState('');
+	const [receiptIndexInProcurement, setReceiptIndexInProcurement] = useState(undefined);
 	const [dialogData, setDialogData] = useState({
 		position: null,
-		procurementPosition: null,
+		positionReplacement: null,
 	});
 	const [dialogOpenedName, setDialogOpenedName] = useState('');
 	const [dialogs, setDialogs] = useState({
 		dialogPositionCreate: false,
-		dialogProcurementPositionEdit: false,
+		dialogPositionCreateReplacement: false,
+		dialogPositionEditReplacement: false,
 	});
 
 	const onOpenDialogByName = (dialogName, dataType, data) => {
@@ -99,7 +101,8 @@ const FormFieldArrayReceipts = props => {
 				<div className={styles.addPositionWrap}>
 					<SelectAutocompleteCreate
 						TextFieldProps={{
-							error: Boolean(touched.positions && errors.positions),
+							error: typeof errors.orderedReceiptsPositions === 'string',
+							helperText: typeof errors.orderedReceiptsPositions === 'string' && errors.orderedReceiptsPositions,
 						}}
 						isDisabled={isSubmitting || !formEditable}
 						isLoading={isLoadingPositions}
@@ -141,21 +144,21 @@ const FormFieldArrayReceipts = props => {
 						options={positionsAvailable}
 						isClearable
 					/>
-					{typeof errors.receipts === 'string' ? <FormHelperText error>{errors.receipts}</FormHelperText> : null}
 				</div>
 			</div>
 
 			{values.receipts.length ? (
 				<div className={styles.receiptsItems}>
 					{values.receipts.map((receipt, index) => (
-						<FormFieldArrayReceipt
+						<Receipt
 							key={receipt.position._id}
+							setReceiptIndexInProcurement={setReceiptIndexInProcurement}
 							onOpenDialogByName={onOpenDialogByName}
-							receipt={receipt}
-							index={index}
 							formEditable={formEditable}
-							arrayHelpers={{ remove }}
-							formikProps={{ errors, isSubmitting, setFieldValue, touched, values }}
+							index={index}
+							receipt={receipt}
+							arrayHelpers={props.arrayHelpers}
+							formikProps={props.formikProps}
 						/>
 					))}
 				</div>
@@ -165,10 +168,8 @@ const FormFieldArrayReceipts = props => {
 				type="create"
 				dialogOpen={dialogs.dialogPositionCreate}
 				onCloseDialog={() => onCloseDialogByName('dialogPositionCreate')}
-				onCallback={response => {
-					if (response.status === 'success') {
-						const position = response.data;
-
+				onCallback={({ status, data: position }) => {
+					if (status === 'success') {
 						push(receiptInitialValues(procurementPositionTransform(position, true)));
 
 						setTimeout(() => {
@@ -183,33 +184,39 @@ const FormFieldArrayReceipts = props => {
 				selectedPosition={dialogOpenedName === 'dialogPositionCreate' ? dialogData.position : null}
 			/>
 
-			<ProcurementPositionEdit
-				dialogOpen={dialogs.dialogProcurementPositionEdit}
-				onCloseDialog={() => onCloseDialogByName('dialogProcurementPositionEdit')}
-				onCallback={({ positionIndexInProcurement: index, ...positionEdited }) => {
-					const receipt = values.receipts[index];
+			<DialogPositionCreateReplacement
+				type="create-replacement"
+				dialogOpen={dialogs.dialogPositionCreateReplacement}
+				onCloseDialog={() => onCloseDialogByName('dialogPositionCreateReplacement')}
+				onExitedDialog={() => onExitedDialogByName('positionReplacement')}
+				onCallback={position => {
+					const receipt = values.receipts[receiptIndexInProcurement];
 
-					const name = positionEdited.name && positionEdited.name !== receipt.position.name ? positionEdited.name : '';
-					const characteristics =
-						positionEdited.characteristics &&
-						positionEdited.characteristics.length &&
-						!isEqual(receipt.position.characteristics, positionEdited.characteristics)
-							? positionEdited.characteristics
-							: '';
+					replace(receiptIndexInProcurement, { ...receipt, position: procurementPositionTransform(position) });
 
-					replace(index, {
-						...receipt,
-						positionChanges: {
-							name,
-							characteristics,
-						},
-					});
+					setReceiptIndexInProcurement(undefined);
 				}}
-				onExitedDialog={() => onExitedDialogByName('procurementPosition')}
-				selectedPosition={dialogOpenedName === 'dialogProcurementPositionEdit' ? dialogData.procurementPosition : null}
+				sendRequest={false}
+				selectedPosition={dialogOpenedName === 'dialogPositionCreateReplacement' ? dialogData.positionReplacement : null}
+			/>
+
+			<DialogPositionEditReplacement
+				type="edit-replacement"
+				dialogOpen={dialogs.dialogPositionEditReplacement}
+				onCloseDialog={() => onCloseDialogByName('dialogPositionEditReplacement')}
+				onExitedDialog={() => onExitedDialogByName('positionReplacement')}
+				onCallback={position => {
+					const receipt = values.receipts[receiptIndexInProcurement];
+
+					replace(receiptIndexInProcurement, { ...receipt, position: procurementPositionTransform(position) });
+
+					setReceiptIndexInProcurement(undefined);
+				}}
+				sendRequest={false}
+				selectedPosition={dialogOpenedName === 'dialogPositionEditReplacement' ? dialogData.positionReplacement : null}
 			/>
 		</div>
 	);
 };
 
-export default FormFieldArrayReceipts;
+export default Receipts;

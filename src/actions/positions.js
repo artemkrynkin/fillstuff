@@ -173,7 +173,7 @@ export const archivePositionAfterEnded = ({ params, data }) => {
 				const position = response.data;
 
 				dispatch({
-					type: 'EDIT_POSITION',
+					type: 'ARCHIVE_POSITION_AFTER_ENDED',
 					payload: {
 						positionId,
 						position,

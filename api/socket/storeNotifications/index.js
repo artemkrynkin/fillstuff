@@ -37,12 +37,28 @@ export const newStoreNotification = io => {
 					},
 					{
 						path: 'orderedReceiptsPositions.position',
-						populate: {
-							path: 'characteristics',
-						},
+						populate: [
+							{
+								path: 'childPosition',
+								select: 'name characteristics',
+								populate: {
+									path: 'characteristics',
+								},
+							},
+							{
+								path: 'parentPosition',
+								select: 'name characteristics',
+								populate: {
+									path: 'characteristics',
+								},
+							},
+							{
+								path: 'characteristics',
+							},
+						],
 					},
 					{
-						path: 'orderedReceiptsPositions.characteristics shop',
+						path: 'shop',
 					},
 				],
 			},
@@ -94,12 +110,28 @@ export const editStoreNotification = io => {
 					},
 					{
 						path: 'orderedReceiptsPositions.position',
-						populate: {
-							path: 'characteristics',
-						},
+						populate: [
+							{
+								path: 'childPosition',
+								select: 'name characteristics',
+								populate: {
+									path: 'characteristics',
+								},
+							},
+							{
+								path: 'parentPosition',
+								select: 'name characteristics',
+								populate: {
+									path: 'characteristics',
+								},
+							},
+							{
+								path: 'characteristics',
+							},
+						],
 					},
 					{
-						path: 'orderedReceiptsPositions.characteristics shop',
+						path: 'shop',
 					},
 				],
 			},

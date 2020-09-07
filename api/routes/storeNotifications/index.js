@@ -42,12 +42,28 @@ storeNotificationsRouter.post(
 						},
 						{
 							path: 'orderedReceiptsPositions.position',
-							populate: {
-								path: 'characteristics',
-							},
+							populate: [
+								{
+									path: 'childPosition',
+									select: 'name characteristics',
+									populate: {
+										path: 'characteristics',
+									},
+								},
+								{
+									path: 'parentPosition',
+									select: 'name characteristics',
+									populate: {
+										path: 'characteristics',
+									},
+								},
+								{
+									path: 'characteristics',
+								},
+							],
 						},
 						{
-							path: 'orderedReceiptsPositions.characteristics shop',
+							path: 'shop',
 						},
 					],
 				},
@@ -103,12 +119,28 @@ storeNotificationsRouter.post(
 						},
 						{
 							path: 'orderedReceiptsPositions.position',
-							populate: {
-								path: 'characteristics',
-							},
+							populate: [
+								{
+									path: 'childPosition',
+									select: 'name characteristics',
+									populate: {
+										path: 'characteristics',
+									},
+								},
+								{
+									path: 'parentPosition',
+									select: 'name characteristics',
+									populate: {
+										path: 'characteristics',
+									},
+								},
+								{
+									path: 'characteristics',
+								},
+							],
 						},
 						{
-							path: 'orderedReceiptsPositions.characteristics shop',
+							path: 'shop',
 						},
 					],
 				},

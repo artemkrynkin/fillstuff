@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import mongoose from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
 import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
@@ -61,6 +62,11 @@ positionsRouter.post(
 			.populate([
 				{
 					path: 'activeReceipt characteristics shops.shop',
+				},
+				{
+					path: 'childPosition parentPosition',
+					select: 'name characteristics',
+					populate: 'characteristics',
 				},
 				{
 					path: 'receipts',
@@ -152,6 +158,12 @@ positionsRouter.post(
 
 		if (positionErr) return next({ code: positionErr.errors ? 5 : 2, err: positionErr });
 
+		if (position.childPosition || position.parentPosition) {
+			Position.findByIdAndUpdate(position.childPosition || position.parentPosition, {
+				$set: { name: position.name },
+			}).catch(err => next({ code: 2, err }));
+		}
+
 		if (positionEdited.isFree !== undefined && position.isFree !== positionEdited.isFree) {
 			await Receipt.updateMany(
 				{
@@ -223,18 +235,29 @@ positionsRouter.post(
 		}
 
 		if (position.hasReceipts) {
-			Position.findByIdAndUpdate(position._id, {
-				$set: { isArchived: true },
-				$unset: { childPosition: 1, parentPosition: 1, positionGroup: 1 },
-			}).catch(err => next({ code: 2, err }));
+			if (position.parentPosition) {
+				position.qrcodeId = uuidv4();
+			}
+
+			position.isArchived = true;
+			position.archivedAfterEnded = undefined;
+			position.childPosition = undefined;
+			position.parentPosition = undefined;
+			position.positionGroup = undefined;
+
+			const positionErr = position.validateSync();
+
+			if (positionErr) return next({ code: positionErr.errors ? 5 : 2, err: positionErr });
 		} else {
 			Position.findByIdAndRemove(position._id).catch(err => next({ code: 2, err }));
 		}
 
+		if (position.parentPosition) {
+			Position.findByIdAndUpdate(position.parentPosition, { $unset: { childPosition: 1 } }).catch(err => next({ code: 2, err }));
+		}
+
 		if (position.childPosition) {
-			Position.findByIdAndUpdate(position.childPosition, {
-				$unset: { parentPosition: 1 },
-			}).catch(err => next({ code: 2, err }));
+			Position.findByIdAndUpdate(position.childPosition, { $unset: { parentPosition: 1 } }).catch(err => next({ code: 2, err }));
 		}
 
 		if (position.positionGroup) {
@@ -247,18 +270,18 @@ positionsRouter.post(
 			}
 		}
 
+		Emitter.emit('deleteStoreNotification', {
+			studio: studioId,
+			type: 'position-ends',
+			position: position._id,
+		});
+
 		const {
 			studio: {
 				store: { numberPositions, storePrice },
 			},
 			receipts,
 		} = position;
-
-		Emitter.emit('deleteStoreNotification', {
-			studio: studioId,
-			type: 'position-ends',
-			position: position._id,
-		});
 
 		const purchasePriceReceiptsPosition = receipts.reduce((sum, receipt) => sum + receipt.current.quantity * receipt.unitPurchasePrice, 0);
 
@@ -288,15 +311,7 @@ positionsRouter.post(
 			data: { archivedAfterEnded },
 		} = req.body;
 
-		const positionUpdate = {
-			$set: {},
-			$unset: {},
-		};
-
-		if (archivedAfterEnded) positionUpdate.$set.archivedAfterEnded = archivedAfterEnded;
-		else positionUpdate.$unset.archivedAfterEnded = 1;
-
-		const position = await Position.findByIdAndUpdate(positionId, positionUpdate, { new: true })
+		const position = await Position.findById(positionId)
 			.populate([
 				{
 					path: 'activeReceipt characteristics shops.shop',
@@ -310,6 +325,23 @@ positionsRouter.post(
 				},
 			])
 			.catch(err => next({ code: 2, err }));
+
+		if (archivedAfterEnded) {
+			position.archivedAfterEnded = archivedAfterEnded;
+		} else {
+			position.archivedAfterEnded = undefined;
+
+			if (position.parentPosition) {
+				Position.findByIdAndUpdate(position.parentPosition, { $unset: { childPosition: 1 } }).catch(err => next({ code: 2, err }));
+
+				position.parentPosition = undefined;
+				position.qrcodeId = uuidv4();
+			}
+		}
+
+		const positionErr = position.validateSync();
+
+		if (positionErr) return next({ code: positionErr.errors ? 5 : 2, err: positionErr });
 
 		const allQuantityReceipts = position.receipts.reduce((sum, receipt) => sum + receipt.current.quantity, 0);
 
@@ -326,6 +358,8 @@ positionsRouter.post(
 				Emitter.emit('newStoreNotification', storeNotification);
 			}
 		}
+
+		await position.save();
 
 		res.json(position);
 	}

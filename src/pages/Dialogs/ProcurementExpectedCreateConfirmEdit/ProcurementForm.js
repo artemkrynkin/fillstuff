@@ -38,6 +38,7 @@ const ProcurementForm = props => {
 	const {
 		onCloseDialog,
 		dialogRef,
+		receiptInitialValues,
 		shops: {
 			data: shops,
 			isFetching: isLoadingShops,
@@ -328,12 +329,13 @@ const ProcurementForm = props => {
 				) : null}
 
 				<FieldArray name="orderedReceiptsPositions" validateOnChange={false}>
-					{props => (
+					{arrayHelpers => (
 						<OrderedReceiptsPositions
 							dialogRef={dialogRef}
+							receiptInitialValues={receiptInitialValues}
 							positions={positions}
-							arrayHelpers={props}
-							formikProps={{ errors, isSubmitting, setFieldValue, touched, values }}
+							arrayHelpers={arrayHelpers}
+							formikProps={props.formikProps}
 						/>
 					)}
 				</FieldArray>

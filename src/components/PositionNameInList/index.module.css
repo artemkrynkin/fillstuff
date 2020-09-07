@@ -106,6 +106,10 @@
   color: var(--c-hex-red-500);
 }
 
-.positionReplacement {
+.childPosition {
+  color: var(--c-hex-teal-300);
+}
+
+.parentPosition {
   color: var(--c-hex-teal-300);
 }

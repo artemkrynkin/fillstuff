@@ -114,7 +114,7 @@ const DeliveryIsExpected = props => {
 					{procurement.comment ? (
 						<Fragment>
 							<div className={styles.infoItem}>&nbsp;</div>
-							<Tooltip title={<div className={styles.commentText}>{procurement.comment}</div>} placement="bottom" interactive>
+							<Tooltip title={<div className={styles.commentText}>{procurement.comment}</div>} placement="bottom">
 								<span className={styles.commentIcon}>
 									<FontAwesomeIcon icon={['fal', 'comment']} />
 								</span>
@@ -124,12 +124,17 @@ const DeliveryIsExpected = props => {
 				</div>
 			</div>
 
-			<Dropdown anchor={refDropdownActions} open={dropdownActions} onClose={() => onHandleDropdownActions(false)} placement="bottom-end">
+			<Dropdown
+				anchor={refDropdownActions}
+				open={dropdownActions}
+				onClose={() => onHandleDropdownActions(false)}
+				placement="bottom-end"
+				stopPropagation
+			>
 				<MenuList>
 					{procurement.isConfirmed ? (
 						<MenuItem
-							onClick={event => {
-								event.stopPropagation();
+							onClick={() => {
 								onHandleDropdownActions();
 								onOpenDialogByName('dialogProcurementReceivedCreate', 'procurementReceived', procurement);
 							}}
@@ -140,8 +145,7 @@ const DeliveryIsExpected = props => {
 						</MenuItem>
 					) : (
 						<MenuItem
-							onClick={event => {
-								event.stopPropagation();
+							onClick={() => {
 								onHandleDropdownActions();
 								onOpenDialogByName('dialogProcurementExpectedConfirm', 'procurementExpected', procurement);
 							}}
@@ -159,8 +163,7 @@ const DeliveryIsExpected = props => {
 					)}
 					{procurement.isConfirmed ? (
 						<MenuItem
-							onClick={event => {
-								event.stopPropagation();
+							onClick={() => {
 								onHandleDropdownActions();
 								onOpenDialogByName('dialogProcurementExpectedEdit', 'procurementExpected', procurement);
 							}}
@@ -170,8 +173,7 @@ const DeliveryIsExpected = props => {
 						</MenuItem>
 					) : null}
 					<MenuItem
-						onClick={event => {
-							event.stopPropagation();
+						onClick={() => {
 							onHandleDropdownActions();
 							onOpenDialogByName('dialogProcurementExpectedCancel', 'procurementExpected', procurement);
 						}}

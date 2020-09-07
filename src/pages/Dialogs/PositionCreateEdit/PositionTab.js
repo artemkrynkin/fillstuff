@@ -5,6 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Grid from '@material-ui/core/Grid';
 import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
+import FormLabel from '@material-ui/core/FormLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -24,6 +26,8 @@ import styles from './index.module.css';
 const PositionTab = props => {
 	const {
 		type,
+		childPosition = props.formikProps.values.childPosition || props.childPosition,
+		parentPosition = props.parentPosition,
 		formikProps: { errors, setFieldValue, touched, values },
 	} = props;
 
@@ -33,17 +37,17 @@ const PositionTab = props => {
 		<DialogContent dividers={typeIsCreateOrEdit}>
 			<div className={styles.minHeightContent}>
 				<Form>
-					{!typeIsCreateOrEdit ? (
+					{childPosition || parentPosition ? (
 						<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 							<Grid xs={3} item>
 								<InputLabel style={{ marginTop: 0 }} data-inline>
-									Заменяемая позиция
+									{childPosition ? 'Заменяемая позиция' : 'Позиция на замену'}
 								</InputLabel>
 							</Grid>
 							<Grid xs={9} item>
 								<PositionNameInList
-									name={values.childPosition.name}
-									characteristics={values.childPosition.characteristics}
+									name={childPosition ? childPosition.name : parentPosition.name}
+									characteristics={childPosition ? childPosition.characteristics : parentPosition.characteristics}
 									size="sm"
 									minHeight={false}
 								/>
@@ -79,6 +83,13 @@ const PositionTab = props => {
 										autoFocus
 										fullWidth
 									/>
+									{typeIsCreateOrEdit && (values.childPosition || values.parentPosition) ? (
+										<FormHelperText>
+											При изменении наименования, у
+											<FormLabel component="span">{values.childPosition ? ' заменяемой позиции ' : ' позиции на замену '}</FormLabel>
+											оно будет также изменено
+										</FormHelperText>
+									) : null}
 								</div>
 							</Tooltip>
 						</Grid>
@@ -97,7 +108,7 @@ const PositionTab = props => {
 							</InputLabel>
 						</Grid>
 						<Grid xs={9} item>
-							{typeIsCreateOrEdit && !values.hasReceipts ? (
+							{typeIsCreateOrEdit && !values.hasReceipts && !values.childPosition ? (
 								<ToggleButtonGroup
 									value={values.unitReceipt}
 									onChange={(event, value) => {
@@ -120,7 +131,7 @@ const PositionTab = props => {
 								<Tooltip
 									title={
 										<div style={{ textAlign: 'center', width: 220 }}>
-											{typeIsCreateOrEdit ? (
+											{typeIsCreateOrEdit && !values.childPosition ? (
 												<>Можно изменить только до&nbsp;внесения первого поступления</>
 											) : (
 												<>Можно изменить только при создании новой позиции</>
@@ -148,7 +159,7 @@ const PositionTab = props => {
 							</InputLabel>
 						</Grid>
 						<Grid xs={9} item>
-							{typeIsCreateOrEdit && !values.hasReceipts ? (
+							{typeIsCreateOrEdit && !values.hasReceipts && !values.childPosition ? (
 								<ToggleButtonGroup
 									value={values.unitRelease}
 									onChange={(event, value) => {
@@ -173,7 +184,7 @@ const PositionTab = props => {
 								<Tooltip
 									title={
 										<div style={{ textAlign: 'center', width: 220 }}>
-											{typeIsCreateOrEdit ? (
+											{typeIsCreateOrEdit && !values.childPosition ? (
 												<>Можно изменить только до&nbsp;внесения первого поступления</>
 											) : (
 												<>Можно изменить только при создании новой позиции</>

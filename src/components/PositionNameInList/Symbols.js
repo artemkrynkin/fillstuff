@@ -8,35 +8,20 @@ import PositionNameInList from './index';
 
 import styles from './index.module.css';
 
-const deliveryIsExpectedIconClasses = ClassNames({
-	[styles.symbolIcon]: true,
-	[styles.deliveryIsExpected]: true,
-});
+const deliveryIsExpectedIconClasses = ClassNames(styles.symbolIcon, styles.deliveryIsExpected);
 
-const isArchivedIconClasses = ClassNames({
-	[styles.symbolIcon]: true,
-	[styles.archive]: true,
-});
+const isArchivedIconClasses = ClassNames(styles.symbolIcon, styles.archive);
 
-const archivedAfterEndedIconClasses = ClassNames({
-	[styles.symbolIcon]: true,
-	[styles.archivedAfterEnded]: true,
-});
+const archivedAfterEndedIconClasses = ClassNames(styles.symbolIcon, styles.archivedAfterEnded);
 
-const canceledIconClasses = ClassNames({
-	[styles.symbolIcon]: true,
-	[styles.writeOffUndo]: true,
-});
+const canceledIconClasses = ClassNames(styles.symbolIcon, styles.writeOffUndo);
 
-const replacementIconClasses = ClassNames({
-	[styles.symbolIcon]: true,
-	[styles.positionReplacement]: true,
-});
+const childPositionIconClasses = ClassNames(styles.symbolIcon, styles.childPosition);
 
 const Symbols = props => {
-	const { deliveryIsExpected, isArchived, archivedAfterEnded, canceled, positionReplaced } = props;
+	const { deliveryIsExpected, isArchived, archivedAfterEnded, canceled, childPosition } = props;
 
-	if (!deliveryIsExpected && !isArchived && !archivedAfterEnded && !canceled && !positionReplaced) return null;
+	if (!deliveryIsExpected && !isArchived && !archivedAfterEnded && !canceled && !childPosition) return null;
 
 	return (
 		<div className={styles.symbols}>
@@ -72,18 +57,18 @@ const Symbols = props => {
 					</div>
 				</Tooltip>
 			) : null}
-			{positionReplaced ? (
+			{childPosition ? (
 				<Tooltip
 					title={
 						<>
 							<b>Заменяемая позиция:</b>
-							<PositionNameInList name={positionReplaced.name} characteristics={positionReplaced.characteristics} />
+							<PositionNameInList name={childPosition.name} characteristics={childPosition.characteristics} />
 						</>
 					}
 					placement="top"
 					interactive
 				>
-					<div className={replacementIconClasses}>
+					<div className={childPositionIconClasses}>
 						<FontAwesomeIcon icon={['far-c', 'position-replacement']} />
 					</div>
 				</Tooltip>

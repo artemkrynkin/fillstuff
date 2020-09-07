@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import ClassNames from 'classnames';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -6,6 +7,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuList from '@material-ui/core/MenuList';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { unitTypeTransform } from 'shared/checkPositionAndReceipt';
 
@@ -14,9 +16,9 @@ import Dropdown from 'src/components/Dropdown';
 import MenuItem from 'src/components/MenuItem';
 import Chips from 'src/components/Chips';
 import { DefinitionList, DefinitionListItem } from 'src/components/Definition';
+import PositionNameInList from 'src/components/PositionNameInList';
 
 import styles from './PositionDetails.module.css';
-import Tooltip from '@material-ui/core/Tooltip';
 
 const PositionDetails = props => {
 	const { position, onOpenDialogPosition, onCancelArchivePositionAfterEnded } = props;
@@ -56,6 +58,24 @@ const PositionDetails = props => {
 				<DefinitionListItem term="Единица отпуска" value={unitTypeTransform(position.unitRelease)} />
 				<DefinitionListItem term="Вид реализации" value={position.isFree ? 'Бесплатный' : 'Платный'} />
 				<DefinitionListItem term="Минимальный остаток" value={position.minimumBalance} />
+				{position.childPosition || position.parentPosition ? (
+					<DefinitionListItem
+						term={position.childPosition ? 'Заменяемая позиция' : 'Позиция на замену'}
+						value={
+							<Link to={`/stock/${position.childPosition ? position.childPosition._id : position.parentPosition._id}`}>
+								<PositionNameInList
+									name={position.childPosition ? position.childPosition.name : position.parentPosition.name}
+									characteristics={
+										position.childPosition ? position.childPosition.characteristics : position.parentPosition.characteristics
+									}
+									size="sm"
+									minHeight={false}
+									style={{ display: 'inline-block' }}
+								/>
+							</Link>
+						}
+					/>
+				) : null}
 			</DefinitionList>
 
 			{position.shops.length ? (

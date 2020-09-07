@@ -56,12 +56,12 @@ const OrderedReceiptPosition = props => {
 							name={orderedReceiptPosition.position.name}
 							characteristics={orderedReceiptPosition.position.characteristics}
 							size="md"
-							positionReplaced={orderedReceiptPosition.position.childPosition}
+							childPosition={orderedReceiptPosition.position.childPosition}
 							minHeight={false}
 						/>
 					</Grid>
 					<Grid className={styles.actionButtons} item>
-						{!orderedReceiptPosition.position.childPosition ? (
+						{!orderedReceiptPosition.position.childPosition && !orderedReceiptPosition.position.parentPosition ? (
 							<Tooltip title="Создать позицию на замену" placement="top">
 								<IconButton
 									className={styles.actionButton}
@@ -87,10 +87,7 @@ const OrderedReceiptPosition = props => {
 						) : null}
 						<Tooltip title="Удалить из заказа" placement="top">
 							<IconButton
-								className={ClassNames({
-									[styles.actionButton]: true,
-									destructiveAction: true,
-								})}
+								className={ClassNames(styles.actionButton, 'destructiveAction')}
 								onClick={() => remove(index)}
 								disabled={isSubmitting}
 								tabIndex={-1}

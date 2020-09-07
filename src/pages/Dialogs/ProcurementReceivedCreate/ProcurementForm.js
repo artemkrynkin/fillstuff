@@ -26,7 +26,7 @@ import { SelectAutocomplete } from 'src/components/selectAutocomplete';
 import NumberFormat, { moneyInputFormatProps } from 'src/components/NumberFormat';
 import Dropdown from 'src/components/Dropdown';
 
-import FormFieldArrayReceipts from './FormFieldArrayReceipts';
+import Receipts from './Receipts';
 
 import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
@@ -34,7 +34,7 @@ import Collapse from '@material-ui/core/Collapse';
 
 const DialogShopCreate = loadable(() => import('src/pages/Dialogs/ShopCreateEdit' /* webpackChunkName: "Dialog_ShopCreateEdit" */));
 
-const FormProcurementReceivedCreate = props => {
+const ProcurementForm = props => {
 	const {
 		dialogRef,
 		receiptInitialValues,
@@ -73,12 +73,7 @@ const FormProcurementReceivedCreate = props => {
 		<Form>
 			<DialogContent style={{ overflow: 'initial' }}>
 				{!formEditable && sellingPositionCount ? (
-					<div
-						className={ClassNames({
-							[styles.headerInfo]: true,
-							[styles.headerInfoBlueGrey]: true,
-						})}
-					>
+					<div className={ClassNames(styles.headerInfo, styles.headerInfoBlueGrey)}>
 						<Grid justify="center" alignItems="center" container>
 							<FontAwesomeIcon
 								className={styles.headerInfoIcon}
@@ -96,12 +91,7 @@ const FormProcurementReceivedCreate = props => {
 
 				<ErrorMessage name="pricePositions">
 					{message => (
-						<div
-							className={ClassNames({
-								[styles.headerInfo]: true,
-								[styles.headerInfoRed]: true,
-							})}
-						>
+						<div className={ClassNames(styles.headerInfo, styles.headerInfoRed)}>
 							<Grid justify="center" alignItems="center" container>
 								<FontAwesomeIcon
 									className={styles.headerInfoIcon}
@@ -303,14 +293,14 @@ const FormProcurementReceivedCreate = props => {
 				</Grid>
 
 				<FieldArray name="receipts" validateOnChange={false}>
-					{props => (
-						<FormFieldArrayReceipts
+					{arrayHelpers => (
+						<Receipts
 							dialogRef={dialogRef}
 							receiptInitialValues={receiptInitialValues}
 							positions={positions}
 							formEditable={formEditable}
-							arrayHelpers={props}
-							formikProps={{ errors, isSubmitting, setFieldValue, touched, values }}
+							arrayHelpers={arrayHelpers}
+							formikProps={props.formikProps}
 						/>
 					)}
 				</FieldArray>
@@ -388,4 +378,4 @@ const FormProcurementReceivedCreate = props => {
 	);
 };
 
-export default FormProcurementReceivedCreate;
+export default ProcurementForm;

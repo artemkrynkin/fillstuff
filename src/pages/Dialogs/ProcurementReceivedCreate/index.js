@@ -1,7 +1,6 @@
 import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { isEmpty } from 'lodash';
 
 import { Formik } from 'formik';
 
@@ -18,37 +17,26 @@ import { getPositions } from 'src/actions/positions';
 import { createProcurementReceived } from 'src/actions/procurements';
 import { enqueueSnackbar } from 'src/actions/snackbars';
 
-import FormProcurementReceivedCreate from './FormProcurementReceivedCreate';
+import ProcurementForm from './ProcurementForm';
 import procurementSchema from './procurementSchema';
 
 import styles from './index.module.css';
 
-const receiptInitialValues = ({ position, name, characteristics, quantity }) => {
-	const receiptInitialValues = {
-		position,
-		positionChanges: {
-			name: '',
-			characteristics: [],
-		},
-		quantity: position.unitReceipt === 'pce' || position.unitRelease === 'nmp' ? quantity || '' : '',
-		quantityPackages: position.unitReceipt === 'pce' || position.unitRelease === 'nmp' ? '' : quantity || '',
-		quantityInUnit: '',
-		purchasePrice: '',
-		unitPurchasePrice: '',
-		sellingPrice: '',
-		unitSellingPrice: '',
-		costDelivery: '',
-		unitCostDelivery: '',
-		markupPercent: position.lastReceipt ? position.lastReceipt.markupPercent : '',
-		markup: '',
-		unitMarkup: '',
-	};
-
-	if (name) receiptInitialValues.positionChanges.name = name;
-	if (characteristics && characteristics.length) receiptInitialValues.positionChanges.characteristics = characteristics;
-
-	return receiptInitialValues;
-};
+const receiptInitialValues = ({ position, quantity }) => ({
+	position,
+	quantity: position.unitReceipt === 'pce' || position.unitRelease === 'nmp' ? quantity || '' : '',
+	quantityPackages: position.unitReceipt === 'pce' || position.unitRelease === 'nmp' ? '' : quantity || '',
+	quantityInUnit: '',
+	purchasePrice: '',
+	unitPurchasePrice: '',
+	sellingPrice: '',
+	unitSellingPrice: '',
+	costDelivery: '',
+	unitCostDelivery: '',
+	markupPercent: position.lastReceipt ? position.lastReceipt.markupPercent : '',
+	markup: '',
+	unitMarkup: '',
+});
 
 class ProcurementReceivedCreate extends Component {
 	static propTypes = {
@@ -209,17 +197,6 @@ class ProcurementReceivedCreate extends Component {
 			procurement.receipts = procurement.receipts.map(receipt => {
 				const { position, quantity, quantityPackages, ...remainingValues } = receipt;
 
-				if (remainingValues.positionChanges) {
-					if (!isEmpty(remainingValues.positionChanges.name) || !isEmpty(remainingValues.positionChanges.characteristics)) {
-						positionsChanged += 1;
-					}
-					if (isEmpty(remainingValues.positionChanges.name)) delete remainingValues.positionChanges.name;
-					if (isEmpty(remainingValues.positionChanges.characteristics)) delete remainingValues.positionChanges.characteristics;
-					if (isEmpty(remainingValues.positionChanges.name) && isEmpty(remainingValues.positionChanges.characteristics)) {
-						delete remainingValues.positionChanges;
-					}
-				}
-
 				const newReceipt = {
 					position: position._id,
 					initial: {},
@@ -312,17 +289,15 @@ class ProcurementReceivedCreate extends Component {
 		}
 
 		if (selectedProcurement) {
-			const { positionsTemp, ...selectedProcurementRemainingParams } = selectedProcurement;
+			const { orderedReceiptsPositions, ...selectedProcurementRemainingParams } = selectedProcurement;
 
 			initialValues = {
 				...initialValues,
 				...selectedProcurementRemainingParams,
-				receipts: positionsTemp.map(position =>
+				receipts: orderedReceiptsPositions.map(({ position, quantity }) =>
 					receiptInitialValues({
-						position: position.position,
-						name: position.name,
-						characteristics: position.characteristics,
-						quantity: position.quantity,
+						position,
+						quantity,
 					})
 				),
 				positions: [],
@@ -357,15 +332,15 @@ class ProcurementReceivedCreate extends Component {
 					validateOnChange={false}
 					onSubmit={(values, actions) => this.onSubmit(values, actions)}
 				>
-					{props => (
-						<FormProcurementReceivedCreate
+					{formikProps => (
+						<ProcurementForm
 							dialogRef={this.dialogRef}
 							receiptInitialValues={receiptInitialValues}
 							onHandleEditFormProcurement={this.onHandleEditFormProcurement}
 							shops={shops}
 							positions={positions}
 							formEditable={formEditable}
-							formikProps={props}
+							formikProps={formikProps}
 						/>
 					)}
 				</Formik>

@@ -37,53 +37,6 @@
   box-shadow: 0 2px 2px 0 rgba(var(--c-rgb-blueGrey-300), 0.2);
 }
 
-.receiptsItems {
-  padding: 0 20px;
-}
-
-.receiptItem {
-  margin-bottom: 12px;
-}
-
-.receiptItem:last-child {
-  margin-bottom: 0;
-}
-
-.receiptItemNumber {
-  color: var(--c-hex-blueGrey-300);
-  font-size: 14px;
-  font-weight: 600;
-  width: 35px;
-}
-
-.receiptItemContent {
-  border-bottom: 1px solid var(--c-hex-brightness-5);
-  padding-bottom: 20px;
-}
-
-.receiptItem:last-child .receiptItemContent {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.actionButtons {
-  margin-left: auto;
-}
-
-.editActionButton,
-.deleteActionButton {
-  padding: 0;
-  margin-left: 5px;
-}
-
-.editActionButton {
-  font-size: 16px;
-}
-
-.deleteActionButton {
-  font-size: 20px;
-}
-
 .headerInfo {
   margin: 0 -20px 20px;
   padding-bottom: 20px;
@@ -107,7 +60,55 @@
   line-height: 1.4;
 }
 
-.searchSellingPrice {
+.receiptsItems {
+  padding: 0 20px;
+}
+
+.receiptItem {
+  margin-bottom: 20px;
+}
+
+.receiptItem:last-child {
+  margin-bottom: 0;
+}
+
+.receiptNumber {
   color: var(--c-hex-blueGrey-300);
+  font-size: 14px;
+  font-weight: 600;
+  width: 35px;
+}
+
+.receiptContent {
+  border-bottom: 1px solid var(--c-hex-brightness-5);
+  flex: 1 1;
+  padding-bottom: 20px;
+  min-width: 0;
+}
+
+.receiptItem:last-child .receiptItemContent {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.receiptContentHeader {
+  margin-bottom: 15px;
+}
+
+.positionSelected {
+  flex: 1 1;
+}
+
+.actionButtons {
+  margin-left: auto;
+  padding-left: 20px;
+}
+
+.actionButton {
+  padding: 0;
+  margin-left: 5px;
+}
+
+.actionButton svg {
   font-size: 16px;
 }

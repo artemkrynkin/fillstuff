@@ -21,12 +21,12 @@ const PositionDropdown = props => {
 			onClose={() => onToggleDropdownActions(false)}
 			placement="bottom-end"
 			disablePortal={false}
+			stopPropagation
 		>
 			{position.receipts.length ? (
 				<MenuList>
 					<MenuItem
-						onClick={event => {
-							event.stopPropagation();
+						onClick={() => {
 							onToggleDropdownActions();
 							onOpenDialogPosition('dialogReceiptActiveAddQuantity', 'position', position);
 						}}
@@ -34,8 +34,7 @@ const PositionDropdown = props => {
 						Добавить количество
 					</MenuItem>
 					<MenuItem
-						onClick={event => {
-							event.stopPropagation();
+						onClick={() => {
 							onToggleDropdownActions();
 							onOpenDialogPosition('dialogWriteOffCreate', 'position', position);
 						}}
@@ -47,8 +46,7 @@ const PositionDropdown = props => {
 			{position.receipts.length ? <Divider /> : null}
 			<MenuList>
 				<MenuItem
-					onClick={event => {
-						event.stopPropagation();
+					onClick={() => {
 						onToggleDropdownActions();
 						onOpenDialogPosition('dialogPositionQRCode', 'position', position);
 					}}
@@ -56,13 +54,18 @@ const PositionDropdown = props => {
 				>
 					Печать QR-кода
 				</MenuItem>
-			</MenuList>
-			<Divider />
-			<MenuList>
-				{position.positionGroup ? (
+				<MenuItem
+					onClick={() => {
+						onToggleDropdownActions();
+						onOpenDialogPosition('dialogPositionEdit', 'position', position);
+					}}
+					iconBefore={<FontAwesomeIcon icon={['far', 'pen']} fixedWidth />}
+				>
+					Редактировать
+				</MenuItem>
+				{position.positionGroup && !position.parentPosition ? (
 					<MenuItem
-						onClick={event => {
-							event.stopPropagation();
+						onClick={() => {
 							onToggleDropdownActions();
 							onOpenDialogPosition('dialogPositionRemoveFromGroup', 'position', position);
 						}}
@@ -71,20 +74,9 @@ const PositionDropdown = props => {
 						Открепить от группы
 					</MenuItem>
 				) : null}
-				<MenuItem
-					onClick={event => {
-						event.stopPropagation();
-						onToggleDropdownActions();
-						onOpenDialogPosition('dialogPositionEdit', 'position', position);
-					}}
-					iconBefore={<FontAwesomeIcon icon={['far', 'pen']} fixedWidth />}
-				>
-					Редактировать
-				</MenuItem>
 				{position.archivedAfterEnded ? (
 					<MenuItem
-						onClick={event => {
-							event.stopPropagation();
+						onClick={() => {
 							onToggleDropdownActions();
 							onArchivedAfterEnded();
 						}}
@@ -100,8 +92,7 @@ const PositionDropdown = props => {
 					</MenuItem>
 				) : null}
 				<MenuItem
-					onClick={event => {
-						event.stopPropagation();
+					onClick={() => {
 						onToggleDropdownActions();
 						onOpenDialogPosition('dialogPositionArchiveDelete', 'position', position);
 					}}

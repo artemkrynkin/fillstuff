@@ -212,7 +212,7 @@ class PositionScanning extends Component {
 						],
 						{ cancelable: false }
 					);
-				}, 450);
+				}, 1000);
 			} else {
 				try {
 					const soundObject = new Audio.Sound();

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Formik } from 'formik';
 
@@ -8,7 +8,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import DialogActions from '@material-ui/core/DialogActions';
 
 import { getStudioStore } from 'src/actions/studio';
-import { createPosition, editPosition } from 'src/actions/positions';
+import { getPositions, createPosition, editPosition } from 'src/actions/positions';
 import { enqueueSnackbar } from 'src/actions/snackbars';
 
 import PositionTab from './PositionTab';
@@ -16,7 +16,7 @@ import ShopsTab from './ShopsTab';
 import positionSchema from './positionSchema';
 
 const PositionForm = props => {
-	const { onCloseDialog, type, selectedPosition, tabName } = props;
+	const { onCloseDialog, type, selectedPosition, childPosition, parentPosition, tabName } = props;
 
 	const typeIsCreateOrEdit = /^(create|edit)$/.test(type);
 
@@ -88,6 +88,13 @@ const PositionForm = props => {
 		}
 	};
 
+	useEffect(() => {
+		if (selectedPosition.childPosition || selectedPosition.parentPosition) {
+			props.getPositions();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [selectedPosition.childPosition, selectedPosition.parentPosition]);
+
 	return (
 		<Formik
 			initialValues={initialValues}
@@ -102,7 +109,7 @@ const PositionForm = props => {
 				return (
 					<>
 						{tabName === 'position' ? (
-							<PositionTab type={type} formikProps={formikProps} />
+							<PositionTab type={type} childPosition={childPosition} parentPosition={parentPosition} formikProps={formikProps} />
 						) : (
 							<ShopsTab type={type} formikProps={formikProps} />
 						)}
@@ -130,13 +137,32 @@ const PositionForm = props => {
 	);
 };
 
+const mapStateToProps = (state, ownProps) => {
+	const { type, selectedPosition } = ownProps;
+
+	const stateReturn = {};
+
+	if (state.positions.data && /^(edit)$/.test(type)) {
+		const childOrParentPositionId = selectedPosition.childPosition || selectedPosition.parentPosition;
+
+		if (childOrParentPositionId) {
+			stateReturn[selectedPosition.childPosition ? 'childPosition' : 'parentPosition'] = state.positions.data.find(
+				position => position._id === childOrParentPositionId
+			);
+		}
+	}
+
+	return stateReturn;
+};
+
 const mapDispatchToProps = dispatch => {
 	return {
 		getStudioStore: () => dispatch(getStudioStore()),
+		getPositions: () => dispatch(getPositions({ showRequest: false })),
 		createPosition: position => dispatch(createPosition({ data: { position } })),
 		editPosition: (positionId, position) => dispatch(editPosition({ params: { positionId }, data: { position } })),
 		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
 	};
 };
 
-export default connect(null, mapDispatchToProps)(PositionForm);
+export default connect(mapStateToProps, mapDispatchToProps)(PositionForm);

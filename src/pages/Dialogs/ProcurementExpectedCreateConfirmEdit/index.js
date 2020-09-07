@@ -20,9 +20,9 @@ import procurementSchema from './procurementSchema';
 
 import styles from './index.module.css';
 
-const receiptInitialValues = ({ position }) => ({
+const receiptInitialValues = ({ position, quantity }) => ({
 	position,
-	quantity: '',
+	quantity: quantity || '',
 });
 
 class ProcurementExpectedCreateConfirmEdit extends Component {
@@ -107,18 +107,23 @@ class ProcurementExpectedCreateConfirmEdit extends Component {
 			costDelivery: '',
 			pricePositions: '',
 			totalPrice: '',
+			comment: '',
 			orderedReceiptsPositions: [],
 			positions: [],
-			comment: '',
 		};
 
 		if (selectedProcurement) {
-			const { positionsTemp, deliveryDate, ...remainingParamsSelectedProcurement } = selectedProcurement;
+			const { orderedReceiptsPositions, deliveryDate, ...remainingParamsSelectedProcurement } = selectedProcurement;
 
 			initialValues = {
 				...initialValues,
 				...remainingParamsSelectedProcurement,
-				orderedReceiptsPositions: positionsTemp.map(position => receiptInitialValues({ position: position.position })),
+				orderedReceiptsPositions: orderedReceiptsPositions.map(({ position, quantity }) =>
+					receiptInitialValues({
+						position,
+						quantity,
+					})
+				),
 			};
 
 			if (type === 'confirm') {
@@ -158,14 +163,15 @@ class ProcurementExpectedCreateConfirmEdit extends Component {
 					validateOnChange={false}
 					onSubmit={(values, actions) => this.onSubmit(values, actions)}
 				>
-					{props => (
+					{formikProps => (
 						<ProcurementForm
 							onCloseDialog={onCloseDialog}
 							dialogRef={this.dialogRef}
+							receiptInitialValues={receiptInitialValues}
 							shops={shops}
 							positions={positions}
 							type={type}
-							formikProps={props}
+							formikProps={formikProps}
 						/>
 					)}
 				</Formik>

@@ -20,7 +20,7 @@
 }
 
 .unifierPosition {
-  color: var(--c-hex-blueGrey-200);
+  color: rgba(var(--c-rgb-blueGrey-100), 0.8);
   height: 35px;
   position: absolute;
   left: 1px;
@@ -28,7 +28,7 @@
 }
 
 .childPosition .unifierPosition + div {
-  margin-left: 28px;
+  margin-left: 34px;
 }
 
 .createReceipt {

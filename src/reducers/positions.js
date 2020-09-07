@@ -42,8 +42,15 @@ const positions = (
 			if (state.data) {
 				stateData = { ...state }.data;
 				const positionIndex = stateData.findIndex(position => position._id === action.payload.positionId);
+				const childOrParentPositionId = action.payload.position.childPosition || action.payload.position.parentPosition;
 
 				stateData[positionIndex] = action.payload.position;
+
+				if (childOrParentPositionId) {
+					const childOrParentPosition = stateData.find(position => position._id === childOrParentPositionId);
+
+					childOrParentPosition.name = action.payload.position.name;
+				}
 			}
 
 			return {
@@ -63,6 +70,28 @@ const positions = (
 					...stateData[positionIndex],
 					isArchived: true,
 				};
+			}
+
+			return {
+				...state,
+				isFetching: false,
+				data: stateData,
+			};
+		}
+		case 'ARCHIVE_POSITION_AFTER_ENDED': {
+			let stateData;
+
+			if (state.data) {
+				stateData = { ...state }.data;
+				const positionIndex = stateData.findIndex(position => position._id === action.payload.positionId);
+
+				stateData[positionIndex] = action.payload.position;
+
+				stateData.forEach(position => {
+					if (position.childPosition === action.payload.positionId) {
+						delete position.childPosition;
+					}
+				});
 			}
 
 			return {

@@ -54,7 +54,7 @@ PositionNameInList.defaultProps = {
 	isArchived: false,
 	archivedAfterEnded: false,
 	canceled: false,
-	positionReplaced: null,
+	childPosition: null,
 	minHeight: true,
 	size: 'sm',
 };

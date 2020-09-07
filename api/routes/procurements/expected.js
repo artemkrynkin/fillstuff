@@ -38,12 +38,28 @@ procurementsRouter.post(
 				},
 				{
 					path: 'orderedReceiptsPositions.position',
-					populate: {
-						path: 'characteristics',
-					},
+					populate: [
+						{
+							path: 'childPosition',
+							select: 'name characteristics',
+							populate: {
+								path: 'characteristics',
+							},
+						},
+						{
+							path: 'parentPosition',
+							select: 'name characteristics',
+							populate: {
+								path: 'characteristics',
+							},
+						},
+						{
+							path: 'characteristics',
+						},
+					],
 				},
 				{
-					path: 'orderedReceiptsPositions.characteristics shop',
+					path: 'shop',
 				},
 			])
 			.catch(err => next({ code: 2, err }));
@@ -92,12 +108,28 @@ procurementsRouter.post(
 				},
 				{
 					path: 'orderedReceiptsPositions.position',
-					populate: {
-						path: 'characteristics',
-					},
+					populate: [
+						{
+							path: 'childPosition',
+							select: 'name characteristics',
+							populate: {
+								path: 'characteristics',
+							},
+						},
+						{
+							path: 'parentPosition',
+							select: 'name characteristics',
+							populate: {
+								path: 'characteristics',
+							},
+						},
+						{
+							path: 'characteristics',
+						},
+					],
 				},
 				{
-					path: 'orderedReceiptsPositions.characteristics shop',
+					path: 'shop',
 				},
 			])
 			.then(procurement => res.json(procurement))
@@ -146,6 +178,7 @@ procurementsRouter.post(
 					{
 						$set: {
 							parentPosition: positionId,
+							archivedAfterEnded: true,
 						},
 					},
 				]);
@@ -202,12 +235,28 @@ procurementsRouter.post(
 				},
 				{
 					path: 'orderedReceiptsPositions.position',
-					populate: {
-						path: 'characteristics',
-					},
+					populate: [
+						{
+							path: 'childPosition',
+							select: 'name characteristics',
+							populate: {
+								path: 'characteristics',
+							},
+						},
+						{
+							path: 'parentPosition',
+							select: 'name characteristics',
+							populate: {
+								path: 'characteristics',
+							},
+						},
+						{
+							path: 'characteristics',
+						},
+					],
 				},
 				{
-					path: 'orderedReceiptsPositions.characteristics shop',
+					path: 'shop',
 				},
 			])
 			.then(procurement => res.json(procurement))
@@ -296,12 +345,28 @@ procurementsRouter.post(
 				},
 				{
 					path: 'orderedReceiptsPositions.position',
-					populate: {
-						path: 'characteristics',
-					},
+					populate: [
+						{
+							path: 'childPosition',
+							select: 'name characteristics',
+							populate: {
+								path: 'characteristics',
+							},
+						},
+						{
+							path: 'parentPosition',
+							select: 'name characteristics',
+							populate: {
+								path: 'characteristics',
+							},
+						},
+						{
+							path: 'characteristics',
+						},
+					],
 				},
 				{
-					path: 'orderedReceiptsPositions.characteristics shop',
+					path: 'shop',
 				},
 			])
 			.then(procurement => res.json(procurement))

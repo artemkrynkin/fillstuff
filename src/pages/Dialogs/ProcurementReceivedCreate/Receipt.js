@@ -17,13 +17,15 @@ import PositionNameInList from 'src/components/PositionNameInList';
 
 import styles from './index.module.css';
 import Tooltip from '@material-ui/core/Tooltip';
+import ClassNames from 'classnames';
 
-const FormFieldArrayReceipt = props => {
+const Receipt = props => {
 	const {
+		setReceiptIndexInProcurement,
 		onOpenDialogByName,
+		formEditable,
 		receipt: { position, ...receipt },
 		index,
-		formEditable,
 		arrayHelpers: { remove },
 		formikProps: { errors, isSubmitting, values, setFieldValue, touched },
 	} = props;
@@ -35,42 +37,73 @@ const FormFieldArrayReceipt = props => {
 	const autoGenUnitSellingPrice =
 		!formEditable && !position.isFree ? formatNumber(receipt.unitPurchasePrice + receipt.unitCostDelivery + receipt.unitMarkup) : 0;
 
-	const name = receipt.positionChanges.name ? receipt.positionChanges.name : position.name;
-	const characteristics =
-		receipt.positionChanges.characteristics && receipt.positionChanges.characteristics.length
-			? receipt.positionChanges.characteristics
-			: position.characteristics;
+	const onOpenDialogPositionCreateReplacement = () => {
+		const { createdAt, isArchived, archivedAfterEnded, hasReceipts, ...remainingProps } = position;
+
+		const positionReplacement = {
+			...remainingProps,
+			childPosition: position,
+		};
+
+		setReceiptIndexInProcurement(index);
+		onOpenDialogByName('dialogPositionCreateReplacement', 'positionReplacement', positionReplacement);
+	};
+
+	const onOpenDialogPositionEditReplacement = () => {
+		setReceiptIndexInProcurement(index);
+		onOpenDialogByName('dialogPositionEditReplacement', 'positionReplacement', position);
+	};
 
 	return (
 		<Grid className={styles.receiptItem} wrap="nowrap" alignItems="baseline" container>
-			<Grid className={styles.receiptItemNumber} item>
+			<Grid className={styles.receiptNumber} item>
 				{index + 1}
 			</Grid>
-			<Grid className={styles.receiptItemContent} direction="column" container>
-				<Grid wrap="nowrap" alignItems="flex-start" style={{ marginBottom: 15 }} container>
-					<Grid style={{ flex: '1 1' }} zeroMinWidth item>
-						<PositionNameInList name={name} characteristics={characteristics} size="md" />
+			<Grid className={styles.receiptContent} direction="column" container>
+				<Grid className={styles.receiptContentHeader} alignItems="center" container>
+					<Grid className={styles.positionSelected} zeroMinWidth item>
+						<PositionNameInList
+							name={position.name}
+							characteristics={position.characteristics}
+							size="md"
+							childPosition={position.childPosition}
+							minHeight={false}
+						/>
 					</Grid>
 					{formEditable && values.status !== 'expected' ? (
 						<Grid className={styles.actionButtons} item>
-							<Tooltip title="Изменить характеристики" placement="top">
+							{!position.childPosition && !position.parentPosition ? (
+								<Tooltip title="Создать позицию на замену" placement="top">
+									<IconButton
+										className={styles.actionButton}
+										onClick={onOpenDialogPositionCreateReplacement}
+										disabled={isSubmitting}
+										tabIndex={-1}
+									>
+										<FontAwesomeIcon icon={['far-c', 'position-replacement']} />
+									</IconButton>
+								</Tooltip>
+							) : null}
+							{position.notCreated ? (
+								<Tooltip title="Редактировать" placement="top">
+									<IconButton
+										className={styles.actionButton}
+										onClick={onOpenDialogPositionEditReplacement}
+										disabled={isSubmitting}
+										tabIndex={-1}
+									>
+										<FontAwesomeIcon icon={['far', 'pen']} />
+									</IconButton>
+								</Tooltip>
+							) : null}
+							<Tooltip title="Удалить из заказа" placement="top">
 								<IconButton
-									className={styles.editActionButton}
-									onClick={() => {
-										onOpenDialogByName('dialogProcurementPositionEdit', 'procurementPosition', {
-											positionIndexInProcurement: index,
-											name,
-											characteristics,
-										});
-									}}
+									className={ClassNames(styles.actionButton, 'destructiveAction')}
+									onClick={() => remove(index)}
+									disabled={isSubmitting}
 									tabIndex={-1}
 								>
-									<FontAwesomeIcon icon={['far', 'pen']} />
-								</IconButton>
-							</Tooltip>
-							<Tooltip title="Удалить" placement="top">
-								<IconButton className={styles.deleteActionButton} onClick={() => remove(index)} tabIndex={-1}>
-									<FontAwesomeIcon icon={['fal', 'times']} />
+									<FontAwesomeIcon icon={['far', 'trash']} />
 								</IconButton>
 							</Tooltip>
 						</Grid>
@@ -264,4 +297,4 @@ const FormFieldArrayReceipt = props => {
 	);
 };
 
-export default FormFieldArrayReceipt;
+export default Receipt;

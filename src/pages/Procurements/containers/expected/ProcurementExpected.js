@@ -94,12 +94,7 @@ const ProcurementExpected = props => {
 					{procurement.comment ? (
 						<Fragment>
 							<div className={styles.infoItem}>&nbsp;</div>
-							<Tooltip
-								title={<div className={styles.commentText}>{procurement.comment}</div>}
-								placement="bottom"
-								leaveDelay={500}
-								interactive
-							>
+							<Tooltip title={<div className={styles.commentText}>{procurement.comment}</div>} placement="bottom">
 								<span className={styles.commentIcon}>
 									<FontAwesomeIcon icon={['fal', 'comment']} />
 								</span>
@@ -114,12 +109,12 @@ const ProcurementExpected = props => {
 					onClose={() => onHandleDropdownActions(false)}
 					placement="bottom-end"
 					disablePortal={true}
+					stopPropagation
 				>
 					<MenuList>
 						{procurement.isConfirmed ? (
 							<MenuItem
-								onClick={event => {
-									event.stopPropagation();
+								onClick={() => {
 									onHandleDropdownActions();
 									onOpenDialogProcurement('dialogProcurementReceivedCreate', 'procurementReceived', procurement);
 								}}
@@ -130,8 +125,7 @@ const ProcurementExpected = props => {
 							</MenuItem>
 						) : (
 							<MenuItem
-								onClick={event => {
-									event.stopPropagation();
+								onClick={() => {
 									onHandleDropdownActions();
 									onOpenDialogProcurement('dialogProcurementExpectedConfirm', 'procurementExpected', procurement);
 								}}
@@ -149,8 +143,7 @@ const ProcurementExpected = props => {
 						)}
 						{procurement.isConfirmed ? (
 							<MenuItem
-								onClick={event => {
-									event.stopPropagation();
+								onClick={() => {
 									onHandleDropdownActions();
 									onOpenDialogProcurement('dialogProcurementExpectedEdit', 'procurementExpected', procurement);
 								}}
@@ -160,8 +153,7 @@ const ProcurementExpected = props => {
 							</MenuItem>
 						) : null}
 						<MenuItem
-							onClick={event => {
-								event.stopPropagation();
+							onClick={() => {
 								onHandleDropdownActions();
 								onOpenDialogProcurement('dialogProcurementExpectedCancel', 'procurementExpected', procurement);
 							}}

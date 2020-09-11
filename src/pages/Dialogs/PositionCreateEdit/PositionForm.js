@@ -89,11 +89,11 @@ const PositionForm = props => {
 	};
 
 	useEffect(() => {
-		if (selectedPosition.childPosition || selectedPosition.parentPosition) {
+		if (selectedPosition && (selectedPosition.childPosition || selectedPosition.parentPosition)) {
 			props.getPositions();
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [selectedPosition.childPosition, selectedPosition.parentPosition]);
+	}, [selectedPosition]);
 
 	return (
 		<Formik

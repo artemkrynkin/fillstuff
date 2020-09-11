@@ -22,13 +22,13 @@ const positions = (
 			return {
 				...state,
 				isFetching: false,
-				data: action.payload,
+				data: action.payload.positions,
 			};
 		}
 		case 'CREATE_POSITION': {
 			let stateData = { ...state }.data;
 
-			stateData.push(action.payload);
+			stateData.push(action.payload.position);
 
 			return {
 				...state,
@@ -64,12 +64,20 @@ const positions = (
 
 			if (state.data) {
 				stateData = { ...state }.data;
-				const positionIndex = stateData.findIndex(position => position._id === action.payload.positionId);
+				const archivedPosition = stateData.find(position => position._id === action.payload.positionId);
 
-				stateData[positionIndex] = {
-					...stateData[positionIndex],
-					isArchived: true,
-				};
+				archivedPosition.isArchived = true;
+
+				delete archivedPosition.archivedAfterEnded;
+				delete archivedPosition.childPosition;
+				delete archivedPosition.parentPosition;
+				delete archivedPosition.positionGroup;
+
+				stateData.forEach(position => {
+					if ((position.childPosition || position.parentPosition) === action.payload.positionId) {
+						delete position[position.childPosition ? 'childPosition' : 'parentPosition'];
+					}
+				});
 			}
 
 			return {
@@ -109,9 +117,9 @@ const positions = (
 				stateData = { ...state }.data;
 
 				stateData.forEach(position => {
-					if (action.payload.positions.some(positionIdInGroup => positionIdInGroup === position._id)) {
+					if (action.payload.positionGroup.positions.some(positionIdInGroup => positionIdInGroup === position._id)) {
 						if (/^(CREATE_POSITION_GROUP|ADD_POSITION_IN_GROUP)$/.test(action.type)) {
-							position.positionGroup = action.payload._id;
+							position.positionGroup = action.payload.positionGroup._id;
 						} else {
 							delete position.positionGroup;
 						}

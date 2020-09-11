@@ -85,9 +85,9 @@ const PositionTab = props => {
 									/>
 									{typeIsCreateOrEdit && (values.childPosition || values.parentPosition) ? (
 										<FormHelperText>
-											При изменении наименования, у
+											Изменив наименование, у
 											<FormLabel component="span">{values.childPosition ? ' заменяемой позиции ' : ' позиции на замену '}</FormLabel>
-											оно будет также изменено
+											оно тоже изменится
 										</FormHelperText>
 									) : null}
 								</div>

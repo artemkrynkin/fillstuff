@@ -123,6 +123,9 @@ writeOffsRouter.post(
 					path: 'activeReceipt',
 				},
 				{
+					path: 'positionGroup',
+				},
+				{
 					path: 'receipts',
 					match: { status: /received|active/ },
 					options: {
@@ -237,19 +240,16 @@ writeOffsRouter.post(
 					}
 
 					if (position.archivedAfterEnded && !position.deliveryIsExpected.length && currentReceiptSet.current.quantity === 0) {
-						awaitingPromises.push(
-							Position.findByIdAndUpdate(position._id, {
-								$set: position.parentPosition ? { qrcodeId: uuidv4(), isArchived: true } : { isArchived: true },
-								$unset: { childPosition: 1, parentPosition: 1, archivedAfterEnded: 1, positionGroup: 1 },
-							}).catch(err => next({ code: 2, err }))
-						);
-
 						if (position.parentPosition) {
-							Position.findByIdAndUpdate(position.parentPosition, { $unset: { childPosition: 1 } }).catch(err => next({ code: 2, err }));
+							awaitingPromises.push(
+								Position.findByIdAndUpdate(position.parentPosition, { $unset: { childPosition: 1 } }).catch(err => next({ code: 2, err }))
+							);
 						}
 
 						if (position.childPosition) {
-							Position.findByIdAndUpdate(position.childPosition, { $unset: { parentPosition: 1 } }).catch(err => next({ code: 2, err }));
+							awaitingPromises.push(
+								Position.findByIdAndUpdate(position.childPosition, { $unset: { parentPosition: 1 } }).catch(err => next({ code: 2, err }))
+							);
 						}
 
 						if (position.positionGroup) {
@@ -263,6 +263,13 @@ writeOffsRouter.post(
 								awaitingPromises.push(PositionGroup.findByIdAndRemove(position.positionGroup).catch(err => next({ code: 2, err })));
 							}
 						}
+
+						awaitingPromises.push(
+							Position.findByIdAndUpdate(position._id, {
+								$set: position.parentPosition ? { qrcodeId: uuidv4(), isArchived: true } : { isArchived: true },
+								$unset: { childPosition: 1, parentPosition: 1, archivedAfterEnded: 1, positionGroup: 1 },
+							}).catch(err => next({ code: 2, err }))
+						);
 
 						numberArchivedPosition += 1;
 					}

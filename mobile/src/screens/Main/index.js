@@ -35,8 +35,10 @@ class PositionScanning extends Component {
 	initialRemainingState = {
 		barCodeScanned: 'ready',
 		position: null,
+		positions: null,
 		positionGroup: null,
 		modalPosition: false,
+		modalPositions: false,
 		modalPositionGroup: false,
 		quantity: '',
 	};
@@ -109,7 +111,7 @@ class PositionScanning extends Component {
 						return this.props.getPosition(studioId, { qrcodeId }).then(response => {
 							if (response.status === 'error') return this.onSetInitialRemainingState();
 
-							const position = response.data;
+							const responseData = response.data;
 
 							Haptics.impactAsync('heavy');
 							if (this.cameraRef) this.cameraRef.pausePreview();
@@ -117,10 +119,14 @@ class PositionScanning extends Component {
 							this.setState(
 								{
 									barCodeScanned: 'scanned',
-									position,
+									[Array.isArray(responseData) ? 'positions' : 'position']: responseData,
 								},
 								() => {
-									this.onHandlerModalPosition(true);
+									if (Array.isArray(responseData)) {
+										this.onHandlerModalPositions(true);
+									} else {
+										this.onHandlerModalPosition(true);
+									}
 								}
 							);
 						});
@@ -136,7 +142,7 @@ class PositionScanning extends Component {
 	onSavePosition = position => this.setState({ position });
 
 	onHandlerModalPosition = visible => {
-		const { barCodeScanned, modalPositionGroup } = this.state;
+		const { barCodeScanned, modalPositions, modalPositionGroup } = this.state;
 
 		const setState = {
 			modalPosition: visible,
@@ -146,7 +152,7 @@ class PositionScanning extends Component {
 			setTimeout(() => this.setState({ barCodeScanned: 'ready', position: null }), 450);
 		}
 
-		if (!modalPositionGroup) {
+		if (!modalPositions && !modalPositionGroup) {
 			setState.quantity = '';
 
 			this.setState(setState, () => {
@@ -161,7 +167,7 @@ class PositionScanning extends Component {
 				if (this.textFieldQuantity && this.textFieldQuantity.current) this.textFieldQuantity.current.blur();
 			}
 		} else {
-			this.setState({ modalPositionGroup: false }, () => {
+			this.setState({ modalPositions: false, modalPositionGroup: false }, () => {
 				setTimeout(() => {
 					this.setState(setState);
 
@@ -175,6 +181,20 @@ class PositionScanning extends Component {
 				}, 450);
 			});
 		}
+	};
+
+	onHandlerModalPositions = visible => {
+		const setState = {
+			modalPositions: visible,
+		};
+
+		if (!visible) {
+			setTimeout(() => this.setState({ barCodeScanned: 'ready', positions: null }), 450);
+		}
+
+		this.setState(setState, () => {
+			if (!visible && this.cameraRef) this.cameraRef.resumePreview();
+		});
 	};
 
 	onHandlerModalPositionGroup = visible => {
@@ -258,7 +278,17 @@ class PositionScanning extends Component {
 	}
 
 	render() {
-		const { hasCameraPermission, barCodeScanned, position, positionGroup, modalPosition, modalPositionGroup, quantity } = this.state;
+		const {
+			hasCameraPermission,
+			barCodeScanned,
+			position,
+			positions,
+			positionGroup,
+			modalPosition,
+			modalPositions,
+			modalPositionGroup,
+			quantity,
+		} = this.state;
 
 		if (hasCameraPermission === null) {
 			return <View />;
@@ -292,7 +322,8 @@ class PositionScanning extends Component {
 								/>
 								<TouchableOpacity
 									style={styles.settingsButton}
-									onPress={() => this.props.navigation.push('Settings')}
+									// onPress={() => this.props.navigation.push('Settings')}
+									onPress={() => this.onToggleRNModal()}
 									children={<FontAwesomeIcon style={styles.settingsIcon} icon={['fal', 'cog']} size={24} />}
 								/>
 							</View>
@@ -390,6 +421,61 @@ class PositionScanning extends Component {
 								<Modal
 									animationInTiming={200}
 									animationOutTiming={400}
+									isVisible={modalPositions}
+									onBackdropPress={() => this.onHandlerModalPositions(false)}
+									onSwipeComplete={() => this.onHandlerModalPositions(false)}
+									swipeDirection={['down']}
+									propagateSwipe
+									style={styles.modal}
+								>
+									<View style={{ ...styles.modalContainer, paddingBottom: insets.bottom }}>
+										{positions ? (
+											<View>
+												<View style={styles.modalHeader2}>
+													{/*<Text style={styles.modalTitle}>Связанные позиции</Text>*/}
+													<TouchableOpacity
+														style={styles.modalClose}
+														onPress={() => this.onHandlerModalPositionGroup(false)}
+														children={<FontAwesomeIcon style={styles.modalCloseIcon} icon={['fal', 'times']} size={18} />}
+													/>
+												</View>
+												<View style={{ maxHeight: 500 }}>
+													<FlatList
+														data={positions}
+														keyExtractor={position => position._id}
+														renderItem={({ item: position }) => {
+															if (!position.activeReceipt) return null;
+
+															return (
+																<TouchableHighlight
+																	onPress={() => {
+																		this.onSavePosition(position);
+																		this.onHandlerModalPosition(true);
+																	}}
+																	underlayColor={theme.brightness.cBr4}
+																>
+																	<View style={styles.modalPositionListItem}>
+																		<Text style={styles.modalPositionListItemText}>
+																			{position.name}
+																			{position.characteristics.reduce(
+																				(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.name}`,
+																				''
+																			)}
+																		</Text>
+																	</View>
+																</TouchableHighlight>
+															);
+														}}
+													/>
+												</View>
+											</View>
+										) : null}
+									</View>
+								</Modal>
+
+								<Modal
+									animationInTiming={200}
+									animationOutTiming={400}
 									isVisible={modalPositionGroup}
 									onBackdropPress={() => this.onHandlerModalPositionGroup(false)}
 									onSwipeComplete={() => this.onHandlerModalPositionGroup(false)}
@@ -412,25 +498,31 @@ class PositionScanning extends Component {
 													<FlatList
 														data={positionGroup.positions}
 														keyExtractor={position => position._id}
-														renderItem={({ item: position }) => (
-															<TouchableHighlight
-																onPress={() => {
-																	this.onSavePosition(position);
-																	this.onHandlerModalPosition(true);
-																}}
-																underlayColor={theme.brightness.cBr4}
-															>
-																<View style={styles.modalPositionListItem}>
-																	<Text style={styles.modalPositionListItemText}>
-																		{position.name}
-																		{position.characteristics.reduce(
-																			(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.name}`,
-																			''
-																		)}
-																	</Text>
-																</View>
-															</TouchableHighlight>
-														)}
+														renderItem={({ item: position }) => {
+															if (!position.activeReceipt) return null;
+
+															return (
+																<TouchableHighlight
+																	onPress={() => {
+																		this.onSavePosition(position);
+																		this.onHandlerModalPosition(true);
+																	}}
+																	underlayColor={theme.brightness.cBr4}
+																>
+																	<View style={styles.modalPositionListItem}>
+																		<Text style={styles.modalPositionListItemText}>
+																			<>
+																				{position.name}
+																				{position.characteristics.reduce(
+																					(fullCharacteristics, characteristic) => `${fullCharacteristics} ${characteristic.name}`,
+																					''
+																				)}
+																			</>
+																		</Text>
+																	</View>
+																</TouchableHighlight>
+															);
+														}}
 													/>
 												</View>
 											</View>

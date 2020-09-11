@@ -9,7 +9,7 @@ import { sleep, formatNumber } from 'shared/utils';
 
 import { DialogStickyFR, DialogTitle } from 'src/components/Dialog';
 
-import { procurementPositionTransform, declensionNumber } from 'src/helpers/utils';
+import { procurementPositionTransform } from 'src/helpers/utils';
 
 import { getStudioStore } from 'src/actions/studio';
 import { getShops } from 'src/actions/shops';
@@ -186,11 +186,8 @@ class ProcurementReceivedCreate extends Component {
 			actions.setSubmitting(false);
 		} else {
 			const procurement = procurementSchema(true).cast(values);
-			let positionsChanged = 0;
 
-			if (procurement.totalPrice === procurement.pricePositions) {
-				procurement.totalPrice = formatNumber(procurement.pricePositions + procurement.costDelivery);
-			}
+			procurement.totalPrice = formatNumber(procurement.pricePositions + procurement.costDelivery);
 
 			procurement.positions = [];
 
@@ -198,7 +195,7 @@ class ProcurementReceivedCreate extends Component {
 				const { position, quantity, quantityPackages, ...remainingValues } = receipt;
 
 				const newReceipt = {
-					position: position._id,
+					position,
 					initial: {},
 					...remainingValues,
 				};
@@ -206,7 +203,9 @@ class ProcurementReceivedCreate extends Component {
 				if (!isNaN(quantity)) newReceipt.initial.quantity = quantity;
 				if (!isNaN(quantityPackages)) newReceipt.initial.quantityPackages = quantityPackages;
 
-				procurement.positions.push(position._id);
+				if (typeof position === 'string') {
+					procurement.positions.push(position);
+				}
 
 				return newReceipt;
 			});
@@ -217,29 +216,6 @@ class ProcurementReceivedCreate extends Component {
 				if (response.status === 'success') {
 					this.props.getStudioStore();
 					onCloseDialog();
-
-					if (positionsChanged) {
-						this.props.enqueueSnackbar({
-							message: (
-								<div>
-									<b>
-										{declensionNumber(positionsChanged, ['Создана позиция', 'Созданы позиции', 'Созданы позиции'])} с новыми
-										характеристиками.
-									</b>
-									<br />
-									{declensionNumber(positionsChanged, [
-										'Действующая позиция будет архивирована',
-										'Действующие позиции будут архивированы',
-										'Действующие позиции будут архивированы',
-									])}{' '}
-									после реализации.
-								</div>
-							),
-							options: {
-								variant: 'warning',
-							},
-						});
-					}
 				}
 
 				if (response.status === 'error') {

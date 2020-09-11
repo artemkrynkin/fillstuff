@@ -58,7 +58,7 @@ positionsRouter.post(
 		if (positionId) conditions._id = positionId;
 		if (qrcodeId) conditions.qrcodeId = qrcodeId;
 
-		Position.findOne(conditions)
+		Position.find(conditions)
 			.populate([
 				{
 					path: 'activeReceipt characteristics shops.shop',
@@ -76,7 +76,7 @@ positionsRouter.post(
 					},
 				},
 			])
-			.then(position => res.json(position))
+			.then(positions => res.json(positions.length === 1 ? positions[0] : positions))
 			.catch(err => next({ code: 2, err }));
 	}
 );
@@ -234,24 +234,6 @@ positionsRouter.post(
 			});
 		}
 
-		if (position.hasReceipts) {
-			if (position.parentPosition) {
-				position.qrcodeId = uuidv4();
-			}
-
-			position.isArchived = true;
-			position.archivedAfterEnded = undefined;
-			position.childPosition = undefined;
-			position.parentPosition = undefined;
-			position.positionGroup = undefined;
-
-			const positionErr = position.validateSync();
-
-			if (positionErr) return next({ code: positionErr.errors ? 5 : 2, err: positionErr });
-		} else {
-			Position.findByIdAndRemove(position._id).catch(err => next({ code: 2, err }));
-		}
-
 		if (position.parentPosition) {
 			Position.findByIdAndUpdate(position.parentPosition, { $unset: { childPosition: 1 } }).catch(err => next({ code: 2, err }));
 		}
@@ -268,6 +250,15 @@ positionsRouter.post(
 			} else {
 				PositionGroup.findByIdAndRemove(position.positionGroup._id).catch(err => next({ code: 2, err }));
 			}
+		}
+
+		if (position.hasReceipts) {
+			Position.findByIdAndUpdate(position._id, {
+				$set: position.parentPosition ? { qrcodeId: uuidv4(), isArchived: true } : { isArchived: true },
+				$unset: { childPosition: 1, parentPosition: 1, archivedAfterEnded: 1, positionGroup: 1 },
+			}).catch(err => next({ code: 2, err }));
+		} else {
+			Position.findByIdAndRemove(position._id).catch(err => next({ code: 2, err }));
 		}
 
 		Emitter.emit('deleteStoreNotification', {

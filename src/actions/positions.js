@@ -16,7 +16,9 @@ export const getPositions = ({ showRequest = true, emptyData = false } = { showR
 			.then(response => {
 				dispatch({
 					type: 'RECEIVE_POSITIONS',
-					payload: response.data,
+					payload: {
+						positions: response.data,
+					},
 				});
 			})
 			.catch(error => {
@@ -65,7 +67,9 @@ export const createPosition = ({ data }) => {
 			.then(response => {
 				dispatch({
 					type: 'CREATE_POSITION',
-					payload: response.data,
+					payload: {
+						position: response.data,
+					},
 				});
 
 				return Promise.resolve({ status: 'success', data: response.data });
@@ -140,6 +144,7 @@ export const archivePosition = ({ params, data }) => {
 						payload: {
 							positionGroupId,
 							positionId,
+							position: response.data,
 						},
 					});
 

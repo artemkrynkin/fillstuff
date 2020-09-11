@@ -16,7 +16,9 @@ export const getPositionGroups = ({ showRequest = true, emptyData = false } = { 
 			.then(response => {
 				dispatch({
 					type: 'RECEIVE_POSITION_GROUPS',
-					payload: response.data,
+					payload: {
+						positionGroups: response.data,
+					},
 				});
 			})
 			.catch(error => {
@@ -41,7 +43,9 @@ export const createPositionGroup = ({ data }) => {
 			.then(async response => {
 				await dispatch({
 					type: 'CREATE_POSITION_GROUP',
-					payload: response.data,
+					payload: {
+						positionGroup: response.data,
+					},
 				});
 
 				return Promise.resolve({ status: 'success' });
@@ -62,6 +66,7 @@ export const editPositionGroup = ({ params, data }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
+		const { positionGroupId } = params;
 
 		return await axios
 			.post('/api/editPositionGroup', {
@@ -73,7 +78,10 @@ export const editPositionGroup = ({ params, data }) => {
 			.then(response => {
 				dispatch({
 					type: 'EDIT_POSITION_GROUP',
-					payload: response.data,
+					payload: {
+						positionGroupId,
+						positionGroup: response.data,
+					},
 				});
 
 				return Promise.resolve({ status: 'success' });
@@ -94,6 +102,7 @@ export const addPositionInGroup = ({ params, data }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
+		const { positionGroupId } = params;
 
 		return await axios
 			.post('/api/addPositionInGroup', {
@@ -105,7 +114,10 @@ export const addPositionInGroup = ({ params, data }) => {
 			.then(response => {
 				dispatch({
 					type: 'ADD_POSITION_IN_GROUP',
-					payload: response.data,
+					payload: {
+						positionGroupId,
+						positionGroup: response.data,
+					},
 				});
 
 				return Promise.resolve({ status: 'success' });
@@ -122,7 +134,7 @@ export const addPositionInGroup = ({ params, data }) => {
 	};
 };
 
-export const removePositionFromGroup = ({ params, data }) => {
+export const removePositionFromGroup = ({ params }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
@@ -134,9 +146,14 @@ export const removePositionFromGroup = ({ params, data }) => {
 				params,
 			})
 			.then(response => {
+				const positionGroup = response.data;
+
 				dispatch({
 					type: 'REMOVE_POSITION_FROM_GROUP',
-					payload: response.data,
+					payload: {
+						positionGroupId: positionGroup._id,
+						positionGroup,
+					},
 				});
 
 				return Promise.resolve({ status: 'success' });

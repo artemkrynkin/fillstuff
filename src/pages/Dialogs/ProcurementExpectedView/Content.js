@@ -29,7 +29,7 @@ const Content = props => {
 			</Typography>
 			<DefinitionList>
 				<DefinitionListItem
-					term="Заказал"
+					term="Заказ от"
 					value={
 						<AvatarTitle
 							classNames={{

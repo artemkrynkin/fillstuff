@@ -85,7 +85,9 @@ const PositionGroup = props => {
 								{positionsInGroup.map(position => {
 									if (!position.positionGroup || position.parentPosition || position.isArchived) return null;
 
-									const childPosition = position.childPosition ? positions.find(({ _id }) => _id === position.childPosition) : null;
+									const childPosition = position.childPosition
+										? positions.find(({ parentPosition }) => parentPosition === position._id)
+										: null;
 									if (!childPosition) {
 										return <Position key={position._id} position={position} onOpenDialogPosition={onOpenDialogPosition} />;
 									} else {

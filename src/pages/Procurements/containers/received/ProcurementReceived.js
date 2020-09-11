@@ -57,13 +57,13 @@ const ProcurementReceived = props => {
 										title={
 											<div>
 												<Typography variant="body2">
-													<b>Заказал</b>
+													<b>Заказ от:</b>
 												</Typography>
 												<Typography variant="body2" gutterBottom>
 													{procurement.orderedByMember.user.name}
 												</Typography>
 												<Typography variant="body2">
-													<b>Принял</b>
+													<b>Оформление от:</b>
 												</Typography>
 												<Typography variant="body2">{procurement.receivedByMember.user.name}</Typography>
 											</div>

@@ -1,12 +1,15 @@
 import { Router } from 'express';
 import mongoose from 'mongoose';
+import { difference } from 'lodash';
 
 import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
 
 import Emitter from 'api/utils/emitter';
 
 import Position from 'api/models/position';
+import PositionGroup from 'api/models/positionGroup';
 import Procurement from 'api/models/procurement';
+import Studio from '../../models/studio';
 
 const procurementsRouter = Router();
 
@@ -158,7 +161,12 @@ procurementsRouter.post(
 
 		const positionsInsert = [];
 		const positionsErr = [];
+		const positionReplacementNumbers = newProcurementValues.orderedReceiptsPositions.reduce(
+			(sum, { position }) => sum + Number(Boolean(position.notCreated)),
+			0
+		);
 		const positionsDeleteStoreNotification = [];
+		const positionsGroupsPositionsAdding = [];
 		let replacementPositionsUpdate = [];
 
 		newProcurement.orderedReceiptsPositions = newProcurementValues.orderedReceiptsPositions.map(orderedReceiptsPositions => {
@@ -182,6 +190,19 @@ procurementsRouter.post(
 						},
 					},
 				]);
+
+				if (position.positionGroup) {
+					const positionGroup = positionsGroupsPositionsAdding.find(positionGroup => positionGroup._id === String(position.positionGroup));
+
+					if (!positionGroup) {
+						positionsGroupsPositionsAdding.push({
+							_id: position.positionGroup,
+							positions: [positionId],
+						});
+					} else {
+						positionGroup.positions.push(positionId);
+					}
+				}
 			}
 
 			newProcurement.positions.push(positionId);
@@ -201,12 +222,26 @@ procurementsRouter.post(
 			await Position.insertMany(positionsInsert).catch(err => next({ code: 2, err }));
 		}
 
+		if (positionReplacementNumbers) {
+			Studio.findByIdAndUpdate(studioId, { $inc: { 'store.numberPositions': positionReplacementNumbers } }).catch(err =>
+				next({ code: 2, err })
+			);
+		}
+
 		const positionsUpdate = Position.updateMany(
 			{ _id: { $in: newProcurement.positions } },
 			{ $push: { deliveryIsExpected: newProcurement._id } }
 		).catch(err => next({ code: 2, err }));
 
 		replacementPositionsUpdate = replacementPositionsUpdate.map(promiseItem => Position.findByIdAndUpdate(promiseItem[0], promiseItem[1]));
+
+		if (positionsGroupsPositionsAdding) {
+			positionsGroupsPositionsAdding.forEach(positionGroup => {
+				PositionGroup.findByIdAndUpdate(positionGroup._id, { $push: { positions: { $each: positionGroup.positions } } }).catch(err =>
+					next({ code: 2, err })
+				);
+			});
+		}
 
 		await Promise.all([newProcurement.save(), positionsUpdate, ...replacementPositionsUpdate]);
 
@@ -216,11 +251,11 @@ procurementsRouter.post(
 			procurement: newProcurement._id,
 		});
 
-		positionsDeleteStoreNotification.forEach(position => {
+		positionsDeleteStoreNotification.forEach(positionId => {
 			Emitter.emit('deleteStoreNotification', {
 				studio: studioId,
 				type: 'position-ends',
-				position: position,
+				position: positionId,
 			});
 		});
 
@@ -285,8 +320,9 @@ procurementsRouter.post(
 
 		const positionsInsert = [];
 		const positionsErr = [];
-		const oldPositions = procurement.positions.slice();
-		const newPositions = [];
+		const oldPositions = procurement.positions.slice().map(positionId => String(positionId));
+		let replacementPositionsUpdate = [];
+		const positionsGroupsPositionsAdding = [];
 
 		procurement.positions = [];
 
@@ -301,13 +337,38 @@ procurementsRouter.post(
 
 				if (newPositionErr) positionsErr.push(newPositionErr);
 				else positionsInsert.push(position);
+
+				replacementPositionsUpdate.push([
+					position.childPosition,
+					{
+						$set: {
+							parentPosition: positionId,
+							archivedAfterEnded: true,
+						},
+					},
+				]);
+
+				if (position.positionGroup) {
+					const positionGroup = positionsGroupsPositionsAdding.find(positionGroup => positionGroup._id === String(position.positionGroup));
+
+					if (!positionGroup) {
+						positionsGroupsPositionsAdding.push({
+							_id: position.positionGroup,
+							positions: [positionId],
+						});
+					} else {
+						positionGroup.positions.push(positionId);
+					}
+				}
 			}
 
-			procurement.positions.push(positionId);
-			newPositions.push(positionId);
+			procurement.positions.push(String(positionId));
 
 			return { ...remainingParams, position };
 		});
+
+		const positionsRemoved = difference(oldPositions, procurement.positions);
+		const positionsAdded = difference(procurement.positions, oldPositions);
 
 		if (positionsErr.length) return next({ code: 2 });
 
@@ -319,14 +380,28 @@ procurementsRouter.post(
 			await Position.insertMany(positionsInsert).catch(err => next({ code: 2, err }));
 		}
 
-		await Position.updateMany({ _id: { $in: oldPositions } }, { $pull: { deliveryIsExpected: procurement._id } }).catch(err =>
-			next({ code: 2, err })
-		);
-		await Position.updateMany({ _id: { $in: newPositions } }, { $push: { deliveryIsExpected: procurement._id } }).catch(err =>
-			next({ code: 2, err })
-		);
+		if (positionsRemoved) {
+			await Position.updateMany({ _id: { $in: positionsRemoved } }, { $pull: { deliveryIsExpected: procurement._id } }).catch(err =>
+				next({ code: 2, err })
+			);
+		}
+		if (positionsAdded) {
+			await Position.updateMany({ _id: { $in: positionsAdded } }, { $push: { deliveryIsExpected: procurement._id } }).catch(err =>
+				next({ code: 2, err })
+			);
+		}
 
-		await procurement.save();
+		replacementPositionsUpdate = replacementPositionsUpdate.map(promiseItem => Position.findByIdAndUpdate(promiseItem[0], promiseItem[1]));
+
+		if (positionsGroupsPositionsAdding) {
+			positionsGroupsPositionsAdding.forEach(positionGroup => {
+				PositionGroup.findByIdAndUpdate(positionGroup._id, { $push: { positions: { $each: positionGroup.positions } } }).catch(err =>
+					next({ code: 2, err })
+				);
+			});
+		}
+
+		await Promise.all([procurement.save(), ...replacementPositionsUpdate]);
 
 		Emitter.emit('editStoreNotification', {
 			studio: studioId,

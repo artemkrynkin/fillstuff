@@ -10,6 +10,7 @@ import Studio from 'api/models/studio';
 import Position from 'api/models/position';
 import Receipt from 'api/models/receipt';
 import Procurement from 'api/models/procurement';
+import PositionGroup from '../../models/positionGroup';
 
 const procurementsRouter = Router();
 
@@ -181,43 +182,65 @@ procurementsRouter.post(
 			  })
 			: procurementExist;
 
-		const deleteNotificationsPositionEnds = [];
 		const positionsInsert = [];
 		const positionsErr = [];
 		const receiptsErr = [];
+		const positionReplacementNumbers = newProcurementValues.receipts.reduce(
+			(sum, { position }) => sum + Number(Boolean(position.notCreated)),
+			0
+		);
+		const positionsDeleteStoreNotification = [];
+		const positionsGroupsPositionsAdding = [];
 		let awaitingPromises = [];
+		let replacementPositionsUpdate = [];
 
 		newProcurement.positions = [];
 
-		newProcurement.receipts = newProcurementValues.receipts.map(({ positionChanges, ...receipt }) => {
-			const initialPosition = positions.find(position => String(position._id) === receipt.position);
-			const position = positionChanges
-				? new Position({
-						name: initialPosition.name,
-						characteristics: initialPosition.characteristics.map(characteristic => characteristic._id),
-						studio: studioId,
-						unitReceipt: initialPosition.unitReceipt,
-						unitRelease: initialPosition.unitRelease,
-						minimumBalance: initialPosition.minimumBalance,
-						isFree: initialPosition.isFree,
-						...positionChanges,
-				  })
-				: initialPosition;
+		newProcurement.receipts = newProcurementValues.receipts.map(initialReceipt => {
+			const { position: positionTemp, ...receipt } = initialReceipt;
 
-			if (positionChanges) {
+			const position = positionTemp.notCreated
+				? new Position(positionTemp)
+				: positions.find(position => String(position._id) === positionTemp);
+
+			if (positionTemp.notCreated) {
 				const newPositionErr = position.validateSync();
 
 				if (newPositionErr) positionsErr.push(newPositionErr);
 				else positionsInsert.push(position);
+
+				replacementPositionsUpdate.push([
+					position.childPosition,
+					{
+						$set: {
+							parentPosition: position._id,
+							archivedAfterEnded: true,
+						},
+					},
+				]);
+
+				if (position.positionGroup) {
+					const positionGroup = positionsGroupsPositionsAdding.find(positionGroup => positionGroup._id === String(position.positionGroup));
+
+					if (!positionGroup) {
+						positionsGroupsPositionsAdding.push({
+							_id: position.positionGroup,
+							positions: [position._id],
+						});
+					} else {
+						positionGroup.positions.push(position._id);
+					}
+				}
 			}
 
-			deleteNotificationsPositionEnds.push(initialPosition._id);
 			newProcurement.positions.push(position._id);
+
+			positionsDeleteStoreNotification.push(positionTemp.notCreated ? position.childPosition : position._id);
 
 			const newReceipt = new Receipt({
 				...receipt,
 				procurement: newProcurement._id,
-				position: position,
+				position: position._id,
 				studio: studioId,
 				status: position.activeReceipt && position.activeReceipt.current.quantity !== 0 ? 'received' : 'active',
 				isFree: position.isFree,
@@ -232,30 +255,24 @@ procurementsRouter.post(
 
 			if (newReceiptErr) receiptsErr.push(newReceiptErr);
 
-			const initialPositionUpdate = {
-				$set: {},
-				$pull: {},
-			};
 			const positionUpdate = {
 				$set: {
 					hasReceipts: true,
 				},
 				$inc: {},
 				$push: {
-					receipts: newReceipt,
+					receipts: newReceipt._id,
 				},
 				$pull: {},
 			};
 			const positionShopIndex = position.shops.findIndex(shop => String(shop.shop) === String(newProcurement.shop));
 
 			if (!position.activeReceipt) {
-				positionUpdate.$set.activeReceipt = newReceipt;
+				positionUpdate.$set.activeReceipt = newReceipt._id;
 			}
 
 			if (newProcurement.status === 'expected') {
-				const positionUpdateObject = !positionChanges ? positionUpdate : initialPositionUpdate;
-
-				positionUpdateObject.$pull.deliveryIsExpected = newProcurement._id;
+				positionUpdate.$pull.deliveryIsExpected = newProcurement._id;
 			}
 
 			if (!!~positionShopIndex) {
@@ -270,14 +287,6 @@ procurementsRouter.post(
 			}
 
 			awaitingPromises.push([position._id, positionUpdate]);
-
-			if (positionChanges) {
-				const allQuantityReceipts = initialPosition.receipts.reduce((sum, receipt) => sum + receipt.current.quantity, 0);
-
-				initialPositionUpdate.$set[allQuantityReceipts ? 'archivedAfterEnded' : 'isArchived'] = true;
-
-				awaitingPromises.push([initialPosition._id, initialPositionUpdate]);
-			}
 
 			return newReceipt;
 		});
@@ -294,7 +303,7 @@ procurementsRouter.post(
 			if (newProcurementValues.invoiceDate) {
 				newProcurement.invoiceDate = newProcurementValues.invoiceDate;
 			}
-			newProcurement.orderedReceiptsPositions = [];
+			newProcurement.orderedReceiptsPositions = undefined;
 		}
 
 		if (positionsErr.length || receiptsErr.length) return next({ code: 2 });
@@ -309,11 +318,19 @@ procurementsRouter.post(
 
 		await Receipt.insertMany(newProcurement.receipts).catch(err => next({ code: 2, err }));
 
-		await newProcurement.save().catch(err => next({ code: 2, err }));
+		replacementPositionsUpdate = replacementPositionsUpdate.map(promiseItem => Position.findByIdAndUpdate(promiseItem[0], promiseItem[1]));
+
+		if (positionsGroupsPositionsAdding) {
+			positionsGroupsPositionsAdding.forEach(positionGroup => {
+				PositionGroup.findByIdAndUpdate(positionGroup._id, { $push: { positions: { $each: positionGroup.positions } } }).catch(err =>
+					next({ code: 2, err })
+				);
+			});
+		}
 
 		awaitingPromises = awaitingPromises.map(promiseItem => Position.findByIdAndUpdate(promiseItem[0], promiseItem[1]));
 
-		await Promise.all(awaitingPromises);
+		await Promise.all([newProcurement.save(), ...awaitingPromises, ...replacementPositionsUpdate]);
 
 		if (procurementExist) {
 			Emitter.emit('deleteStoreNotification', {
@@ -322,7 +339,7 @@ procurementsRouter.post(
 				procurement: procurementExist._id,
 			});
 		} else {
-			deleteNotificationsPositionEnds.forEach(positionId => {
+			positionsDeleteStoreNotification.forEach(positionId => {
 				Emitter.emit('deleteStoreNotification', {
 					studio: studioId,
 					type: 'position-ends',
@@ -375,6 +392,9 @@ procurementsRouter.post(
 				$set: {
 					'store.storePrice':
 						storePriceOld + procurement.receipts.reduce((sum, receipt) => sum + receipt.initial.quantity * receipt.unitPurchasePrice, 0),
+				},
+				$inc: {
+					'store.numberPositions': positionReplacementNumbers,
 				},
 			},
 			{ runValidators: true }

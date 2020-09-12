@@ -18,7 +18,7 @@ class AuthLoading extends Component {
 		return (
 			<View style={styles.container}>
 				<ActivityIndicator />
-				<StatusBar barStyle="default" />
+				<StatusBar barStyle="light-content" />
 			</View>
 		);
 	}

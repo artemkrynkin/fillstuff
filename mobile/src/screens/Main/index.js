@@ -7,22 +7,24 @@ import {
 	TouchableHighlight,
 	TouchableOpacity,
 	FlatList,
-	AppState,
+	// AppState,
 	Vibration,
 	ImageBackground,
 	TextInput,
 	Alert,
+	StatusBar,
 } from 'react-native';
+import { withNavigationFocus } from '@react-navigation/compat';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Asset } from 'expo-asset';
 import Constants from 'expo-constants';
 import { Camera } from 'expo-camera';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import * as Permissions from 'expo-permissions';
 import * as Haptics from 'expo-haptics';
 import { Audio } from 'expo-av';
 import Modal from 'react-native-modal';
+import * as MailComposer from 'expo-mail-composer';
 import { SafeAreaView, SafeAreaInsetsContext } from 'react-native-safe-area-context';
 
 import theme from '../../constants/theme';
@@ -41,19 +43,19 @@ class PositionScanning extends Component {
 		modalPositions: false,
 		modalPositionGroup: false,
 		quantity: '',
+		networkActivityIndicatorVisible: false,
 	};
 
 	state = {
-		appState: AppState.currentState,
+		// appState: AppState.currentState,
 		hasCameraPermission: null,
-		type: BarCodeScanner.Constants.Type.back,
 		...this.initialRemainingState,
 	};
 
-	timerAppState = {
-		timer: null,
-		drop: false,
-	};
+	// timerAppState = {
+	// 	timer: null,
+	// 	drop: false,
+	// };
 
 	cameraRef = createRef();
 	textFieldQuantity = createRef();
@@ -78,7 +80,7 @@ class PositionScanning extends Component {
 			const { studioId } = JSON.parse(await AsyncStorage.getItem('user'));
 			const { type, id: qrcodeId } = JSON.parse(data);
 
-			this.setState({ barCodeScanned: 'scanning' }, () => {
+			this.setState({ barCodeScanned: 'scanning', networkActivityIndicatorVisible: true }, () => {
 				if (
 					Constants.platform.android ||
 					(Constants.platform.ios &&
@@ -101,6 +103,7 @@ class PositionScanning extends Component {
 								{
 									barCodeScanned: 'scanned',
 									positionGroup,
+									networkActivityIndicatorVisible: false,
 								},
 								() => {
 									this.onHandlerModalPositionGroup(true);
@@ -120,6 +123,7 @@ class PositionScanning extends Component {
 								{
 									barCodeScanned: 'scanned',
 									[Array.isArray(responseData) ? 'positions' : 'position']: responseData,
+									networkActivityIndicatorVisible: false,
 								},
 								() => {
 									if (Array.isArray(responseData)) {
@@ -216,7 +220,11 @@ class PositionScanning extends Component {
 	writeOffConfirm = async (positionId, quantity) => {
 		const { memberId, studioId } = JSON.parse(await AsyncStorage.getItem('user'));
 
+		this.setState({ networkActivityIndicatorVisible: true });
+
 		this.props.createWriteOff(studioId, memberId, positionId, quantity).then(async response => {
+			this.setState({ networkActivityIndicatorVisible: false });
+
 			if (response.data.code === 7) {
 				await Haptics.notificationAsync('error');
 
@@ -247,35 +255,45 @@ class PositionScanning extends Component {
 		});
 	};
 
-	onHandleAppStateChange = nextAppState => {
-		if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-			clearTimeout(this.timerAppState.timer);
-
-			if (this.timerAppState.drop) {
-				this.timerAppState.drop = false;
-				this.onDropModals();
-			}
-		}
-		if (nextAppState.match(/inactive|background/) && this.state.appState === 'active') {
-			this.timerAppState.timer = setTimeout(() => {
-				this.timerAppState.drop = true;
-			}, 15000);
-		}
-
-		this.setState({ appState: nextAppState });
-	};
+	// onHandleAppStateChange = nextAppState => {
+	// 	if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+	// 		clearTimeout(this.timerAppState.timer);
+	//
+	// 		if (this.timerAppState.drop) {
+	// 			this.timerAppState.drop = false;
+	// 			this.onDropModals();
+	// 		}
+	// 	}
+	// 	if (nextAppState.match(/inactive|background/) && this.state.appState === 'active') {
+	// 		this.timerAppState.timer = setTimeout(() => {
+	// 			this.timerAppState.drop = true;
+	// 		}, 15000);
+	// 	}
+	//
+	// 	this.setState({ appState: nextAppState });
+	// };
 
 	async componentDidMount() {
-		const { status } = await Permissions.askAsync(Permissions.CAMERA);
+		const { status } = await Camera.requestPermissionsAsync();
 
 		this.setState({ hasCameraPermission: status === 'granted' });
 
-		AppState.addEventListener('change', this.onHandleAppStateChange);
+		// AppState.addEventListener('change', this.onHandleAppStateChange);
 	}
 
-	componentWillUnmount() {
-		AppState.removeEventListener('change', this.onHandleAppStateChange);
+	componentDidUpdate() {
+		const { isFocused } = this.props;
+		const { barCodeScanned } = this.state;
+
+		if (barCodeScanned === 'ready') {
+			if (isFocused) this.cameraRef.resumePreview();
+			else this.cameraRef.pausePreview();
+		}
 	}
+
+	// componentWillUnmount() {
+	// 	AppState.removeEventListener('change', this.onHandleAppStateChange);
+	// }
 
 	render() {
 		const {
@@ -288,6 +306,7 @@ class PositionScanning extends Component {
 			modalPositions,
 			modalPositionGroup,
 			quantity,
+			networkActivityIndicatorVisible,
 		} = this.state;
 
 		if (hasCameraPermission === null) {
@@ -303,9 +322,11 @@ class PositionScanning extends Component {
 		} else {
 			return (
 				<>
+					<StatusBar barStyle="light-content" networkActivityIndicatorVisible={networkActivityIndicatorVisible} animated />
 					<View style={{ flex: 1 }}>
 						<Camera
 							ref={ref => (this.cameraRef = ref)}
+							focusDepth={1}
 							barCodeScannerSettings={{
 								barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
 							}}
@@ -321,9 +342,21 @@ class PositionScanning extends Component {
 									style={{ ...styles.scanningContainerBox, opacity: Number(barCodeScanned !== 'scanned') }}
 								/>
 								<TouchableOpacity
+									style={styles.bugButton}
+									onPress={async () => {
+										const user = await AsyncStorage.getItem('user');
+
+										await MailComposer.composeAsync({
+											recipients: ['pagesppl@gmail.com', 'pagesppl@icloud.com'],
+											subject: 'Bug report',
+											body: `User Data: ${user}\n\nState: ${JSON.stringify(this.state)}`,
+										});
+									}}
+									children={<FontAwesomeIcon style={styles.settingsIcon} icon={['fal', 'bug']} size={24} />}
+								/>
+								<TouchableOpacity
 									style={styles.settingsButton}
-									// onPress={() => this.props.navigation.push('Settings')}
-									onPress={() => this.onToggleRNModal()}
+									onPress={() => this.props.navigation.push('Settings')}
 									children={<FontAwesomeIcon style={styles.settingsIcon} icon={['fal', 'cog']} size={24} />}
 								/>
 							</View>
@@ -432,10 +465,10 @@ class PositionScanning extends Component {
 										{positions ? (
 											<View>
 												<View style={styles.modalHeader2}>
-													{/*<Text style={styles.modalTitle}>Связанные позиции</Text>*/}
+													<Text style={styles.modalTitle}>{positions[0].name}</Text>
 													<TouchableOpacity
 														style={styles.modalClose}
-														onPress={() => this.onHandlerModalPositionGroup(false)}
+														onPress={() => this.onHandlerModalPositions(false)}
 														children={<FontAwesomeIcon style={styles.modalCloseIcon} icon={['fal', 'times']} size={18} />}
 													/>
 												</View>
@@ -546,4 +579,4 @@ const mapDispatchToProps = dispatch => {
 	};
 };
 
-export default connect(null, mapDispatchToProps)(PositionScanning);
+export default connect(null, mapDispatchToProps)(withNavigationFocus(PositionScanning));

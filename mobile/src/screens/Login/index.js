@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import { connect } from 'react-redux';
-import { ImageBackground, StyleSheet, Text, View } from 'react-native';
-import * as Permissions from 'expo-permissions';
+import { withNavigationFocus } from '@react-navigation/compat';
+import { ImageBackground, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { Camera } from 'expo-camera';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { Asset } from 'expo-asset';
@@ -13,9 +13,10 @@ import styles from './styles';
 class Login extends Component {
 	state = {
 		hasCameraPermission: null,
-		type: Camera.Constants.Type.back,
 		scanned: false,
 	};
+
+	cameraRef = createRef();
 
 	handleBarCodeScanned = async ({ type, data }) => {
 		try {
@@ -32,8 +33,16 @@ class Login extends Component {
 	};
 
 	async componentDidMount() {
-		const { status } = await Permissions.askAsync(Permissions.CAMERA);
+		const { status } = await Camera.requestPermissionsAsync();
+
 		this.setState({ hasCameraPermission: status === 'granted' });
+	}
+
+	componentDidUpdate() {
+		const { isFocused } = this.props;
+
+		if (isFocused) this.cameraRef.resumePreview();
+		else this.cameraRef.pausePreview();
 	}
 
 	render() {
@@ -45,23 +54,27 @@ class Login extends Component {
 			return <Text>No access to camera</Text>;
 		} else {
 			return (
-				<View style={styles.container}>
-					<Camera
-						focusDepth={1}
-						barCodeScannerSettings={{
-							barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
-						}}
-						onBarCodeScanned={scanned ? undefined : this.handleBarCodeScanned}
-						style={StyleSheet.absoluteFillObject}
-					/>
-					<View style={styles.containerScan}>
-						<ImageBackground source={Asset.fromModule(require('../../../assets/images/cameraDetect.png'))} style={styles.borderScan} />
-						<View style={styles.contentScan}>
-							<Text style={styles.textScan}>Наведите камеру на QR-код</Text>
-							<Text style={styles.textScan}>и дождитесь авторизации</Text>
+				<>
+					<StatusBar barStyle="light-content" animated />
+					<View style={styles.container}>
+						<Camera
+							ref={ref => (this.cameraRef = ref)}
+							focusDepth={1}
+							barCodeScannerSettings={{
+								barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
+							}}
+							onBarCodeScanned={scanned ? undefined : this.handleBarCodeScanned}
+							style={StyleSheet.absoluteFillObject}
+						/>
+						<View style={styles.containerScan}>
+							<ImageBackground source={Asset.fromModule(require('../../../assets/images/cameraDetect.png'))} style={styles.borderScan} />
+							<View style={styles.contentScan}>
+								<Text style={styles.textScan}>Наведите камеру на QR-код</Text>
+								<Text style={styles.textScan}>и дождитесь авторизации</Text>
+							</View>
 						</View>
 					</View>
-				</View>
+				</>
 			);
 		}
 	}
@@ -73,4 +86,4 @@ const mapDispatchToProps = dispatch => {
 	};
 };
 
-export default connect(null, mapDispatchToProps)(Login);
+export default connect(null, mapDispatchToProps)(withNavigationFocus(Login));

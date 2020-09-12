@@ -27,7 +27,7 @@ const StackRootScreens = () => {
 			}}
 		>
 			<StackRoot.Screen name="Main" options={{ title: 'Камера' }} component={Main} />
-			<StackRoot.Screen name="Settings" options={{ title: 'Настройки' }} component={Settings} />
+			<StackRoot.Screen name="Settings" options={{ title: 'Настройки', headerBackTitle: 'Назад' }} component={Settings} />
 		</StackRoot.Navigator>
 	);
 };

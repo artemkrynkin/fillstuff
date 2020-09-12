@@ -11,6 +11,13 @@ export default StyleSheet.create({
 		justifyContent: 'center',
 		width: '100%',
 	},
+	bugButton: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		position: 'absolute',
+		left: 20,
+		top: 15,
+	},
 	settingsButton: {
 		alignItems: 'center',
 		justifyContent: 'center',

@@ -36,6 +36,8 @@ const PositionGroup = props => {
 					unmountOnExit: true,
 				}}
 				defaultExpanded={true}
+				square={false}
+				elevation={0}
 			>
 				<AccordionSummary
 					expandIcon={<FontAwesomeIcon icon={['far', 'angle-down']} />}

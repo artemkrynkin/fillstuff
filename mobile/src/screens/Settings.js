@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { View, Button } from 'react-native';
+import { View, Button, StatusBar } from 'react-native';
 
 import { logout } from '../actions/authentication';
 
@@ -9,9 +9,12 @@ class Settings extends Component {
 
 	render() {
 		return (
-			<View>
-				<Button title="Выйти" onPress={this.logout} />
-			</View>
+			<>
+				<StatusBar barStyle="dark-content" animated />
+				<View>
+					<Button title="Выйти" onPress={this.logout} />
+				</View>
+			</>
 		);
 	}
 }

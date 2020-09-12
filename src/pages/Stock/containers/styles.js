@@ -9,7 +9,6 @@ import colorTheme from 'shared/colorTheme';
 export const Accordion = withStyles({
 	root: {
 		backgroundColor: 'transparent',
-		boxShadow: 'none',
 		marginBottom: 0,
 		'&$expanded': {
 			margin: '0',
@@ -17,17 +16,8 @@ export const Accordion = withStyles({
 		'&$disabled': {
 			backgroundColor: 'transparent',
 		},
-		'.sa-positions__position-group:last-child &': {
-			borderRadius: '0 0 8px 8px',
-			overflow: 'hidden',
-		},
-	},
-	rounded: {
-		'&:first-child': {
-			borderRadius: 0,
-		},
-		'&:last-child': {
-			borderRadius: 0,
+		'&:before': {
+			display: 'none',
 		},
 	},
 	expanded: {},

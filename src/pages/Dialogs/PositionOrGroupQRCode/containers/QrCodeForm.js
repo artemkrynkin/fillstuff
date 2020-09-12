@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Form, Formik } from 'formik';
 import pdfMake from 'pdfmake/build/pdfmake';
+import { v4 as uuidv4 } from 'uuid';
 
 import Grid from '@material-ui/core/Grid';
 
@@ -60,26 +61,32 @@ const QrCodeForm = props => {
 			...definition,
 		};
 
-		await props
-			.editPosition(position._id, {
-				printDestination: formSettings.printDestination,
-			})
-			.then(response => {
-				if (response.status === 'error' && !response.data) {
-					props.enqueueSnackbar({
-						message: response.message || 'Неизвестная ошибка.',
-						options: {
-							variant: 'error',
-						},
-					});
-				}
-			});
+		if (type === 'position') {
+			await props
+				.editPosition(position._id, {
+					printDestination: formSettings.printDestination,
+				})
+				.then(response => {
+					if (response.status === 'error' && !response.data) {
+						props.enqueueSnackbar({
+							message: response.message || 'Неизвестная ошибка.',
+							options: {
+								variant: 'error',
+							},
+						});
+					}
+				});
+		}
 
 		await sleep(300);
 
 		const pdf = pdfMake.createPdf(docDefinition, null, fonts);
 
-		pdf.print();
+		if (formSettings.printDestination === 'storage') {
+			pdf.print();
+		} else {
+			pdf.download(`${selectedPositionOrGroup.name.replace(' ', '-')}_${Date.now()}`);
+		}
 	};
 
 	const quantity = type === 'position' ? selectedPositionOrGroup.receipts.reduce((sum, receipt) => sum + receipt.current.quantity, 0) : 0;

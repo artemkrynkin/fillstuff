@@ -62,29 +62,31 @@ const positionGroups = (
 		}
 		case 'REMOVE_POSITION_FROM_GROUP':
 		case 'ARCHIVE_POSITION': {
-			let stateData;
+			let stateData = action.type === '';
 
-			if (state.data && action.payload.positionGroupId) {
+			if (state.data) {
 				stateData = { ...state }.data;
 
-				const positionNumbers = action.type === 'REMOVE_POSITION_FROM_GROUP' ? action.payload.positionGroup.positions.length : 1;
-				const positionGroupIndex = stateData.findIndex(positionGroup => positionGroup._id === action.payload.positionGroupId);
-				const positionGroup = stateData[positionGroupIndex];
+				if (action.payload.positionGroupId) {
+					const positionNumbers = action.type === 'REMOVE_POSITION_FROM_GROUP' ? action.payload.positionGroup.positions.length : 1;
+					const positionGroupIndex = stateData.findIndex(positionGroup => positionGroup._id === action.payload.positionGroupId);
+					const positionGroup = stateData[positionGroupIndex];
 
-				if (positionGroup.positions.length > positionNumbers) {
-					if (action.type === 'REMOVE_POSITION_FROM_GROUP') {
-						action.payload.positionGroup.positions.forEach(positionId => {
-							const positionIndex = positionGroup.positions.findIndex(positionIdInGroup => positionIdInGroup === positionId);
+					if (positionGroup.positions.length > positionNumbers) {
+						if (action.type === 'REMOVE_POSITION_FROM_GROUP') {
+							action.payload.positionGroup.positions.forEach(positionId => {
+								const positionIndex = positionGroup.positions.findIndex(positionIdInGroup => positionIdInGroup === positionId);
+
+								positionGroup.positions.splice(positionIndex, 1);
+							});
+						} else {
+							const positionIndex = positionGroup.positions.findIndex(positionIdInGroup => positionIdInGroup === action.payload.positionId);
 
 							positionGroup.positions.splice(positionIndex, 1);
-						});
+						}
 					} else {
-						const positionIndex = positionGroup.positions.findIndex(positionIdInGroup => positionIdInGroup === action.payload.positionId);
-
-						positionGroup.positions.splice(positionIndex, 1);
+						stateData.splice(positionGroupIndex, 1);
 					}
-				} else {
-					stateData.splice(positionGroupIndex, 1);
 				}
 			}
 

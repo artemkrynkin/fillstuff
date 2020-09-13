@@ -45,15 +45,17 @@ const PositionDropdown = props => {
 			) : null}
 			{position.receipts.length ? <Divider /> : null}
 			<MenuList>
-				<MenuItem
-					onClick={() => {
-						onToggleDropdownActions();
-						onOpenDialogPosition('dialogPositionQRCode', 'position', position);
-					}}
-					iconBefore={<FontAwesomeIcon icon={['far-c', 'qr-code']} fixedWidth />}
-				>
-					Печать QR-кода
-				</MenuItem>
+				{!position.parentPosition ? (
+					<MenuItem
+						onClick={() => {
+							onToggleDropdownActions();
+							onOpenDialogPosition('dialogPositionQRCode', 'position', position);
+						}}
+						iconBefore={<FontAwesomeIcon icon={['far-c', 'qr-code']} fixedWidth />}
+					>
+						Печать QR-кода
+					</MenuItem>
+				) : null}
 				<MenuItem
 					onClick={() => {
 						onToggleDropdownActions();

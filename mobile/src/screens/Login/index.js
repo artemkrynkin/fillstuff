@@ -1,6 +1,5 @@
 import React, { Component, createRef } from 'react';
 import { connect } from 'react-redux';
-import { withNavigationFocus } from '@react-navigation/compat';
 import { ImageBackground, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { Camera } from 'expo-camera';
 import { BarCodeScanner } from 'expo-barcode-scanner';
@@ -16,6 +15,8 @@ class Login extends Component {
 		scanned: false,
 	};
 
+	_focusListener = null;
+	_blurListener = null;
 	cameraRef = createRef();
 
 	handleBarCodeScanned = async ({ type, data }) => {
@@ -35,14 +36,27 @@ class Login extends Component {
 	async componentDidMount() {
 		const { status } = await Camera.requestPermissionsAsync();
 
+		this._focusListener = this.props.navigation.addListener('focus', () => {
+			this.cameraRef.resumePreview();
+		});
+
+		this._blurListener = this.props.navigation.addListener('blur', () => {
+			this.cameraRef.pausePreview();
+		});
+
 		this.setState({ hasCameraPermission: status === 'granted' });
 	}
 
-	componentDidUpdate() {
-		const { isFocused } = this.props;
+	componentWillUnmount() {
+		if (this._focusListener) {
+			this._focusListener();
+			this._focusListener = null;
+		}
 
-		if (isFocused) this.cameraRef.resumePreview();
-		else this.cameraRef.pausePreview();
+		if (this._blurListener) {
+			this._blurListener();
+			this._blurListener = null;
+		}
 	}
 
 	render() {
@@ -86,4 +100,4 @@ const mapDispatchToProps = dispatch => {
 	};
 };
 
-export default connect(null, mapDispatchToProps)(withNavigationFocus(Login));
+export default connect(null, mapDispatchToProps)(Login);

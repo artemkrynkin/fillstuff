@@ -7,14 +7,12 @@ import {
 	TouchableHighlight,
 	TouchableOpacity,
 	FlatList,
-	// AppState,
 	Vibration,
 	ImageBackground,
 	TextInput,
 	Alert,
 	StatusBar,
 } from 'react-native';
-import { withNavigationFocus } from '@react-navigation/compat';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Asset } from 'expo-asset';
@@ -47,16 +45,12 @@ class PositionScanning extends Component {
 	};
 
 	state = {
-		// appState: AppState.currentState,
 		hasCameraPermission: null,
 		...this.initialRemainingState,
 	};
 
-	// timerAppState = {
-	// 	timer: null,
-	// 	drop: false,
-	// };
-
+	_focusListener = null;
+	_blurListener = null;
 	cameraRef = createRef();
 	textFieldQuantity = createRef();
 
@@ -71,7 +65,6 @@ class PositionScanning extends Component {
 		if (barCodeScanned.match(/scanning|scanned/)) {
 			if (modalPosition) setTimeout(() => this.onHandlerModalPosition(false), 500);
 			else if (modalPositionGroup) setTimeout(() => this.onHandlerModalPositionGroup(false), 500);
-			// setTimeout(() => this.setState(this.initialRemainingState), 450);
 		}
 	};
 
@@ -79,7 +72,6 @@ class PositionScanning extends Component {
 		try {
 			const { studioId } = JSON.parse(await AsyncStorage.getItem('user'));
 			const { type, id: qrcodeId } = JSON.parse(data);
-
 			this.setState({ barCodeScanned: 'scanning', networkActivityIndicatorVisible: true }, () => {
 				if (
 					Constants.platform.android ||
@@ -163,11 +155,11 @@ class PositionScanning extends Component {
 				if (!visible && this.cameraRef) this.cameraRef.resumePreview();
 			});
 
-			if (barCodeScanned === 'scanned' && visible)
+			if (barCodeScanned === 'scanned' && visible) {
 				setTimeout(() => {
 					if (this.textFieldQuantity && this.textFieldQuantity.current) this.textFieldQuantity.current.focus();
 				}, 100);
-			else {
+			} else {
 				if (this.textFieldQuantity && this.textFieldQuantity.current) this.textFieldQuantity.current.blur();
 			}
 		} else {
@@ -175,11 +167,11 @@ class PositionScanning extends Component {
 				setTimeout(() => {
 					this.setState(setState);
 
-					if (barCodeScanned === 'scanned' && visible)
+					if (barCodeScanned === 'scanned' && visible) {
 						setTimeout(() => {
 							if (this.textFieldQuantity && this.textFieldQuantity.current) this.textFieldQuantity.current.focus();
 						}, 100);
-					else {
+					} else {
 						if (this.textFieldQuantity && this.textFieldQuantity.current) this.textFieldQuantity.current.blur();
 					}
 				}, 450);
@@ -255,45 +247,31 @@ class PositionScanning extends Component {
 		});
 	};
 
-	// onHandleAppStateChange = nextAppState => {
-	// 	if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-	// 		clearTimeout(this.timerAppState.timer);
-	//
-	// 		if (this.timerAppState.drop) {
-	// 			this.timerAppState.drop = false;
-	// 			this.onDropModals();
-	// 		}
-	// 	}
-	// 	if (nextAppState.match(/inactive|background/) && this.state.appState === 'active') {
-	// 		this.timerAppState.timer = setTimeout(() => {
-	// 			this.timerAppState.drop = true;
-	// 		}, 15000);
-	// 	}
-	//
-	// 	this.setState({ appState: nextAppState });
-	// };
-
 	async componentDidMount() {
 		const { status } = await Camera.requestPermissionsAsync();
 
-		this.setState({ hasCameraPermission: status === 'granted' });
+		this._focusListener = this.props.navigation.addListener('focus', () => {
+			this.cameraRef.resumePreview();
+		});
 
-		// AppState.addEventListener('change', this.onHandleAppStateChange);
+		this._blurListener = this.props.navigation.addListener('blur', () => {
+			this.cameraRef.pausePreview();
+		});
+
+		this.setState({ hasCameraPermission: status === 'granted' });
 	}
 
-	componentDidUpdate() {
-		const { isFocused } = this.props;
-		const { barCodeScanned } = this.state;
+	componentWillUnmount() {
+		if (this._focusListener) {
+			this._focusListener();
+			this._focusListener = null;
+		}
 
-		if (barCodeScanned === 'ready') {
-			if (isFocused) this.cameraRef.resumePreview();
-			else this.cameraRef.pausePreview();
+		if (this._blurListener) {
+			this._blurListener();
+			this._blurListener = null;
 		}
 	}
-
-	// componentWillUnmount() {
-	// 	AppState.removeEventListener('change', this.onHandleAppStateChange);
-	// }
 
 	render() {
 		const {
@@ -365,7 +343,7 @@ class PositionScanning extends Component {
 
 					<SafeAreaInsetsContext.Consumer>
 						{insets => (
-							<View>
+							<>
 								<Modal
 									animationInTiming={200}
 									animationOutTiming={400}
@@ -562,7 +540,7 @@ class PositionScanning extends Component {
 										) : null}
 									</View>
 								</Modal>
-							</View>
+							</>
 						)}
 					</SafeAreaInsetsContext.Consumer>
 				</>
@@ -579,4 +557,4 @@ const mapDispatchToProps = dispatch => {
 	};
 };
 
-export default connect(null, mapDispatchToProps)(withNavigationFocus(PositionScanning));
+export default connect(null, mapDispatchToProps)(PositionScanning);

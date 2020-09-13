@@ -66,7 +66,7 @@ const PositionTab = props => {
 								disableFocusListener={typeIsCreateOrEdit}
 								disableHoverListener={typeIsCreateOrEdit}
 								disableTouchListener={typeIsCreateOrEdit}
-								title={<div style={{ textAlign: 'center', width: 220 }}>Можно изменить только при&nbsp;создании новой позиции</div>}
+								title={<div style={{ textAlign: 'center', width: 220 }}>Можно изменить при&nbsp;редактировании позиции</div>}
 								placement="bottom"
 							>
 								<div>

@@ -17,7 +17,11 @@ const DialogPositionArchiveDelete = loadable(() =>
 );
 
 const Header = props => {
-	const { onCloseDialog, onOpenDialogByNameIndex, storeNotification } = props;
+	const {
+		onCloseDialog,
+		onOpenDialogByNameIndex,
+		storeNotification: { position },
+	} = props;
 	const [dialogData, setDialogData] = useState({
 		position: null,
 	});
@@ -26,13 +30,17 @@ const Header = props => {
 		dialogPositionArchiveDelete: false,
 	});
 
-	const procurement = setLastReceipt => ({
-		orderedReceiptsPositions: [
-			{
-				position: procurementPositionTransform(storeNotification.position, setLastReceipt),
-			},
-		],
-	});
+	const procurement = setLastReceipt => {
+		const orderedPosition = 'parentPosition' in position ? position.parentPosition : position;
+
+		return {
+			orderedReceiptsPositions: [
+				{
+					position: procurementPositionTransform(orderedPosition, setLastReceipt),
+				},
+			],
+		};
+	};
 
 	const onOpenDialogByName = (dialogName, dataType, data) => {
 		setDialogOpenedName(dialogName);
@@ -93,7 +101,7 @@ const Header = props => {
 						[styles.archiveAfterEndedButton]: true,
 						destructiveAction: true,
 					})}
-					onClick={() => onOpenDialogByName('dialogPositionArchiveDelete', 'position', storeNotification.position)}
+					onClick={() => onOpenDialogByName('dialogPositionArchiveDelete', 'position', position)}
 				>
 					<FontAwesomeIcon icon={['far', 'archive']} />
 				</IconButton>

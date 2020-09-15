@@ -20,28 +20,31 @@ const OrderedReceiptPosition = props => {
 		setPositionIndexInProcurement,
 		onOpenDialogByName,
 		index,
-		orderedReceiptPosition,
+		orderedReceiptPosition: { position },
 		arrayHelpers: { remove },
 		formikProps: { errors, isSubmitting, touched },
 	} = props;
 
-	const isNmpNmp = orderedReceiptPosition.position.unitReceipt === 'nmp' && orderedReceiptPosition.position.unitRelease === 'nmp';
+	const isNmpNmp = position.unitReceipt === 'nmp' && position.unitRelease === 'nmp';
 
 	const onOpenDialogPositionCreateReplacement = () => {
-		const { createdAt, isArchived, archivedAfterEnded, hasReceipts, ...remainingProps } = orderedReceiptPosition.position;
+		const { name, qrcodeId, printDestination, positionGroup, unitReceipt, unitRelease, minimumBalance, isFree, characteristics } = position;
 
 		const positionReplacement = {
-			...remainingProps,
-			childPosition: orderedReceiptPosition.position,
+			name,
+			qrcodeId,
+			printDestination,
+			positionGroup,
+			unitReceipt,
+			unitRelease,
+			minimumBalance,
+			isFree,
+			characteristics,
+			childPosition: position._id,
 		};
 
 		setPositionIndexInProcurement(index);
 		onOpenDialogByName('dialogPositionCreateReplacement', 'positionReplacement', positionReplacement);
-	};
-
-	const onOpenDialogPositionEditReplacement = () => {
-		setPositionIndexInProcurement(index);
-		onOpenDialogByName('dialogPositionEditReplacement', 'positionReplacement', orderedReceiptPosition.position);
 	};
 
 	return (
@@ -53,15 +56,15 @@ const OrderedReceiptPosition = props => {
 				<Grid className={styles.positionContentHeader} alignItems="center" container>
 					<Grid className={styles.positionSelected} zeroMinWidth item>
 						<PositionNameInList
-							name={orderedReceiptPosition.position.name}
-							characteristics={orderedReceiptPosition.position.characteristics}
+							name={position.name}
+							characteristics={position.characteristics}
 							size="md"
-							childPosition={orderedReceiptPosition.position.childPosition}
+							childPosition={position.childPosition}
 							minHeight={false}
 						/>
 					</Grid>
 					<Grid className={styles.actionButtons} item>
-						{!orderedReceiptPosition.position.childPosition && !orderedReceiptPosition.position.parentPosition ? (
+						{!position.childPosition && !position.parentPosition ? (
 							<Tooltip title="Создать позицию на замену" placement="top">
 								<IconButton
 									className={styles.actionButton}
@@ -70,18 +73,6 @@ const OrderedReceiptPosition = props => {
 									tabIndex={-1}
 								>
 									<FontAwesomeIcon icon={['far-c', 'position-replacement']} />
-								</IconButton>
-							</Tooltip>
-						) : null}
-						{orderedReceiptPosition.position.notCreated ? (
-							<Tooltip title="Редактировать" placement="top">
-								<IconButton
-									className={styles.actionButton}
-									onClick={onOpenDialogPositionEditReplacement}
-									disabled={isSubmitting}
-									tabIndex={-1}
-								>
-									<FontAwesomeIcon icon={['far', 'pen']} />
 								</IconButton>
 							</Tooltip>
 						) : null}

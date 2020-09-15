@@ -22,18 +22,7 @@ const procurementSchema = (depopulate = false) => {
 			Yup.object().shape({
 				position: Yup.mixed()
 					.required()
-					.transform(position => {
-						const { _id, notCreated, childPosition, characteristics, ...remainingParams } = position;
-
-						const positionReplacement = {
-							...remainingParams,
-							childPosition: _id,
-							notCreated,
-							characteristics: characteristics.map(characteristic => characteristic._id),
-						};
-
-						return depopulate ? (notCreated ? positionReplacement : _id) : position;
-					}),
+					.transform(position => (depopulate ? position._id : position)),
 				quantity: Yup.number()
 					.nullable(true)
 					.transform(value => (isNaN(value) ? null : value))

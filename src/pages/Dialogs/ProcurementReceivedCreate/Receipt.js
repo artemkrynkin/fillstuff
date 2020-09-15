@@ -38,20 +38,23 @@ const Receipt = props => {
 		!formEditable && !position.isFree ? formatNumber(receipt.unitPurchasePrice + receipt.unitCostDelivery + receipt.unitMarkup) : 0;
 
 	const onOpenDialogPositionCreateReplacement = () => {
-		const { createdAt, isArchived, archivedAfterEnded, hasReceipts, ...remainingProps } = position;
+		const { name, qrcodeId, printDestination, positionGroup, unitReceipt, unitRelease, minimumBalance, isFree, characteristics } = position;
 
 		const positionReplacement = {
-			...remainingProps,
-			childPosition: position,
+			name,
+			qrcodeId,
+			printDestination,
+			positionGroup,
+			unitReceipt,
+			unitRelease,
+			minimumBalance,
+			isFree,
+			characteristics,
+			childPosition: position._id,
 		};
 
 		setReceiptIndexInProcurement(index);
 		onOpenDialogByName('dialogPositionCreateReplacement', 'positionReplacement', positionReplacement);
-	};
-
-	const onOpenDialogPositionEditReplacement = () => {
-		setReceiptIndexInProcurement(index);
-		onOpenDialogByName('dialogPositionEditReplacement', 'positionReplacement', position);
 	};
 
 	return (
@@ -81,18 +84,6 @@ const Receipt = props => {
 										tabIndex={-1}
 									>
 										<FontAwesomeIcon icon={['far-c', 'position-replacement']} />
-									</IconButton>
-								</Tooltip>
-							) : null}
-							{position.notCreated ? (
-								<Tooltip title="Редактировать" placement="top">
-									<IconButton
-										className={styles.actionButton}
-										onClick={onOpenDialogPositionEditReplacement}
-										disabled={isSubmitting}
-										tabIndex={-1}
-									>
-										<FontAwesomeIcon icon={['far', 'pen']} />
 									</IconButton>
 								</Tooltip>
 							) : null}

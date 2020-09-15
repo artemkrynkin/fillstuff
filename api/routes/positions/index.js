@@ -10,6 +10,7 @@ import Studio from 'api/models/studio';
 import Position from 'api/models/position';
 import PositionGroup from 'api/models/positionGroup';
 import Receipt from 'api/models/receipt';
+import StoreNotification from '../../models/storeNotification';
 
 const positionsRouter = Router();
 
@@ -100,37 +101,34 @@ positionsRouter.post(
 
 		if (newPositionErr) return next({ code: newPositionErr.errors ? 5 : 2, err: newPositionErr });
 
+		if (newPosition.childPosition) {
+			const childPosition = await Position.findById(newPosition.childPosition);
+
+			await Position.findByIdAndUpdate(childPosition._id, {
+				$set: {
+					parentPosition: newPosition._id,
+					archivedAfterEnded: true,
+				},
+			}).catch(err => next({ code: 2, err }));
+
+			if (childPosition.positionGroup) {
+				PositionGroup.findByIdAndUpdate(childPosition.positionGroup, { $push: { positions: childPosition._id } }).catch(err =>
+					next({ code: 2, err })
+				);
+			}
+		}
+
 		await Promise.all([newPosition.save()]);
 
 		const position = await Position.findById(newPosition._id)
 			.populate([
-				{
-					path: 'studio',
-					select: 'store',
-				},
 				{
 					path: 'activeReceipt characteristics shops.shop',
 				},
 			])
 			.catch(err => next({ code: 2, err }));
 
-		const {
-			studio: {
-				store: { numberPositions: numberPositionsOld },
-			},
-		} = position;
-
-		Studio.findByIdAndUpdate(
-			position.studio._id,
-			{
-				$set: {
-					'store.numberPositions': numberPositionsOld + 1,
-				},
-			},
-			{ runValidators: true }
-		).catch(err => next({ code: 2, err }));
-
-		position.depopulate('studio');
+		Studio.findByIdAndUpdate(position.studio._id, { $inc: { 'store.numberPositions': 1 } }).catch(err => next({ code: 2, err }));
 
 		res.json(position);
 	}
@@ -343,9 +341,11 @@ positionsRouter.post(
 				position: position._id,
 			};
 
+			const isCreatedStoreNotification = await StoreNotification.findOne(storeNotification).catch(err => next({ code: 2, err }));
+
 			if (archivedAfterEnded) {
 				Emitter.emit('deleteStoreNotification', storeNotification);
-			} else {
+			} else if (!archivedAfterEnded && !isCreatedStoreNotification) {
 				Emitter.emit('newStoreNotification', storeNotification);
 			}
 		}

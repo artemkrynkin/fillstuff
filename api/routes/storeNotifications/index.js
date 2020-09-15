@@ -22,6 +22,12 @@ storeNotificationsRouter.post(
 					path: 'position',
 					populate: [
 						{
+							path: 'parentPosition',
+							populate: {
+								path: 'characteristics',
+							},
+						},
+						{
 							path: 'receipts',
 							match: { status: /received|active/ },
 							options: {
@@ -35,6 +41,7 @@ storeNotificationsRouter.post(
 					populate: [
 						{
 							path: 'orderedByMember',
+							select: 'user',
 							populate: {
 								path: 'user',
 								select: 'avatar name email',
@@ -103,6 +110,12 @@ storeNotificationsRouter.post(
 					path: 'position',
 					populate: [
 						{
+							path: 'parentPosition',
+							populate: {
+								path: 'characteristics',
+							},
+						},
+						{
 							path: 'characteristics shops.shop shops.lastProcurement receipts',
 						},
 					],
@@ -112,6 +125,7 @@ storeNotificationsRouter.post(
 					populate: [
 						{
 							path: 'orderedByMember',
+							select: 'user',
 							populate: {
 								path: 'user',
 								select: 'avatar name email',

@@ -28,7 +28,7 @@ const PositionNameInList = props => {
 			<div className={styles.names}>
 				<div className={styles.name}>
 					{size === 'sm' ? (
-						name
+						<>{name}</>
 					) : (
 						<>
 							<span className={styles.nameText}>{name}</span>

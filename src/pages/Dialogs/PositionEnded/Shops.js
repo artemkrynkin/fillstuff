@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
@@ -40,7 +40,7 @@ const Shops = props => {
 	}, []);
 
 	return (
-		<Fragment>
+		<>
 			{otherShops ? (
 				<div className={styles.lastShop}>
 					<Typography className={styles.title} variant="h6">
@@ -110,7 +110,7 @@ const Shops = props => {
 					) : null}
 				</div>
 			) : null}
-		</Fragment>
+		</>
 	);
 };
 

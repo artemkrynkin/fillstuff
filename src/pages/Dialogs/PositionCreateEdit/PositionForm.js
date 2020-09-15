@@ -18,8 +18,6 @@ import positionSchema from './positionSchema';
 const PositionForm = props => {
 	const { onCloseDialog, type, selectedPosition, childPosition, parentPosition, tabName } = props;
 
-	const typeIsCreateOrEdit = /^(create|edit)$/.test(type);
-
 	let initialValues = {
 		name: '',
 		unitReceipt: '',
@@ -33,32 +31,24 @@ const PositionForm = props => {
 	if (selectedPosition) initialValues = { ...initialValues, ...selectedPosition };
 
 	const onSubmit = (values, actions) => {
-		const { type, sendRequest } = props;
-		const position = positionSchema(typeIsCreateOrEdit).cast(values);
+		const { type } = props;
+		const position = positionSchema(true).cast(values);
 
-		if (!sendRequest) {
-			position.notCreated = true;
-
-			return handleSuccess(sendRequest, position, actions);
-		}
-
-		if (type === 'create') {
-			props.createPosition(position).then(response => handleSuccess(sendRequest, response, actions));
+		if (/^(create|create-replacement)$/.test(type)) {
+			props.createPosition(position).then(response => handleSuccess(response, actions));
 		}
 
 		if (type === 'edit') {
-			props.editPosition(position._id, position).then(response => handleSuccess(sendRequest, response, actions));
+			props.editPosition(position._id, position).then(response => handleSuccess(response, actions));
 		}
 	};
 
-	const handleSuccess = (sendRequest, response, actions) => {
+	const handleSuccess = (response, actions) => {
 		const { type, onCloseDialog, onCallback } = props;
 
 		actions.setSubmitting(false);
 
 		if (onCallback !== undefined) onCallback(response);
-
-		if (!sendRequest) return onCloseDialog();
 
 		if (response.status === 'success') {
 			const { data: position } = response;
@@ -142,11 +132,11 @@ const mapStateToProps = (state, ownProps) => {
 
 	const stateReturn = {};
 
-	if (state.positions.data && /^(edit)$/.test(type)) {
+	if (state.positions.data && !/^(create)$/.test(type)) {
 		const childOrParentPositionId = selectedPosition.childPosition || selectedPosition.parentPosition;
 
 		if (childOrParentPositionId) {
-			stateReturn[selectedPosition.childPosition ? 'childPosition' : 'parentPosition'] = state.positions.data.find(
+			stateReturn['childPosition' in selectedPosition ? 'childPosition' : 'parentPosition'] = state.positions.data.find(
 				position => position._id === childOrParentPositionId
 			);
 		}

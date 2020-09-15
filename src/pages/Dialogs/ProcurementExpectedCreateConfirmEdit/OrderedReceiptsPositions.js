@@ -15,10 +15,6 @@ const DialogPositionCreateReplacement = loadable(() =>
 	import('src/pages/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateReplacement" */)
 );
 
-const DialogPositionEditReplacement = loadable(() =>
-	import('src/pages/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionEditReplacement" */)
-);
-
 const OrderedReceiptsPositions = props => {
 	const {
 		dialogRef,
@@ -41,7 +37,6 @@ const OrderedReceiptsPositions = props => {
 	const [dialogs, setDialogs] = useState({
 		dialogPositionCreate: false,
 		dialogPositionCreateReplacement: false,
-		dialogPositionEditReplacement: false,
 	});
 
 	const onOpenDialogByName = (dialogName, dataType, data) => {
@@ -181,31 +176,16 @@ const OrderedReceiptsPositions = props => {
 				dialogOpen={dialogs.dialogPositionCreateReplacement}
 				onCloseDialog={() => onCloseDialogByName('dialogPositionCreateReplacement')}
 				onExitedDialog={() => onExitedDialogByName('positionReplacement')}
-				onCallback={position => {
-					const orderedReceiptPosition = values.orderedReceiptsPositions[positionIndexInProcurement];
+				onCallback={({ status, data: position }) => {
+					if (status === 'success') {
+						const orderedReceipt = values.orderedReceiptsPositions[positionIndexInProcurement];
 
-					replace(positionIndexInProcurement, { ...orderedReceiptPosition, position: procurementPositionTransform(position) });
+						replace(positionIndexInProcurement, { ...orderedReceipt, position: procurementPositionTransform(position) });
 
-					setPositionIndexInProcurement(undefined);
+						setPositionIndexInProcurement(undefined);
+					}
 				}}
-				sendRequest={false}
 				selectedPosition={dialogOpenedName === 'dialogPositionCreateReplacement' ? dialogData.positionReplacement : null}
-			/>
-
-			<DialogPositionEditReplacement
-				type="edit-replacement"
-				dialogOpen={dialogs.dialogPositionEditReplacement}
-				onCloseDialog={() => onCloseDialogByName('dialogPositionEditReplacement')}
-				onExitedDialog={() => onExitedDialogByName('positionReplacement')}
-				onCallback={position => {
-					const orderedReceiptPosition = values.orderedReceiptsPositions[positionIndexInProcurement];
-
-					replace(positionIndexInProcurement, { ...orderedReceiptPosition, position: procurementPositionTransform(position) });
-
-					setPositionIndexInProcurement(undefined);
-				}}
-				sendRequest={false}
-				selectedPosition={dialogOpenedName === 'dialogPositionEditReplacement' ? dialogData.positionReplacement : null}
 			/>
 		</div>
 	);

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Form, Formik } from 'formik';
 import pdfMake from 'pdfmake/build/pdfmake';
-import { v4 as uuidv4 } from 'uuid';
 
 import Grid from '@material-ui/core/Grid';
 

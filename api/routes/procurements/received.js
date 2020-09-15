@@ -168,6 +168,7 @@ procurementsRouter.post(
 					},
 				},
 			])
+			.lean()
 			.catch(err => next({ code: 2, err }));
 
 		const positions = await positionsPromise;
@@ -182,60 +183,14 @@ procurementsRouter.post(
 			  })
 			: procurementExist;
 
-		const positionsInsert = [];
-		const positionsErr = [];
 		const receiptsErr = [];
-		const positionReplacementNumbers = newProcurementValues.receipts.reduce(
-			(sum, { position }) => sum + Number(Boolean(position.notCreated)),
-			0
-		);
 		const positionsDeleteStoreNotification = [];
-		const positionsGroupsPositionsAdding = [];
 		let awaitingPromises = [];
-		let replacementPositionsUpdate = [];
 
-		newProcurement.positions = [];
+		newProcurement.receipts = newProcurementValues.receipts.map(({ position: positionId, ...receipt }) => {
+			const position = positions.find(position => String(position._id) === positionId);
 
-		newProcurement.receipts = newProcurementValues.receipts.map(initialReceipt => {
-			const { position: positionTemp, ...receipt } = initialReceipt;
-
-			const position = positionTemp.notCreated
-				? new Position(positionTemp)
-				: positions.find(position => String(position._id) === positionTemp);
-
-			if (positionTemp.notCreated) {
-				const newPositionErr = position.validateSync();
-
-				if (newPositionErr) positionsErr.push(newPositionErr);
-				else positionsInsert.push(position);
-
-				replacementPositionsUpdate.push([
-					position.childPosition,
-					{
-						$set: {
-							parentPosition: position._id,
-							archivedAfterEnded: true,
-						},
-					},
-				]);
-
-				if (position.positionGroup) {
-					const positionGroup = positionsGroupsPositionsAdding.find(positionGroup => positionGroup._id === String(position.positionGroup));
-
-					if (!positionGroup) {
-						positionsGroupsPositionsAdding.push({
-							_id: position.positionGroup,
-							positions: [position._id],
-						});
-					} else {
-						positionGroup.positions.push(position._id);
-					}
-				}
-			}
-
-			newProcurement.positions.push(position._id);
-
-			positionsDeleteStoreNotification.push(positionTemp.notCreated ? position.childPosition : position._id);
+			positionsDeleteStoreNotification.push('childPosition' in position ? position.childPosition : position._id);
 
 			const newReceipt = new Receipt({
 				...receipt,
@@ -306,31 +261,17 @@ procurementsRouter.post(
 			newProcurement.orderedReceiptsPositions = undefined;
 		}
 
-		if (positionsErr.length || receiptsErr.length) return next({ code: 2 });
+		if (receiptsErr.length) return next({ code: 2 });
 
 		const newProcurementErr = newProcurement.validateSync();
 
 		if (newProcurementErr) return next({ code: newProcurementErr.errors ? 5 : 2, err: newProcurementErr });
 
-		if (positionsInsert.length) {
-			await Position.insertMany(positionsInsert).catch(err => next({ code: 2, err }));
-		}
-
 		await Receipt.insertMany(newProcurement.receipts).catch(err => next({ code: 2, err }));
-
-		replacementPositionsUpdate = replacementPositionsUpdate.map(promiseItem => Position.findByIdAndUpdate(promiseItem[0], promiseItem[1]));
-
-		if (positionsGroupsPositionsAdding) {
-			positionsGroupsPositionsAdding.forEach(positionGroup => {
-				PositionGroup.findByIdAndUpdate(positionGroup._id, { $push: { positions: { $each: positionGroup.positions } } }).catch(err =>
-					next({ code: 2, err })
-				);
-			});
-		}
 
 		awaitingPromises = awaitingPromises.map(promiseItem => Position.findByIdAndUpdate(promiseItem[0], promiseItem[1]));
 
-		await Promise.all([newProcurement.save(), ...awaitingPromises, ...replacementPositionsUpdate]);
+		await Promise.all([newProcurement.save(), ...awaitingPromises]);
 
 		if (procurementExist) {
 			Emitter.emit('deleteStoreNotification', {
@@ -392,9 +333,6 @@ procurementsRouter.post(
 				$set: {
 					'store.storePrice':
 						storePriceOld + procurement.receipts.reduce((sum, receipt) => sum + receipt.initial.quantity * receipt.unitPurchasePrice, 0),
-				},
-				$inc: {
-					'store.numberPositions': positionReplacementNumbers,
 				},
 			},
 			{ runValidators: true }

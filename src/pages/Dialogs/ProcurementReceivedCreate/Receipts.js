@@ -18,10 +18,6 @@ const DialogPositionCreateReplacement = loadable(() =>
 	import('src/pages/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateReplacement" */)
 );
 
-const DialogPositionEditReplacement = loadable(() =>
-	import('src/pages/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionEditReplacement" */)
-);
-
 const addPositionContainerClasses = (formEditable, status) =>
 	ClassNames(styles.addPositionContainer, {
 		[styles.disabled]: !formEditable || status === 'expected',
@@ -50,7 +46,6 @@ const Receipts = props => {
 	const [dialogs, setDialogs] = useState({
 		dialogPositionCreate: false,
 		dialogPositionCreateReplacement: false,
-		dialogPositionEditReplacement: false,
 	});
 
 	const onOpenDialogByName = (dialogName, dataType, data) => {
@@ -189,31 +184,16 @@ const Receipts = props => {
 				dialogOpen={dialogs.dialogPositionCreateReplacement}
 				onCloseDialog={() => onCloseDialogByName('dialogPositionCreateReplacement')}
 				onExitedDialog={() => onExitedDialogByName('positionReplacement')}
-				onCallback={position => {
-					const receipt = values.receipts[receiptIndexInProcurement];
+				onCallback={({ status, data: position }) => {
+					if (status === 'success') {
+						const receipt = values.receipts[receiptIndexInProcurement];
 
-					replace(receiptIndexInProcurement, { ...receipt, position: procurementPositionTransform(position) });
+						replace(receiptIndexInProcurement, { ...receipt, position: procurementPositionTransform(position) });
 
-					setReceiptIndexInProcurement(undefined);
+						setReceiptIndexInProcurement(undefined);
+					}
 				}}
-				sendRequest={false}
 				selectedPosition={dialogOpenedName === 'dialogPositionCreateReplacement' ? dialogData.positionReplacement : null}
-			/>
-
-			<DialogPositionEditReplacement
-				type="edit-replacement"
-				dialogOpen={dialogs.dialogPositionEditReplacement}
-				onCloseDialog={() => onCloseDialogByName('dialogPositionEditReplacement')}
-				onExitedDialog={() => onExitedDialogByName('positionReplacement')}
-				onCallback={position => {
-					const receipt = values.receipts[receiptIndexInProcurement];
-
-					replace(receiptIndexInProcurement, { ...receipt, position: procurementPositionTransform(position) });
-
-					setReceiptIndexInProcurement(undefined);
-				}}
-				sendRequest={false}
-				selectedPosition={dialogOpenedName === 'dialogPositionEditReplacement' ? dialogData.positionReplacement : null}
 			/>
 		</div>
 	);

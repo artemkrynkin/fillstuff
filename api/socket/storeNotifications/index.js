@@ -17,6 +17,12 @@ export const newStoreNotification = io => {
 				path: 'position',
 				populate: [
 					{
+						path: 'parentPosition',
+						populate: {
+							path: 'characteristics',
+						},
+					},
+					{
 						path: 'receipts',
 						match: { status: /received|active/ },
 						options: {
@@ -30,6 +36,7 @@ export const newStoreNotification = io => {
 				populate: [
 					{
 						path: 'orderedByMember',
+						select: 'user',
 						populate: {
 							path: 'user',
 							select: 'avatar name email',
@@ -90,6 +97,12 @@ export const editStoreNotification = io => {
 				path: 'position',
 				populate: [
 					{
+						path: 'parentPosition',
+						populate: {
+							path: 'characteristics',
+						},
+					},
+					{
 						path: 'receipts',
 						match: { status: /received|active/ },
 						options: {
@@ -103,6 +116,7 @@ export const editStoreNotification = io => {
 				populate: [
 					{
 						path: 'orderedByMember',
+						select: 'user',
 						populate: {
 							path: 'user',
 							select: 'avatar name email',

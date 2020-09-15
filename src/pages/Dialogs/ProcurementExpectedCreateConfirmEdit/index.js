@@ -184,7 +184,9 @@ const mapStateToProps = state => {
 	const positions = { ...state.positions };
 
 	if (positions.data && positions.data.length > 0) {
-		positions.data = positions.data.filter(position => !position.isArchived).map(position => procurementPositionTransform(position));
+		positions.data = positions.data
+			.filter(position => !position.isArchived && !position.archivedAfterEnded)
+			.map(position => procurementPositionTransform(position));
 	}
 
 	return {

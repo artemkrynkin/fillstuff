@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Formik } from 'formik';
+import { isEqual } from 'lodash';
 
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import DialogActions from '@material-ui/core/DialogActions';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { getStudioStore } from 'src/actions/studio';
 import { getPositions, createPosition, editPosition } from 'src/actions/positions';
@@ -96,6 +98,8 @@ const PositionForm = props => {
 			{formikProps => {
 				const { isSubmitting, submitForm } = formikProps;
 
+				const isEqualCharacteristics = childPosition ? isEqual(formikProps.values.characteristics, childPosition.characteristics) : false;
+
 				return (
 					<>
 						{tabName === 'position' ? (
@@ -111,12 +115,34 @@ const PositionForm = props => {
 									</Button>
 								</Grid>
 								<Grid xs={8} item>
-									<Button onClick={() => submitForm()} disabled={isSubmitting} variant="contained" color="primary" size="large" fullWidth>
-										{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
-										<span className="loading-button-label" style={{ opacity: Number(!isSubmitting) }}>
-											{/^(create|create-replacement)$/.test(type) ? 'Создать' : 'Сохранить'}
-										</span>
-									</Button>
+									<Tooltip
+										disableFocusListener={!isEqualCharacteristics}
+										disableHoverListener={!isEqualCharacteristics}
+										disableTouchListener={!isEqualCharacteristics}
+										title={
+											<div style={{ textAlign: 'center' }}>
+												Характеристики позиции на&nbsp;замену
+												<br />
+												и&nbsp;заменяемой позиции должны различаться
+											</div>
+										}
+									>
+										<div>
+											<Button
+												onClick={() => submitForm()}
+												variant="contained"
+												color="primary"
+												size="large"
+												disabled={isSubmitting || isEqualCharacteristics}
+												fullWidth
+											>
+												{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
+												<span className="loading-button-label" style={{ opacity: Number(!isSubmitting) }}>
+													{/^(create|create-replacement)$/.test(type) ? 'Создать' : 'Сохранить'}
+												</span>
+											</Button>
+										</div>
+									</Tooltip>
 								</Grid>
 							</Grid>
 						</DialogActions>

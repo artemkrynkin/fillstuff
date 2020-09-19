@@ -1,6 +1,10 @@
 import { library } from '@fortawesome/fontawesome-svg-core';
 
-import { farQrCode as farcQrCode, farPositionReplacement as farcPositionReplacement } from './fontAwecomeCustomIcons';
+import {
+	farQrCode as farcQrCode,
+	farPositionReplacement as farcPositionReplacement,
+	farPositionDetach as farcPositionDetach,
+} from './fontAwecomeCustomIcons';
 
 import { faVk, faInstagram } from '@fortawesome/free-brands-svg-icons';
 
@@ -104,6 +108,7 @@ library.add(
 	// Custom
 	farcQrCode,
 	farcPositionReplacement,
+	farcPositionDetach,
 
 	// Brands
 	faVk,

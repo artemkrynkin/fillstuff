@@ -59,6 +59,28 @@ const positions = (
 				data: stateData,
 			};
 		}
+		case 'DETACH_POSITION': {
+			let stateData;
+
+			if (state.data) {
+				stateData = { ...state }.data;
+				const positionIndex = stateData.findIndex(position => position._id === action.payload.positionId);
+
+				stateData[positionIndex] = action.payload.position;
+
+				stateData.forEach(position => {
+					if ((position.childPosition || position.parentPosition) === action.payload.positionId) {
+						delete position[position.childPosition ? 'childPosition' : 'parentPosition'];
+					}
+				});
+			}
+
+			return {
+				...state,
+				isFetching: false,
+				data: stateData,
+			};
+		}
 		case 'ARCHIVE_POSITION': {
 			let stateData;
 

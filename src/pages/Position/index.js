@@ -62,8 +62,8 @@ const Position = props => {
 		});
 	};
 
-	const onCancelArchivePositionAfterEnded = positionId => {
-		props.archivePositionAfterEnded(positionId, { archivedAfterEnded: false }).then(response => {
+	const onArchivedAfterEnded = () => {
+		props.archivePositionAfterEnded({ archivedAfterEnded: false }).then(response => {
 			setPositionData(response);
 		});
 	};
@@ -139,7 +139,7 @@ const Position = props => {
 					receiptsData={receiptsData}
 					getPosition={getPosition}
 					getReceipts={getReceipts}
-					onCancelArchivePositionAfterEnded={onCancelArchivePositionAfterEnded}
+					onArchivedAfterEnded={onArchivedAfterEnded}
 					onReceiptCreate={onReceiptCreate}
 					onChangeSellingPriceReceipt={onChangeSellingPriceReceipt}
 				/>
@@ -157,7 +157,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 	return {
 		getPosition: () => dispatch(getPosition({ params: { positionId } })),
-		archivePositionAfterEnded: (positionId, data) => dispatch(archivePositionAfterEnded({ params: { positionId }, data })),
+		archivePositionAfterEnded: data => dispatch(archivePositionAfterEnded({ params: { positionId }, data })),
 		getReceiptsPosition: () => dispatch(getReceiptsPosition({ params: { positionId } })),
 		changeReceipt: (params, data) => dispatch(changeReceipt({ params, data })),
 		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),

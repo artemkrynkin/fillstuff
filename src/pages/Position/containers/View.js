@@ -6,7 +6,7 @@ import PositionDetails from './PositionDetails';
 import Receipts from './Receipts';
 
 const View = props => {
-	const { positionData, receiptsData, onOpenDialogByName, onCancelArchivePositionAfterEnded, onChangeSellingPriceReceipt } = props;
+	const { positionData, receiptsData, onOpenDialogByName, onArchivedAfterEnded, onChangeSellingPriceReceipt } = props;
 
 	if (!positionData || !positionData.data) return <LoadingPage />;
 
@@ -14,11 +14,7 @@ const View = props => {
 
 	return (
 		<Fragment>
-			<PositionDetails
-				position={position}
-				onOpenDialogPosition={onOpenDialogByName}
-				onCancelArchivePositionAfterEnded={onCancelArchivePositionAfterEnded}
-			/>
+			<PositionDetails position={position} onOpenDialogPosition={onOpenDialogByName} onArchivedAfterEnded={onArchivedAfterEnded} />
 			<Receipts
 				position={position}
 				receiptsData={receiptsData}

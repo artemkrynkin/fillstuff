@@ -2,17 +2,12 @@ import React from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import MenuList from '@material-ui/core/MenuList';
-import Divider from '@material-ui/core/Divider';
 
 import MenuItem from 'src/components/MenuItem';
 import Dropdown from 'src/components/Dropdown';
 
 const PositionDropdown = props => {
-	const { refDropdownActions, dropdownActions, onToggleDropdownActions, position, onOpenDialogPosition } = props;
-
-	const onArchivedAfterEnded = () => {
-		props.archivePositionAfterEnded(position._id, { archivedAfterEnded: false });
-	};
+	const { refDropdownActions, dropdownActions, onToggleDropdownActions, position, onOpenDialogPosition, onArchivedAfterEnded } = props;
 
 	return (
 		<Dropdown
@@ -21,29 +16,7 @@ const PositionDropdown = props => {
 			onClose={() => onToggleDropdownActions(false)}
 			placement="bottom-end"
 			disablePortal={false}
-			stopPropagation
 		>
-			{position.receipts.length ? (
-				<MenuList>
-					<MenuItem
-						onClick={() => {
-							onToggleDropdownActions();
-							onOpenDialogPosition('dialogReceiptActiveAddQuantity', 'position', position);
-						}}
-					>
-						Добавить количество
-					</MenuItem>
-					<MenuItem
-						onClick={() => {
-							onToggleDropdownActions();
-							onOpenDialogPosition('dialogWriteOffCreate', 'position', position);
-						}}
-					>
-						Списать количество
-					</MenuItem>
-				</MenuList>
-			) : null}
-			{position.receipts.length ? <Divider /> : null}
 			<MenuList>
 				{!position.parentPosition ? (
 					<MenuItem

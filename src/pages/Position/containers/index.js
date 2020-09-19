@@ -23,6 +23,8 @@ const DialogPositionArchiveDelete = loadable(() =>
 	import('src/pages/Dialogs/PositionArchiveDelete' /* webpackChunkName: "Dialog_PositionArchiveDelete" */)
 );
 
+const DialogPositionDetach = loadable(() => import('src/pages/Dialogs/PositionDetach' /* webpackChunkName: "Dialog_PositionDetach" */));
+
 const DialogReceiptCreate = loadable(() => import('src/pages/Dialogs/ReceiptCreate' /* webpackChunkName: "Dialog_ReceiptCreate" */));
 
 const DialogReceiptConfirmCreate = loadable(() =>
@@ -44,6 +46,7 @@ const Index = props => {
 		dialogPositionEdit: false,
 		dialogPositionRemoveFromGroup: false,
 		dialogPositionArchiveDelete: false,
+		dialogPositionDetach: false,
 		dialogPositionQRCode: false,
 		dialogReceiptCreate: false,
 		dialogReceiptConfirmCreate: false,
@@ -133,6 +136,20 @@ const Index = props => {
 					}
 				}}
 				selectedPosition={dialogOpenedName === 'dialogPositionArchiveDelete' ? dialogData.position : null}
+			/>
+
+			<DialogPositionDetach
+				dialogOpen={dialogs.dialogPositionDetach}
+				onCloseDialog={() => onCloseDialogByName('dialogPositionDetach')}
+				onExitedDialog={() => onExitedDialogByName('position')}
+				onCallback={response => {
+					if (response.status === 'success' && response.data) {
+						getPosition();
+					} else {
+						onBackStock();
+					}
+				}}
+				selectedPosition={dialogOpenedName === 'dialogPositionDetach' ? dialogData.position : null}
 			/>
 
 			<DialogPositionQRCode

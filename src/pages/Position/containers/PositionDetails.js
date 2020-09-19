@@ -4,28 +4,26 @@ import ClassNames from 'classnames';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import IconButton from '@material-ui/core/IconButton';
-import MenuList from '@material-ui/core/MenuList';
-import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import { unitTypeTransform } from 'shared/checkPositionAndReceipt';
 
 import CardPaper from 'src/components/CardPaper';
-import Dropdown from 'src/components/Dropdown';
-import MenuItem from 'src/components/MenuItem';
 import Chips from 'src/components/Chips';
 import { DefinitionList, DefinitionListItem } from 'src/components/Definition';
 import PositionNameInList from 'src/components/PositionNameInList';
 
+import PositionDropdown from '../components/PositionDropdown';
+
 import styles from './PositionDetails.module.css';
 
 const PositionDetails = props => {
-	const { position, onOpenDialogPosition, onCancelArchivePositionAfterEnded } = props;
+	const { position, onOpenDialogPosition, onArchivedAfterEnded } = props;
 	const refDropdownActions = useRef(null);
 	const [dropdownActions, setDropdownActions] = useState(false);
 
-	const onHandleDropdownActions = value => setDropdownActions(value === null || value === undefined ? prevValue => !prevValue : value);
+	const onToggleDropdownActions = value => setDropdownActions(value === null || value === undefined ? prevValue => !prevValue : value);
 
 	return (
 		<CardPaper
@@ -37,7 +35,7 @@ const PositionDetails = props => {
 						[styles.actionButton]: true,
 						activeAction: dropdownActions,
 					})}
-					onClick={() => onHandleDropdownActions()}
+					onClick={() => onToggleDropdownActions()}
 				>
 					<FontAwesomeIcon icon={['far', 'ellipsis-h']} />
 				</IconButton>
@@ -58,25 +56,24 @@ const PositionDetails = props => {
 				<DefinitionListItem term="Единица отпуска" value={unitTypeTransform(position.unitRelease)} />
 				<DefinitionListItem term="Вид реализации" value={position.isFree ? 'Бесплатный' : 'Платный'} />
 				<DefinitionListItem term="Минимальный остаток" value={position.minimumBalance} />
-				{position.childPosition || position.parentPosition ? (
-					<DefinitionListItem
-						term={position.childPosition ? 'Заменяемая позиция' : 'Позиция на замену'}
-						value={
-							<Link to={`/stock/${position.childPosition ? position.childPosition._id : position.parentPosition._id}`}>
-								<PositionNameInList
-									name={position.childPosition ? position.childPosition.name : position.parentPosition.name}
-									characteristics={
-										position.childPosition ? position.childPosition.characteristics : position.parentPosition.characteristics
-									}
-									size="sm"
-									minHeight={false}
-									style={{ display: 'inline-block' }}
-								/>
-							</Link>
-						}
-					/>
-				) : null}
 			</DefinitionList>
+
+			{position.childPosition || position.parentPosition ? (
+				<div style={{ marginTop: 40 }}>
+					<Typography variant="h6" gutterBottom>
+						{position.childPosition ? 'Заменяемая позиция' : 'Позиция на замену'}
+					</Typography>
+					<Link to={`/stock/${position.childPosition ? position.childPosition._id : position.parentPosition._id}`}>
+						<PositionNameInList
+							name={position.childPosition ? position.childPosition.name : position.parentPosition.name}
+							characteristics={position.childPosition ? position.childPosition.characteristics : position.parentPosition.characteristics}
+							size="sm"
+							minHeight={false}
+							style={{ display: 'inline-block' }}
+						/>
+					</Link>
+				</div>
+			) : null}
 
 			{position.shops.length ? (
 				<div style={{ marginTop: 40 }}>
@@ -132,81 +129,14 @@ const PositionDetails = props => {
 				</div>
 			) : null}
 
-			<Dropdown
-				anchor={refDropdownActions}
-				open={dropdownActions}
-				onClose={() => onHandleDropdownActions(false)}
-				placement="bottom-end"
-				disablePortal={false}
-			>
-				<MenuList>
-					<MenuItem
-						onClick={() => {
-							onHandleDropdownActions();
-							onOpenDialogPosition('dialogPositionQRCode', 'position', position);
-						}}
-						iconBefore={<FontAwesomeIcon icon={['far-c', 'qr-code']} fixedWidth />}
-					>
-						Печать QR-кода
-					</MenuItem>
-				</MenuList>
-				<Divider />
-				<MenuList>
-					{position.positionGroup ? (
-						<MenuItem
-							onClick={() => {
-								onHandleDropdownActions();
-								onOpenDialogPosition('dialogPositionRemoveFromGroup', 'position', position);
-							}}
-							iconBefore={<FontAwesomeIcon icon={['far', 'folder-minus']} fixedWidth />}
-						>
-							Открепить от группы
-						</MenuItem>
-					) : null}
-					<MenuItem
-						onClick={() => {
-							onHandleDropdownActions();
-							onOpenDialogPosition('dialogPositionEdit', 'position', position);
-						}}
-						iconBefore={<FontAwesomeIcon icon={['far', 'pen']} fixedWidth />}
-					>
-						Редактировать
-					</MenuItem>
-					{position.archivedAfterEnded ? (
-						<MenuItem
-							onClick={() => {
-								onHandleDropdownActions();
-								onCancelArchivePositionAfterEnded(position._id);
-							}}
-							iconBefore={
-								<span className="fa-layers fa-fw" style={{ width: '16px' }}>
-									<FontAwesomeIcon icon={['far', 'archive']} />
-									<FontAwesomeIcon icon={['fas', 'circle']} transform="shrink-5 down-2.5 right-7" inverse />
-									<FontAwesomeIcon icon={['fas', 'clock']} transform="shrink-7 down-2.5 right-7" />
-								</span>
-							}
-						>
-							Отменить архивирование
-						</MenuItem>
-					) : null}
-					<MenuItem
-						onClick={() => {
-							onHandleDropdownActions();
-							onOpenDialogPosition('dialogPositionArchiveDelete', 'position', position);
-						}}
-						iconBefore={
-							position.hasReceipts ? (
-								<FontAwesomeIcon icon={['far', 'archive']} fixedWidth />
-							) : (
-								<FontAwesomeIcon icon={['far', 'trash-alt']} fixedWidth />
-							)
-						}
-						destructive
-					>
-						{position.hasReceipts ? 'Архивировать' : 'Удалить'}
-					</MenuItem>
-				</MenuList>
-			</Dropdown>
+			<PositionDropdown
+				refDropdownActions={refDropdownActions}
+				dropdownActions={dropdownActions}
+				onToggleDropdownActions={onToggleDropdownActions}
+				position={position}
+				onOpenDialogPosition={onOpenDialogPosition}
+				onArchivedAfterEnded={onArchivedAfterEnded}
+			/>
 		</CardPaper>
 	);
 };

@@ -58,7 +58,7 @@ const PositionForm = props => {
 			props.enqueueSnackbar({
 				message: (
 					<div>
-						Позиция <b>{position.name}</b> успешно {type === 'create' ? 'создана' : 'отредактирована'}.
+						Позиция <b>{position.name}</b> успешно {/^(create|create-replacement)$/.test(type) ? 'создана' : 'отредактирована'}.
 					</div>
 				),
 				options: {

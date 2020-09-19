@@ -124,6 +124,39 @@ export const editPosition = ({ params, data }) => {
 	};
 };
 
+export const detachPosition = ({ params }) => {
+	return async (dispatch, getState) => {
+		const studioId = getState().studio.data._id;
+		const memberId = getState().member.data._id;
+		const { positionId } = params;
+
+		return await axios
+			.post('/api/detachPosition', {
+				studioId,
+				memberId,
+				params,
+			})
+			.then(response => {
+				const position = response.data;
+
+				dispatch({
+					type: 'DETACH_POSITION',
+					payload: {
+						positionId,
+						position,
+					},
+				});
+
+				return Promise.resolve({ status: 'success', data: position });
+			})
+			.catch(error => {
+				console.error(error);
+
+				return Promise.resolve({ status: 'error', message: error.message, ...error });
+			});
+	};
+};
+
 export const archivePosition = ({ params, data }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;

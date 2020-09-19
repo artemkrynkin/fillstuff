@@ -29,6 +29,8 @@ const DialogPositionArchiveDelete = loadable(() =>
 	import('src/pages/Dialogs/PositionArchiveDelete' /* webpackChunkName: "Dialog_PositionArchiveDelete" */)
 );
 
+const DialogPositionDetach = loadable(() => import('src/pages/Dialogs/PositionDetach' /* webpackChunkName: "Dialog_PositionDetach" */));
+
 const DialogPositionOrGroupQRCode = loadable(() =>
 	import('src/pages/Dialogs/PositionOrGroupQRCode' /* webpackChunkName: "Dialog_PositionOrGroupQRCode" */)
 );
@@ -69,6 +71,7 @@ const Index = props => {
 		dialogPositionEdit: false,
 		dialogPositionRemoveFromGroup: false,
 		dialogPositionArchiveDelete: false,
+		dialogPositionDetach: false,
 		dialogPositionQRCode: true,
 		dialogReceiptActiveAddQuantity: false,
 		dialogReceiptCreate: false,
@@ -168,6 +171,13 @@ const Index = props => {
 				onCloseDialog={() => onCloseDialogByName('dialogPositionArchiveDelete')}
 				onExitedDialog={() => onExitedDialogByName('position')}
 				selectedPosition={dialogOpenedName === 'dialogPositionArchiveDelete' ? dialogData.position : null}
+			/>
+
+			<DialogPositionDetach
+				dialogOpen={dialogs.dialogPositionDetach}
+				onCloseDialog={() => onCloseDialogByName('dialogPositionDetach')}
+				onExitedDialog={() => onExitedDialogByName('position')}
+				selectedPosition={dialogOpenedName === 'dialogPositionDetach' ? dialogData.position : null}
 			/>
 
 			<DialogPositionQRCode

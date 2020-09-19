@@ -111,8 +111,8 @@ positionsRouter.post(
 				},
 			}).catch(err => next({ code: 2, err }));
 
-			if (childPosition.positionGroup) {
-				PositionGroup.findByIdAndUpdate(childPosition.positionGroup, { $push: { positions: childPosition._id } }).catch(err =>
+			if (newPosition.positionGroup) {
+				PositionGroup.findByIdAndUpdate(newPosition.positionGroup, { $push: { positions: newPosition._id } }).catch(err =>
 					next({ code: 2, err })
 				);
 			}
@@ -193,6 +193,52 @@ positionsRouter.post(
 			])
 			.then(position => res.json(position))
 			.catch(err => next({ code: 2, err }));
+	}
+);
+
+positionsRouter.post(
+	'/detachPosition',
+	isAuthedResolver,
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
+	async (req, res, next) => {
+		const {
+			params: { positionId },
+		} = req.body;
+
+		const position = await Position.findById(positionId)
+			.populate([
+				{
+					path: 'activeReceipt characteristics shops.shop',
+				},
+				{
+					path: 'receipts',
+					match: { status: /received|active/ },
+					options: {
+						sort: { createdAt: 1 },
+					},
+				},
+			])
+			.catch(err => next({ code: 2, err }));
+
+		if (position.parentPosition) {
+			Position.findByIdAndUpdate(position.parentPosition, { $unset: { childPosition: 1 } }).catch(err => next({ code: 2, err }));
+		}
+
+		if (position.childPosition) {
+			Position.findByIdAndUpdate(position.childPosition, { $unset: { parentPosition: 1 } }).catch(err => next({ code: 2, err }));
+		}
+
+		position.childPosition = undefined;
+		position.parentPosition = undefined;
+		position.qrcodeId = uuidv4();
+
+		const positionErr = position.validateSync();
+
+		if (positionErr) return next({ code: positionErr.errors ? 5 : 2, err: positionErr });
+
+		await position.save();
+
+		res.json(position);
 	}
 );
 

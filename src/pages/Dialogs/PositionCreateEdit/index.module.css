@@ -6,6 +6,10 @@
   min-height: 370px;
 }
 
+.childPosition {
+  margin-bottom: 30px;
+}
+
 .emptyText {
   margin-bottom: 10px;
 }

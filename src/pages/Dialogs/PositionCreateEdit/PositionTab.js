@@ -37,7 +37,21 @@ const PositionTab = props => {
 		<DialogContent dividers={typeIsCreateOrEdit}>
 			<div className={styles.minHeightContent}>
 				<Form>
-					{childPosition || parentPosition ? (
+					{!typeIsCreateOrEdit && childPosition ? (
+						<>
+							<div className={styles.childPosition}>
+								<Typography variant="h6" gutterBottom>
+									Заменяемая позиция
+								</Typography>
+								<PositionNameInList name={childPosition.name} characteristics={childPosition.characteristics} size="sm" minHeight={false} />
+							</div>
+							<Typography variant="h6" gutterBottom>
+								Позиция на замену
+							</Typography>
+						</>
+					) : null}
+
+					{typeIsCreateOrEdit && (childPosition || parentPosition) ? (
 						<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 							<Grid xs={3} item>
 								<InputLabel style={{ marginTop: 0 }} data-inline>
@@ -101,109 +115,101 @@ const PositionTab = props => {
 						</FieldArray>
 					</Grid>
 
-					<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
-						<Grid xs={3} item>
-							<InputLabel error={Boolean(touched.unitReceipt && errors.unitReceipt)} data-inline>
-								Единица поступления
-							</InputLabel>
-						</Grid>
-						<Grid xs={9} item>
-							{typeIsCreateOrEdit && !values.hasReceipts && !values.childPosition ? (
-								<ToggleButtonGroup
-									value={values.unitReceipt}
-									onChange={(event, value) => {
-										if (value === null) return;
+					{typeIsCreateOrEdit ? (
+						<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
+							<Grid xs={3} item>
+								<InputLabel error={Boolean(touched.unitReceipt && errors.unitReceipt)} data-inline>
+									Единица поступления
+								</InputLabel>
+							</Grid>
+							<Grid xs={9} item>
+								{!values.hasReceipts && !values.childPosition ? (
+									<ToggleButtonGroup
+										value={values.unitReceipt}
+										onChange={(event, value) => {
+											if (value === null) return;
 
-										setFieldValue('unitReceipt', value);
+											setFieldValue('unitReceipt', value);
 
-										if (value === 'pce') setFieldValue('unitRelease', 'pce');
-									}}
-									size="small"
-									exclusive
-								>
-									{unitTypes.map(unitType => (
-										<ToggleButton key={unitType} value={unitType}>
-											{unitTypeTransform(unitType)}
-										</ToggleButton>
-									))}
-								</ToggleButtonGroup>
-							) : (
-								<Tooltip
-									title={
-										<div style={{ textAlign: 'center', width: 220 }}>
-											{typeIsCreateOrEdit && !values.childPosition ? (
-												<>Можно изменить только до&nbsp;внесения первого поступления</>
-											) : (
-												<>Можно изменить только при создании новой позиции</>
-											)}
-										</div>
-									}
-									placement="bottom"
-								>
-									<ToggleButtonGroup value={values.unitReceipt} size="small" exclusive>
+											if (value === 'pce') setFieldValue('unitRelease', 'pce');
+										}}
+										size="small"
+										exclusive
+									>
 										{unitTypes.map(unitType => (
-											<ToggleButton key={unitType} value={unitType} disabled={true}>
+											<ToggleButton key={unitType} value={unitType}>
 												{unitTypeTransform(unitType)}
 											</ToggleButton>
 										))}
 									</ToggleButtonGroup>
-								</Tooltip>
-							)}
-						</Grid>
-					</Grid>
-
-					<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
-						<Grid xs={3} item>
-							<InputLabel error={Boolean(touched.unitRelease && errors.unitRelease)} data-inline>
-								Единица отпуска
-							</InputLabel>
-						</Grid>
-						<Grid xs={9} item>
-							{typeIsCreateOrEdit && !values.hasReceipts && !values.childPosition ? (
-								<ToggleButtonGroup
-									value={values.unitRelease}
-									onChange={(event, value) => {
-										if (value === null) return;
-
-										setFieldValue('unitRelease', value);
-
-										if (value === 'nmp') {
-											setFieldValue('unitReceipt', 'nmp');
+								) : (
+									<Tooltip
+										title={
+											<div style={{ textAlign: 'center', width: 220 }}>Можно изменить только до&nbsp;внесения первого поступления</div>
 										}
-									}}
-									size="small"
-									exclusive
-								>
-									{unitTypes.map(unitType => (
-										<ToggleButton key={unitType} value={unitType}>
-											{unitTypeTransform(unitType)}
-										</ToggleButton>
-									))}
-								</ToggleButtonGroup>
-							) : (
-								<Tooltip
-									title={
-										<div style={{ textAlign: 'center', width: 220 }}>
-											{typeIsCreateOrEdit && !values.childPosition ? (
-												<>Можно изменить только до&nbsp;внесения первого поступления</>
-											) : (
-												<>Можно изменить только при создании новой позиции</>
-											)}
-										</div>
-									}
-									placement="bottom"
-								>
-									<ToggleButtonGroup value={values.unitRelease} size="small" exclusive>
+										placement="bottom"
+									>
+										<ToggleButtonGroup value={values.unitReceipt} size="small" exclusive>
+											{unitTypes.map(unitType => (
+												<ToggleButton key={unitType} value={unitType} disabled={true}>
+													{unitTypeTransform(unitType)}
+												</ToggleButton>
+											))}
+										</ToggleButtonGroup>
+									</Tooltip>
+								)}
+							</Grid>
+						</Grid>
+					) : null}
+
+					{typeIsCreateOrEdit ? (
+						<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
+							<Grid xs={3} item>
+								<InputLabel error={Boolean(touched.unitRelease && errors.unitRelease)} data-inline>
+									Единица отпуска
+								</InputLabel>
+							</Grid>
+							<Grid xs={9} item>
+								{!values.hasReceipts && !values.childPosition ? (
+									<ToggleButtonGroup
+										value={values.unitRelease}
+										onChange={(event, value) => {
+											if (value === null) return;
+
+											setFieldValue('unitRelease', value);
+
+											if (value === 'nmp') {
+												setFieldValue('unitReceipt', 'nmp');
+											}
+										}}
+										size="small"
+										exclusive
+									>
 										{unitTypes.map(unitType => (
-											<ToggleButton key={unitType} value={unitType} disabled={true}>
+											<ToggleButton key={unitType} value={unitType}>
 												{unitTypeTransform(unitType)}
 											</ToggleButton>
 										))}
 									</ToggleButtonGroup>
-								</Tooltip>
-							)}
+								) : (
+									<Tooltip
+										title={
+											<div style={{ textAlign: 'center', width: 220 }}>Можно изменить только до&nbsp;внесения первого поступления</div>
+										}
+										placement="bottom"
+									>
+										<ToggleButtonGroup value={values.unitRelease} size="small" exclusive>
+											{unitTypes.map(unitType => (
+												<ToggleButton key={unitType} value={unitType} disabled={true}>
+													{unitTypeTransform(unitType)}
+												</ToggleButton>
+											))}
+										</ToggleButtonGroup>
+									</Tooltip>
+								)}
+							</Grid>
 						</Grid>
-					</Grid>
+					) : null}
 
 					<Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
 						<Grid xs={3} item>
@@ -256,8 +262,8 @@ const PositionTab = props => {
 												Достигнув этого значения вы&nbsp;получите сигнал о&nbsp;необходимости пополнить запасы позиции.
 											</Typography>
 											<Typography variant="body2">
-												При расчете учитывайте время необходимое для закупки (заказ, доставку и&nbsp;тд.) и&nbsp;интенсивность расхода
-												позиции.
+												При расчете учитывайте время необходимое для закупки (заказ, доставку и&nbsp;тд.), а также&nbsp;интенсивность
+												расхода позиции.
 											</Typography>
 										</div>
 									}

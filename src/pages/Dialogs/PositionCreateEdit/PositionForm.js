@@ -96,9 +96,9 @@ const PositionForm = props => {
 			onSubmit={onSubmit}
 		>
 			{formikProps => {
-				const { isSubmitting, submitForm } = formikProps;
+				const { isSubmitting, submitForm, values } = formikProps;
 
-				const isEqualCharacteristics = childPosition ? isEqual(formikProps.values.characteristics, childPosition.characteristics) : false;
+				const isEqualCharacteristics = childPosition ? isEqual(values.characteristics, childPosition.characteristics) : false;
 
 				return (
 					<>
@@ -115,34 +115,38 @@ const PositionForm = props => {
 									</Button>
 								</Grid>
 								<Grid xs={8} item>
-									<Tooltip
-										disableFocusListener={!isEqualCharacteristics}
-										disableHoverListener={!isEqualCharacteristics}
-										disableTouchListener={!isEqualCharacteristics}
-										title={
-											<div style={{ textAlign: 'center' }}>
-												Характеристики позиции на&nbsp;замену
-												<br />
-												и&nbsp;заменяемой позиции должны различаться
+									{/^(create|edit)$/.test(type) ? (
+										<Button onClick={() => submitForm()} variant="contained" color="primary" size="large" disabled={isSubmitting} fullWidth>
+											{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
+											<span className="loading-button-label" style={{ opacity: Number(!isSubmitting) }}>
+												{type === 'create' ? 'Создать' : 'Сохранить'}
+											</span>
+										</Button>
+									) : (
+										<Tooltip
+											disableFocusListener={!isEqualCharacteristics}
+											disableHoverListener={!isEqualCharacteristics}
+											disableTouchListener={!isEqualCharacteristics}
+											title="Измените характеристики чтобы создать позицию на замену"
+											placement="top"
+										>
+											<div>
+												<Button
+													onClick={() => submitForm()}
+													variant="contained"
+													color="primary"
+													size="large"
+													disabled={isSubmitting || isEqualCharacteristics}
+													fullWidth
+												>
+													{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
+													<span className="loading-button-label" style={{ opacity: Number(!isSubmitting) }}>
+														Создать
+													</span>
+												</Button>
 											</div>
-										}
-									>
-										<div>
-											<Button
-												onClick={() => submitForm()}
-												variant="contained"
-												color="primary"
-												size="large"
-												disabled={isSubmitting || isEqualCharacteristics}
-												fullWidth
-											>
-												{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
-												<span className="loading-button-label" style={{ opacity: Number(!isSubmitting) }}>
-													{/^(create|create-replacement)$/.test(type) ? 'Создать' : 'Сохранить'}
-												</span>
-											</Button>
-										</div>
-									</Tooltip>
+										</Tooltip>
+									)}
 								</Grid>
 							</Grid>
 						</DialogActions>

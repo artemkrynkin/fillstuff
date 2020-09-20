@@ -7,7 +7,6 @@ import colorTheme from 'shared/colorTheme';
 
 export const TableCell = withStyles({
 	root: {
-		padding: '14px 15px',
 		'&:first-child': {
 			paddingLeft: 0,
 		},
@@ -22,6 +21,7 @@ export const TableCell = withStyles({
 	body: {
 		borderTop: `1px solid ${colorTheme.brightness['4']}`,
 		borderBottom: 'none',
+		padding: '14px 15px',
 	},
 })(MuiTableCell);
 

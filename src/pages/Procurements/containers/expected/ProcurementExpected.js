@@ -16,7 +16,7 @@ import MenuItem from 'src/components/MenuItem';
 import Dropdown from 'src/components/Dropdown';
 import AvatarTitle from 'src/components/AvatarTitle';
 
-import { useStyles } from './styles';
+import { useStylesProcurementExpected as useStyles } from '../../components/styles';
 import styles from './ProcurementExpected.module.css';
 
 const calendarFormat = {

@@ -24,7 +24,7 @@ import { deleteParamsCoincidence } from 'src/components/Pagination/utils';
 
 import WriteOff from './WriteOff';
 
-import { TableCell } from './styles';
+import { TableCell } from '../components/styles';
 import styles from './WriteOffsDay.module.css';
 
 const calendarFormat = {

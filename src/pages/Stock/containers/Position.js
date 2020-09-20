@@ -21,7 +21,7 @@ import { archivePositionAfterEnded } from 'src/actions/positions';
 import SellingPriceDisplay from '../components/SellingPriceDisplay';
 import PositionDropdown from '../components/PositionDropdown';
 
-import { TableCell } from './styles';
+import { TableCell } from '../components/styles';
 import stylesPositions from './Positions.module.css';
 import styles from './Position.module.css';
 

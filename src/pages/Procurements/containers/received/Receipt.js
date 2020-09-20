@@ -9,7 +9,7 @@ import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFor
 import PositionName from 'src/components/PositionName';
 import QuantityIndicator from 'src/components/QuantityIndicator';
 
-import { TableCell, TableCellHighlight, TableRowHighlight } from './styles';
+import { TableCell, TableCellHighlight, TableRowHighlight } from '../../components/styles';
 
 import styles from './Receipt.module.css';
 

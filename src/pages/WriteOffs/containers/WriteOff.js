@@ -15,7 +15,7 @@ import AvatarTitle from 'src/components/AvatarTitle';
 
 import styles from './WriteOff.module.css';
 
-import { TableCell } from './styles';
+import { TableCell } from '../components/styles';
 
 const WriteOff = props => {
 	const { writeOff, isCurrentDay, onOpenDialogWriteOff } = props;

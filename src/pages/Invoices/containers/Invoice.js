@@ -22,7 +22,7 @@ import AvatarTitle from 'src/components/AvatarTitle';
 import Position from './Position';
 import Payment from './Payment';
 
-import { TableCell } from './styles';
+import { TableCell } from '../components/styles';
 import styles from './Invoice.module.css';
 
 const Invoice = props => {

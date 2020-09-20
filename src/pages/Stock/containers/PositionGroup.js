@@ -16,7 +16,7 @@ import QuantityIndicator from 'src/components/QuantityIndicator';
 import PositionGroupDropdown from '../components/PositionGroupDropdown';
 import Position from './Position';
 
-import { Accordion, AccordionSummary, AccordionDetails, TableCellAccordion } from './styles';
+import { Accordion, AccordionSummary, AccordionDetails, TableCellAccordion } from '../components/styles';
 import stylesPositions from './Positions.module.css';
 import styles from './PositionGroup.module.css';
 

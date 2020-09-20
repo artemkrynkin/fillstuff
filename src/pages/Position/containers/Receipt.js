@@ -18,7 +18,7 @@ import Dropdown from 'src/components/Dropdown';
 
 import FormChangeSellingPrice from './FormChangeSellingPrice';
 
-import { TableCell } from './styles';
+import { TableCell } from '../components/styles';
 import styles from './Receipt.module.css';
 
 const momentDate = moment();

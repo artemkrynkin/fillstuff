@@ -8,7 +8,7 @@ import { formatNumber } from 'shared/utils';
 
 import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
 
-import { TableCell } from './styles';
+import { TableCell } from '../components/styles';
 import styles from './Invoice.module.css';
 
 const momentDate = moment();

@@ -13,7 +13,7 @@ import CardPaper from 'src/components/CardPaper';
 
 import Receipt from './Receipt';
 
-import { TableCell } from './styles';
+import { TableCell } from '../components/styles';
 
 const Receipts = props => {
 	const { position, receiptsData, onOpenDialogReceipt, onChangeSellingPriceReceipt } = props;
@@ -40,8 +40,8 @@ const Receipts = props => {
 			title
 		>
 			{receiptsData && receiptsData.status === 'success' && receiptsData.data.length ? (
-				<div>
-					<Table style={{ tableLayout: 'fixed', margin: '-20px 0' }}>
+				<>
+					<Table style={{ tableLayout: 'fixed', margin: '-20px -15px', width: 'calc(100% + 30px)' }}>
 						<TableHead>
 							<TableRow>
 								<TableCell>Дата поступления</TableCell>
@@ -79,7 +79,7 @@ const Receipts = props => {
 							</Button>
 						</Grid>
 					) : null}
-				</div>
+				</>
 			) : receiptsData && receiptsData.status === 'success' && !receiptsData.data.length ? (
 				<Typography style={{ padding: '2px 0' }}>Еще нет ни одного поступления</Typography>
 			) : receiptsData && receiptsData.status === 'error' ? (

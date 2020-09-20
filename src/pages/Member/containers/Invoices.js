@@ -21,7 +21,7 @@ import { enqueueSnackbar } from 'src/actions/snackbars';
 
 import Invoice from './Invoice';
 
-import { TableCell } from './styles';
+import { TableCell } from '../components/styles';
 import styles from './Invoices.module.css';
 
 const momentDate = moment();

@@ -9,7 +9,7 @@ import { memberRoleTransform } from 'shared/roles-access-rights';
 
 import CardPaper from 'src/components/CardPaper';
 
-import { ButtonRed } from './styles';
+import { ButtonRed } from '../components/styles';
 
 import styles from './MemberCard.module.css';
 

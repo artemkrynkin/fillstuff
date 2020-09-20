@@ -7,7 +7,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
-import { TableCell } from './styles';
+import { TableCell } from '../components/styles';
 import Position from './Position';
 import PositionGroup from './PositionGroup';
 

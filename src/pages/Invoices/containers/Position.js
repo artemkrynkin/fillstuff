@@ -9,7 +9,7 @@ import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFor
 
 import styles from './Position.module.css';
 
-import { TableCell } from './styles';
+import { TableCell } from '../components/styles';
 
 const Position = props => {
 	const { position } = props;

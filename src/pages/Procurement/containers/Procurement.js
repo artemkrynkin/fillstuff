@@ -13,7 +13,7 @@ import AvatarTitle from 'src/components/AvatarTitle';
 
 import Receipt from './Receipt';
 
-import { TableCell } from './styles';
+import { TableCell } from '../components/styles';
 import styles from './Procurement.module.css';
 
 const Procurement = props => {

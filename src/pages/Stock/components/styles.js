@@ -90,16 +90,12 @@ export const TableCellAccordion = withStyles({
 })(MuiTableCell);
 
 export const TableCell = withStyles({
-	root: {
-		padding: '11px 16px',
-	},
 	head: {
-		paddingTop: 18,
-		paddingBottom: 18,
 		borderBottom: 'none',
 	},
 	body: {
 		borderTop: `1px solid ${colorTheme.brightness['4']}`,
 		borderBottom: 'none',
+		padding: '11px 16px',
 	},
 })(MuiTableCell);

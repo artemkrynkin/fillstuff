@@ -16,12 +16,12 @@ export const TableCell = withStyles({
 	},
 	head: {
 		paddingTop: 6,
-		paddingBottom: 18,
+		paddingBottom: 16,
 	},
 	body: {
 		borderTop: `1px solid ${colorTheme.brightness['4']}`,
 		borderBottom: 'none',
-		padding: '14px 15px',
+		padding: '15px 16px',
 	},
 })(MuiTableCell);
 

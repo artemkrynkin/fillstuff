@@ -195,17 +195,15 @@ class ProcurementReceivedCreate extends Component {
 				const { position, quantity, quantityPackages, ...remainingValues } = receipt;
 
 				const newReceipt = {
-					position,
-					initial: {},
 					...remainingValues,
+					position: position._id,
+					initial: {},
 				};
 
 				if (!isNaN(quantity)) newReceipt.initial.quantity = quantity;
 				if (!isNaN(quantityPackages)) newReceipt.initial.quantityPackages = quantityPackages;
 
-				if (typeof position === 'string') {
-					procurement.positions.push(position);
-				}
+				procurement.positions.push(position._id);
 
 				return newReceipt;
 			});

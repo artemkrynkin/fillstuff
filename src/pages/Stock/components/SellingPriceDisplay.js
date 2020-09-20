@@ -111,9 +111,9 @@ const SellingPriceDisplay = props => {
 				/>
 				{nextReceipt ? (
 					nextReceipt.unitSellingPrice > activeReceipt.unitSellingPrice ? (
-						<FontAwesomeIcon className={styles.changePriceIconUp} icon={['far', 'chevron-up']} />
+						<FontAwesomeIcon className={styles.changePriceIconUp} icon={['far', 'chevron-up']} fixedWidth />
 					) : nextReceipt.unitSellingPrice < activeReceipt.unitSellingPrice ? (
-						<FontAwesomeIcon className={styles.changePriceIconDown} icon={['far', 'chevron-down']} />
+						<FontAwesomeIcon className={styles.changePriceIconDown} icon={['far', 'chevron-down']} fixedWidth />
 					) : null
 				) : null}
 			</span>

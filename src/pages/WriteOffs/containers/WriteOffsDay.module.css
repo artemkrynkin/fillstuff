@@ -88,6 +88,7 @@
   display: flex;
   font-size: 12px;
   font-weight: 700;
+  line-height: 1;
   margin: 2px 0 2px 14px;
   padding: 0 10px;
   transition: margin 150ms ease-out

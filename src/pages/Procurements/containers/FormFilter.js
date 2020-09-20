@@ -26,7 +26,7 @@ import Dropdown from 'src/components/Dropdown';
 import PositionName from 'src/components/PositionName';
 import MenuItem from 'src/components/MenuItem';
 
-import { SearchTextField, FilterSearchTextField } from './Filter.styles';
+import { SearchTextField, FilterSearchTextField } from '../components/Filter.styles';
 import styles from './Filter.module.css';
 
 const FilterMemberTransform = (memberSelected, members, loading) => {
@@ -229,7 +229,7 @@ const FormFilter = props => {
 							className={styles.filterButtonLinkReset}
 							tabIndex={-1}
 						>
-							<FontAwesomeIcon icon={['fal', 'times']} />
+							<FontAwesomeIcon icon={['far', 'times']} fixedWidth />
 						</ButtonBase>
 					) : null}
 				</div>
@@ -249,7 +249,7 @@ const FormFilter = props => {
 							className={styles.filterButtonLinkReset}
 							tabIndex={-1}
 						>
-							<FontAwesomeIcon icon={['fal', 'times']} />
+							<FontAwesomeIcon icon={['far', 'times']} fixedWidth />
 						</ButtonBase>
 					) : null}
 				</div>
@@ -267,7 +267,7 @@ const FormFilter = props => {
 							className={styles.filterButtonLinkReset}
 							tabIndex={-1}
 						>
-							<FontAwesomeIcon icon={['fal', 'times']} />
+							<FontAwesomeIcon icon={['far', 'times']} fixedWidth />
 						</ButtonBase>
 					) : null}
 				</div>
@@ -283,7 +283,7 @@ const FormFilter = props => {
 								onClick={() => onResetAllFilters(setFieldValue, submitForm)}
 								color="primary"
 							>
-								<FontAwesomeIcon icon={['fal', 'times']} />
+								<FontAwesomeIcon icon={['fal', 'times']} fixedWidth />
 							</IconButton>
 						</Tooltip>
 					) : null}
@@ -439,6 +439,7 @@ const FormFilter = props => {
 										name={position.name}
 										characteristics={position.characteristics}
 										isArchived={position.isArchived}
+										minHeight={false}
 									/>
 								</MenuItem>
 							);

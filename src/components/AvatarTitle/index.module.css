@@ -26,13 +26,13 @@
 }
 
 .details {
-  margin-left: 10px;
+  margin-left: 12px;
   max-width: calc(100% - 38px);
 }
 
 .title {
   color: var(--c-hex-blueGrey-500);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   max-width: 100%;
   overflow: hidden;

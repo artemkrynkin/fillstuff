@@ -144,10 +144,13 @@ export const MuiTheme = createMuiTheme({
 			root: {
 				color: colorTheme.blueGrey.cBg700,
 				borderRadius: 4,
-				fontSize: 13,
-				minHeight: 34,
+				fontSize: 14,
+				minHeight: 38,
 				lineHeight: 1.6,
 				whiteSpace: null,
+				'@media (min-width: 600px)': {
+					minHeight: 38,
+				},
 			},
 			gutters: {
 				paddingLeft: 8,
@@ -450,7 +453,7 @@ export const MuiTheme = createMuiTheme({
 				boxShadow: `0 0 0 2px ${colorTheme.brightness['5']} inset`,
 				boxSizing: 'border-box',
 				color: colorTheme.blueGrey['700'],
-				fontSize: 13,
+				fontSize: 14,
 				lineHeight: 1.3,
 				minHeight: 36,
 				transition: 'background-color 150ms ease-out, box-shadow 150ms ease-out',
@@ -806,18 +809,20 @@ export const MuiTheme = createMuiTheme({
 			},
 		},
 		MuiTableCell: {
+			root: {
+				fontSize: 14,
+			},
 			head: {
 				borderBottomColor: colorTheme.brightness['4'],
 				color: colorTheme.blueGrey['300'],
-				fontSize: 14,
 				fontWeight: 600,
 				lineHeight: 1.3,
-				paddingTop: 18,
-				paddingBottom: 18,
+				paddingTop: 16,
+				paddingBottom: 16,
 			},
 			body: {
-				color: colorTheme.blueGrey['700'],
 				borderBottomColor: colorTheme.brightness['4'],
+				color: colorTheme.blueGrey['700'],
 			},
 			stickyHeader: {
 				backgroundColor: 'white',

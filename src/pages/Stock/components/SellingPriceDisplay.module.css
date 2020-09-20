@@ -1,7 +1,7 @@
 .changePriceIconUp,
 .changePriceIconDown {
   box-sizing: content-box;
-  font-size: 13px;
+  font-size: 14px;
   margin-right: calc(-0.875em + -5px);
   padding-left: 5px;
 }

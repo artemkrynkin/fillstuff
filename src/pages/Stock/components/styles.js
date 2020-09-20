@@ -81,7 +81,7 @@ export const AccordionDetails = withStyles({
 
 export const TableCellAccordion = withStyles({
 	root: {
-		padding: '19px 16px',
+		padding: '20px 16px',
 	},
 	body: {
 		borderTop: `1px solid ${colorTheme.brightness['4']}`,

@@ -154,7 +154,7 @@ const WriteOffsDay = props => {
 					</div>
 				</Collapse>
 				<ButtonBase className={ClassNames(styles.detailsButton, { open: expanded })} onClick={onHandleExpand} disableRipple>
-					<FontAwesomeIcon icon={['far', 'angle-down']} className={expanded ? 'open' : ''} />
+					<FontAwesomeIcon icon={['far', 'chevron-down']} className={expanded ? 'open' : ''} />
 				</ButtonBase>
 			</div>
 

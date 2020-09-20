@@ -1,12 +1,12 @@
 .title {
   color: var(--c-hex-blueGrey-400);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
 }
 
 .content {
   color: var(--c-hex-blueGrey-700);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   margin-left: 10px;
 }

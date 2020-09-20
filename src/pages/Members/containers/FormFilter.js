@@ -12,7 +12,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Dropdown from 'src/components/Dropdown';
 import MenuItem from 'src/components/MenuItem';
 
-import { SearchTextField } from './Filter.styles';
+import { SearchTextField } from '../components/Filter.styles';
 import styles from './Filter.module.css';
 
 const roles = ['all', 'owners', 'admins', 'artists'];
@@ -21,11 +21,11 @@ const FilterRoleTransform = roleSelected => {
 		case 'all':
 			return 'Все роли';
 		case 'owners':
-			return 'Только владельцы';
+			return 'Владельцы';
 		case 'admins':
-			return 'Только администраторы';
+			return 'Администраторы';
 		case 'artists':
-			return 'Только мастера';
+			return 'Мастера';
 		default:
 			return null;
 	}
@@ -116,7 +116,7 @@ const FormFilter = props => {
 				open={dropdownRole}
 				onClose={() => handlerDropdown('dropdownRole', false)}
 				placement="bottom-start"
-				innerContentStyle={{ width: 230, maxHeight: 300, overflow: 'auto' }}
+				innerContentStyle={{ width: 190, maxHeight: 300, overflow: 'auto' }}
 			>
 				<MenuList autoFocusItem={dropdownRole}>
 					{roles.map((role, index) => (

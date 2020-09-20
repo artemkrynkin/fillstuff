@@ -2,10 +2,6 @@
   display: flex;
 }
 
-.minHeight {
-  min-height: 32px;
-}
-
 .sizeSm {
   align-items: center;
 }
@@ -13,6 +9,10 @@
 .sizeMd,
 .sizeLg {
   align-items: flex-start;
+}
+
+.sizeSm.minHeight {
+  min-height: 36px;
 }
 
 .names {
@@ -28,7 +28,6 @@
 }
 
 .name,
-.nameText,
 .characteristics {
   line-height: 1.3;
   overflow: hidden;
@@ -38,12 +37,12 @@
 
 .sizeSm .name {
   color: var(--c-hex-blueGrey-700);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 400;
 }
 
 .sizeMd .name {
-  color: var(--c-hex-blueGrey-600);
+  color: var(--c-hex-blueGrey-700);
   font-size: 16px;
   font-weight: 600;
 }
@@ -51,7 +50,7 @@
 .sizeLg .name {
   color: var(--c-hex-blueGrey-700);
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .characteristics {
@@ -61,17 +60,17 @@
 
 .sizeSm .characteristics {
   font-size: 12px;
-  margin-top: 1px;
+  margin-top: 3px;
 }
 
 .sizeMd .characteristics {
-  font-size: 13px;
+  font-size: 14px;
   margin-top: 4px;
 }
 
 .sizeLg .characteristics {
   font-size: 14px;
-  margin-top: 8px;
+  margin-top: 7px;
 }
 
 .symbols {
@@ -86,7 +85,7 @@
 }
 
 .symbolIcon {
-  font-size: 13px;
+  font-size: 14px;
   margin-left: 8px;
 }
 

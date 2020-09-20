@@ -26,7 +26,7 @@ import Dropdown from 'src/components/Dropdown';
 import PositionName from 'src/components/PositionName';
 import MenuItem from 'src/components/MenuItem';
 
-import { FilterSearchTextField } from './Filter.styles';
+import { FilterSearchTextField } from '../components/Filter.styles';
 import styles from './Filter.module.css';
 
 const roles = ['all', 'owners', 'admins', 'artists'];
@@ -35,11 +35,11 @@ const FilterRoleTransform = (roleSelected, members, loading) => {
 		case 'all':
 			return 'Все участники';
 		case 'owners':
-			return 'Только владельцы';
+			return 'Владельцы';
 		case 'admins':
-			return 'Только администраторы';
+			return 'Администраторы';
 		case 'artists':
-			return 'Только мастера';
+			return 'Мастера';
 		default:
 			if (loading) return <CircularProgress size={13} />;
 
@@ -66,9 +66,9 @@ const FilterPositionTransform = (positionSelected, positions, loading) => {
 		case 'all':
 			return 'Все позиции';
 		case 'paid':
-			return 'Только платные позиции';
+			return 'Платные позиции';
 		case 'free':
-			return 'Только бесплатные позиции';
+			return 'Бесплатные позиции';
 		default:
 			if (loading) return <CircularProgress size={13} />;
 
@@ -210,7 +210,7 @@ const FormFilter = props => {
 						) : (
 							'Некорректная дата'
 						)}
-						{!values.dateStartView && !values.dateEndView ? <FontAwesomeIcon icon={['far', 'angle-down']} /> : null}
+						{!values.dateStartView && !values.dateEndView ? <FontAwesomeIcon icon={['far', 'angle-down']} fixedWidth /> : null}
 					</ButtonBase>
 					{values.dateStartView || values.dateEndView ? (
 						<ButtonBase
@@ -218,7 +218,7 @@ const FormFilter = props => {
 							className={styles.filterButtonLinkReset}
 							tabIndex={-1}
 						>
-							<FontAwesomeIcon icon={['fal', 'times']} />
+							<FontAwesomeIcon icon={['far', 'times']} fixedWidth />
 						</ButtonBase>
 					) : null}
 				</div>
@@ -231,7 +231,7 @@ const FormFilter = props => {
 						onClick={() => handlerDropdown('dropdownPosition', null)}
 					>
 						<span>{FilterPositionTransform(values.position, allPositions, isLoadingAllPositions)}</span>
-						{values.position === 'all' ? <FontAwesomeIcon icon={['far', 'angle-down']} /> : null}
+						{values.position === 'all' ? <FontAwesomeIcon icon={['far', 'angle-down']} fixedWidth /> : null}
 					</ButtonBase>
 					{values.position !== 'all' ? (
 						<ButtonBase
@@ -239,7 +239,7 @@ const FormFilter = props => {
 							className={styles.filterButtonLinkReset}
 							tabIndex={-1}
 						>
-							<FontAwesomeIcon icon={['fal', 'times']} />
+							<FontAwesomeIcon icon={['far', 'times']} fixedWidth />
 						</ButtonBase>
 					) : null}
 				</div>
@@ -248,7 +248,7 @@ const FormFilter = props => {
 				<div className={styles.bottomContainerItem}>
 					<ButtonBase ref={refDropdownRole} className={styles.filterButtonLink} onClick={() => handlerDropdown('dropdownRole', null)}>
 						<span>{FilterRoleTransform(values.role, allMembers, isLoadingAllMembers)}</span>
-						{values.role === 'all' ? <FontAwesomeIcon icon={['far', 'angle-down']} /> : null}
+						{values.role === 'all' ? <FontAwesomeIcon icon={['far', 'angle-down']} fixedWidth /> : null}
 					</ButtonBase>
 					{values.role !== 'all' ? (
 						<ButtonBase
@@ -256,7 +256,7 @@ const FormFilter = props => {
 							className={styles.filterButtonLinkReset}
 							tabIndex={-1}
 						>
-							<FontAwesomeIcon icon={['fal', 'times']} />
+							<FontAwesomeIcon icon={['far', 'times']} fixedWidth />
 						</ButtonBase>
 					) : null}
 				</div>
@@ -291,7 +291,7 @@ const FormFilter = props => {
 								})}
 								onClick={() => onResetAllFilters(setFieldValue, submitForm)}
 							>
-								<FontAwesomeIcon icon={['fal', 'times']} />
+								<FontAwesomeIcon icon={['fal', 'times']} fixedWidth />
 							</IconButton>
 						</Tooltip>
 					) : null}
@@ -450,6 +450,7 @@ const FormFilter = props => {
 										name={position.name}
 										characteristics={position.characteristics}
 										isArchived={position.isArchived}
+										minHeight={false}
 									/>
 								</MenuItem>
 							);

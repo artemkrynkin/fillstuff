@@ -17,7 +17,7 @@ const PositionName = props => {
 				.map(key => [key, true])
 		),
 		[styles.container]: true,
-		[styles.minHeight]: minHeight,
+		[styles.minHeight]: minHeight && size === 'sm',
 		[styles.sizeSm]: size === 'sm',
 		[styles.sizeMd]: size === 'md',
 		[styles.sizeLg]: size === 'lg',
@@ -30,7 +30,7 @@ const PositionName = props => {
 					<div className={styles.name}>{name}</div>
 				) : (
 					<div className={styles.nameWithSymbols}>
-						<span className={styles.nameText}>{name}</span>
+						<span className={styles.name}>{name}</span>
 						<Symbols {...remainingProps} />
 					</div>
 				)}

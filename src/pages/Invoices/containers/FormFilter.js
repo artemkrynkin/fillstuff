@@ -25,18 +25,18 @@ import { weekActive, monthActive, paginationCalendarFormat } from 'src/component
 import Dropdown from 'src/components/Dropdown';
 import MenuItem from 'src/components/MenuItem';
 
-import { FilterSearchTextField } from './Filter.styles';
+import { FilterSearchTextField } from '../components/Filter.styles';
 import styles from './Filter.module.css';
 
 const statusList = ['all', 'unpaid', 'partially-paid', 'paid'];
 const FilterStatusTransform = statusSelected => {
 	switch (statusSelected) {
 		case 'unpaid':
-			return 'Только не оплаченные';
+			return 'Не оплаченные';
 		case 'partially-paid':
-			return 'Только частично оплаченные';
+			return 'Частично оплаченные';
 		case 'paid':
-			return 'Только оплаченные';
+			return 'Оплаченные';
 		case 'all':
 		default:
 			return 'Все счета';
@@ -334,7 +334,7 @@ const FormFilter = props => {
 				open={dropdownStatus}
 				onClose={() => handlerDropdown('dropdownStatus', false)}
 				placement="bottom-start"
-				innerContentStyle={{ width: 260, maxHeight: 300, overflow: 'auto' }}
+				innerContentStyle={{ width: 220, maxHeight: 300, overflow: 'auto' }}
 			>
 				<MenuList autoFocusItem={dropdownStatus}>
 					{statusList.map((status, index) => (

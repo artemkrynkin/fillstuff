@@ -20,9 +20,7 @@ const procurementSchema = (depopulate = false) => {
 		pricePositions: Yup.number().min(0),
 		receipts: Yup.array(
 			Yup.object().shape({
-				position: Yup.mixed()
-					.required()
-					.transform(position => (depopulate ? position._id : position)),
+				position: Yup.mixed().required(),
 				quantity: Yup.number()
 					.nullable(true)
 					.transform(value => (isNaN(value) ? null : value))

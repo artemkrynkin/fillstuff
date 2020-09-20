@@ -16,7 +16,7 @@
 .iconBefore,
 .iconAfter {
   color: var(--c-hex-blueGrey-400);
-  font-size: 14px;
+  font-size: 16px;
   transition: background-color 50ms ease-out;
 }
 

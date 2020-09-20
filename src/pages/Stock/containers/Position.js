@@ -13,7 +13,7 @@ import { formatNumber } from 'shared/utils';
 import history from 'src/helpers/history';
 
 import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
-import PositionNameInList from 'src/components/PositionNameInList';
+import PositionName from 'src/components/PositionName';
 import QuantityIndicator from 'src/components/QuantityIndicator';
 
 import { archivePositionAfterEnded } from 'src/actions/positions';
@@ -50,7 +50,7 @@ const Position = props => {
 			<TableCell width={330} style={position.positionGroup ? { paddingLeft: 41 } : {}}>
 				<div className={styles.positionName}>
 					{position.parentPosition ? <UnifierPosition className={styles.unifierPosition} /> : null}
-					<PositionNameInList
+					<PositionName
 						name={position.name}
 						characteristics={position.characteristics}
 						archivedAfterEnded={position.archivedAfterEnded}

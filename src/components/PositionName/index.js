@@ -6,7 +6,7 @@ import Symbols from './Symbols';
 
 import styles from './index.module.css';
 
-const PositionNameInList = props => {
+const PositionName = props => {
 	const { name, characteristics, minHeight, size, className, style, ...remainingProps } = props;
 
 	const classes = ClassNames({
@@ -26,16 +26,14 @@ const PositionNameInList = props => {
 	return (
 		<div className={classes} style={style}>
 			<div className={styles.names}>
-				<div className={styles.name}>
-					{size === 'sm' ? (
-						<>{name}</>
-					) : (
-						<>
-							<span className={styles.nameText}>{name}</span>
-							<Symbols {...remainingProps} />
-						</>
-					)}
-				</div>
+				{size === 'sm' ? (
+					<div className={styles.name}>{name}</div>
+				) : (
+					<div className={styles.nameWithSymbols}>
+						<span className={styles.nameText}>{name}</span>
+						<Symbols {...remainingProps} />
+					</div>
+				)}
 				{characteristics && characteristics.length ? (
 					<div className={styles.characteristics}>
 						{characteristics.reduce((characteristics, characteristic) => {
@@ -49,7 +47,7 @@ const PositionNameInList = props => {
 	);
 };
 
-PositionNameInList.defaultProps = {
+PositionName.defaultProps = {
 	className: '',
 	isArchived: false,
 	archivedAfterEnded: false,
@@ -59,7 +57,7 @@ PositionNameInList.defaultProps = {
 	size: 'sm',
 };
 
-PositionNameInList.propTypes = {
+PositionName.propTypes = {
 	className: PropTypes.string,
 	name: PropTypes.string.isRequired,
 	characteristics: PropTypes.arrayOf(
@@ -76,4 +74,4 @@ PositionNameInList.propTypes = {
 	size: PropTypes.oneOf(['sm', 'md', 'lg']),
 };
 
-export default PositionNameInList;
+export default PositionName;

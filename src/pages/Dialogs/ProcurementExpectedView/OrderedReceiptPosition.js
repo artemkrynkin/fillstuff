@@ -2,7 +2,7 @@ import React from 'react';
 
 import Grid from '@material-ui/core/Grid';
 
-import PositionNameInList from 'src/components/PositionNameInList';
+import PositionName from 'src/components/PositionName';
 
 import styles from './index.module.css';
 
@@ -21,7 +21,7 @@ const OrderedReceiptPosition = props => {
 				{index + 1}
 			</Grid>
 			<Grid className={styles.positionItemContent} style={{ flex: '1 1' }} zeroMinWidth item>
-				<PositionNameInList name={name} characteristics={characteristics} size="md" />
+				<PositionName name={name} characteristics={characteristics} size="md" />
 			</Grid>
 		</Grid>
 	);

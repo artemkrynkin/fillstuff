@@ -13,7 +13,7 @@ import { formatNumber } from 'shared/utils';
 import { formError, formErrorHelperText } from 'src/helpers/utils';
 
 import NumberFormat, { moneyInputFormatProps } from 'src/components/NumberFormat';
-import PositionNameInList from 'src/components/PositionNameInList';
+import PositionName from 'src/components/PositionName';
 
 import styles from './index.module.css';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -65,7 +65,7 @@ const Receipt = props => {
 			<Grid className={styles.receiptContent} direction="column" container>
 				<Grid className={styles.receiptContentHeader} alignItems="center" container>
 					<Grid className={styles.positionSelected} zeroMinWidth item>
-						<PositionNameInList
+						<PositionName
 							name={position.name}
 							characteristics={position.characteristics}
 							size="md"

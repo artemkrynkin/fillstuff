@@ -12,7 +12,7 @@ import { unitTypeTransform } from 'shared/checkPositionAndReceipt';
 import CardPaper from 'src/components/CardPaper';
 import Chips from 'src/components/Chips';
 import { DefinitionList, DefinitionListItem } from 'src/components/Definition';
-import PositionNameInList from 'src/components/PositionNameInList';
+import PositionName from 'src/components/PositionName';
 
 import PositionDropdown from '../components/PositionDropdown';
 
@@ -64,7 +64,7 @@ const PositionDetails = props => {
 						{position.childPosition ? 'Заменяемая позиция' : 'Позиция на замену'}
 					</Typography>
 					<Link to={`/stock/${position.childPosition ? position.childPosition._id : position.parentPosition._id}`}>
-						<PositionNameInList
+						<PositionName
 							name={position.childPosition ? position.childPosition.name : position.parentPosition.name}
 							characteristics={position.childPosition ? position.childPosition.characteristics : position.parentPosition.characteristics}
 							size="sm"

@@ -16,7 +16,7 @@ import Typography from '@material-ui/core/Typography';
 import { unitTypes, unitTypeTransform } from 'shared/checkPositionAndReceipt';
 
 import NumberFormat from 'src/components/NumberFormat';
-import PositionNameInList from 'src/components/PositionNameInList';
+import PositionName from 'src/components/PositionName';
 
 import Characteristics from './Characteristics';
 
@@ -43,7 +43,7 @@ const PositionTab = props => {
 								<Typography variant="h6" gutterBottom>
 									Заменяемая позиция
 								</Typography>
-								<PositionNameInList name={childPosition.name} characteristics={childPosition.characteristics} size="sm" minHeight={false} />
+								<PositionName name={childPosition.name} characteristics={childPosition.characteristics} size="sm" minHeight={false} />
 							</div>
 							<Typography variant="h6" gutterBottom>
 								Позиция на замену
@@ -59,7 +59,7 @@ const PositionTab = props => {
 								</InputLabel>
 							</Grid>
 							<Grid xs={9} item>
-								<PositionNameInList
+								<PositionName
 									name={childPosition ? childPosition.name : parentPosition.name}
 									characteristics={childPosition ? childPosition.characteristics : parentPosition.characteristics}
 									size="sm"

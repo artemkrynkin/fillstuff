@@ -10,7 +10,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { formatNumber } from 'shared/utils';
 
 import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
-import PositionNameInList from 'src/components/PositionNameInList';
+import PositionName from 'src/components/PositionName';
 import AvatarTitle from 'src/components/AvatarTitle';
 
 import styles from './WriteOff.module.css';
@@ -37,11 +37,7 @@ const WriteOff = props => {
 				<AvatarTitle imageSrc={writeOff.member.user.avatar} title={writeOff.member.user.name} />
 			</TableCell>
 			<TableCell>
-				<PositionNameInList
-					name={writeOff.position.name}
-					characteristics={writeOff.position.characteristics}
-					canceled={writeOff.canceled}
-				/>
+				<PositionName name={writeOff.position.name} characteristics={writeOff.position.characteristics} canceled={writeOff.canceled} />
 			</TableCell>
 			<TableCell align="right" width={115}>
 				{writeOff.quantity} {writeOff.position.unitRelease === 'pce' ? 'шт.' : 'уп.'}

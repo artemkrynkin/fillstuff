@@ -6,7 +6,7 @@ import { Grid } from '@material-ui/core';
 
 import qrRender from 'src/helpers/qrRender';
 
-import PositionNameInList from 'src/components/PositionNameInList';
+import PositionName from 'src/components/PositionName';
 
 import { getDiagonalSize, calculatePPI, calculateCmPerPx } from '../helpers/renderOptions';
 
@@ -66,7 +66,7 @@ const Markup = props => {
 					</div>
 				</div>
 				<div className={styles.footer}>
-					<PositionNameInList
+					<PositionName
 						className={styles.positionName}
 						name={selectedPositionOrGroup.name}
 						characteristics={selectedPositionOrGroup.characteristics}

@@ -22,6 +22,11 @@
   min-width: 0;
 }
 
+.nameWithSymbols {
+  display: flex;
+  align-items: flex-start;
+}
+
 .name,
 .nameText,
 .characteristics {
@@ -47,11 +52,6 @@
   color: var(--c-hex-blueGrey-700);
   font-size: 18px;
   font-weight: 500;
-}
-
-:not(.sizeSm) .name {
-  display: flex;
-  align-items: flex-start;
 }
 
 .characteristics {

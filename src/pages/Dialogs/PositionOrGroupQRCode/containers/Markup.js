@@ -70,6 +70,7 @@ const Markup = props => {
 						className={styles.positionName}
 						name={selectedPositionOrGroup.name}
 						characteristics={selectedPositionOrGroup.characteristics}
+						minHeight={false}
 					/>
 				</div>
 			</Grid>

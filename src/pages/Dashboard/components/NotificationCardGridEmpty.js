@@ -7,8 +7,8 @@ const NotificationCardGridEmpty = props => {
 
 	const notificationsGridEmptyText = {
 		red: 'Совершите действие',
-		orange: 'Уделите внимание',
-		green: 'Информационные',
+		orange: 'Держите под контролем',
+		green: 'Обратите внимание',
 	};
 
 	return (

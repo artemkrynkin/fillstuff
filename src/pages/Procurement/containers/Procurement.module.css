@@ -33,7 +33,7 @@
 
 .indicatorsSubtitle {
   color: var(--c-hex-blueGrey-300);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   margin-top: 7px;
   text-align: right;
@@ -41,7 +41,7 @@
 
 .indicatorsSubtitle2 {
   color: var(--c-hex-blueGrey-500);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   text-align: right;
 }

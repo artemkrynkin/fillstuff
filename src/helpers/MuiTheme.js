@@ -449,13 +449,13 @@ export const MuiTheme = createMuiTheme({
 		MuiInputBase: {
 			root: {
 				backgroundColor: colorTheme.brightness['4'],
-				borderRadius: 5,
+				borderRadius: 8,
 				boxShadow: `0 0 0 2px ${colorTheme.brightness['5']} inset`,
 				boxSizing: 'border-box',
 				color: colorTheme.blueGrey['700'],
-				fontSize: 14,
+				fontSize: 13,
 				lineHeight: 1.3,
-				minHeight: 36,
+				minHeight: 38,
 				transition: 'background-color 150ms ease-out, box-shadow 150ms ease-out',
 				'[readonly] > &, [readonly] > &$focused:not($error)': {
 					backgroundColor: 'transparent',
@@ -479,8 +479,8 @@ export const MuiTheme = createMuiTheme({
 				},
 			},
 			input: {
-				height: 26,
-				padding: '5px 10px',
+				height: 28,
+				padding: '5px 12px',
 			},
 			inputMultiline: {
 				padding: '10px',
@@ -508,7 +508,7 @@ export const MuiTheme = createMuiTheme({
 		MuiSelect: {
 			select: {
 				paddingTop: 11,
-				paddingBottom: 10,
+				paddingBottom: 11,
 				'&:focus': {
 					backgroundColor: null,
 				},

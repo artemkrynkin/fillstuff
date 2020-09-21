@@ -166,7 +166,7 @@ const FormFilter = props => {
 						) : (
 							'Некорректная дата'
 						)}
-						{!values.dateStartView && !values.dateEndView ? <FontAwesomeIcon icon={['far', 'angle-down']} /> : null}
+						{!values.dateStartView && !values.dateEndView ? <FontAwesomeIcon icon={['far', 'angle-down']} fixedWidth /> : null}
 					</ButtonBase>
 					{values.dateStartView || values.dateEndView ? (
 						<ButtonBase
@@ -174,7 +174,7 @@ const FormFilter = props => {
 							className={styles.filterButtonLinkReset}
 							tabIndex={-1}
 						>
-							<FontAwesomeIcon icon={['fal', 'times']} />
+							<FontAwesomeIcon icon={['far', 'times']} fixedWidth />
 						</ButtonBase>
 					) : null}
 				</div>
@@ -183,7 +183,7 @@ const FormFilter = props => {
 				<div className={styles.bottomContainerItem}>
 					<ButtonBase ref={refDropdownStatus} className={styles.filterButtonLink} onClick={() => handlerDropdown('dropdownStatus')}>
 						<span>{FilterStatusTransform(values.status)}</span>
-						{values.status === 'all' ? <FontAwesomeIcon icon={['far', 'angle-down']} /> : null}
+						{values.status === 'all' ? <FontAwesomeIcon icon={['far', 'angle-down']} fixedWidth /> : null}
 					</ButtonBase>
 					{values.status !== 'all' ? (
 						<ButtonBase
@@ -191,7 +191,7 @@ const FormFilter = props => {
 							className={styles.filterButtonLinkReset}
 							tabIndex={-1}
 						>
-							<FontAwesomeIcon icon={['fal', 'times']} />
+							<FontAwesomeIcon icon={['far', 'times']} fixedWidth />
 						</ButtonBase>
 					) : null}
 				</div>
@@ -200,7 +200,7 @@ const FormFilter = props => {
 				<div className={styles.bottomContainerItem}>
 					<ButtonBase ref={refDropdownMember} className={styles.filterButtonLink} onClick={() => handlerDropdown('dropdownMember', null)}>
 						<span>{FilterMemberTransform(values.member, allMembers, isLoadingAllMembers)}</span>
-						{values.member === 'all' ? <FontAwesomeIcon icon={['far', 'angle-down']} /> : null}
+						{values.member === 'all' ? <FontAwesomeIcon icon={['far', 'angle-down']} fixedWidth /> : null}
 					</ButtonBase>
 					{values.member !== 'all' ? (
 						<ButtonBase
@@ -208,7 +208,7 @@ const FormFilter = props => {
 							className={styles.filterButtonLinkReset}
 							tabIndex={-1}
 						>
-							<FontAwesomeIcon icon={['fal', 'times']} />
+							<FontAwesomeIcon icon={['far', 'times']} fixedWidth />
 						</ButtonBase>
 					) : null}
 				</div>
@@ -224,7 +224,7 @@ const FormFilter = props => {
 								onClick={() => onResetAllFilters(setFieldValue, submitForm)}
 								color="primary"
 							>
-								<FontAwesomeIcon icon={['fal', 'times']} />
+								<FontAwesomeIcon icon={['fal', 'times']} fixedWidth />
 							</IconButton>
 						</Tooltip>
 					) : null}

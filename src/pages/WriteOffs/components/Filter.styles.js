@@ -6,6 +6,7 @@ export const FilterSearchTextField = withStyles({
 		backgroundColor: 'transparent !important',
 		boxShadow: 'none !important',
 		borderRadius: 0,
+		fontSize: 14,
 		minHeight: 40,
 	},
 	input: {

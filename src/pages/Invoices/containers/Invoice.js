@@ -152,7 +152,7 @@ const Invoice = props => {
 					) : null}
 				</Collapse>
 				<ButtonBase className={ClassNames(styles.detailsButton, { open: expanded })} onClick={onHandleExpand}>
-					<FontAwesomeIcon icon={['far', 'angle-down']} className={expanded ? 'open' : ''} />
+					<FontAwesomeIcon icon={['far', 'chevron-down']} className={expanded ? 'open' : ''} />
 				</ButtonBase>
 			</div>
 		</CardPaper>

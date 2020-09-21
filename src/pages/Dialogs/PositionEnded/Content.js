@@ -1,6 +1,6 @@
 import React from 'react';
 
-import PositionName from 'src/components/PositionName';
+import PositionSummary from 'src/components/PositionSummary';
 
 import Shops from './Shops';
 
@@ -9,7 +9,7 @@ const Content = props => {
 
 	return (
 		<>
-			<PositionName name={storeNotification.position.name} characteristics={storeNotification.position.characteristics} size="lg" />
+			<PositionSummary name={storeNotification.position.name} characteristics={storeNotification.position.characteristics} size="lg" />
 
 			<Shops position={storeNotification.position} />
 		</>

@@ -6,7 +6,7 @@ import TableRow from '@material-ui/core/TableRow';
 import { formatNumber } from 'shared/utils';
 
 import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
-import PositionName from 'src/components/PositionName';
+import PositionSummary from 'src/components/PositionSummary';
 import QuantityIndicator from 'src/components/QuantityIndicator';
 
 import { TableCell, TableCellHighlight, TableRowHighlight } from '../../components/styles';
@@ -22,7 +22,7 @@ const Receipt = props => {
 		<TableRow classes={positionSameFilter ? { root: TableRowHighlightClasses.root } : {}}>
 			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} width={280}>
 				<Link className={styles.positionLink} to={`/stock/${receipt.position._id}`}>
-					<PositionName
+					<PositionSummary
 						name={receipt.position.name}
 						characteristics={receipt.position.characteristics}
 						isArchived={receipt.position.isArchived}

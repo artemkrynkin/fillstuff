@@ -10,14 +10,13 @@ import styles from './index.module.css';
 const CardPaper = props => {
 	const { className, elevation, header, leftContent, rightContent, title, customRightColumn, style, children, ...remainingProps } = props;
 
-	const classes = ClassNames({
+	const classes = ClassNames(styles.container, {
 		...Object.fromEntries(
 			className
 				.split(' ')
 				.filter(val => val)
 				.map(key => [key, true])
 		),
-		[styles.container]: true,
 	});
 
 	return (

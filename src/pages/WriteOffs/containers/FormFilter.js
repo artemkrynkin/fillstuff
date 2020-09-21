@@ -23,7 +23,7 @@ import { memberRoleTransform } from 'shared/roles-access-rights';
 
 import { weekActive, monthActive, paginationCalendarFormat } from 'src/components/Pagination/utils';
 import Dropdown from 'src/components/Dropdown';
-import PositionName from 'src/components/PositionName';
+import PositionSummary from 'src/components/PositionSummary';
 import MenuItem from 'src/components/MenuItem';
 
 import { FilterSearchTextField } from '../components/Filter.styles';
@@ -445,7 +445,7 @@ const FormFilter = props => {
 									onClick={() => onChangeFilterPosition(position._id, setFieldValue, submitForm)}
 									tabIndex={0}
 								>
-									<PositionName
+									<PositionSummary
 										className={styles.positionName}
 										name={position.name}
 										characteristics={position.characteristics}

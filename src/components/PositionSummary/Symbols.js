@@ -4,7 +4,7 @@ import ClassNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Tooltip from '@material-ui/core/Tooltip';
 
-// import PositionName from './index';
+// import PositionSummary from './index';
 
 import styles from './index.module.css';
 
@@ -62,7 +62,7 @@ const Symbols = props => {
 					title={
 						<>
 							Позиция на замену
-							{/*<PositionName name={childPosition.name} characteristics={childPosition.characteristics} />*/}
+							{/*<PositionSummary name={childPosition.name} characteristics={childPosition.characteristics} />*/}
 						</>
 					}
 					placement="top"

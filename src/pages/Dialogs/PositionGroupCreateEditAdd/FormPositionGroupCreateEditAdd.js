@@ -15,7 +15,7 @@ import TextField from '@material-ui/core/TextField';
 import DialogActions from '@material-ui/core/DialogActions';
 
 import Chips from 'src/components/Chips';
-import PositionName from 'src/components/PositionName';
+import PositionSummary from 'src/components/PositionSummary';
 
 import { SearchTextField } from './styles';
 import stylesGlobal from 'src/styles/globals.module.css';
@@ -128,7 +128,11 @@ const FormPositionGroupCreateEditAdd = props => {
 													<div className={styles.selectPositionCheckbox}>
 														<FontAwesomeIcon icon={['far', 'check']} />
 													</div>
-													<PositionName className={styles.positionName} name={position.name} characteristics={position.characteristics} />
+													<PositionSummary
+														className={styles.positionName}
+														name={position.name}
+														characteristics={position.characteristics}
+													/>
 												</div>
 											))
 										) : !positions.length && searchTextPosition ? (

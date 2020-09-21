@@ -10,7 +10,7 @@ import TextField from '@material-ui/core/TextField';
 
 import { formError, formErrorHelperText } from 'src/helpers/utils';
 
-import PositionName from 'src/components/PositionName';
+import PositionSummary from 'src/components/PositionSummary';
 import NumberFormat from 'src/components/NumberFormat';
 
 import styles from './index.module.css';
@@ -55,7 +55,7 @@ const OrderedReceiptPosition = props => {
 			<Grid className={styles.positionContent} direction="column" container>
 				<Grid className={styles.positionContentHeader} alignItems="center" container>
 					<Grid className={styles.positionSelected} zeroMinWidth item>
-						<PositionName
+						<PositionSummary
 							name={position.name}
 							characteristics={position.characteristics}
 							size="md"

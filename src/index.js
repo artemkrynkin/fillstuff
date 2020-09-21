@@ -23,10 +23,11 @@ const store = initStore(window.__DATA__ || {});
 moment.locale('ru');
 moment().format();
 
+const axios = require('axios').defaults;
+// In development for cross-domain requests to api
+axios.baseURL = SERVER_URL;
+
 if (process.env.NODE_ENV === 'development') {
-	const axios = require('axios').defaults;
-	// In development for cross-domain requests to api
-	axios.baseURL = SERVER_URL;
 	axios.withCredentials = true;
 }
 

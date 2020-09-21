@@ -4,7 +4,7 @@ import TableRow from '@material-ui/core/TableRow';
 
 import { formatNumber } from 'shared/utils';
 
-import PositionName from 'src/components/PositionName';
+import PositionSummary from 'src/components/PositionSummary';
 import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
 
 import styles from './Position.module.css';
@@ -18,7 +18,7 @@ const Position = props => {
 		<TableRow>
 			<TableCell width={280}>
 				<a className={styles.positionLink} href={`/stock/${position.position._id}`} target="_blank" rel="noreferrer noopener">
-					<PositionName name={position.position.name} characteristics={position.position.characteristics} />
+					<PositionSummary name={position.position.name} characteristics={position.position.characteristics} />
 				</a>
 			</TableCell>
 			<TableCell />

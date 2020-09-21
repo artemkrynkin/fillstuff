@@ -6,7 +6,7 @@ import Symbols from './Symbols';
 
 import styles from './index.module.css';
 
-const PositionName = props => {
+const PositionSummary = props => {
 	const { name, characteristics, minHeight, size, className, style, ...remainingProps } = props;
 
 	const classes = ClassNames({
@@ -34,11 +34,12 @@ const PositionName = props => {
 						<Symbols {...remainingProps} />
 					</div>
 				)}
-				{characteristics && characteristics.length ? (
+				{characteristics?.length ? (
 					<div className={styles.characteristics}>
-						{characteristics.reduce((characteristics, characteristic) => {
-							return (characteristics ? `${characteristics}, ` : '') + characteristic.name;
-						}, '')}
+						{characteristics.reduce(
+							(characteristics, characteristic) => (characteristics ? `${characteristics}, ` : '') + characteristic.name,
+							''
+						)}
 					</div>
 				) : null}
 			</div>
@@ -47,7 +48,7 @@ const PositionName = props => {
 	);
 };
 
-PositionName.defaultProps = {
+PositionSummary.defaultProps = {
 	className: '',
 	isArchived: false,
 	archivedAfterEnded: false,
@@ -57,7 +58,7 @@ PositionName.defaultProps = {
 	size: 'sm',
 };
 
-PositionName.propTypes = {
+PositionSummary.propTypes = {
 	className: PropTypes.string,
 	name: PropTypes.string.isRequired,
 	characteristics: PropTypes.arrayOf(
@@ -74,4 +75,4 @@ PositionName.propTypes = {
 	size: PropTypes.oneOf(['sm', 'md', 'lg']),
 };
 
-export default PositionName;
+export default PositionSummary;

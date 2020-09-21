@@ -12,7 +12,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import { receiptCalc } from 'shared/checkPositionAndReceipt';
 
 import NumberFormat, { moneyInputFormatProps } from 'src/components/NumberFormat';
-import PositionName from 'src/components/PositionName';
+import PositionSummary from 'src/components/PositionSummary';
 
 const FormReceiptCreate = props => {
 	const {
@@ -27,7 +27,7 @@ const FormReceiptCreate = props => {
 	return (
 		<Form>
 			<DialogContent>
-				<PositionName
+				<PositionSummary
 					name={values.position.name}
 					characteristics={values.position.characteristics}
 					size="md"

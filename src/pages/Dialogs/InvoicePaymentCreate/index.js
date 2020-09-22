@@ -15,7 +15,7 @@ import Typography from '@material-ui/core/Typography';
 import { Dialog, DialogTitle } from 'src/components/Dialog';
 import NumberFormat, { moneyInputFormatProps } from 'src/components/NumberFormat';
 import Money from 'src/components/Money';
-import AvatarTitle from 'src/components/AvatarTitle';
+import Avatar from 'src/components/Avatar';
 
 import { createInvoicePayment } from 'src/actions/invoices';
 import { enqueueSnackbar } from 'src/actions/snackbars';
@@ -82,14 +82,8 @@ class DialogInvoicePaymentCreate extends Component {
 						<Form>
 							<DialogContent>
 								<Grid className={styles.header} alignItems="center" direction="column" container>
-									<Grid item>
-										<AvatarTitle
-											classNames={{
-												container: styles.avatar,
-												image: styles.avatarImage,
-											}}
-											imageSrc={selectedInvoice.member.user.avatar}
-										/>
+									<Grid className={styles.user} item>
+										<Avatar className={styles.avatar} src={selectedInvoice.member.user.avatar} size="xl" />
 										<Typography className={styles.name} variant="h6">
 											{selectedInvoice.member.user.name}
 										</Typography>

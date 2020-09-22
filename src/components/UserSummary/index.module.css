@@ -1,0 +1,96 @@
+.container {
+  display: flex;
+  align-items: center;
+}
+
+.details {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.sizeXs .details {
+  margin-left: 8px;
+}
+
+.sizeSm .details {
+  margin-left: 12px;
+}
+
+.sizeMd .details {
+  margin-left: 16px;
+}
+
+.sizeLg .details {
+  margin-left: 20px;
+}
+
+.sizeXl .details {
+  margin-left: 28px;
+}
+
+.title,
+.subtitle {
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.title {
+  color: var(--c-hex-blueGrey-700);
+}
+
+.sizeXs .title {
+  font-size: 13px;
+}
+
+.sizeSm .title {
+  font-size: 14px;
+}
+
+.sizeMd .title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.sizeLg .title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.sizeXl .title {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.sizeXs .withoutSubtitle,
+.sizeSm .withoutSubtitle {
+  font-weight: 600;
+}
+
+.subtitle {
+  color: var(--c-hex-blueGrey-300);
+}
+
+.sizeSm .subtitle {
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 3px;
+}
+
+.sizeMd .subtitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.sizeLg .subtitle {
+  font-size: 14px;
+  margin-top: 7px;
+}
+
+.sizeXl .subtitle {
+  font-size: 16px;
+  margin-top: 13px;
+}

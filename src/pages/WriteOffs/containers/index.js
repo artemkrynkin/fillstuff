@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import loadable from '@loadable/component';
+import React, { useState, lazy, Suspense } from 'react';
 
 import Container from '@material-ui/core/Container';
 
 import View from './View';
 
-const DialogWriteOffCancel = loadable(() => import('src/pages/Dialogs/WriteOffCancel' /* webpackChunkName: "Dialog_WriteOffCancel" */));
+const DialogWriteOffCancel = lazy(() => import('src/pages/Dialogs/WriteOffCancel'));
 
 const Index = props => {
 	const [dialogData, setDialogData] = useState({
@@ -54,12 +53,14 @@ const Index = props => {
 		<Container>
 			<View onOpenDialogByName={onOpenDialogByName} {...props} />
 
-			<DialogWriteOffCancel
-				dialogOpen={dialogs.dialogWriteOffCancel}
-				onCloseDialog={() => onCloseDialogByName('dialogWriteOffCancel')}
-				onExitedDialog={() => onExitedDialogByName('writeOff')}
-				selectedWriteOff={dialogOpenedName === 'dialogWriteOffCancel' ? dialogData.writeOff : null}
-			/>
+			<Suspense fallback={null}>
+				<DialogWriteOffCancel
+					dialogOpen={dialogs.dialogWriteOffCancel}
+					onCloseDialog={() => onCloseDialogByName('dialogWriteOffCancel')}
+					onExitedDialog={() => onExitedDialogByName('writeOff')}
+					selectedWriteOff={dialogOpenedName === 'dialogWriteOffCancel' ? dialogData.writeOff : null}
+				/>
+			</Suspense>
 		</Container>
 	);
 };

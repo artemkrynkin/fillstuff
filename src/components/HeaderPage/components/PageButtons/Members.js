@@ -1,14 +1,9 @@
-import React, { useState } from 'react';
-import loadable from '@loadable/component';
-
-// import Button from '@material-ui/core/Button';
+import React, { useState, lazy, Suspense } from 'react';
 
 import { Button } from './styles';
 import styles from './index.module.css';
 
-const DialogMemberInvitationOrLogin = loadable(() =>
-	import('src/pages/Dialogs/MemberInvitationOrLogin' /* webpackChunkName: "Dialog_MemberInvitationOrLogin" */)
-);
+const DialogMemberInvitationOrLogin = lazy(() => import('src/pages/Dialogs/MemberInvitationOrLogin'));
 
 const Members = props => {
 	const { currentStudio } = props;
@@ -26,11 +21,13 @@ const Members = props => {
 				Добавить участника
 			</Button>
 
-			<DialogMemberInvitationOrLogin
-				dialogOpen={MemberInvitationOrLogin}
-				onCloseDialog={onCloseDialogMemberInvitationOrLogin}
-				currentStudio={currentStudio}
-			/>
+			<Suspense fallback={null}>
+				<DialogMemberInvitationOrLogin
+					dialogOpen={MemberInvitationOrLogin}
+					onCloseDialog={onCloseDialogMemberInvitationOrLogin}
+					currentStudio={currentStudio}
+				/>
+			</Suspense>
 		</div>
 	);
 };

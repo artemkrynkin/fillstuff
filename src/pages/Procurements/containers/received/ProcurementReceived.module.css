@@ -63,27 +63,25 @@
   margin-top: 20px;
 }
 
-.users {
+.userGroup {
   display: inline-flex;
 }
 
 .user {
-  border: 2px solid white;
-  border-radius: 50%;
+  box-shadow: 0 0 0 2px white;
   transition: margin-left 150ms ease-out;
 }
 
 .user:nth-child(1) {
-  margin-left: -2px;
-}
-
-.user:nth-child(2) {
-  margin-left: -9px;
   z-index: 1;
 }
 
-.users:hover .user:nth-child(2) {
-  margin-left: 0;
+.user:nth-child(2) {
+  margin-left: -8px;
+}
+
+.userGroup:hover .user:nth-child(2) {
+  margin-left: 8px;
 }
 
 .detailsButton {

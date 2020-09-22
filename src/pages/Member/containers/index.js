@@ -1,17 +1,11 @@
-import React, { useState } from 'react';
-import loadable from '@loadable/component';
+import React, { useState, lazy, Suspense } from 'react';
 
 import Container from '@material-ui/core/Container';
 
 import View from './View';
 
-const DialogMemberInvitationOrLogin = loadable(() =>
-	import('src/pages/Dialogs/MemberInvitationOrLogin' /* webpackChunkName: "Dialog_MemberInvitationOrLogin" */)
-);
-
-const DialogMemberDeactivated = loadable(() =>
-	import('src/pages/Dialogs/MemberDeactivated' /* webpackChunkName: "Dialog_MemberDeactivated" */)
-);
+const DialogMemberInvitationOrLogin = lazy(() => import('src/pages/Dialogs/MemberInvitationOrLogin'));
+const DialogMemberDeactivated = lazy(() => import('src/pages/Dialogs/MemberDeactivated'));
 
 const Index = props => {
 	const { currentStudio, getMember } = props;
@@ -62,21 +56,23 @@ const Index = props => {
 		<Container>
 			<View onOpenDialogByName={onOpenDialogByName} {...props} />
 
-			<DialogMemberInvitationOrLogin
-				dialogOpen={dialogs.memberInvitationOrLogin}
-				onCloseDialog={() => onCloseDialogByName('memberInvitationOrLogin')}
-				onExitedDialog={() => onExitedDialogByName('member')}
-				currentStudio={currentStudio}
-				selectedMember={dialogOpenedName === 'memberInvitationOrLogin' ? dialogData.member : null}
-			/>
+			<Suspense fallback={null}>
+				<DialogMemberInvitationOrLogin
+					dialogOpen={dialogs.memberInvitationOrLogin}
+					onCloseDialog={() => onCloseDialogByName('memberInvitationOrLogin')}
+					onExitedDialog={() => onExitedDialogByName('member')}
+					currentStudio={currentStudio}
+					selectedMember={dialogOpenedName === 'memberInvitationOrLogin' ? dialogData.member : null}
+				/>
 
-			<DialogMemberDeactivated
-				dialogOpen={dialogs.memberDeactivated}
-				onCloseDialog={() => onCloseDialogByName('memberDeactivated')}
-				onExitedDialog={() => onExitedDialogByName('member')}
-				onCallback={getMember}
-				selectedMember={dialogOpenedName === 'memberDeactivated' ? dialogData.member : null}
-			/>
+				<DialogMemberDeactivated
+					dialogOpen={dialogs.memberDeactivated}
+					onCloseDialog={() => onCloseDialogByName('memberDeactivated')}
+					onExitedDialog={() => onExitedDialogByName('member')}
+					onCallback={getMember}
+					selectedMember={dialogOpenedName === 'memberDeactivated' ? dialogData.member : null}
+				/>
+			</Suspense>
 		</Container>
 	);
 };

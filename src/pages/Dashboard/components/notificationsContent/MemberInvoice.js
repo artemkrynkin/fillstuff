@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 
-import AvatarTitle from 'src/components/AvatarTitle';
+import UserSummary from 'src/components/UserSummary';
 import Money from 'src/components/Money';
 
 import stylesGlobal from '../../containers/Notification.module.css';
@@ -26,13 +26,7 @@ const MemberInvoice = props => {
 				</Typography>
 			</div>
 			<div>
-				<AvatarTitle
-					classNames={{
-						container: styles.user,
-					}}
-					imageSrc={invoice.member.user.avatar}
-					title={invoice.member.user.name}
-				/>
+				<UserSummary className={styles.user} src={invoice.member.user.avatar} title={invoice.member.user.name} size="xs" />
 				<Grid justify="space-between" alignItems="center" container>
 					<Grid item>
 						<div className={stylesGlobal.totalPrice}>

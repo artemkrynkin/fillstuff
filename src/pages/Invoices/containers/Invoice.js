@@ -17,7 +17,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import CardPaper from 'src/components/CardPaper';
 import Money from 'src/components/Money';
-import AvatarTitle from 'src/components/AvatarTitle';
+import UserSummary from 'src/components/UserSummary';
 
 import Position from './Position';
 import Payment from './Payment';
@@ -47,7 +47,7 @@ const Invoice = props => {
 							<Link className={styles.title} onClick={event => event.stopPropagation()} to={`/invoices/${invoice._id}`}>
 								Счет за {moment(invoice.fromDate).format('DD.MM.YYYY')} &ndash; {moment(invoice.toDate).format('DD.MM.YYYY')}
 							</Link>
-							<AvatarTitle imageSrc={invoice.member.user.avatar} title={invoice.member.user.name} />
+							<UserSummary src={invoice.member.user.avatar} title={invoice.member.user.name} />
 						</Grid>
 						<Grid xs={6} item>
 							<Grid className={styles.indicators} direction="column" justify="center" container>

@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import loadable from '@loadable/component';
+import React, { useState, lazy, Suspense } from 'react';
 import ClassNames from 'classnames';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -12,9 +11,7 @@ import { procurementPositionTransform } from 'src/helpers/utils';
 
 import styles from './Header.module.css';
 
-const DialogPositionArchiveDelete = loadable(() =>
-	import('src/pages/Dialogs/PositionArchiveDelete' /* webpackChunkName: "Dialog_PositionArchiveDelete" */)
-);
+const DialogPositionArchiveDelete = lazy(() => import('src/pages/Dialogs/PositionArchiveDelete'));
 
 const Header = props => {
 	const {
@@ -107,13 +104,15 @@ const Header = props => {
 				</IconButton>
 			</Tooltip>
 
-			<DialogPositionArchiveDelete
-				dialogOpen={dialogs.dialogPositionArchiveDelete}
-				onCloseDialog={() => onCloseDialogByName('dialogPositionArchiveDelete')}
-				onExitedDialog={() => onExitedDialogByName('position')}
-				selectedPosition={dialogOpenedName === 'dialogPositionArchiveDelete' ? dialogData.position : null}
-				onCallback={onCloseDialog}
-			/>
+			<Suspense fallback={null}>
+				<DialogPositionArchiveDelete
+					dialogOpen={dialogs.dialogPositionArchiveDelete}
+					onCloseDialog={() => onCloseDialogByName('dialogPositionArchiveDelete')}
+					onExitedDialog={() => onExitedDialogByName('position')}
+					selectedPosition={dialogOpenedName === 'dialogPositionArchiveDelete' ? dialogData.position : null}
+					onCallback={onCloseDialog}
+				/>
+			</Suspense>
 		</Grid>
 	);
 };

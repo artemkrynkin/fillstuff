@@ -9,7 +9,7 @@ import TableRow from '@material-ui/core/TableRow';
 
 import CardPaper from 'src/components/CardPaper';
 import Money from 'src/components/Money';
-import AvatarTitle from 'src/components/AvatarTitle';
+import UserSummary from 'src/components/UserSummary';
 
 import Receipt from './Receipt';
 
@@ -34,7 +34,7 @@ const Procurement = props => {
 								'Чек/накладная отсутствует'
 							)}
 						</div>
-						<AvatarTitle imageSrc={procurement.receivedByMember.user.avatar} title={procurement.receivedByMember.user.name} />
+						<UserSummary src={procurement.receivedByMember.user.avatar} title={procurement.receivedByMember.user.name} />
 					</Grid>
 					<Grid xs={6} item>
 						<div className={styles.indicatorsTitle}>

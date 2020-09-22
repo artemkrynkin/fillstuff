@@ -2,18 +2,12 @@
   margin-bottom: 20px;
 }
 
+.user {
+  text-align: center;
+}
+
 .avatar {
-  justify-content: center;
-  margin-bottom: 10px;
-}
-
-.avatar svg {
-  font-size: 70px;
-}
-
-.avatarImage {
-  height: 90px;
-  width: 90px;
+  margin-bottom: 12px;
 }
 
 .name {
@@ -29,7 +23,7 @@
 
 .indicatorsSubtitle {
   color: var(--c-hex-blueGrey-300);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   margin: 7px auto 0;
 }

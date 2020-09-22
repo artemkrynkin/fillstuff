@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import loadable from '@loadable/component';
 
 import generateMetaInfo from 'shared/generate-meta-info';
 
@@ -9,7 +8,6 @@ import history from 'src/helpers/history';
 
 import Head from 'src/components/head';
 import HeaderPage from 'src/components/HeaderPage';
-import { LoadingPage } from 'src/components/Loading';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 
 import { getMember } from 'src/actions/members';
@@ -18,9 +16,7 @@ import { getMemberInvoices } from 'src/actions/invoices';
 import stylesPage from 'src/styles/page.module.css';
 import styles from './index.module.css';
 
-const Index = loadable(() => import('./containers/index' /* webpackChunkName: "Member_Index" */), {
-	fallback: <LoadingPage />,
-});
+import Index from './containers/index';
 
 const Members = props => {
 	const { currentStudio } = props;

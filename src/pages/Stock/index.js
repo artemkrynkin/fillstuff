@@ -1,13 +1,11 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import loadable from '@loadable/component';
 
 import generateMetaInfo from 'shared/generate-meta-info';
 
 import Head from 'src/components/head';
 import HeaderPage from 'src/components/HeaderPage';
-import { LoadingPage } from 'src/components/Loading';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 
 import { getPositions } from 'src/actions/positions';
@@ -16,9 +14,7 @@ import { getPositionGroups } from 'src/actions/positionGroups';
 import stylesPage from 'src/styles/page.module.css';
 import styles from './index.module.css';
 
-const Index = loadable(() => import('./containers/index' /* webpackChunkName: "Stock_Index" */), {
-	fallback: <LoadingPage />,
-});
+import Index from './containers/index';
 
 const Stock = props => {
 	const { currentStudio, positions, positionGroups } = props;

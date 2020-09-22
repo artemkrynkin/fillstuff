@@ -1,16 +1,10 @@
-import React, { useState } from 'react';
-import loadable from '@loadable/component';
+import React, { useState, lazy, Suspense } from 'react';
 
 import { Button } from './styles';
 import styles from './index.module.css';
 
-const DialogPositionCreate = loadable(() =>
-	import('src/pages/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateEdit" */)
-);
-
-const DialogPositionGroupCreate = loadable(() =>
-	import('src/pages/Dialogs/PositionGroupCreateEditAdd' /* webpackChunkName: "Dialog_PositionGroupCreateEditAdd" */)
-);
+const DialogPositionCreate = lazy(() => import('src/pages/Dialogs/PositionCreateEdit'));
+const DialogPositionGroupCreate = lazy(() => import('src/pages/Dialogs/PositionGroupCreateEditAdd'));
 
 const Stock = () => {
 	const [dialogPositionCreate, setDialogPositionCreate] = useState(false);
@@ -33,9 +27,11 @@ const Stock = () => {
 				Создать группу
 			</Button>
 
-			<DialogPositionCreate type="create" dialogOpen={dialogPositionCreate} onCloseDialog={onCloseDialogPositionCreate} />
+			<Suspense fallback={null}>
+				<DialogPositionCreate type="create" dialogOpen={dialogPositionCreate} onCloseDialog={onCloseDialogPositionCreate} />
 
-			<DialogPositionGroupCreate type="create" dialogOpen={dialogPositionGroupCreate} onCloseDialog={onCloseDialogPositionGroupCreate} />
+				<DialogPositionGroupCreate type="create" dialogOpen={dialogPositionGroupCreate} onCloseDialog={onCloseDialogPositionGroupCreate} />
+			</Suspense>
 		</div>
 	);
 };

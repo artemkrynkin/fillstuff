@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
 import { connect } from 'react-redux';
 import validator from 'validator';
 import { Form, Field } from 'formik';
-import loadable from '@loadable/component';
 
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
@@ -13,7 +12,7 @@ import { SelectAutocompleteCreate } from 'src/components/selectAutocomplete';
 
 import { getShops } from 'src/actions/shops';
 
-const DialogShopCreate = loadable(() => import('src/pages/Dialogs/ShopCreateEdit' /* webpackChunkName: "Dialog_ShopCreateEdit" */));
+const DialogShopCreate = lazy(() => import('src/pages/Dialogs/ShopCreateEdit'));
 
 // const filter = createFilterOptions();
 
@@ -173,19 +172,21 @@ const ShopAddingForm = props => {
 				</Grid>
 			</Grid>
 
-			<DialogShopCreate
-				type="create"
-				dialogOpen={dialogShopCreate}
-				onCloseDialog={onCloseDialogShopCreate}
-				onCallback={response => {
-					if (response.status === 'success') {
-						const shop = response.data;
+			<Suspense fallback={null}>
+				<DialogShopCreate
+					type="create"
+					dialogOpen={dialogShopCreate}
+					onCloseDialog={onCloseDialogShopCreate}
+					onCallback={response => {
+						if (response.status === 'success') {
+							const shop = response.data;
 
-						setFieldValue('shop', shop);
-					}
-				}}
-				selectedShop={dialogShopCreate ? shopTemp : null}
-			/>
+							setFieldValue('shop', shop);
+						}
+					}}
+					selectedShop={dialogShopCreate ? shopTemp : null}
+				/>
+			</Suspense>
 		</Form>
 	);
 };

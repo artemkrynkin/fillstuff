@@ -14,7 +14,7 @@ import CardPaper from 'src/components/CardPaper';
 import Money from 'src/components/Money';
 import MenuItem from 'src/components/MenuItem';
 import Dropdown from 'src/components/Dropdown';
-import AvatarTitle from 'src/components/AvatarTitle';
+import UserSummary from 'src/components/UserSummary';
 
 import { useStylesProcurementExpected as useStyles } from '../../components/styles';
 import styles from './ProcurementExpected.module.css';
@@ -78,12 +78,11 @@ const ProcurementExpected = props => {
 						Ожидается подтверждение заказа
 					</Typography>
 				)}
-				<AvatarTitle
-					classNames={{
-						container: styles.user,
-					}}
-					imageSrc={procurement.orderedByMember.user.avatar}
+				<UserSummary
+					className={styles.user}
+					src={procurement.orderedByMember.user.avatar}
 					title={procurement.orderedByMember.user.name}
+					size="xs"
 				/>
 				<div className={styles.totalPrice}>
 					<Money value={procurement.totalPrice} />

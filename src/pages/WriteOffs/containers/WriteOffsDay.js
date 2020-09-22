@@ -17,7 +17,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import history from 'src/helpers/history';
 
 import CardPaper from 'src/components/CardPaper';
-import AvatarTitle from 'src/components/AvatarTitle';
+import Avatar from 'src/components/Avatar';
 import Money from 'src/components/Money';
 import Dropdown from 'src/components/Dropdown';
 import { deleteParamsCoincidence } from 'src/components/Pagination/utils';
@@ -78,21 +78,15 @@ const WriteOffsDay = props => {
 					<Grid container>
 						<Grid xs={6} item>
 							<div className={styles.title}>{moment(date).calendar(null, calendarFormat)}</div>
-							<div className={styles.usersContainer}>
-								<div ref={refDropdownAllUsers} onClick={event => event.stopPropagation()} className={styles.users}>
+							<div className={styles.userGroupContainer}>
+								<div ref={refDropdownAllUsers} onClick={event => event.stopPropagation()} className={styles.userGroup}>
 									{indicators.members.map((member, index) => {
 										if (index >= maxVisibleUsers) return null;
 
 										return (
 											<Tooltip key={member._id} title={member.user.name} placement="top" enterDelay={150} enterNextDelay={150}>
 												<div className={styles.user} style={{ zIndex: indicators.members.length - index }}>
-													<AvatarTitle
-														onClick={() => onChangeFilterRole(member._id)}
-														classNames={{
-															image: styles.userPhoto,
-														}}
-														imageSrc={member.user.avatar}
-													/>
+													<Avatar className={styles.userAvatar} onClick={() => onChangeFilterRole(member._id)} src={member.user.avatar} />
 												</div>
 											</Tooltip>
 										);
@@ -165,18 +159,18 @@ const WriteOffsDay = props => {
 					onClose={onHandleDropdownAllUsers}
 					placement="bottom-start"
 					disablePortal={false}
-					style={{ margin: '-40px 0px 0px -8px' }}
+					style={{ margin: '-46px 0px 0px -10px' }}
 					innerContentStyle={{ minWidth: 252, maxWidth: 386 }}
 				>
 					<div className={styles.allUsersPopup}>
 						<IconButton className={styles.closePopup} onClick={onHandleDropdownAllUsers} size="small">
-							<FontAwesomeIcon icon={['fal', 'times']} />
+							<FontAwesomeIcon icon={['fal', 'times']} fixedWidth />
 						</IconButton>
 						<div className={styles.usersPopup}>
 							{indicators.members.map(member => (
 								<Tooltip key={member._id} title={member.user.name} placement="top">
-									<div className={styles.userPopup}>
-										<AvatarTitle onClick={() => onChangeFilterRole(member._id)} imageSrc={member.user.avatar} />
+									<div>
+										<Avatar onClick={() => onChangeFilterRole(member._id)} className={styles.userPopup} src={member.user.avatar} />
 									</div>
 								</Tooltip>
 							))}

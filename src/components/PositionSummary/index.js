@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ClassNames from 'classnames';
 
+import Avatar from 'src/components/Avatar';
+
 import Symbols from './Symbols';
 
 import styles from './index.module.css';
@@ -25,6 +27,7 @@ const PositionSummary = props => {
 
 	return (
 		<div className={classes} style={style}>
+			<Avatar size={size} />
 			<div className={styles.names}>
 				{size === 'sm' ? (
 					<div className={styles.name}>{name}</div>

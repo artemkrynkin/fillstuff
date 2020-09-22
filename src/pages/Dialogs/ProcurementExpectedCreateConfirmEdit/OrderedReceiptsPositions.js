@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import loadable from '@loadable/component';
+import React, { useState, lazy, Suspense } from 'react';
 
 import { procurementPositionTransform } from 'src/helpers/utils';
 
@@ -9,11 +8,8 @@ import OrderedReceiptPosition from './OrderedReceiptPosition';
 
 import styles from './index.module.css';
 
-const DialogPositionCreate = loadable(() => import('src/pages/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreate" */));
-
-const DialogPositionCreateReplacement = loadable(() =>
-	import('src/pages/Dialogs/PositionCreateEdit' /* webpackChunkName: "Dialog_PositionCreateReplacement" */)
-);
+const DialogPositionCreate = lazy(() => import('src/pages/Dialogs/PositionCreateEdit'));
+const DialogPositionCreateReplacement = lazy(() => import('src/pages/Dialogs/PositionCreateEdit'));
 
 const OrderedReceiptsPositions = props => {
 	const {
@@ -151,42 +147,44 @@ const OrderedReceiptsPositions = props => {
 				</div>
 			) : null}
 
-			<DialogPositionCreate
-				type="create"
-				dialogOpen={dialogs.dialogPositionCreate}
-				onCloseDialog={() => onCloseDialogByName('dialogPositionCreate')}
-				onCallback={({ status, data: position }) => {
-					if (status === 'success') {
-						push(receiptInitialValues(procurementPositionTransform(position)));
+			<Suspense fallback={null}>
+				<DialogPositionCreate
+					type="create"
+					dialogOpen={dialogs.dialogPositionCreate}
+					onCloseDialog={() => onCloseDialogByName('dialogPositionCreate')}
+					onCallback={({ status, data: position }) => {
+						if (status === 'success') {
+							push(receiptInitialValues(procurementPositionTransform(position)));
 
-						setTimeout(() => {
-							dialogRef.current.querySelector('.sentinel-bottom').scrollIntoView({
-								behavior: 'smooth',
-								block: 'end',
-							});
-						}, 0);
-					}
-				}}
-				onExitedDialog={() => onExitedDialogByName('position')}
-				selectedPosition={dialogOpenedName === 'dialogPositionCreate' ? dialogData.position : null}
-			/>
+							setTimeout(() => {
+								dialogRef.current.querySelector('.sentinel-bottom').scrollIntoView({
+									behavior: 'smooth',
+									block: 'end',
+								});
+							}, 0);
+						}
+					}}
+					onExitedDialog={() => onExitedDialogByName('position')}
+					selectedPosition={dialogOpenedName === 'dialogPositionCreate' ? dialogData.position : null}
+				/>
 
-			<DialogPositionCreateReplacement
-				type="create-replacement"
-				dialogOpen={dialogs.dialogPositionCreateReplacement}
-				onCloseDialog={() => onCloseDialogByName('dialogPositionCreateReplacement')}
-				onExitedDialog={() => onExitedDialogByName('positionReplacement')}
-				onCallback={({ status, data: position }) => {
-					if (status === 'success') {
-						const orderedReceipt = values.orderedReceiptsPositions[positionIndexInProcurement];
+				<DialogPositionCreateReplacement
+					type="create-replacement"
+					dialogOpen={dialogs.dialogPositionCreateReplacement}
+					onCloseDialog={() => onCloseDialogByName('dialogPositionCreateReplacement')}
+					onExitedDialog={() => onExitedDialogByName('positionReplacement')}
+					onCallback={({ status, data: position }) => {
+						if (status === 'success') {
+							const orderedReceipt = values.orderedReceiptsPositions[positionIndexInProcurement];
 
-						replace(positionIndexInProcurement, { ...orderedReceipt, position: procurementPositionTransform(position) });
+							replace(positionIndexInProcurement, { ...orderedReceipt, position: procurementPositionTransform(position) });
 
-						setPositionIndexInProcurement(undefined);
-					}
-				}}
-				selectedPosition={dialogOpenedName === 'dialogPositionCreateReplacement' ? dialogData.positionReplacement : null}
-			/>
+							setPositionIndexInProcurement(undefined);
+						}
+					}}
+					selectedPosition={dialogOpenedName === 'dialogPositionCreateReplacement' ? dialogData.positionReplacement : null}
+				/>
+			</Suspense>
 		</div>
 	);
 };

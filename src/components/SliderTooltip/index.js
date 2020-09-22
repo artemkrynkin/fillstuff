@@ -16,7 +16,7 @@ const SliderTooltip = props => {
 };
 
 SliderTooltip.propTypes = {
-	children: PropTypes.element.isRequired,
+	children: PropTypes.node.isRequired,
 	open: PropTypes.bool.isRequired,
 	value: PropTypes.number.isRequired,
 };

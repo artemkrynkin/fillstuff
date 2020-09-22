@@ -1,7 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, lazy, Suspense } from 'react';
 import { Form, Field, FieldArray } from 'formik';
 import moment from 'moment';
-import loadable from '@loadable/component';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -32,7 +31,7 @@ import OrderedReceiptsPositions from './OrderedReceiptsPositions';
 import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
 
-const DialogShopCreate = loadable(() => import('src/pages/Dialogs/ShopCreateEdit' /* webpackChunkName: "Dialog_ShopCreateEdit" */));
+const DialogShopCreate = lazy(() => import('src/pages/Dialogs/ShopCreateEdit'));
 
 const ProcurementForm = props => {
 	const {
@@ -358,20 +357,22 @@ const ProcurementForm = props => {
 				</Grid>
 			</DialogActions>
 
-			<DialogShopCreate
-				type="create"
-				dialogOpen={dialogShopCreate}
-				onCloseDialog={onCloseDialogShopCreate}
-				onCallback={response => {
-					if (response.status === 'success') {
-						const { data: shop } = response;
+			<Suspense fallback={null}>
+				<DialogShopCreate
+					type="create"
+					dialogOpen={dialogShopCreate}
+					onCloseDialog={onCloseDialogShopCreate}
+					onCallback={response => {
+						if (response.status === 'success') {
+							const { data: shop } = response;
 
-						setFieldValue('shop', shop);
+							setFieldValue('shop', shop);
 
-						setShopTempName('');
-					}
-				}}
-			/>
+							setShopTempName('');
+						}
+					}}
+				/>
+			</Suspense>
 
 			<Dropdown
 				anchor={refDropdownDeliveryDate}

@@ -6,10 +6,9 @@ import TableRow from '@material-ui/core/TableRow';
 import { formatNumber } from 'shared/utils';
 
 import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
-import AvatarTitle from 'src/components/AvatarTitle';
+import UserSummary from 'src/components/UserSummary';
 
 import { TableCell } from '../components/styles';
-import styles from './Payment.module.css';
 
 const Payment = props => {
 	const { payment } = props;
@@ -17,13 +16,7 @@ const Payment = props => {
 	return (
 		<TableRow>
 			<TableCell>
-				<AvatarTitle
-					classNames={{
-						container: styles.avatar,
-					}}
-					imageSrc={payment.merchant.user.avatar}
-					title={payment.merchant.user.name}
-				/>
+				<UserSummary src={payment.merchant.user.avatar} title={payment.merchant.user.name} />
 			</TableCell>
 			<TableCell>{moment(payment.date).format('DD MMMM YYYY')}</TableCell>
 			<TableCell />

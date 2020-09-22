@@ -16,7 +16,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import CardPaper from 'src/components/CardPaper';
 import Money from 'src/components/Money';
-import AvatarTitle from 'src/components/AvatarTitle';
+import UserSummary from 'src/components/UserSummary';
+import Avatar from 'src/components/Avatar';
 
 import Receipt from './Receipt';
 
@@ -49,8 +50,8 @@ const ProcurementReceived = props => {
 									'Чек/накладная отсутствует'
 								)}
 							</Link>
-							{!procurement.orderedByMember || procurement.orderedByMember._id === procurement.receivedByMember._id ? (
-								<AvatarTitle imageSrc={procurement.receivedByMember.user.avatar} title={procurement.receivedByMember.user.name} />
+							{!procurement.orderedByMember ? (
+								<UserSummary src={procurement.receivedByMember.user.avatar} title={procurement.receivedByMember.user.name} />
 							) : (
 								<div>
 									<Tooltip
@@ -72,19 +73,9 @@ const ProcurementReceived = props => {
 										enterDelay={150}
 										enterNextDelay={150}
 									>
-										<div className={styles.users}>
-											<AvatarTitle
-												classNames={{
-													container: styles.user,
-												}}
-												imageSrc={procurement.orderedByMember.user.avatar}
-											/>
-											<AvatarTitle
-												classNames={{
-													container: styles.user,
-												}}
-												imageSrc={procurement.receivedByMember.user.avatar}
-											/>
+										<div className={styles.userGroup}>
+											<Avatar className={styles.user} src={procurement.receivedByMember.user.avatar} />
+											<Avatar className={styles.user} src={procurement.orderedByMember.user.avatar} />
 										</div>
 									</Tooltip>
 								</div>

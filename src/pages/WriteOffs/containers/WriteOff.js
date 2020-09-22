@@ -11,7 +11,7 @@ import { formatNumber } from 'shared/utils';
 
 import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
 import PositionSummary from 'src/components/PositionSummary';
-import AvatarTitle from 'src/components/AvatarTitle';
+import UserSummary from 'src/components/UserSummary';
 
 import styles from './WriteOff.module.css';
 
@@ -34,7 +34,7 @@ const WriteOff = props => {
 	return (
 		<TableRow className={styles.writeOff}>
 			<TableCell width={100}>
-				<AvatarTitle imageSrc={writeOff.member.user.avatar} title={writeOff.member.user.name} />
+				<UserSummary src={writeOff.member.user.avatar} title={writeOff.member.user.name} />
 			</TableCell>
 			<TableCell>
 				<PositionSummary name={writeOff.position.name} characteristics={writeOff.position.characteristics} canceled={writeOff.canceled} />

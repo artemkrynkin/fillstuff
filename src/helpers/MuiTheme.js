@@ -882,6 +882,23 @@ export const MuiTheme = createMuiTheme({
 				},
 			},
 		},
+		MuiAvatar: {
+			root: {
+				height: null,
+				width: null,
+			},
+			colorDefault: {
+				backgroundColor: colorTheme.brightness['5'],
+				border: `2px solid ${colorTheme.blueGrey['100']}`,
+			},
+			fallback: {
+				color: colorTheme.brightness['1'],
+				bottom: 0,
+				height: '80% !important',
+				position: 'absolute',
+				width: '80% !important',
+			},
+		},
 	},
 	palette: {
 		primary: {

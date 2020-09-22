@@ -1,13 +1,10 @@
-import React, { useState } from 'react';
-import loadable from '@loadable/component';
+import React, { useState, lazy, Suspense } from 'react';
 
 import Container from '@material-ui/core/Container';
 
 import View from './View';
 
-const DialogInvoicePaymentCreate = loadable(() =>
-	import('src/pages/Dialogs/InvoicePaymentCreate' /* webpackChunkName: "Dialog_InvoicePaymentCreate" */)
-);
+const DialogInvoicePaymentCreate = lazy(() => import('src/pages/Dialogs/InvoicePaymentCreate'));
 
 const Index = props => {
 	const [dialogData, setDialogData] = useState({
@@ -56,12 +53,14 @@ const Index = props => {
 		<Container>
 			<View onOpenDialogByName={onOpenDialogByName} {...props} />
 
-			<DialogInvoicePaymentCreate
-				dialogOpen={dialogs.dialogInvoicePaymentCreate}
-				onCloseDialog={() => onCloseDialogByName('dialogInvoicePaymentCreate')}
-				onExitedDialog={() => onExitedDialogByName('invoice')}
-				selectedInvoice={dialogOpenedName === 'dialogInvoicePaymentCreate' ? dialogData.invoice : null}
-			/>
+			<Suspense fallback={null}>
+				<DialogInvoicePaymentCreate
+					dialogOpen={dialogs.dialogInvoicePaymentCreate}
+					onCloseDialog={() => onCloseDialogByName('dialogInvoicePaymentCreate')}
+					onExitedDialog={() => onExitedDialogByName('invoice')}
+					selectedInvoice={dialogOpenedName === 'dialogInvoicePaymentCreate' ? dialogData.invoice : null}
+				/>
+			</Suspense>
 		</Container>
 	);
 };

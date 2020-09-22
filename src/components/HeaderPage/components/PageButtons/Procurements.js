@@ -1,18 +1,10 @@
-import React, { useState } from 'react';
-import loadable from '@loadable/component';
-
-// import Button from '@material-ui/core/Button';
+import React, { useState, lazy, Suspense } from 'react';
 
 import { Button } from './styles';
 import styles from './index.module.css';
 
-const DialogProcurementExpectedCreate = loadable(() =>
-	import('src/pages/Dialogs/ProcurementExpectedCreateConfirmEdit' /* webpackChunkName: "Dialog_ProcurementExpectedCreateConfirmEdit" */)
-);
-
-const DialogProcurementReceivedCreate = loadable(() =>
-	import('src/pages/Dialogs/ProcurementReceivedCreate' /* webpackChunkName: "Dialog_ProcurementReceivedCreate" */)
-);
+const DialogProcurementExpectedCreate = lazy(() => import('src/pages/Dialogs/ProcurementExpectedCreateConfirmEdit'));
+const DialogProcurementReceivedCreate = lazy(() => import('src/pages/Dialogs/ProcurementReceivedCreate'));
 
 const Procurements = props => {
 	const { currentStudio } = props;
@@ -36,17 +28,19 @@ const Procurements = props => {
 				Оформить закупку
 			</Button>
 
-			<DialogProcurementExpectedCreate
-				type="create"
-				dialogOpen={dialogProcurementExpectedCreate}
-				onCloseDialog={onCloseDialogProcurementExpectedCreate}
-			/>
+			<Suspense fallback={null}>
+				<DialogProcurementExpectedCreate
+					type="create"
+					dialogOpen={dialogProcurementExpectedCreate}
+					onCloseDialog={onCloseDialogProcurementExpectedCreate}
+				/>
 
-			<DialogProcurementReceivedCreate
-				dialogOpen={dialogProcurementReceivedCreate}
-				onCloseDialog={onCloseDialogProcurementReceivedCreate}
-				currentStudio={currentStudio}
-			/>
+				<DialogProcurementReceivedCreate
+					dialogOpen={dialogProcurementReceivedCreate}
+					onCloseDialog={onCloseDialogProcurementReceivedCreate}
+					currentStudio={currentStudio}
+				/>
+			</Suspense>
 		</div>
 	);
 };

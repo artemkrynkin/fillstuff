@@ -8,7 +8,7 @@ import { formatNumber } from 'shared/utils';
 
 import { DefinitionList, DefinitionListItem } from 'src/components/Definition';
 import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFormat';
-import AvatarTitle from 'src/components/AvatarTitle';
+import UserSummary from 'src/components/UserSummary';
 
 import OrderedReceiptPosition from './OrderedReceiptPosition';
 
@@ -30,16 +30,7 @@ const Content = props => {
 			<DefinitionList>
 				<DefinitionListItem
 					term="Заказ от"
-					value={
-						<AvatarTitle
-							classNames={{
-								image: styles.avatarImage,
-								title: styles.avatarTitle,
-							}}
-							imageSrc={procurement.orderedByMember.user.avatar}
-							title={procurement.orderedByMember.user.name}
-						/>
-					}
+					value={<UserSummary src={procurement.orderedByMember.user.avatar} title={procurement.orderedByMember.user.name} size="xs" />}
 				/>
 				<DefinitionListItem term="Магазин" value={procurement.shop.name} />
 				{procurement.isConfirmed ? (

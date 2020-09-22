@@ -49,48 +49,41 @@
   text-align: right;
 }
 
-.usersContainer {
-  display: flex;
-  margin-left: -2px;
-}
-
-.users {
+.userGroupContainer,
+.userGroup {
   display: flex;
 }
 
 .user {
-  border-radius: 50%;
-  margin-right: -10px;
+  margin-right: -8px;
   transition: margin 150ms ease-out, padding 150ms ease-out;
 }
 
 .user:first-child:hover + .user {
-  margin-left: 6px;
-  padding-left: 6px;
+  margin-left: 8px;
+  padding-left: 8px;
 }
 
 .user:not(:first-child):hover {
-  margin: 0 -4px 0 6px;
-  padding: 0 6px;
+  margin: 0 0 0 8px;
+  padding: 0 8px;
 }
 
-.userPhoto {
-  border: 2px solid white;
-  height: 32px;
-  width: 32px;
+.userAvatar {
+  box-shadow: 0 0 0 2px white;
 }
 
 .remainingUsersButton {
   background-color: var(--c-hex-blueGrey-50);
   align-items: center;
-  border-radius: 28px;
+  border-radius: 32px;
   color: var(--c-hex-blueGrey-500);
   display: flex;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 600;
   line-height: 1;
-  margin: 2px 0 2px 14px;
-  padding: 0 10px;
+  margin: 2px 0 2px 16px;
+  padding: 9px 10px;
   transition: margin 150ms ease-out
 }
 

@@ -20,6 +20,7 @@
   color: var(--c-hex-blueGrey-300);
   font-size: 14px;
   font-weight: 600;
+  padding: 5px 0;
   width: 35px;
 }
 

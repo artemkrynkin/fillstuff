@@ -9,6 +9,12 @@ export const isInteger = num => {
 	return (num ^ 0) === num;
 };
 
+export const ucFirst = str => {
+	if (!str) return str;
+
+	return str[0].toUpperCase() + str.slice(1);
+};
+
 export const kiloFormat = num => {
 	let kilo,
 		decimalNum = num / 1000;

@@ -6,24 +6,26 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import MuiAvatar from '@material-ui/core/Avatar';
 import { makeStyles } from '@material-ui/core/styles';
 
+import { ucFirst } from 'src/helpers/utils';
+
 const useStyles = makeStyles(theme => ({
-	sizeAvatarXs: {
+	sizeXs: {
 		height: theme.spacing(3.5),
 		width: theme.spacing(3.5),
 	},
-	sizeAvatarSm: {
+	sizeSm: {
 		height: theme.spacing(4.5),
 		width: theme.spacing(4.5),
 	},
-	sizeAvatarMd: {
+	sizeMd: {
 		height: theme.spacing(6),
 		width: theme.spacing(6),
 	},
-	sizeAvatarLg: {
+	sizeLg: {
 		height: theme.spacing(9),
 		width: theme.spacing(9),
 	},
-	sizeAvatarXl: {
+	sizeXl: {
 		height: theme.spacing(14),
 		width: theme.spacing(14),
 	},
@@ -33,19 +35,14 @@ const Avatar = props => {
 	const { className, size, ...remainingProps } = props;
 	const classes = useStyles();
 
-	const avatarClasses = ClassNames(className, {
-		[classes.sizeAvatarXs]: size === 'xs',
-		[classes.sizeAvatarSm]: size === 'sm',
-		[classes.sizeAvatarMd]: size === 'md',
-		[classes.sizeAvatarLg]: size === 'lg',
-		[classes.sizeAvatarXl]: size === 'xl',
-	});
+	const classesAvatar = ClassNames(className, classes[`size${ucFirst(size)}`]);
+	const classesIcon = ClassNames(props.classes?.fallback, classes.fallback, 'MuiAvatar-fallback');
 
 	return (
 		<MuiAvatar
-			children={<FontAwesomeIcon className="MuiAvatar-fallback" icon={['fas', 'user-alt']} />}
+			children={<FontAwesomeIcon className={classesIcon} icon={['fas', 'user-alt']} />}
 			{...remainingProps}
-			className={avatarClasses}
+			className={classesAvatar}
 		/>
 	);
 };

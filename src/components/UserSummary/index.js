@@ -4,6 +4,8 @@ import ClassNames from 'classnames';
 
 import Grid from '@material-ui/core/Grid';
 
+import { ucFirst } from 'src/helpers/utils';
+
 import Avatar from 'src/components/Avatar';
 
 import styles from './index.module.css';
@@ -13,31 +15,22 @@ const UserSummary = props => {
 
 	if (!title) return null;
 
-	const classesContainer = ClassNames(className, styles.container, {
-		[styles.sizeXs]: size === 'xs',
-		[styles.sizeSm]: size === 'sm',
-		[styles.sizeMd]: size === 'md',
-		[styles.sizeLg]: size === 'lg',
-		[styles.sizeXl]: size === 'xl',
-	});
-
+	const classesContainer = ClassNames(className, styles.container, styles[`size${ucFirst(size)}`]);
 	const classesTitle = ClassNames(styles.title, { [styles.withoutSubtitle]: !subtitle });
 
 	return (
 		<div className={classesContainer} {...remainingProps}>
-			{avatar ? <Avatar className={styles.image} src={src} alt={title} size={size} /> : null}
-			{title ? (
-				<Grid className={styles.details} direction="column" container>
-					<div className={classesTitle} style={titleWeight && { fontWeight: titleWeight }}>
-						{title}
+			{avatar ? <Avatar className={styles.avatar} src={src} size={size} /> : null}
+			<Grid className={styles.summary} direction="column" container>
+				<div className={classesTitle} style={titleWeight && { fontWeight: titleWeight }}>
+					{title}
+				</div>
+				{subtitle && size !== 'xs' ? (
+					<div className={styles.subtitle} style={subtitleWeight && { fontWeight: subtitleWeight }}>
+						{subtitle}
 					</div>
-					{subtitle && size !== 'xs' ? (
-						<div className={styles.subtitle} style={subtitleWeight && { fontWeight: subtitleWeight }}>
-							{subtitle}
-						</div>
-					) : null}
-				</Grid>
-			) : null}
+				) : null}
+			</Grid>
 		</div>
 	);
 };

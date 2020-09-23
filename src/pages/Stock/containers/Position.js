@@ -40,6 +40,13 @@ const Position = props => {
 		return event.ctrlKey || event.shiftKey || event.metaKey ? window.open(positionLink) : history.push(positionLink);
 	};
 
+	const positionBadges = (badges = []) => {
+		if (position.archivedAfterEnded) badges.push('archiving-after-ended');
+		if (Boolean(position.deliveryIsExpected.length)) badges.push('delivery-is-expected');
+
+		return badges;
+	};
+
 	const containerClasses = ClassNames(stylesPositions.position, styles.position, {
 		[styles.positionInGroup]: position.positionGroup,
 		[styles.childPosition]: position.parentPosition,
@@ -50,12 +57,7 @@ const Position = props => {
 			<TableCell width={330} style={position.positionGroup ? { paddingLeft: 41 } : {}}>
 				<div className={styles.positionName}>
 					{position.parentPosition ? <UnifierPosition className={styles.unifierPosition} /> : null}
-					<PositionSummary
-						name={position.name}
-						characteristics={position.characteristics}
-						archivedAfterEnded={position.archivedAfterEnded}
-						deliveryIsExpected={Boolean(position.deliveryIsExpected.length)}
-					/>
+					<PositionSummary name={position.name} characteristics={position.characteristics} badges={positionBadges()} avatar />
 				</div>
 			</TableCell>
 			<TableCell />

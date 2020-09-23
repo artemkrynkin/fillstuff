@@ -102,7 +102,11 @@ import {
 	faFileEdit as falFileEdit,
 } from '@fortawesome/pro-light-svg-icons';
 
-import { faCheckCircle as fadCheckCircle, faExclamationCircle as fadExclamationCircle } from '@fortawesome/pro-duotone-svg-icons';
+import {
+	faCheckCircle as fadCheckCircle,
+	faExclamationCircle as fadExclamationCircle,
+	faBoxAlt as fadBoxAlt,
+} from '@fortawesome/pro-duotone-svg-icons';
 
 library.add(
 	// Custom
@@ -207,5 +211,6 @@ library.add(
 
 	// Duotone
 	fadCheckCircle,
-	fadExclamationCircle
+	fadExclamationCircle,
+	fadBoxAlt
 );

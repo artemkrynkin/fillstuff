@@ -810,6 +810,7 @@ export const MuiTheme = createMuiTheme({
 		},
 		MuiTableCell: {
 			root: {
+				color: colorTheme.blueGrey['700'],
 				fontSize: 14,
 			},
 			head: {
@@ -822,7 +823,6 @@ export const MuiTheme = createMuiTheme({
 			},
 			body: {
 				borderBottomColor: colorTheme.brightness['4'],
-				color: colorTheme.blueGrey['700'],
 			},
 			stickyHeader: {
 				backgroundColor: 'white',
@@ -890,9 +890,10 @@ export const MuiTheme = createMuiTheme({
 			colorDefault: {
 				backgroundColor: colorTheme.brightness['5'],
 				border: `2px solid ${colorTheme.blueGrey['100']}`,
+				color: colorTheme.blueGrey['200'],
 			},
 			fallback: {
-				color: colorTheme.brightness['1'],
+				color: 'white',
 				bottom: 0,
 				height: '80% !important',
 				position: 'absolute',

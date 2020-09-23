@@ -1,0 +1,46 @@
+.positionItem {
+  align-items: center;
+  border-bottom: 1px solid var(--c-hex-brightness-5);
+  cursor: pointer;
+  display: flex;
+  color: var(--c-hex-blueGrey-700);
+  font-size: 14px;
+  line-height: 1.2;
+  margin: 0 -20px;
+  padding: 13px 20px;
+  transition: background-color 150ms ease-out;
+}
+
+.positionItem:hover {
+  background-color: var(--c-hex-brightness-2);
+}
+
+.positionSummary {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.checkbox {
+  align-items: center;
+  border: 2px solid var(--c-hex-blueGrey-100);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  height: 24px;
+  margin-left: 12px;
+  width: 24px;
+}
+
+.checkbox svg {
+  color: transparent;
+  font-size: 14px;
+}
+
+.checkboxActive {
+  background-color: var(--c-hex-teal-300);
+  border-color: var(--c-hex-teal-300);
+}
+
+.checkboxActive svg {
+  color: white;
+}

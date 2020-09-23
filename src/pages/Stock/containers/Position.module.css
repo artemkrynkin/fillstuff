@@ -23,12 +23,12 @@
   color: rgba(var(--c-rgb-blueGrey-100), 0.8);
   height: 35px;
   position: absolute;
-  left: 1px;
+  left: 17px;
   top: -16px;
 }
 
 .childPosition .unifierPosition + div {
-  margin-left: 34px;
+  margin-left: 41px;
 }
 
 .createReceipt {

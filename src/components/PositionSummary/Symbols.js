@@ -4,9 +4,7 @@ import ClassNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Tooltip from '@material-ui/core/Tooltip';
 
-// import PositionSummary from './index';
-
-import styles from './index.module.css';
+import styles from './Symbols.module.css';
 
 const deliveryIsExpectedIconClasses = ClassNames(styles.symbolIcon, styles.deliveryIsExpected);
 
@@ -19,28 +17,24 @@ const canceledIconClasses = ClassNames(styles.symbolIcon, styles.writeOffUndo);
 const childPositionIconClasses = ClassNames(styles.symbolIcon, styles.childPosition);
 
 const Symbols = props => {
-	const { deliveryIsExpected, isArchived, archivedAfterEnded, canceled, childPosition } = props;
+	const { badges } = props;
 
-	if (!deliveryIsExpected && !isArchived && !archivedAfterEnded && !canceled && !childPosition) return null;
+	if (!badges?.length) return null;
 
 	return (
 		<div className={styles.symbols}>
-			{deliveryIsExpected ? (
-				<Tooltip title="Ожидается доставка" placement="top">
-					<div className={deliveryIsExpectedIconClasses}>
-						<FontAwesomeIcon icon={['far', 'truck']} />
-					</div>
-				</Tooltip>
-			) : null}
-			{isArchived ? (
+			{badges.some(badge => badge === 'archived') ? (
 				<Tooltip title="Позиция архивирована" placement="top">
 					<div className={isArchivedIconClasses}>
-						<FontAwesomeIcon icon={['far', 'archive']} />
+						<FontAwesomeIcon icon={['far', 'archive']} fixedWidth />
 					</div>
 				</Tooltip>
 			) : null}
-			{archivedAfterEnded ? (
-				<Tooltip title={<div style={{ width: 200 }}>Позиция архивируется после списания последней единицы</div>} placement="top">
+			{badges.some(badge => badge === 'archiving-after-ended') ? (
+				<Tooltip
+					title={<div style={{ textAlign: 'center', width: 200 }}>Архивируется после списания последней единицы</div>}
+					placement="top"
+				>
 					<div className={archivedAfterEndedIconClasses}>
 						<span className="fa-layers fa-fw" style={{ width: '16px' }}>
 							<FontAwesomeIcon icon={['far', 'archive']} />
@@ -50,26 +44,35 @@ const Symbols = props => {
 					</div>
 				</Tooltip>
 			) : null}
-			{canceled ? (
+			{badges.some(badge => badge === 'canceled') ? (
 				<Tooltip title="Списание отменено" placement="top">
 					<div className={canceledIconClasses}>
-						<FontAwesomeIcon icon={['far', 'undo']} />
+						<FontAwesomeIcon icon={['far', 'undo']} fixedWidth />
 					</div>
 				</Tooltip>
 			) : null}
-			{childPosition ? (
+			{badges.some(badge => badge === 'delivery-is-expected') ? (
+				<Tooltip title="Ожидается доставка" placement="top">
+					<div className={deliveryIsExpectedIconClasses}>
+						<FontAwesomeIcon icon={['far', 'truck']} fixedWidth />
+					</div>
+				</Tooltip>
+			) : null}
+			{badges.some(badge => badge === 'replaceable') ? (
 				<Tooltip
 					title={
 						<>
 							Позиция на замену
-							{/*<PositionSummary name={childPosition.name} characteristics={childPosition.characteristics} />*/}
+							{/*{childPosition ? (*/}
+							{/*  <PositionSummary name={childPosition.name} characteristics={childPosition.characteristics} />*/}
+							{/*) : null}*/}
 						</>
 					}
 					placement="top"
 					interactive
 				>
 					<div className={childPositionIconClasses}>
-						<FontAwesomeIcon icon={['far-c', 'position-replacement']} />
+						<FontAwesomeIcon icon={['far-c', 'position-replacement']} fixedWidth />
 					</div>
 				</Tooltip>
 			) : null}

@@ -16,6 +16,12 @@ import styles from './Receipt.module.css';
 const Receipt = props => {
 	const { receipt } = props;
 
+	const positionBadges = (badges = []) => {
+		if (receipt.position.isArchived) badges.push('archived');
+
+		return badges;
+	};
+
 	return (
 		<TableRow>
 			<TableCell width={280}>
@@ -23,7 +29,8 @@ const Receipt = props => {
 					<PositionSummary
 						name={receipt.position.name}
 						characteristics={receipt.position.characteristics}
-						isArchived={receipt.position.isArchived}
+						badges={positionBadges()}
+						avatar
 					/>
 				</Link>
 			</TableCell>

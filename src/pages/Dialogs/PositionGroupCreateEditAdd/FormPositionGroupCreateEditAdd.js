@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import ClassNames from 'classnames';
 
 import { Form, Field, FieldArray } from 'formik';
 
@@ -15,18 +14,12 @@ import TextField from '@material-ui/core/TextField';
 import DialogActions from '@material-ui/core/DialogActions';
 
 import Chips from 'src/components/Chips';
-import PositionSummary from 'src/components/PositionSummary';
+
+import Position from './Position';
 
 import { SearchTextField } from './styles';
 import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
-
-const selectPositionsClasses = (selectedPositions, positionId) => {
-	return ClassNames({
-		[styles.selectPosition]: true,
-		[styles.selectPositionSelected]: selectedPositions.some(selectedPosition => selectedPosition._id === positionId),
-	});
-};
 
 const findPositionByFullName = (position, searchText) => {
 	if (position.positionGroup) return false;
@@ -110,31 +103,17 @@ const FormPositionGroupCreateEditAdd = props => {
 								<div className={styles.selectPositionsWrap}>
 									{!isLoadingAllPositions ? (
 										positions.length ? (
-											positions.map((position, index) => (
-												<div
-													key={position._id}
-													className={selectPositionsClasses(values.positions, position._id)}
-													onClick={() => {
-														const selectedPositionIndex = values.positions.findIndex(
-															selectedPosition => selectedPosition._id === position._id
-														);
-
-														searchTextFieldPosition.current.focus();
-
-														if (!!~selectedPositionIndex) return arrayHelpers.remove(selectedPositionIndex);
-														else return arrayHelpers.push(position);
-													}}
-												>
-													<div className={styles.selectPositionCheckbox}>
-														<FontAwesomeIcon icon={['far', 'check']} />
-													</div>
-													<PositionSummary
-														className={styles.positionName}
-														name={position.name}
-														characteristics={position.characteristics}
+											<>
+												{positions.map(position => (
+													<Position
+														key={position._id}
+														selectedPositions={values.positions}
+														position={position}
+														arrayHelpers={arrayHelpers}
+														searchTextFieldPosition={searchTextFieldPosition}
 													/>
-												</div>
-											))
+												))}
+											</>
 										) : !positions.length && searchTextPosition ? (
 											<Typography variant="caption" align="center" display="block" style={{ marginTop: 20 }}>
 												Ничего не найдено
@@ -151,15 +130,7 @@ const FormPositionGroupCreateEditAdd = props => {
 										<Chips
 											className={styles.selectedPositions}
 											chips={values.positions}
-											onRenderChipLabel={position => (
-												<span>
-													{position.name}
-													{/*{position.characteristics.reduce(*/}
-													{/*	(fullName, characteristic) => `${fullName} ${characteristic.name}`,*/}
-													{/*	position.name*/}
-													{/*)}*/}
-												</span>
-											)}
+											onRenderChipLabel={position => <span>{position.name}</span>}
 											onRemoveChip={(chips, index) => arrayHelpers.remove(index)}
 										/>
 									) : null}

@@ -32,6 +32,7 @@ const FormReceiptCreate = props => {
 					characteristics={values.position.characteristics}
 					size="md"
 					style={{ marginBottom: 12 }}
+					avatar
 				/>
 
 				<Grid alignItems="flex-start" spacing={2} container>

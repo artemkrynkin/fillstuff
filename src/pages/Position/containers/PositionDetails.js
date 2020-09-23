@@ -67,9 +67,9 @@ const PositionDetails = props => {
 						<PositionSummary
 							name={position.childPosition ? position.childPosition.name : position.parentPosition.name}
 							characteristics={position.childPosition ? position.childPosition.characteristics : position.parentPosition.characteristics}
-							size="sm"
-							minHeight={false}
-							style={{ display: 'inline-block' }}
+							size="md"
+							style={{ display: 'inline-flex' }}
+							avatar
 						/>
 					</Link>
 				</div>

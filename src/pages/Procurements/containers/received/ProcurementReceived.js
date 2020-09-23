@@ -50,7 +50,7 @@ const ProcurementReceived = props => {
 									'Чек/накладная отсутствует'
 								)}
 							</Link>
-							{!procurement.orderedByMember ? (
+							{!procurement.orderedByMember || procurement.orderedByMember._id === procurement.receivedByMember._id ? (
 								<UserSummary src={procurement.receivedByMember.user.avatar} title={procurement.receivedByMember.user.name} />
 							) : (
 								<div>

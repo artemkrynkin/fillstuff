@@ -16,12 +16,12 @@ const OrderedReceiptPosition = props => {
 			: orderedReceiptPosition.position.characteristics;
 
 	return (
-		<Grid className={styles.positionItem} wrap="nowrap" alignItems="baseline" container>
+		<Grid className={styles.positionItem} wrap="nowrap" alignItems="flex-start" container>
 			<Grid className={styles.positionItemNumber} item>
 				{index + 1}
 			</Grid>
 			<Grid className={styles.positionItemContent} style={{ flex: '1 1' }} zeroMinWidth item>
-				<PositionSummary name={name} characteristics={characteristics} size="md" />
+				<PositionSummary name={name} characteristics={characteristics} size="md" avatar />
 			</Grid>
 		</Grid>
 	);

@@ -69,8 +69,7 @@ const Markup = props => {
 					<PositionSummary
 						className={styles.positionName}
 						name={selectedPositionOrGroup.name}
-						characteristics={selectedPositionOrGroup.characteristics}
-						minHeight={false}
+						characteristics={!selectedPositionOrGroup.childPosition ? selectedPositionOrGroup.characteristics : null}
 					/>
 				</div>
 			</Grid>

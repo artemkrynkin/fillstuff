@@ -9,7 +9,12 @@ const Content = props => {
 
 	return (
 		<>
-			<PositionSummary name={storeNotification.position.name} characteristics={storeNotification.position.characteristics} size="lg" />
+			<PositionSummary
+				name={storeNotification.position.name}
+				characteristics={storeNotification.position.characteristics}
+				size="lg"
+				avatar
+			/>
 
 			<Shops position={storeNotification.position} />
 		</>

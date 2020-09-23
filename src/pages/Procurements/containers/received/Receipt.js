@@ -18,6 +18,12 @@ const Receipt = props => {
 	const TableRowHighlightClasses = TableRowHighlight();
 	const TableCellHighlightClasses = TableCellHighlight();
 
+	const positionBadges = (badges = []) => {
+		if (receipt.position.isArchived) badges.push('archived');
+
+		return badges;
+	};
+
 	return (
 		<TableRow classes={positionSameFilter ? { root: TableRowHighlightClasses.root } : {}}>
 			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} width={280}>
@@ -25,7 +31,8 @@ const Receipt = props => {
 					<PositionSummary
 						name={receipt.position.name}
 						characteristics={receipt.position.characteristics}
-						isArchived={receipt.position.isArchived}
+						badges={positionBadges()}
+						avatar
 					/>
 				</Link>
 			</TableCell>

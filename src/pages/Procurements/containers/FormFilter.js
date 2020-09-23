@@ -426,6 +426,12 @@ const FormFilter = props => {
 						{positions.map((position, index) => {
 							if (position.isArchived && !searchTextPosition) return null;
 
+							const positionBadges = (badges = []) => {
+								if (position.isArchived) badges.push('archived');
+
+								return badges;
+							};
+
 							return (
 								<MenuItem
 									key={index}
@@ -434,13 +440,7 @@ const FormFilter = props => {
 									onClick={() => onChangeFilterPosition(position._id, setFieldValue, submitForm)}
 									tabIndex={0}
 								>
-									<PositionSummary
-										className={styles.positionName}
-										name={position.name}
-										characteristics={position.characteristics}
-										isArchived={position.isArchived}
-										minHeight={false}
-									/>
+									<PositionSummary name={position.name} characteristics={position.characteristics} badges={positionBadges()} avatar />
 								</MenuItem>
 							);
 						})}

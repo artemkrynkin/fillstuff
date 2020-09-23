@@ -2,39 +2,39 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ClassNames from 'classnames';
 
-import Avatar from 'src/components/Avatar';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Grid from '@material-ui/core/Grid';
+
+import { ucFirst } from 'src/helpers/utils';
 
 import Symbols from './Symbols';
 
+import { Avatar } from './styles';
 import styles from './index.module.css';
 
 const PositionSummary = props => {
-	const { name, characteristics, minHeight, size, className, style, ...remainingProps } = props;
+	const { className, avatar, src, name, characteristics, badges, childPosition, size, minHeight, ...remainingProps } = props;
 
-	const classes = ClassNames({
-		...Object.fromEntries(
-			className
-				.split(' ')
-				.filter(val => val)
-				.map(key => [key, true])
-		),
-		[styles.container]: true,
+	if (!name) return null;
+
+	const classes = ClassNames(className, styles.container, styles[`size${ucFirst(size)}`], {
 		[styles.minHeight]: minHeight && size === 'sm',
-		[styles.sizeSm]: size === 'sm',
-		[styles.sizeMd]: size === 'md',
-		[styles.sizeLg]: size === 'lg',
 	});
 
 	return (
-		<div className={classes} style={style}>
-			<Avatar size={size} />
-			<div className={styles.names}>
+		<div className={classes} {...remainingProps}>
+			{avatar ? (
+				<Avatar className={styles.avatar} src={src} size={size} variant="rounded">
+					<FontAwesomeIcon className={styles.avatarFallback} icon={['fad', 'box-alt']} />
+				</Avatar>
+			) : null}
+			<Grid className={styles.summary} direction="column" container>
 				{size === 'sm' ? (
 					<div className={styles.name}>{name}</div>
 				) : (
 					<div className={styles.nameWithSymbols}>
 						<span className={styles.name}>{name}</span>
-						<Symbols {...remainingProps} />
+						<Symbols badges={badges} childPosition={childPosition} />
 					</div>
 				)}
 				{characteristics?.length ? (
@@ -45,24 +45,23 @@ const PositionSummary = props => {
 						)}
 					</div>
 				) : null}
-			</div>
-			{size === 'sm' ? <Symbols {...remainingProps} /> : null}
+			</Grid>
+			{size === 'sm' ? <Symbols badges={badges} childPosition={childPosition} /> : null}
 		</div>
 	);
 };
 
 PositionSummary.defaultProps = {
 	className: '',
-	isArchived: false,
-	archivedAfterEnded: false,
-	canceled: false,
-	childPosition: null,
-	minHeight: true,
+	avatar: false,
 	size: 'sm',
+	minHeight: false,
 };
 
 PositionSummary.propTypes = {
 	className: PropTypes.string,
+	avatar: PropTypes.bool,
+	src: PropTypes.string,
 	name: PropTypes.string.isRequired,
 	characteristics: PropTypes.arrayOf(
 		PropTypes.shape({
@@ -70,12 +69,13 @@ PositionSummary.propTypes = {
 			name: PropTypes.string.isRequired,
 		})
 	),
-	isArchived: PropTypes.bool,
-	archivedAfterEnded: PropTypes.bool,
-	canceled: PropTypes.bool,
-	replacement: PropTypes.object,
-	minHeight: PropTypes.bool,
+	/**
+	 * archived | archiving-after-ended | canceled | delivery-is-expected | replaceable
+	 */
+	badges: PropTypes.array,
+	childPosition: PropTypes.object,
 	size: PropTypes.oneOf(['sm', 'md', 'lg']),
+	minHeight: PropTypes.bool,
 };
 
 export default PositionSummary;

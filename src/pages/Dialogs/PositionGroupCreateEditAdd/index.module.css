@@ -40,52 +40,6 @@
   min-height: 250px;
 }
 
-.selectPosition {
-  align-items: center;
-  border-bottom: 1px solid var(--c-hex-brightness-5);
-  cursor: pointer;
-  display: flex;
-  color: var(--c-hex-blueGrey-700);
-  font-size: 14px;
-  line-height: 1.2;
-  margin: 0 -20px;
-  padding: 13px 20px;
-  transition: background-color 150ms ease-out;
-}
-
-.selectPosition:hover {
-  background-color: var(--c-hex-brightness-2);
-}
-
-.selectPositionCheckbox {
-  align-items: center;
-  border: 2px solid var(--c-hex-blueGrey-100);
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  height: 24px;
-  margin-right: 10px;
-  width: 24px;
-}
-
-.selectPositionCheckbox svg {
-  color: transparent;
-  font-size: 14px;
-}
-
-.selectPositionSelected .selectPositionCheckbox {
-  background-color: var(--c-hex-teal-300);
-  border-color: var(--c-hex-teal-300);
-}
-
-.selectPositionSelected .selectPositionCheckbox svg {
-  color: white;
-}
-
-.positionName {
-  width: calc(100% - 34px);
-}
-
 .helpIcon {
   color: var(--c-hex-blueGrey-300);
   font-size: 16px;

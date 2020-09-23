@@ -3,28 +3,28 @@
   align-items: center;
 }
 
-.details {
+.summary {
   flex: 1 1 0;
   min-width: 0;
 }
 
-.sizeXs .details {
+.sizeXs .avatar + .summary {
   margin-left: 8px;
 }
 
-.sizeSm .details {
+.sizeSm .avatar + .summary {
   margin-left: 12px;
 }
 
-.sizeMd .details {
+.sizeMd .avatar + .summary {
   margin-left: 16px;
 }
 
-.sizeLg .details {
+.sizeLg .avatar + .summary {
   margin-left: 20px;
 }
 
-.sizeXl .details {
+.sizeXl .avatar + .summary {
   margin-left: 28px;
 }
 
@@ -43,10 +43,12 @@
 
 .sizeXs .title {
   font-size: 13px;
+  font-weight: 400;
 }
 
 .sizeSm .title {
   font-size: 14px;
+  font-weight: 400;
 }
 
 .sizeMd .title {
@@ -87,10 +89,12 @@
 
 .sizeLg .subtitle {
   font-size: 14px;
+  font-weight: 400;
   margin-top: 7px;
 }
 
 .sizeXl .subtitle {
   font-size: 16px;
+  font-weight: 400;
   margin-top: 13px;
 }

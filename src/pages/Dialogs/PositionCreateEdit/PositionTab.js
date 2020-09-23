@@ -43,7 +43,7 @@ const PositionTab = props => {
 								<Typography variant="h6" gutterBottom>
 									Заменяемая позиция
 								</Typography>
-								<PositionSummary name={childPosition.name} characteristics={childPosition.characteristics} size="sm" minHeight={false} />
+								<PositionSummary name={childPosition.name} characteristics={childPosition.characteristics} avatar />
 							</div>
 							<Typography variant="h6" gutterBottom>
 								Позиция на замену
@@ -62,8 +62,7 @@ const PositionTab = props => {
 								<PositionSummary
 									name={childPosition ? childPosition.name : parentPosition.name}
 									characteristics={childPosition ? childPosition.characteristics : parentPosition.characteristics}
-									size="sm"
-									minHeight={false}
+									avatar
 								/>
 							</Grid>
 						</Grid>

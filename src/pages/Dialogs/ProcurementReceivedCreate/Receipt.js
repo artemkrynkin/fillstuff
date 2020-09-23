@@ -37,6 +37,12 @@ const Receipt = props => {
 	const autoGenUnitSellingPrice =
 		!formEditable && !position.isFree ? formatNumber(receipt.unitPurchasePrice + receipt.unitCostDelivery + receipt.unitMarkup) : 0;
 
+	const positionBadges = (badges = []) => {
+		if (position.childPosition) badges.push('replaceable');
+
+		return badges;
+	};
+
 	const onOpenDialogPositionCreateReplacement = () => {
 		const { name, qrcodeId, printDestination, positionGroup, unitReceipt, unitRelease, minimumBalance, isFree, characteristics } = position;
 
@@ -58,20 +64,14 @@ const Receipt = props => {
 	};
 
 	return (
-		<Grid className={styles.receiptItem} wrap="nowrap" alignItems="baseline" container>
+		<Grid className={styles.receiptItem} wrap="nowrap" alignItems="flex-start" container>
 			<Grid className={styles.receiptNumber} item>
 				{index + 1}
 			</Grid>
 			<Grid className={styles.receiptContent} direction="column" container>
 				<Grid className={styles.receiptContentHeader} alignItems="center" container>
 					<Grid className={styles.positionSelected} zeroMinWidth item>
-						<PositionSummary
-							name={position.name}
-							characteristics={position.characteristics}
-							size="md"
-							childPosition={position.childPosition}
-							minHeight={false}
-						/>
+						<PositionSummary name={position.name} characteristics={position.characteristics} badges={positionBadges()} size="md" avatar />
 					</Grid>
 					{formEditable && values.status !== 'expected' ? (
 						<Grid className={styles.actionButtons} item>

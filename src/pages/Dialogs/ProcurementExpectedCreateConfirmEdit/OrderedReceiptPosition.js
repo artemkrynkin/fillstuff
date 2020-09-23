@@ -47,21 +47,21 @@ const OrderedReceiptPosition = props => {
 		onOpenDialogByName('dialogPositionCreateReplacement', 'positionReplacement', positionReplacement);
 	};
 
+	const positionBadges = (badges = []) => {
+		if (position.childPosition) badges.push('replaceable');
+
+		return badges;
+	};
+
 	return (
-		<Grid className={styles.positionItem} wrap="nowrap" alignItems="baseline" container>
+		<Grid className={styles.positionItem} wrap="nowrap" alignItems="flex-start" container>
 			<Grid className={styles.positionNumber} item>
 				{index + 1}
 			</Grid>
 			<Grid className={styles.positionContent} direction="column" container>
 				<Grid className={styles.positionContentHeader} alignItems="center" container>
 					<Grid className={styles.positionSelected} zeroMinWidth item>
-						<PositionSummary
-							name={position.name}
-							characteristics={position.characteristics}
-							size="md"
-							childPosition={position.childPosition}
-							minHeight={false}
-						/>
+						<PositionSummary name={position.name} characteristics={position.characteristics} badges={positionBadges()} size="md" avatar />
 					</Grid>
 					<Grid className={styles.actionButtons} item>
 						{!position.childPosition && !position.parentPosition ? (

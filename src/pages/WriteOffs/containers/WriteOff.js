@@ -31,13 +31,24 @@ const WriteOff = props => {
 		.subtract({ minute: 1 })
 		.isBefore(writeOff.createdAt);
 
+	const positionBadges = (badges = []) => {
+		if (writeOff.canceled) badges.push('archived');
+
+		return badges;
+	};
+
 	return (
 		<TableRow className={styles.writeOff}>
 			<TableCell width={100}>
 				<UserSummary src={writeOff.member.user.avatar} title={writeOff.member.user.name} />
 			</TableCell>
 			<TableCell>
-				<PositionSummary name={writeOff.position.name} characteristics={writeOff.position.characteristics} canceled={writeOff.canceled} />
+				<PositionSummary
+					name={writeOff.position.name}
+					characteristics={writeOff.position.characteristics}
+					badges={positionBadges()}
+					avatar
+				/>
 			</TableCell>
 			<TableCell align="right" width={115}>
 				{writeOff.quantity} {writeOff.position.unitRelease === 'pce' ? 'шт.' : 'уп.'}

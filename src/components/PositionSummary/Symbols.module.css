@@ -1,0 +1,39 @@
+.symbols {
+  align-items: center;
+  display: flex;
+  margin-left: 10px;
+  max-width: 32px;
+}
+
+.symbols > div:first-child {
+  margin-left: 0;
+}
+
+.symbolIcon {
+  font-size: 14px;
+  margin-left: 8px;
+}
+
+.deliveryIsExpected {
+  color: var(--c-hex-teal-300);
+}
+
+.archive {
+  color: var(--c-hex-red-500);
+}
+
+.archivedAfterEnded {
+  color: var(--c-hex-orange-500);
+}
+
+.writeOffUndo {
+  color: var(--c-hex-red-500);
+}
+
+.childPosition {
+  color: var(--c-hex-teal-300);
+}
+
+.parentPosition {
+  color: var(--c-hex-teal-300);
+}

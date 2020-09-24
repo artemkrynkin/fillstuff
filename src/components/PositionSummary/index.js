@@ -25,7 +25,7 @@ const PositionSummary = props => {
 		<div className={classes} {...remainingProps}>
 			{avatar ? (
 				<Avatar className={styles.avatar} src={src} size={size} variant="rounded">
-					<FontAwesomeIcon className={styles.avatarFallback} icon={['fad', 'box-alt']} />
+					<FontAwesomeIcon className={styles.avatarFallback} icon={['fad', 'box-alt']} style={{ '--fa-secondary-opacity': 0 }} />
 				</Avatar>
 			) : null}
 			<Grid className={styles.summary} direction="column" container>

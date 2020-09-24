@@ -45,7 +45,7 @@ const WriteOffsDay = props => {
 	const [expanded, setExpanded] = useState(moment(date).isSame(new Date(), 'day'));
 	const [dropdownAllUsers, setDropdownAllUsers] = useState(false);
 
-	const maxVisibleUsers = 4;
+	const maxVisibleUsers = 8;
 
 	const onHandleDropdownAllUsers = () => setDropdownAllUsers(prevValue => !prevValue);
 

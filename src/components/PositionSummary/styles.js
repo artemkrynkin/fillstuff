@@ -10,6 +10,6 @@ const hexToRgb = color => ColorConvert.hex.rgb(color);
 export const Avatar = withStyles({
 	root: {
 		backgroundColor: 'white',
-		border: `2px solid rgba(${hexToRgb(colorTheme.blueGrey['100'])}, 0.7)`,
+		border: `2px solid rgba(${hexToRgb(colorTheme.blueGrey['100'])}, 0.8)`,
 	},
 })(AvatarCustom);

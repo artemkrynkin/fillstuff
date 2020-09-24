@@ -888,9 +888,9 @@ export const MuiTheme = createMuiTheme({
 				width: null,
 			},
 			colorDefault: {
-				backgroundColor: `rgba(${hexToRgb(colorTheme.blueGrey['100'])}, 0.7)`,
+				backgroundColor: `rgba(${hexToRgb(colorTheme.blueGrey['100'])}, 0.8)`,
 				border: `2px solid transparent`,
-				color: `rgba(${hexToRgb(colorTheme.blueGrey['100'])}, 0.7)`,
+				color: `rgba(${hexToRgb(colorTheme.blueGrey['100'])}, 0.8)`,
 			},
 			fallback: {
 				color: 'white',

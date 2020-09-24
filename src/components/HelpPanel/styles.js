@@ -8,13 +8,16 @@ const hexToRgb = color => ColorConvert.hex.rgb(color);
 
 export const useStylesAvatar = makeStyles(({ transitions }) => ({
 	root: {
+		boxShadow: active =>
+			active ? `0 0 0 2px ${colorTheme.slateGrey['1']}` : `0 0 0 2px rgba(${hexToRgb(colorTheme.slateGrey['2'])}, 0.5)`,
+		transition: transitions.create(['box-shadow'], { duration: transitions.duration.shortest }),
+	},
+	colorDefault: {
 		backgroundColor: active => (!active ? 'transparent' : `rgba(${hexToRgb(colorTheme.slateGrey['2'])}, 0.2)`),
-		border: `2px solid rgba(${hexToRgb(colorTheme.slateGrey['2'])}, 0.8)`,
-		borderColor: active => (active ? colorTheme.slateGrey['1'] : null),
-		transition: transitions.create(['background-color', 'border-color'], { duration: transitions.duration.shortest }),
+		transition: transitions.create(['background-color', 'box-shadow'], { duration: transitions.duration.shortest }),
 	},
 	fallback: {
-		color: active => (!active ? `rgba(${hexToRgb(colorTheme.slateGrey['2'])}, 0.5)` : `rgba(${hexToRgb(colorTheme.slateGrey['2'])}, 0.7)`),
+		color: active => (!active ? `rgba(${hexToRgb(colorTheme.slateGrey['2'])}, 0.5)` : colorTheme.slateGrey['1']),
 		transition: transitions.create('color', { duration: transitions.duration.shortest }),
 	},
 }));

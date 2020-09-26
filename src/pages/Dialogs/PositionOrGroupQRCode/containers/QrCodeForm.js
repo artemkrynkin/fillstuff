@@ -66,7 +66,7 @@ const QrCodeForm = props => {
 					printDestination: formSettings.printDestination,
 				})
 				.then(response => {
-					if (response.status === 'error' && !response.data) {
+					if (response.status === 'error') {
 						props.enqueueSnackbar({
 							message: response.message || 'Неизвестная ошибка.',
 							options: {

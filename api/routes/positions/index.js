@@ -10,9 +10,12 @@ import Studio from 'api/models/studio';
 import Position from 'api/models/position';
 import PositionGroup from 'api/models/positionGroup';
 import Receipt from 'api/models/receipt';
-import StoreNotification from '../../models/storeNotification';
+import StoreNotification from 'api/models/storeNotification';
 
 const positionsRouter = Router();
+
+const existIsNotSame = (propName, originalData, editedData) =>
+	editedData[propName] !== undefined && originalData[propName] !== editedData[propName];
 
 // const debug = require('debug')('api:products');
 
@@ -97,14 +100,16 @@ positionsRouter.post(
 			studio: studioId,
 		});
 
+		if (newPosition.childPosition) {
+			newPosition.notifyReceiptMissing = true;
+		}
+
 		const newPositionErr = newPosition.validateSync();
 
 		if (newPositionErr) return next({ code: newPositionErr.errors ? 5 : 2, err: newPositionErr });
 
 		if (newPosition.childPosition) {
-			const childPosition = await Position.findById(newPosition.childPosition);
-
-			await Position.findByIdAndUpdate(childPosition._id, {
+			await Position.findByIdAndUpdate(newPosition.childPosition, {
 				$set: {
 					parentPosition: newPosition._id,
 					archivedAfterEnded: true,
@@ -116,21 +121,33 @@ positionsRouter.post(
 					next({ code: 2, err })
 				);
 			}
+
+			Emitter.emit('deleteStoreNotification', {
+				studio: studioId,
+				type: 'position-ends',
+				position: newPosition.childPosition,
+			});
+
+			Emitter.emit('newStoreNotification', {
+				studio: studioId,
+				type: 'receipts-missing',
+				position: newPosition._id,
+			});
 		}
 
-		await Promise.all([newPosition.save()]);
+		await newPosition.save();
 
-		const position = await Position.findById(newPosition._id)
+		await newPosition
 			.populate([
 				{
 					path: 'activeReceipt characteristics shops.shop',
 				},
 			])
-			.catch(err => next({ code: 2, err }));
+			.execPopulate();
 
-		Studio.findByIdAndUpdate(position.studio._id, { $inc: { 'store.numberPositions': 1 } }).catch(err => next({ code: 2, err }));
+		Studio.findByIdAndUpdate(studioId, { $inc: { 'store.numberPositions': 1 } }).catch(err => next({ code: 2, err }));
 
-		res.json(position);
+		res.json(newPosition);
 	}
 );
 
@@ -140,17 +157,37 @@ positionsRouter.post(
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
+			studioId,
 			params: { positionId },
-			data: { position: positionEdited },
+			data: { position: positionEditable },
 		} = req.body;
 
 		const position = await Position.findById(positionId).catch(err => next({ code: 2, err }));
 
-		Object.keys(positionEdited).forEach(receiptParamEdited => {
-			if (receiptParamEdited || (/unitReceipt|unitRelease/.test(receiptParamEdited) && !position.hasReceipts)) {
-				position[receiptParamEdited] = positionEdited[receiptParamEdited];
-			}
-		});
+		if (existIsNotSame('name', position, positionEditable)) position.name = positionEditable.name;
+		if (existIsNotSame('minimumBalance', position, positionEditable)) position.minimumBalance = positionEditable.minimumBalance;
+		if (existIsNotSame('shops', position, positionEditable)) position.shops = positionEditable.shops;
+
+		if (!position.hasReceipts) {
+			if (existIsNotSame('unitReceipt', position, positionEditable)) position.unitReceipt = positionEditable.unitReceipt;
+			if (existIsNotSame('unitRelease', position, positionEditable)) position.unitRelease = positionEditable.unitRelease;
+		}
+
+		if (existIsNotSame('isFree', position, positionEditable)) {
+			position.isFree = positionEditable.isFree;
+
+			await Receipt.updateMany(
+				{
+					position: mongoose.Types.ObjectId(positionId),
+					status: /received|active/,
+				},
+				{
+					$set: {
+						isFree: position.isFree,
+					},
+				}
+			).catch(err => next({ code: 2, err }));
+		}
 
 		const positionErr = position.validateSync();
 
@@ -162,23 +199,9 @@ positionsRouter.post(
 			}).catch(err => next({ code: 2, err }));
 		}
 
-		if (positionEdited.isFree !== undefined && position.isFree !== positionEdited.isFree) {
-			await Receipt.updateMany(
-				{
-					position: mongoose.Types.ObjectId(positionId),
-					status: /received|active/,
-				},
-				{
-					$set: {
-						isFree: positionEdited.isFree,
-					},
-				}
-			).catch(err => next({ code: 2, err }));
-		}
-
 		await position.save();
 
-		Position.findById(position._id)
+		await position
 			.populate([
 				{
 					path: 'activeReceipt characteristics shops.shop',
@@ -191,41 +214,49 @@ positionsRouter.post(
 					},
 				},
 			])
-			.then(position => res.json(position))
-			.catch(err => next({ code: 2, err }));
+			.execPopulate();
+
+		if (position.hasReceipts && !position.archivedAfterEnded && !position.deliveryIsExpected.length) {
+			const storeNotification = {
+				studio: studioId,
+				type: 'position-ends',
+				position: position._id,
+			};
+
+			const isCreatedStoreNotification = await StoreNotification.findOne(storeNotification).catch(err => next({ code: 2, err }));
+
+			const totalQuantityReceipts = position.receipts.reduce((total, { current }) => total + current.quantity, 0);
+
+			if (!isCreatedStoreNotification && totalQuantityReceipts <= position.minimumBalance) {
+				Emitter.emit('newStoreNotification', storeNotification);
+			} else if (isCreatedStoreNotification && totalQuantityReceipts >= position.minimumBalance) {
+				Emitter.emit('deleteStoreNotification', storeNotification);
+			}
+		}
+
+		res.json(position);
 	}
 );
 
 positionsRouter.post(
-	'/detachPosition',
+	'/detachPositions',
 	isAuthedResolver,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
+			studioId,
 			params: { positionId },
 		} = req.body;
 
-		const position = await Position.findById(positionId)
-			.populate([
-				{
-					path: 'activeReceipt characteristics shops.shop',
-				},
-				{
-					path: 'receipts',
-					match: { status: /received|active/ },
-					options: {
-						sort: { createdAt: 1 },
-					},
-				},
-			])
-			.catch(err => next({ code: 2, err }));
+		const position = await Position.findById(positionId).catch(err => next({ code: 2, err }));
 
-		if (position.parentPosition) {
-			Position.findByIdAndUpdate(position.parentPosition, { $unset: { childPosition: 1 } }).catch(err => next({ code: 2, err }));
-		}
-
-		if (position.childPosition) {
-			Position.findByIdAndUpdate(position.childPosition, { $unset: { parentPosition: 1 } }).catch(err => next({ code: 2, err }));
+		if (!position.childPosition) {
+			return next({
+				code: 7,
+				message: position.parentPosition
+					? 'Разъединить позиции можно только через позицию на замену'
+					: 'Чтобы разъединить позицию у нее должна быть заменяемая позиция',
+			});
 		}
 
 		position.childPosition = undefined;
@@ -236,7 +267,32 @@ positionsRouter.post(
 
 		if (positionErr) return next({ code: positionErr.errors ? 5 : 2, err: positionErr });
 
+		Position.findByIdAndUpdate(position.childPosition, { $unset: { parentPosition: 1 } }).catch(err => next({ code: 2, err }));
+
+		if (position.notifyReceiptMissing && position.deliveryIsExpected.length === 0 && !position.hasReceipts) {
+			Emitter.emit('newStoreNotification', {
+				studio: studioId,
+				type: 'receipts-missing',
+				position: position._id,
+			});
+		}
+
 		await position.save();
+
+		await position
+			.populate([
+				{
+					path: 'activeReceipt characteristics shops.shop',
+				},
+				{
+					path: 'receipts',
+					match: { status: /received|active/ },
+					options: {
+						sort: { createdAt: 1 },
+					},
+				},
+			])
+			.execPopulate();
 
 		res.json(position);
 	}
@@ -307,25 +363,27 @@ positionsRouter.post(
 
 		Emitter.emit('deleteStoreNotification', {
 			studio: studioId,
-			type: 'position-ends',
+			type: !position.notifyReceiptMissing ? 'position-ends' : 'receipts-missing',
 			position: position._id,
 		});
 
 		const {
 			studio: {
-				store: { numberPositions, storePrice },
+				store: { storePrice },
 			},
 			receipts,
 		} = position;
 
-		const purchasePriceReceiptsPosition = receipts.reduce((sum, receipt) => sum + receipt.current.quantity * receipt.unitPurchasePrice, 0);
+		const purchasePriceReceipts = receipts.reduce((total, receipt) => total + receipt.current.quantity * receipt.unitPurchasePrice, 0);
 
 		Studio.findByIdAndUpdate(
 			position.studio._id,
 			{
 				$set: {
-					'store.numberPositions': numberPositions - 1,
-					'store.storePrice': storePrice - purchasePriceReceiptsPosition,
+					'store.storePrice': storePrice - purchasePriceReceipts,
+				},
+				$inc: {
+					'store.numberPositions': -1,
 				},
 			},
 			{ runValidators: true }
@@ -346,7 +404,28 @@ positionsRouter.post(
 			data: { archivedAfterEnded },
 		} = req.body;
 
-		const position = await Position.findById(positionId)
+		const position = await Position.findById(positionId).catch(err => next({ code: 2, err }));
+
+		if (archivedAfterEnded) {
+			position.archivedAfterEnded = true;
+		} else {
+			position.archivedAfterEnded = undefined;
+
+			if (position.parentPosition) {
+				position.parentPosition = undefined;
+				position.qrcodeId = uuidv4();
+
+				Position.findByIdAndUpdate(position.parentPosition, { $unset: { childPosition: 1 } }).catch(err => next({ code: 2, err }));
+			}
+		}
+
+		const positionErr = position.validateSync();
+
+		if (positionErr) return next({ code: positionErr.errors ? 5 : 2, err: positionErr });
+
+		await position.save();
+
+		await position
 			.populate([
 				{
 					path: 'activeReceipt characteristics shops.shop',
@@ -359,28 +438,11 @@ positionsRouter.post(
 					},
 				},
 			])
-			.catch(err => next({ code: 2, err }));
+			.execPopulate();
 
-		if (archivedAfterEnded) {
-			position.archivedAfterEnded = archivedAfterEnded;
-		} else {
-			position.archivedAfterEnded = undefined;
+		const totalQuantityReceipts = position.receipts.reduce((total, { current }) => total + current.quantity, 0);
 
-			if (position.parentPosition) {
-				Position.findByIdAndUpdate(position.parentPosition, { $unset: { childPosition: 1 } }).catch(err => next({ code: 2, err }));
-
-				position.parentPosition = undefined;
-				position.qrcodeId = uuidv4();
-			}
-		}
-
-		const positionErr = position.validateSync();
-
-		if (positionErr) return next({ code: positionErr.errors ? 5 : 2, err: positionErr });
-
-		const allQuantityReceipts = position.receipts.reduce((sum, receipt) => sum + receipt.current.quantity, 0);
-
-		if (allQuantityReceipts <= position.minimumBalance) {
+		if (totalQuantityReceipts <= position.minimumBalance) {
 			const storeNotification = {
 				studio: studioId,
 				type: 'position-ends',
@@ -395,8 +457,6 @@ positionsRouter.post(
 				Emitter.emit('newStoreNotification', storeNotification);
 			}
 		}
-
-		await position.save();
 
 		res.json(position);
 	}

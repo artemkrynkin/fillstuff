@@ -13,6 +13,9 @@ const procurementsRouter = Router();
 
 // const debug = require('debug')('api:products');
 
+const existIsNotSame = (propName, originalData, editedData) =>
+	editedData[propName] !== undefined && originalData[propName] !== editedData[propName];
+
 procurementsRouter.post(
 	'/getProcurementsExpected',
 	isAuthedResolver,
@@ -160,12 +163,6 @@ procurementsRouter.post(
 			status: 'expected',
 		});
 
-		const positionsDeleteStoreNotification = newProcurementValues.orderedReceiptsPositions.map(({ position: positionId }) => {
-			const position = positions.find(position => String(position._id) === positionId);
-
-			return 'childPosition' in position ? position.childPosition : position._id;
-		});
-
 		const newProcurementErr = newProcurement.validateSync();
 
 		if (newProcurementErr) return next({ code: newProcurementErr.errors ? 5 : 2, err: newProcurementErr });
@@ -183,15 +180,17 @@ procurementsRouter.post(
 			procurement: newProcurement._id,
 		});
 
-		positionsDeleteStoreNotification.forEach(positionId => {
+		newProcurement.positions.forEach(positionId => {
+			const position = positions.find(position => String(position._id) === String(positionId));
+
 			Emitter.emit('deleteStoreNotification', {
 				studio: studioId,
-				type: 'position-ends',
-				position: positionId,
+				type: !position.notifyReceiptMissing ? 'position-ends' : 'receipts-missing',
+				position: position._id,
 			});
 		});
 
-		Procurement.findById(newProcurement._id)
+		await newProcurement
 			.populate([
 				{
 					path: 'orderedByMember',
@@ -227,8 +226,9 @@ procurementsRouter.post(
 					path: 'shop',
 				},
 			])
-			.then(procurement => res.json(procurement))
-			.catch(err => next({ code: 2, err }));
+			.execPopulate();
+
+		res.json(newProcurement);
 	}
 );
 
@@ -245,28 +245,95 @@ procurementsRouter.post(
 
 		const procurement = await Procurement.findById(procurementId).catch(err => next({ code: 2, err }));
 
-		const oldPositions = procurement.positions.slice().map(positionId => String(positionId));
+		const oldPositionsInString = procurement.positions.slice().map(positionId => String(positionId));
 
-		Object.keys(procurementEdited).forEach(procurementParamEdited => {
-			procurement[procurementParamEdited] = procurementEdited[procurementParamEdited];
-		});
+		if (existIsNotSame('shop', procurement, procurementEdited)) procurement.shop = procurementEdited.shop;
+		if (existIsNotSame('isConfirmed', procurement, procurementEdited)) procurement.isConfirmed = procurementEdited.isConfirmed;
+		if (existIsNotSame('isUnknownDeliveryDate', procurement, procurementEdited))
+			procurement.isUnknownDeliveryDate = procurementEdited.isUnknownDeliveryDate;
+		if (existIsNotSame('deliveryDate', procurement, procurementEdited)) procurement.deliveryDate = procurementEdited.deliveryDate;
+		if (existIsNotSame('deliveryTimeFrom', procurement, procurementEdited))
+			procurement.deliveryTimeFrom = procurementEdited.deliveryTimeFrom;
+		if (existIsNotSame('deliveryTimeTo', procurement, procurementEdited)) procurement.deliveryTimeTo = procurementEdited.deliveryTimeTo;
+		if (existIsNotSame('pricePositions', procurement, procurementEdited)) procurement.pricePositions = procurementEdited.pricePositions;
+		if (existIsNotSame('costDelivery', procurement, procurementEdited)) procurement.costDelivery = procurementEdited.costDelivery;
+		if (existIsNotSame('totalPrice', procurement, procurementEdited)) procurement.totalPrice = procurementEdited.totalPrice;
+		if (existIsNotSame('compensateCostDelivery', procurement, procurementEdited))
+			procurement.compensateCostDelivery = procurementEdited.compensateCostDelivery;
+		if (existIsNotSame('orderedReceiptsPositions', procurement, procurementEdited))
+			procurement.orderedReceiptsPositions = procurementEdited.orderedReceiptsPositions;
+		if (existIsNotSame('positions', procurement, procurementEdited))
+			procurement.positions = procurementEdited.positions.map(positionId => String(positionId));
+		if (existIsNotSame('comment', procurement, procurementEdited)) procurement.comment = procurementEdited.comment;
 
-		const positionsRemoved = difference(oldPositions, procurement.positions);
-		const positionsAdded = difference(procurement.positions, oldPositions);
+		const newPositionInString = procurement.positions.slice().map(positionId => String(positionId));
+		const positionsRemoved = difference(oldPositionsInString, newPositionInString);
+		const positionsAdded = difference(newPositionInString, oldPositionsInString);
 
 		const procurementErr = procurement.validateSync();
 
 		if (procurementErr) return next({ code: procurementErr.errors ? 5 : 2, err: procurementErr });
 
-		if (positionsRemoved) {
-			await Position.updateMany({ _id: { $in: positionsRemoved } }, { $pull: { deliveryIsExpected: procurement._id } }).catch(err =>
+		const positionsEdited = await Position.find({ _id: { $in: [...positionsRemoved, ...positionsAdded] } })
+			.populate([
+				{
+					path: 'receipts',
+					match: { status: /received|active/ },
+					options: {
+						sort: { createdAt: 1 },
+					},
+				},
+			])
+			.lean()
+			.catch(err => next({ code: 2, err }));
+
+		if (positionsRemoved.length) {
+			Position.updateMany({ _id: { $in: positionsRemoved } }, { $pull: { deliveryIsExpected: procurement._id } }).catch(err =>
 				next({ code: 2, err })
 			);
+
+			positionsEdited
+				.filter(position => positionsRemoved.some(positionRemovedId => String(positionRemovedId) === String(position._id)))
+				.forEach(position => {
+					const deliveryIsExpected = position.deliveryIsExpected.filter(
+						expectedProcurementId => String(expectedProcurementId) !== procurementId
+					);
+
+					if (deliveryIsExpected.length === 0) {
+						if (position.hasReceipts) {
+							const totalQuantityReceipts = position.receipts.reduce((total, { current }) => total + current.quantity, 0);
+
+							if (totalQuantityReceipts <= position.minimumBalance) {
+								Emitter.emit('newStoreNotification', {
+									studio: studioId,
+									type: 'position-ends',
+									position: position._id,
+								});
+							}
+						} else if (!position.hasReceipts && position.notifyReceiptMissing) {
+							Emitter.emit('newStoreNotification', {
+								studio: studioId,
+								type: 'receipts-missing',
+								position: position._id,
+							});
+						}
+					}
+				});
 		}
-		if (positionsAdded) {
-			await Position.updateMany({ _id: { $in: positionsAdded } }, { $push: { deliveryIsExpected: procurement._id } }).catch(err =>
+		if (positionsAdded.length) {
+			Position.updateMany({ _id: { $in: positionsAdded } }, { $push: { deliveryIsExpected: procurement._id } }).catch(err =>
 				next({ code: 2, err })
 			);
+
+			positionsEdited
+				.filter(position => positionsAdded.some(positionAddedId => String(positionAddedId) === String(position._id)))
+				.forEach(position => {
+					Emitter.emit('deleteStoreNotification', {
+						studio: studioId,
+						type: !position.notifyReceiptMissing ? 'position-ends' : 'receipts-missing',
+						position: position._id,
+					});
+				});
 		}
 
 		await procurement.save();
@@ -277,7 +344,7 @@ procurementsRouter.post(
 			procurement: procurement._id,
 		});
 
-		Procurement.findById(procurement._id)
+		await procurement
 			.populate([
 				{
 					path: 'orderedByMember',
@@ -313,8 +380,9 @@ procurementsRouter.post(
 					path: 'shop',
 				},
 			])
-			.then(procurement => res.json(procurement))
-			.catch(err => next({ code: 2, err }));
+			.execPopulate();
+
+		res.json(procurement);
 	}
 );
 
@@ -328,9 +396,48 @@ procurementsRouter.post(
 			params: { procurementId },
 		} = req.body;
 
+		const positions = await Position.find({ deliveryIsExpected: { $in: procurementId } })
+			.populate([
+				{
+					path: 'receipts',
+					match: { status: /received|active/ },
+					options: {
+						sort: { createdAt: 1 },
+					},
+				},
+			])
+			.lean()
+			.catch(err => next({ code: 2, err }));
+
 		Position.updateMany({ deliveryIsExpected: { $in: procurementId } }, { $pull: { deliveryIsExpected: procurementId } }).catch(err =>
 			next({ code: 2, err })
 		);
+
+		positions.forEach(position => {
+			const deliveryIsExpected = position.deliveryIsExpected.filter(
+				expectedProcurementId => String(expectedProcurementId) !== procurementId
+			);
+
+			if (deliveryIsExpected.length === 0) {
+				if (position.hasReceipts) {
+					const totalQuantityReceipts = position.receipts.reduce((total, { current }) => total + current.quantity, 0);
+
+					if (totalQuantityReceipts <= position.minimumBalance) {
+						Emitter.emit('newStoreNotification', {
+							studio: studioId,
+							type: 'position-ends',
+							position: position._id,
+						});
+					}
+				} else if (!position.hasReceipts && position.notifyReceiptMissing) {
+					Emitter.emit('newStoreNotification', {
+						studio: studioId,
+						type: 'receipts-missing',
+						position: position._id,
+					});
+				}
+			}
+		});
 
 		const procurement = await Procurement.findByIdAndRemove(procurementId).catch(err => next({ code: 2, err }));
 

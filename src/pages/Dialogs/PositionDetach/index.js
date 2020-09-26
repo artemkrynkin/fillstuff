@@ -10,7 +10,7 @@ import Button from '@material-ui/core/Button';
 import { Dialog, DialogTitle } from 'src/components/Dialog';
 
 import { getStudioStore } from 'src/actions/studio';
-import { detachPosition } from 'src/actions/positions';
+import { detachPositions } from 'src/actions/positions';
 import { enqueueSnackbar } from 'src/actions/snackbars';
 
 const PositionDetach = props => {
@@ -18,8 +18,8 @@ const PositionDetach = props => {
 
 	if (!selectedPosition) return null;
 
-	const onDetachPosition = () => {
-		props.detachPosition(selectedPosition._id).then(response => {
+	const onDetachPositions = () => {
+		props.detachPositions(selectedPosition._id).then(response => {
 			if (onCallback !== undefined) onCallback(response);
 
 			onCloseDialog();
@@ -37,13 +37,22 @@ const PositionDetach = props => {
 					},
 				});
 			}
+
+			if (response.status === 'error') {
+				props.enqueueSnackbar({
+					message: response.message || 'Неизвестная ошибка.',
+					options: {
+						variant: 'error',
+					},
+				});
+			}
 		});
 	};
 
 	return (
 		<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth="sm">
 			<DialogTitle onClose={onCloseDialog} theme="noTheme">
-				Разъединение позиции
+				Разъединение позиций
 			</DialogTitle>
 			<DialogContent>
 				<Typography variant="body1">
@@ -53,7 +62,7 @@ const PositionDetach = props => {
 					<Button onClick={onCloseDialog} variant="outlined" size="small">
 						Отмена
 					</Button>
-					<Button onClick={onDetachPosition} variant="contained" color="primary" size="small">
+					<Button onClick={onDetachPositions} variant="contained" color="primary" size="small">
 						Разъединить
 					</Button>
 				</DialogActions>
@@ -75,7 +84,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 	return {
 		getStudioStore: () => dispatch(getStudioStore()),
-		detachPosition: positionId => dispatch(detachPosition({ params: { positionId: selectedPosition._id } })),
+		detachPositions: positionId => dispatch(detachPositions({ params: { positionId: selectedPosition._id } })),
 		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
 	};
 };

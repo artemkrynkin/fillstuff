@@ -124,14 +124,14 @@ export const editPosition = ({ params, data }) => {
 	};
 };
 
-export const detachPosition = ({ params }) => {
+export const detachPositions = ({ params }) => {
 	return async (dispatch, getState) => {
 		const studioId = getState().studio.data._id;
 		const memberId = getState().member.data._id;
 		const { positionId } = params;
 
 		return await axios
-			.post('/api/detachPosition', {
+			.post('/api/detachPositions', {
 				studioId,
 				memberId,
 				params,
@@ -150,9 +150,13 @@ export const detachPosition = ({ params }) => {
 				return Promise.resolve({ status: 'success', data: position });
 			})
 			.catch(error => {
-				console.error(error);
+				if (error.response) {
+					return Promise.resolve({ status: 'error', message: error.response.data.message, data: error.response.data });
+				} else {
+					console.error(error);
 
-				return Promise.resolve({ status: 'error', message: error.message, ...error });
+					return Promise.resolve({ status: 'error', message: error.message, ...error });
+				}
 			});
 	};
 };

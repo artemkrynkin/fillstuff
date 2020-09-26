@@ -886,11 +886,29 @@ export const MuiTheme = createMuiTheme({
 			root: {
 				height: null,
 				width: null,
+				'&:after': {
+					content: '""',
+					display: 'block',
+					height: '100%',
+					position: 'absolute',
+					top: 0,
+					width: '100%',
+				},
+				'&:not($colorDefault):after': {
+					boxShadow: `0 0 0 .5px rgba(${hexToRgb(colorTheme.blueGrey['100'])}, 0.5) inset`,
+				},
+				'&$circle:after': {
+					borderRadius: '50%',
+				},
+				'&$rounded:after': {
+					borderRadius: 8,
+				},
 			},
 			colorDefault: {
 				backgroundColor: `rgba(${hexToRgb(colorTheme.blueGrey['100'])}, 0.8)`,
 				border: `2px solid transparent`,
 				color: `rgba(${hexToRgb(colorTheme.blueGrey['100'])}, 0.8)`,
+				position: 'relative',
 			},
 			fallback: {
 				color: 'white',

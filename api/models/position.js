@@ -7,6 +7,7 @@ import { printDestination, unitTypes } from 'shared/checkPositionAndReceipt';
 const Schema = mongoose.Schema;
 
 const Position = new Schema({
+	// Наименование
 	name: {
 		type: String,
 		minlength: [2, i18n.__('Не может быть короче 2 символов')],
@@ -14,22 +15,27 @@ const Position = new Schema({
 		required: [true, i18n.__('Обязательное поле')],
 		trim: true,
 	},
+	// Дата создания
 	createdAt: {
 		type: Date,
 		default: Date.now,
 	},
+	// Родительская позиция
 	parentPosition: {
 		type: Schema.Types.ObjectId,
 		ref: 'Position',
 	},
+	// Дочерняя позиция
 	childPosition: {
 		type: Schema.Types.ObjectId,
 		ref: 'Position',
 	},
+	// ID QR-кода
 	qrcodeId: {
 		type: String,
 		default: () => uuidv4(),
 	},
+	// Место печати
 	printDestination: {
 		type: String,
 		enum: printDestination,
@@ -76,10 +82,6 @@ const Position = new Schema({
 		type: String,
 		enum: unitTypes,
 		required: [true, i18n.__('Обязательное поле')],
-	},
-	activeReceipt: {
-		type: Schema.Types.ObjectId,
-		ref: 'Receipt',
 	},
 	// Минимальный остаток
 	minimumBalance: {
@@ -130,6 +132,16 @@ const Position = new Schema({
 		type: Boolean,
 		default: false,
 	},
+	// Уведомлять об отсутствии поступлений
+	notifyReceiptMissing: {
+		type: Boolean,
+		default: false,
+	},
+	// Поступление на реализации
+	activeReceipt: {
+		type: Schema.Types.ObjectId,
+		ref: 'Receipt',
+	},
 	// Поступления
 	receipts: [
 		{
@@ -142,5 +154,11 @@ const Position = new Schema({
 		select: false,
 	},
 });
+
+// Position.path('unitReceipt').validate(function (value) {
+//   console.log(value);
+//
+//   return true;
+// });
 
 export default mongoose.model('Position', Position);

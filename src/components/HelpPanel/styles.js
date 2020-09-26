@@ -8,6 +8,9 @@ const hexToRgb = color => ColorConvert.hex.rgb(color);
 
 export const useStylesAvatar = makeStyles(({ transitions }) => ({
 	root: {
+		'&:after': {
+			display: 'none',
+		},
 		boxShadow: active =>
 			active ? `0 0 0 2px ${colorTheme.slateGrey['1']}` : `0 0 0 2px rgba(${hexToRgb(colorTheme.slateGrey['2'])}, 0.5)`,
 		transition: transitions.create(['box-shadow'], { duration: transitions.duration.shortest }),

@@ -16,7 +16,7 @@ const StoreNotification = new Schema({
 	},
 	type: {
 		type: String,
-		enum: ['position-ends', 'delivery-is-expected', 'member-invoice', 'cancel-write-off'],
+		enum: ['position-ends', 'receipts-missing', 'delivery-is-expected', 'member-invoice', 'cancel-write-off'],
 		required: [true, i18n.__('Обязательное поле')],
 	},
 	position: {

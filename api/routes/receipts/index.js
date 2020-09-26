@@ -7,6 +7,7 @@ import { receiptCalc } from 'shared/checkPositionAndReceipt';
 import Studio from 'api/models/studio';
 import Position from 'api/models/position';
 import Receipt from 'api/models/receipt';
+import Emitter from '../../utils/emitter';
 
 const receiptsRouter = Router();
 
@@ -71,32 +72,34 @@ receiptsRouter.post(
 			newReceipt.save(),
 			Position.findByIdAndUpdate(newReceipt.position, {
 				$set: { activeReceipt: newReceipt, hasReceipts: true },
+				$unset: { notifyReceiptMissing: 1 },
 				$push: { receipts: newReceipt },
 			}),
 		]);
 
+		if (position.notifyReceiptMissing) {
+			Emitter.emit('deleteStoreNotification', {
+				studio: studioId,
+				type: 'receipts-missing',
+				position: position._id,
+			});
+		}
+
 		const {
-			store: { storePrice: storePriceOld },
+			store: { storePrice },
 		} = studio;
+
+		const purchasePriceReceipt = newReceipt.initial.quantity * newReceipt.unitPurchasePrice;
 
 		Studio.findByIdAndUpdate(
 			studioId,
-			{
-				$set: {
-					'store.storePrice': storePriceOld + newReceipt.initial.quantity * newReceipt.unitPurchasePrice,
-				},
-			},
+			{ $set: { 'store.storePrice': storePrice + purchasePriceReceipt } },
 			{ runValidators: true }
 		).catch(err => next({ code: 2, err }));
 
-		Receipt.findById(newReceipt._id)
-			.populate([
-				{
-					path: 'procurement',
-				},
-			])
-			.then(receipt => res.json(receipt))
-			.catch(err => next({ code: 2, err }));
+		await newReceipt.populate('procurement').execPopulate();
+
+		res.json(newReceipt);
 	}
 );
 
@@ -120,16 +123,11 @@ receiptsRouter.post(
 
 		if (receiptErr) return next({ code: receiptErr.errors ? 5 : 2, err: receiptErr });
 
-		await Promise.all([receipt.save()]);
+		await receipt.save();
 
-		Receipt.findById(receipt._id)
-			.populate([
-				{
-					path: 'procurement',
-				},
-			])
-			.then(receipt => res.json(receipt))
-			.catch(err => next({ code: 2, err }));
+		await receipt.populate('procurement').execPopulate();
+
+		res.json(receipt);
 	}
 );
 

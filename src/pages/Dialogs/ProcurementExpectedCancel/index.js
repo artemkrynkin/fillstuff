@@ -29,7 +29,7 @@ const DialogProcurementExpectedCancel = props => {
 			onCloseDialog();
 
 			if (response.status === 'error') {
-				this.props.enqueueSnackbar({
+				props.enqueueSnackbar({
 					message: response.message || 'Неизвестная ошибка.',
 					options: {
 						variant: 'error',

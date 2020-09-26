@@ -49,7 +49,7 @@ const PositionDropdown = props => {
 						Открепить от группы
 					</MenuItem>
 				) : null}
-				{position.childPosition || position.parentPosition ? (
+				{position.childPosition ? (
 					<MenuItem
 						onClick={() => {
 							onToggleDropdownActions();
@@ -57,7 +57,7 @@ const PositionDropdown = props => {
 						}}
 						iconBefore={<FontAwesomeIcon icon={['far-c', 'position-detach']} fixedWidth />}
 					>
-						Разъединить позицию
+						Разъединить позиции
 					</MenuItem>
 				) : null}
 				{position.archivedAfterEnded ? (

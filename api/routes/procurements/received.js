@@ -10,7 +10,6 @@ import Studio from 'api/models/studio';
 import Position from 'api/models/position';
 import Receipt from 'api/models/receipt';
 import Procurement from 'api/models/procurement';
-import PositionGroup from '../../models/positionGroup';
 
 const procurementsRouter = Router();
 
@@ -111,7 +110,7 @@ procurementsRouter.post(
 			params: { procurementId },
 		} = req.body;
 
-		Procurement.findOne({ _id: procurementId, status: 'received' })
+		const procurement = await Procurement.findOne({ _id: procurementId, status: 'received' })
 			.populate([
 				{
 					path: 'orderedByMember',
@@ -137,8 +136,9 @@ procurementsRouter.post(
 					},
 				},
 			])
-			.then(procurement => res.json(procurement))
 			.catch(err => next({ code: 2, err }));
+
+		res.json(procurement);
 	}
 );
 
@@ -184,13 +184,10 @@ procurementsRouter.post(
 			: procurementExist;
 
 		const receiptsErr = [];
-		const positionsDeleteStoreNotification = [];
 		let awaitingPromises = [];
 
 		newProcurement.receipts = newProcurementValues.receipts.map(({ position: positionId, ...receipt }) => {
 			const position = positions.find(position => String(position._id) === positionId);
-
-			positionsDeleteStoreNotification.push('childPosition' in position ? position.childPosition : position._id);
 
 			const newReceipt = new Receipt({
 				...receipt,
@@ -218,12 +215,17 @@ procurementsRouter.post(
 				$push: {
 					receipts: newReceipt._id,
 				},
+				$unset: {},
 				$pull: {},
 			};
 			const positionShopIndex = position.shops.findIndex(shop => String(shop.shop) === String(newProcurement.shop));
 
 			if (!position.activeReceipt) {
 				positionUpdate.$set.activeReceipt = newReceipt._id;
+			}
+
+			if (position.notifyReceiptMissing) {
+				positionUpdate.$unset.notifyReceiptMissing = 1;
 			}
 
 			if (newProcurement.status === 'expected') {
@@ -280,16 +282,18 @@ procurementsRouter.post(
 				procurement: procurementExist._id,
 			});
 		} else {
-			positionsDeleteStoreNotification.forEach(positionId => {
+			newProcurement.positions.forEach(positionId => {
+				const position = positions.find(position => String(position._id) === String(positionId));
+
 				Emitter.emit('deleteStoreNotification', {
 					studio: studioId,
-					type: 'position-ends',
+					type: !position.notifyReceiptMissing ? 'position-ends' : 'receipts-missing',
 					position: positionId,
 				});
 			});
 		}
 
-		const procurement = await Procurement.findById(newProcurement._id)
+		await newProcurement
 			.populate([
 				{
 					path: 'studio',
@@ -319,28 +323,26 @@ procurementsRouter.post(
 					},
 				},
 			])
-			.catch(err => next({ code: 2, err }));
+			.execPopulate();
 
 		const {
 			studio: {
-				store: { storePrice: storePriceOld },
+				store: { storePrice },
 			},
-		} = procurement;
+			receipts,
+		} = newProcurement;
+
+		const purchasePriceReceipts = receipts.reduce((total, receipt) => total + receipt.initial.quantity * receipt.unitPurchasePrice, 0);
 
 		Studio.findByIdAndUpdate(
-			procurement.studio._id,
-			{
-				$set: {
-					'store.storePrice':
-						storePriceOld + procurement.receipts.reduce((sum, receipt) => sum + receipt.initial.quantity * receipt.unitPurchasePrice, 0),
-				},
-			},
+			studioId,
+			{ $set: { 'store.storePrice': storePrice + purchasePriceReceipts } },
 			{ runValidators: true }
 		).catch(err => next({ code: 2, err }));
 
-		procurement.depopulate('studio');
+		newProcurement.depopulate('studio');
 
-		res.json(procurement);
+		res.json(newProcurement);
 	}
 );
 

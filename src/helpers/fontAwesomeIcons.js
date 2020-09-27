@@ -4,6 +4,7 @@ import {
 	farQrCode as farcQrCode,
 	farPositionReplacement as farcPositionReplacement,
 	farPositionDetach as farcPositionDetach,
+	falReceiptsMissing as falcReceiptsMissing,
 } from './fontAwecomeCustomIcons';
 
 import { faVk, faInstagram } from '@fortawesome/free-brands-svg-icons';
@@ -113,6 +114,7 @@ library.add(
 	farcQrCode,
 	farcPositionReplacement,
 	farcPositionDetach,
+	falcReceiptsMissing,
 
 	// Brands
 	faVk,

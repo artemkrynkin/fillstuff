@@ -17,6 +17,9 @@ export const newStoreNotification = io => {
 				path: 'position',
 				populate: [
 					{
+						path: 'characteristics',
+					},
+					{
 						path: 'parentPosition',
 						populate: {
 							path: 'characteristics',
@@ -96,6 +99,9 @@ export const editStoreNotification = io => {
 			{
 				path: 'position',
 				populate: [
+					{
+						path: 'characteristics',
+					},
 					{
 						path: 'parentPosition',
 						populate: {

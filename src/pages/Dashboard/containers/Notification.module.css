@@ -143,10 +143,16 @@
 
 .notificationIcon {
   margin-right: 10px;
+  margin-top: 2px;
 }
 
 .cardPositionEnds .notificationIcon {
   font-size: 26px;
+  margin-top: 0;
+}
+
+.cardReceiptsMissing .notificationIcon {
+  font-size: 22px;
 }
 
 .cardDeliveryIsExpected .notificationIcon {
@@ -155,7 +161,6 @@
 
 .cardMemberInvoice .notificationIcon {
   font-size: 22px;
-  margin-top: 2px;
 }
 
 .cardImportanceRed .notificationIcon,
@@ -176,6 +181,7 @@
 .subtitle {
   color: var(--c-hex-blueGrey-600);
   font-weight: 500;
+  line-height: 1.5;
   margin-bottom: 15px;
 }
 
@@ -237,4 +243,8 @@
   max-width: 300px;
   white-space: break-spaces;
   word-break: break-word;
+}
+
+.positionSummary {
+  margin-top: 15px;
 }

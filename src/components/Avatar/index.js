@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import MuiAvatar from '@material-ui/core/Avatar';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { ucFirst } from 'src/helpers/utils';
+import { capitalize } from 'src/helpers/utils';
 
 const useStyles = makeStyles(theme => ({
 	sizeXs: {
@@ -35,7 +35,7 @@ const Avatar = props => {
 	const { className, size, ...remainingProps } = props;
 	const classes = useStyles();
 
-	const classesAvatar = ClassNames(className, classes[`size${ucFirst(size)}`]);
+	const classesAvatar = ClassNames(className, classes[`size${capitalize(size)}`]);
 	const classesIcon = ClassNames(props.classes?.fallback, classes.fallback, 'MuiAvatar-fallback');
 
 	return (

@@ -2,7 +2,8 @@ import React, { Fragment } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Typography from '@material-ui/core/Typography';
-// import Tooltip from '@material-ui/core/Tooltip';
+
+import PositionSummary from 'src/components/PositionSummary';
 
 import styles from '../../containers/Notification.module.css';
 
@@ -21,19 +22,11 @@ const PositionEnds = props => {
 					Заканчивается позиция
 				</Typography>
 			</div>
-			<Typography className={styles.subtitle} variant="subtitle1">
-				{position.name}
-			</Typography>
+			<PositionSummary name={position.name} characteristics={position.characteristics} style={{ marginTop: 15 }} avatar />
 			<div>
 				<div className={styles.caption}>
 					Остаток: {remainingQuantity} {position.unitRelease === 'pce' ? 'шт.' : 'уп.'}
 				</div>
-				{/*<div className={styles.caption}>*/}
-				{/*  Закончится через:*/}
-				{/*  <Tooltip title="Недостаточно данных для расчета" placement="bottom">*/}
-				{/*    <FontAwesomeIcon icon={['fal', 'robot']} />*/}
-				{/*  </Tooltip>*/}
-				{/*</div>*/}
 			</div>
 		</Fragment>
 	);

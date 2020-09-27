@@ -22,6 +22,9 @@ storeNotificationsRouter.post(
 					path: 'position',
 					populate: [
 						{
+							path: 'characteristics',
+						},
+						{
 							path: 'parentPosition',
 							populate: {
 								path: 'characteristics',
@@ -109,6 +112,9 @@ storeNotificationsRouter.post(
 				{
 					path: 'position',
 					populate: [
+						{
+							path: 'characteristics',
+						},
 						{
 							path: 'parentPosition',
 							populate: {

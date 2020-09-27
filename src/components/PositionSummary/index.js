@@ -5,19 +5,35 @@ import ClassNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Grid from '@material-ui/core/Grid';
 
-import { ucFirst } from 'src/helpers/utils';
+import { capitalize } from 'src/helpers/utils';
 
 import Symbols from './Symbols';
 
 import { Avatar } from './styles';
 import styles from './index.module.css';
 
+/**
+ * avatar - Если true, будет показываться аватар
+ *
+ * name - Наименование позиции
+ *
+ * characteristics - характеристики позиции
+ *
+ * badges - иконки статусов ( archived | archiving-after-ended | canceled | delivery-is-expected | replaceable )
+ *
+ * childPosition - данные заменяемой позиции
+ *
+ * size - размер ( sm | md | lg )
+ *
+ * minHeight - Если true, минимальный размер компонента будет равен 36px. Применяется только на размере sm
+ *
+ */
 const PositionSummary = props => {
 	const { className, avatar, src, name, characteristics, badges, childPosition, size, minHeight, ...remainingProps } = props;
 
 	if (!name) return null;
 
-	const classes = ClassNames(className, styles.container, styles[`size${ucFirst(size)}`], {
+	const classes = ClassNames(className, styles.container, styles[`size${capitalize(size)}`], {
 		[styles.minHeight]: minHeight && size === 'sm',
 	});
 
@@ -52,7 +68,6 @@ const PositionSummary = props => {
 };
 
 PositionSummary.defaultProps = {
-	className: '',
 	avatar: false,
 	size: 'sm',
 	minHeight: false,
@@ -69,9 +84,6 @@ PositionSummary.propTypes = {
 			name: PropTypes.string.isRequired,
 		})
 	),
-	/**
-	 * archived | archiving-after-ended | canceled | delivery-is-expected | replaceable
-	 */
 	badges: PropTypes.array,
 	childPosition: PropTypes.object,
 	size: PropTypes.oneOf(['sm', 'md', 'lg']),

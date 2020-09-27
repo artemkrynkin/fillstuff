@@ -4,7 +4,7 @@ import ClassNames from 'classnames';
 
 import Grid from '@material-ui/core/Grid';
 
-import { ucFirst } from 'src/helpers/utils';
+import { capitalize } from 'src/helpers/utils';
 
 import Avatar from 'src/components/Avatar';
 
@@ -15,7 +15,7 @@ const UserSummary = props => {
 
 	if (!title) return null;
 
-	const classesContainer = ClassNames(className, styles.container, styles[`size${ucFirst(size)}`]);
+	const classesContainer = ClassNames(className, styles.container, styles[`size${capitalize(size)}`]);
 	const classesTitle = ClassNames(styles.title, { [styles.withoutSubtitle]: !subtitle });
 
 	return (

@@ -65,9 +65,9 @@ const mapStateToProps = state => {
 	if (storeNotificationsData && storeNotificationsData.length) {
 		const momentDate = moment();
 		const notificationTypes = {
-			red: /position-ends/,
+			red: /^(position-ends|receipts-missing)$/,
 			orange: /none/,
-			green: /member-invoice/,
+			green: /^(member-invoice)$/,
 		};
 
 		storeNotificationsData.forEach(storeNotification => {

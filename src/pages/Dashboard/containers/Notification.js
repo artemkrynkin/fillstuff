@@ -3,13 +3,14 @@ import { connect } from 'react-redux';
 import ClassNames from 'classnames';
 import moment from 'moment';
 
-import { getDeliveryDateTimeMoment } from 'src/helpers/utils';
+import { getDeliveryDateTimeMoment, capitalize } from 'src/helpers/utils';
 
 import CardPaper from 'src/components/CardPaper';
 
 import { editStatusDeliveryIsExpected } from 'src/actions/storeNotifications';
 
 import PositionEnds from '../components/notificationsContent/PositionEnds';
+import ReceiptsMissing from '../components/notificationsContent/ReceiptsMissing';
 import DeliveryIsExpected from '../components/notificationsContent/DeliveryIsExpected';
 import MemberInvoice from '../components/notificationsContent/MemberInvoice';
 
@@ -19,20 +20,20 @@ const Notification = props => {
 	const { index, reverseIndex, importance, onOpenDialogByName, notification } = props;
 	const [actionStatus, setActionStatus] = useState(false);
 
-	const containerClasses = ClassNames(styles.card, {
-		[styles.cardImportanceRed]: importance === 'red',
-		[styles.cardImportanceOrange]: importance === 'orange',
-		[styles.cardImportanceGreen]: importance === 'green',
-		[styles.cardNew]: notification.actionStatus === 'new',
-		[styles.cardDeleting]: actionStatus === 'deleting' || notification.actionStatus === 'deleting',
-		[styles.cardPositionEnds]: notification.type === 'position-ends',
-		[styles.cardDeliveryIsExpected]: notification.type === 'delivery-is-expected',
-		[styles.cardMemberInvoice]: notification.type === 'member-invoice',
-	});
+	const containerClasses = ClassNames(
+		styles.card,
+		styles[`cardImportance${capitalize(importance)}`],
+		styles[`card${capitalize(notification.type.replace(/-/g, ' ')).replace(/ /g, '')}`],
+		{
+			[styles.cardNew]: notification.actionStatus === 'new',
+			[styles.cardDeleting]: actionStatus === 'deleting' || notification.actionStatus === 'deleting',
+		}
+	);
 
 	const openViewDialog = () => {
 		switch (notification.type) {
 			case 'position-ends':
+			case 'receipts-missing':
 				return onOpenDialogByName('dialogPositionEnded', 'storeNotification', notification);
 			case 'delivery-is-expected':
 				const { procurement } = notification;
@@ -78,6 +79,8 @@ const Notification = props => {
 		>
 			{notification.type === 'position-ends' ? (
 				<PositionEnds notification={notification} importance={importance} />
+			) : notification.type === 'receipts-missing' ? (
+				<ReceiptsMissing notification={notification} importance={importance} />
 			) : notification.type === 'delivery-is-expected' ? (
 				<DeliveryIsExpected notification={notification} importance={importance} onOpenDialogByName={onOpenDialogByName} />
 			) : notification.type === 'member-invoice' ? (

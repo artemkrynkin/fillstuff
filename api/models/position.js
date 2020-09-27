@@ -155,10 +155,4 @@ const Position = new Schema({
 	},
 });
 
-// Position.path('unitReceipt').validate(function (value) {
-//   console.log(value);
-//
-//   return true;
-// });
-
 export default mongoose.model('Position', Position);

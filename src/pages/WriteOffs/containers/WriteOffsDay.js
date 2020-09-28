@@ -42,7 +42,7 @@ const WriteOffsDay = props => {
 		onOpenDialogByName,
 	} = props;
 	const refDropdownAllUsers = useRef(null);
-	const [expanded, setExpanded] = moment(date).isSame(new Date(), 'day');
+	const [expanded, setExpanded] = useState(moment(date).isSame(new Date(), 'day'));
 	const [dropdownAllUsers, setDropdownAllUsers] = useState(false);
 
 	const maxVisibleUsers = 8;

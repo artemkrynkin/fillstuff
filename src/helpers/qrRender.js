@@ -102,7 +102,7 @@ const qrModulesDataRender = (data, size, moduleSize) => {
 	return svg;
 };
 
-export default (qrData, customOptions, cb) => {
+export const qrRender = (qrData, customOptions, cb) => {
 	const options = {
 		color: 'colored',
 		...customOptions,
@@ -119,8 +119,8 @@ export default (qrData, customOptions, cb) => {
 	const logoModule3Color = options.color === 'colored' ? '#DD5B5B' : '#ffffff';
 
 	const qrSvg = `
-<svg style="color: ${moduleColor}" viewBox="0 0 ${moduleSize * size} ${moduleSize *
-		size}" width="250px" height="250px" version="1.1" class="qr-code" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg viewBox="0 0 ${moduleSize * size} ${moduleSize *
+		size}" width="250px" height="250px" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <defs>
     <rect id="rect" width="100" height="100" fill="currentColor"/>
     <path id="empty" d="M0,28.6v42.9C0,87.3,12.8,100,28.6,100h42.9c15.9,0,28.6-12.8,28.6-28.6V28.6C100,12.7,87.2,0,71.4,0H28.6 C12.8,0,0,12.8,0,28.6z" fill="currentColor"/>
@@ -167,7 +167,7 @@ export default (qrData, customOptions, cb) => {
 	const svg = `
 <svg viewBox="0 0 250 250" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <defs>
-    <g id="qr">${qrSvg}</g>
+    <g id="qr" style="color: ${moduleColor}">${qrSvg}</g>
   </defs>
   <g clip-path="url(#main-mask)">
     <use x="0" y="0" xlink:href="#qr" transform="scale(1)" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"/>

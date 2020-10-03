@@ -4,7 +4,7 @@ import ClassNames from 'classnames';
 
 import { Grid } from '@material-ui/core';
 
-import qrRender from 'src/helpers/qrRender';
+import { qrRender } from 'src/helpers/qrRender';
 
 import PositionSummary from 'src/components/PositionSummary';
 

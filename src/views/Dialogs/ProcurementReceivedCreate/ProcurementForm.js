@@ -31,7 +31,7 @@ import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
 import Collapse from '@material-ui/core/Collapse';
 
-const DialogShopCreate = lazy(() => import('src/pages/Dialogs/ShopCreateEdit'));
+const DialogShopCreate = lazy(() => import('src/views/Dialogs/ShopCreateEdit'));
 
 const ProcurementForm = props => {
 	const {

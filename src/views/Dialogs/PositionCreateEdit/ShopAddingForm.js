@@ -12,7 +12,7 @@ import { SelectAutocompleteCreate } from 'src/components/selectAutocomplete';
 
 import { getShops } from 'src/actions/shops';
 
-const DialogShopCreate = lazy(() => import('src/pages/Dialogs/ShopCreateEdit'));
+const DialogShopCreate = lazy(() => import('src/views/Dialogs/ShopCreateEdit'));
 
 // const filter = createFilterOptions();
 

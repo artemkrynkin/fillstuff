@@ -4,7 +4,7 @@ import Container from '@material-ui/core/Container';
 
 import View from './View';
 
-const DialogInvoicePaymentCreate = lazy(() => import('src/pages/Dialogs/InvoicePaymentCreate'));
+const DialogInvoicePaymentCreate = lazy(() => import('src/views/Dialogs/InvoicePaymentCreate'));
 
 const Index = props => {
 	const { getInvoice } = props;

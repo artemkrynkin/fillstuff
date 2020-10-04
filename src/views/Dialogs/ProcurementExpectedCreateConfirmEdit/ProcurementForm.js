@@ -31,7 +31,7 @@ import OrderedReceiptsPositions from './OrderedReceiptsPositions';
 import stylesGlobal from 'src/styles/globals.module.css';
 import styles from './index.module.css';
 
-const DialogShopCreate = lazy(() => import('src/pages/Dialogs/ShopCreateEdit'));
+const DialogShopCreate = lazy(() => import('src/views/Dialogs/ShopCreateEdit'));
 
 const ProcurementForm = props => {
 	const {

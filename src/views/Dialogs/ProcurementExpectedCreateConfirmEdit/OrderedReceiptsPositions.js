@@ -8,8 +8,8 @@ import OrderedReceiptPosition from './OrderedReceiptPosition';
 
 import styles from './index.module.css';
 
-const DialogPositionCreate = lazy(() => import('src/pages/Dialogs/PositionCreateEdit'));
-const DialogPositionCreateReplacement = lazy(() => import('src/pages/Dialogs/PositionCreateEdit'));
+const DialogPositionCreate = lazy(() => import('src/views/Dialogs/PositionCreateEdit'));
+const DialogPositionCreateReplacement = lazy(() => import('src/views/Dialogs/PositionCreateEdit'));
 
 const OrderedReceiptsPositions = props => {
 	const {

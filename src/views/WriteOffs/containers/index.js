@@ -4,7 +4,7 @@ import Container from '@material-ui/core/Container';
 
 import View from './View';
 
-const DialogWriteOffCancel = lazy(() => import('src/pages/Dialogs/WriteOffCancel'));
+const DialogWriteOffCancel = lazy(() => import('src/views/Dialogs/WriteOffCancel'));
 
 const Index = props => {
 	const [dialogData, setDialogData] = useState({

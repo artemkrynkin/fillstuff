@@ -6,14 +6,14 @@ import history from 'src/helpers/history';
 
 import View from './View';
 
-const DialogPositionEdit = lazy(() => import('src/pages/Dialogs/PositionCreateEdit'));
-const DialogPositionRemoveFromGroup = lazy(() => import('src/pages/Dialogs/PositionRemoveFromGroup'));
-const DialogPositionQRCode = lazy(() => import('src/pages/Dialogs/PositionOrGroupQRCode'));
-const DialogPositionArchiveDelete = lazy(() => import('src/pages/Dialogs/PositionArchiveDelete'));
-const DialogPositionDetach = lazy(() => import('src/pages/Dialogs/PositionDetach'));
-const DialogReceiptCreate = lazy(() => import('src/pages/Dialogs/ReceiptCreate'));
-const DialogReceiptConfirmCreate = lazy(() => import('src/pages/Dialogs/ReceiptConfirmCreate'));
-const DialogProcurementReceivedCreate = lazy(() => import('src/pages/Dialogs/ProcurementReceivedCreate'));
+const DialogPositionEdit = lazy(() => import('src/views/Dialogs/PositionCreateEdit'));
+const DialogPositionRemoveFromGroup = lazy(() => import('src/views/Dialogs/PositionRemoveFromGroup'));
+const DialogPositionQRCode = lazy(() => import('src/views/Dialogs/PositionOrGroupQRCode'));
+const DialogPositionArchiveDelete = lazy(() => import('src/views/Dialogs/PositionArchiveDelete'));
+const DialogPositionDetach = lazy(() => import('src/views/Dialogs/PositionDetach'));
+const DialogReceiptCreate = lazy(() => import('src/views/Dialogs/ReceiptCreate'));
+const DialogReceiptConfirmCreate = lazy(() => import('src/views/Dialogs/ReceiptConfirmCreate'));
+const DialogProcurementReceivedCreate = lazy(() => import('src/views/Dialogs/ProcurementReceivedCreate'));
 
 const Index = props => {
 	const { currentStudio, getPosition, getReceipts, onReceiptCreate } = props;

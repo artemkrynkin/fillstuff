@@ -4,8 +4,8 @@ import Container from '@material-ui/core/Container';
 
 import View from './View';
 
-const DialogMemberInvitationOrLogin = lazy(() => import('src/pages/Dialogs/MemberInvitationOrLogin'));
-const DialogMemberDeactivated = lazy(() => import('src/pages/Dialogs/MemberDeactivated'));
+const DialogMemberInvitationOrLogin = lazy(() => import('src/views/Dialogs/MemberInvitationOrLogin'));
+const DialogMemberDeactivated = lazy(() => import('src/views/Dialogs/MemberDeactivated'));
 
 const Index = props => {
 	const { currentStudio, getMember } = props;

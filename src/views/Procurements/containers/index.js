@@ -4,12 +4,12 @@ import Container from '@material-ui/core/Container';
 
 import View from './View';
 
-const DialogProcurementExpectedView = lazy(() => import('src/pages/Dialogs/ProcurementExpectedView'));
-const DialogProcurementExpectedCreate = lazy(() => import('src/pages/Dialogs/ProcurementExpectedCreateConfirmEdit'));
-const DialogProcurementExpectedConfirm = lazy(() => import('src/pages/Dialogs/ProcurementExpectedCreateConfirmEdit'));
-const DialogProcurementExpectedEdit = lazy(() => import('src/pages/Dialogs/ProcurementExpectedCreateConfirmEdit'));
-const DialogProcurementExpectedCancel = lazy(() => import('src/pages/Dialogs/ProcurementExpectedCancel'));
-const DialogProcurementReceivedCreate = lazy(() => import('src/pages/Dialogs/ProcurementReceivedCreate'));
+const DialogProcurementExpectedView = lazy(() => import('src/views/Dialogs/ProcurementExpectedView'));
+const DialogProcurementExpectedCreate = lazy(() => import('src/views/Dialogs/ProcurementExpectedCreateConfirmEdit'));
+const DialogProcurementExpectedConfirm = lazy(() => import('src/views/Dialogs/ProcurementExpectedCreateConfirmEdit'));
+const DialogProcurementExpectedEdit = lazy(() => import('src/views/Dialogs/ProcurementExpectedCreateConfirmEdit'));
+const DialogProcurementExpectedCancel = lazy(() => import('src/views/Dialogs/ProcurementExpectedCancel'));
+const DialogProcurementReceivedCreate = lazy(() => import('src/views/Dialogs/ProcurementReceivedCreate'));
 
 const Index = props => {
 	const { currentStudio } = props;

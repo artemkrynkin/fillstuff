@@ -11,7 +11,7 @@ import { procurementPositionTransform } from 'src/helpers/utils';
 
 import styles from './Header.module.css';
 
-const DialogPositionArchiveDelete = lazy(() => import('src/pages/Dialogs/PositionArchiveDelete'));
+const DialogPositionArchiveDelete = lazy(() => import('src/views/Dialogs/PositionArchiveDelete'));
 
 const Header = props => {
 	const {

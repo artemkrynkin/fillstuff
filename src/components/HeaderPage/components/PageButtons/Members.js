@@ -3,7 +3,7 @@ import React, { useState, lazy, Suspense } from 'react';
 import { Button } from './styles';
 import styles from './index.module.css';
 
-const DialogMemberInvitationOrLogin = lazy(() => import('src/pages/Dialogs/MemberInvitationOrLogin'));
+const DialogMemberInvitationOrLogin = lazy(() => import('src/views/Dialogs/MemberInvitationOrLogin'));
 
 const Members = props => {
 	const { currentStudio } = props;

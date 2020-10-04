@@ -3,8 +3,8 @@ import React, { useState, lazy, Suspense } from 'react';
 import { Button } from './styles';
 import styles from './index.module.css';
 
-const DialogPositionCreate = lazy(() => import('src/pages/Dialogs/PositionCreateEdit'));
-const DialogPositionGroupCreate = lazy(() => import('src/pages/Dialogs/PositionGroupCreateEditAdd'));
+const DialogPositionCreate = lazy(() => import('src/views/Dialogs/PositionCreateEdit'));
+const DialogPositionGroupCreate = lazy(() => import('src/views/Dialogs/PositionGroupCreateEditAdd'));
 
 const Stock = () => {
 	const [dialogPositionCreate, setDialogPositionCreate] = useState(false);

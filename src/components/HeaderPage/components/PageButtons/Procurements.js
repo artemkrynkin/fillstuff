@@ -3,8 +3,8 @@ import React, { useState, lazy, Suspense } from 'react';
 import { Button } from './styles';
 import styles from './index.module.css';
 
-const DialogProcurementExpectedCreate = lazy(() => import('src/pages/Dialogs/ProcurementExpectedCreateConfirmEdit'));
-const DialogProcurementReceivedCreate = lazy(() => import('src/pages/Dialogs/ProcurementReceivedCreate'));
+const DialogProcurementExpectedCreate = lazy(() => import('src/views/Dialogs/ProcurementExpectedCreateConfirmEdit'));
+const DialogProcurementReceivedCreate = lazy(() => import('src/views/Dialogs/ProcurementReceivedCreate'));
 
 const Procurements = props => {
 	const { currentStudio } = props;

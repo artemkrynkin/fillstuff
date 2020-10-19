@@ -14,7 +14,6 @@ import i18n from 'shared/middlewares/i18n';
 import addSecurityMiddleware from 'shared/middlewares/security';
 import toobusy from 'shared/middlewares/toobusy';
 
-import { init as initPassport } from './authentication';
 import router from './routes';
 import socket from './socket';
 import middlewares from './routes/middlewares';
@@ -22,8 +21,6 @@ import { isAuthedResolverSocket } from 'api/utils/permissions';
 import './cron';
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
-
-initPassport();
 
 const app = express();
 const server = http.createServer(app);

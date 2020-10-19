@@ -7,22 +7,24 @@ import sharp from 'sharp';
 import mongoose from 'mongoose';
 
 import { uploadAvatar } from 'api/utils/multer-settings';
-import { isAuthedResolver } from 'api/utils/permissions';
+import { auth0management } from 'api/utils/auth';
+import { isAuthed, isAuthedResolver } from 'api/utils/permissions';
 import { updateCookieUserData } from 'api/utils/update-cookie-user-data';
 
-import User, { UserSchema } from 'api/models/user';
+import User from 'api/models/user';
 import Member from 'api/models/member';
 
 const accountRouter = Router();
 const upload = uploadAvatar.single('avatar');
 
-accountRouter.post('/getMyAccount', isAuthedResolver, (req, res) => {
-	// const hour = 60 * 1 * 1000;
-	// req.session.cookie.expires = new Date(Date.now() + hour)
-	// req.session.cookie.maxAge = hour
-	// console.log(req.session.cookie.maxAge);
+accountRouter.post('/getMyAccount', isAuthed, async (req, res, next) => {
+	const auth0user = await auth0management.getUser({ id: req.user.sub }).catch(err => next({ code: 2, err }));
 
-	res.json(req.user);
+	const user = await User.findOne({ auth0uid: req.user.sub })
+		.lean()
+		.catch(err => next({ code: 2, err }));
+
+	res.json({ ...auth0user, ...user });
 });
 
 accountRouter.post(
@@ -124,7 +126,7 @@ accountRouter.post(
 							return user
 								.execPopulate()
 								.then(async () => {
-									UserSchema.options.toObject.deleteConfidentialData = true;
+									// UserSchema.options.toObject.deleteConfidentialData = true;
 
 									await updateCookieUserData(req, user.toObject());
 

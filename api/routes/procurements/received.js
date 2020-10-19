@@ -296,10 +296,6 @@ procurementsRouter.post(
 		await newProcurement
 			.populate([
 				{
-					path: 'studio',
-					select: 'store',
-				},
-				{
 					path: 'orderedByMember',
 					populate: {
 						path: 'user',
@@ -325,22 +321,20 @@ procurementsRouter.post(
 			])
 			.execPopulate();
 
-		const {
-			studio: {
-				store: { storePrice },
-			},
-			receipts,
-		} = newProcurement;
+		const purchasePriceReceipts = newProcurement.receipts.reduce(
+			(total, receipt) => total + receipt.initial.quantity * receipt.unitPurchasePrice,
+			0
+		);
 
-		const purchasePriceReceipts = receipts.reduce((total, receipt) => total + receipt.initial.quantity * receipt.unitPurchasePrice, 0);
+		const studio = await Studio.findById(studioId).catch(err => next({ code: 2, err }));
 
-		Studio.findByIdAndUpdate(
-			studioId,
-			{ $set: { 'store.storePrice': storePrice + purchasePriceReceipts } },
-			{ runValidators: true }
-		).catch(err => next({ code: 2, err }));
+		studio.store.storePrice += purchasePriceReceipts;
 
-		newProcurement.depopulate('studio');
+		const studioErr = studio.validateSync();
+
+		if (studioErr) return next({ code: studioErr.errors ? 5 : 2, err: studioErr });
+
+		await studio.save();
 
 		res.json(newProcurement);
 	}

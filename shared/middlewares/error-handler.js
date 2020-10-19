@@ -40,7 +40,7 @@ export default (err, req, res, next) => {
  *
  *
  * @error = {
- *   code: ERROR_CODE_NUMBER, Код ошибки, если указан, будет вызват метод ниже, иначе сервер выдаст 500 ошибку
+ *   code: ERROR_CODE_NUMBER, Код ошибки, если указан, будет вызван метод ниже, иначе сервер выдаст 500 ошибку
  *   message: String, // Описание ошибки
  *   err: Object, // Если возможны ошибки валидации сервера, то передавать `err`, иначе null
  *   customErr: Array // Пользовательские ошибки вида [{ field: String, message: String }]
@@ -110,7 +110,12 @@ const sendErrorsResponse = (req, res, next, error) => {
 			return res.status(400).json(responseSend);
 		}
 		default: {
-			return next(err);
+			if (error.message) responseSend.message = error.message;
+
+			if (error.status) res.status(error.status);
+			else res.status(520);
+
+			return res.json(responseSend);
 		}
 	}
 };

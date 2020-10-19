@@ -13,16 +13,16 @@
 
 .wrapper {
   margin: 0 auto;
-  max-width: 480px;
+  max-width: 420px;
   padding: 30px 0 20px;
   width: 100%;
 }
 
 .logo {
-  background: url('/img/logo_original.svg') no-repeat center center;
-  height: 33px;
+  background: url('/img/logo_original_full.svg') no-repeat center center;
+  height: 40px;
   margin: 0 auto 0;
-  width: 200px;
+  width: 170px;
 }
 
 .form {

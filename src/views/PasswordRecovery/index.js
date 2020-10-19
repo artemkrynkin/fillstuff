@@ -38,7 +38,7 @@ const PasswordRecovery = () => {
 						{({ errors, isSubmitting, touched }) => (
 							<Form>
 								<FormControl margin="normal" fullWidth>
-									<Field name="email" placeholder="Email" as={TextField} autoFocus />
+									<Field name="email" placeholder="Email" as={TextField} autoComplete="off" autoFocus />
 								</FormControl>
 								<Button type="submit" disabled={isSubmitting} variant="contained" color="primary" fullWidth>
 									{isSubmitting ? <CircularProgress size={20} /> : 'Восстановить пароль'}

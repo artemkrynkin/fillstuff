@@ -38,7 +38,7 @@ import Invoice from 'src/views/Invoice';
 import Members from 'src/views/Members';
 import Member from 'src/views/Member';
 import Settings from 'src/views/Settings';
-import Registration from 'src/views/Registration';
+import Signup from 'src/views/Signup';
 import UserSettings from 'src/views/UserSettings';
 
 import stylesPage from 'src/styles/page.module.css';
@@ -48,9 +48,9 @@ const LoginFallback = signedOutFallback(
 	() => <Layout children={<Login />} />
 );
 
-const RegistrationFallback = signedOutFallback(
+const SignupFallback = signedOutFallback(
 	() => <Redirect to="/dashboard" />,
-	() => <Layout children={<Registration />} />
+	() => <Layout children={<Signup />} />
 );
 
 const PasswordRecoveryFallback = signedOutFallback(
@@ -185,7 +185,7 @@ const Routes = props => {
 						<Switch>
 							{/* Публичные бизнес страницы */}
 							{/* Страницы приложения */}
-							<Route path="/" exact strict sensitive>
+							<Route path="/" exact strict>
 								{() => {
 									if (currentUser && currentUser._id && currentStudio && currentStudio._id && currentMember && currentMember._id) {
 										return <Redirect to="/dashboard" push />;
@@ -195,24 +195,29 @@ const Routes = props => {
 								}}
 							</Route>
 
-							<Route path="/login" component={LoginFallback} exact strict sensitive />
-							<Route path="/registration" component={RegistrationFallback} exact strict sensitive />
-							<Route path="/password-recovery" component={PasswordRecoveryFallback} exact strict sensitive />
+							<Route path={['/login', '/login/']} component={LoginFallback} exact strict />
+							<Route path={['/signup', '/signup/']} component={SignupFallback} exact strict />
+							<Route path={['/password-recovery', '/password-recovery/']} component={PasswordRecoveryFallback} exact strict />
 
-							<Route path="/dashboard" component={DashboardFallback} exact strict sensitive />
-							<Route path="/stock" component={StockFallback} exact strict sensitive />
-							<Route path="/stock/:positionId" component={PositionFallback} exact strict sensitive />
-							<Route path="/write-offs" component={WriteOffsFallback} exact strict sensitive />
-							<Route path="/stocktaking" component={StocktakingFallback} exact strict sensitive />
-							<Route path="/procurements" component={ProcurementsFallback} exact strict sensitive />
-							<Route path="/procurements/:procurementId" component={ProcurementFallback} exact strict sensitive />
-							<Route path="/invoices" component={InvoicesFallback} exact strict sensitive />
-							<Route path="/invoices/:invoiceId" component={InvoiceFallback} exact strict sensitive />
-							<Route path={['/members', '/members/guests']} component={MembersFallback} exact strict sensitive />
-							<Route path="/members/:memberId" component={MemberFallback} exact strict sensitive />
-							<Route path="/settings" component={SettingsFallback} exact strict sensitive />
+							<Route path={['/dashboard', '/dashboard/']} component={DashboardFallback} exact strict />
+							<Route path={['/stock', '/stock/']} component={StockFallback} exact strict />
+							<Route path={['/stock/:positionId', '/stock/:positionId/']} component={PositionFallback} exact strict />
+							<Route path={['/write-offs', '/write-offs/']} component={WriteOffsFallback} exact strict />
+							<Route path={['/stocktaking', '/stocktaking/']} component={StocktakingFallback} exact strict />
+							<Route path={['/procurements', '/procurements/']} component={ProcurementsFallback} exact strict />
+							<Route
+								path={['/procurements/:procurementId', '/procurements/:procurementId/']}
+								component={ProcurementFallback}
+								exact
+								strict
+							/>
+							<Route path={['/invoices', '/invoices/']} component={InvoicesFallback} exact strict />
+							<Route path={['/invoices/:invoiceId', '/invoices/:invoiceId/']} component={InvoiceFallback} exact strict />
+							<Route path={['/members', '/members/', '/members/guests', '/members/guests/']} component={MembersFallback} exact strict />
+							<Route path={['/members/:memberId', '/members/:memberId/']} component={MemberFallback} exact strict />
+							<Route path={['/settings', '/settings/']} component={SettingsFallback} exact strict />
 
-							<Route path="/user-settings" component={UserSettingsFallback} exact strict sensitive />
+							<Route path={['/user-settings', '/user-settings/']} component={UserSettingsFallback} exact strict />
 
 							<Route path="*" component={PageNotFound} />
 						</Switch>

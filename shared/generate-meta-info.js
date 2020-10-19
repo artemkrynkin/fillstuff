@@ -55,7 +55,7 @@ function generateMetaInfo(input) {
 		// 	});
 		// }
 		case 'login':
-		case 'registration':
+		case 'signup':
 		case 'password-recovery':
 		case 'dashboard':
 		case 'stock':

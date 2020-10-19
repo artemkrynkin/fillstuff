@@ -6,13 +6,11 @@ import logger from 'shared/logger';
 
 const debug = require('debug')('shared:mongodb');
 
-/**
- * Настройка базы данных выполняется здесь
- */
 const IS_PROD = process.env.NODE_ENV === 'production';
 
-const uri_dev = 'mongodb://localhost:27017/bliksidetest';
-const uri_prod = 'mongodb://artem:741310PTppl#@rc1c-r70mh0q5hyyvlo3i.mdb.yandexcloud.net:27018/blikside-alpha';
+const uri = IS_PROD
+	? 'mongodb://artem:741310PTppl#@rc1c-r70mh0q5hyyvlo3i.mdb.yandexcloud.net:27018/blikside-alpha'
+	: 'mongodb://localhost:27017/bliksidetest';
 
 mongoose.Promise = bluebird;
 
@@ -24,9 +22,21 @@ const options = {
 	autoIndex: !IS_PROD,
 };
 
+let ca;
+
+try {
+	ca = fs.readFileSync('/usr/local/share/ca-certificates/Yandex/YandexInternalRootCA.crt');
+} catch (err) {}
+
+if (!ca && IS_PROD) {
+	throw new Error(
+		'Please provide the SSL certificate to connect to the production database in a file called `YandexInternalRootCA.crt` in the `usr/local/share/ca-certificates/Yandex` directory.'
+	);
+}
+
 if (IS_PROD) {
 	options.ssl = true;
-	options.sslCA = fs.readFileSync('/usr/local/share/ca-certificates/Yandex/YandexInternalRootCA.crt');
+	options.sslCA = ca;
 	options.replicaSet = 'rs01';
 }
 
@@ -52,9 +62,9 @@ DBConnection.once('connecting', () => {
 	.on('disconnected', () => {
 		debug('Disconnected MongoDB');
 		logger.warn('Disconnected MongoDB');
-		mongoose.connect(IS_PROD ? uri_prod : uri_dev, options);
+		mongoose.connect(uri, options);
 	});
 
-mongoose.connect(IS_PROD ? uri_prod : uri_dev, options);
+mongoose.connect(uri, options);
 
 export default DBConnection;

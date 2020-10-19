@@ -1,5 +1,8 @@
 import cookie from 'cookie';
 import cookieParser from 'cookie-parser';
+import jwt from 'express-jwt';
+// import jwtAuthz from 'express-jwt-authz';
+import jwksRsa from 'jwks-rsa';
 
 import { checkPermissions } from 'shared/roles-access-rights';
 
@@ -7,6 +10,27 @@ import { sessionStore } from 'shared/middlewares/session';
 
 import User from 'api/models/user';
 import Member from 'api/models/member';
+
+export const isAuthed = jwt({
+	secret: jwksRsa.expressJwtSecret({
+		cache: true,
+		rateLimit: true,
+		jwksRequestsPerMinute: 10,
+		jwksUri: `https://keeberinkdev.eu.auth0.com/.well-known/jwks.json`,
+	}),
+	audience: 'https://blikside.com/api',
+	issuer: `https://keeberinkdev.eu.auth0.com/`,
+	algorithms: ['RS256'],
+	getToken: req => {
+		if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+			return req.headers.authorization.split(' ')[1];
+		} else if (req.cookies?.['session.token']) {
+			return req.cookies['session.token'];
+		}
+
+		return null;
+	},
+});
 
 export const isAuthedResolver = (req, res, next) => {
 	if (!req.isAuthenticated()) return next({ code: 3 });

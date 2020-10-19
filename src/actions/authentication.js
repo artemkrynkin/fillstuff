@@ -1,22 +1,23 @@
-import axios from 'axios';
-
+import { webAuth } from 'src/api/auth';
 import { SERVER_URL } from 'src/api/constants';
 
-export const login = async ({ data }) => {
-	return await axios
-		.post('/auth/local', data)
-		.then(response => {
-			return Promise.resolve({ status: 'success', data: response.data });
-		})
-		.catch(error => {
-			if (error.response) {
-				return Promise.resolve({ status: 'error', data: error.response.data });
-			} else {
-				console.error(error);
-
-				return Promise.resolve({ status: 'error', message: error.message, ...error });
-			}
+export const login = ({ data }) => {
+	return async () => {
+		const loginResponse = await new Promise(resolve => {
+			webAuth.login(
+				{
+					username: data.email,
+					password: data.password,
+					realm: 'Username-Password-Authentication',
+				},
+				error => {
+					if (error) resolve(error);
+				}
+			);
 		});
+
+		return Promise.resolve({ status: 'error', data: loginResponse?.original });
+	};
 };
 
 export const logout = () => (window.location.href = `${SERVER_URL}/auth/logout`);

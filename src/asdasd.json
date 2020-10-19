@@ -1,0 +1,580 @@
+{
+  "data": {
+    "issue": {
+      "id": "10006",
+      "fields": [
+        {
+          "key": "summary",
+          "title": "Pезюме",
+          "editable": true,
+          "required": true,
+          "autoCompleteUrl": null,
+          "allowedValues": [],
+          "content": "sadasdasd",
+          "renderedContent": null,
+          "schema": {
+            "custom": null,
+            "system": "summary",
+            "configuration": null,
+            "items": null,
+            "type": "string",
+            "renderer": "jira-text-renderer"
+          }
+        },
+        {
+          "key": "watches",
+          "title": "Наблюдатели",
+          "editable": false,
+          "required": false,
+          "autoCompleteUrl": null,
+          "allowedValues": [],
+          "content": {
+            "self": "https://testpagesppl.atlassian.net/rest/api/2/issue/TEST-6/watchers",
+            "watchCount": 1,
+            "isWatching": true
+          },
+          "renderedContent": null,
+          "schema": {
+            "custom": null,
+            "system": "watches",
+            "configuration": null,
+            "items": null,
+            "type": "watches",
+            "renderer": null
+          }
+        },
+        {
+          "key": "issuetype",
+          "title": "Тип задачи",
+          "editable": true,
+          "required": true,
+          "autoCompleteUrl": null,
+          "allowedValues": [
+            {
+              "self": "https://testpagesppl.atlassian.net/rest/api/2/issuetype/10002",
+              "id": "10002",
+              "description": "Небольшая порция работы.",
+              "iconUrl": "https://testpagesppl.atlassian.net/secure/viewavatar?size=medium&avatarId=10318&avatarType=issuetype",
+              "name": "Задача",
+              "subtask": false,
+              "avatarId": 10318
+            },
+            {
+              "self": "https://testpagesppl.atlassian.net/rest/api/2/issuetype/10001",
+              "id": "10001",
+              "description": "Функции, которые пользователи указывают в качестве целей.",
+              "iconUrl": "https://testpagesppl.atlassian.net/secure/viewavatar?size=medium&avatarId=10315&avatarType=issuetype",
+              "name": "История",
+              "subtask": false,
+              "avatarId": 10315
+            },
+            {
+              "self": "https://testpagesppl.atlassian.net/rest/api/2/issuetype/10004",
+              "id": "10004",
+              "description": "Проблема или ошибка.",
+              "iconUrl": "https://testpagesppl.atlassian.net/secure/viewavatar?size=medium&avatarId=10303&avatarType=issuetype",
+              "name": "Баг",
+              "subtask": false,
+              "avatarId": 10303
+            },
+            {
+              "self": "https://testpagesppl.atlassian.net/rest/api/2/issuetype/10000",
+              "id": "10000",
+              "description": "Подборка похожих историй, заданий и связанных с ними ошибок.",
+              "iconUrl": "https://testpagesppl.atlassian.net/images/icons/issuetypes/epic.svg",
+              "name": "Эпик",
+              "subtask": false
+            }
+          ],
+          "content": {
+            "self": "https://testpagesppl.atlassian.net/rest/api/2/issuetype/10002",
+            "id": "10002",
+            "description": "Небольшая порция работы.",
+            "iconUrl": "https://testpagesppl.atlassian.net/secure/viewavatar?size=medium&avatarId=10318&avatarType=issuetype",
+            "name": "Задача",
+            "subtask": false,
+            "avatarId": 10318
+          },
+          "renderedContent": null,
+          "schema": {
+            "custom": null,
+            "system": "issuetype",
+            "configuration": null,
+            "items": null,
+            "type": "issuetype",
+            "renderer": "jira-text-renderer"
+          }
+        },
+        {
+          "key": "components",
+          "title": "Компоненты",
+          "editable": true,
+          "required": false,
+          "autoCompleteUrl": null,
+          "allowedValues": [],
+          "content": [],
+          "renderedContent": null,
+          "schema": {
+            "custom": null,
+            "system": "components",
+            "configuration": null,
+            "items": "component",
+            "type": "array",
+            "renderer": "frother-control-renderer"
+          }
+        },
+        {
+          "key": "subtasks",
+          "title": "Подзадачи",
+          "editable": false,
+          "required": false,
+          "autoCompleteUrl": null,
+          "allowedValues": [],
+          "content": [],
+          "renderedContent": null,
+          "schema": {
+            "custom": null,
+            "system": "subtasks",
+            "configuration": null,
+            "items": "issuelinks",
+            "type": "array",
+            "renderer": null
+          }
+        },
+        {
+          "key": "created",
+          "title": "Создано",
+          "editable": false,
+          "required": false,
+          "autoCompleteUrl": null,
+          "allowedValues": [],
+          "content": "2020-04-02T23:44:18.706+0300",
+          "renderedContent": "02/апр/20 11:44 PM",
+          "schema": {
+            "custom": null,
+            "system": "created",
+            "configuration": null,
+            "items": null,
+            "type": "datetime",
+            "renderer": null
+          }
+        },
+        {
+          "key": "timeoriginalestimate",
+          "title": "Исходная оценка",
+          "editable": true,
+          "required": false,
+          "autoCompleteUrl": null,
+          "allowedValues": [],
+          "content": null,
+          "renderedContent": null,
+          "schema": {
+            "custom": null,
+            "system": "timeoriginalestimate",
+            "configuration": null,
+            "items": null,
+            "type": "number",
+            "renderer": null
+          }
+        },
+        {
+          "key": "description",
+          "title": "Описание",
+          "editable": true,
+          "required": false,
+          "autoCompleteUrl": null,
+          "allowedValues": [],
+          "content": null,
+          "renderedContent": "",
+          "schema": {
+            "custom": null,
+            "system": "description",
+            "configuration": null,
+            "items": null,
+            "type": "string",
+            "renderer": "atlassian-wiki-renderer"
+          }
+        },
+        {
+          "key": "customfield_10021",
+          "title": "Flagged",
+          "editable": false,
+          "required": false,
+          "autoCompleteUrl": null,
+          "allowedValues": [],
+          "content": null,
+          "renderedContent": null,
+          "schema": {
+            "custom": "com.atlassian.jira.plugin.system.customfieldtypes:flagged",
+            "system": null,
+            "configuration": null,
+            "items": "option",
+            "type": "array",
+            "renderer": "jira-text-renderer"
+          }
+        },
+        {
+          "key": "reporter",
+          "title": "Автор",
+          "editable": false,
+          "required": false,
+          "autoCompleteUrl": null,
+          "allowedValues": [],
+          "content": {
+            "self": "https://testpagesppl.atlassian.net/rest/api/2/user?accountId=557058%3Aef17ddc3-6c10-4b01-b578-026da58d55b1",
+            "accountId": "557058:ef17ddc3-6c10-4b01-b578-026da58d55b1",
+            "emailAddress": "pagesppl@gmail.com",
+            "avatarUrls": {
+              "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/557058:ef17ddc3-6c10-4b01-b578-026da58d55b1/600a2c51-ce6c-4f2e-a08d-15099c973f91/48",
+              "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/557058:ef17ddc3-6c10-4b01-b578-026da58d55b1/600a2c51-ce6c-4f2e-a08d-15099c973f91/24",
+              "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/557058:ef17ddc3-6c10-4b01-b578-026da58d55b1/600a2c51-ce6c-4f2e-a08d-15099c973f91/16",
+              "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/557058:ef17ddc3-6c10-4b01-b578-026da58d55b1/600a2c51-ce6c-4f2e-a08d-15099c973f91/32"
+            },
+            "displayName": "Артем Крынкин",
+            "active": true,
+            "timeZone": "Europe/Moscow",
+            "accountType": "atlassian"
+          },
+          "renderedContent": null,
+          "schema": {
+            "custom": null,
+            "system": "reporter",
+            "configuration": null,
+            "items": null,
+            "type": "user",
+            "renderer": "jira-text-renderer"
+          }
+        },
+        {
+          "key": "fixVersions",
+          "title": "Версии фикса",
+          "editable": true,
+          "required": false,
+          "autoCompleteUrl": null,
+          "allowedValues": [],
+          "content": [],
+          "renderedContent": null,
+          "schema": {
+            "custom": null,
+            "system": "fixVersions",
+            "configuration": null,
+            "items": "version",
+            "type": "array",
+            "renderer": "frother-control-renderer"
+          }
+        },
+        {
+          "key": "priority",
+          "title": "Приоритет",
+          "editable": true,
+          "required": false,
+          "autoCompleteUrl": null,
+          "allowedValues": [
+            {
+              "self": "https://testpagesppl.atlassian.net/rest/api/2/priority/1",
+              "iconUrl": "https://testpagesppl.atlassian.net/images/icons/priorities/highest.svg",
+              "name": "Highest",
+              "id": "1"
+            },
+            {
+              "self": "https://testpagesppl.atlassian.net/rest/api/2/priority/2",
+              "iconUrl": "https://testpagesppl.atlassian.net/images/icons/priorities/high.svg",
+              "name": "High",
+              "id": "2"
+            },
+            {
+              "self": "https://testpagesppl.atlassian.net/rest/api/2/priority/3",
+              "iconUrl": "https://testpagesppl.atlassian.net/images/icons/priorities/medium.svg",
+              "name": "Medium",
+              "id": "3"
+            },
+            {
+              "self": "https://testpagesppl.atlassian.net/rest/api/2/priority/4",
+              "iconUrl": "https://testpagesppl.atlassian.net/images/icons/priorities/low.svg",
+              "name": "Low",
+              "id": "4"
+            },
+            {
+              "self": "https://testpagesppl.atlassian.net/rest/api/2/priority/5",
+              "iconUrl": "https://testpagesppl.atlassian.net/images/icons/priorities/lowest.svg",
+              "name": "Lowest",
+              "id": "5"
+            }
+          ],
+          "content": {
+            "self": "https://testpagesppl.atlassian.net/rest/api/2/priority/3",
+            "iconUrl": "https://testpagesppl.atlassian.net/images/icons/priorities/medium.svg",
+            "name": "Medium",
+            "id": "3"
+          },
+          "renderedContent": null,
+          "schema": {
+            "custom": null,
+            "system": "priority",
+            "configuration": null,
+            "items": null,
+            "type": "priority",
+            "renderer": "jira-text-renderer"
+          }
+        },
+        {
+          "key": "resolution",
+          "title": "Решение",
+          "editable": false,
+          "required": false,
+          "autoCompleteUrl": null,
+          "allowedValues": [],
+          "content": null,
+          "renderedContent": null,
+          "schema": {
+            "custom": null,
+            "system": "resolution",
+            "configuration": null,
+            "items": null,
+            "type": "resolution",
+            "renderer": "jira-text-renderer"
+          }
+        },
+        {
+          "key": "customfield_10014",
+          "title": "Epic Link",
+          "editable": true,
+          "required": false,
+          "autoCompleteUrl": null,
+          "allowedValues": [],
+          "content": null,
+          "renderedContent": null,
+          "schema": {
+            "custom": "com.pyxis.greenhopper.jira:gh-epic-link",
+            "system": null,
+            "configuration": null,
+            "items": null,
+            "type": "any",
+            "renderer": "jira-text-renderer"
+          }
+        },
+        {
+          "key": "timetracking",
+          "title": "Учет времени",
+          "editable": false,
+          "required": false,
+          "autoCompleteUrl": null,
+          "allowedValues": [],
+          "content": {},
+          "renderedContent": {},
+          "schema": {
+            "custom": null,
+            "system": "timetracking",
+            "configuration": null,
+            "items": null,
+            "type": "timetracking",
+            "renderer": "jira-text-renderer"
+          }
+        },
+        {
+          "key": "labels",
+          "title": "Метки",
+          "editable": true,
+          "required": false,
+          "autoCompleteUrl": "https://testpagesppl.atlassian.net/rest/api/1.0/labels/10006/suggest?query=",
+          "allowedValues": [],
+          "content": [],
+          "renderedContent": null,
+          "schema": {
+            "custom": null,
+            "system": "labels",
+            "configuration": null,
+            "items": "string",
+            "type": "array",
+            "renderer": "jira-text-renderer"
+          }
+        },
+        {
+          "key": "security",
+          "title": "Уровень безопасности",
+          "editable": false,
+          "required": false,
+          "autoCompleteUrl": null,
+          "allowedValues": [],
+          "content": null,
+          "renderedContent": null,
+          "schema": {
+            "custom": null,
+            "system": "security",
+            "configuration": null,
+            "items": null,
+            "type": "securitylevel",
+            "renderer": "jira-text-renderer"
+          }
+        },
+        {
+          "key": "votes",
+          "title": "Голоса",
+          "editable": false,
+          "required": false,
+          "autoCompleteUrl": null,
+          "allowedValues": [],
+          "content": {
+            "self": "https://testpagesppl.atlassian.net/rest/api/2/issue/TEST-6/votes",
+            "votes": 0,
+            "hasVoted": false
+          },
+          "renderedContent": null,
+          "schema": {
+            "custom": null,
+            "system": "votes",
+            "configuration": null,
+            "items": null,
+            "type": "votes",
+            "renderer": null
+          }
+        },
+        {
+          "key": "issuelinks",
+          "title": "Связанные задачи",
+          "editable": true,
+          "required": false,
+          "autoCompleteUrl": "https://testpagesppl.atlassian.net/rest/api/2/issue/picker?currentProjectId=&showSubTaskParent=true&showSubTasks=true&currentIssueKey=TEST-6&query=",
+          "allowedValues": [],
+          "content": [],
+          "renderedContent": null,
+          "schema": {
+            "custom": null,
+            "system": "issuelinks",
+            "configuration": null,
+            "items": "issuelinks",
+            "type": "array",
+            "renderer": "jira-text-renderer"
+          }
+        },
+        {
+          "key": "assignee",
+          "title": "Исполнитель",
+          "editable": true,
+          "required": false,
+          "autoCompleteUrl": "https://testpagesppl.atlassian.net/rest/api/2/user/assignable/search?issueKey=TEST-6&query=",
+          "allowedValues": [],
+          "content": {
+            "self": "https://testpagesppl.atlassian.net/rest/api/2/user?accountId=557058%3Aef17ddc3-6c10-4b01-b578-026da58d55b1",
+            "accountId": "557058:ef17ddc3-6c10-4b01-b578-026da58d55b1",
+            "emailAddress": "pagesppl@gmail.com",
+            "avatarUrls": {
+              "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/557058:ef17ddc3-6c10-4b01-b578-026da58d55b1/600a2c51-ce6c-4f2e-a08d-15099c973f91/48",
+              "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/557058:ef17ddc3-6c10-4b01-b578-026da58d55b1/600a2c51-ce6c-4f2e-a08d-15099c973f91/24",
+              "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/557058:ef17ddc3-6c10-4b01-b578-026da58d55b1/600a2c51-ce6c-4f2e-a08d-15099c973f91/16",
+              "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/557058:ef17ddc3-6c10-4b01-b578-026da58d55b1/600a2c51-ce6c-4f2e-a08d-15099c973f91/32"
+            },
+            "displayName": "Артем Крынкин",
+            "active": true,
+            "timeZone": "Europe/Moscow",
+            "accountType": "atlassian"
+          },
+          "renderedContent": null,
+          "schema": {
+            "custom": null,
+            "system": "assignee",
+            "configuration": null,
+            "items": null,
+            "type": "user",
+            "renderer": "jira-text-renderer"
+          }
+        },
+        {
+          "key": "updated",
+          "title": "Обновлено",
+          "editable": false,
+          "required": false,
+          "autoCompleteUrl": null,
+          "allowedValues": [],
+          "content": "2020-04-02T23:44:18.706+0300",
+          "renderedContent": "02/апр/20 11:44 PM",
+          "schema": {
+            "custom": null,
+            "system": "updated",
+            "configuration": null,
+            "items": null,
+            "type": "datetime",
+            "renderer": null
+          }
+        },
+        {
+          "key": "status",
+          "title": "Статус",
+          "editable": false,
+          "required": false,
+          "autoCompleteUrl": null,
+          "allowedValues": [],
+          "content": {
+            "self": "https://testpagesppl.atlassian.net/rest/api/2/status/10000",
+            "description": "",
+            "iconUrl": "https://testpagesppl.atlassian.net/",
+            "name": "Backlog",
+            "id": "10000",
+            "statusCategory": {
+              "self": "https://testpagesppl.atlassian.net/rest/api/2/statuscategory/2",
+              "id": 2,
+              "key": "new",
+              "colorName": "blue-gray",
+              "name": "К выполнению"
+            }
+          },
+          "renderedContent": null,
+          "schema": {
+            "custom": null,
+            "system": "status",
+            "configuration": null,
+            "items": null,
+            "type": "status",
+            "renderer": null
+          }
+        }
+      ],
+      "expandAssigneeInSubtasks": false,
+      "expandAssigneeInIssuelinks": false,
+      "systemFields": {
+        "descriptionAdf": {
+          "value": null
+        },
+        "environmentAdf": {
+          "value": null
+        }
+      },
+      "customFields": {
+        "textareaAdf": []
+      },
+      "tabs": [],
+      "isHybridAgilityProject": false,
+      "agile": {
+        "epic": {
+          "key": "customfield_10014"
+        }
+      }
+    },
+    "project": {
+      "id": "10000",
+      "name": "test",
+      "key": "TEST",
+      "projectTypeKey": "software",
+      "simplified": false,
+      "avatarUrls": [
+        {
+          "key": "48x48",
+          "value": "https://testpagesppl.atlassian.net/secure/projectavatar?pid=10000&avatarId=10424"
+        },
+        {
+          "key": "24x24",
+          "value": "https://testpagesppl.atlassian.net/secure/projectavatar?size=small&s=small&pid=10000&avatarId=10424"
+        },
+        {
+          "key": "16x16",
+          "value": "https://testpagesppl.atlassian.net/secure/projectavatar?size=xsmall&s=xsmall&pid=10000&avatarId=10424"
+        },
+        {
+          "key": "32x32",
+          "value": "https://testpagesppl.atlassian.net/secure/projectavatar?size=medium&s=medium&pid=10000&avatarId=10424"
+        }
+      ],
+      "issueTypeHierarchy": null
+    }
+  }
+}

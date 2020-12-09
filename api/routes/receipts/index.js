@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
+import { isAuthed, hasPermissions } from 'api/utils/permissions';
 
 import { receiptCalc } from 'shared/checkPositionAndReceipt';
 
@@ -15,7 +15,7 @@ const receiptsRouter = Router();
 
 receiptsRouter.post(
 	'/getReceiptsPosition',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
@@ -37,7 +37,7 @@ receiptsRouter.post(
 
 receiptsRouter.post(
 	'/createReceipt',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
@@ -105,7 +105,7 @@ receiptsRouter.post(
 
 receiptsRouter.post(
 	'/changeReceipt',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
@@ -133,7 +133,7 @@ receiptsRouter.post(
 
 receiptsRouter.post(
 	'/activeReceiptAddQuantity',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {

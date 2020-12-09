@@ -30,7 +30,7 @@ const Content = props => {
 			<DefinitionList>
 				<DefinitionListItem
 					term="Заказ от"
-					value={<UserSummary src={procurement.orderedByMember.user.avatar} title={procurement.orderedByMember.user.name} size="xs" />}
+					value={<UserSummary src={procurement.orderedByMember.user.picture} title={procurement.orderedByMember.user.name} size="xs" />}
 				/>
 				<DefinitionListItem term="Магазин" value={procurement.shop.name} />
 				{procurement.isConfirmed ? (

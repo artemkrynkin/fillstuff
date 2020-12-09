@@ -26,7 +26,7 @@ const MemberInvoice = props => {
 				</Typography>
 			</div>
 			<div>
-				<UserSummary className={styles.user} src={invoice.member.user.avatar} title={invoice.member.user.name} size="xs" />
+				<UserSummary className={styles.user} src={invoice.member.user.picture} title={invoice.member.user.name} size="xs" />
 				<Grid justify="space-between" alignItems="center" container>
 					<Grid item>
 						<div className={stylesGlobal.totalPrice}>

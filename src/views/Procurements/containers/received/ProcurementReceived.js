@@ -51,7 +51,7 @@ const ProcurementReceived = props => {
 								)}
 							</Link>
 							{!procurement.orderedByMember || procurement.orderedByMember._id === procurement.receivedByMember._id ? (
-								<UserSummary src={procurement.receivedByMember.user.avatar} title={procurement.receivedByMember.user.name} />
+								<UserSummary src={procurement.receivedByMember.user.picture} title={procurement.receivedByMember.user.name} />
 							) : (
 								<div>
 									<Tooltip
@@ -74,8 +74,8 @@ const ProcurementReceived = props => {
 										enterNextDelay={150}
 									>
 										<div className={styles.userGroup}>
-											<Avatar className={styles.user} src={procurement.receivedByMember.user.avatar} />
-											<Avatar className={styles.user} src={procurement.orderedByMember.user.avatar} />
+											<Avatar className={styles.user} src={procurement.receivedByMember.user.picture} />
+											<Avatar className={styles.user} src={procurement.orderedByMember.user.picture} />
 										</div>
 									</Tooltip>
 								</div>

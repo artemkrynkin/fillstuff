@@ -16,7 +16,7 @@ const Payment = props => {
 	return (
 		<TableRow>
 			<TableCell>
-				<UserSummary src={payment.merchant.user.avatar} title={payment.merchant.user.name} />
+				<UserSummary src={payment.merchant.user.picture} title={payment.merchant.user.name} />
 			</TableCell>
 			<TableCell>{moment(payment.date).format('DD MMMM YYYY')}</TableCell>
 			<TableCell />

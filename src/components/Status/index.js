@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 
 import { withCurrentUser } from 'src/components/withCurrentUser';
 
-import { logoutListener } from 'src/actions/authentication';
-import { joinStudio } from 'src/actions/studio';
+import { joinStudio } from 'src/actions/studios';
 import { getStoreNotifications, storeNotificationEvents } from 'src/actions/storeNotifications';
 
 class Status extends Component {
@@ -27,7 +26,6 @@ class Status extends Component {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		logoutListener: () => dispatch(logoutListener()),
 		joinStudio: () => dispatch(joinStudio()),
 		getStoreNotifications: () => dispatch(getStoreNotifications()),
 		storeNotificationEvents: () => dispatch(storeNotificationEvents()),

@@ -14,7 +14,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import { Dialog, DialogTitle } from 'src/components/Dialog';
 import NumberFormat from 'src/components/NumberFormat';
 
-import { getStudioStore } from 'src/actions/studio';
+import { getStudioStore } from 'src/actions/studios';
 import { activeReceiptAddQuantity } from 'src/actions/receipts';
 
 import stylesGlobal from 'src/styles/globals.module.css';
@@ -39,7 +39,7 @@ class DialogReceiptActiveAddQuantity extends Component {
 
 		this.props.activeReceiptAddQuantity(selectedPosition._id, values).then(response => {
 			if (response.status === 'success') {
-				this.props.getStudioStore();
+				// this.props.getStudioStore();
 				onCloseDialog();
 			} else actions.setSubmitting(false);
 		});

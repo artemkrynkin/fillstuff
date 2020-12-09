@@ -1,36 +1,35 @@
 .container {
   background-color: var(--c-hex-slateGrey-4);
-  width: 256px;
+  width: 240px;
 }
 
 .wrapper {
   height: 100vh;
   position: sticky;
   top: 0;
-  width: 256px;
   z-index: 10;
 }
 
 .logo {
   align-items: center;
-  background: url('/img/logo_text_sg.svg') no-repeat center center;
+  background: url('/img/logo/wordmark_neutral.svg') no-repeat center center;
   box-sizing: content-box;
   display: flex;
-  height: 30px;
+  height: 20px;
   margin: 0 55px 0 24px;
   opacity: 0.45;
-  padding: 10px 0;
+  padding: 15px 0;
   position: relative;
   text-decoration: none;
   transition: opacity 250ms ease-in-out;
-  width: 98px;
+  width: 94px;
 }
 
 .menu {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  padding: 10px 0 5px;
+  padding: 10px 10px 5px;
   height: calc(100% - 50px);
 }
 
@@ -38,7 +37,6 @@
   border-radius: 8px;
   color: var(--c-hex-slateGrey-2);
   display: flex;
-  margin: 0 10px;
   padding: 12px 14px;
   transition: background-color 50ms ease-out;
 }
@@ -56,7 +54,8 @@
 .menuLink svg {
   font-size: 16px;
   opacity: 0.5;
-  margin-right: 12px;
+  margin-right: 16px;
+  transition: opacity 50ms ease-out;
 }
 
 .menuLink:hover svg {
@@ -73,4 +72,95 @@
 .menuLink_active .menuText,
 .menuLink_active:hover .menuText {
   opacity: 1;
+}
+
+.switchStudioLoading {
+  position: absolute;
+  left: 8px;
+}
+
+.studioSelectButton {
+  background-color: transparent;
+  border: none;
+  border-radius: 8px;
+  color: var(--c-hex-slateGrey-2);
+  cursor: pointer;
+  margin-bottom: 10px;
+  padding: 7px 10px;
+  position: relative;
+  transition: background-color 50ms ease-out, color 50ms ease-out;
+}
+
+.studioSelectButton:hover {
+  background-color: rgba(var(--c-rgb-slateGrey-2), 0.1);
+}
+
+.studioSelectButtonActive,
+.studioSelectButtonActive:hover {
+  background-color: var(--c-hex-slateGrey-5);
+  color: var(--c-hex-teal-A100);
+}
+
+.studioItemAvatar {
+  background-color: transparent;
+  box-shadow: 0 0 0 2px rgba(var(--c-rgb-slateGrey-2), 0.2) inset;
+  border: none;
+  color: rgba(var(--c-rgb-slateGrey-2), 0.5);
+  transition: box-shadow 50ms ease-out, color 50ms ease-out;
+}
+
+.studioSelectButtonActive .studioItemAvatar {
+  box-shadow: 0 0 0 2px rgba(var(--c-rgb-slateGrey-2), 0.3) inset;
+  color: rgba(var(--c-rgb-slateGrey-2), 0.7);
+}
+
+.studioItemAvatarFallback {
+  bottom: auto;
+  color: inherit;
+  height: 55% !important;
+  width: 55% !important;
+}
+
+.studioItemName {
+  flex: 1 1;
+  font-weight: 600;
+  letter-spacing: 0.03rem;
+  margin-left: 12px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: initial;
+  white-space: nowrap;
+}
+
+.studioItemArrow {
+  color: rgba(var(--c-rgb-slateGrey-2), 0.5);
+  margin-left: auto;
+  transition: color 50ms ease-out;
+}
+
+.studioSelectButtonActive .studioItemArrow {
+  color: var(--c-hex-teal-A100);
+}
+
+.dropdownStudiosHeader {
+  border-bottom: 1px solid var(--c-hex-brightness-5);
+}
+
+.dropdownStudiosFooter {
+  border-top: 1px solid var(--c-hex-brightness-5);
+}
+
+.filterSearchTextFieldClear {
+  color: var(--c-hex-blueGrey-300);
+  font-size: 16px;
+  padding: 12px 16px 12px 10px;
+  position: absolute;
+  right: 0;
+  transition: color 150ms ease-out;
+  top: 0;
+}
+
+.filterSearchTextFieldClear:hover {
+  color: var(--c-hex-blueGrey-600);
 }

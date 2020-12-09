@@ -8,8 +8,11 @@ export const getWriteOffs = (
 	}
 ) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		if (showRequest) dispatch({ type: 'REQUEST_WRITE_OFFS' });
 		if (emptyData) dispatch({ type: 'EMPTY_WRITE_OFFS' });
@@ -45,8 +48,11 @@ export const getWriteOffs = (
 
 export const createWriteOff = ({ params, data }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 		const { positionId } = params;
 
 		return await axios
@@ -81,8 +87,11 @@ export const createWriteOff = ({ params, data }) => {
 
 export const cancelWriteOff = ({ params }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 		const { writeOffId } = params;
 		const data = { cancellationRequestBy: memberId };
 

@@ -4,9 +4,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import moment from 'moment';
 
-import generateMetaInfo from 'shared/generate-meta-info';
-
-import Head from 'src/components/head';
+import Layout from 'src/components/Layout';
 import HeaderPage from 'src/components/HeaderPage';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 import { checkQueryInFilter, deleteParamsCoincidence } from 'src/components/Pagination/utils';
@@ -22,16 +20,10 @@ const WriteOffs = props => {
 	const { currentStudio, writeOffs } = props;
 	const [page, setPage] = useState(1);
 
-	const metaInfo = {
-		pageName: 'write-offs',
-		pageTitle: 'Списания',
+	const layoutMetaInfo = {
+		pageName: 'dashboard',
+		pageTitle: 'Монитор',
 	};
-	const { title, description } = generateMetaInfo({
-		type: metaInfo.pageName,
-		data: {
-			title: metaInfo.pageTitle,
-		},
-	});
 
 	const filterOptions = {
 		params: checkQueryInFilter({
@@ -62,10 +54,8 @@ const WriteOffs = props => {
 	}, []);
 
 	return (
-		<div className={stylesPage.page}>
-			<Head title={title} description={description} />
-
-			<HeaderPage pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
+		<Layout metaInfo={layoutMetaInfo}>
+			<HeaderPage pageName={layoutMetaInfo.pageName} pageTitle={layoutMetaInfo.pageTitle} />
 			<div className={`${stylesPage.pageContent} ${styles.container}`}>
 				<Index
 					currentStudio={currentStudio}
@@ -77,7 +67,7 @@ const WriteOffs = props => {
 					}}
 				/>
 			</div>
-		</div>
+		</Layout>
 	);
 };
 

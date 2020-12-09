@@ -27,6 +27,7 @@ import {
 	faCheckCircle as fasCheckCircle,
 	faQuestionCircle as fasQuestionCircle,
 	faExclamationCircle as fasExclamationCircle,
+	faStore as fasStore,
 } from '@fortawesome/pro-solid-svg-icons';
 
 import {
@@ -64,6 +65,7 @@ import {
 	faTrash as farTrash,
 	faComment as farComment,
 	faInventory as farInventory,
+	faExternalLink as farExternalLink,
 } from '@fortawesome/pro-regular-svg-icons';
 
 import {
@@ -138,6 +140,7 @@ library.add(
 	fasCheckCircle,
 	fasQuestionCircle,
 	fasExclamationCircle,
+	fasStore,
 
 	// Regular
 	farAngleLeft,
@@ -174,6 +177,7 @@ library.add(
 	farTrash,
 	farComment,
 	farInventory,
+	farExternalLink,
 
 	// Light
 	falAngleLeft,

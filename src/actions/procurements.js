@@ -8,8 +8,11 @@ export const getProcurementsExpected = (
 	}
 ) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		if (showRequest) dispatch({ type: 'REQUEST_PROCUREMENTS_EXPECTED' });
 		if (emptyData) dispatch({ type: 'EMPTY_PROCUREMENTS_EXPECTED' });
@@ -44,8 +47,11 @@ export const getProcurementsExpected = (
 
 export const getProcurementExpected = ({ params }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		return await axios
 			.post('/api/getProcurementExpected', {
@@ -68,8 +74,11 @@ export const getProcurementExpected = ({ params }) => {
 
 export const createProcurementExpected = ({ data }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		return await axios
 			.post('/api/createProcurementExpected', {
@@ -101,8 +110,11 @@ export const createProcurementExpected = ({ data }) => {
 
 export const editProcurementExpected = ({ params, data }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 		const { procurementId } = params;
 
 		return await axios
@@ -139,8 +151,11 @@ export const editProcurementExpected = ({ params, data }) => {
 
 export const cancelProcurementExpected = ({ params }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 		const { procurementId } = params;
 
 		return await axios
@@ -179,8 +194,11 @@ export const getProcurementsReceived = (
 	}
 ) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		if (showRequest) dispatch({ type: 'REQUEST_PROCUREMENTS_RECEIVED' });
 		if (emptyData) dispatch({ type: 'EMPTY_PROCUREMENTS_RECEIVED' });
@@ -216,8 +234,11 @@ export const getProcurementsReceived = (
 
 export const getProcurementReceived = ({ params }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		return await axios
 			.post('/api/getProcurementReceived', {
@@ -240,8 +261,11 @@ export const getProcurementReceived = ({ params }) => {
 
 export const createProcurementReceived = ({ data }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		return await axios
 			.post('/api/createProcurementReceived', {

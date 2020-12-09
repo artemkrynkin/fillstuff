@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
+import { isAuthed, hasPermissions } from 'api/utils/permissions';
 
 import Characteristic from 'api/models/characteristic';
 
@@ -10,7 +10,7 @@ const characteristicsRouter = Router();
 
 characteristicsRouter.post(
 	'/getCharacteristics',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	(req, res, next) => {
 		const {
@@ -30,7 +30,7 @@ characteristicsRouter.post(
 
 characteristicsRouter.post(
 	'/createCharacteristic',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	(req, res, next) => {
 		const {

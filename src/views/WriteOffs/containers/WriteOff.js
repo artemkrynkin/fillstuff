@@ -40,7 +40,7 @@ const WriteOff = props => {
 	return (
 		<TableRow className={styles.writeOff}>
 			<TableCell width={100}>
-				<UserSummary src={writeOff.member.user.avatar} title={writeOff.member.user.name} />
+				<UserSummary src={writeOff.member.user.picture} title={writeOff.member.user.name} />
 			</TableCell>
 			<TableCell>
 				<PositionSummary

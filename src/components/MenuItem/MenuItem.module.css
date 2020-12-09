@@ -1,3 +1,7 @@
+.container {
+  color: var(--c-hex-blueGrey-700);
+}
+
 .container.positive:hover {
   background-color: var(--c-hex-teal-50);
   color: var(--c-hex-teal-500);

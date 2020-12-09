@@ -8,18 +8,10 @@ const Switch = props => {
 	const { Component, FallbackComponent, ...rest } = props;
 
 	return (
-		<AuthViewHandler
-			user={props.currentUser}
-			studio={props.currentStudio}
-			member={props.currentMember}
-			loading={props.isLoadingCurrentUser || props.isLoadingCurrentStudio || props.isLoadingCurrentMember}
-		>
+		<AuthViewHandler user={props.currentUser} loading={props.isLoadingCurrentUser}>
 			{authed => {
-				if (!authed) {
-					return <FallbackComponent {...rest} />;
-				} else {
-					return <Component {...rest} />;
-				}
+				if (!authed) return <FallbackComponent {...rest} />;
+				return <Component {...rest} />;
 			}}
 		</AuthViewHandler>
 	);

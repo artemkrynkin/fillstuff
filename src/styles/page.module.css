@@ -2,20 +2,11 @@
   display: flex;
 }
 
-.pageWrapperContent {
-  flex: 1 1 auto;
-  min-height: calc(100vh - 50px);
-}
-
-.pageWrapperContent:not(.fullWidth) {
-  max-width: calc(100% - 320px);
-}
-
 .page {
-  height: 100%;
+  flex: 1 1 auto;
+  min-height: 100vh;
 }
 
 .pageContent {
-  padding-bottom: 40px;
   height: calc(100% - 50px);
 }

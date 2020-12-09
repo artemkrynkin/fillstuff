@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
+import { isAuthed, hasPermissions } from 'api/utils/permissions';
 
 import StoreNotification from 'api/models/storeNotification';
 
@@ -10,7 +10,7 @@ const storeNotificationsRouter = Router();
 
 storeNotificationsRouter.post(
 	'/getStoreNotifications',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	(req, res, next) => {
 		const { studioId } = req.body;
@@ -100,7 +100,7 @@ storeNotificationsRouter.post(
 
 storeNotificationsRouter.post(
 	'/getStoreNotification',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {

@@ -2,6 +2,7 @@ const members = (
 	state = {
 		isFetching: false,
 		data: null,
+		error: null,
 	},
 	action
 ) => {

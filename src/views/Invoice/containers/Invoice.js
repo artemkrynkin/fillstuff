@@ -35,7 +35,7 @@ const Invoice = props => {
 						<div className={styles.title}>
 							Счет за {moment(invoice.fromDate).format('DD.MM.YYYY')} &ndash; {moment(invoice.toDate).format('DD.MM.YYYY')}
 						</div>
-						<UserSummary src={invoice.member.user.avatar} title={invoice.member.user.name} />
+						<UserSummary src={invoice.member.user.picture} title={invoice.member.user.name} />
 					</Grid>
 					<Grid xs={6} item>
 						<Grid className={styles.indicators} direction="column" justify="center" container>

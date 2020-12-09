@@ -7,7 +7,7 @@ import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 
 const Dropdown = props => {
-	const { anchor, open, onClose, header, children, style, innerContentStyle, stopPropagation, ...remainingProps } = props;
+	const { anchor, open, onClose, header, footer, children, style, innerContentStyle, stopPropagation, ...remainingProps } = props;
 
 	const popperStyle = {
 		zIndex: 1300,
@@ -29,6 +29,7 @@ const Dropdown = props => {
 							<div>
 								{header ? header : null}
 								<div style={innerContentStyle}>{children}</div>
+								{footer ? footer : null}
 							</div>
 						</ClickAwayListener>
 					</Paper>
@@ -47,6 +48,7 @@ Dropdown.propTypes = {
 	open: PropTypes.bool.isRequired,
 	onClose: PropTypes.func.isRequired,
 	header: PropTypes.node,
+	footer: PropTypes.node,
 	stopPropagation: PropTypes.bool,
 };
 

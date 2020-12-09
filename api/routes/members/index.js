@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import mongoose from 'mongoose';
 
-import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
+import { isAuthed, hasPermissions } from 'api/utils/permissions';
 
 import { memberRoleTransform } from 'shared/roles-access-rights';
 
@@ -15,7 +15,7 @@ const membersRouter = Router();
 
 membersRouter.post(
 	'/getMembers',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
@@ -70,7 +70,7 @@ membersRouter.post(
 
 membersRouter.post(
 	'/getMember',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
@@ -86,7 +86,7 @@ membersRouter.post(
 
 membersRouter.post(
 	'/invitationMember',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['studio.control']),
 	async (req, res, next) => {
 		const { studioId } = req.body;
@@ -139,7 +139,7 @@ membersRouter.post('/confirmInvitationMember', async (req, res, next) => {
 
 membersRouter.post(
 	'/editMember',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['studio.control']),
 	async (req, res, next) => {
 		const {
@@ -164,7 +164,7 @@ membersRouter.post(
 
 membersRouter.post(
 	'/deactivatedMember',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['studio.control']),
 	async (req, res, next) => {
 		const {

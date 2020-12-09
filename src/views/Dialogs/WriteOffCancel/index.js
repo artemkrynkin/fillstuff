@@ -9,7 +9,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 
 import { Dialog, DialogTitle } from 'src/components/Dialog';
 
-import { getStudioStore } from 'src/actions/studio';
+import { getStudioStore } from 'src/actions/studios';
 import { cancelWriteOff } from 'src/actions/writeOffs';
 import { enqueueSnackbar } from 'src/actions/snackbars';
 
@@ -22,7 +22,7 @@ const DialogWriteOffCancel = props => {
 		props.cancelWriteOff(selectedWriteOff._id).then(response => {
 			onCloseDialog();
 
-			if (response.status === 'success') props.getStudioStore();
+			// if (response.status === 'success') props.getStudioStore();
 
 			if (response.status === 'error') {
 				props.enqueueSnackbar({

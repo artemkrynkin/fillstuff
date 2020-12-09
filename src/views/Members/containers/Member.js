@@ -10,7 +10,7 @@ const Member = props => {
 
 	return (
 		<CardPaper header={false}>
-			<UserSummary src={member.user.avatar} title={member.user.name} subtitle={memberRoleTransform(member.roles).join(', ')} size="lg" />
+			<UserSummary src={member.user.picture} title={member.user.name} subtitle={memberRoleTransform(member.roles).join(', ')} size="lg" />
 		</CardPaper>
 	);
 };

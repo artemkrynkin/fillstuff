@@ -2,6 +2,7 @@ const user = (
 	state = {
 		isFetching: false,
 		data: null,
+		error: null,
 	},
 	action
 ) => {
@@ -17,13 +18,13 @@ const user = (
 				isFetching: false,
 				data: action.payload,
 			};
-		case 'UNAUTHORIZED_USER':
+		case 'ERROR_USER': {
 			return {
 				...state,
 				isFetching: false,
-				error: 'unauthorized',
-				data: action.payload,
+				error: action.payload,
 			};
+		}
 		default:
 			return state;
 	}

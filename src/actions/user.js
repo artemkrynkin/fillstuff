@@ -1,11 +1,13 @@
 import axios from 'axios';
 
+import { ACCOUNT_SERVER_URL } from 'src/api/constants';
+
 export const getMyAccount = () => {
 	return async dispatch => {
 		dispatch({ type: 'REQUEST_USER' });
 
 		return await axios
-			.post('/api/getMyAccount')
+			.post(`${ACCOUNT_SERVER_URL}/api/getMyAccount`)
 			.then(response => {
 				dispatch({
 					type: 'RECEIVE_USER',
@@ -15,26 +17,24 @@ export const getMyAccount = () => {
 				return Promise.resolve({ status: 'success' });
 			})
 			.catch(error => {
-				if (error.response && error.response.status === 401) {
-					dispatch({
-						type: 'UNAUTHORIZED_USER',
-						payload: error.response.data,
-					});
-				} else {
-					console.error(error.response);
-				}
+				console.error(error);
 
-				return Promise.resolve({ status: 'error' });
+				dispatch({
+					type: 'ERROR_USER',
+					payload: error,
+				});
+
+				return Promise.reject({ status: 'error' });
 			});
 	};
 };
 
-export const editMyAccount = ({ data }) => {
+export const switchStudio = ({ data }) => {
 	return async dispatch => {
-		dispatch({ type: 'REQUEST_USER' });
-
 		return await axios
-			.post('/api/editMyAccount', data)
+			.post(`${ACCOUNT_SERVER_URL}/api/switchStudio`, {
+				data,
+			})
 			.then(response => {
 				dispatch({
 					type: 'RECEIVE_USER',
@@ -44,45 +44,14 @@ export const editMyAccount = ({ data }) => {
 				return Promise.resolve({ status: 'success' });
 			})
 			.catch(error => {
-				if (error.response) {
-					return Promise.resolve({ status: 'error', message: error.response.data.message, data: error.response.data });
-				} else {
-					console.error(error);
+				console.error(error);
 
-					return Promise.resolve({ status: 'error', message: error.message, ...error });
-				}
-			});
-	};
-};
-
-export const getMyAccountMember = (userId, memberId) => {
-	return async dispatch => {
-		dispatch({ type: 'REQUEST_MEMBER' });
-
-		return await axios
-			.post('/api/getMyAccountMember', {
-				userId,
-				memberId,
-			})
-			.then(response => {
 				dispatch({
-					type: 'RECEIVE_MEMBER',
-					payload: response.data,
+					type: 'ERROR_USER',
+					payload: error,
 				});
 
-				return Promise.resolve({ status: 'success' });
-			})
-			.catch(error => {
-				if (error.response && error.response.status === 401) {
-					dispatch({
-						type: 'UNAUTHORIZED_USER',
-						payload: error.response.data,
-					});
-				} else {
-					console.error(error.response);
-				}
-
-				return Promise.resolve({ status: 'error' });
+				return Promise.reject({ status: 'error' });
 			});
 	};
 };

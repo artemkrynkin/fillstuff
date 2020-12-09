@@ -26,12 +26,6 @@ const User = new Schema({
 			ref: 'Member',
 		},
 	},
-	studios: [
-		{
-			type: Schema.Types.ObjectId,
-			ref: 'Studio',
-		},
-	],
 	__v: {
 		type: Number,
 		select: false,

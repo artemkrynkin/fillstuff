@@ -1,6 +1,6 @@
 import React from 'react';
 import { compose } from 'redux';
-import { Route, Switch, Redirect } from 'react-router';
+import { Route, Switch } from 'react-router';
 import { SnackbarProvider } from 'notistack';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,24 +8,18 @@ import { ThemeProvider } from '@material-ui/core/styles';
 
 import generateMetaInfo from 'shared/generate-meta-info';
 
-import { CLIENT_URL } from 'src/api/constants';
+import { CLIENT_URL, ACCOUNT_CLIENT_URL } from 'src/api/constants';
 
 import { MuiTheme } from 'src/helpers/MuiTheme';
 import useStylesSnackbar from 'src/helpers/snackbarStyles';
 import signedOutFallback from 'src/helpers/signed-out-fallback';
 
-import AuthViewHandler from 'src/components/authViewHandler';
 import Head from 'src/components/head';
-import { Layout } from 'src/components/Layout';
-import HelpPanel from 'src/components/HelpPanel';
-import Sidebar from 'src/components/Sidebar';
 import Snackbar from 'src/components/Snackbar';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 import Status from 'src/components/Status';
 
-import Login from 'src/views/Login';
-import PageNotFound from 'src/views/PageNotFound';
-import PasswordRecovery from 'src/views/PasswordRecovery';
+import GettingStarted from 'src/views/GettingStarted';
 import Dashboard from 'src/views/Dashboard';
 import Stock from 'src/views/Stock';
 import Position from 'src/views/Position';
@@ -38,90 +32,46 @@ import Invoice from 'src/views/Invoice';
 import Members from 'src/views/Members';
 import Member from 'src/views/Member';
 import Settings from 'src/views/Settings';
-import Signup from 'src/views/Signup';
-import UserSettings from 'src/views/UserSettings';
+import PageNotFound from 'src/views/PageNotFound';
 
-import stylesPage from 'src/styles/page.module.css';
+const redirectLogin = () => {
+	const urlLogin = new URL(`${ACCOUNT_CLIENT_URL}/login`);
 
-const LoginFallback = signedOutFallback(
-	() => <Redirect to="/dashboard" />,
-	() => <Layout children={<Login />} />
-);
+	urlLogin.searchParams.set('returnTo', CLIENT_URL);
 
-const SignupFallback = signedOutFallback(
-	() => <Redirect to="/dashboard" />,
-	() => <Layout children={<Signup />} />
-);
+	window.location.href = urlLogin;
+};
 
-const PasswordRecoveryFallback = signedOutFallback(
-	() => <Redirect to="/dashboard" />,
-	() => <Layout children={<PasswordRecovery />} />
-);
+const HomeViewRedirectFallback = signedOutFallback(props => {
+	const { currentUser } = props;
 
-const DashboardFallback = signedOutFallback(
-	() => <Layout children={<Dashboard />} authed />,
-	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/dashboard`} />} />
-);
+	if (currentUser.settings.studio && currentUser.settings.member) return <DashboardFallback {...props} />;
+	else return <GettingStarted {...props} />;
+}, redirectLogin);
 
-const StockFallback = signedOutFallback(
-	props => <Layout children={<Stock match={props.match} />} authed />,
-	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/stock`} />} />
-);
+const DashboardFallback = signedOutFallback(Dashboard, redirectLogin);
 
-const PositionFallback = signedOutFallback(
-	props => <Layout children={<Position match={props.match} />} authed />,
-	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/stock/${match.params.positionId}`} />} />
-);
+const StockFallback = signedOutFallback(Stock, redirectLogin);
 
-const WriteOffsFallback = signedOutFallback(
-	props => <Layout children={<WriteOffs match={props.match} />} authed />,
-	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/write-offs`} />} />
-);
+const PositionFallback = signedOutFallback(Position, redirectLogin);
 
-const StocktakingFallback = signedOutFallback(
-	props => <Layout children={<Stocktaking match={props.match} />} authed />,
-	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/stocktaking`} />} />
-);
+const WriteOffsFallback = signedOutFallback(WriteOffs, redirectLogin);
 
-const ProcurementsFallback = signedOutFallback(
-	props => <Layout children={<Procurements match={props.match} />} authed />,
-	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/procurements`} />} />
-);
+const StocktakingFallback = signedOutFallback(Stocktaking, redirectLogin);
 
-const ProcurementFallback = signedOutFallback(
-	props => <Layout children={<Procurement match={props.match} />} authed />,
-	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/procurements/${match.params.procurementId}`} />} />
-);
+const ProcurementsFallback = signedOutFallback(Procurements, redirectLogin);
 
-const InvoicesFallback = signedOutFallback(
-	props => <Layout children={<Invoices match={props.match} />} authed />,
-	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/invoices`} />} />
-);
+const ProcurementFallback = signedOutFallback(Procurement, redirectLogin);
 
-const InvoiceFallback = signedOutFallback(
-	props => <Layout children={<Invoice match={props.match} />} authed />,
-	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/invoices/${match.params.invoiceId}`} />} />
-);
+const InvoicesFallback = signedOutFallback(Invoices, redirectLogin);
 
-const MembersFallback = signedOutFallback(
-	props => <Layout children={<Members match={props.match} />} authed />,
-	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/members`} />} />
-);
+const InvoiceFallback = signedOutFallback(Invoice, redirectLogin);
 
-const MemberFallback = signedOutFallback(
-	props => <Layout children={<Member match={props.match} />} authed />,
-	({ match }) => <Layout children={<Login redirectPath={`${CLIENT_URL}/members/${match.params.memberId}`} />} />
-);
+const MembersFallback = signedOutFallback(Members, redirectLogin);
 
-const SettingsFallback = signedOutFallback(
-	() => <Layout children={<Settings />} authed />,
-	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/settings`} />} />
-);
+const MemberFallback = signedOutFallback(Member, redirectLogin);
 
-const UserSettingsFallback = signedOutFallback(
-	() => <Layout children={<UserSettings />} authed />,
-	() => <Layout children={<Login redirectPath={`${CLIENT_URL}/user-settings`} />} />
-);
+const SettingsFallback = signedOutFallback(Settings, redirectLogin);
 
 const snackbarSettings = {
 	maxSnack: 5,
@@ -160,69 +110,32 @@ const Routes = props => {
 				<Head title={title} description={description} />
 
 				<Snackbar />
-				{currentUser && currentUser._id && currentStudio && currentStudio._id && currentMember && currentMember._id ? <Status /> : null}
+				{currentUser && currentStudio && currentMember ? <Status /> : null}
 
-				{/*
-         AuthViewHandler often returns null, but is responsible for triggering
-         things like the 'set username' prompt when a user auths and doesn't
-         have a username set.
-         */}
-				<AuthViewHandler>{() => null}</AuthViewHandler>
+				<>
+					{/*
+           Switch отображает только первое совпадение. Внутренняя маршрутизация происходит вниз по течению
+           https://reacttraining.com/react-router/web/api/Switch
+           */}
+					<Switch>
+						{/* Публичные бизнес страницы */}
+						{/* Страницы приложения */}
+						<Route path="/" component={HomeViewRedirectFallback} exact strict />
+						<Route path="/stock" component={StockFallback} />
+						<Route path="/stock/:positionId" component={PositionFallback} exact />
+						<Route path="/write-offs" component={WriteOffsFallback} />
+						<Route path="/stocktaking" component={StocktakingFallback} />
+						<Route path="/procurements" component={ProcurementsFallback} />
+						<Route path="/procurements/:procurementId" component={ProcurementFallback} exact />
+						<Route path="/invoices" component={InvoicesFallback} />
+						<Route path="/invoices/:invoiceId" component={InvoiceFallback} exact />
+						<Route path={['/members/', '/members/guests/']} component={MembersFallback} exact />
+						<Route path="/members/:memberId" component={MemberFallback} exact />
+						<Route path="/settings" component={SettingsFallback} exact />
 
-				<div>
-					<div className={stylesPage.pageWrapper}>
-						{currentUser && currentUser._id && currentStudio && currentStudio._id && currentMember && currentMember._id ? (
-							<HelpPanel />
-						) : null}
-						{currentUser && currentUser._id && currentStudio && currentStudio._id && currentMember && currentMember._id ? (
-							<Sidebar />
-						) : null}
-
-						{/*
-             Switch отображает только первое совпадение. Внутренняя маршрутизация происходит вниз по течению
-             https://reacttraining.com/react-router/web/api/Switch
-             */}
-						<Switch>
-							{/* Публичные бизнес страницы */}
-							{/* Страницы приложения */}
-							<Route path="/" exact strict>
-								{() => {
-									if (currentUser && currentUser._id && currentStudio && currentStudio._id && currentMember && currentMember._id) {
-										return <Redirect to="/dashboard" push />;
-									} else {
-										return <Redirect to="/login" push />;
-									}
-								}}
-							</Route>
-
-							<Route path={['/login', '/login/']} component={LoginFallback} exact strict />
-							<Route path={['/signup', '/signup/']} component={SignupFallback} exact strict />
-							<Route path={['/password-recovery', '/password-recovery/']} component={PasswordRecoveryFallback} exact strict />
-
-							<Route path={['/dashboard', '/dashboard/']} component={DashboardFallback} exact strict />
-							<Route path={['/stock', '/stock/']} component={StockFallback} exact strict />
-							<Route path={['/stock/:positionId', '/stock/:positionId/']} component={PositionFallback} exact strict />
-							<Route path={['/write-offs', '/write-offs/']} component={WriteOffsFallback} exact strict />
-							<Route path={['/stocktaking', '/stocktaking/']} component={StocktakingFallback} exact strict />
-							<Route path={['/procurements', '/procurements/']} component={ProcurementsFallback} exact strict />
-							<Route
-								path={['/procurements/:procurementId', '/procurements/:procurementId/']}
-								component={ProcurementFallback}
-								exact
-								strict
-							/>
-							<Route path={['/invoices', '/invoices/']} component={InvoicesFallback} exact strict />
-							<Route path={['/invoices/:invoiceId', '/invoices/:invoiceId/']} component={InvoiceFallback} exact strict />
-							<Route path={['/members', '/members/', '/members/guests', '/members/guests/']} component={MembersFallback} exact strict />
-							<Route path={['/members/:memberId', '/members/:memberId/']} component={MemberFallback} exact strict />
-							<Route path={['/settings', '/settings/']} component={SettingsFallback} exact strict />
-
-							<Route path={['/user-settings', '/user-settings/']} component={UserSettingsFallback} exact strict />
-
-							<Route path="*" component={PageNotFound} />
-						</Switch>
-					</div>
-				</div>
+						<Route path="*" component={PageNotFound} />
+					</Switch>
+				</>
 			</SnackbarProvider>
 		</ThemeProvider>
 	);

@@ -2,8 +2,11 @@ import axios from 'axios';
 
 export const getPositionGroups = ({ showRequest = true, emptyData = false } = { showRequest: true, emptyData: false }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		if (showRequest) dispatch({ type: 'REQUEST_POSITION_GROUPS' });
 		if (emptyData) dispatch({ type: 'EMPTY_POSITION_GROUPS' });
@@ -31,8 +34,11 @@ export const getPositionGroups = ({ showRequest = true, emptyData = false } = { 
 
 export const createPositionGroup = ({ data }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		return await axios
 			.post('/api/createPositionGroup', {
@@ -64,8 +70,11 @@ export const createPositionGroup = ({ data }) => {
 
 export const editPositionGroup = ({ params, data }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 		const { positionGroupId } = params;
 
 		return await axios
@@ -100,8 +109,11 @@ export const editPositionGroup = ({ params, data }) => {
 
 export const addPositionInGroup = ({ params, data }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 		const { positionGroupId } = params;
 
 		return await axios
@@ -136,8 +148,11 @@ export const addPositionInGroup = ({ params, data }) => {
 
 export const removePositionFromGroup = ({ params }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		return await axios
 			.post('/api/removePositionFromGroup', {

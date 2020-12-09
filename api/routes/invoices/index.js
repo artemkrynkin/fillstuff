@@ -2,7 +2,7 @@ import { Router } from 'express';
 import _ from 'lodash';
 import mongoose from 'mongoose';
 
-import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
+import { isAuthed, hasPermissions } from 'api/utils/permissions';
 
 import Emitter from 'api/utils/emitter';
 
@@ -15,7 +15,7 @@ const invoicesRouter = Router();
 
 invoicesRouter.post(
 	'/getInvoices',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
@@ -92,7 +92,7 @@ invoicesRouter.post(
 
 invoicesRouter.post(
 	'/getMemberInvoices',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
@@ -109,7 +109,7 @@ invoicesRouter.post(
 
 invoicesRouter.post(
 	'/getInvoice',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
@@ -149,7 +149,7 @@ invoicesRouter.post(
 
 invoicesRouter.post(
 	'/createInvoice',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
@@ -243,7 +243,7 @@ invoicesRouter.post(
 
 invoicesRouter.post(
 	'/createInvoicePayment',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {

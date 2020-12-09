@@ -2,6 +2,7 @@ const procurementsExpected = (
 	state = {
 		isFetching: false,
 		data: null,
+		error: null,
 	},
 	action
 ) => {

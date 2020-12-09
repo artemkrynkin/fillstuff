@@ -11,8 +11,10 @@ export const useStylesAvatar = makeStyles(({ transitions }) => ({
 		'&:after': {
 			display: 'none',
 		},
-		boxShadow: active =>
-			active ? `0 0 0 2px ${colorTheme.slateGrey['1']}` : `0 0 0 2px rgba(${hexToRgb(colorTheme.slateGrey['2'])}, 0.5)`,
+		'&:hover': {
+			boxShadow: active => (!active ? `0 0 0 2px rgba(${hexToRgb(colorTheme.slateGrey['2'])}, 0.5)` : ''),
+		},
+		boxShadow: active => (active ? `0 0 0 4px rgba(${hexToRgb(colorTheme.slateGrey['2'])}, 0.3)` : ''),
 		transition: transitions.create(['box-shadow'], { duration: transitions.duration.shortest }),
 	},
 	colorDefault: {

@@ -9,7 +9,7 @@ import Button from '@material-ui/core/Button';
 
 import { Dialog, DialogTitle } from 'src/components/Dialog';
 
-import { getStudioStore } from 'src/actions/studio';
+import { getStudioStore } from 'src/actions/studios';
 import { archivePosition, archivePositionAfterEnded } from 'src/actions/positions';
 import { enqueueSnackbar } from 'src/actions/snackbars';
 
@@ -40,7 +40,7 @@ const PositionArchiveDelete = props => {
 					},
 				});
 
-				props.getStudioStore();
+				// props.getStudioStore();
 			}
 
 			if (response.status === 'error') {

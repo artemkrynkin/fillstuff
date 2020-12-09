@@ -20,7 +20,7 @@ const MemberCard = props => {
 			<Grid className={styles.container} container>
 				<Grid xs={6} item>
 					<UserSummary
-						src={member.user.avatar}
+						src={member.user.picture}
 						title={member.user.name}
 						subtitle={memberRoleTransform(member.roles).join(', ')}
 						size="xl"

@@ -2,8 +2,11 @@ import axios from 'axios';
 
 export const getShops = () => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		dispatch({ type: 'REQUEST_SHOPS' });
 
@@ -32,8 +35,11 @@ export const getShops = () => {
 
 export const createShop = ({ data }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		dispatch({ type: 'REQUEST_SHOPS' });
 

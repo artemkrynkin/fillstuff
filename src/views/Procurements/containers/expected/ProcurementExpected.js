@@ -80,7 +80,7 @@ const ProcurementExpected = props => {
 				)}
 				<UserSummary
 					className={styles.user}
-					src={procurement.orderedByMember.user.avatar}
+					src={procurement.orderedByMember.user.picture}
 					title={procurement.orderedByMember.user.name}
 					size="xs"
 				/>

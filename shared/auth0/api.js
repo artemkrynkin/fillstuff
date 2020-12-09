@@ -2,29 +2,23 @@
 const IS_PROD = process.env.NODE_ENV === 'production';
 
 const DEV_CONFIG = {
-	clientId: '4pmdOXEv0seOwvHscw6vUE8VnzQESUWA',
-	clientSecret: 'RAIIhdxbrRfQAiXvVAHX_mw5Kln9wEXQOl9mmGHi3CZ2kK1Z9lSditTRQjYn6wkr',
-	domain: 'keeberinkdev.eu.auth0.com',
-	audience: 'https://keeberinkdev.eu.auth0.com/api/v2/',
-	accessToken: {
-		type: 'Bearer',
-		token:
-			'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im4tT0toRjB3eWFSSWFBUVAyaDRyMSJ9.eyJpc3MiOiJodHRwczovL2tlZWJlcmlua2Rldi5ldS5hdXRoMC5jb20vIiwic3ViIjoiNHBtZE9YRXYwc2VPd3ZIc2N3NnZVRThWbnpRRVNVV0FAY2xpZW50cyIsImF1ZCI6Imh0dHBzOi8va2VlYmVyaW5rZGV2LmV1LmF1dGgwLmNvbS9hcGkvdjIvIiwiaWF0IjoxNjAzMTIyNTk5LCJleHAiOjE2MDMyMDg5OTksImF6cCI6IjRwbWRPWEV2MHNlT3d2SHNjdzZ2VUU4Vm56UUVTVVdBIiwic2NvcGUiOiJyZWFkOnVzZXJzIHVwZGF0ZTp1c2VycyBkZWxldGU6dXNlcnMgY3JlYXRlOnVzZXJzIHJlYWQ6dXNlcnNfYXBwX21ldGFkYXRhIHVwZGF0ZTp1c2Vyc19hcHBfbWV0YWRhdGEgZGVsZXRlOnVzZXJzX2FwcF9tZXRhZGF0YSBjcmVhdGU6dXNlcnNfYXBwX21ldGFkYXRhIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIn0.Vqr2gPWW9dRSzrxtTEW3-keO1AhJQa_3ab0TPRxfVqnIe1i_6RPiCRKBvPwkp3NBhElNGoU8Gyb8L7APil96ABAxTiuTLEeuIU0d8VAnFcaVT7jyMn4Lyx2LDOaSlO80g_n1Y54GW24ttGVkCu5NqVTBQLpBXSM2jdE74Ke8w4kOejU8IdcTVvVXeI6O196P9Rfsceu0VhRuiZq8EnX_MSF9G5lZJezrOTGJxZEBZiBbHc2TJjt4L6aSa5bLq0hBNsR8P-See2UNXb9kbHl0ieQYOL_2pSrL6_g1l82lhZryqNyBFw5GwSfUBo4RIUwn0kPjDyC6r8nTvdug3cIhgg',
-	},
-	redirectUri: 'http://localhost:3001/login/callback',
+	dbConnectionName: 'Username-Password-Authentication',
+	clientId: 'J7H0qGhB0ZwM4d0bGV24Px4l675Yr9WI',
+	clientSecret: 'N7PnbvlD8Xwl2rv6Af6JlBvUWTO8Jod1mqVem61i6fl0n4aLYWgaYeGIjEH9m8hW',
+	domain: 'keeberinklocal.eu.auth0.com',
+	audience: 'https://keeberinklocal.eu.auth0.com/api/v2/',
+	redirectUri: 'http://localhost:3003/auth/loginCallback',
+	issuer: 'https://keeberinklocal.eu.auth0.com/',
 };
 
 const PRODUCTION_CONFIG = {
+	dbConnectionName: 'Username-Password-Authentication',
 	clientId: '4pmdOXEv0seOwvHscw6vUE8VnzQESUWA',
 	clientSecret: 'RAIIhdxbrRfQAiXvVAHX_mw5Kln9wEXQOl9mmGHi3CZ2kK1Z9lSditTRQjYn6wkr',
-	domain: 'keeberinkdev.eu.auth0.com',
+	domain: 'auth.keeberink.com',
 	audience: 'https://keeberinkdev.eu.auth0.com/api/v2/',
-	accessToken: {
-		type: 'Bearer',
-		token:
-			'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im4tT0toRjB3eWFSSWFBUVAyaDRyMSJ9.eyJpc3MiOiJodHRwczovL2tlZWJlcmlua2Rldi5ldS5hdXRoMC5jb20vIiwic3ViIjoiNHBtZE9YRXYwc2VPd3ZIc2N3NnZVRThWbnpRRVNVV0FAY2xpZW50cyIsImF1ZCI6Imh0dHBzOi8va2VlYmVyaW5rZGV2LmV1LmF1dGgwLmNvbS9hcGkvdjIvIiwiaWF0IjoxNjAzMTIyNTk5LCJleHAiOjE2MDMyMDg5OTksImF6cCI6IjRwbWRPWEV2MHNlT3d2SHNjdzZ2VUU4Vm56UUVTVVdBIiwic2NvcGUiOiJyZWFkOnVzZXJzIHVwZGF0ZTp1c2VycyBkZWxldGU6dXNlcnMgY3JlYXRlOnVzZXJzIHJlYWQ6dXNlcnNfYXBwX21ldGFkYXRhIHVwZGF0ZTp1c2Vyc19hcHBfbWV0YWRhdGEgZGVsZXRlOnVzZXJzX2FwcF9tZXRhZGF0YSBjcmVhdGU6dXNlcnNfYXBwX21ldGFkYXRhIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIn0.Vqr2gPWW9dRSzrxtTEW3-keO1AhJQa_3ab0TPRxfVqnIe1i_6RPiCRKBvPwkp3NBhElNGoU8Gyb8L7APil96ABAxTiuTLEeuIU0d8VAnFcaVT7jyMn4Lyx2LDOaSlO80g_n1Y54GW24ttGVkCu5NqVTBQLpBXSM2jdE74Ke8w4kOejU8IdcTVvVXeI6O196P9Rfsceu0VhRuiZq8EnX_MSF9G5lZJezrOTGJxZEBZiBbHc2TJjt4L6aSa5bLq0hBNsR8P-See2UNXb9kbHl0ieQYOL_2pSrL6_g1l82lhZryqNyBFw5GwSfUBo4RIUwn0kPjDyC6r8nTvdug3cIhgg',
-	},
-	redirectUri: 'https://blikside.com/login/callback',
+	redirectUri: 'https://account.keeberink.com/auth/loginCallback',
+	issuer: 'https://auth.keeberink.com/',
 };
 
 export const config = IS_PROD ? PRODUCTION_CONFIG : DEV_CONFIG;

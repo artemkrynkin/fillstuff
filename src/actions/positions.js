@@ -2,8 +2,11 @@ import axios from 'axios';
 
 export const getPositions = ({ showRequest = true, emptyData = false } = { showRequest: true, emptyData: false }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		if (showRequest) dispatch({ type: 'REQUEST_POSITIONS' });
 		if (emptyData) dispatch({ type: 'EMPTY_POSITIONS' });
@@ -31,8 +34,11 @@ export const getPositions = ({ showRequest = true, emptyData = false } = { showR
 
 export const getPosition = ({ params }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		return await axios
 			.post('/api/getPosition', {
@@ -55,8 +61,11 @@ export const getPosition = ({ params }) => {
 
 export const createPosition = ({ data }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		return await axios
 			.post('/api/createPosition', {
@@ -88,8 +97,11 @@ export const createPosition = ({ data }) => {
 
 export const editPosition = ({ params, data }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 		const { positionId } = params;
 
 		return await axios
@@ -126,8 +138,11 @@ export const editPosition = ({ params, data }) => {
 
 export const detachPositions = ({ params }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 		const { positionId } = params;
 
 		return await axios
@@ -163,8 +178,11 @@ export const detachPositions = ({ params }) => {
 
 export const archivePosition = ({ params, data }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 		const { positionId } = params;
 		const { positionGroupId } = data;
 
@@ -200,8 +218,11 @@ export const archivePosition = ({ params, data }) => {
 
 export const archivePositionAfterEnded = ({ params, data }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 		const { positionId } = params;
 
 		return await axios

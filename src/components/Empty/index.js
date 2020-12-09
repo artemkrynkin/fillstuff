@@ -5,7 +5,7 @@ import ClassNames from 'classnames';
 import styles from './index.module.css';
 
 const Empty = props => {
-	const { imageSrc, imageSize, content, actions, style } = props;
+	const { imageSrc, imageSize, header, content, actions, style } = props;
 	const classNames = { ...props.classNamesInitial, ...props.classNames };
 
 	const containerClasses = ClassNames({
@@ -32,6 +32,7 @@ const Empty = props => {
 
 	return (
 		<div className={containerClasses} style={style}>
+			{header ? header : null}
 			{imageSrc ? (
 				<div className={imageClasses}>
 					<img src={imageSrc} alt="" />
@@ -58,6 +59,7 @@ Empty.defaultProps = {
 Empty.propTypes = {
 	imageSrc: PropTypes.string,
 	imageSize: PropTypes.oneOf(['md', 'sm', 'xs', '']),
+	header: PropTypes.node,
 	content: PropTypes.node,
 	actions: PropTypes.node,
 	style: PropTypes.object,

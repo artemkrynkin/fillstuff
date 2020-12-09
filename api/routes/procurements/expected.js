@@ -2,7 +2,7 @@ import { Router } from 'express';
 import mongoose from 'mongoose';
 import { difference } from 'lodash';
 
-import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
+import { isAuthed, hasPermissions } from 'api/utils/permissions';
 
 import Emitter from 'api/utils/emitter';
 
@@ -18,7 +18,7 @@ const existIsNotSame = (propName, originalData, editedData) =>
 
 procurementsRouter.post(
 	'/getProcurementsExpected',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const { studioId } = req.body;
@@ -93,7 +93,7 @@ procurementsRouter.post(
 
 procurementsRouter.post(
 	'/getProcurementExpected',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
@@ -143,7 +143,7 @@ procurementsRouter.post(
 
 procurementsRouter.post(
 	'/createProcurementExpected',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
@@ -234,7 +234,7 @@ procurementsRouter.post(
 
 procurementsRouter.post(
 	'/editProcurementExpected',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
@@ -388,7 +388,7 @@ procurementsRouter.post(
 
 procurementsRouter.post(
 	'/cancelProcurementExpected',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {

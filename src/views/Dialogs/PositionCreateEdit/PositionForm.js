@@ -9,7 +9,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import DialogActions from '@material-ui/core/DialogActions';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { getStudioStore } from 'src/actions/studio';
+import { getStudioStore } from 'src/actions/studios';
 import { getPositions, createPosition, editPosition } from 'src/actions/positions';
 import { enqueueSnackbar } from 'src/actions/snackbars';
 
@@ -66,7 +66,7 @@ const PositionForm = props => {
 				},
 			});
 
-			props.getStudioStore();
+			// props.getStudioStore();
 			onCloseDialog();
 		}
 

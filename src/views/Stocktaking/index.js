@@ -1,8 +1,6 @@
 import React from 'react';
 
-import generateMetaInfo from 'shared/generate-meta-info';
-
-import Head from 'src/components/head';
+import Layout from 'src/components/Layout';
 import HeaderPage from 'src/components/HeaderPage';
 
 import stylesPage from 'src/styles/page.module.css';
@@ -13,26 +11,18 @@ import Index from './containers/index';
 const Stocktaking = props => {
 	const { currentStudio } = props;
 
-	const metaInfo = {
+	const layoutMetaInfo = {
 		pageName: 'stocktaking',
 		pageTitle: 'Инвентаризации',
 	};
-	const { title, description } = generateMetaInfo({
-		type: metaInfo.pageName,
-		data: {
-			title: metaInfo.pageTitle,
-		},
-	});
 
 	return (
-		<div className={stylesPage.page}>
-			<Head title={title} description={description} />
-
-			<HeaderPage pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
+		<Layout metaInfo={layoutMetaInfo}>
+			<HeaderPage pageName={layoutMetaInfo.pageName} pageTitle={layoutMetaInfo.pageTitle} />
 			<div className={`${stylesPage.pageContent} ${styles.container}`}>
 				<Index currentStudio={currentStudio} />
 			</div>
-		</div>
+		</Layout>
 	);
 };
 

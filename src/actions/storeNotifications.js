@@ -4,8 +4,11 @@ import { sleep } from 'shared/utils';
 
 export const getStoreNotifications = () => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		dispatch({ type: 'REQUEST_STORE_NOTIFICATIONS' });
 
@@ -32,8 +35,11 @@ export const getStoreNotifications = () => {
 
 export const getStoreNotification = ({ params }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		return await axios
 			.post('/api/getStoreNotification', {

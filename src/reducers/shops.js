@@ -2,6 +2,7 @@ const shops = (
 	state = {
 		isFetching: false,
 		data: null,
+		error: null,
 	},
 	action
 ) => {

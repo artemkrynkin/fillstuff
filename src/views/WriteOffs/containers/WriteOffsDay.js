@@ -86,7 +86,7 @@ const WriteOffsDay = props => {
 										return (
 											<Tooltip key={member._id} title={member.user.name} placement="top" enterDelay={150} enterNextDelay={150}>
 												<div className={styles.user} style={{ zIndex: indicators.members.length - index }}>
-													<Avatar className={styles.userAvatar} onClick={() => onChangeFilterRole(member._id)} src={member.user.avatar} />
+													<Avatar className={styles.userAvatar} onClick={() => onChangeFilterRole(member._id)} src={member.user.picture} />
 												</div>
 											</Tooltip>
 										);
@@ -170,7 +170,7 @@ const WriteOffsDay = props => {
 							{indicators.members.map(member => (
 								<Tooltip key={member._id} title={member.user.name} placement="top">
 									<div>
-										<Avatar onClick={() => onChangeFilterRole(member._id)} className={styles.userPopup} src={member.user.avatar} />
+										<Avatar onClick={() => onChangeFilterRole(member._id)} className={styles.userPopup} src={member.user.picture} />
 									</div>
 								</Tooltip>
 							))}

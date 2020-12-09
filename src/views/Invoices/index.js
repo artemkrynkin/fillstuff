@@ -4,9 +4,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import moment from 'moment';
 
-import generateMetaInfo from 'shared/generate-meta-info';
-
-import Head from 'src/components/head';
+import Layout from 'src/components/Layout';
 import HeaderPage from 'src/components/HeaderPage';
 import { checkQueryInFilter, deleteParamsCoincidence } from 'src/components/Pagination/utils';
 import { withCurrentUser } from 'src/components/withCurrentUser';
@@ -22,16 +20,10 @@ const Invoices = props => {
 	const { currentStudio, invoices } = props;
 	const [page, setPage] = useState(1);
 
-	const metaInfo = {
+	const layoutMetaInfo = {
 		pageName: 'invoices',
 		pageTitle: 'Счета',
 	};
-	const { title, description } = generateMetaInfo({
-		type: metaInfo.pageName,
-		data: {
-			title: metaInfo.pageTitle,
-		},
-	});
 
 	const filterOptions = {
 		params: checkQueryInFilter({
@@ -59,10 +51,8 @@ const Invoices = props => {
 	}, []);
 
 	return (
-		<div className={stylesPage.page}>
-			<Head title={title} description={description} />
-
-			<HeaderPage pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
+		<Layout metaInfo={layoutMetaInfo}>
+			<HeaderPage pageName={layoutMetaInfo.pageName} pageTitle={layoutMetaInfo.pageTitle} />
 			<div className={`${stylesPage.pageContent} ${styles.container}`}>
 				<Index
 					currentStudio={currentStudio}
@@ -74,7 +64,7 @@ const Invoices = props => {
 					}}
 				/>
 			</div>
-		</div>
+		</Layout>
 	);
 };
 

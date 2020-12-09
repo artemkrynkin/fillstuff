@@ -1,55 +1,49 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
 import ClassNames from 'classnames';
 
+import generateMetaInfo from 'shared/generate-meta-info';
+
+import Head from 'src/components/head';
+import HelpPanel from 'src/components/HelpPanel';
+import Sidebar from 'src/components/Sidebar';
+import { withCurrentUser } from 'src/components/withCurrentUser';
+
 import stylesPage from 'src/styles/page.module.css';
-import styles from './index.module.css';
 
-export const Layout = props => {
-	const { authed, theme, children } = props;
-
-	const pageWrapperContentClasses = ClassNames({
-		[stylesPage.pageWrapperContent]: true,
-		[stylesPage.fullWidth]: !authed || theme !== 'default',
+const Layout = props => {
+	const { children, metaInfo, currentUser, currentStudio, studios } = props;
+	const { title: pageTitle, description: pageDescription } = generateMetaInfo({
+		type: metaInfo.pageName,
+		data: {
+			title: metaInfo.pageTitle,
+		},
 	});
 
 	return (
-		<div className={pageWrapperContentClasses}>
-			{authed ? (
-				theme === 'default' ? (
-					children
-				) : (
-					<div className={`${stylesPage.page} ${styles.layout_bg}`}>{children}</div>
-				)
-			) : (
-				<div className={`${stylesPage.page} ${styles.layout_bg} ${styles.container}`}>
-					<Link className={styles.logo} to="/" />
-					{children}
-					<div className={styles.codeOfConduct}>
-						Используя Blikside, вы соглашаетесь с{' '}
-						<a href="/manifest.json" target="_blank" rel="noreferrer noopener">
-							Политикой конфиденциальности
-						</a>
-						{' и '}
-						<a href="/manifest.json" target="_blank" rel="noreferrer noopener">
-							Условиями использования
-						</a>
-						.
-					</div>
-				</div>
-			)}
+		<div className={stylesPage.pageWrapper}>
+			<Head title={pageTitle} description={pageDescription} />
+			<HelpPanel currentUser={currentUser} />
+			<Sidebar currentUser={currentUser} currentStudio={currentStudio} studios={studios} />
+			<div className={ClassNames(stylesPage.page)}>{children}</div>
 		</div>
 	);
 };
 
-Layout.defaultProps = {
-	authed: false,
-	theme: 'default',
+Layout.propTypes = {
+	children: PropTypes.node,
+	metaInfo: PropTypes.shape({
+		pageName: PropTypes.string,
+		pageTitle: PropTypes.string,
+	}),
 };
 
-Layout.propTypes = {
-	authed: PropTypes.bool.isRequired,
-	theme: PropTypes.string.isRequired,
-	children: PropTypes.node,
+const mapStateToProps = state => {
+	return {
+		studios: state.studios,
+	};
 };
+
+export default compose(withCurrentUser, connect(mapStateToProps, null))(Layout);

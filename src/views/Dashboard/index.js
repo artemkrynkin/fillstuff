@@ -3,12 +3,10 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import moment from 'moment';
 
-import generateMetaInfo from 'shared/generate-meta-info';
-
 import { getDeliveryDateTimeMoment } from 'src/helpers/utils';
 
-import Head from 'src/components/head';
 import HeaderPage from 'src/components/HeaderPage';
+import Layout from 'src/components/Layout';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 
 import stylesPage from 'src/styles/page.module.css';
@@ -19,26 +17,18 @@ import Index from './containers/index';
 const Dashboard = props => {
 	const { currentStudio, storeNotifications } = props;
 
-	const metaInfo = {
+	const layoutMetaInfo = {
 		pageName: 'dashboard',
 		pageTitle: 'Монитор',
 	};
-	const { title, description } = generateMetaInfo({
-		type: metaInfo.pageName,
-		data: {
-			title: metaInfo.pageTitle,
-		},
-	});
 
 	return (
-		<div className={stylesPage.page}>
-			<Head title={title} description={description} />
-
-			<HeaderPage pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
+		<Layout metaInfo={layoutMetaInfo}>
+			<HeaderPage pageName={layoutMetaInfo.pageName} pageTitle={layoutMetaInfo.pageTitle} />
 			<div className={`${stylesPage.pageContent} ${styles.container}`}>
 				<Index currentStudio={currentStudio} storeNotifications={storeNotifications} />
 			</div>
-		</div>
+		</Layout>
 	);
 };
 

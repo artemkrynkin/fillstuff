@@ -395,7 +395,7 @@ const FormFilter = props => {
 								onClick={() => onChangeFilterMember(member._id, setFieldValue, submitForm)}
 								tabIndex={0}
 							>
-								<UserSummary src={member.user.avatar} title={member.user.name} subtitle={memberRoleTransform(member.roles).join(', ')} />
+								<UserSummary src={member.user.picture} title={member.user.name} subtitle={memberRoleTransform(member.roles).join(', ')} />
 							</MenuItem>
 						))}
 					</MenuList>

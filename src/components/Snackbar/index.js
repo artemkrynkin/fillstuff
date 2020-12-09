@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
 
@@ -21,7 +21,7 @@ const Snackbar = props => {
 		displayed = [...displayed.filter(key => id !== key)];
 	};
 
-	React.useEffect(() => {
+	useEffect(() => {
 		snackbars.forEach(({ key, message, options = {}, dismissed = false }) => {
 			if (dismissed) {
 				// dismiss snackbar using notistack

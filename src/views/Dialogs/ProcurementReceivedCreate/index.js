@@ -11,7 +11,7 @@ import { DialogStickyFR, DialogTitle } from 'src/components/Dialog';
 
 import { procurementPositionTransform } from 'src/helpers/utils';
 
-import { getStudioStore } from 'src/actions/studio';
+import { getStudioStore } from 'src/actions/studios';
 import { getShops } from 'src/actions/shops';
 import { getPositions } from 'src/actions/positions';
 import { createProcurementReceived } from 'src/actions/procurements';
@@ -212,7 +212,7 @@ class ProcurementReceivedCreate extends Component {
 				actions.setSubmitting(false);
 
 				if (response.status === 'success') {
-					this.props.getStudioStore();
+					// this.props.getStudioStore();
 					onCloseDialog();
 				}
 
@@ -258,7 +258,7 @@ class ProcurementReceivedCreate extends Component {
 			positions: [],
 		};
 
-		if (currentStudio.settings.procurements.compensateCostDelivery) {
+		if (currentStudio?.settings?.procurements?.compensateCostDelivery) {
 			initialValues.compensateCostDelivery = currentStudio.settings.procurements.compensateCostDelivery;
 		}
 

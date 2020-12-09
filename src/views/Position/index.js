@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 
-import generateMetaInfo from 'shared/generate-meta-info';
-
 import history from 'src/helpers/history';
 
-import Head from 'src/components/head';
+import Layout from 'src/components/Layout';
 import HeaderPage from 'src/components/HeaderPage';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 
@@ -24,21 +22,10 @@ const Position = props => {
 	const [positionData, setPositionData] = useState(null);
 	const [receiptsData, setReceiptsData] = useState(null);
 
-	const metaInfo = {
+	const layoutMetaInfo = {
 		pageName: 'position',
-		pageTitle: 'Детали позиции',
+		pageTitle: positionData?.data?.name || 'Детали позиции',
 	};
-
-	if (positionData && positionData.data && positionData.data.name) {
-		metaInfo.pageTitle = positionData.data.name;
-	}
-
-	const { title, description } = generateMetaInfo({
-		type: metaInfo.pageName,
-		data: {
-			title: metaInfo.pageTitle,
-		},
-	});
 
 	const pageParams = {
 		backToPage: '/stock',
@@ -124,10 +111,8 @@ const Position = props => {
 	}, [props.match.params.positionId]);
 
 	return (
-		<div className={stylesPage.page}>
-			<Head title={title} description={description} />
-
-			<HeaderPage pageName={metaInfo.pageName} pageTitle="Склад" pageParams={pageParams} />
+		<Layout metaInfo={layoutMetaInfo}>
+			<HeaderPage pageName={layoutMetaInfo.pageName} pageTitle="Склад" pageParams={pageParams} />
 			<div className={`${stylesPage.pageContent} ${styles.container}`}>
 				<Index
 					currentStudio={currentStudio}
@@ -140,7 +125,7 @@ const Position = props => {
 					onChangeSellingPriceReceipt={onChangeSellingPriceReceipt}
 				/>
 			</div>
-		</div>
+		</Layout>
 	);
 };
 

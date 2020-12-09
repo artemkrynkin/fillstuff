@@ -14,7 +14,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { Dialog, DialogTitle } from 'src/components/Dialog';
 import NumberFormat from 'src/components/NumberFormat';
 
-import { getStudioStore } from 'src/actions/studio';
+import { getStudioStore } from 'src/actions/studios';
 import { createWriteOff } from 'src/actions/writeOffs';
 import { enqueueSnackbar } from 'src/actions/snackbars';
 
@@ -41,7 +41,7 @@ class DialogWriteOffCreate extends Component {
 			actions.setSubmitting(false);
 
 			if (response.status === 'success') {
-				this.props.getStudioStore();
+				// this.props.getStudioStore();
 				onCloseDialog();
 			}
 

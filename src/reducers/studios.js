@@ -1,28 +1,31 @@
-const studio = (
+const studios = (
 	state = {
 		isFetching: false,
 		data: null,
+		error: null,
 	},
 	action
 ) => {
 	switch (action.type) {
-		case 'REQUEST_STUDIO': {
+		case 'REQUEST_STUDIOS': {
 			return {
 				...state,
 				isFetching: true,
 			};
 		}
-		case 'RECEIVE_STUDIO': {
+		case 'RECEIVE_STUDIOS': {
 			return {
 				...state,
 				isFetching: false,
 				data: action.payload,
 			};
 		}
-		case 'GET_STUDIO_STORE': {
+		case 'CREATE_STUDIO': {
 			let stateData = { ...state }.data;
 
-			stateData.store = action.payload;
+			stateData.data.push(action.payload.studio);
+
+			stateData.paging.total += 1;
 
 			return {
 				...state,
@@ -31,12 +34,14 @@ const studio = (
 			};
 		}
 		case 'EDIT_STUDIO': {
-			let stateData = { ...state }.data;
+			let stateData;
 
-			stateData = {
-				...stateData,
-				...action.payload,
-			};
+			if (state.data) {
+				stateData = { ...state }.data;
+				const studioIndex = stateData.data.findIndex(studio => studio._id === action.payload.studioId);
+
+				stateData.data[studioIndex] = action.payload.studio;
+			}
 
 			return {
 				...state,
@@ -44,12 +49,11 @@ const studio = (
 				data: stateData,
 			};
 		}
-		case 'UNAUTHORIZED_USER': {
+		case 'ERROR_STUDIOS': {
 			return {
 				...state,
 				isFetching: false,
-				error: 'unauthorized',
-				data: action.payload,
+				error: action.payload,
 			};
 		}
 		default:
@@ -57,4 +61,4 @@ const studio = (
 	}
 };
 
-export default studio;
+export default studios;

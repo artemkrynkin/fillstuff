@@ -4,9 +4,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import moment from 'moment';
 
-import generateMetaInfo from 'shared/generate-meta-info';
-
-import Head from 'src/components/head';
+import Layout from 'src/components/Layout';
 import HeaderPage from 'src/components/HeaderPage';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 import { checkQueryInFilter, deleteParamsCoincidence } from 'src/components/Pagination/utils';
@@ -22,16 +20,10 @@ const Procurements = props => {
 	const { currentStudio, procurementsExpected, procurementsReceived } = props;
 	const [page, setPage] = useState(1);
 
-	const metaInfo = {
+	const layoutMetaInfo = {
 		pageName: 'procurements',
 		pageTitle: 'Закупки',
 	};
-	const { title, description } = generateMetaInfo({
-		type: metaInfo.pageName,
-		data: {
-			title: metaInfo.pageTitle,
-		},
-	});
 
 	const filterOptions = {
 		params: checkQueryInFilter({
@@ -61,10 +53,8 @@ const Procurements = props => {
 	}, []);
 
 	return (
-		<div className={stylesPage.page}>
-			<Head title={title} description={description} />
-
-			<HeaderPage pageName={metaInfo.pageName} pageTitle={metaInfo.pageTitle} />
+		<Layout metaInfo={layoutMetaInfo}>
+			<HeaderPage pageName={layoutMetaInfo.pageName} pageTitle={layoutMetaInfo.pageTitle} />
 			<div className={`${stylesPage.pageContent} ${styles.container}`}>
 				<Index
 					currentStudio={currentStudio}
@@ -77,7 +67,7 @@ const Procurements = props => {
 					}}
 				/>
 			</div>
-		</div>
+		</Layout>
 	);
 };
 

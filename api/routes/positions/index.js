@@ -2,7 +2,7 @@ import { Router } from 'express';
 import mongoose from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 
-import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
+import { isAuthed, hasPermissions } from 'api/utils/permissions';
 
 import Emitter from 'api/utils/emitter';
 
@@ -21,7 +21,7 @@ const existIsNotSame = (propName, originalData, editedData) =>
 
 positionsRouter.post(
 	'/getPositions',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const { studioId } = req.body;
@@ -50,7 +50,7 @@ positionsRouter.post(
 
 positionsRouter.post(
 	'/getPosition',
-	// isAuthedResolver,
+	// isAuthed,
 	// (req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	(req, res, next) => {
 		const {
@@ -87,7 +87,7 @@ positionsRouter.post(
 
 positionsRouter.post(
 	'/createPosition',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
@@ -153,7 +153,7 @@ positionsRouter.post(
 
 positionsRouter.post(
 	'/editPosition',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
@@ -240,7 +240,7 @@ positionsRouter.post(
 
 positionsRouter.post(
 	'/detachPositions',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
@@ -300,7 +300,7 @@ positionsRouter.post(
 
 positionsRouter.post(
 	'/archivePosition',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
@@ -395,7 +395,7 @@ positionsRouter.post(
 
 positionsRouter.post(
 	'/archivePositionAfterEnded',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {

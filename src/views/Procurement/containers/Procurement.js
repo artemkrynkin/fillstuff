@@ -34,7 +34,7 @@ const Procurement = props => {
 								'Чек/накладная отсутствует'
 							)}
 						</div>
-						<UserSummary src={procurement.receivedByMember.user.avatar} title={procurement.receivedByMember.user.name} />
+						<UserSummary src={procurement.receivedByMember.user.picture} title={procurement.receivedByMember.user.name} />
 					</Grid>
 					<Grid xs={6} item>
 						<div className={styles.indicatorsTitle}>

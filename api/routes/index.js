@@ -1,8 +1,3 @@
-import authRoutes from './auth';
-import signup from './signup';
-import account from './account';
-import studio from './studio';
-import members from './members';
 import characteristics from './characteristics';
 import shops from './shops';
 import positions from './positions';
@@ -14,11 +9,6 @@ import invoices from './invoices';
 import storeNotifications from './storeNotifications';
 
 const router = app => {
-	app.use('/', authRoutes);
-	app.use('/api', signup);
-	app.use('/api', account);
-	app.use('/api', studio);
-	app.use('/api', members);
 	app.use('/api', characteristics);
 	app.use('/api', shops);
 	app.use('/api', positions);

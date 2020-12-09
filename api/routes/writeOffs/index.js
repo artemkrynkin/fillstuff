@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
 import mongoose from 'mongoose';
 
-import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
+import { isAuthed, hasPermissions } from 'api/utils/permissions';
 
 import Emitter from 'api/utils/emitter';
 
@@ -21,7 +21,7 @@ const writeOffsRouter = Router();
 
 writeOffsRouter.post(
 	'/getWriteOffs',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
@@ -101,7 +101,7 @@ writeOffsRouter.post(
 
 writeOffsRouter.post(
 	'/createWriteOff',
-	// isAuthedResolver,
+	// isAuthed,
 	// (req, res, next) => hasPermissions(req, res, next, ['products.scanning']),
 	async (req, res, next) => {
 		const {
@@ -343,7 +343,7 @@ writeOffsRouter.post(
 
 writeOffsRouter.post(
 	'/cancelWriteOff',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {

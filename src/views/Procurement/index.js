@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 
-import generateMetaInfo from 'shared/generate-meta-info';
-
 import history from 'src/helpers/history';
 
-import Head from 'src/components/head';
+import Layout from 'src/components/Layout';
 import HeaderPage from 'src/components/HeaderPage';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 
@@ -20,16 +18,10 @@ import Index from './containers/index';
 const Procurement = props => {
 	const [procurementData, setProcurementData] = useState(null);
 
-	const metaInfo = {
+	const layoutMetaInfo = {
 		pageName: 'procurement',
 		pageTitle: 'Детали закупки',
 	};
-	const { title, description } = generateMetaInfo({
-		type: metaInfo.pageName,
-		data: {
-			title: metaInfo.pageTitle,
-		},
-	});
 
 	const pageParams = {
 		backToPage: '/procurements',
@@ -49,14 +41,12 @@ const Procurement = props => {
 	}, []);
 
 	return (
-		<div className={stylesPage.page}>
-			<Head title={title} description={description} />
-
-			<HeaderPage pageName={metaInfo.pageName} pageTitle="Закупки" pageParams={pageParams} />
+		<Layout metaInfo={layoutMetaInfo}>
+			<HeaderPage pageName={layoutMetaInfo.pageName} pageTitle="Закупки" pageParams={pageParams} />
 			<div className={`${stylesPage.pageContent} ${styles.container}`}>
 				<Index procurementData={procurementData} />
 			</div>
-		</div>
+		</Layout>
 	);
 };
 

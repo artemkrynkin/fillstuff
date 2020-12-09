@@ -1,25 +1,26 @@
 import cookie from 'cookie';
 import cookieParser from 'cookie-parser';
 import jwt from 'express-jwt';
-// import jwtAuthz from 'express-jwt-authz';
 import jwksRsa from 'jwks-rsa';
-
-import { checkPermissions } from 'shared/roles-access-rights';
+import axios from 'axios';
 
 import { sessionStore } from 'shared/middlewares/session';
+import { config } from 'shared/auth0/api';
 
 import User from 'api/models/user';
-import Member from 'api/models/member';
+
+const IS_PROD = process.env.NODE_ENV === 'production';
+const ACCOUNT_SERVER_URL = IS_PROD ? 'https://account.keeberink.com' : 'http://localhost:3003';
 
 export const isAuthed = jwt({
 	secret: jwksRsa.expressJwtSecret({
 		cache: true,
 		rateLimit: true,
 		jwksRequestsPerMinute: 10,
-		jwksUri: `https://keeberinkdev.eu.auth0.com/.well-known/jwks.json`,
+		jwksUri: `${config.issuer}.well-known/jwks.json`,
 	}),
-	audience: 'https://blikside.com/api',
-	issuer: `https://keeberinkdev.eu.auth0.com/`,
+	audience: 'https://keeberink-api',
+	issuer: config.issuer,
 	algorithms: ['RS256'],
 	getToken: req => {
 		if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
@@ -31,12 +32,6 @@ export const isAuthed = jwt({
 		return null;
 	},
 });
-
-export const isAuthedResolver = (req, res, next) => {
-	if (!req.isAuthenticated()) return next({ code: 3 });
-
-	next();
-};
 
 export const isAuthedResolverSocket = async (socket, next) => {
 	socket.handshake.cookies = cookie.parse(socket.request.headers.cookie || '');
@@ -66,23 +61,23 @@ export const isAuthedResolverSocket = async (socket, next) => {
 	next();
 };
 
-export const hasPermissions = async (req, res, next, accessRightList, skipCheck = false) => {
-	if (!skipCheck) {
+export const hasPermissions = async (req, res, next, accessRightList) => {
+	try {
 		const memberId = req.body.memberId || req.query.memberId;
 
-		if (!memberId) {
-			return next({
-				code: 6,
-				message: 'missing "memberId" parameter',
-			});
-		}
+		await axios.post(
+			`${ACCOUNT_SERVER_URL}/api/hasPermissions`,
+			{
+				memberId,
+				accessRightList,
+			},
+			{
+				headers: req.headers,
+			}
+		);
 
-		await Member.findById(memberId)
-			.then(member => {
-				if (!checkPermissions(member.roles, accessRightList)) return next({ code: 4 });
-			})
-			.catch(err => next({ code: 2, err }));
+		next();
+	} catch (err) {
+		next(err.response.data);
 	}
-
-	next();
 };

@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+import { ACCOUNT_SERVER_URL } from 'src/api/constants';
+
 export const getMembers = (
 	{ query = {}, showRequest = true, emptyData = false } = {
 		query: {},
@@ -8,14 +10,17 @@ export const getMembers = (
 	}
 ) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		if (showRequest) dispatch({ type: 'REQUEST_MEMBERS' });
 		if (emptyData) dispatch({ type: 'EMPTY_MEMBERS' });
 
 		return await axios
-			.post('/api/getMembers', {
+			.post(`${ACCOUNT_SERVER_URL}/api/getMembers`, {
 				studioId,
 				memberId,
 				query,
@@ -36,11 +41,14 @@ export const getMembers = (
 
 export const getMember = ({ params }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		return await axios
-			.post('/api/getMember', {
+			.post(`${ACCOUNT_SERVER_URL}/api/getMember`, {
 				studioId,
 				memberId,
 				params,
@@ -60,11 +68,14 @@ export const getMember = ({ params }) => {
 
 export const invitationMember = () => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		return await axios
-			.post('/api/invitationMember', {
+			.post(`${ACCOUNT_SERVER_URL}/api/invitationMember`, {
 				studioId,
 				memberId,
 			})
@@ -83,11 +94,14 @@ export const invitationMember = () => {
 
 export const editMember = ({ params, data }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		return await axios
-			.post('/api/editMember', {
+			.post(`${ACCOUNT_SERVER_URL}/api/editMember`, {
 				studioId,
 				memberId,
 				params,
@@ -112,11 +126,14 @@ export const editMember = ({ params, data }) => {
 
 export const deactivatedMember = ({ params }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		return await axios
-			.post('/api/deactivatedMember', {
+			.post(`${ACCOUNT_SERVER_URL}/api/deactivatedMember`, {
 				studioId,
 				memberId,
 				params,

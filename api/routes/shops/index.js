@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
+import { isAuthed, hasPermissions } from 'api/utils/permissions';
 
 import Shop from 'api/models/shop';
 
@@ -10,7 +10,7 @@ const shopsRouter = Router();
 
 shopsRouter.post(
 	'/getShops',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	(req, res, next) => {
 		const { studioId } = req.body;
@@ -24,7 +24,7 @@ shopsRouter.post(
 
 shopsRouter.post(
 	'/createShop',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	(req, res, next) => {
 		const {

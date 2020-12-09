@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import { receiptCalc } from 'shared/checkPositionAndReceipt';
 
 import Emitter from 'api/utils/emitter';
-import { isAuthedResolver, hasPermissions } from 'api/utils/permissions';
+import { isAuthed, hasPermissions } from 'api/utils/permissions';
 
 import Studio from 'api/models/studio';
 import Position from 'api/models/position';
@@ -17,7 +17,7 @@ const procurementsRouter = Router();
 
 procurementsRouter.post(
 	'/getProcurementsReceived',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
@@ -103,7 +103,7 @@ procurementsRouter.post(
 
 procurementsRouter.post(
 	'/getProcurementReceived',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {
@@ -144,7 +144,7 @@ procurementsRouter.post(
 
 procurementsRouter.post(
 	'/createProcurementReceived',
-	isAuthedResolver,
+	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	async (req, res, next) => {
 		const {

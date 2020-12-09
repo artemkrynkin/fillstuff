@@ -1,8 +1,7 @@
 import { combineReducers } from 'redux';
 
 import user from './user';
-import studio from './studio';
-import member from './member';
+import studios from './studios';
 import members from './members';
 import positionGroups from './positionGroups';
 import positions from './positions';
@@ -19,8 +18,7 @@ import snackbars from './snackbars';
 const getReducers = () => {
 	return combineReducers({
 		user,
-		studio,
-		member,
+		studios,
 		members,
 		positionGroups,
 		positions,

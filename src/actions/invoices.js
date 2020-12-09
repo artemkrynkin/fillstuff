@@ -8,8 +8,11 @@ export const getInvoices = (
 	}
 ) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		if (showRequest) dispatch({ type: 'REQUEST_INVOICES' });
 		if (emptyData) dispatch({ type: 'EMPTY_INVOICES' });
@@ -45,8 +48,11 @@ export const getInvoices = (
 
 export const getInvoice = ({ params }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		return await axios
 			.post('/api/getInvoice', {
@@ -69,8 +75,11 @@ export const getInvoice = ({ params }) => {
 
 export const getMemberInvoices = ({ params }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		return await axios
 			.post('/api/getMemberInvoices', {
@@ -93,8 +102,11 @@ export const getMemberInvoices = ({ params }) => {
 
 export const createInvoice = ({ params }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 
 		return await axios
 			.post('/api/createInvoice', {
@@ -119,8 +131,11 @@ export const createInvoice = ({ params }) => {
 
 export const createInvoicePayment = ({ params, data }) => {
 	return async (dispatch, getState) => {
-		const studioId = getState().studio.data._id;
-		const memberId = getState().member.data._id;
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
 		const { invoiceId } = params;
 
 		return await axios

@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 
-import generateMetaInfo from 'shared/generate-meta-info';
-
 import history from 'src/helpers/history';
 
-import Head from 'src/components/head';
+import Layout from 'src/components/Layout';
 import HeaderPage from 'src/components/HeaderPage';
 import { withCurrentUser } from 'src/components/withCurrentUser';
 
@@ -23,21 +21,10 @@ const Members = props => {
 	const [memberData, setMemberData] = useState(null);
 	const [invoicesData, setInvoicesData] = useState(null);
 
-	const metaInfo = {
+	const layoutMetaInfo = {
 		pageName: 'member',
-		pageTitle: 'Данные пользователя',
+		pageTitle: memberData?.data?.user?.name || 'Данные пользователя',
 	};
-
-	if (memberData && memberData.data && memberData.data.user.name) {
-		metaInfo.pageTitle = memberData.data.user.name;
-	}
-
-	const { title, description } = generateMetaInfo({
-		type: metaInfo.pageName,
-		data: {
-			title: metaInfo.pageTitle,
-		},
-	});
 
 	const pageParams = {
 		backToPage: memberData && memberData.data && memberData.data.guest ? '/members/guests' : '/members',
@@ -72,10 +59,8 @@ const Members = props => {
 	}, []);
 
 	return (
-		<div className={stylesPage.page}>
-			<Head title={title} description={description} />
-
-			<HeaderPage pageName={metaInfo.pageName} pageTitle="Команда" pageParams={pageParams} />
+		<Layout metaInfo={layoutMetaInfo}>
+			<HeaderPage pageName={layoutMetaInfo.pageName} pageTitle="Команда" pageParams={pageParams} />
 			<div className={`${stylesPage.pageContent} ${styles.container}`}>
 				<Index
 					currentStudio={currentStudio}
@@ -86,7 +71,7 @@ const Members = props => {
 					getInvoices={getInvoices}
 				/>
 			</div>
-		</div>
+		</Layout>
 	);
 };
 

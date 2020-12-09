@@ -5,11 +5,10 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 
 // import { findMemberInStock } from 'shared/roles-access-rights';
-import { sleep } from 'shared/utils';
 
 import CardPaper from 'src/components/CardPaper';
 
-import { editStudio } from 'src/actions/studio';
+import { editStudio } from 'src/actions/studios';
 import { enqueueSnackbar } from 'src/actions/snackbars';
 
 import FormGeneralSettings from './FormGeneralSettings';
@@ -35,20 +34,18 @@ const GeneralSettings = props => {
 	};
 
 	const onSubmit = async (values, actions) => {
-		await sleep(500);
-
-		props.editStudio(values).then(response => {
-			actions.setSubmitting(false);
-
-			if (response.status === 'error') {
-				if (response.data.formErrors) {
-					response.data.formErrors.forEach(error => {
+		try {
+			await props.editStudio(values);
+		} catch (error) {
+			if (error.status === 'error') {
+				if (error.data.formErrors) {
+					error.data.formErrors.forEach(error => {
 						actions.setFieldError(error.field, error.message);
 					});
 				} else {
-					if (response.status === 'error') {
+					if (error.status === 'error') {
 						props.enqueueSnackbar({
-							message: response.message || 'Неизвестная ошибка.',
+							message: error.message || 'Неизвестная ошибка.',
 							options: {
 								variant: 'error',
 							},
@@ -56,7 +53,7 @@ const GeneralSettings = props => {
 					}
 				}
 			}
-		});
+		}
 	};
 
 	return (
@@ -67,7 +64,7 @@ const GeneralSettings = props => {
 				validateOnChange={false}
 				validateOnBlur={false}
 				enableReinitialize
-				onSubmit={(values, actions) => onSubmit(values, actions)}
+				onSubmit={onSubmit}
 			>
 				{props => (
 					<FormGeneralSettings
@@ -83,7 +80,7 @@ const GeneralSettings = props => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		editStudio: data => dispatch(editStudio({ data })),
+		editStudio: data => dispatch(editStudio({ data: { studio: data } })),
 		enqueueSnackbar: (...args) => dispatch(enqueueSnackbar(...args)),
 	};
 };

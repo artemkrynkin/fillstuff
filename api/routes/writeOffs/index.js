@@ -7,6 +7,7 @@ import { isAuthed, hasPermissions } from 'api/utils/permissions';
 
 import Emitter from 'api/utils/emitter';
 
+import User from 'api/models/user';
 import Member from 'api/models/member';
 import Studio from 'api/models/studio';
 import PositionGroup from 'api/models/positionGroup';
@@ -15,11 +16,11 @@ import WriteOff from 'api/models/writeOff';
 import Receipt from 'api/models/receipt';
 import StoreNotification from 'api/models/storeNotification';
 
-const writeOffsRouter = Router();
+const router = Router();
 
 // const debug = require('debug')('api:writeOffs');
 
-writeOffsRouter.post(
+router.post(
 	'/getWriteOffs',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -56,8 +57,10 @@ writeOffsRouter.post(
 				{
 					path: 'member',
 					select: 'roles user',
+					model: Member,
 					populate: {
 						path: 'user',
+						model: User,
 						select: 'avatar name email',
 					},
 				},
@@ -99,7 +102,7 @@ writeOffsRouter.post(
 	}
 );
 
-writeOffsRouter.post(
+router.post(
 	'/createWriteOff',
 	// isAuthed,
 	// (req, res, next) => hasPermissions(req, res, next, ['products.scanning']),
@@ -117,7 +120,8 @@ writeOffsRouter.post(
 			.populate([
 				{
 					path: 'studio',
-					select: 'store',
+					select: 'stock',
+					model: Studio,
 				},
 				{
 					path: 'activeReceipt',
@@ -142,7 +146,7 @@ writeOffsRouter.post(
 
 		const {
 			studio: {
-				store: { numberPositions: numberPositionsOld, storePrice: storePriceOld },
+				stock: { numberPositions: numberPositionsOld, stockPrice: stockPriceOld },
 			},
 			receipts = position.receipts.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)),
 		} = position;
@@ -316,8 +320,8 @@ writeOffsRouter.post(
 			studioId,
 			{
 				$set: {
-					'store.numberPositions': numberPositionsOld - numberArchivedPosition,
-					'store.storePrice': storePriceOld - totalPurchasePrice,
+					'stock.numberPositions': numberPositionsOld - numberArchivedPosition,
+					'stock.stockPrice': stockPriceOld - totalPurchasePrice,
 				},
 			},
 			{ runValidators: true }
@@ -341,7 +345,7 @@ writeOffsRouter.post(
 	}
 );
 
-writeOffsRouter.post(
+router.post(
 	'/cancelWriteOff',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -357,7 +361,8 @@ writeOffsRouter.post(
 			.populate([
 				{
 					path: 'studio',
-					select: 'store',
+					select: 'stock',
+					model: Studio,
 				},
 				{
 					path: 'position receipt',
@@ -394,7 +399,7 @@ writeOffsRouter.post(
 
 		const {
 			studio: {
-				store: { storePrice: storePriceOld },
+				stock: { stockPrice: stockPriceOld },
 			},
 			receipt,
 		} = writeOff;
@@ -468,7 +473,7 @@ writeOffsRouter.post(
 			writeOff.studio._id,
 			{
 				$set: {
-					'store.storePrice': storePriceOld + writeOff.purchasePrice,
+					'stock.stockPrice': stockPriceOld + writeOff.purchasePrice,
 				},
 			},
 			{ runValidators: true }
@@ -478,8 +483,10 @@ writeOffsRouter.post(
 			.populate([
 				{
 					path: 'member',
+					model: Member,
 					populate: {
 						path: 'user',
+						model: User,
 						select: 'avatar name email',
 					},
 				},
@@ -501,4 +508,4 @@ writeOffsRouter.post(
 	}
 );
 
-export default writeOffsRouter;
+export default router;

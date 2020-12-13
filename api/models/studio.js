@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import i18n from 'i18n';
 import momentTz from 'moment-timezone';
 
+import { dbAccount } from 'shared/db';
 import { formatNumber } from 'shared/utils';
 
 const Schema = mongoose.Schema;
@@ -34,11 +35,9 @@ const Studio = new Schema({
 			},
 		},
 	},
-	// TODO: заменить параметр на stock
-	store: {
-		// TODO: заменить параметр на store
+	stock: {
 		// если есть платные позиции, то true, иначе false
-		shop: {
+		store: {
 			type: Boolean,
 			default: false,
 		},
@@ -47,8 +46,7 @@ const Studio = new Schema({
 			set: value => formatNumber(value, { fractionDigits: 0 }),
 			default: 0,
 		},
-		// TODO: заменить параметр на stockPrice
-		storePrice: {
+		stockPrice: {
 			type: Number,
 			set: value => formatNumber(value),
 			default: 0,
@@ -78,4 +76,4 @@ const Studio = new Schema({
 	},
 });
 
-export default mongoose.model('Studio', Studio);
+export default dbAccount.model('Studio', Studio);

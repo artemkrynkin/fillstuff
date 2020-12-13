@@ -1,5 +1,6 @@
 .container {
   background-color: var(--c-hex-slateGrey-4);
+  flex: 0 0 auto;
   width: 240px;
 }
 

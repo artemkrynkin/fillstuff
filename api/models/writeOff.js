@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import i18n from 'i18n';
 
+import { dbFillstuff } from 'shared/db';
+
 import { formatNumber } from 'shared/utils';
 
 const Schema = mongoose.Schema;
@@ -101,4 +103,4 @@ const WriteOff = new Schema({
 
 WriteOff.plugin(mongoosePaginate);
 
-export default mongoose.model('WriteOff', WriteOff);
+export default dbFillstuff.model('WriteOff', WriteOff);

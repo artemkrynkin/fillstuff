@@ -9,6 +9,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import TextField from '@material-ui/core/TextField';
 
+import history from 'src/helpers/history';
+
 import { createStudio } from 'src/actions/studios';
 import { enqueueSnackbar } from 'src/actions/snackbars';
 
@@ -23,11 +25,13 @@ function StudioForm(props) {
 		name: '',
 	};
 
-	const onSubmit = async (values, actions) => {
+	const onSubmit = async values => {
 		try {
 			await props.createStudio(values);
 
 			onCloseDialog();
+
+			history.push('/');
 		} catch (error) {
 			props.enqueueSnackbar({
 				message: error.message || 'Неизвестная ошибка.',

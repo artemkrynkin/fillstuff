@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import i18n from 'i18n';
 
+import { dbFillstuff } from 'shared/db';
+
 import { characteristicsTypes } from 'shared/checkPositionAndReceipt';
 
 const Schema = mongoose.Schema;
@@ -28,4 +30,4 @@ const Characteristic = new Schema({
 	},
 });
 
-export default mongoose.model('Characteristic', Characteristic);
+export default dbFillstuff.model('Characteristic', Characteristic);

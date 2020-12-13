@@ -6,16 +6,18 @@ import { receiptCalc } from 'shared/checkPositionAndReceipt';
 import Emitter from 'api/utils/emitter';
 import { isAuthed, hasPermissions } from 'api/utils/permissions';
 
+import User from 'api/models/user';
+import Member from 'api/models/member';
 import Studio from 'api/models/studio';
 import Position from 'api/models/position';
 import Receipt from 'api/models/receipt';
 import Procurement from 'api/models/procurement';
 
-const procurementsRouter = Router();
+const router = Router();
 
 // const debug = require('debug')('api:products');
 
-procurementsRouter.post(
+router.post(
 	'/getProcurementsReceived',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -51,16 +53,20 @@ procurementsRouter.post(
 				{
 					path: 'orderedByMember',
 					select: 'user',
+					model: Member,
 					populate: {
 						path: 'user',
+						model: User,
 						select: 'avatar name email',
 					},
 				},
 				{
 					path: 'receivedByMember',
 					select: 'user',
+					model: Member,
 					populate: {
 						path: 'user',
+						model: User,
 						select: 'avatar name email',
 					},
 				},
@@ -101,7 +107,7 @@ procurementsRouter.post(
 	}
 );
 
-procurementsRouter.post(
+router.post(
 	'/getProcurementReceived',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -114,15 +120,19 @@ procurementsRouter.post(
 			.populate([
 				{
 					path: 'orderedByMember',
+					model: Member,
 					populate: {
 						path: 'user',
+						model: User,
 						select: 'avatar name email',
 					},
 				},
 				{
 					path: 'receivedByMember',
+					model: Member,
 					populate: {
 						path: 'user',
+						model: User,
 						select: 'avatar name email',
 					},
 				},
@@ -142,7 +152,7 @@ procurementsRouter.post(
 	}
 );
 
-procurementsRouter.post(
+router.post(
 	'/createProcurementReceived',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -297,15 +307,19 @@ procurementsRouter.post(
 			.populate([
 				{
 					path: 'orderedByMember',
+					model: Member,
 					populate: {
 						path: 'user',
+						model: User,
 						select: 'avatar name email',
 					},
 				},
 				{
 					path: 'receivedByMember',
+					model: Member,
 					populate: {
 						path: 'user',
+						model: User,
 						select: 'avatar name email',
 					},
 				},
@@ -328,7 +342,7 @@ procurementsRouter.post(
 
 		const studio = await Studio.findById(studioId).catch(err => next({ code: 2, err }));
 
-		studio.store.storePrice += purchasePriceReceipts;
+		studio.stock.stockPrice += purchasePriceReceipts;
 
 		const studioErr = studio.validateSync();
 
@@ -340,4 +354,4 @@ procurementsRouter.post(
 	}
 );
 
-export default procurementsRouter;
+export default router;

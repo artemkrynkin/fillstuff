@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 import i18n from 'i18n';
 import { v4 as uuidv4 } from 'uuid';
 
+import { dbFillstuff } from 'shared/db';
+
 const Schema = mongoose.Schema;
 
 const PositionGroup = new Schema({
@@ -39,4 +41,4 @@ const PositionGroup = new Schema({
 	},
 });
 
-export default mongoose.model('PositionGroup', PositionGroup);
+export default dbFillstuff.model('PositionGroup', PositionGroup);

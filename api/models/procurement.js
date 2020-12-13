@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import i18n from 'i18n';
 
+import { dbFillstuff } from 'shared/db';
+
 import { formatNumber, timesInterval15Minutes } from 'shared/utils';
 
 const Schema = mongoose.Schema;
@@ -161,4 +163,4 @@ const Procurement = new Schema({
 
 Procurement.plugin(mongoosePaginate);
 
-export default mongoose.model('Procurement', Procurement);
+export default dbFillstuff.model('Procurement', Procurement);

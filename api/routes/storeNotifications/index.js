@@ -2,13 +2,15 @@ import { Router } from 'express';
 
 import { isAuthed, hasPermissions } from 'api/utils/permissions';
 
+import User from 'api/models/user';
+import Member from 'api/models/member';
 import StoreNotification from 'api/models/storeNotification';
 
-const storeNotificationsRouter = Router();
+const router = Router();
 
 // const debug = require('debug')('api:studio');
 
-storeNotificationsRouter.post(
+router.post(
 	'/getStoreNotifications',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -45,8 +47,10 @@ storeNotificationsRouter.post(
 						{
 							path: 'orderedByMember',
 							select: 'user',
+							model: Member,
 							populate: {
 								path: 'user',
+								model: User,
 								select: 'avatar name email',
 							},
 						},
@@ -82,8 +86,10 @@ storeNotificationsRouter.post(
 					populate: [
 						{
 							path: 'member',
+							model: Member,
 							populate: {
 								path: 'user',
+								model: User,
 								select: 'avatar name email',
 							},
 						},
@@ -98,7 +104,7 @@ storeNotificationsRouter.post(
 	}
 );
 
-storeNotificationsRouter.post(
+router.post(
 	'/getStoreNotification',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -132,8 +138,10 @@ storeNotificationsRouter.post(
 						{
 							path: 'orderedByMember',
 							select: 'user',
+							model: Member,
 							populate: {
 								path: 'user',
+								model: User,
 								select: 'avatar name email',
 							},
 						},
@@ -169,8 +177,10 @@ storeNotificationsRouter.post(
 					populate: [
 						{
 							path: 'member',
+							model: Member,
 							populate: {
 								path: 'user',
+								model: User,
 								select: 'avatar name email',
 							},
 						},
@@ -203,4 +213,4 @@ storeNotificationsRouter.post(
 	}
 );
 
-export default storeNotificationsRouter;
+export default router;

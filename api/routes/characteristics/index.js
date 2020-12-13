@@ -4,11 +4,11 @@ import { isAuthed, hasPermissions } from 'api/utils/permissions';
 
 import Characteristic from 'api/models/characteristic';
 
-const characteristicsRouter = Router();
+const router = Router();
 
 // const debug = require('debug')('api:studio');
 
-characteristicsRouter.post(
+router.post(
 	'/getCharacteristics',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -28,7 +28,7 @@ characteristicsRouter.post(
 	}
 );
 
-characteristicsRouter.post(
+router.post(
 	'/createCharacteristic',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -50,4 +50,4 @@ characteristicsRouter.post(
 	}
 );
 
-export default characteristicsRouter;
+export default router;

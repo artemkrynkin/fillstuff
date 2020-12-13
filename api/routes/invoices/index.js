@@ -6,14 +6,15 @@ import { isAuthed, hasPermissions } from 'api/utils/permissions';
 
 import Emitter from 'api/utils/emitter';
 
+import User from 'api/models/user';
 import Member from 'api/models/member';
 import Invoice from 'api/models/Invoice';
 
-const invoicesRouter = Router();
+const router = Router();
 
 // const debug = require('debug')('api:products');
 
-invoicesRouter.post(
+router.post(
 	'/getInvoices',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -46,8 +47,10 @@ invoicesRouter.post(
 				{
 					path: 'member',
 					select: 'user',
+					model: Member,
 					populate: {
 						path: 'user',
+						model: User,
 						select: 'avatar name email',
 					},
 				},
@@ -62,6 +65,7 @@ invoicesRouter.post(
 					select: 'user',
 					populate: {
 						path: 'user',
+						model: User,
 						select: 'avatar name email',
 					},
 				},
@@ -90,7 +94,7 @@ invoicesRouter.post(
 	}
 );
 
-invoicesRouter.post(
+router.post(
 	'/getMemberInvoices',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -107,7 +111,7 @@ invoicesRouter.post(
 	}
 );
 
-invoicesRouter.post(
+router.post(
 	'/getInvoice',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -121,8 +125,10 @@ invoicesRouter.post(
 			.populate([
 				{
 					path: 'member',
+					model: Member,
 					populate: {
 						path: 'user',
+						model: User,
 						select: 'avatar name email',
 					},
 				},
@@ -137,6 +143,7 @@ invoicesRouter.post(
 					select: 'user',
 					populate: {
 						path: 'user',
+						model: User,
 						select: 'avatar name email',
 					},
 				},
@@ -147,7 +154,7 @@ invoicesRouter.post(
 	}
 );
 
-invoicesRouter.post(
+router.post(
 	'/createInvoice',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -229,7 +236,7 @@ invoicesRouter.post(
 		).catch(err => next({ code: 2, err }));
 
 		const memberEditedPromise = Member.findById(member._id)
-			.populate('user', 'avatar name email')
+			.populate('user', 'avatar name email', User)
 			.catch(err => next({ code: 2, err }));
 
 		const invoicePromise = Invoice.findById(newInvoice._id).catch(err => next({ code: 2, err }));
@@ -241,7 +248,7 @@ invoicesRouter.post(
 	}
 );
 
-invoicesRouter.post(
+router.post(
 	'/createInvoicePayment',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -303,8 +310,10 @@ invoicesRouter.post(
 			.populate([
 				{
 					path: 'member',
+					model: Member,
 					populate: {
 						path: 'user',
+						model: User,
 						select: 'avatar name email',
 					},
 				},
@@ -319,6 +328,7 @@ invoicesRouter.post(
 					select: 'user',
 					populate: {
 						path: 'user',
+						model: User,
 						select: 'avatar name email',
 					},
 				},
@@ -338,4 +348,4 @@ invoicesRouter.post(
 	}
 );
 
-export default invoicesRouter;
+export default router;

@@ -1,10 +1,9 @@
 const debug = require('debug')('sockets');
-import { sessionReload } from './auth';
+
 import { joinStudio } from './studio';
 import { newStoreNotification, editStoreNotification, deleteStoreNotification } from './storeNotifications';
 
 const socket = io => {
-	sessionReload(io);
 	newStoreNotification(io);
 	editStoreNotification(io);
 	deleteStoreNotification(io);

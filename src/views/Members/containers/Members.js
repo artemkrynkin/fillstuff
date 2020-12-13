@@ -53,7 +53,7 @@ const Members = props => {
 						}
 						actions={
 							<Button variant="contained" color="primary">
-								Добавить мастера
+								Пригласить мастера
 							</Button>
 						}
 					/>

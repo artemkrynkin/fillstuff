@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import i18n from 'i18n';
 
+import { dbAccount } from 'shared/db';
 import { formatNumber } from 'shared/utils';
 
 const Schema = mongoose.Schema;
@@ -86,4 +87,4 @@ const Member = new Schema({
 	},
 });
 
-export default mongoose.model('Member', Member);
+export default dbAccount.model('Member', Member);

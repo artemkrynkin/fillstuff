@@ -33,7 +33,7 @@ class DialogReceiptCreate extends Component {
 	onSubmit = async (values, actions) => {
 		const { onCloseDialog, onCallback } = this.props;
 		const { checkSellingPrice } = this.state;
-		const receipt = receiptSchema(false).cast(values);
+		const receipt = receiptSchema.cast(values);
 
 		receiptCalc.unitPurchasePrice(receipt, {
 			unitReceipt: receipt.position.unitReceipt,
@@ -53,7 +53,7 @@ class DialogReceiptCreate extends Component {
 
 			actions.setSubmitting(false);
 		} else {
-			const { position, quantity, quantityPackages, ...remainingValues } = receiptSchema(true).cast(values);
+			const { position, quantity, quantityPackages, ...remainingValues } = receiptSchema.cast(receipt);
 
 			const newReceipt = {
 				position: position._id,
@@ -131,7 +131,7 @@ class DialogReceiptCreate extends Component {
 				</DialogTitle>
 				<Formik
 					initialValues={initialValues}
-					validationSchema={receiptSchema(false)}
+					validationSchema={receiptSchema}
 					validateOnBlur={false}
 					validateOnChange={false}
 					onSubmit={(values, actions) => this.onSubmit(values, actions)}

@@ -17,14 +17,14 @@ const Indicators = props => {
 				<Grid item xs={6}>
 					<Grid alignItems="flex-end" justify="flex-start" container>
 						<div className={styles.title}>Количество позиций:</div>
-						<div className={styles.content}>{currentStudio.store.numberPositions}</div>
+						<div className={styles.content}>{currentStudio.stock.numberPositions}</div>
 					</Grid>
 				</Grid>
 				<Grid item xs={6}>
 					<Grid alignItems="flex-end" justify="flex-end" container>
 						<div className={styles.title}>Стоимость склада:</div>
 						<div className={styles.content}>
-							<Money value={currentStudio.store.storePrice} />
+							<Money value={currentStudio.stock.stockPrice} />
 						</div>
 					</Grid>
 				</Grid>

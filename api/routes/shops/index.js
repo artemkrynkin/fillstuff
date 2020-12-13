@@ -4,11 +4,11 @@ import { isAuthed, hasPermissions } from 'api/utils/permissions';
 
 import Shop from 'api/models/shop';
 
-const shopsRouter = Router();
+const router = Router();
 
 // const debug = require('debug')('api:studio');
 
-shopsRouter.post(
+router.post(
 	'/getShops',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -22,7 +22,7 @@ shopsRouter.post(
 	}
 );
 
-shopsRouter.post(
+router.post(
 	'/createShop',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -44,4 +44,4 @@ shopsRouter.post(
 	}
 );
 
-export default shopsRouter;
+export default router;

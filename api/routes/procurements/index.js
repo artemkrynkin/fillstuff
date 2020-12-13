@@ -2,9 +2,9 @@ import { Router } from 'express';
 import received from './received';
 import expected from './expected';
 
-const procurementsRouter = Router();
+const router = Router();
 
-procurementsRouter.use('/', received);
-procurementsRouter.use('/', expected);
+router.use('/', received);
+router.use('/', expected);
 
-export default procurementsRouter;
+export default router;

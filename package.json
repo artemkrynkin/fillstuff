@@ -3,6 +3,7 @@
   "version": "1.2.0-alpha",
   "private": true,
   "devDependencies": {
+    "@babel/plugin-proposal-throw-expressions": "^7.12.1",
     "backpack-core": "0.8.4",
     "cross-env": "7.0.2",
     "husky": "4.2.5",
@@ -94,9 +95,9 @@
     "winston": "3.3.3",
     "yup": "0.29.2"
   },
-    "resolutions": {
-      "babel-loader": "8.1.0"
-    },
+  "resolutions": {
+    "babel-loader": "8.1.0"
+  },
   "scripts": {
     "dev:web": "cross-env NODE_PATH=./ react-scripts start",
     "dev:api": "cross-env NODE_PATH=./ cross-env NODE_ENV=development cross-env DEBUG=build*,api*,shared:middlewares*,shared:mongodb cross-env DIR=api backpack",

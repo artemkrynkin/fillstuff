@@ -28,9 +28,6 @@ const MemberCard = props => {
 				</Grid>
 				{!member.deactivated ? (
 					<Grid style={{ textAlign: 'right' }} xs={6} item>
-						<Button onClick={() => onOpenDialogByName('memberInvitationOrLogin', 'member', member)} style={{ marginRight: 8 }}>
-							QR для входа
-						</Button>
 						<ButtonRed onClick={() => onOpenDialogByName('memberDeactivated', 'member', member)} variant="text">
 							Отключить участника
 						</ButtonRed>

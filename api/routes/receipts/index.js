@@ -1,19 +1,19 @@
 import { Router } from 'express';
 
-import { isAuthed, hasPermissions } from 'api/utils/permissions';
-
 import { receiptCalc } from 'shared/checkPositionAndReceipt';
+
+import Emitter from 'api/utils/emitter';
+import { isAuthed, hasPermissions } from 'api/utils/permissions';
 
 import Studio from 'api/models/studio';
 import Position from 'api/models/position';
 import Receipt from 'api/models/receipt';
-import Emitter from '../../utils/emitter';
 
-const receiptsRouter = Router();
+const router = Router();
 
 // const debug = require('debug')('api:products');
 
-receiptsRouter.post(
+router.post(
 	'/getReceiptsPosition',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -35,7 +35,7 @@ receiptsRouter.post(
 	}
 );
 
-receiptsRouter.post(
+router.post(
 	'/createReceipt',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -46,14 +46,14 @@ receiptsRouter.post(
 		} = req.body;
 
 		const positionPromise = Position.findById(newReceiptValues.position).catch(err => next({ code: 2, err }));
-		const studioPromise = Studio.findById(studioId, 'store').catch(err => next({ code: 2, err }));
+		const studioPromise = Studio.findById(studioId, 'stock').catch(err => next({ code: 2, err }));
 
 		const position = await positionPromise;
 		const studio = await studioPromise;
 
 		const newReceipt = new Receipt({
 			...newReceiptValues,
-			position: position,
+			position: position._id,
 			studio: studioId,
 			status: 'active',
 			isFree: position.isFree,
@@ -86,24 +86,24 @@ receiptsRouter.post(
 		}
 
 		const {
-			store: { storePrice },
+			stock: { stockPrice },
 		} = studio;
 
 		const purchasePriceReceipt = newReceipt.initial.quantity * newReceipt.unitPurchasePrice;
 
 		Studio.findByIdAndUpdate(
 			studioId,
-			{ $set: { 'store.storePrice': storePrice + purchasePriceReceipt } },
+			{ $set: { 'stock.stockPrice': stockPrice + purchasePriceReceipt } },
 			{ runValidators: true }
 		).catch(err => next({ code: 2, err }));
 
-		await newReceipt.populate('procurement').execPopulate();
+		await newReceipt.populate().execPopulate();
 
 		res.json(newReceipt);
 	}
 );
 
-receiptsRouter.post(
+router.post(
 	'/changeReceipt',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -131,7 +131,7 @@ receiptsRouter.post(
 	}
 );
 
-receiptsRouter.post(
+router.post(
 	'/activeReceiptAddQuantity',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -147,7 +147,8 @@ receiptsRouter.post(
 			.populate([
 				{
 					path: 'studio',
-					select: 'store',
+					select: 'stock',
+					model: Studio,
 				},
 				{
 					path: 'activeReceipt',
@@ -157,7 +158,7 @@ receiptsRouter.post(
 
 		const {
 			studio: {
-				store: { storePrice: storePriceOld },
+				stock: { stockPrice: stockPriceOld },
 			},
 			activeReceipt,
 		} = position;
@@ -190,7 +191,7 @@ receiptsRouter.post(
 			position.studio._id,
 			{
 				$set: {
-					'store.storePrice': storePriceOld + quantity * activeReceipt.unitPurchasePrice,
+					'stock.stockPrice': stockPriceOld + quantity * activeReceipt.unitPurchasePrice,
 				},
 			},
 			{ runValidators: true }
@@ -214,4 +215,4 @@ receiptsRouter.post(
 	}
 );
 
-export default receiptsRouter;
+export default router;

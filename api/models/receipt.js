@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import i18n from 'i18n';
 
+import { dbFillstuff } from 'shared/db';
+
 import { formatNumber } from 'shared/utils';
 
 const Schema = mongoose.Schema;
@@ -153,4 +155,4 @@ const Receipt = new Schema({
 	},
 });
 
-export default mongoose.model('Receipt', Receipt);
+export default dbFillstuff.model('Receipt', Receipt);

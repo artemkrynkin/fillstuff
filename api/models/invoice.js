@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import i18n from 'i18n';
 
+import { dbFillstuff } from 'shared/db';
+
 import { formatNumber } from 'shared/utils';
 
 const Schema = mongoose.Schema;
@@ -113,4 +115,4 @@ const Invoice = new Schema({
 
 Invoice.plugin(mongoosePaginate);
 
-export default mongoose.model('Invoice', Invoice);
+export default dbFillstuff.model('Invoice', Invoice);

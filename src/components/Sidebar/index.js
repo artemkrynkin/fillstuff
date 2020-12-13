@@ -42,7 +42,7 @@ function Sidebar(props) {
 		<div className={styles.container}>
 			<div className={styles.wrapper}>
 				<div className={styles.logo} />
-				{currentUser.settings.studio && currentUser.settings.member ? (
+				{currentStudio && currentUser.settings.studio && currentUser.settings.member ? (
 					<div className={styles.menu}>
 						<Grid
 							ref={refDropdownStudios}

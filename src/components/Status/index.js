@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useEffect } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 
@@ -7,21 +7,20 @@ import { withCurrentUser } from 'src/components/withCurrentUser';
 import { joinStudio } from 'src/actions/studios';
 import { getStoreNotifications, storeNotificationEvents } from 'src/actions/storeNotifications';
 
-class Status extends Component {
-	componentDidMount() {
-		this.props.logoutListener();
+function Status(props) {
+	const { currentUser } = props;
 
-		if (/owner|admin/.test(this.props.currentMember.roles)) {
-			this.props.joinStudio();
-			this.props.getStoreNotifications().then(() => {
-				this.props.storeNotificationEvents();
+	useEffect(() => {
+		if (/owner|admin/.test(currentUser.settings.member.roles)) {
+			props.joinStudio();
+			props.getStoreNotifications().then(() => {
+				props.storeNotificationEvents();
 			});
 		}
-	}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [currentUser]);
 
-	render() {
-		return null;
-	}
+	return null;
 }
 
 const mapDispatchToProps = dispatch => {

@@ -5,11 +5,11 @@ import { isAuthed, hasPermissions } from 'api/utils/permissions';
 import Position from 'api/models/position';
 import PositionGroup from 'api/models/positionGroup';
 
-const positionGroupsRouter = Router();
+const router = Router();
 
 // const debug = require('debug')('api:products');
 
-positionGroupsRouter.post(
+router.post(
 	'/getPositionGroups',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -26,7 +26,7 @@ positionGroupsRouter.post(
 	}
 );
 
-positionGroupsRouter.post(
+router.post(
 	'/getPositionGroup',
 	// isAuthed,
 	// (req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -57,7 +57,7 @@ positionGroupsRouter.post(
 	}
 );
 
-positionGroupsRouter.post(
+router.post(
 	'/createPositionGroup',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -104,7 +104,7 @@ positionGroupsRouter.post(
 	}
 );
 
-positionGroupsRouter.post(
+router.post(
 	'/editPositionGroup',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -132,7 +132,7 @@ positionGroupsRouter.post(
 	}
 );
 
-positionGroupsRouter.post(
+router.post(
 	'/addPositionInGroup',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -169,7 +169,7 @@ positionGroupsRouter.post(
 	}
 );
 
-positionGroupsRouter.post(
+router.post(
 	'/removePositionFromGroup',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -204,4 +204,4 @@ positionGroupsRouter.post(
 	}
 );
 
-export default positionGroupsRouter;
+export default router;

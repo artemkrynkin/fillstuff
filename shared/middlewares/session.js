@@ -1,10 +1,10 @@
 // import session from 'cookie-session';
 import expressSession from 'express-session';
-import connectMongo from 'connect-mongo';
+// import connectMongo from 'connect-mongo';
 
-import DBConnection from 'shared/db';
+// import DBConnection from 'shared/db';
 
-const MongoStore = connectMongo(expressSession);
+// const MongoStore = connectMongo(expressSession);
 
 const ONE_WEEK = 604800000;
 
@@ -21,7 +21,7 @@ const ONE_WEEK = 604800000;
 // 	sameSite: 'lax',
 // });
 
-export const sessionStore = new MongoStore({ mongooseConnection: DBConnection });
+// export const sessionStore = new MongoStore({ mongooseConnection: DBConnection });
 
 export const session = expressSession({
 	secret: 'secrettest',
@@ -32,7 +32,7 @@ export const session = expressSession({
 		// secure: process.env.NODE_ENV === 'production',
 		maxAge: ONE_WEEK,
 	},
-	store: sessionStore,
+	// store: sessionStore,
 	unset: 'destroy',
 	saveUninitialized: false,
 	resave: true,

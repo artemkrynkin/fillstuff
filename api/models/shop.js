@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import i18n from 'i18n';
 
+import { dbFillstuff } from 'shared/db';
+
 import { extractHostname } from 'shared/utils';
 
 const Schema = mongoose.Schema;
@@ -26,4 +28,4 @@ const Shop = new Schema({
 	},
 });
 
-export default mongoose.model('Shop', Shop);
+export default dbFillstuff.model('Shop', Shop);

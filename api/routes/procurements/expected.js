@@ -6,17 +6,19 @@ import { isAuthed, hasPermissions } from 'api/utils/permissions';
 
 import Emitter from 'api/utils/emitter';
 
+import User from 'api/models/user';
+import Member from 'api/models/member';
 import Position from 'api/models/position';
 import Procurement from 'api/models/procurement';
 
-const procurementsRouter = Router();
+const router = Router();
 
 // const debug = require('debug')('api:products');
 
 const existIsNotSame = (propName, originalData, editedData) =>
 	editedData[propName] !== undefined && originalData[propName] !== editedData[propName];
 
-procurementsRouter.post(
+router.post(
 	'/getProcurementsExpected',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -35,8 +37,10 @@ procurementsRouter.post(
 				{
 					path: 'orderedByMember',
 					select: 'user',
+					model: Member,
 					populate: {
 						path: 'user',
+						model: User,
 						select: 'avatar name email',
 					},
 				},
@@ -91,7 +95,7 @@ procurementsRouter.post(
 	}
 );
 
-procurementsRouter.post(
+router.post(
 	'/getProcurementExpected',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -105,8 +109,10 @@ procurementsRouter.post(
 				{
 					path: 'orderedByMember',
 					select: 'user',
+					model: Member,
 					populate: {
 						path: 'user',
+						model: User,
 						select: 'avatar name email',
 					},
 				},
@@ -141,7 +147,7 @@ procurementsRouter.post(
 	}
 );
 
-procurementsRouter.post(
+router.post(
 	'/createProcurementExpected',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -195,8 +201,10 @@ procurementsRouter.post(
 				{
 					path: 'orderedByMember',
 					select: 'user',
+					model: Member,
 					populate: {
 						path: 'user',
+						model: User,
 						select: 'avatar name email',
 					},
 				},
@@ -232,7 +240,7 @@ procurementsRouter.post(
 	}
 );
 
-procurementsRouter.post(
+router.post(
 	'/editProcurementExpected',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -349,8 +357,10 @@ procurementsRouter.post(
 				{
 					path: 'orderedByMember',
 					select: 'user',
+					model: Member,
 					populate: {
 						path: 'user',
+						model: User,
 						select: 'avatar name email',
 					},
 				},
@@ -386,7 +396,7 @@ procurementsRouter.post(
 	}
 );
 
-procurementsRouter.post(
+router.post(
 	'/cancelProcurementExpected',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -451,4 +461,4 @@ procurementsRouter.post(
 	}
 );
 
-export default procurementsRouter;
+export default router;

@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import i18n from 'i18n';
 
+import { dbFillstuff } from 'shared/db';
+
 const Schema = mongoose.Schema;
 
 const StoreNotification = new Schema({
@@ -65,4 +67,4 @@ const StoreNotification = new Schema({
 	},
 });
 
-export default mongoose.model('StoreNotification', StoreNotification);
+export default dbFillstuff.model('StoreNotification', StoreNotification);

@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 import i18n from 'i18n';
 import { v4 as uuidv4 } from 'uuid';
 
+import { dbFillstuff } from 'shared/db';
+
 import { printDestination, unitTypes } from 'shared/checkPositionAndReceipt';
 
 const Schema = mongoose.Schema;
@@ -155,4 +157,4 @@ const Position = new Schema({
 	},
 });
 
-export default mongoose.model('Position', Position);
+export default dbFillstuff.model('Position', Position);

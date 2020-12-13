@@ -12,14 +12,14 @@ import PositionGroup from 'api/models/positionGroup';
 import Receipt from 'api/models/receipt';
 import StoreNotification from 'api/models/storeNotification';
 
-const positionsRouter = Router();
+const router = Router();
 
 const existIsNotSame = (propName, originalData, editedData) =>
 	editedData[propName] !== undefined && originalData[propName] !== editedData[propName];
 
 // const debug = require('debug')('api:products');
 
-positionsRouter.post(
+router.post(
 	'/getPositions',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -48,7 +48,7 @@ positionsRouter.post(
 	}
 );
 
-positionsRouter.post(
+router.post(
 	'/getPosition',
 	// isAuthed,
 	// (req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -85,7 +85,7 @@ positionsRouter.post(
 	}
 );
 
-positionsRouter.post(
+router.post(
 	'/createPosition',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -145,13 +145,13 @@ positionsRouter.post(
 			])
 			.execPopulate();
 
-		Studio.findByIdAndUpdate(studioId, { $inc: { 'store.numberPositions': 1 } }).catch(err => next({ code: 2, err }));
+		Studio.findByIdAndUpdate(studioId, { $inc: { 'stock.numberPositions': 1 } }).catch(err => next({ code: 2, err }));
 
 		res.json(newPosition);
 	}
 );
 
-positionsRouter.post(
+router.post(
 	'/editPosition',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -238,7 +238,7 @@ positionsRouter.post(
 	}
 );
 
-positionsRouter.post(
+router.post(
 	'/detachPositions',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -298,7 +298,7 @@ positionsRouter.post(
 	}
 );
 
-positionsRouter.post(
+router.post(
 	'/archivePosition',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -312,7 +312,8 @@ positionsRouter.post(
 			.populate([
 				{
 					path: 'studio',
-					select: 'store',
+					select: 'stock',
+					model: Studio,
 				},
 				{
 					path: 'positionGroup',
@@ -369,7 +370,7 @@ positionsRouter.post(
 
 		const {
 			studio: {
-				store: { storePrice },
+				stock: { stockPrice },
 			},
 			receipts,
 		} = position;
@@ -380,10 +381,10 @@ positionsRouter.post(
 			position.studio._id,
 			{
 				$set: {
-					'store.storePrice': storePrice - purchasePriceReceipts,
+					'stock.stockPrice': stockPrice - purchasePriceReceipts,
 				},
 				$inc: {
-					'store.numberPositions': -1,
+					'stock.numberPositions': -1,
 				},
 			},
 			{ runValidators: true }
@@ -393,7 +394,7 @@ positionsRouter.post(
 	}
 );
 
-positionsRouter.post(
+router.post(
 	'/archivePositionAfterEnded',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
@@ -462,4 +463,4 @@ positionsRouter.post(
 	}
 );
 
-export default positionsRouter;
+export default router;

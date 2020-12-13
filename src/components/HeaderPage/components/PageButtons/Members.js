@@ -3,33 +3,28 @@ import React, { useState, lazy, Suspense } from 'react';
 import { Button } from './styles';
 import styles from './index.module.css';
 
-const DialogMemberInvitationOrLogin = lazy(() => import('src/views/Dialogs/MemberInvitationOrLogin'));
+const DialogMemberInvitation = lazy(() => import('src/views/Dialogs/MemberInvitation'));
 
-const Members = props => {
-	const { currentStudio } = props;
-	const [MemberInvitationOrLogin, setDialogMemberInvitationOrLogin] = useState(false);
+function Members() {
+	const [MemberInvitation, setDialogMemberInvitation] = useState(false);
 
-	const onOpenDialogMemberInvitationOrLogin = async () => {
-		setDialogMemberInvitationOrLogin(true);
+	const onOpenDialogMemberInvitation = async () => {
+		setDialogMemberInvitation(true);
 	};
 
-	const onCloseDialogMemberInvitationOrLogin = () => setDialogMemberInvitationOrLogin(false);
+	const onCloseDialogMemberInvitation = () => setDialogMemberInvitation(false);
 
 	return (
 		<div className={styles.container}>
-			<Button onClick={onOpenDialogMemberInvitationOrLogin} variant="contained" color="primary">
-				Добавить участника
+			<Button onClick={onOpenDialogMemberInvitation} variant="contained" color="primary">
+				Пригласить участника
 			</Button>
 
 			<Suspense fallback={null}>
-				<DialogMemberInvitationOrLogin
-					dialogOpen={MemberInvitationOrLogin}
-					onCloseDialog={onCloseDialogMemberInvitationOrLogin}
-					currentStudio={currentStudio}
-				/>
+				<DialogMemberInvitation dialogOpen={MemberInvitation} onCloseDialog={onCloseDialogMemberInvitation} />
 			</Suspense>
 		</div>
 	);
-};
+}
 
 export default Members;

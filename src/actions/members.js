@@ -66,32 +66,6 @@ export const getMember = ({ params }) => {
 	};
 };
 
-export const invitationMember = () => {
-	return async (dispatch, getState) => {
-		const {
-			user: { data: currentUser },
-		} = getState();
-		const studioId = currentUser.settings.studio;
-		const memberId = currentUser.settings.member._id;
-
-		return await axios
-			.post(`${ACCOUNT_SERVER_URL}/api/invitationMember`, {
-				studioId,
-				memberId,
-			})
-			.then(response => {
-				const { data: member } = response;
-
-				return Promise.resolve({ status: 'success', data: member });
-			})
-			.catch(error => {
-				console.error(error);
-
-				return Promise.resolve({ status: 'error', message: error.message, ...error });
-			});
-	};
-};
-
 export const editMember = ({ params, data }) => {
 	return async (dispatch, getState) => {
 		const {

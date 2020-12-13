@@ -90,7 +90,7 @@ const snackbarSettings = {
 };
 
 const Routes = props => {
-	const { currentUser, currentStudio, currentMember } = props;
+	const { currentUser, currentStudio } = props;
 	const { title, description } = generateMetaInfo();
 	const classesSnackbar = useStylesSnackbar();
 
@@ -110,7 +110,7 @@ const Routes = props => {
 				<Head title={title} description={description} />
 
 				<Snackbar />
-				{currentUser && currentStudio && currentMember ? <Status /> : null}
+				{currentUser && currentStudio ? <Status /> : null}
 
 				<>
 					{/*
@@ -121,17 +121,17 @@ const Routes = props => {
 						{/* Публичные бизнес страницы */}
 						{/* Страницы приложения */}
 						<Route path="/" component={HomeViewRedirectFallback} exact strict />
-						<Route path="/stock" component={StockFallback} />
-						<Route path="/stock/:positionId" component={PositionFallback} exact />
+						<Route path="/stock" component={StockFallback} exact />
+						<Route path="/stock/:positionId" component={PositionFallback} />
 						<Route path="/write-offs" component={WriteOffsFallback} />
 						<Route path="/stocktaking" component={StocktakingFallback} />
-						<Route path="/procurements" component={ProcurementsFallback} />
-						<Route path="/procurements/:procurementId" component={ProcurementFallback} exact />
-						<Route path="/invoices" component={InvoicesFallback} />
-						<Route path="/invoices/:invoiceId" component={InvoiceFallback} exact />
-						<Route path={['/members/', '/members/guests/']} component={MembersFallback} exact />
-						<Route path="/members/:memberId" component={MemberFallback} exact />
-						<Route path="/settings" component={SettingsFallback} exact />
+						<Route path="/procurements" component={ProcurementsFallback} exact />
+						<Route path="/procurements/:procurementId" component={ProcurementFallback} />
+						<Route path="/invoices" component={InvoicesFallback} exact />
+						<Route path="/invoices/:invoiceId" component={InvoiceFallback} />
+						<Route path={['/members', '/members/guests']} component={MembersFallback} exact />
+						<Route path="/members/:memberId" component={MemberFallback} />
+						<Route path="/settings" component={SettingsFallback} />
 
 						<Route path="*" component={PageNotFound} />
 					</Switch>

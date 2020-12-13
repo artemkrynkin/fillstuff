@@ -8,7 +8,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 
-import { ACCOUNT_CLIENT_URL, ACCOUNT_SERVER_URL } from 'src/api/constants';
+import { CLIENT_URL, ACCOUNT_CLIENT_URL, ACCOUNT_SERVER_URL } from 'src/api/constants';
 
 import Dropdown from 'src/components/Dropdown';
 import Avatar from 'src/components/Avatar';
@@ -22,6 +22,10 @@ const HelpPanel = props => {
 	const refDropdownProfile = useRef(null);
 	const [dropdownProfile, setDropdownProfile] = useState(false);
 	const classesAvatar = useStylesAvatar(dropdownProfile);
+
+	const logoutUrl = new URL(`${ACCOUNT_SERVER_URL}/auth/logout`);
+
+	logoutUrl.searchParams.set('returnTo', `${CLIENT_URL}`);
 
 	const onToggleDropdownProfile = value => setDropdownProfile(value === null || value === undefined ? prevValue => !prevValue : value);
 
@@ -62,7 +66,7 @@ const HelpPanel = props => {
 				<Divider />
 				<MenuList>
 					<MenuItem
-						href={`${ACCOUNT_SERVER_URL}/auth/logout`}
+						href={logoutUrl.href}
 						onClick={() => {
 							onToggleDropdownProfile(false);
 						}}

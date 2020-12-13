@@ -1,5 +1,7 @@
 import Emitter from 'api/utils/emitter';
 
+import User from 'api/models/user';
+import Member from 'api/models/member';
 import StoreNotification from 'api/models/storeNotification';
 
 export const newStoreNotification = io => {
@@ -40,8 +42,10 @@ export const newStoreNotification = io => {
 					{
 						path: 'orderedByMember',
 						select: 'user',
+						model: Member,
 						populate: {
 							path: 'user',
+							model: User,
 							select: 'avatar name email',
 						},
 					},
@@ -77,8 +81,10 @@ export const newStoreNotification = io => {
 				populate: [
 					{
 						path: 'member',
+						model: Member,
 						populate: {
 							path: 'user',
+							model: User,
 							select: 'avatar name email',
 						},
 					},
@@ -123,8 +129,10 @@ export const editStoreNotification = io => {
 					{
 						path: 'orderedByMember',
 						select: 'user',
+						model: Member,
 						populate: {
 							path: 'user',
+							model: User,
 							select: 'avatar name email',
 						},
 					},
@@ -160,8 +168,10 @@ export const editStoreNotification = io => {
 				populate: [
 					{
 						path: 'member',
+						model: Member,
 						populate: {
 							path: 'user',
+							model: User,
 							select: 'avatar name email',
 						},
 					},

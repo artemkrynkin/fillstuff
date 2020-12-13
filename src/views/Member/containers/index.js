@@ -4,17 +4,15 @@ import Container from '@material-ui/core/Container';
 
 import View from './View';
 
-const DialogMemberInvitationOrLogin = lazy(() => import('src/views/Dialogs/MemberInvitationOrLogin'));
 const DialogMemberDeactivated = lazy(() => import('src/views/Dialogs/MemberDeactivated'));
 
 const Index = props => {
-	const { currentStudio, getMember } = props;
+	const { getMember } = props;
 	const [dialogData, setDialogData] = useState({
 		member: null,
 	});
 	const [dialogOpenedName, setDialogOpenedName] = useState('');
 	const [dialogs, setDialogs] = useState({
-		memberInvitationOrLogin: false,
 		memberDeactivated: false,
 	});
 
@@ -57,14 +55,6 @@ const Index = props => {
 			<View onOpenDialogByName={onOpenDialogByName} {...props} />
 
 			<Suspense fallback={null}>
-				<DialogMemberInvitationOrLogin
-					dialogOpen={dialogs.memberInvitationOrLogin}
-					onCloseDialog={() => onCloseDialogByName('memberInvitationOrLogin')}
-					onExitedDialog={() => onExitedDialogByName('member')}
-					currentStudio={currentStudio}
-					selectedMember={dialogOpenedName === 'memberInvitationOrLogin' ? dialogData.member : null}
-				/>
-
 				<DialogMemberDeactivated
 					dialogOpen={dialogs.memberDeactivated}
 					onCloseDialog={() => onCloseDialogByName('memberDeactivated')}

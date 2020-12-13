@@ -1,13 +1,14 @@
 import cookie from 'cookie';
-import cookieParser from 'cookie-parser';
 import jwt from 'express-jwt';
 import jwksRsa from 'jwks-rsa';
 import axios from 'axios';
 
-import { sessionStore } from 'shared/middlewares/session';
+// import { sessionStore } from 'shared/middlewares/session';
+import { checkPermissions } from 'shared/roles-access-rights';
 import { config } from 'shared/auth0/api';
 
-import User from 'api/models/user';
+// import User from 'api/models/user';
+import Member from 'api/models/member';
 
 const IS_PROD = process.env.NODE_ENV === 'production';
 const ACCOUNT_SERVER_URL = IS_PROD ? 'https://account.keeberink.com' : 'http://localhost:3003';
@@ -35,24 +36,19 @@ export const isAuthed = jwt({
 
 export const isAuthedResolverSocket = async (socket, next) => {
 	socket.handshake.cookies = cookie.parse(socket.request.headers.cookie || '');
-	const sidCookie = socket.handshake.cookies.session;
-	const sid = cookieParser.signedCookie(sidCookie, 'secrettest');
+	const sessionToken = socket.handshake.cookies['session.token'];
 
-	const session = await sessionStore.get(sid, (err, session) => {
-		if (err) return null;
+	if (!sessionToken) return next({ code: 3 });
 
-		session.id = sid;
-	});
+	const user = await axios.post(
+		`${ACCOUNT_SERVER_URL}/api/getMyAccount`,
+		{},
+		{
+			headers: socket.request.headers,
+		}
+	);
 
-	if (!session) return next({ code: 3 });
-
-	socket.handshake.session = session;
-
-	if (!session.passport.user) return next({ code: 3 });
-
-	const user = await User.findById(session.passport.user, { salt: false, hashedPassword: false })
-		.then(user => user)
-		.catch(() => null);
+	// socket.handshake.session = session;
 
 	socket.handshake.user = user;
 
@@ -62,22 +58,20 @@ export const isAuthedResolverSocket = async (socket, next) => {
 };
 
 export const hasPermissions = async (req, res, next, accessRightList) => {
-	try {
-		const memberId = req.body.memberId || req.query.memberId;
+	const memberId = req.body.memberId || req.query.memberId;
 
-		await axios.post(
-			`${ACCOUNT_SERVER_URL}/api/hasPermissions`,
-			{
-				memberId,
-				accessRightList,
-			},
-			{
-				headers: req.headers,
-			}
-		);
-
-		next();
-	} catch (err) {
-		next(err.response.data);
+	if (!memberId) {
+		return next({
+			code: 6,
+			message: 'missing "memberId" parameter',
+		});
 	}
+
+	const member = await Member.findById(memberId)
+		.lean()
+		.catch(err => next({ code: 2, err }));
+
+	if (!checkPermissions(member.roles, accessRightList)) return next({ code: 4 });
+
+	next();
 };

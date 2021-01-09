@@ -9,5 +9,5 @@ export const dbAccount = initDatabase({
 
 export const dbFillstuff = initDatabase({
 	dbUri: IS_PROD ? 'mongodb://artem:741310PTppl#@rc1c-r70mh0q5hyyvlo3i.mdb.yandexcloud.net:27018' : 'mongodb://localhost:27017',
-	dbName: IS_PROD ? 'blikside-alpha' : 'keeberink-fillstuff-local',
+	dbName: IS_PROD ? 'keeberink-fillstuff' : 'keeberink-fillstuff-local',
 });

@@ -37,7 +37,6 @@ class HomeOLD extends Component {
 }
 
 function DevelopmentModeNotice() {
-	// eslint-disable-next-line
 	if (__DEV__) {
 		const learnMoreButton = (
 			<Text onPress={handleLearnMorePress} style={styles.helpLinkText}>

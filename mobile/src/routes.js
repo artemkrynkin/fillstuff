@@ -46,7 +46,6 @@ function Routes(props) {
 				}
 			} catch (error) {}
 		})();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (

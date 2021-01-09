@@ -8,4 +8,7 @@ module.exports = {
 		'import/first': 0,
 		'no-useless-escape': 1,
 	},
+	globals: {
+		__DEV__: false,
+	},
 };

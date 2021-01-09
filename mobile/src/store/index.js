@@ -1,7 +1,7 @@
 import { createStore, compose, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 
-import getReducers from '../reducers';
+import getReducers from 'mobile/src/reducers';
 
 // this enables the chrome devtools for redux only in development
 // prettier-ignore

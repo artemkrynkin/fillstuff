@@ -1,35 +1,44 @@
-import { setItemObject, removeItem } from '../helpers/storage';
+import axios from 'axios';
+import * as SecureStore from 'expo-secure-store';
 
-export const authentication = user => {
-	return async dispatch => {
-		dispatch({ type: 'REQUEST_USER' });
+import { removeItem } from 'mobile/src/helpers/storage';
 
-		await setItemObject('user', user);
+import { ACCOUNT_SERVER_URL } from 'mobile/src/api/constants';
 
-		dispatch({
-			type: 'USER_LOGIN',
-			payload: user,
-		});
+export const getAccessToken = ({ code, codeVerifier, redirectUri }) => {
+	return async () => {
+		await axios
+			.post(`${ACCOUNT_SERVER_URL}/auth/getAccessToken`, {
+				code,
+				codeVerifier,
+				redirectUri,
+			})
+			.then(async response => {
+				const authData = response.data;
 
-		return Promise.resolve({ status: 'success', data: user });
+				await SecureStore.setItemAsync('authData', JSON.stringify(authData));
+
+				return Promise.resolve({ status: 'success', data: authData });
+			})
+			.catch(error => {
+				console.error(error);
+
+				return Promise.reject({ status: 'error' });
+			});
 	};
 };
 
 export const logout = () => {
 	return async dispatch => {
-		await removeItem('user');
-
-		dispatch({ type: 'USER_LOGOUT' });
-	};
-};
-
-export const restore = user => {
-	return async dispatch => {
-		await setItemObject('user', user);
+		await SecureStore.deleteItemAsync('authData');
 
 		dispatch({
-			type: 'USER_RESTORE',
-			payload: user,
+			type: 'RECEIVE_USER',
+			payload: null,
+		});
+		dispatch({
+			type: 'RECEIVE_STUDIOS',
+			payload: null,
 		});
 	};
 };

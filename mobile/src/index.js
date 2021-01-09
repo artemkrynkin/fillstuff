@@ -1,37 +1,38 @@
 import React, { useState } from 'react';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
+import { StatusBar, View } from 'react-native';
 import { Provider } from 'react-redux';
 import { Asset } from 'expo-asset';
 import { registerRootComponent } from 'expo';
 import AppLoading from 'expo-app-loading';
-import * as Font from 'expo-font';
 import { NavigationContainer } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
-
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { initStore } from './store';
-import { SERVER_URL } from './api/constants';
+import { initStore } from 'mobile/src/store';
 
-import Routes from './routes';
+import Routes from 'mobile/src/routes';
 
-import './helpers/fontAwesomeIcons';
+import 'mobile/src/helpers/fontAwesomeIcons';
 
 const store = initStore({});
 
-const axios = require('axios').defaults;
-axios.baseURL = SERVER_URL;
-
 async function loadResourcesAsync() {
 	await Promise.all([
-		Asset.loadAsync([require('../assets/images/robot-dev.png'), require('../assets/images/robot-prod.png')]),
-		Font.loadAsync({
-			// This is the font that we are using for our tab bar
-			...Ionicons.font,
-			// We include SpaceMono because we use it in HomeScreen.js. Feel free to
-			// remove this if you are not using it in your app
-			'space-mono': require('../assets/fonts/SpaceMono-Regular.ttf'),
-		}),
+		Asset.loadAsync([
+			require('mobile/assets/images/robot-dev.png'),
+			require('mobile/assets/images/robot-prod.png'),
+			require('mobile/assets/images/logo/lockup_neutral.svg'),
+			require('mobile/assets/images/camera/defining_box_detect_qr_lt.svg'),
+			require('mobile/assets/images/camera/defining_box_detect_qr_lb.svg'),
+			require('mobile/assets/images/camera/defining_box_detect_qr_rb.svg'),
+			require('mobile/assets/images/camera/defining_box_detect_qr_rt.svg'),
+			require('mobile/assets/images/camera/defining_box.svg'),
+			require('mobile/assets/sounds/write-off_confirmation.aac'),
+		]),
+		// Font.loadAsync({
+		// 	// We include SpaceMono because we use it in HomeScreen.js. Feel free to
+		// 	// remove this if you are not using it in your app
+		// 	'space-mono': require('mobile/assets/fonts/SpaceMono-Regular.ttf'),
+		// }),
 	]);
 }
 
@@ -44,7 +45,9 @@ function handleLoadingError(error) {
 const App = props => {
 	const [isLoading, setLoading] = useState(false);
 
-	const handleFinishLoading = () => setLoading(true);
+	const handleFinishLoading = () => {
+		setLoading(true);
+	};
 
 	if (!isLoading && !props.skipLoadingScreen) {
 		return <AppLoading startAsync={loadResourcesAsync} onFinish={() => handleFinishLoading()} onError={handleLoadingError} />;
@@ -53,8 +56,8 @@ const App = props => {
 	return (
 		<Provider store={store}>
 			<SafeAreaProvider>
-				<View style={styles.container}>
-					{Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+				<View style={{ flex: 1 }}>
+					<StatusBar />
 					<NavigationContainer>
 						<Routes />
 					</NavigationContainer>
@@ -63,12 +66,5 @@ const App = props => {
 		</Provider>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: 'black',
-	},
-});
 
 registerRootComponent(App);

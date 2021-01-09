@@ -1,61 +1,30 @@
 import axios from 'axios';
 
-export const getPosition = (studioId, params) => {
-	return async dispatch => {
+import { SERVER_URL } from 'mobile/src/api/constants';
+
+export const getPosition = ({ params }) => {
+	return async (dispatch, getState) => {
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
+
 		return await axios
-			.post('/getPosition', {
+			.post(`${SERVER_URL}/api/getPosition`, {
+				studioId,
+				memberId,
 				params,
 			})
 			.then(response => {
 				const position = response.data;
 
-				if (position) return Promise.resolve({ status: 'success', data: position });
-				else return Promise.resolve({ status: 'error' });
+				return Promise.resolve({ status: 'success', data: position });
 			})
 			.catch(error => {
 				console.error(error);
 
-				return Promise.resolve({ status: 'error' });
-			});
-	};
-};
-
-export const getPositionGroup = (studioId, params) => {
-	return async dispatch => {
-		return await axios
-			.post('/getPositionGroup', {
-				params,
-			})
-			.then(response => {
-				const positionGroup = response.data;
-
-				if (positionGroup) return Promise.resolve({ status: 'success', data: positionGroup });
-				else return Promise.resolve({ status: 'error' });
-			})
-			.catch(error => {
-				console.error(error);
-
-				return Promise.resolve({ status: 'error' });
-			});
-	};
-};
-
-export const createWriteOff = (studioId, memberId, positionId, quantity) => {
-	return async dispatch => {
-		return await axios
-			.post('/createWriteOff', {
-				studioId,
-				memberId,
-				params: { positionId },
-				data: { quantity },
-			})
-			.then(response => {
-				return Promise.resolve({ status: 'success', data: response.data });
-			})
-			.catch(error => {
-				console.error(error);
-
-				return Promise.resolve({ status: 'error' });
+				return Promise.reject({ status: 'error' });
 			});
 	};
 };

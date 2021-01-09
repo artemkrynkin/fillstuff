@@ -1,20 +1,20 @@
 {
   "expo": {
-    "name": "Blikside",
-    "slug": "blikside",
+    "name": "Fillstuff",
+    "slug": "fillstuff",
+    "scheme": "keeberink.fillstuff",
     "privacy": "public",
     "platforms": [
       "ios",
-      "android",
-      "web"
+      "android"
     ],
-    "version": "0.0.3",
+    "version": "0.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "cover",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#2b3544"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -23,10 +23,10 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "blikside.com.blikside",
-      "buildNumber": "4",
+      "bundleIdentifier": "keeberink.fillstuff",
+      "buildNumber": "1"
     },
     "description": "",
-    "githubUrl": "https://github.com/artemkrynkin/bliksidemobile"
+    "githubUrl": "https://github.com/artemkrynkin/fillstuff"
   }
 }

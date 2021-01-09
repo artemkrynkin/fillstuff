@@ -28,7 +28,7 @@ const Index = props => {
 		position: null,
 		procurementReceived: null,
 	});
-	const [dialogOpenedName, setDialogOpenedName] = useState('dialogPositionQRCode');
+	const [dialogOpenedName, setDialogOpenedName] = useState('');
 	const [dialogs, setDialogs] = useState({
 		dialogPositionGroupEdit: false,
 		dialogPositionGroupAdd: false,

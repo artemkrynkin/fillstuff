@@ -32,7 +32,7 @@ const View = ({ onOpenDialogByName }) => (
 						Создать студию
 					</Button>
 					<Typography variant="caption" component="div" style={{ marginTop: 15 }}>
-						или отсканируйте QR-код приглашения в студию
+						или отсканируйте QR-код приглашения студии
 						<br />
 						через&nbsp;мобильное приложение
 					</Typography>

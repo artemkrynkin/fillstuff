@@ -2,36 +2,39 @@ const user = (
 	state = {
 		isFetching: false,
 		data: null,
-		isAuthorized: false,
+		error: null,
 	},
 	action
 ) => {
 	switch (action.type) {
-		case 'REQUEST_USER':
+		case 'REQUEST_USER': {
 			return {
 				...state,
 				isFetching: true,
 			};
-		case 'USER_LOGIN':
+		}
+		case 'RECEIVE_USER': {
+			let stateData = action.payload;
+
+			console.log(1);
+
+			if (stateData && ~stateData.picture.indexOf('localhost') && __DEV__) {
+				stateData.picture = stateData.picture.replace('localhost', '192.168.0.144');
+			}
+
 			return {
 				...state,
 				isFetching: false,
-				data: action.payload,
-				isAuthorized: true,
+				data: stateData,
 			};
-		case 'USER_LOGOUT':
+		}
+		case 'ERROR_USER': {
 			return {
 				...state,
 				isFetching: false,
-				data: null,
-				isAuthorized: false,
+				error: action.payload,
 			};
-		case 'USER_RESTORE':
-			return {
-				...state,
-				isFetching: false,
-				data: action.payload,
-			};
+		}
 		default:
 			return state;
 	}

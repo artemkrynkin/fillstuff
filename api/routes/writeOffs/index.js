@@ -104,8 +104,8 @@ router.post(
 
 router.post(
 	'/createWriteOff',
-	// isAuthed,
-	// (req, res, next) => hasPermissions(req, res, next, ['products.scanning']),
+	isAuthed,
+	(req, res, next) => hasPermissions(req, res, next, ['products.scanning']),
 	async (req, res, next) => {
 		const {
 			studioId,

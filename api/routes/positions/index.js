@@ -50,8 +50,8 @@ router.post(
 
 router.post(
 	'/getPosition',
-	// isAuthed,
-	// (req, res, next) => hasPermissions(req, res, next, ['products.control']),
+	isAuthed,
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
 	(req, res, next) => {
 		const {
 			params: { positionId, qrcodeId },
@@ -166,6 +166,7 @@ router.post(
 
 		if (existIsNotSame('name', position, positionEditable)) position.name = positionEditable.name;
 		if (existIsNotSame('minimumBalance', position, positionEditable)) position.minimumBalance = positionEditable.minimumBalance;
+		if (existIsNotSame('characteristics', position, positionEditable)) position.characteristics = positionEditable.characteristics;
 		if (existIsNotSame('shops', position, positionEditable)) position.shops = positionEditable.shops;
 
 		if (!position.hasReceipts) {

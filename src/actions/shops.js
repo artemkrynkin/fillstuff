@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { axiosFillstuff } from 'src/api/constants';
 
 export const getShops = () => {
 	return async (dispatch, getState) => {
@@ -10,7 +10,7 @@ export const getShops = () => {
 
 		dispatch({ type: 'REQUEST_SHOPS' });
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/getShops', {
 				studioId,
 				memberId,
@@ -43,7 +43,7 @@ export const createShop = ({ data }) => {
 
 		dispatch({ type: 'REQUEST_SHOPS' });
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/createShop', {
 				studioId,
 				memberId,

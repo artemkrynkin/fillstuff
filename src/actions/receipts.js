@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { axiosFillstuff } from 'src/api/constants';
 
 export const getReceiptsPosition = ({ params }) => {
 	return async (dispatch, getState) => {
@@ -8,7 +8,7 @@ export const getReceiptsPosition = ({ params }) => {
 		const studioId = currentUser.settings.studio;
 		const memberId = currentUser.settings.member._id;
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/getReceiptsPosition', {
 				studioId,
 				memberId,
@@ -35,7 +35,7 @@ export const createReceipt = ({ data }) => {
 		const studioId = currentUser.settings.studio;
 		const memberId = currentUser.settings.member._id;
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/createReceipt', {
 				studioId,
 				memberId,
@@ -73,7 +73,7 @@ export const changeReceipt = ({ params, data }) => {
 		const studioId = currentUser.settings.studio;
 		const memberId = currentUser.settings.member._id;
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/changeReceipt', {
 				studioId,
 				memberId,
@@ -106,7 +106,7 @@ export const activeReceiptAddQuantity = ({ params, data }) => {
 		const memberId = currentUser.settings.member._id;
 		const { positionId } = params;
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/activeReceiptAddQuantity', {
 				studioId,
 				memberId,

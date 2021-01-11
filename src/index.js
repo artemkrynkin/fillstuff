@@ -8,7 +8,6 @@ import 'moment/locale/ru';
 
 import { StylesProvider } from '@material-ui/core/styles';
 
-import { SERVER_URL } from 'src/api/constants';
 import history from 'src/helpers/history';
 import { initStore } from 'src/store';
 
@@ -22,14 +21,6 @@ const store = initStore(window.__DATA__ || {});
 
 moment.locale('ru');
 moment().format();
-
-const axios = require('axios').defaults;
-// In development for cross-domain requests to api
-axios.baseURL = SERVER_URL;
-
-if (process.env.NODE_ENV === 'development') {
-	axios.withCredentials = true;
-}
 
 const App = () => {
 	return (

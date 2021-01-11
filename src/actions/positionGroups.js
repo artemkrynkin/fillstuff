@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { axiosFillstuff } from 'src/api/constants';
 
 export const getPositionGroups = ({ showRequest = true, emptyData = false } = { showRequest: true, emptyData: false }) => {
 	return async (dispatch, getState) => {
@@ -11,7 +11,7 @@ export const getPositionGroups = ({ showRequest = true, emptyData = false } = { 
 		if (showRequest) dispatch({ type: 'REQUEST_POSITION_GROUPS' });
 		if (emptyData) dispatch({ type: 'EMPTY_POSITION_GROUPS' });
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/getPositionGroups', {
 				studioId,
 				memberId,
@@ -40,7 +40,7 @@ export const createPositionGroup = ({ data }) => {
 		const studioId = currentUser.settings.studio;
 		const memberId = currentUser.settings.member._id;
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/createPositionGroup', {
 				studioId,
 				memberId,
@@ -77,7 +77,7 @@ export const editPositionGroup = ({ params, data }) => {
 		const memberId = currentUser.settings.member._id;
 		const { positionGroupId } = params;
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/editPositionGroup', {
 				studioId,
 				memberId,
@@ -116,7 +116,7 @@ export const addPositionInGroup = ({ params, data }) => {
 		const memberId = currentUser.settings.member._id;
 		const { positionGroupId } = params;
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/addPositionInGroup', {
 				studioId,
 				memberId,
@@ -154,7 +154,7 @@ export const removePositionFromGroup = ({ params }) => {
 		const studioId = currentUser.settings.studio;
 		const memberId = currentUser.settings.member._id;
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/removePositionFromGroup', {
 				studioId,
 				memberId,

@@ -1,6 +1,4 @@
-import axios from 'axios';
-
-import { ACCOUNT_SERVER_URL } from 'src/api/constants';
+import { axiosAccount } from 'src/api/constants';
 
 export const getStudios = (
 	{ query = {}, showRequest = true } = {
@@ -11,8 +9,8 @@ export const getStudios = (
 	return async dispatch => {
 		if (showRequest) dispatch({ type: 'REQUEST_STUDIOS' });
 
-		return await axios
-			.post(`${ACCOUNT_SERVER_URL}/api/getStudios`, {
+		return await axiosAccount
+			.post('/api/getStudios', {
 				query,
 			})
 			.then(response => {
@@ -38,8 +36,8 @@ export const getStudios = (
 
 export const createStudio = ({ data }) => {
 	return async dispatch => {
-		return await axios
-			.post(`${ACCOUNT_SERVER_URL}/api/createStudio`, {
+		return await axiosAccount
+			.post('/api/createStudio', {
 				data,
 			})
 			.then(response => {
@@ -74,8 +72,8 @@ export const createStudio = ({ data }) => {
 
 export const editStudio = ({ studioId, memberId, data }) => {
 	return async dispatch => {
-		return await axios
-			.post(`${ACCOUNT_SERVER_URL}/api/editStudio`, {
+		return await axiosAccount
+			.post('/api/editStudio', {
 				studioId,
 				memberId,
 				data,
@@ -115,7 +113,7 @@ export const getStudioStore = () => {
 
 		dispatch({ type: 'REQUEST_STUDIO' });
 
-		return await axios
+		return await axiosAccount
 			.post('/api/getStudioStore', {
 				studioId,
 			})

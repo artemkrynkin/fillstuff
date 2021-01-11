@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { axiosFillstuff } from 'src/api/constants';
 
 export const getPositions = ({ showRequest = true, emptyData = false } = { showRequest: true, emptyData: false }) => {
 	return async (dispatch, getState) => {
@@ -11,7 +11,7 @@ export const getPositions = ({ showRequest = true, emptyData = false } = { showR
 		if (showRequest) dispatch({ type: 'REQUEST_POSITIONS' });
 		if (emptyData) dispatch({ type: 'EMPTY_POSITIONS' });
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/getPositions', {
 				studioId,
 				memberId,
@@ -40,7 +40,7 @@ export const getPosition = ({ params }) => {
 		const studioId = currentUser.settings.studio;
 		const memberId = currentUser.settings.member._id;
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/getPosition', {
 				studioId,
 				memberId,
@@ -67,7 +67,7 @@ export const createPosition = ({ data }) => {
 		const studioId = currentUser.settings.studio;
 		const memberId = currentUser.settings.member._id;
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/createPosition', {
 				studioId,
 				memberId,
@@ -104,7 +104,7 @@ export const editPosition = ({ params, data }) => {
 		const memberId = currentUser.settings.member._id;
 		const { positionId } = params;
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/editPosition', {
 				studioId,
 				memberId,
@@ -145,7 +145,7 @@ export const detachPositions = ({ params }) => {
 		const memberId = currentUser.settings.member._id;
 		const { positionId } = params;
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/detachPositions', {
 				studioId,
 				memberId,
@@ -186,7 +186,7 @@ export const archivePosition = ({ params, data }) => {
 		const { positionId } = params;
 		const { positionGroupId } = data;
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/archivePosition', {
 				studioId,
 				memberId,
@@ -225,7 +225,7 @@ export const archivePositionAfterEnded = ({ params, data }) => {
 		const memberId = currentUser.settings.member._id;
 		const { positionId } = params;
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/archivePositionAfterEnded', {
 				studioId,
 				memberId,

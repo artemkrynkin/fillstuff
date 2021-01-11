@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { axiosFillstuff } from 'src/api/constants';
 
 export const getWriteOffs = (
 	{ query, showRequest = true, mergeData = false, emptyData = false } = {
@@ -17,7 +17,7 @@ export const getWriteOffs = (
 		if (showRequest) dispatch({ type: 'REQUEST_WRITE_OFFS' });
 		if (emptyData) dispatch({ type: 'EMPTY_WRITE_OFFS' });
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/getWriteOffs', {
 				studioId,
 				memberId,
@@ -55,7 +55,7 @@ export const createWriteOff = ({ params, data }) => {
 		const memberId = currentUser.settings.member._id;
 		const { positionId } = params;
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/createWriteOff', {
 				studioId,
 				memberId,
@@ -95,7 +95,7 @@ export const cancelWriteOff = ({ params }) => {
 		const { writeOffId } = params;
 		const data = { cancellationRequestBy: memberId };
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/cancelWriteOff', {
 				studioId,
 				memberId,

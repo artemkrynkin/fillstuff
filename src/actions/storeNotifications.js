@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { axiosFillstuff } from 'src/api/constants';
 
 import { sleep } from 'shared/utils';
 
@@ -12,7 +12,7 @@ export const getStoreNotifications = () => {
 
 		dispatch({ type: 'REQUEST_STORE_NOTIFICATIONS' });
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/getStoreNotifications', {
 				studioId,
 				memberId,
@@ -41,7 +41,7 @@ export const getStoreNotification = ({ params }) => {
 		const studioId = currentUser.settings.studio;
 		const memberId = currentUser.settings.member._id;
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/getStoreNotification', {
 				studioId,
 				memberId,

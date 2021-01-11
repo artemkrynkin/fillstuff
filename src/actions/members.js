@@ -1,6 +1,4 @@
-import axios from 'axios';
-
-import { ACCOUNT_SERVER_URL } from 'src/api/constants';
+import { axiosAccount } from 'src/api/constants';
 
 export const getMembers = (
 	{ query = {}, showRequest = true, emptyData = false } = {
@@ -19,8 +17,8 @@ export const getMembers = (
 		if (showRequest) dispatch({ type: 'REQUEST_MEMBERS' });
 		if (emptyData) dispatch({ type: 'EMPTY_MEMBERS' });
 
-		return await axios
-			.post(`${ACCOUNT_SERVER_URL}/api/getMembers`, {
+		return await axiosAccount
+			.post('/api/getMembers', {
 				studioId,
 				memberId,
 				query,
@@ -47,8 +45,8 @@ export const getMember = ({ params }) => {
 		const studioId = currentUser.settings.studio;
 		const memberId = currentUser.settings.member._id;
 
-		return await axios
-			.post(`${ACCOUNT_SERVER_URL}/api/getMember`, {
+		return await axiosAccount
+			.post('/api/getMember', {
 				studioId,
 				memberId,
 				params,
@@ -74,8 +72,8 @@ export const editMember = ({ params, data }) => {
 		const studioId = currentUser.settings.studio;
 		const memberId = currentUser.settings.member._id;
 
-		return await axios
-			.post(`${ACCOUNT_SERVER_URL}/api/editMember`, {
+		return await axiosAccount
+			.post('/api/editMember', {
 				studioId,
 				memberId,
 				params,
@@ -106,8 +104,8 @@ export const deactivatedMember = ({ params }) => {
 		const studioId = currentUser.settings.studio;
 		const memberId = currentUser.settings.member._id;
 
-		return await axios
-			.post(`${ACCOUNT_SERVER_URL}/api/deactivatedMember`, {
+		return await axiosAccount
+			.post('/api/deactivatedMember', {
 				studioId,
 				memberId,
 				params,

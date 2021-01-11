@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { axiosFillstuff } from 'src/api/constants';
 
 export const getCharacteristics = ({ params }) => {
 	return async (dispatch, getState) => {
@@ -10,7 +10,7 @@ export const getCharacteristics = ({ params }) => {
 
 		dispatch({ type: 'REQUEST_CHARACTERISTICS' });
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/getCharacteristics', {
 				studioId,
 				memberId,
@@ -42,7 +42,7 @@ export const createCharacteristic = ({ data }) => {
 
 		dispatch({ type: 'REQUEST_CHARACTERISTICS' });
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/createCharacteristic', {
 				studioId,
 				memberId,

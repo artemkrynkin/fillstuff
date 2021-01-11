@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { axiosFillstuff } from 'src/api/constants';
 
 export const getInvoices = (
 	{ query, showRequest = true, mergeData = false, emptyData = false } = {
@@ -17,7 +17,7 @@ export const getInvoices = (
 		if (showRequest) dispatch({ type: 'REQUEST_INVOICES' });
 		if (emptyData) dispatch({ type: 'EMPTY_INVOICES' });
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/getInvoices', {
 				studioId,
 				memberId,
@@ -54,7 +54,7 @@ export const getInvoice = ({ params }) => {
 		const studioId = currentUser.settings.studio;
 		const memberId = currentUser.settings.member._id;
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/getInvoice', {
 				studioId,
 				memberId,
@@ -81,7 +81,7 @@ export const getMemberInvoices = ({ params }) => {
 		const studioId = currentUser.settings.studio;
 		const memberId = currentUser.settings.member._id;
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/getMemberInvoices', {
 				studioId,
 				memberId,
@@ -108,7 +108,7 @@ export const createInvoice = ({ params }) => {
 		const studioId = currentUser.settings.studio;
 		const memberId = currentUser.settings.member._id;
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/createInvoice', {
 				studioId,
 				memberId,
@@ -138,7 +138,7 @@ export const createInvoicePayment = ({ params, data }) => {
 		const memberId = currentUser.settings.member._id;
 		const { invoiceId } = params;
 
-		return await axios
+		return await axiosFillstuff
 			.post('/api/createInvoicePayment', {
 				studioId,
 				memberId,

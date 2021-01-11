@@ -1,13 +1,11 @@
-import axios from 'axios';
-
-import { ACCOUNT_SERVER_URL } from 'src/api/constants';
+import { axiosAccount } from 'src/api/constants';
 
 export const getMyAccount = () => {
 	return async dispatch => {
 		dispatch({ type: 'REQUEST_USER' });
 
-		return await axios
-			.post(`${ACCOUNT_SERVER_URL}/api/getMyAccount`)
+		return await axiosAccount
+			.post('/api/getMyAccount')
 			.then(response => {
 				dispatch({
 					type: 'RECEIVE_USER',
@@ -31,8 +29,8 @@ export const getMyAccount = () => {
 
 export const switchStudio = ({ data }) => {
 	return async dispatch => {
-		return await axios
-			.post(`${ACCOUNT_SERVER_URL}/api/switchStudio`, {
+		return await axiosAccount
+			.post('/api/switchStudio', {
 				data,
 			})
 			.then(response => {

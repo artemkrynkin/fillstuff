@@ -2,7 +2,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 // import {
 // } from '@fortawesome/free-brands-svg-icons';
 
-import { faFlashlight as fasFlashlight } from '@fortawesome/pro-solid-svg-icons';
+import { faFlashlight as fasFlashlight, faUser as fasUser } from '@fortawesome/pro-solid-svg-icons';
 
 import {
 	faTimes as farTimes,
@@ -22,6 +22,7 @@ library.add(
 	// Brands
 	// Solid
 	fasFlashlight,
+	fasUser,
 
 	// Regular
 	farTimes,

@@ -79,23 +79,15 @@ function LoginAndSignup(props) {
 				>
 					<Text style={styles.buttonText}>Войти в аккаунт</Text>
 				</Pressable>
-				<Pressable
-					onPress={() => {}}
-					style={({ pressed }) => (pressed ? [styles.buttonOutlined, styles.buttonOutlinedActive] : [styles.buttonOutlined])}
-				>
-					<Text style={styles.buttonOutlinedText}>Зарегистрироваться</Text>
-				</Pressable>
 			</View>
 		</SafeAreaView>
 	);
 }
 
-const mapDispatchToProps = dispatch => {
-	return {
-		getAccessToken: data => dispatch(getAccessToken(data)),
-		getMyAccount: () => dispatch(getMyAccount()),
-		getStudios: () => dispatch(getStudios()),
-	};
+const mapDispatchToProps = {
+	getAccessToken,
+	getMyAccount,
+	getStudios,
 };
 
 export default connect(null, mapDispatchToProps)(LoginAndSignup);

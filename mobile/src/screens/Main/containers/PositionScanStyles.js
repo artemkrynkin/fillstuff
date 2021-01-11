@@ -5,13 +5,13 @@ import theme from 'mobile/src/constants/theme';
 export default StyleSheet.create({
 	notEnoughPermission: {
 		alignItems: 'center',
-		backgroundColor: theme.slateGrey['3'],
+		backgroundColor: 'black',
+		flex: 1,
 		justifyContent: 'center',
-		height: '100%',
 	},
 	notEnoughPermissionTitle: {
 		color: 'white',
-		fontSize: 20,
+		fontSize: 22,
 		fontWeight: '600',
 		marginBottom: 10,
 	},
@@ -20,7 +20,7 @@ export default StyleSheet.create({
 		fontSize: 16,
 		textAlign: 'center',
 	},
-	linkText: {
+	notEnoughPermissionLinkText: {
 		color: theme.teal['300'],
 		fontSize: 16,
 		marginTop: 20,

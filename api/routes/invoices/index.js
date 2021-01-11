@@ -51,7 +51,7 @@ router.post(
 					populate: {
 						path: 'user',
 						model: User,
-						select: 'avatar name email',
+						select: 'picture name email',
 					},
 				},
 				{
@@ -66,7 +66,7 @@ router.post(
 					populate: {
 						path: 'user',
 						model: User,
-						select: 'avatar name email',
+						select: 'picture name email',
 					},
 				},
 			],
@@ -129,7 +129,7 @@ router.post(
 					populate: {
 						path: 'user',
 						model: User,
-						select: 'avatar name email',
+						select: 'picture name email',
 					},
 				},
 				{
@@ -144,7 +144,7 @@ router.post(
 					populate: {
 						path: 'user',
 						model: User,
-						select: 'avatar name email',
+						select: 'picture name email',
 					},
 				},
 			])
@@ -236,7 +236,7 @@ router.post(
 		).catch(err => next({ code: 2, err }));
 
 		const memberEditedPromise = Member.findById(member._id)
-			.populate('user', 'avatar name email', User)
+			.populate('user', 'picture name email', User)
 			.catch(err => next({ code: 2, err }));
 
 		const invoicePromise = Invoice.findById(newInvoice._id).catch(err => next({ code: 2, err }));
@@ -314,7 +314,7 @@ router.post(
 					populate: {
 						path: 'user',
 						model: User,
-						select: 'avatar name email',
+						select: 'picture name email',
 					},
 				},
 				{
@@ -329,7 +329,7 @@ router.post(
 					populate: {
 						path: 'user',
 						model: User,
-						select: 'avatar name email',
+						select: 'picture name email',
 					},
 				},
 			])

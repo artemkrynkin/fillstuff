@@ -19,7 +19,16 @@ import styles from './styles';
 let timer;
 
 function ModalPositionWriteOff(props) {
-	const { visible, onClose, position } = props;
+	const {
+		visible,
+		onClose,
+		position,
+		currentUser: {
+			data: currentUser,
+			// isFetching: isLoadingCurrentUser,
+			// error: errorCurrentUser
+		},
+	} = props;
 	const [availableQuantity, setAvailableQuantity] = useState(0);
 	const [writeOffQuantity, setWriteOffQuantity] = useState(0);
 	const [buttonChangeQuantityPressed, setButtonChangeQuantityPressed] = useState(false);
@@ -52,7 +61,7 @@ function ModalPositionWriteOff(props) {
 
 	const onWriteOffSubmit = async () => {
 		try {
-			await props.createWriteOff({ positionId: position._id }, { quantity: writeOffQuantity });
+			await props.createWriteOff({ params: { positionId: position._id }, data: { quantity: writeOffQuantity } });
 
 			await Promise.all(successWriteOffSound.playAsync(), Haptics.notificationAsync('success'));
 
@@ -135,7 +144,9 @@ function ModalPositionWriteOff(props) {
 													) : null}
 													{!position.isFree ? (
 														<Text style={styles.sellingPrice}>
-															{position.activeReceipt.unitSellingPrice}
+															{currentUser.settings.member.markupPosition
+																? position.activeReceipt.unitSellingPrice
+																: position.activeReceipt.unitSellingPrice - position.activeReceipt.unitMarkup}
 															{' ₽'}
 														</Text>
 													) : (
@@ -192,16 +203,22 @@ function ModalPositionWriteOff(props) {
 	);
 }
 
+const mapStateToProps = state => {
+	const { user } = state;
+
+	return {
+		currentUser: state.user,
+	};
+};
+
 ModalPositionWriteOff.propTypes = {
 	visible: PropTypes.bool.isRequired,
 	position: PropTypes.object,
 	onClose: PropTypes.func.isRequired,
 };
 
-const mapDispatchToProps = dispatch => {
-	return {
-		createWriteOff: (params, data) => dispatch(createWriteOff({ params, data })),
-	};
+const mapDispatchToProps = {
+	createWriteOff,
 };
 
-export default connect(null, mapDispatchToProps)(ModalPositionWriteOff);
+export default connect(mapStateToProps, mapDispatchToProps)(ModalPositionWriteOff);

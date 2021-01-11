@@ -31,7 +31,7 @@ const ReceiptConfirmCreate = props => {
 					Если вы&nbsp;закупили новую позицию, создайте поступление при помощи кнопки &laquo;Оформить закупку&raquo;.
 				</Typography>
 				<Typography variant="body1">
-					Если позиция уже используется вами, но&nbsp;не&nbsp;была внесена в&nbsp;Blikside, продолжите оформление здесь.
+					Если позиция уже используется вами, но&nbsp;не&nbsp;была внесена в&nbsp;Fillstuff, продолжите оформление здесь.
 				</Typography>
 				<DialogActions>
 					<Button

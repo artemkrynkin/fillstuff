@@ -107,7 +107,6 @@ const Settings = props => {
 									}
 									label="Включить наценку для платных позиций"
 									labelPlacement="end"
-									disabled
 								/>
 							</FormGroup>
 						</FormControl>

@@ -41,7 +41,7 @@ router.post(
 					populate: {
 						path: 'user',
 						model: User,
-						select: 'avatar name email',
+						select: 'picture name email',
 					},
 				},
 				{
@@ -113,7 +113,7 @@ router.post(
 					populate: {
 						path: 'user',
 						model: User,
-						select: 'avatar name email',
+						select: 'picture name email',
 					},
 				},
 				{
@@ -205,7 +205,7 @@ router.post(
 					populate: {
 						path: 'user',
 						model: User,
-						select: 'avatar name email',
+						select: 'picture name email',
 					},
 				},
 				{
@@ -361,7 +361,7 @@ router.post(
 					populate: {
 						path: 'user',
 						model: User,
-						select: 'avatar name email',
+						select: 'picture name email',
 					},
 				},
 				{

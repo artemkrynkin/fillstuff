@@ -6,7 +6,7 @@ import ModalPositionGroup from 'mobile/src/screens/Modals/PositionGroup';
 
 import { sleep } from 'mobile/src/helpers/utils';
 
-import ViewContainer from './View';
+import View from './View';
 
 function Index(props) {
 	const [cameraScanned, setCameraScanned] = useState(false);
@@ -56,7 +56,7 @@ function Index(props) {
 
 	return (
 		<>
-			<ViewContainer
+			<View
 				modalData={modalData}
 				modals={modals}
 				onVisibleModalByName={onVisibleModalByName}

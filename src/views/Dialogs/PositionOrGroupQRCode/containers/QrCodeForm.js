@@ -50,8 +50,8 @@ const QrCodeForm = props => {
 			info: {
 				title: infoMetaGenerate(formSettings.printDestination),
 				subject: infoMetaGenerate(formSettings.printDestination, true),
-				creator: 'Blikside',
-				producer: 'Blikside',
+				creator: 'Fillstuff',
+				producer: 'Fillstuff',
 			},
 			defaultStyle: {
 				font: 'Nunito',

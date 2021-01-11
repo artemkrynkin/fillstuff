@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { ACCOUNT_SERVER_URL } from 'mobile/src/api/constants';
+import { sleep } from '../helpers/utils';
 
 export const getStudios = (
 	{ query, showRequest } = {
@@ -30,6 +31,25 @@ export const getStudios = (
 					type: 'ERROR_STUDIOS',
 					payload: error,
 				});
+
+				return Promise.reject({ status: 'error' });
+			});
+	};
+};
+
+export const getStudio = ({ params }) => {
+	return async dispatch => {
+		return await axios
+			.post(`${ACCOUNT_SERVER_URL}/api/getStudio`, {
+				params,
+			})
+			.then(response => {
+				const studio = response.data;
+
+				return Promise.resolve({ status: 'success', data: studio });
+			})
+			.catch(error => {
+				console.error(error);
 
 				return Promise.reject({ status: 'error' });
 			});

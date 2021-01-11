@@ -17,13 +17,14 @@ export default StyleSheet.create({
 	},
 	stubTitle: {
 		color: theme.blueGrey['900'],
-		fontSize: 20,
+		fontSize: 22,
 		fontWeight: '600',
 		marginBottom: 10,
+		textAlign: 'center',
 	},
 	stubSubhead: {
-		color: theme.blueGrey['600'],
-		fontSize: 15,
+		color: theme.blueGrey['700'],
+		fontSize: 16,
 	},
 	button: {
 		borderRadius: 8,

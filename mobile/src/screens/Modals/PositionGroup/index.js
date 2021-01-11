@@ -19,7 +19,7 @@ function ModalPositionGroup(props) {
 	const { visible, onClose, positionGroup, onVisibleModalByName, onDisableModalByName } = props;
 
 	const onOpenPosition = async positionId => {
-		const { data: position } = await props.getPosition({ positionId });
+		const { data: position } = await props.getPosition({ params: { positionId } });
 
 		onDisableModalByName('modalPositionGroup', 'positionGroup');
 
@@ -79,10 +79,8 @@ function ModalPositionGroup(props) {
 	);
 }
 
-const mapDispatchToProps = dispatch => {
-	return {
-		getPosition: params => dispatch(getPosition({ params })),
-	};
+const mapDispatchToProps = {
+	getPosition,
 };
 
 export default connect(null, mapDispatchToProps)(ModalPositionGroup);

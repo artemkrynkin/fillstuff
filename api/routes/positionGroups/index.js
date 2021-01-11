@@ -29,7 +29,7 @@ router.post(
 router.post(
 	'/getPositionGroup',
 	isAuthed,
-	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
+	(req, res, next) => hasPermissions(req, res, next, ['products.scanning']),
 	(req, res, next) => {
 		const {
 			params: { positionGroupId, qrcodeId },

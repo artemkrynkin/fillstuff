@@ -1,6 +1,8 @@
 import React from 'react';
-import { Image, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+import Avatar from 'mobile/src/components/Avatar';
 
 import styles from './HeaderStyles';
 
@@ -10,18 +12,12 @@ function Header(props) {
 	return (
 		<SafeAreaView style={styles.header}>
 			<TouchableOpacity
-				style={styles.user}
 				onPress={() => {
 					onVisibleModalByName('modalUserMenu');
 				}}
 				activeOpacity={0.6}
 			>
-				<Image
-					style={styles.userAvatar}
-					source={{
-						uri: currentUser.picture,
-					}}
-				/>
+				<Avatar sourceUri={currentUser.picture} />
 			</TouchableOpacity>
 		</SafeAreaView>
 	);

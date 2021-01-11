@@ -23,7 +23,7 @@ const definingBoxDetectQrRB = Asset.fromModule(require('mobile/assets/images/cam
 const definingBoxDetectQrRT = Asset.fromModule(require('mobile/assets/images/camera/defining_box_detect_qr_rt.svg'));
 
 function PositionScan(props) {
-	const { modalData, onVisibleModalByName, cameraScanned, setCameraScanned } = props;
+	const { modals, modalData, onVisibleModalByName, cameraScanned, setCameraScanned } = props;
 	const isFocusedScreen = useIsFocused();
 	const [hasPermissionCamera, setHasPermissionCamera] = useState(null);
 	const [barcodeObject, setBarcodeObject] = useState(null);
@@ -53,7 +53,7 @@ function PositionScan(props) {
 				case 's-p': {
 					setCameraScanned(true);
 
-					const { data: position } = await props.getPosition({ qrcodeId: barcodeData.id });
+					const { data: position } = await props.getPosition({ params: { qrcodeId: barcodeData.id } });
 
 					if (position?.length) {
 						const positionGroup = {
@@ -69,7 +69,7 @@ function PositionScan(props) {
 				case 's-pg': {
 					setCameraScanned(true);
 
-					const { data: positionGroup } = await props.getPositionGroup({ qrcodeId: barcodeData.id });
+					const { data: positionGroup } = await props.getPositionGroup({ params: { qrcodeId: barcodeData.id } });
 
 					return onVisibleModalByName('modalPositionGroup', 'positionGroup', positionGroup);
 				}
@@ -108,7 +108,7 @@ function PositionScan(props) {
 				<Text style={styles.notEnoughPermissionTitle}>Разрешите доступ</Text>
 				<Text style={styles.notEnoughPermissionSubhead}>Чтобы распознавать QR-коды, нужен доступ к&nbsp;камере</Text>
 				<TouchableOpacity onPress={() => onOpenSettings()}>
-					<Text style={styles.linkText}>Предоставить доступ</Text>
+					<Text style={styles.notEnoughPermissionLinkText}>Предоставить доступ</Text>
 				</TouchableOpacity>
 			</View>
 		);
@@ -118,8 +118,7 @@ function PositionScan(props) {
 		<>
 			{isFocusedScreen ? (
 				<BarCodeScanner
-					zoom={0}
-					onBarCodeScanned={onBarCodeScanned}
+					onBarCodeScanned={modals.modalUserMenu ? undefined : onBarCodeScanned}
 					barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
 					style={StyleSheet.absoluteFillObject}
 				/>
@@ -187,11 +186,9 @@ function PositionScan(props) {
 	);
 }
 
-const mapDispatchToProps = dispatch => {
-	return {
-		getPosition: params => dispatch(getPosition({ params })),
-		getPositionGroup: params => dispatch(getPositionGroup({ params })),
-	};
+const mapDispatchToProps = {
+	getPosition,
+	getPositionGroup,
 };
 
 export default connect(null, mapDispatchToProps)(PositionScan);

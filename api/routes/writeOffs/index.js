@@ -61,7 +61,7 @@ router.post(
 					populate: {
 						path: 'user',
 						model: User,
-						select: 'avatar name email',
+						select: 'picture name email',
 					},
 				},
 				{
@@ -91,6 +91,82 @@ router.post(
 
 			writeOffs = writeOffs.filter(writeOff => writeOff.member.roles.some(role => role.includes(roleFilter)));
 		}
+
+		res.json({
+			data: writeOffs,
+			paging: {
+				...paging,
+				totalCount: writeOffsCount,
+			},
+		});
+	}
+);
+
+router.post(
+	'/getUserWriteOffs',
+	isAuthed,
+	(req, res, next) => hasPermissions(req, res, next, ['products.scanning']),
+	async (req, res, next) => {
+		const {
+			studioId,
+			memberId,
+			query: { page, limit, dateStart, dateEnd, position, onlyCanceled },
+		} = req.body;
+
+		const conditions = {
+			studio: studioId,
+			member: memberId,
+		};
+
+		if (dateStart && dateEnd) {
+			conditions.createdAt = {
+				$gte: dateStart,
+				$lte: dateEnd,
+			};
+		}
+
+		if (position && !/all|paid|free/.test(position)) conditions.position = position;
+
+		if (position && /paid|free/.test(position)) conditions.isFree = position !== 'paid';
+
+		if (onlyCanceled) conditions.canceled = onlyCanceled;
+
+		const writeOffPromise = WriteOff.paginate(conditions, {
+			sort: { createdAt: -1 },
+			lean: true,
+			leanWithId: false,
+			populate: [
+				{
+					path: 'member',
+					select: 'roles user',
+					model: Member,
+					populate: {
+						path: 'user',
+						model: User,
+						select: 'picture name email',
+					},
+				},
+				{
+					path: 'position',
+					populate: {
+						path: 'characteristics',
+					},
+					select: 'isArchived name unitRelease characteristics',
+				},
+			],
+			page,
+			limit,
+			customLabels: {
+				docs: 'data',
+				meta: 'paging',
+			},
+		}).catch(err => next({ code: 2, err }));
+		const writeOffCountPromise = WriteOff.countDocuments({ studio: studioId, member: memberId });
+
+		const writeOffsResult = await writeOffPromise;
+		const writeOffsCount = await writeOffCountPromise;
+
+		let { data: writeOffs, paging } = writeOffsResult;
 
 		res.json({
 			data: writeOffs,
@@ -487,7 +563,7 @@ router.post(
 					populate: {
 						path: 'user',
 						model: User,
-						select: 'avatar name email',
+						select: 'picture name email',
 					},
 				},
 				{

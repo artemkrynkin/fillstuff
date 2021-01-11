@@ -6,6 +6,8 @@ import { registerRootComponent } from 'expo';
 import AppLoading from 'expo-app-loading';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import moment from 'moment';
+import 'moment/locale/ru';
 
 import { initStore } from 'mobile/src/store';
 
@@ -14,6 +16,9 @@ import Routes from 'mobile/src/routes';
 import 'mobile/src/helpers/fontAwesomeIcons';
 
 const store = initStore({});
+
+moment.locale('ru');
+moment().format();
 
 async function loadResourcesAsync() {
 	await Promise.all([

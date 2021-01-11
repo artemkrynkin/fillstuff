@@ -16,9 +16,7 @@ const user = (
 		case 'RECEIVE_USER': {
 			let stateData = action.payload;
 
-			console.log(1);
-
-			if (stateData && ~stateData.picture.indexOf('localhost') && __DEV__) {
+			if (__DEV__ && stateData && stateData?.picture) {
 				stateData.picture = stateData.picture.replace('localhost', '192.168.0.144');
 			}
 

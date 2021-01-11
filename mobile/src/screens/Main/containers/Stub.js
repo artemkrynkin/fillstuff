@@ -7,6 +7,10 @@ import styles from './StubStyles';
 const scanQrStudioInvitationStub = Asset.fromModule(require('mobile/assets/images/stubs/scan_qr_studio_invitation.png'));
 
 function Stub(props) {
+	const goToJoiningStudio = () => {
+		props.navigation.navigate('JoiningStudio');
+	};
+
 	return (
 		<View style={styles.stub}>
 			<Image
@@ -15,9 +19,12 @@ function Stub(props) {
 					uri: scanQrStudioInvitationStub.uri,
 				}}
 			/>
-			<Text style={styles.stubTitle}>Вы&nbsp;не&nbsp;привязаны к студии</Text>
+			<Text style={styles.stubTitle}>Вы&nbsp;не&nbsp;приглашены{'\n'}ни&nbsp;в&nbsp;одну студию</Text>
 			<Text style={styles.stubSubhead}>Отсканируйте QR-код приглашения студии</Text>
-			<Pressable onPress={() => {}} style={({ pressed }) => (pressed ? [styles.button, styles.buttonActive] : [styles.button])}>
+			<Pressable
+				onPress={() => goToJoiningStudio()}
+				style={({ pressed }) => (pressed ? [styles.button, styles.buttonActive] : [styles.button])}
+			>
 				<Text style={styles.buttonText}>Сканировать QR-код</Text>
 			</Pressable>
 		</View>

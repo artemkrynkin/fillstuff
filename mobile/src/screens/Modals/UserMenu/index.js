@@ -1,9 +1,11 @@
 import React from 'react';
-import { Modal, View, Text, TouchableOpacity, TouchableHighlight, FlatList, Alert, Image } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, TouchableHighlight, FlatList, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 
 import theme from 'mobile/src/constants/theme';
+
+import Avatar from 'mobile/src/components/Avatar';
 
 import { logout } from 'mobile/src/actions/authentication';
 
@@ -69,17 +71,12 @@ function ModalUserMenu(props) {
 				ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
 				ListHeaderComponent={
 					<View style={styles.contentHeader}>
-						<Image
-							style={styles.userAvatar}
-							source={{
-								uri: currentUser.picture,
-							}}
-						/>
+						<Avatar style={styles.userAvatar} sourceUri={currentUser.picture} />
 						<Text style={styles.userName}>{currentUser.name}</Text>
 						{currentStudio ? <Text style={styles.studioName}>{currentStudio.name}</Text> : null}
 					</View>
 				}
-				renderItem={({ item: menuItem, index }) => (
+				renderItem={({ item: menuItem }) => (
 					<TouchableHighlight onPress={menuItem.onPress} underlayColor={theme.brightness['4']}>
 						<View style={styles.menuItem}>
 							<View style={styles.menuIcon}>{menuItem.icon}</View>
@@ -109,10 +106,8 @@ const mapStateToProps = state => {
 	};
 };
 
-const mapDispatchToProps = dispatch => {
-	return {
-		logout: () => dispatch(logout()),
-	};
+const mapDispatchToProps = {
+	logout,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ModalUserMenu);

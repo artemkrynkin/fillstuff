@@ -20,7 +20,7 @@ export default StyleSheet.create({
 	logo: {
 		marginLeft: 'auto',
 		marginRight: 'auto',
-		marginBottom: 50,
+		marginBottom: 100,
 	},
 	button: {
 		borderRadius: 8,

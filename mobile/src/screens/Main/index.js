@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 
 import Index from './containers/index';
 
-// import styles from './styles';
-
 function Main(props) {
 	return <Index {...props} />;
 }
@@ -24,8 +22,6 @@ const mapStateToProps = state => {
 	};
 };
 
-const mapDispatchToProps = dispatch => {
-	return {};
-};
+const mapDispatchToProps = {};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main);

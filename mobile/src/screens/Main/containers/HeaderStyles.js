@@ -8,13 +8,4 @@ export default StyleSheet.create({
 		position: 'absolute',
 		zIndex: 1,
 	},
-	user: {
-		height: 45,
-		width: 45,
-	},
-	userAvatar: {
-		borderRadius: 42,
-		height: '100%',
-		width: '100%',
-	},
 });

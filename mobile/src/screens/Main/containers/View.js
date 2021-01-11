@@ -32,7 +32,7 @@ function View(props) {
 				}
 			/>
 			<Header currentUser={currentUser} onVisibleModalByName={onVisibleModalByName} />
-			{currentStudio ? <PositionScan {...props} /> : <Stub />}
+			{currentStudio ? <PositionScan {...props} /> : <Stub {...props} />}
 		</>
 	);
 }

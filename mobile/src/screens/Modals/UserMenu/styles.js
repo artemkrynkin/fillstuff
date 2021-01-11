@@ -4,14 +4,15 @@ import theme from 'mobile/src/constants/theme';
 
 export default StyleSheet.create({
 	modalHeader: {
-		paddingLeft: 10,
+		paddingLeft: 15,
 		paddingRight: 10,
 		paddingBottom: 10,
-		paddingTop: 10,
+		paddingTop: 15,
 	},
 	modalClose: {
 		alignItems: 'center',
 		borderRadius: 30,
+		marginLeft: 'auto',
 		justifyContent: 'center',
 		height: 34,
 		width: 34,
@@ -25,7 +26,6 @@ export default StyleSheet.create({
 		paddingRight: 15,
 	},
 	userAvatar: {
-		borderRadius: 42,
 		height: 70,
 		width: 70,
 	},

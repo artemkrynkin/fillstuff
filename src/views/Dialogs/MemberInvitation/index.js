@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import QRCode from 'qrcode';
+import { v4 as uuidv4 } from 'uuid';
 
 import DialogContent from '@material-ui/core/DialogContent';
 import Typography from '@material-ui/core/Typography';
@@ -20,8 +21,10 @@ function MemberInvitation(props) {
 	const onEnterDialog = () => {
 		const qrData = JSON.stringify({
 			type: 'm-i',
-			studioId: currentStudio._id,
+			id: currentStudio._id,
+			code: uuidv4(),
 		});
+
 		const options = {
 			color: 'colored',
 			logo: currentStudio.avatar ? 'image' : 'fillstuff',

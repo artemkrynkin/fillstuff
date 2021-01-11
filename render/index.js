@@ -69,7 +69,7 @@ app.use('/api', (req, res) => {
 	const redirectUrl = `${req.baseUrl}${req.path}`;
 	res.redirect(
 		req.method === 'POST' || req.xhr ? 307 : 301,
-		process.env.NODE_ENV === 'production' ? `https://blikside.com${redirectUrl}` : `http://localhost:3001${redirectUrl}`
+		process.env.NODE_ENV === 'production' ? `https://fillstuff.keeberink.com${redirectUrl}` : `http://localhost:3001${redirectUrl}`
 	);
 });
 
@@ -77,7 +77,7 @@ app.use('/auth', (req, res) => {
 	const redirectUrl = `${req.baseUrl}${req.path}`;
 	res.redirect(
 		req.method === 'POST' || req.xhr ? 307 : 301,
-		process.env.NODE_ENV === 'production' ? `https://blikside.com${redirectUrl}` : `http://localhost:3001${redirectUrl}`
+		process.env.NODE_ENV === 'production' ? `https://fillstuff.keeberink.com${redirectUrl}` : `http://localhost:3001${redirectUrl}`
 	);
 });
 

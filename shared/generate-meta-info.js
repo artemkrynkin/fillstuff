@@ -3,7 +3,7 @@ const striptags = require('striptags');
 // const draft = require('./draft-utils');
 
 const DEFAULT_META = {
-	title: 'Blikside',
+	title: 'Fillstuff',
 	description: 'Складской учет для тату-студий',
 };
 

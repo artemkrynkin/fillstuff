@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Создайте отчёт, чтобы помочь нам улучшить Blikside
+about: Создайте отчёт, чтобы помочь нам улучшить Fillstuff
 title: "[BUG] Отчёт об ошибке"
 labels: bug, question
 assignees: artemkrynkin

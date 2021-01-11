@@ -1,8 +1,8 @@
 <div align="center">
 
-  [![Blikside](./public/img/media.png)](https://blikside.com)
+  [![Fillstuff](./public/img/media.png)](https://fillstuff.keeberink.com)
 
-  ### Blikside
+  ### Fillstuff
 
 </div>
 
@@ -38,7 +38,7 @@
 #### Структура папок
 
 ```sh
-blikside/
+fillstuff/
 ├── api        # API сервер
 ├── mobile     # Мобильное приложения (сборка с Expo)
 ├── public     # Открытые файлы, используемые во внешнем интерфейсе
@@ -58,17 +58,17 @@ blikside/
 
 Для начала клонируйте репозиторий:
 ```sh
-git clone git@github.com:artemkrynkin/blikside.git
+git clone git@github.com:artemkrynkin/fillstuff.git
 ```
 Если вы получили сообщение `Permission denied` используя `ssh` прочитайте [это](https://help.github.com/articles/error-permission-denied-publickey/)
 или используйте `https` ссылку в качестве запасного варианта.
 ```sh
-git clone https://github.com/artemkrynkin/blikside.git
+git clone https://github.com/artemkrynkin/fillstuff.git
 ```
 
 #### Установка
 
-Blikside имеет 3 больших этапа установки:
+Fillstuff имеет 3 больших этапа установки:
 
 1. **Установка MongoDB**: см. [Документацию MongoDB](https://docs.mongodb.com/guides/server/install/) для получения инструкций по установке его с вашей ОС.
 2. **Установка yarn**: мы используем yarn для установки зависимостей JavaScript. Инструкции по установке смотрите в [документации yarn](https://yarnpkg.com/en/docs/install).
@@ -83,7 +83,7 @@ node shared/install-dependencies.js
 
 #### Фоновые сервисы
 
-Каждый раз когда вы хотите запустить Blikside локально, вы должны запустить MongoDB работающую в фоновом режиме.
+Каждый раз когда вы хотите запустить Fillstuff локально, вы должны запустить MongoDB работающую в фоновом режиме.
 
 ```sh
 mongod

@@ -9,11 +9,11 @@ export default StyleSheet.create({
 		marginBottom: 'auto',
 	},
 	stubImage: {
-		height: 260,
+		height: 280,
 		marginBottom: 30,
 		marginLeft: 'auto',
 		marginRight: 'auto',
-		width: '70%',
+		width: 260,
 	},
 	stubTitle: {
 		color: theme.blueGrey['900'],

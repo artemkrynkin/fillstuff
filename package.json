@@ -1,6 +1,6 @@
 {
   "name": "fillstuff",
-  "version": "1.2.2-alpha",
+  "version": "1.2.3-alpha",
   "private": true,
   "devDependencies": {
     "@babel/plugin-proposal-throw-expressions": "^7.12.1",

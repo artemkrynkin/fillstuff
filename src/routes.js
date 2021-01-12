@@ -39,7 +39,7 @@ const redirectLogin = () => {
 
 	urlLogin.searchParams.set('returnTo', CLIENT_URL);
 
-	// window.location.href = urlLogin;
+	window.location.href = urlLogin;
 };
 
 const HomeViewRedirectFallback = signedOutFallback(props => {

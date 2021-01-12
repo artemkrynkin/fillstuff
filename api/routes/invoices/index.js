@@ -8,7 +8,10 @@ import Emitter from 'api/utils/emitter';
 
 import User from 'api/models/user';
 import Member from 'api/models/member';
-import Invoice from 'api/models/Invoice';
+import Invoice from 'api/models/invoice';
+import WriteOff from 'api/models/writeOff';
+import Position from 'api/models/position';
+import Characteristic from 'api/models/characteristic';
 
 const router = Router();
 
@@ -62,6 +65,7 @@ router.post(
 				},
 				{
 					path: 'payments.merchant',
+					model: Member,
 					select: 'user',
 					populate: {
 						path: 'user',
@@ -140,6 +144,7 @@ router.post(
 				},
 				{
 					path: 'payments.merchant',
+					model: Member,
 					select: 'user',
 					populate: {
 						path: 'user',
@@ -171,10 +176,13 @@ router.post(
 			.populate([
 				{
 					path: 'billingPeriodWriteOffs',
+					model: WriteOff,
 					populate: {
 						path: 'position',
+						model: Position,
 						populate: {
 							path: 'characteristics',
+							model: Characteristic,
 						},
 					},
 				},
@@ -325,6 +333,7 @@ router.post(
 				},
 				{
 					path: 'payments.merchant',
+					model: Member,
 					select: 'user',
 					populate: {
 						path: 'user',

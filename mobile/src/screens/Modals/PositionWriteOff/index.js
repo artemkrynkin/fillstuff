@@ -113,7 +113,7 @@ function ModalPositionWriteOff(props) {
 					swipeDirection={['down']}
 					style={styles.modal}
 				>
-					<View style={{ ...styles.modalContainer, paddingBottom: insets.bottom }}>
+					<View style={{ ...styles.modalContainer, paddingBottom: insets.bottom || 15 }}>
 						{position ? (
 							<>
 								<View style={styles.modalHeader}>

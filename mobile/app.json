@@ -24,7 +24,11 @@
     ],
     "ios": {
       "bundleIdentifier": "keeberink.fillstuff",
-      "buildNumber": "1"
+      "buildNumber": "2"
+    },
+    "android": {
+      "package": "keeberink.fillstuff",
+      "versionCode": 1
     },
     "description": "",
     "githubUrl": "https://github.com/artemkrynkin/fillstuff"

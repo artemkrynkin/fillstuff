@@ -100,7 +100,7 @@ function ModalJoiningStudio(props) {
 			<StatusBar barStyle="light-content" />
 			<SafeAreaInsetsContext.Consumer>
 				{insets => (
-					<View style={[styles.screen, { paddingBottom: insets.bottom }]}>
+					<View style={[styles.screen, { paddingBottom: insets.bottom || 20 }]}>
 						<View style={styles.header}>
 							<TouchableOpacity
 								style={styles.close}

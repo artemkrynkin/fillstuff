@@ -21,8 +21,8 @@ const WriteOffs = props => {
 	const [page, setPage] = useState(1);
 
 	const layoutMetaInfo = {
-		pageName: 'dashboard',
-		pageTitle: 'Монитор',
+		pageName: 'write-offs',
+		pageTitle: 'Списания',
 	};
 
 	const filterOptions = {

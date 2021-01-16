@@ -14,8 +14,8 @@ const Settings = props => {
 	const { currentUser, currentStudio } = props;
 
 	const layoutMetaInfo = {
-		pageName: 'dashboard',
-		pageTitle: 'Монитор',
+		pageName: 'settings',
+		pageTitle: 'Настройки',
 	};
 
 	return (

@@ -250,6 +250,7 @@ router.post(
 		} = req.body;
 
 		const position = await Position.findById(positionId).catch(err => next({ code: 2, err }));
+		const childPositionId = position.childPosition;
 
 		if (!position.childPosition) {
 			return next({
@@ -268,7 +269,9 @@ router.post(
 
 		if (positionErr) return next({ code: positionErr.errors ? 5 : 2, err: positionErr });
 
-		Position.findByIdAndUpdate(position.childPosition, { $unset: { parentPosition: 1 } }).catch(err => next({ code: 2, err }));
+		Position.findByIdAndUpdate(childPositionId, { $unset: { parentPosition: 1, archivedAfterEnded: 1 } }).catch(err =>
+			next({ code: 2, err })
+		);
 
 		if (position.notifyReceiptMissing && position.deliveryIsExpected.length === 0 && !position.hasReceipts) {
 			Emitter.emit('newStoreNotification', {

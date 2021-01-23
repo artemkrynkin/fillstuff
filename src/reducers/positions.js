@@ -71,6 +71,7 @@ const positions = (
 
 				stateData.forEach(position => {
 					if ((position.childPosition || position.parentPosition) === action.payload.positionId) {
+						if (position.parentPosition) delete position.archivedAfterEnded;
 						delete position[position.childPosition ? 'childPosition' : 'parentPosition'];
 					}
 				});

@@ -9,8 +9,8 @@ import styles from './WriteOffStyles';
 function WriteOff(props) {
 	const { writeOff } = props;
 
-	const sellingPrice = new Intl.NumberFormat('ru-RU').format(writeOff.sellingPrice);
-	const unitSellingPrice = new Intl.NumberFormat('ru-RU').format(writeOff.unitSellingPrice);
+	const sellingPrice = writeOff.sellingPrice; //new Intl.NumberFormat('ru-RU').format(writeOff.sellingPrice);
+	const unitSellingPrice = writeOff.unitSellingPrice; //new Intl.NumberFormat('ru-RU').format(writeOff.unitSellingPrice);
 
 	return (
 		<View style={styles.container}>

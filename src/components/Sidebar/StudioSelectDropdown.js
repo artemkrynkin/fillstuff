@@ -90,7 +90,7 @@ function StudioSelectDropdown(props) {
 					<div className={styles.dropdownStudiosHeader}>
 						<FilterSearchTextField
 							inputRef={searchTextFieldStudios}
-							placeholder="Поиск студий"
+							placeholder="Поиск студии"
 							value={searchTextStudios}
 							onChange={onTypeSearchTextStudios}
 							fullWidth

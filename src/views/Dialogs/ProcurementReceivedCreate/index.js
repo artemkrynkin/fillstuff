@@ -87,6 +87,9 @@ class ProcurementReceivedCreate extends Component {
 				return;
 			}
 
+			if (procurement.pricePositions === 0) actions.setFieldValue('pricePositions', 0);
+			if (procurement.costDelivery === 0) actions.setFieldValue('costDelivery', 0);
+
 			actions.setFieldValue('totalPrice', indicators.pricePositions);
 
 			// Если есть платные позиции и стоимость доставки компенсируется за счет платных позиций

@@ -202,23 +202,21 @@ const ProcurementForm = props => {
 								</Grid>
 							</Grid>
 						</Collapse>
-						{formEditable ? (
-							<Grid item>
-								<Field
-									type="checkbox"
-									name="noInvoice"
-									Label={{ label: 'Чек/накладная отсутствует' }}
-									as={CheckboxWithLabel}
-									onChange={({ target: { checked } }) => {
-										setFieldValue('noInvoice', checked);
+						<Grid item>
+							<Field
+								type="checkbox"
+								name="noInvoice"
+								Label={{ label: 'Чек/накладная отсутствует' }}
+								as={CheckboxWithLabel}
+								onChange={({ target: { checked } }) => {
+									setFieldValue('noInvoice', checked);
 
-										if (checked && values.invoiceNumber) setFieldValue('invoiceNumber', '');
-										if (checked && values.invoiceDate) setFieldValue('invoiceDate', '');
-									}}
-									disabled={isSubmitting || !formEditable}
-								/>
-							</Grid>
-						) : null}
+									if (checked && values.invoiceNumber) setFieldValue('invoiceNumber', '');
+									if (checked && values.invoiceDate) setFieldValue('invoiceDate', '');
+								}}
+								disabled={isSubmitting || !formEditable}
+							/>
+						</Grid>
 					</Grid>
 				</Grid>
 

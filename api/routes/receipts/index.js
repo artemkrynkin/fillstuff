@@ -71,8 +71,7 @@ router.post(
 		await Promise.all([
 			newReceipt.save(),
 			Position.findByIdAndUpdate(newReceipt.position, {
-				$set: { activeReceipt: newReceipt, hasReceipts: true },
-				$unset: { notifyReceiptMissing: 1 },
+				$set: { activeReceipt: newReceipt, hasReceipts: true, notifyReceiptMissing: false },
 				$push: { receipts: newReceipt },
 			}),
 		]);

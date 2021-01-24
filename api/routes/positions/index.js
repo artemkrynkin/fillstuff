@@ -165,6 +165,7 @@ router.post(
 		const position = await Position.findById(positionId).catch(err => next({ code: 2, err }));
 
 		if (existIsNotSame('name', position, positionEditable)) position.name = positionEditable.name;
+		if (existIsNotSame('printDestination', position, positionEditable)) position.printDestination = positionEditable.printDestination;
 		if (existIsNotSame('minimumBalance', position, positionEditable)) position.minimumBalance = positionEditable.minimumBalance;
 		if (existIsNotSame('characteristics', position, positionEditable)) position.characteristics = positionEditable.characteristics;
 		if (existIsNotSame('shops', position, positionEditable)) position.shops = positionEditable.shops;

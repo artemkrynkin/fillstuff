@@ -235,7 +235,7 @@ router.post(
 			}
 
 			if (position.notifyReceiptMissing) {
-				positionUpdate.$unset.notifyReceiptMissing = 1;
+				positionUpdate.$set.notifyReceiptMissing = false;
 			}
 
 			if (newProcurement.status === 'expected') {

@@ -1,4 +1,4 @@
-import React, { Fragment, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import ClassNames from 'classnames';
 
@@ -50,7 +50,7 @@ const DeliveryIsExpected = props => {
 		: 'unconfirmed';
 
 	return (
-		<Fragment>
+		<>
 			<IconButton
 				ref={refDropdownActions}
 				className={ClassNames({
@@ -112,14 +112,14 @@ const DeliveryIsExpected = props => {
 				<div className={styles.info}>
 					<div className={styles.infoItem}>{procurement.shop.name}</div>
 					{procurement.comment ? (
-						<Fragment>
+						<>
 							<div className={styles.infoItem}>&nbsp;</div>
 							<Tooltip title={<div className={styles.commentText}>{procurement.comment}</div>} placement="bottom">
 								<span className={styles.commentIcon}>
 									<FontAwesomeIcon icon={['fal', 'comment']} />
 								</span>
 							</Tooltip>
-						</Fragment>
+						</>
 					) : null}
 				</div>
 			</div>
@@ -184,7 +184,7 @@ const DeliveryIsExpected = props => {
 					</MenuItem>
 				</MenuList>
 			</Dropdown>
-		</Fragment>
+		</>
 	);
 };
 

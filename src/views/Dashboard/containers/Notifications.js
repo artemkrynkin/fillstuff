@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ClassNames from 'classnames';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -52,7 +52,7 @@ const Notifications = props => {
 				{Object.keys(storeNotifications).map(notificationType => (
 					<Grid key={notificationType} className={styles.grid} xs={4} item>
 						{storeNotifications[notificationType].length ? (
-							<Fragment>
+							<>
 								<div className={styles.notifications}>
 									{storeNotifications[notificationType].map((notification, index) => (
 										<Notification
@@ -74,7 +74,7 @@ const Notifications = props => {
 										{`Еще ${storeNotifications[notificationType].length - 1}`}
 									</ButtonBase>
 								) : null}
-							</Fragment>
+							</>
 						) : (
 							<NotificationCardGridEmpty notificationType={notificationType} />
 						)}

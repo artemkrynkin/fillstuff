@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Typography from '@material-ui/core/Typography';
@@ -13,7 +13,7 @@ const ReceiptsMissing = props => {
 	} = props;
 
 	return (
-		<Fragment>
+		<>
 			<div className={styles.header}>
 				<FontAwesomeIcon className={styles.notificationIcon} icon={['fal-c', 'receipts-missing']} />
 				<Typography className={styles.title} variant="h6">
@@ -24,7 +24,7 @@ const ReceiptsMissing = props => {
 				Создайте заказ или оформите закупку
 			</Typography>
 			<PositionSummary name={position.name} characteristics={position.characteristics} avatar />
-		</Fragment>
+		</>
 	);
 };
 

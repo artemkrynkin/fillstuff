@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import Typography from '@material-ui/core/Typography';
 
@@ -20,11 +20,11 @@ const Tasks = () => {
 				}}
 				imageSrc={statisticsEmpty}
 				content={
-					<Fragment>
+					<>
 						<Typography variant="h6" gutterBottom>
 							У вас еще нет задач
 						</Typography>
-					</Fragment>
+					</>
 				}
 			/>
 		</div>

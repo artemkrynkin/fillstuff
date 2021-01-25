@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Typography from '@material-ui/core/Typography';
@@ -15,7 +15,7 @@ const PositionEnds = props => {
 	const remainingQuantity = position.receipts.reduce((sum, receipt) => sum + receipt.current.quantity, 0);
 
 	return (
-		<Fragment>
+		<>
 			<div className={styles.header}>
 				<FontAwesomeIcon className={styles.notificationIcon} icon={['fal', 'chart-line-down']} />
 				<Typography className={styles.title} variant="h6">
@@ -28,7 +28,7 @@ const PositionEnds = props => {
 					Остаток: {remainingQuantity} {position.unitRelease === 'pce' ? 'шт.' : 'уп.'}
 				</div>
 			</div>
-		</Fragment>
+		</>
 	);
 };
 

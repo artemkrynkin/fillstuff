@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Typography from '@material-ui/core/Typography';
@@ -18,7 +18,7 @@ const MemberInvoice = props => {
 	} = props;
 
 	return (
-		<Fragment>
+		<>
 			<div className={stylesGlobal.header}>
 				<FontAwesomeIcon className={stylesGlobal.notificationIcon} icon={['fal', 'receipt']} />
 				<Typography className={stylesGlobal.title} variant="h6">
@@ -45,7 +45,7 @@ const MemberInvoice = props => {
 					</Grid>
 				</Grid>
 			</div>
-		</Fragment>
+		</>
 	);
 };
 

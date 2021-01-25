@@ -6,8 +6,10 @@ import DialogContent from '@material-ui/core/DialogContent';
 import Typography from '@material-ui/core/Typography';
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
 
 import { Dialog, DialogTitle } from 'src/components/Dialog';
+import PositionSummary from 'src/components/PositionSummary';
 
 import { getStudioStore } from 'src/actions/studios';
 import { archivePosition, archivePositionAfterEnded } from 'src/actions/positions';
@@ -81,16 +83,37 @@ const PositionArchiveDelete = props => {
 				{type === 'archive' ? 'Архивирование' : 'Удаление'} позиции
 			</DialogTitle>
 			<DialogContent>
-				<Typography variant="body1">
-					Вы действительно хотите {type === 'archive' ? 'архивировать' : 'удалить'}{' '}
-					<b>
-						{selectedPosition.characteristics.reduce(
-							(fullName, characteristic) => `${fullName} ${characteristic.name}`,
-							selectedPosition.name
-						)}
-					</b>
-					?
-				</Typography>
+				{type === 'archive' ? (
+					<>
+						<PositionSummary
+							name={selectedPosition.name}
+							characteristics={selectedPosition.characteristics}
+							style={{ marginBottom: 20 }}
+							avatar
+						/>
+						<Typography variant="body1" gutterBottom>
+							Позиция немедленно <b>переместится в архив</b>.
+						</Typography>
+						<Typography variant="body1">
+							Дальнейшая <b>реализация и использование</b> позиции <b>будет недоступно</b>.
+						</Typography>
+					</>
+				) : (
+					<>
+						<PositionSummary
+							name={selectedPosition.name}
+							characteristics={selectedPosition.characteristics}
+							style={{ marginBottom: 20 }}
+							avatar
+						/>
+						<Typography variant="body1" gutterBottom>
+							Вы действительно хотите <b>удалить данную позицию</b>?
+						</Typography>
+						<Typography variant="body1">
+							Отменить это действие будет <b>невозможно</b>.
+						</Typography>
+					</>
+				)}
 				<DialogActions>
 					<Button onClick={onCloseDialog} variant="outlined" size="small">
 						Отмена

@@ -15,6 +15,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
+import FormLabel from '@material-ui/core/FormLabel';
 import MomentUtils from '@material-ui/pickers/adapter/moment';
 import { StaticDateRangePicker, LocalizationProvider } from '@material-ui/pickers';
 
@@ -373,32 +374,66 @@ const FormFilter = props => {
 						) : null}
 					</div>
 				}
-				innerContentStyle={{ width: 250, maxHeight: 300, overflow: 'auto' }}
+				innerContentStyle={{ width: 250, maxHeight: 305, overflow: 'auto' }}
 			>
 				{!isLoadingAllMembers && members && members.length ? (
-					<MenuList autoFocusItem={dropdownMember && !searchTextFieldMember.current}>
-						{!searchTextMember ? (
-							<MenuItem
-								disabled={isSubmitting}
-								selected={values.member === 'all'}
-								onClick={() => onChangeFilterMember('all', setFieldValue, submitForm)}
-								tabIndex={0}
-							>
-								Все участники
-							</MenuItem>
+					<>
+						{members.filter(member => !member.deactivated).length ? (
+							<MenuList autoFocusItem={dropdownMember && !searchTextFieldMember.current}>
+								{!searchTextMember ? (
+									<MenuItem
+										disabled={isSubmitting}
+										selected={values.member === 'all'}
+										onClick={() => onChangeFilterMember('all', setFieldValue, submitForm)}
+										tabIndex={0}
+									>
+										Все участники
+									</MenuItem>
+								) : null}
+								{members
+									.filter(member => !member.deactivated)
+									.map((member, index) => (
+										<MenuItem
+											key={index}
+											disabled={isSubmitting}
+											selected={values.member === member._id}
+											onClick={() => onChangeFilterMember(member._id, setFieldValue, submitForm)}
+											tabIndex={0}
+										>
+											<UserSummary
+												src={member.user.picture}
+												title={member.user.name}
+												subtitle={memberRoleTransform(member.roles).join(', ')}
+											/>
+										</MenuItem>
+									))}
+							</MenuList>
 						) : null}
-						{members.map((member, index) => (
-							<MenuItem
-								key={index}
-								disabled={isSubmitting}
-								selected={values.member === member._id}
-								onClick={() => onChangeFilterMember(member._id, setFieldValue, submitForm)}
-								tabIndex={0}
-							>
-								<UserSummary src={member.user.picture} title={member.user.name} subtitle={memberRoleTransform(member.roles).join(', ')} />
-							</MenuItem>
-						))}
-					</MenuList>
+						{members.filter(member => member.deactivated).length ? (
+							<MenuList>
+								<FormLabel style={{ padding: '0 8px 8px' }} component="div">
+									Отключённые участники
+								</FormLabel>
+								{members
+									.filter(member => member.deactivated)
+									.map((member, index) => (
+										<MenuItem
+											key={index}
+											disabled={isSubmitting}
+											selected={values.member === member._id}
+											onClick={() => onChangeFilterMember(member._id, setFieldValue, submitForm)}
+											tabIndex={0}
+										>
+											<UserSummary
+												src={member.user.picture}
+												title={member.user.name}
+												subtitle={memberRoleTransform(member.roles).join(', ')}
+											/>
+										</MenuItem>
+									))}
+							</MenuList>
+						) : null}
+					</>
 				) : (
 					<div style={{ textAlign: 'center', padding: 15 }}>
 						{members && !members.length ? <Typography variant="caption">Ничего не найдено</Typography> : <CircularProgress size={20} />}

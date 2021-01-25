@@ -9,14 +9,13 @@ import NumberFormat, { currencyMoneyFormatProps } from 'src/components/NumberFor
 import PositionSummary from 'src/components/PositionSummary';
 import QuantityIndicator from 'src/components/QuantityIndicator';
 
-import { TableCell, TableCellHighlight, TableRowHighlight } from '../../components/styles';
+import { TableCell, useStylesTableHighlight as useStyles } from '../../components/styles';
 
 import styles from './Receipt.module.css';
 
 const Receipt = props => {
 	const { receipt, positionSameFilter } = props;
-	const TableRowHighlightClasses = TableRowHighlight();
-	const TableCellHighlightClasses = TableCellHighlight();
+	const classes = useStyles();
 
 	const positionBadges = (badges = []) => {
 		if (receipt.position.isArchived) badges.push('archived');
@@ -25,8 +24,8 @@ const Receipt = props => {
 	};
 
 	return (
-		<TableRow classes={positionSameFilter ? { root: TableRowHighlightClasses.root } : {}}>
-			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} width={280}>
+		<TableRow classes={positionSameFilter ? { root: classes.row } : {}}>
+			<TableCell classes={positionSameFilter ? { body: classes.cell } : {}} width={280}>
 				<Link className={styles.positionLink} to={`/stock/${receipt.position._id}`}>
 					<PositionSummary
 						name={receipt.position.name}
@@ -37,7 +36,7 @@ const Receipt = props => {
 				</Link>
 			</TableCell>
 			<TableCell />
-			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="right" width={160}>
+			<TableCell classes={positionSameFilter ? { body: classes.cell } : {}} align="right" width={160}>
 				<QuantityIndicator
 					type="procurementReceipt"
 					unitReceipt={receipt.position.unitReceipt}
@@ -45,7 +44,7 @@ const Receipt = props => {
 					receipts={[!receipt.quantityInUnit ? { ...receipt.initial } : { ...receipt.initial, quantityInUnit: receipt.quantityInUnit }]}
 				/>
 			</TableCell>
-			<TableCell classes={positionSameFilter ? { root: TableCellHighlightClasses.root } : {}} align="right" width={140}>
+			<TableCell classes={positionSameFilter ? { body: classes.cell } : {}} align="right" width={140}>
 				<NumberFormat
 					value={formatNumber(receipt.unitPurchasePrice, { toString: true })}
 					renderText={value => value}
@@ -53,7 +52,7 @@ const Receipt = props => {
 					{...currencyMoneyFormatProps}
 				/>
 			</TableCell>
-			<TableCell align="right" width={140}>
+			<TableCell classes={positionSameFilter ? { body: classes.cell } : {}} align="right" width={140}>
 				<NumberFormat
 					value={formatNumber(receipt.initial.quantity * receipt.unitPurchasePrice, { toString: true })}
 					renderText={value => value}

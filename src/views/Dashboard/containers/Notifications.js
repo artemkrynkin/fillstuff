@@ -57,6 +57,7 @@ const Notifications = props => {
 									{storeNotifications[notificationType].map((notification, index) => (
 										<Notification
 											key={notification._id}
+											visibleAllNotifications={visibleAllNotifications}
 											index={index}
 											reverseIndex={storeNotifications[notificationType].length - index}
 											importance={notificationType}

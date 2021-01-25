@@ -17,7 +17,7 @@ import MemberInvoice from '../components/notificationsContent/MemberInvoice';
 import styles from './Notification.module.css';
 
 const Notification = props => {
-	const { index, reverseIndex, importance, onOpenDialogByName, notification } = props;
+	const { visibleAllNotifications, index, reverseIndex, importance, onOpenDialogByName, notification } = props;
 	const [actionStatus, setActionStatus] = useState(false);
 
 	const containerClasses = ClassNames(
@@ -31,6 +31,8 @@ const Notification = props => {
 	);
 
 	const openViewDialog = () => {
+		if (!visibleAllNotifications && index > 0) return;
+
 		switch (notification.type) {
 			case 'position-ends':
 			case 'receipts-missing':

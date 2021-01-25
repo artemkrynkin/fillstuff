@@ -30,6 +30,7 @@ const positions = (
 			let stateData = { ...state }.data;
 
 			stateData.push(action.payload.position);
+			stateData.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 
 			return {
 				...state,

@@ -6,7 +6,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import Typography from '@material-ui/core/Typography';
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
 
 import { Dialog, DialogTitle } from 'src/components/Dialog';
 import PositionSummary from 'src/components/PositionSummary';

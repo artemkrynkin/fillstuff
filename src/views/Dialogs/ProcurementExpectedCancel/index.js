@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
@@ -45,10 +45,10 @@ const DialogProcurementExpectedCancel = props => {
 				Отмена заказа
 			</DialogTitle>
 			<DialogContent>
-				<Typography variant="body1">
+				<Typography variant="body1" gutterBottom>
 					Вы&nbsp;действительно хотите отменить заказ из&nbsp;магазина <b>{selectedProcurement.shop.name}</b>
 					{selectedProcurement.isConfirmed && !selectedProcurement.isUnknownDeliveryDate ? (
-						<Fragment>
+						<>
 							{' '}
 							запланированный на&nbsp;
 							<b>
@@ -59,9 +59,15 @@ const DialogProcurementExpectedCancel = props => {
 										: `в ${selectedProcurement.deliveryTimeFrom}`
 									: null}
 							</b>
-						</Fragment>
+						</>
 					) : null}
 					?
+				</Typography>
+				<Typography variant="body1" gutterBottom>
+					Все данные по заказу будут удалены.
+				</Typography>
+				<Typography variant="body1">
+					Отменить это действие будет <b>невозможно</b>.
 				</Typography>
 				<DialogActions>
 					<ButtonRed onClick={onCloseDialog} variant="outlined" size="small">

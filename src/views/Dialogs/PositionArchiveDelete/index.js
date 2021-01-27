@@ -23,57 +23,46 @@ const PositionArchiveDelete = props => {
 
 	const type = selectedPosition.hasReceipts ? 'archive' : 'delete';
 
-	const onArchiveDelete = () => {
-		props.archivePosition(selectedPosition._id, selectedPosition.positionGroup).then(response => {
+	/**
+	 *
+	 * @param action - archiveOrDelete|archiveAfterEnded
+	 * @returns {Promise<void>}
+	 */
+	const onArchiveOrDelete = async action => {
+		try {
+			let response;
+
+			if (action === 'archiveOrDelete') {
+				response = await props.archivePosition(selectedPosition._id, selectedPosition.positionGroup);
+			} else {
+				response = await props.archivePositionAfterEnded(selectedPosition._id, { archivedAfterEnded: true });
+			}
+
 			if (onCallback !== undefined) onCallback(response);
 
-			onCloseDialog();
-
-			if (response.status === 'success') {
-				props.enqueueSnackbar({
-					message: (
+			props.enqueueSnackbar({
+				message:
+					action === 'archiveOrDelete' ? (
 						<div>
-							Позиция <b>{selectedPosition.name}</b> успешно {type === 'archive' ? 'архивирована' : 'удалена'}.
+							Позиция <b>{selectedPosition.name}</b> успешно {type === 'archive' ? 'перемещена в архив' : 'удалена'}.
+						</div>
+					) : (
+						<div>
+							Позиция <b>{selectedPosition.name}</b> будет перемещена в архив после реализации всех поступлений.
 						</div>
 					),
-					options: {
-						variant: 'success',
-					},
-				});
-
-				// props.getStudioStore();
-			}
-
-			if (response.status === 'error') {
-				props.enqueueSnackbar({
-					message: response.message || 'Неизвестная ошибка.',
-					options: {
-						variant: 'error',
-					},
-				});
-			}
-		});
-	};
-
-	const onArchivedAfterEnded = () => {
-		props.archivePositionAfterEnded(selectedPosition._id, { archivedAfterEnded: true }).then(response => {
-			if (onCallback !== undefined) onCallback(response);
-
-			onCloseDialog();
-
-			if (response.status === 'success') {
-				props.enqueueSnackbar({
-					message: (
-						<div>
-							Позиция <b>{selectedPosition.name}</b> будет архивирована после реализации.
-						</div>
-					),
-					options: {
-						variant: 'success',
-					},
-				});
-			}
-		});
+				options: {
+					variant: 'success',
+				},
+			});
+		} catch (error) {
+			props.enqueueSnackbar({
+				message: error.message || 'Неизвестная ошибка.',
+				options: {
+					variant: 'error',
+				},
+			});
+		}
 	};
 
 	return (
@@ -119,7 +108,7 @@ const PositionArchiveDelete = props => {
 					</Button>
 					{type === 'archive' ? (
 						<ButtonRed
-							onClick={onArchiveDelete}
+							onClick={() => onArchiveOrDelete('archiveOrDelete')}
 							variant={!selectedPosition.archivedAfterEnded && selectedPosition.receipts.length ? 'outlined' : 'contained'}
 							color="primary"
 							size="small"
@@ -128,12 +117,12 @@ const PositionArchiveDelete = props => {
 						</ButtonRed>
 					) : null}
 					{type === 'archive' && !selectedPosition.archivedAfterEnded && selectedPosition.receipts.length ? (
-						<ButtonRed onClick={onArchivedAfterEnded} variant="contained" color="primary" size="small">
+						<ButtonRed onClick={() => onArchiveOrDelete('archiveAfterEnded')} variant="contained" color="primary" size="small">
 							Архивировать после реализации
 						</ButtonRed>
 					) : null}
 					{type === 'delete' ? (
-						<ButtonRed onClick={onArchiveDelete} variant="contained" color="primary" size="small">
+						<ButtonRed onClick={() => onArchiveOrDelete('archiveOrDelete')} variant="contained" color="primary" size="small">
 							Удалить
 						</ButtonRed>
 					) : null}

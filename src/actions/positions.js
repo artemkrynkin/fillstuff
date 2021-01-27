@@ -193,25 +193,30 @@ export const archivePosition = ({ params, data }) => {
 				params,
 			})
 			.then(response => {
-				if (!response.data.code) {
-					dispatch({
-						type: 'ARCHIVE_POSITION',
-						payload: {
-							positionGroupId,
-							positionId,
-							position: response.data,
-						},
-					});
+				dispatch({
+					type: 'ARCHIVE_POSITION',
+					payload: {
+						positionGroupId,
+						positionId,
+						position: response.data,
+					},
+				});
 
-					return Promise.resolve({ status: 'success' });
-				} else {
-					return Promise.resolve({ status: 'error', ...response.data });
-				}
+				return Promise.resolve({ status: 'success' });
 			})
 			.catch(error => {
-				console.error(error);
+				if (error.response.data.code) {
+					return Promise.reject({ status: 'error', message: error.message });
+				} else {
+					console.error(error);
 
-				return Promise.resolve({ status: 'error', message: error.message, ...error });
+					dispatch({
+						type: 'ERROR_POSITIONS',
+						payload: error,
+					});
+
+					return Promise.reject({ status: 'error', message: error.message, ...error });
+				}
 			});
 	};
 };
@@ -248,7 +253,12 @@ export const archivePositionAfterEnded = ({ params, data }) => {
 			.catch(error => {
 				console.error(error);
 
-				return Promise.resolve({ status: 'error' });
+				dispatch({
+					type: 'ERROR_POSITIONS',
+					payload: error,
+				});
+
+				return Promise.reject({ status: 'error' });
 			});
 	};
 };

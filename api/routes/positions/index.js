@@ -334,9 +334,9 @@ router.post(
 			.catch(err => next({ code: 2, err }));
 
 		if (position.deliveryIsExpected.length) {
-			return res.json({
-				code: 400,
-				message: `Позиция не может быть ${position.hasReceipts ? 'архивирована' : 'удалена'} пока ожидается доставка`,
+			return next({
+				code: 6,
+				message: `Позиция не может быть ${position.hasReceipts ? 'перемещена в архив' : 'удалена'} пока ожидается доставка закупки`,
 			});
 		}
 
@@ -427,7 +427,7 @@ router.post(
 
 		const positionErr = position.validateSync();
 
-		if (positionErr) return next({ code: positionErr.errors ? 5 : 2, err: positionErr });
+		if (positionErr) return next({ code: 2 });
 
 		await position.save();
 

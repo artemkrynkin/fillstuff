@@ -872,6 +872,10 @@ export const MuiTheme = createMuiTheme({
 				color: colorTheme.blueGrey['700'],
 				fontSize: 14,
 				padding: '10px 20px',
+				maxWidth: 600,
+			},
+			message: {
+				flex: '1 1 0',
 			},
 			action: {
 				alignSelf: 'flex-start',

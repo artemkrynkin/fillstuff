@@ -103,23 +103,24 @@ const PositionDropdown = props => {
 					>
 						Отменить архивирование
 					</MenuItem>
-				) : null}
-				<MenuItem
-					onClick={() => {
-						onToggleDropdownActions();
-						onOpenDialogPosition('dialogPositionArchiveDelete', 'position', position);
-					}}
-					iconBefore={
-						position.hasReceipts ? (
-							<FontAwesomeIcon icon={['far', 'archive']} fixedWidth />
-						) : (
-							<FontAwesomeIcon icon={['far', 'trash-alt']} fixedWidth />
-						)
-					}
-					destructive
-				>
-					{position.hasReceipts ? 'Архивировать' : 'Удалить'}
-				</MenuItem>
+				) : (
+					<MenuItem
+						onClick={() => {
+							onToggleDropdownActions();
+							onOpenDialogPosition('dialogPositionArchiveDelete', 'position', position);
+						}}
+						iconBefore={
+							position.hasReceipts ? (
+								<FontAwesomeIcon icon={['far', 'archive']} fixedWidth />
+							) : (
+								<FontAwesomeIcon icon={['far', 'trash-alt']} fixedWidth />
+							)
+						}
+						destructive
+					>
+						{position.hasReceipts ? 'Архивировать' : 'Удалить'}
+					</MenuItem>
+				)}
 			</MenuList>
 		</Dropdown>
 	);

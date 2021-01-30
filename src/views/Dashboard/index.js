@@ -56,7 +56,7 @@ const mapStateToProps = state => {
 		const momentDate = moment();
 		const notificationTypes = {
 			red: /^(position-ends|receipts-missing)$/,
-			orange: /none/,
+			orange: /^(position-moved-archive)$/,
 			green: /^(member-invoice)$/,
 		};
 

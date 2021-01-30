@@ -63,6 +63,8 @@ const PositionArchiveDelete = props => {
 				},
 			});
 		}
+
+		onCloseDialog();
 	};
 
 	return (
@@ -71,29 +73,36 @@ const PositionArchiveDelete = props => {
 				{type === 'archive' ? 'Архивирование' : 'Удаление'} позиции
 			</DialogTitle>
 			<DialogContent>
+				<PositionSummary
+					name={selectedPosition.name}
+					characteristics={selectedPosition.characteristics}
+					style={{ marginBottom: 20 }}
+					avatar
+				/>
 				{type === 'archive' ? (
 					<>
-						<PositionSummary
-							name={selectedPosition.name}
-							characteristics={selectedPosition.characteristics}
-							style={{ marginBottom: 20 }}
-							avatar
-						/>
-						<Typography variant="body1" gutterBottom>
-							Позиция немедленно <b>переместится в архив</b>.
-						</Typography>
-						<Typography variant="body1">
-							Дальнейшая <b>реализация и использование будет недоступно</b> до тех пор, пока позиция не будет разархивирована.
-						</Typography>
+						{selectedPosition.receipts.length ? (
+							<>
+								<Typography variant="body1" gutterBottom>
+									<b>Позиция переместится в архив</b> после реализации всех поступлений.
+								</Typography>
+								<Typography variant="body1">
+									При необходимости, вы сможете <b>отменить</b> данное действие или <b>восстановить</b> позицию из архива.
+								</Typography>
+							</>
+						) : (
+							<>
+								<Typography variant="body1" gutterBottom>
+									Вы действительно хотите <b>архивировать данную позицию</b>?
+								</Typography>
+								<Typography variant="body1">
+									При необходимости, вы сможете <b>восстановить</b> ее из архива.
+								</Typography>
+							</>
+						)}
 					</>
 				) : (
 					<>
-						<PositionSummary
-							name={selectedPosition.name}
-							characteristics={selectedPosition.characteristics}
-							style={{ marginBottom: 20 }}
-							avatar
-						/>
 						<Typography variant="body1" gutterBottom>
 							Вы действительно хотите <b>удалить данную позицию</b>?
 						</Typography>
@@ -107,19 +116,22 @@ const PositionArchiveDelete = props => {
 						Отмена
 					</Button>
 					{type === 'archive' ? (
-						<ButtonRed
-							onClick={() => onArchiveOrDelete('archiveOrDelete')}
-							variant={!selectedPosition.archivedAfterEnded && selectedPosition.receipts.length ? 'outlined' : 'contained'}
-							color="primary"
-							size="small"
-						>
-							Архивировать
-						</ButtonRed>
-					) : null}
-					{type === 'archive' && !selectedPosition.archivedAfterEnded && selectedPosition.receipts.length ? (
-						<ButtonRed onClick={() => onArchiveOrDelete('archiveAfterEnded')} variant="contained" color="primary" size="small">
-							Архивировать после реализации
-						</ButtonRed>
+						<>
+							{selectedPosition.receipts.length ? (
+								<ButtonRed onClick={() => onArchiveOrDelete('archiveAfterEnded')} variant="contained" color="primary" size="small">
+									Архивировать после реализации
+								</ButtonRed>
+							) : (
+								<ButtonRed
+									onClick={() => onArchiveOrDelete('archiveOrDelete')}
+									variant={!selectedPosition.archivedAfterEnded && selectedPosition.receipts.length ? 'outlined' : 'contained'}
+									color="primary"
+									size="small"
+								>
+									Архивировать
+								</ButtonRed>
+							)}
+						</>
 					) : null}
 					{type === 'delete' ? (
 						<ButtonRed onClick={() => onArchiveOrDelete('archiveOrDelete')} variant="contained" color="primary" size="small">

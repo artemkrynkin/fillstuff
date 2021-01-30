@@ -340,6 +340,13 @@ router.post(
 			});
 		}
 
+		if (position.receipts.length) {
+			return next({
+				code: 6,
+				message: `Позиция не может быть перемещена в архив пока все поступления не будут реализованы`,
+			});
+		}
+
 		if (position.parentPosition) {
 			Position.findByIdAndUpdate(position.parentPosition, { $unset: { childPosition: 1 } }).catch(err => next({ code: 2, err }));
 		}
@@ -373,21 +380,9 @@ router.post(
 			position: position._id,
 		});
 
-		const {
-			studio: {
-				stock: { stockPrice },
-			},
-			receipts,
-		} = position;
-
-		const purchasePriceReceipts = receipts.reduce((total, receipt) => total + receipt.current.quantity * receipt.unitPurchasePrice, 0);
-
 		Studio.findByIdAndUpdate(
 			position.studio._id,
 			{
-				$set: {
-					'stock.stockPrice': stockPrice - purchasePriceReceipts,
-				},
 				$inc: {
 					'stock.numberPositions': -1,
 				},

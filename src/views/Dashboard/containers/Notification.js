@@ -7,9 +7,10 @@ import { getDeliveryDateTimeMoment, capitalize } from 'src/helpers/utils';
 
 import CardPaper from 'src/components/CardPaper';
 
-import { editStatusDeliveryIsExpected } from 'src/actions/storeNotifications';
+import { deleteStoreNotification, editStatusDeliveryIsExpected } from 'src/actions/storeNotifications';
 
 import PositionEnds from '../components/notificationsContent/PositionEnds';
+import PositionMovedArchive from '../components/notificationsContent/PositionMovedArchive';
 import ReceiptsMissing from '../components/notificationsContent/ReceiptsMissing';
 import DeliveryIsExpected from '../components/notificationsContent/DeliveryIsExpected';
 import MemberInvoice from '../components/notificationsContent/MemberInvoice';
@@ -44,6 +45,10 @@ const Notification = props => {
 			default:
 				return;
 		}
+	};
+
+	const onHideNotification = () => {
+		props.deleteStoreNotification({ storeNotificationId: notification._id });
 	};
 
 	useEffect(() => {
@@ -81,6 +86,8 @@ const Notification = props => {
 		>
 			{notification.type === 'position-ends' ? (
 				<PositionEnds notification={notification} importance={importance} />
+			) : notification.type === 'position-moved-archive' ? (
+				<PositionMovedArchive notification={notification} importance={importance} onHideNotification={onHideNotification} />
 			) : notification.type === 'receipts-missing' ? (
 				<ReceiptsMissing notification={notification} importance={importance} />
 			) : notification.type === 'delivery-is-expected' ? (
@@ -94,6 +101,7 @@ const Notification = props => {
 
 const mapDispatchToProps = dispatch => {
 	return {
+		deleteStoreNotification: params => dispatch(deleteStoreNotification({ params })),
 		editStatusDeliveryIsExpected: data => dispatch(editStatusDeliveryIsExpected({ data })),
 	};
 };

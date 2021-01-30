@@ -60,6 +60,28 @@ export const getStoreNotification = ({ params }) => {
 	};
 };
 
+export const deleteStoreNotification = ({ params }) => {
+	return async (dispatch, getState) => {
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
+
+		return await axiosFillstuff
+			.post('/api/deleteStoreNotification', {
+				studioId,
+				memberId,
+				params,
+			})
+			.catch(error => {
+				console.error(error.response);
+
+				return Promise.resolve({ status: 'error' });
+			});
+	};
+};
+
 export const editStatusDeliveryIsExpected = ({ data: storeNotification }) => {
 	return async dispatch => {
 		await sleep(250);

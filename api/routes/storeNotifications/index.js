@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import { isAuthed, hasPermissions } from 'api/utils/permissions';
+import Emitter from 'api/utils/emitter';
 
 import User from 'api/models/user';
 import Member from 'api/models/member';
@@ -210,6 +211,34 @@ router.post(
 		}
 
 		res.json(storeNotification);
+	}
+);
+
+router.post(
+	'/deleteStoreNotification',
+	isAuthed,
+	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
+	async (req, res, next) => {
+		const {
+			studioId,
+			params: { storeNotificationId },
+		} = req.body;
+
+		const storeNotification = await StoreNotification.findById(storeNotificationId);
+
+		if (!/^(position-moved-archive)$/.test(storeNotification.type)) {
+			return next({
+				code: 7,
+				message: 'Данный тип событий не может быть отменен',
+			});
+		}
+
+		Emitter.emit('deleteStoreNotification', {
+			studio: studioId,
+			_id: storeNotificationId,
+		});
+
+		res.json();
 	}
 );
 

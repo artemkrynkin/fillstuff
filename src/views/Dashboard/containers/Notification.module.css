@@ -153,6 +153,10 @@
   margin-top: 0;
 }
 
+.cardPositionMovedArchive .notificationIcon {
+  font-size: 22px;
+}
+
 .cardReceiptsMissing .notificationIcon {
   font-size: 22px;
 }

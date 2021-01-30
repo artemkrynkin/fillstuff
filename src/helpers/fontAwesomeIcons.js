@@ -103,6 +103,7 @@ import {
 	faComment as falComment,
 	faScanner as falScanner,
 	faFileEdit as falFileEdit,
+	faArchive as falArchive,
 } from '@fortawesome/pro-light-svg-icons';
 
 import {
@@ -214,6 +215,7 @@ library.add(
 	falComment,
 	falScanner,
 	falFileEdit,
+	falArchive,
 
 	// Duotone
 	fadCheckCircle,

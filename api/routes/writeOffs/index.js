@@ -352,6 +352,12 @@ router.post(
 						);
 
 						numberArchivedPosition += 1;
+
+						Emitter.emit('newStoreNotification', {
+							studio: studioId,
+							type: 'position-moved-archive',
+							position: position._id,
+						});
 					}
 				}
 

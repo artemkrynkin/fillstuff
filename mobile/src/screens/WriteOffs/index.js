@@ -5,6 +5,8 @@ import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import _ from 'lodash';
 import moment from 'moment';
 
+import theme from 'mobile/src/constants/theme';
+
 import FocusAwareStatusBar from 'mobile/src/components/FocusAwareStatusBar';
 
 import { getUserWriteOffs } from 'mobile/src/actions/writeOffs';
@@ -32,10 +34,10 @@ function WriteOffs(props) {
 
 	return (
 		<>
-			<FocusAwareStatusBar barStyle="dark-content" />
+			<FocusAwareStatusBar barStyle="dark-content" backgroundColor={theme.brightness['4']} />
 			<SafeAreaInsetsContext.Consumer>
 				{insets => (
-					<View style={{ flex: 1, paddingTop: insets.top }}>
+					<View style={{ flex: 1, paddingTop: insets.bottom }}>
 						<Content {...props} />
 					</View>
 				)}

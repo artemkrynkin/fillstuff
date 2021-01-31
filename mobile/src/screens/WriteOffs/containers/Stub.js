@@ -4,19 +4,19 @@ import { Asset } from 'expo-asset';
 
 import styles from './StubStyles';
 
-const scanQrStudioInvitationStub = Asset.fromModule(require('mobile/assets/images/stubs/scan_qr_studio_invitation.png'));
+const writeOffsEmptyStub = Asset.fromModule(require('mobile/assets/images/stubs/write_offs_empty.png'));
 
-function Stub(props) {
+function Stub() {
 	return (
 		<View style={styles.stub}>
 			<Image
 				style={styles.stubImage}
 				source={{
-					uri: scanQrStudioInvitationStub.uri,
+					uri: writeOffsEmptyStub.uri,
 				}}
 			/>
 			<Text style={styles.stubTitle}>У вас пока нет списаний</Text>
-			<Text style={styles.stubSubhead}>Списания появятся в этой разделе</Text>
+			<Text style={styles.stubSubhead}>Списания появятся в этом разделе</Text>
 		</View>
 	);
 }

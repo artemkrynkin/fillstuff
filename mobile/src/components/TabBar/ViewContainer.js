@@ -1,22 +1,31 @@
 import React from 'react';
-import { Dimensions } from 'react-native';
+import { Dimensions, View } from 'react-native';
 import { getTabBarHeight } from '@react-navigation/bottom-tabs/src/views/BottomTabBar';
-import { initialSafeAreaInsets } from '@react-navigation/bottom-tabs/src/views/SafeAreaProviderCompat';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';
 
 import styles from './styles';
 
 function ViewContainer(props) {
-	const { state, isCurrentStudio, isStateMain, insets, children, ...remainingProps } = props;
+	const { state, isCurrentStudio, isStateMain, safeAreaInsets, children, ...remainingProps } = props;
 
 	const stylesContainer = isCurrentStudio && isStateMain ? [styles.container, styles.containerMain] : [styles.container];
+
+	const defaultInsets = useSafeAreaInsets();
+
+	const insets = {
+		top: safeAreaInsets?.top ?? defaultInsets.top,
+		right: safeAreaInsets?.right ?? defaultInsets.right,
+		bottom: safeAreaInsets?.bottom ?? defaultInsets.bottom,
+		left: safeAreaInsets?.left ?? defaultInsets.left,
+	};
 
 	const dimensions = Dimensions.get('window');
 	const tabBarHeight = getTabBarHeight({
 		state,
 		dimensions,
 		layout: { width: dimensions.width, height: 0 },
-		insets: initialSafeAreaInsets,
+		insets,
 		adaptive: remainingProps?.adaptive,
 		labelPosition: remainingProps?.labelPosition,
 		tabStyle: remainingProps?.tabStyle,
@@ -31,8 +40,11 @@ function ViewContainer(props) {
 				...stylesContainer,
 				{ height: tabBarHeight, paddingBottom: insets.bottom, alignItems: insets.bottom ? 'flex-end' : 'center' },
 			]}
-			children={children}
-		/>
+		>
+			{/*<View onLayout={handleLayout}>*/}
+			{children}
+			{/*</View>*/}
+		</BlurView>
 	);
 }
 

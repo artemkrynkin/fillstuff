@@ -3,6 +3,10 @@ import { StyleSheet } from 'react-native';
 import theme from 'mobile/src/constants/theme';
 
 export default StyleSheet.create({
+	container: {
+		backgroundColor: '#000000',
+		flex: 1,
+	},
 	notEnoughPermission: {
 		alignItems: 'center',
 		backgroundColor: 'black',
@@ -25,6 +29,11 @@ export default StyleSheet.create({
 		fontSize: 16,
 		marginTop: 20,
 	},
+	camera: {
+		borderTopLeftRadius: 10,
+		borderTopRightRadius: 10,
+		overflow: 'hidden',
+	},
 	scanningContainer: {
 		flex: 1,
 	},
@@ -46,7 +55,7 @@ export default StyleSheet.create({
 	},
 	cameraInfo: {
 		position: 'absolute',
-		bottom: 30,
+		marginBottom: 50,
 		color: 'white',
 		fontSize: 15,
 		fontWeight: '600',

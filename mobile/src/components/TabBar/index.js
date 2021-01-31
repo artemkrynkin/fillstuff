@@ -17,51 +17,47 @@ function MyTabBar({ state, descriptors, navigation, ...remainingProps }) {
 	if (focusedOptions.tabBarVisible === false) return null;
 
 	return (
-		<SafeAreaInsetsContext.Consumer>
-			{insets => (
-				<ViewContainer isStateMain={isStateMain} insets={insets} {...remainingProps}>
-					{state.routes.map((route, index) => {
-						const { options } = descriptors[route.key];
+		<ViewContainer isStateMain={isStateMain} {...remainingProps}>
+			{state.routes.map((route, index) => {
+				const { options } = descriptors[route.key];
 
-						const label = options?.tabBarLabel || options?.title || route?.name;
-						const Icon = options?.tabBarIcon;
-						const isFocused = state.index === index;
+				const label = options?.tabBarLabel || options?.title || route?.name;
+				const Icon = options?.tabBarIcon;
+				const isFocused = state.index === index;
 
-						const colorTabBarItem = isFocused ? theme.teal.A700 : isCurrentStudio && isStateMain ? 'white' : theme.blueGrey['400'];
+				const colorTabBarItem = isFocused ? theme.teal.A700 : isCurrentStudio && isStateMain ? 'white' : theme.blueGrey['400'];
 
-						const onPress = () => {
-							const event = navigation.emit({
-								type: 'tabPress',
-								target: route.key,
-								canPreventDefault: true,
-							});
+				const onPress = () => {
+					const event = navigation.emit({
+						type: 'tabPress',
+						target: route.key,
+						canPreventDefault: true,
+					});
 
-							if (!isFocused && !event.defaultPrevented) {
-								navigation.navigate(route.name);
-							}
-						};
+					if (!isFocused && !event.defaultPrevented) {
+						navigation.navigate(route.name);
+					}
+				};
 
-						return (
-							<TouchableWithoutFeedback
-								key={route.key}
-								accessibilityRole="button"
-								accessibilityState={isFocused ? { selected: true } : {}}
-								accessibilityLabel={options.tabBarAccessibilityLabel}
-								onPress={onPress}
-							>
-								<View style={styles.tabBarItem}>
-									<Icon size={26} color={colorTabBarItem} focused={isFocused} />
-									<Text style={[{ color: colorTabBarItem }, styles.tabBarLabel]}>
-										{label}
-										{studiosTest}
-									</Text>
-								</View>
-							</TouchableWithoutFeedback>
-						);
-					})}
-				</ViewContainer>
-			)}
-		</SafeAreaInsetsContext.Consumer>
+				return (
+					<TouchableWithoutFeedback
+						key={route.key}
+						accessibilityRole="button"
+						accessibilityState={isFocused ? { selected: true } : {}}
+						accessibilityLabel={options.tabBarAccessibilityLabel}
+						onPress={onPress}
+					>
+						<View style={styles.tabBarItem}>
+							<Icon size={26} color={colorTabBarItem} focused={isFocused} />
+							<Text style={[{ color: colorTabBarItem }, styles.tabBarLabel]}>
+								{label}
+								{studiosTest}
+							</Text>
+						</View>
+					</TouchableWithoutFeedback>
+				);
+			})}
+		</ViewContainer>
 	);
 }
 

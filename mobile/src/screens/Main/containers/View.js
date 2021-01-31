@@ -1,5 +1,7 @@
 import React from 'react';
 
+import theme from 'mobile/src/constants/theme';
+
 import FocusAwareStatusBar from 'mobile/src/components/FocusAwareStatusBar';
 
 import Header from './Header';
@@ -22,14 +24,13 @@ function View(props) {
 		},
 	} = props;
 
+	const cameraIsShow = (currentStudio && currentUser.settings.studio && currentUser.settings.member) || modals.modalUserMenu;
+
 	return (
 		<>
 			<FocusAwareStatusBar
-				barStyle={
-					(currentStudio && currentUser.settings.studio && currentUser.settings.member) || modals.modalUserMenu
-						? 'light-content'
-						: 'dark-content'
-				}
+				barStyle={cameraIsShow ? 'light-content' : 'dark-content'}
+				backgroundColor={cameraIsShow ? 'black' : theme.brightness['4']}
 			/>
 			<Header currentUser={currentUser} onVisibleModalByName={onVisibleModalByName} />
 			{currentStudio ? <PositionScan {...props} /> : <Stub {...props} />}

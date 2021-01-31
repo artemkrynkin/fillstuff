@@ -9,9 +9,9 @@ export default StyleSheet.create({
 		marginTop: 100,
 	},
 	stubImage: {
-		height: 280,
+		height: 320,
 		marginBottom: 30,
-		width: 260,
+		width: 300,
 	},
 	stubTitle: {
 		color: theme.blueGrey['900'],

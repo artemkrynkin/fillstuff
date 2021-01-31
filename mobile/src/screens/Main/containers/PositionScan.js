@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useState } from 'react';
-import { View, Text, StyleSheet, Linking, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Linking, Platform, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { debounce } from 'lodash';
@@ -8,6 +8,7 @@ import { BarCodeScanner } from 'expo-barcode-scanner';
 import { Camera } from 'expo-camera';
 import { SvgUri } from 'react-native-svg';
 import { useIsFocused } from '@react-navigation/native';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 import { isJson } from 'mobile/src/helpers/utils';
 
@@ -25,6 +26,7 @@ const definingBoxDetectQrRT = Asset.fromModule(require('mobile/assets/images/cam
 function PositionScan(props) {
 	const { modals, modalData, onVisibleModalByName, cameraScanned, setCameraScanned } = props;
 	const isFocusedScreen = useIsFocused();
+	const tabBarHeight = useBottomTabBarHeight();
 	const [hasPermissionCamera, setHasPermissionCamera] = useState(null);
 	const [barcodeObject, setBarcodeObject] = useState(null);
 	const [cameraInfo, setCameraInfo] = useState('');
@@ -36,14 +38,17 @@ function PositionScan(props) {
 	const onBarCodeScanned = async barCodeEvent => {
 		const barcodeData = isJson(barCodeEvent.data) ? JSON.parse(barCodeEvent.data) : barCodeEvent.data;
 
-		if (
-			(cameraScanned && barcodeData?.id !== modalData.position?.qrcodeId && barcodeData?.id !== modalData.positionGroup?.qrcodeId) ||
-			(cameraScanned && !barcodeData.type && !barcodeData.id)
-		) {
-			return;
+		if (barCodeEvent.bounds && barCodeEvent.cornerPoints) {
+			if (
+				(cameraScanned && barcodeData?.id !== modalData.position?.qrcodeId && barcodeData?.id !== modalData.positionGroup?.qrcodeId) ||
+				(cameraScanned && !barcodeData.type && !barcodeData.id)
+			) {
+				return;
+			}
+
+			setBarcodeObject(barCodeEvent);
 		}
 
-		setBarcodeObject(barCodeEvent);
 		onClearBarcodeObject();
 
 		if (cameraScanned) return;
@@ -62,16 +67,24 @@ function PositionScan(props) {
 						};
 
 						return onVisibleModalByName('modalPositionGroup', 'positionGroup', positionGroup);
+					} else if (position && !Array.isArray(position)) {
+						return onVisibleModalByName('modalPositionWriteOff', 'position', position);
+					} else {
+						setCameraScanned(false);
+						return setCameraInfo('Неизвестная ошибка');
 					}
-
-					return onVisibleModalByName('modalPositionWriteOff', 'position', position);
 				}
 				case 's-pg': {
 					setCameraScanned(true);
 
 					const { data: positionGroup } = await props.getPositionGroup({ params: { qrcodeId: barcodeData.id } });
 
-					return onVisibleModalByName('modalPositionGroup', 'positionGroup', positionGroup);
+					if (positionGroup) {
+						return onVisibleModalByName('modalPositionGroup', 'positionGroup', positionGroup);
+					} else {
+						setCameraScanned(false);
+						return setCameraInfo('Неизвестная ошибка');
+					}
 				}
 				default: {
 					return setCameraInfo('Неизвестная ошибка');
@@ -115,13 +128,28 @@ function PositionScan(props) {
 	}
 
 	return (
-		<>
+		<View style={styles.container}>
 			{isFocusedScreen ? (
-				<BarCodeScanner
-					onBarCodeScanned={modals.modalUserMenu ? undefined : onBarCodeScanned}
-					barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
-					style={StyleSheet.absoluteFillObject}
-				/>
+				<>
+					{Platform.OS === 'ios' ? (
+						<BarCodeScanner
+							onBarCodeScanned={modals.modalUserMenu ? undefined : onBarCodeScanned}
+							barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
+							style={StyleSheet.absoluteFillObject}
+						/>
+					) : (
+						<View style={[styles.camera, StyleSheet.absoluteFillObject]}>
+							<Camera
+								onBarCodeScanned={modals.modalUserMenu ? undefined : onBarCodeScanned}
+								barCodeScannerSettings={{
+									barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
+								}}
+								ratio="16:9"
+								style={StyleSheet.absoluteFillObject}
+							/>
+						</View>
+					)}
+				</>
 			) : null}
 			<SafeAreaView style={styles.scanningContainer}>
 				<SvgUri
@@ -130,8 +158,10 @@ function PositionScan(props) {
 					uri={cameraDefiningBox.uri}
 					style={[styles.cameraDefiningBox, { opacity: Number(!Boolean(barcodeObject) && !cameraScanned) }]}
 				/>
+				{cameraInfo ? (
+					<Text style={[styles.cameraInfo, { bottom: tabBarHeight, opacity: Number(Boolean(cameraInfo)) }]}>{cameraInfo}</Text>
+				) : null}
 				<View style={[styles.detectQrContent, { opacity: Number(Boolean(barcodeObject)) }]}>
-					{cameraInfo ? <Text style={styles.cameraInfo}>{cameraInfo}</Text> : null}
 					<SvgUri
 						width={15}
 						height={15}
@@ -182,7 +212,7 @@ function PositionScan(props) {
 					/>
 				</View>
 			</SafeAreaView>
-		</>
+		</View>
 	);
 }
 

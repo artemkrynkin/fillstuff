@@ -115,9 +115,11 @@ function ModalJoiningStudio(props) {
 								{hasPermissionCamera ? (
 									<>
 										{isFocusedScreen ? (
-											<BarCodeScanner
+											<Camera
 												onBarCodeScanned={onBarCodeScanned}
-												barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
+												barCodeScannerSettings={{
+													barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
+												}}
 												style={styles.camera}
 											/>
 										) : null}

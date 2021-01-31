@@ -61,45 +61,50 @@ function ModalPositionWriteOff(props) {
 
 	const onWriteOffSubmit = async () => {
 		try {
+			const { sound } = await Audio.Sound.createAsync(require('mobile/assets/sounds/write-off_confirmation.aac'));
+
+			setSuccessWriteOffSound(sound);
+
 			await props.createWriteOff({ params: { positionId: position._id }, data: { quantity: writeOffQuantity } });
 
-			await Promise.all(successWriteOffSound.playAsync(), Haptics.notificationAsync('success'));
-
-			onClose();
+			await Promise.all(sound.playAsync(), Haptics.notificationAsync('success'));
 		} catch (error) {
 			await Haptics.notificationAsync('error');
 		}
+
+		onClose();
 	};
 
 	useEffect(() => {
-		setAvailableQuantity(
-			position && position.receipts.length ? position.receipts.reduce((total, receipt) => total + receipt.current.quantity, 0) : 0
-		);
+		const availableQuantity =
+			position && position.receipts.length ? position.receipts.reduce((total, receipt) => total + receipt.current.quantity, 0) : 0;
+
+		setAvailableQuantity(availableQuantity);
+
+		if (position && position.printDestination === 'eachUnit' && availableQuantity !== 0) {
+			setWriteOffQuantity(1);
+		}
 	}, [position]);
 
 	useEffect(() => {
 		(async () => {
 			if (visible) {
-				const { sound } = await Audio.Sound.createAsync(require('mobile/assets/sounds/write-off_confirmation.aac'));
-
-				setSuccessWriteOffSound(sound);
-
 				await Haptics.impactAsync('medium');
 			} else {
 				setAvailableQuantity(0);
 				setWriteOffQuantity(0);
 				setButtonChangeQuantityPressed(false);
-
-				if (!successWriteOffSound) return;
-
-				const soundStatus = await successWriteOffSound.getStatusAsync();
-
-				await sleep(soundStatus.durationMillis - soundStatus.positionMillis);
-
-				await successWriteOffSound.unloadAsync();
 			}
 		})();
 	}, [visible]);
+
+	React.useEffect(() => {
+		return successWriteOffSound
+			? () => {
+					successWriteOffSound.unloadAsync();
+			  }
+			: undefined;
+	}, [successWriteOffSound]);
 
 	return (
 		<SafeAreaInsetsContext.Consumer>
@@ -153,28 +158,30 @@ function ModalPositionWriteOff(props) {
 														<Text style={styles.sellingPrice}>Бесплатно</Text>
 													)}
 												</View>
-												<View style={styles.quantityActions}>
-													<Pressable
-														onPress={() => onChangeQuantity('minus')}
-														onLongPress={() => onPressedChangeQuantity('minus')}
-														onPressOut={() => onPressOutChangeQuantity()}
-														delayLongPress={200}
-														style={({ pressed }) =>
-															pressed ? [styles.buttonChangeQuantity, styles.buttonChangeQuantityActive] : [styles.buttonChangeQuantity]
-														}
-														children={<FontAwesomeIcon style={styles.buttonChangeQuantityIcon} icon={['far', 'minus']} size={20} />}
-													/>
-													<Pressable
-														onPress={() => onChangeQuantity('plus')}
-														onLongPress={() => onPressedChangeQuantity('plus')}
-														onPressOut={() => onPressOutChangeQuantity()}
-														delayLongPress={200}
-														style={({ pressed }) =>
-															pressed ? [styles.buttonChangeQuantity, styles.buttonChangeQuantityActive] : [styles.buttonChangeQuantity]
-														}
-														children={<FontAwesomeIcon style={styles.buttonChangeQuantityIcon} icon={['far', 'plus']} size={20} />}
-													/>
-												</View>
+												{position.printDestination === 'storage' ? (
+													<View style={styles.quantityActions}>
+														<Pressable
+															onPress={() => onChangeQuantity('minus')}
+															onLongPress={() => onPressedChangeQuantity('minus')}
+															onPressOut={() => onPressOutChangeQuantity()}
+															delayLongPress={200}
+															style={({ pressed }) =>
+																pressed ? [styles.buttonChangeQuantity, styles.buttonChangeQuantityActive] : [styles.buttonChangeQuantity]
+															}
+															children={<FontAwesomeIcon style={styles.buttonChangeQuantityIcon} icon={['far', 'minus']} size={20} />}
+														/>
+														<Pressable
+															onPress={() => onChangeQuantity('plus')}
+															onLongPress={() => onPressedChangeQuantity('plus')}
+															onPressOut={() => onPressOutChangeQuantity()}
+															delayLongPress={200}
+															style={({ pressed }) =>
+																pressed ? [styles.buttonChangeQuantity, styles.buttonChangeQuantityActive] : [styles.buttonChangeQuantity]
+															}
+															children={<FontAwesomeIcon style={styles.buttonChangeQuantityIcon} icon={['far', 'plus']} size={20} />}
+														/>
+													</View>
+												) : null}
 											</>
 										) : (
 											<Text style={styles.outOfStock}>Отсутствует на складе</Text>

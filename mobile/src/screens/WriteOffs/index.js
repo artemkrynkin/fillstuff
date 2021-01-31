@@ -37,7 +37,7 @@ function WriteOffs(props) {
 			<FocusAwareStatusBar barStyle="dark-content" backgroundColor={theme.brightness['4']} />
 			<SafeAreaInsetsContext.Consumer>
 				{insets => (
-					<View style={{ flex: 1, paddingTop: insets.bottom }}>
+					<View style={{ flex: 1, paddingTop: insets.top }}>
 						<Content {...props} />
 					</View>
 				)}

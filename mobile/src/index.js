@@ -31,6 +31,8 @@ async function loadResourcesAsync() {
 			require('mobile/assets/images/camera/defining_box_detect_qr_rb.svg'),
 			require('mobile/assets/images/camera/defining_box_detect_qr_rt.svg'),
 			require('mobile/assets/images/camera/defining_box.svg'),
+			require('mobile/assets/images/stubs/scan_qr_studio_invitation.png'),
+			require('mobile/assets/images/stubs/write_offs_empty.png'),
 			require('mobile/assets/sounds/write_off_confirmation.wav'),
 		]),
 		// Font.loadAsync({

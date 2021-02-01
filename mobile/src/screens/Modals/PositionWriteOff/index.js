@@ -61,7 +61,7 @@ function ModalPositionWriteOff(props) {
 
 	const onWriteOffSubmit = async () => {
 		try {
-			const { sound } = await Audio.Sound.createAsync(require('mobile/assets/sounds/write-off_confirmation.aac'));
+			const { sound } = await Audio.Sound.createAsync(require('mobile/assets/sounds/write_off_confirmation.wav'));
 
 			setSuccessWriteOffSound(sound);
 

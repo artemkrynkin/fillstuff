@@ -31,7 +31,7 @@ async function loadResourcesAsync() {
 			require('mobile/assets/images/camera/defining_box_detect_qr_rb.svg'),
 			require('mobile/assets/images/camera/defining_box_detect_qr_rt.svg'),
 			require('mobile/assets/images/camera/defining_box.svg'),
-			require('mobile/assets/sounds/write-off_confirmation.aac'),
+			require('mobile/assets/sounds/write_off_confirmation.wav'),
 		]),
 		// Font.loadAsync({
 		// 	// We include SpaceMono because we use it in HomeScreen.js. Feel free to

@@ -23,19 +23,16 @@ const PositionArchiveDelete = props => {
 
 	const type = selectedPosition.hasReceipts ? 'archive' : 'delete';
 
-	/**
-	 *
-	 * @param action - archiveOrDelete|archiveAfterEnded
-	 * @returns {Promise<void>}
-	 */
-	const onArchiveOrDelete = async action => {
+	const onArchiveOrDelete = async () => {
+		const action = type !== 'delete' && selectedPosition.receipts.length ? 'archiveAfterEnded' : 'archiveOrDelete';
+
 		try {
 			let response;
 
-			if (action === 'archiveOrDelete') {
-				response = await props.archivePosition(selectedPosition._id, selectedPosition.positionGroup);
-			} else {
+			if (action) {
 				response = await props.archivePositionAfterEnded(selectedPosition._id, { archivedAfterEnded: true });
+			} else {
+				response = await props.archivePosition(selectedPosition._id, selectedPosition.positionGroup);
 			}
 
 			if (onCallback !== undefined) onCallback(response);
@@ -87,7 +84,8 @@ const PositionArchiveDelete = props => {
 									<b>Позиция переместится в архив</b> после реализации всех поступлений.
 								</Typography>
 								<Typography variant="body1">
-									При необходимости, вы сможете <b>отменить</b> данное действие или <b>восстановить</b> позицию из архива.
+									Вы сможете <b>отменить</b> данное действие до полного списания позиции или <b>восстановить</b> ее после перемещения в
+									архив.
 								</Typography>
 							</>
 						) : (
@@ -118,12 +116,12 @@ const PositionArchiveDelete = props => {
 					{type === 'archive' ? (
 						<>
 							{selectedPosition.receipts.length ? (
-								<ButtonRed onClick={() => onArchiveOrDelete('archiveAfterEnded')} variant="contained" color="primary" size="small">
+								<ButtonRed onClick={onArchiveOrDelete} variant="contained" color="primary" size="small">
 									Архивировать после реализации
 								</ButtonRed>
 							) : (
 								<ButtonRed
-									onClick={() => onArchiveOrDelete('archiveOrDelete')}
+									onClick={onArchiveOrDelete}
 									variant={!selectedPosition.archivedAfterEnded && selectedPosition.receipts.length ? 'outlined' : 'contained'}
 									color="primary"
 									size="small"
@@ -134,7 +132,7 @@ const PositionArchiveDelete = props => {
 						</>
 					) : null}
 					{type === 'delete' ? (
-						<ButtonRed onClick={() => onArchiveOrDelete('archiveOrDelete')} variant="contained" color="primary" size="small">
+						<ButtonRed onClick={onArchiveOrDelete} variant="contained" color="primary" size="small">
 							Удалить
 						</ButtonRed>
 					) : null}

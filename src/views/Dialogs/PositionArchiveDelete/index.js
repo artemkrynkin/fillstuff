@@ -39,13 +39,13 @@ const PositionArchiveDelete = props => {
 
 			props.enqueueSnackbar({
 				message:
-					action === 'archiveOrDelete' ? (
+					action === 'archiveAfterEnded' ? (
 						<div>
-							Позиция <b>{selectedPosition.name}</b> успешно {type === 'archive' ? 'перемещена в архив' : 'удалена'}.
+							Позиция <b>{selectedPosition.name}</b> будет перемещена в архив после реализации всех поступлений.
 						</div>
 					) : (
 						<div>
-							Позиция <b>{selectedPosition.name}</b> будет перемещена в архив после реализации всех поступлений.
+							Позиция <b>{selectedPosition.name}</b> успешно {type === 'archive' ? 'перемещена в архив' : 'удалена'}.
 						</div>
 					),
 				options: {
@@ -130,12 +130,11 @@ const PositionArchiveDelete = props => {
 								</ButtonRed>
 							)}
 						</>
-					) : null}
-					{type === 'delete' ? (
+					) : (
 						<ButtonRed onClick={onArchiveOrDelete} variant="contained" color="primary" size="small">
 							Удалить
 						</ButtonRed>
-					) : null}
+					)}
 				</DialogActions>
 			</DialogContent>
 		</Dialog>

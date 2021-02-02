@@ -29,7 +29,7 @@ const PositionArchiveDelete = props => {
 		try {
 			let response;
 
-			if (action) {
+			if (action === 'archiveAfterEnded') {
 				response = await props.archivePositionAfterEnded(selectedPosition._id, { archivedAfterEnded: true });
 			} else {
 				response = await props.archivePosition(selectedPosition._id, selectedPosition.positionGroup);

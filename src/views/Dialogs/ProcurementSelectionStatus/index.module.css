@@ -1,0 +1,29 @@
+.button {
+  display: flex;
+  flex-direction: column;
+  max-width: 230px;
+  width: 100%;
+}
+
+.buttonIcon {
+  border-radius: 12px;
+  box-sizing: content-box;
+  color: var(--c-hex-blueGrey-200);
+  display: block;
+  height: 96px;
+  padding: 12px;
+  position: relative;
+  transition: box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  width: 96px;
+}
+
+.button:hover .buttonIcon {
+  box-shadow: 0 1px 8px 0 rgba(84,110,122, 0.2), 0 3px 4px 0 rgba(84,110,122, 0.14), 0 3px 3px -2px rgba(84,110,122, 0.12);
+  color: var(--c-hex-teal-300);
+}
+
+.title {
+  color: var(--c-hex-blueGrey-600);
+  font-size: 15px;
+  margin-top: 5px;
+}

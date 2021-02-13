@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { createMuiTheme } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Fade from '@material-ui/core/Fade';
+import IconButton from '@material-ui/core/IconButton';
 
 import colorTheme from 'shared/colorTheme';
 
@@ -223,7 +224,7 @@ export const MuiTheme = createMuiTheme({
 					alignItems: 'center',
 					display: 'flex',
 					flex: '0 0 auto',
-					marginRight: 10,
+					marginRight: 8,
 					marginTop: 10,
 				},
 			},
@@ -233,9 +234,6 @@ export const MuiTheme = createMuiTheme({
 				left: null,
 				position: null,
 				transform: null,
-				// '[readonly] &': {
-				// 	marginBottom: 0,
-				// },
 			},
 			shrink: {
 				transform: 'translate(0, 0)',
@@ -315,8 +313,9 @@ export const MuiTheme = createMuiTheme({
 				},
 			},
 			outlined: {
-				color: `rgba(${hexToRgb(colorTheme.blueGrey['100'])}, 0.8)`,
+				backgroundColor: '#ffffff',
 				borderColor: colorTheme.blueGrey['100'],
+				color: `rgba(${hexToRgb(colorTheme.blueGrey['100'])}, 0.8)`,
 				'&:hover': {
 					backgroundColor: `rgba(${hexToRgb(colorTheme.blueGrey['300'])}, 0.08)`,
 				},
@@ -519,11 +518,10 @@ export const MuiTheme = createMuiTheme({
 			icon: {
 				color: colorTheme.blueGrey['300'],
 				fontSize: 16,
-				flexShrink: 0,
-				right: '10px',
-				top: 'calc(50% - 8px)',
-				userSelect: 'none',
+				right: 0,
 				pointerEvents: 'none',
+				top: null,
+				userSelect: 'none',
 			},
 		},
 		MuiAutocomplete: {
@@ -535,18 +533,32 @@ export const MuiTheme = createMuiTheme({
 					padding: '5px 10px',
 				},
 			},
+			inputRoot: {
+				'&[class*="MuiInput-root"]': {
+					paddingBottom: null,
+				},
+				'$hasPopupIcon &, $hasClearIcon &': {
+					paddingRight: null,
+				},
+				'$hasPopupIcon$hasClearIcon &': {
+					paddingRight: null,
+				},
+			},
 			endAdornment: {
-				top: 0,
-				padding: '0 10px',
+				right: null,
+				top: null,
+				position: null,
 			},
 			clearIndicator: {
 				color: colorTheme.blueGrey['300'],
 				fontSize: 16,
-				marginRight: 5,
-				padding: 10,
+				padding: null,
 				'&:hover': {
 					backgroundColor: 'transparent',
 					color: colorTheme.blueGrey['600'],
+				},
+				'&:not($clearIndicatorDirty)': {
+					display: 'none',
 				},
 			},
 			clearIndicatorDirty: {
@@ -555,10 +567,10 @@ export const MuiTheme = createMuiTheme({
 			popupIndicator: {
 				color: colorTheme.blueGrey['300'],
 				fontSize: 16,
-				marginRight: 0,
-				padding: 0,
-				userSelect: 'none',
+				marginRight: null,
+				padding: null,
 				pointerEvents: 'none',
+				userSelect: 'none',
 			},
 		},
 		MuiSlider: {
@@ -922,6 +934,28 @@ export const MuiTheme = createMuiTheme({
 				width: '80% !important',
 			},
 		},
+		MuiStepper: {
+			root: {
+				padding: null,
+			},
+		},
+		MuiStep: {
+			horizontal: {
+				paddingLeft: null,
+				paddingRight: null,
+			},
+		},
+		MuiStepLabel: {
+			label: {
+				color: colorTheme.blueGrey['400'],
+				'&$alternativeLabel': {
+					marginTop: 10,
+				},
+				'&$active, &$completed': {
+					color: colorTheme.teal['400'],
+				},
+			},
+		},
 	},
 	palette: {
 		primary: {
@@ -945,7 +979,11 @@ export const MuiTheme = createMuiTheme({
 			autoComplete: 'off',
 		},
 		MuiSelect: {
-			IconComponent: props => <FontAwesomeIcon {...props} icon={['far', 'angle-down']} />,
+			IconComponent: props => (
+				<IconButton {...props}>
+					<FontAwesomeIcon icon={['far', 'angle-down']} />
+				</IconButton>
+			),
 			MenuProps: {
 				elevation: 3,
 				transitionDuration: 150,
@@ -958,7 +996,7 @@ export const MuiTheme = createMuiTheme({
 			closeIcon: <FontAwesomeIcon icon={['fal', 'times']} />,
 			popupIcon: <FontAwesomeIcon icon={['far', 'angle-down']} />,
 			loadingText: 'Загрузка...',
-			noOptionsText: 'Нет результатов для выбора',
+			noOptionsText: 'Нет вариантов для выбора',
 			clearText: '',
 		},
 		MuiCheckbox: {

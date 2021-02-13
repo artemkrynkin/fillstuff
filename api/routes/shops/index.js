@@ -12,13 +12,16 @@ router.post(
 	'/getShops',
 	isAuthed,
 	(req, res, next) => hasPermissions(req, res, next, ['products.control']),
-	(req, res, next) => {
+	async (req, res, next) => {
 		const { studioId } = req.body;
 
-		Shop.find({ studio: studioId })
-			.sort({ name: 1 })
-			.then(shops => res.json(shops))
-			.catch(err => next(err));
+		try {
+			const shops = await Shop.find({ studio: studioId }).sort({ name: 1 });
+
+			res.json(shops);
+		} catch (err) {
+			next(err);
+		}
 	}
 );
 

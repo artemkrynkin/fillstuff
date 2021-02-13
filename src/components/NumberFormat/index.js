@@ -50,10 +50,10 @@ export const moneyInputFormatProps = {
 	decimalScale: 2,
 	allowNegative: false,
 	// suffix: ' ₽',
-	isAllowed: values => {
-		const { formattedValue, floatValue } = values;
-		return formattedValue === '' || floatValue <= 9999999;
-	},
+	// isAllowed: values => {
+	// 	const { formattedValue, floatValue } = values;
+	// 	return formattedValue === '' || floatValue <= 9999999;
+	// },
 };
 
 export default NumberFormat;

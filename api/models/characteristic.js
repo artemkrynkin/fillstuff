@@ -20,7 +20,8 @@ const Characteristic = new Schema({
 	},
 	name: {
 		type: String,
-		maxlength: [60, i18n.__('Не может превышать 60 символов')],
+		minlength: [1, i18n.__('Не может быть короче 1 символа')],
+		maxlength: [30, i18n.__('Не может превышать 30 символов')],
 		required: [true, i18n.__('Обязательное поле')],
 		trim: true,
 	},

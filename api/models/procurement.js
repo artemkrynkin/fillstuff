@@ -5,6 +5,7 @@ import i18n from 'i18n';
 import { dbFillstuff } from 'shared/db';
 
 import { formatNumber, timesInterval15Minutes } from 'shared/utils';
+import { procurementStatusList } from 'shared/modelsHelpers';
 
 const Schema = mongoose.Schema;
 
@@ -29,7 +30,7 @@ const Procurement = new Schema({
 	},
 	status: {
 		type: String,
-		enum: ['expected', 'received'],
+		enum: procurementStatusList,
 	},
 	shop: {
 		type: String,
@@ -153,6 +154,7 @@ const Procurement = new Schema({
 	],
 	comment: {
 		type: String,
+		maxlength: [600, i18n.__('Не может превышать 600 символов')],
 		trim: true,
 	},
 	__v: {

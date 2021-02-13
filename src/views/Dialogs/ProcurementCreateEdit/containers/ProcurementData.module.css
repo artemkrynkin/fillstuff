@@ -1,0 +1,15 @@
+.container {
+  padding-bottom: 40px;
+}
+
+.title {
+  margin-bottom: 20px;
+}
+
+.formRow:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+.label {
+  width: 150px;
+}

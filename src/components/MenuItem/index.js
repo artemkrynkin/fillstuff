@@ -10,20 +10,15 @@ import PropTypes from 'prop-types';
 const MenuItem = forwardRef((props, ref) => {
 	const { className, children, positive, destructive, iconBefore, iconAfter, ...remainingProps } = props;
 
-	const classes = ClassNames({
-		...Object.fromEntries(
-			className
-				.split(' ')
-				.filter(val => val)
-				.map(key => [key, true])
-		),
-		[styles.container]: true,
-		[styles.positive]: positive,
-		[styles.destructive]: destructive,
-	});
-
 	return (
-		<MuiMenuItem className={classes} innerRef={ref} {...remainingProps}>
+		<MuiMenuItem
+			className={ClassNames(className, styles.container, {
+				[styles.positive]: positive,
+				[styles.destructive]: destructive,
+			})}
+			innerRef={ref}
+			{...remainingProps}
+		>
 			{iconBefore !== undefined ? <div className={styles.iconBefore}>{iconBefore}</div> : null}
 			<div className={styles.content}>{children}</div>
 			{props.selected !== undefined ? (
@@ -44,6 +39,7 @@ MenuItem.defaultProps = {
 };
 
 MenuItem.propTypes = {
+	className: PropTypes.string,
 	positive: PropTypes.bool,
 	destructive: PropTypes.bool,
 	selected: PropTypes.bool,

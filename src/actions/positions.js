@@ -17,12 +17,14 @@ export const getPositions = ({ showRequest = true, emptyData = false } = { showR
 				memberId,
 			})
 			.then(response => {
+				const positions = response.data;
+
 				dispatch({
 					type: 'RECEIVE_POSITIONS',
-					payload: {
-						positions: response.data,
-					},
+					payload: { positions },
 				});
+
+				return Promise.resolve({ status: 'success', data: positions });
 			})
 			.catch(error => {
 				console.error(error.response);

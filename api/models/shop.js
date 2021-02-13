@@ -16,7 +16,10 @@ const Shop = new Schema({
 	},
 	name: {
 		type: String,
+		minlength: [2, i18n.__('Не может быть короче 2 символов')],
+		maxlength: [30, i18n.__('Не может превышать 30 символов')],
 		required: [true, i18n.__('Обязательное поле')],
+		trim: true,
 	},
 	link: {
 		type: String,

@@ -34,11 +34,11 @@ function DialogProcurementCreateEdit({ dialogOpen, onCloseDialog, onExitedDialog
 					position: 'top',
 					sentinelAdditionalText: 'Stepper',
 				},
-				{
-					stickySelector: classesReceipts.addPositionContainer,
-					position: 'top',
-					sentinelAdditionalText: 'AddPositionContainer',
-				},
+				// {
+				// 	stickySelector: classesReceipts.addPositionContainer,
+				// 	position: 'top',
+				// 	sentinelAdditionalText: 'AddPositionContainer',
+				// },
 			]}
 			stickyActions
 		>

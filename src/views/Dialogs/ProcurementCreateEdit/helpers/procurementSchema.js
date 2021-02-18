@@ -3,22 +3,20 @@ import moment from 'moment';
 
 import { procurementStatusList } from 'shared/modelsHelpers';
 
-const procurementSchema = (depopulate = false) => {
-	return Yup.object().shape({
+const procurementSchema = {
+	option: Yup.object().shape({
 		status: Yup.string()
-			.required()
+			.required('Выберите вариант закупки, чтобы продолжить')
 			.oneOf(procurementStatusList),
-		shop: Yup.mixed()
-			.required()
-			.transform(value => (depopulate ? value._id : value)),
-		noInvoice: Yup.bool().when('status', (status, schema) => {
-			return status === 'received' ? schema.required() : schema.strip();
+	}),
+	dataReceived: Yup.object().shape({
+		shop: Yup.mixed().required(),
+		noInvoice: Yup.bool().required(),
+		invoiceNumber: Yup.string().when('noInvoice', (noInvoice, schema) => {
+			return !noInvoice ? schema.required() : schema.strip();
 		}),
-		invoiceNumber: Yup.string().when(['status', 'noInvoice'], (status, noInvoice, schema) => {
-			return status === 'received' && !noInvoice ? schema.required() : schema.strip();
-		}),
-		invoiceDate: Yup.mixed().when(['status', 'noInvoice'], (status, noInvoice, schema) => {
-			return status === 'received' && !noInvoice
+		invoiceDate: Yup.mixed().when('noInvoice', (noInvoice, schema) => {
+			return !noInvoice
 				? schema.required().transform((value, originalValue) => (moment(value).isValid() ? value : originalValue))
 				: schema.strip();
 		}),
@@ -85,7 +83,12 @@ const procurementSchema = (depopulate = false) => {
 		)
 			// eslint-disable-next-line
 			.min(1, 'Необходимо выбрать хотя бы ${min} позицию'),
-	});
+	}),
+	dataExpected: Yup.object().shape({
+		shop: Yup.mixed().required(),
+	}),
+	priceFormation: Yup.object().shape({}),
+	deliveryConfirmation: Yup.object().shape({}),
 };
 
 export default procurementSchema;

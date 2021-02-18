@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
+import { Field } from 'formik';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withStyles } from '@material-ui/core/styles';
@@ -56,10 +57,10 @@ function InvoiceData({ classes, formikProps: { isSubmitting, values, touched, er
 				<Collapse in={!values.noInvoice} timeout="auto">
 					<Grid wrap="nowrap" alignItems="flex-start" spacing={2} container>
 						<Grid className={classes.invoiceNumberGrid} item>
-							<TextField
+							<Field
 								name="invoiceNumber"
 								placeholder="Номер"
-								onChange={handleChange}
+								as={TextField}
 								error={touched.invoiceNumber && Boolean(errors.invoiceNumber)}
 								helperText={touched.invoiceNumber && errors.invoiceNumber}
 								InputProps={{
@@ -81,10 +82,10 @@ function InvoiceData({ classes, formikProps: { isSubmitting, values, touched, er
 										innerRef={refDropdownInvoiceDate}
 										name="invoiceDate"
 										placeholder="Дата"
+										value={values.invoiceDate ? moment(values.invoiceDate).format('DD.MM.YYYY') : ''}
 										error={touched.invoiceDate && Boolean(errors.invoiceDate)}
 										helperText={touched.invoiceDate && errors.invoiceDate}
 										disabled={isSubmitting}
-										value={values.invoiceDate ? moment(values.invoiceDate).format('DD.MM.YYYY') : ''}
 										onFocus={() => setTimeout(() => onHandleDropdownInvoiceDate(true), 100)}
 										fullWidth
 									/>
@@ -94,10 +95,11 @@ function InvoiceData({ classes, formikProps: { isSubmitting, values, touched, er
 					</Grid>
 				</Collapse>
 				<Grid className={classes.noInvoiceGrid} item>
-					<CheckboxWithLabel
+					<Field
 						type="checkbox"
 						name="noInvoice"
 						Label={{ label: 'Чек/накладная отсутствует' }}
+						as={CheckboxWithLabel}
 						onChange={onChangeNoInvoice}
 						disabled={isSubmitting}
 					/>

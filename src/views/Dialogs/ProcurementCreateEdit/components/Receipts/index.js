@@ -82,6 +82,7 @@ const getOptionLabelAutocomplete = option => {
 };
 
 function Receipts({
+	positions: { data: positions, isFetching: isLoadingPositions },
 	dialogRef,
 	formikProps,
 	arrayHelpers,
@@ -93,8 +94,9 @@ function Receipts({
 	const [inputValue, setInputValue] = useState(null);
 	const [dialogPositionCreate, setDialogPositionCreate] = useState(false);
 	const [newPosition, setNewPosition] = useState({ name: '' });
-	const [options, setOptions] = useState([]);
-	const [loading, setLoading] = useState(false);
+	const [options, setOptions] = useState(positions || []);
+	const [autocompleteOpen, setAutocompleteOpen] = useState(false);
+	const [loaded, setLoaded] = useState(false);
 
 	const addPositionInReceipts = position => {
 		push(receiptInitialValues({ position }));
@@ -102,7 +104,7 @@ function Receipts({
 		scrollToBottomDialog(dialogRef.current);
 	};
 
-	const onOpenAutocomplete = () => setLoading(true);
+	const onOpenAutocomplete = () => setAutocompleteOpen(true);
 
 	const onChangeAutocomplete = (event, newValue) => {
 		setInputValue(null);
@@ -134,9 +136,7 @@ function Receipts({
 	};
 
 	useEffect(() => {
-		if (!loading || options.length) {
-			return setLoading(false);
-		}
+		if (!autocompleteOpen || loaded) return;
 
 		(async () => {
 			try {
@@ -149,10 +149,10 @@ function Receipts({
 				setOptions(positions);
 			} catch (error) {}
 
-			setLoading(false);
+			setLoaded(false);
 		})();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [loading]);
+	}, [autocompleteOpen]);
 
 	return (
 		<>
@@ -179,7 +179,7 @@ function Receipts({
 								/>
 							)}
 							options={options}
-							loading={loading}
+							loading={isLoadingPositions}
 							disabled={isSubmitting}
 							clearOnBlur={false}
 							selectOnFocus
@@ -222,8 +222,12 @@ function Receipts({
 	);
 }
 
+const mapStateToProps = state => ({
+	positions: state.positions,
+});
+
 const mapDispatchToProps = {
 	getPositions,
 };
 
-export default compose(connect(null, mapDispatchToProps))(Receipts);
+export default compose(connect(mapStateToProps, mapDispatchToProps))(Receipts);

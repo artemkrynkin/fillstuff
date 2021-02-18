@@ -1,6 +1,7 @@
 import React from 'react';
 import { FieldArray } from 'formik';
 
+import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import DialogContent from '@material-ui/core/DialogContent';
 import Typography from '@material-ui/core/Typography';
@@ -11,25 +12,40 @@ import InvoiceData from '../components/InvoiceData';
 import TotalPrice from '../components/TotalPrice';
 import Receipts from '../components/Receipts';
 
-import styles from './ProcurementData.module.css';
+const styles = () => ({
+	container: {
+		paddingBottom: 40,
+	},
+	title: {
+		marginBottom: 20,
+	},
+	formRow: {
+		'&:not(:last-child)': {
+			marginBottom: 20,
+		},
+	},
+	label: {
+		width: 150,
+	},
+});
 
-function ProcurementData({ dialogRef, formikProps, formikProps: { touched, errors } }) {
+function ProcurementData({ classes, dialogRef, formikProps, formikProps: { touched, errors } }) {
 	return (
-		<DialogContent className={styles.container} style={{ overflow: 'initial' }}>
-			<Typography className={styles.title} variant="h5" align="center">
+		<DialogContent className={classes.container} style={{ overflow: 'initial' }}>
+			<Typography className={classes.title} variant="h5" align="center">
 				Данные о закупке
 			</Typography>
 
-			<Grid className={styles.formRow} wrap="nowrap" alignItems="flex-start" container>
-				<InputLabel className={styles.label} error={touched.shop && Boolean(errors.shop)} data-inline>
+			<Grid className={classes.formRow} wrap="nowrap" alignItems="flex-start" container>
+				<InputLabel className={classes.label} error={touched.shop && Boolean(errors.shop)} data-inline>
 					Магазин
 				</InputLabel>
 				<ShopAutocomplete formikProps={formikProps} />
 			</Grid>
 
-			<Grid className={styles.formRow} wrap="nowrap" alignItems="flex-start" container>
+			<Grid className={classes.formRow} wrap="nowrap" alignItems="flex-start" container>
 				<InputLabel
-					className={styles.label}
+					className={classes.label}
 					error={(touched.invoiceNumber && Boolean(errors.invoiceNumber)) || (touched.invoiceDate && Boolean(errors.invoiceDate))}
 					data-inline
 				>
@@ -38,9 +54,9 @@ function ProcurementData({ dialogRef, formikProps, formikProps: { touched, error
 				<InvoiceData formikProps={formikProps} />
 			</Grid>
 
-			<Grid className={styles.formRow} wrap="nowrap" alignItems="flex-start" container>
+			<Grid className={classes.formRow} wrap="nowrap" alignItems="flex-start" container>
 				<InputLabel
-					className={styles.label}
+					className={classes.label}
 					error={touched.pricePositions && Boolean(errors.pricePositions)}
 					style={{ marginTop: 32 }}
 					data-inline
@@ -50,7 +66,7 @@ function ProcurementData({ dialogRef, formikProps, formikProps: { touched, error
 				<TotalPrice formikProps={formikProps} />
 			</Grid>
 
-			<Typography className={styles.title} variant="h5" align="center">
+			<Typography className={classes.title} variant="h5" align="center">
 				Список позиций
 			</Typography>
 
@@ -61,4 +77,4 @@ function ProcurementData({ dialogRef, formikProps, formikProps: { touched, error
 	);
 }
 
-export default ProcurementData;
+export default withStyles(styles)(ProcurementData);

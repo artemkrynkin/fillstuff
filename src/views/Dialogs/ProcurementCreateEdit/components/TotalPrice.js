@@ -1,4 +1,5 @@
 import React from 'react';
+import { Field } from 'formik';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withStyles } from '@material-ui/core/styles';
@@ -32,16 +33,16 @@ const styles = theme => ({
 	},
 });
 
-function TotalPrice({ classes, formikProps: { isSubmitting, touched, errors, handleChange } }) {
+function TotalPrice({ classes, formikProps: { isSubmitting, values, touched, errors, handleChange } }) {
 	return (
 		<Grid direction="column" container>
 			<Grid wrap="nowrap" alignItems="flex-start" spacing={2} container>
 				<Grid className={classes.pricePositionsFieldGrid} item>
-					<TextField
+					<Field
 						name="pricePositions"
 						placeholder="0"
 						label="Стоимость позиций"
-						onChange={handleChange}
+						as={TextField}
 						error={touched.pricePositions && Boolean(errors.pricePositions)}
 						helperText={touched.pricePositions && errors.pricePositions}
 						InputProps={{
@@ -57,11 +58,13 @@ function TotalPrice({ classes, formikProps: { isSubmitting, touched, errors, han
 					/>
 				</Grid>
 				<Grid className={classes.costDeliveryFieldGrid} item>
-					<TextField
+					<Field
 						name="costDelivery"
 						placeholder="0"
 						label="Стоимость доставки"
-						onChange={handleChange}
+						as={TextField}
+						error={touched.costDelivery && Boolean(errors.costDelivery)}
+						helperText={touched.costDelivery && errors.costDelivery}
 						InputProps={{
 							endAdornment: <InputAdornment position="end">₽</InputAdornment>,
 							inputComponent: NumberFormat,
@@ -76,11 +79,11 @@ function TotalPrice({ classes, formikProps: { isSubmitting, touched, errors, han
 				</Grid>
 			</Grid>
 			<Grid className={classes.compensateCostDeliveryGrid} alignItems="center" container>
-				<CheckboxWithLabel
+				<Field
 					type="checkbox"
 					name="compensateCostDelivery"
 					Label={{ label: 'Компенсировать' }}
-					onChange={handleChange}
+					as={CheckboxWithLabel}
 					disabled={isSubmitting}
 				/>
 				<Tooltip

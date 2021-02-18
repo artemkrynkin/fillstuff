@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const getSteps = ({ showOptionSelectStep = true, status, sellingPositions = false }) => {
-	const defaultSteps = [
+	const stepList = [
 		{
 			index: 1,
 			label: (
@@ -15,26 +15,33 @@ export const getSteps = ({ showOptionSelectStep = true, status, sellingPositions
 	];
 
 	if (showOptionSelectStep) {
-		defaultSteps.unshift({
+		stepList.unshift({
 			index: 0,
 			label: 'Вариант закупки',
 		});
 	}
 
 	if (status === 'received' && sellingPositions) {
-		defaultSteps.push({
+		stepList.push({
 			index: 2,
 			label: 'Формирование цены продажи',
 		});
 	}
 	if (status === 'expected') {
-		defaultSteps.push({
+		stepList.push({
 			index: 2,
 			label: 'Подтверждение доставки',
 		});
 	}
 
-	return defaultSteps;
+	return {
+		list: stepList,
+		options: {
+			showOptionSelectStep,
+			status,
+			sellingPositions: status === 'received' && sellingPositions,
+		},
+	};
 };
 
 export const receiptInitialValues = ({ position, quantity }) => ({

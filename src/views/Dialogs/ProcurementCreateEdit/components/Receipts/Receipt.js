@@ -1,5 +1,6 @@
 import React from 'react';
 import ClassNames from 'classnames';
+import { Field } from 'formik';
 
 import { withStyles } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -67,7 +68,7 @@ function Receipt({
 	index,
 	receipt,
 	position = receipt.position,
-	formikProps: { isSubmitting, values, handleChange, getFieldMeta },
+	formikProps: { isSubmitting, values, getFieldMeta },
 	arrayHelpers: { remove },
 }) {
 	const fieldsMeta = {
@@ -115,11 +116,11 @@ function Receipt({
 				<Grid alignItems="flex-start" spacing={2} container>
 					<Grid xs={3} item>
 						{position.unitReceipt === 'pce' || position.unitRelease === 'nmp' ? (
-							<TextField
+							<Field
 								name={`receipts.${index}.quantity`}
 								label={isNmpNmp ? 'Количество уп.' : 'Количество шт.'}
 								placeholder="0"
-								onChange={handleChange}
+								as={TextField}
 								error={fieldsMeta.quantity.touched && Boolean(fieldsMeta.quantity.error)}
 								helperText={fieldsMeta.quantity.touched && fieldsMeta.quantity.error}
 								InputProps={{
@@ -133,11 +134,11 @@ function Receipt({
 								fullWidth
 							/>
 						) : (
-							<TextField
+							<Field
 								name={`receipts.${index}.quantityPackages`}
 								label="Количество уп."
 								placeholder="0"
-								onChange={handleChange}
+								as={TextField}
 								error={fieldsMeta.quantityPackages.touched && Boolean(fieldsMeta.quantityPackages.error)}
 								helperText={fieldsMeta.quantityPackages.touched && fieldsMeta.quantityPackages.error}
 								InputProps={{
@@ -155,11 +156,11 @@ function Receipt({
 
 					{isNmpPce ? (
 						<Grid xs={3} item>
-							<TextField
+							<Field
 								name={`receipts.${index}.quantityInUnit`}
 								label="Штук в упаковке"
 								placeholder="0"
-								onChange={handleChange}
+								as={TextField}
 								error={fieldsMeta.quantityInUnit.touched && Boolean(fieldsMeta.quantityInUnit.error)}
 								helperText={fieldsMeta.quantityInUnit.touched && fieldsMeta.quantityInUnit.error}
 								InputProps={{
@@ -176,11 +177,11 @@ function Receipt({
 					) : null}
 
 					<Grid xs={3} item>
-						<TextField
+						<Field
 							name={`receipts.${index}.purchasePrice`}
 							label={position.unitReceipt === 'nmp' ? 'Цена покупки уп.' : 'Цена покупки шт.'}
 							placeholder="0"
-							onChange={handleChange}
+							as={TextField}
 							error={fieldsMeta.purchasePrice.touched && Boolean(fieldsMeta.purchasePrice.error)}
 							helperText={fieldsMeta.purchasePrice.touched && fieldsMeta.purchasePrice.error}
 							InputProps={{

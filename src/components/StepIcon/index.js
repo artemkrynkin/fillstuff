@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import styles from './index.module.css';
 
-function StepIcon({ completed, active, error, icon }) {
+function StepIcon({ completed, active, error, icon, activeStep }) {
 	return (
 		<>
 			{completed ? (

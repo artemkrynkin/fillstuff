@@ -42,13 +42,18 @@ const getOptionLabelAutocomplete = option => {
 	return option.name;
 };
 
-function ShopAutocomplete({ formikProps: { isSubmitting, values, touched, errors, setFieldValue }, ...props }) {
+function ShopAutocomplete({
+	shops: { data: shops, isFetching: isLoadingShops },
+	formikProps: { isSubmitting, values, touched, errors, setFieldValue },
+	...props
+}) {
 	const [dialogShopCreate, setDialogShopCreate] = useState(false);
 	const [newShop, setNewShop] = useState({ name: '' });
-	const [options, setOptions] = useState([]);
-	const [loading, setLoading] = useState(false);
+	const [options, setOptions] = useState(shops || []);
+	const [autocompleteOpen, setAutocompleteOpen] = useState(false);
+	const [loaded, setLoaded] = useState(false);
 
-	const onOpenAutocomplete = () => setLoading(true);
+	const onOpenAutocomplete = () => setAutocompleteOpen(true);
 
 	const onChangeAutocomplete = (event, newValue) => {
 		if (newValue?.itemCreation) {
@@ -70,9 +75,7 @@ function ShopAutocomplete({ formikProps: { isSubmitting, values, touched, errors
 	};
 
 	useEffect(() => {
-		if (!loading || options.length) {
-			return setLoading(false);
-		}
+		if (!autocompleteOpen || loaded) return;
 
 		(async () => {
 			try {
@@ -81,10 +84,10 @@ function ShopAutocomplete({ formikProps: { isSubmitting, values, touched, errors
 				setOptions(response.data);
 			} catch (error) {}
 
-			setLoading(false);
+			setLoaded(true);
 		})();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [loading]);
+	}, [autocompleteOpen]);
 
 	return (
 		<>
@@ -95,6 +98,7 @@ function ShopAutocomplete({ formikProps: { isSubmitting, values, touched, errors
 					onChange={onChangeAutocomplete}
 					filterOptions={filterOptionsAutocomplete}
 					getOptionLabel={getOptionLabelAutocomplete}
+					getOptionSelected={(option, value) => option.name === value.name}
 					renderOption={option => option.name}
 					renderInput={params => (
 						<TextField
@@ -106,7 +110,7 @@ function ShopAutocomplete({ formikProps: { isSubmitting, values, touched, errors
 						/>
 					)}
 					options={options}
-					loading={loading}
+					loading={isLoadingShops}
 					disabled={isSubmitting}
 					clearOnBlur={false}
 					selectOnFocus
@@ -129,8 +133,12 @@ function ShopAutocomplete({ formikProps: { isSubmitting, values, touched, errors
 	);
 }
 
+const mapStateToProps = state => ({
+	shops: state.shops,
+});
+
 const mapDispatchToProps = {
 	getShops,
 };
 
-export default compose(connect(null, mapDispatchToProps))(ShopAutocomplete);
+export default compose(connect(mapStateToProps, mapDispatchToProps))(ShopAutocomplete);

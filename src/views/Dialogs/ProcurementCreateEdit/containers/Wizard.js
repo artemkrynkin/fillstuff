@@ -1,4 +1,4 @@
-import React, { cloneElement, useState } from 'react';
+import React, { cloneElement, Children, useEffect } from 'react';
 import { Formik, Form } from 'formik';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -10,16 +10,26 @@ import colorTheme from 'shared/colorTheme';
 
 import ButtonLoader from 'src/components/ButtonLoader';
 
-const styles = () => ({
-	dialogActions: {
+const DialogActions = withStyles({
+	root: {
 		backgroundColor: `${colorTheme.brightness['4']} !important`,
 		zIndex: 2,
 	},
-});
+})(MuiDialogActions);
 
-function Wizard({ classes, children, onCloseDialog, activeStep, setActiveStep, completed, setCompleted, initialValues, onSubmit }) {
-	const steps = React.Children.toArray(children);
-	const [snapshot, setSnapshot] = useState(initialValues);
+function Wizard({
+	children,
+	onCloseFuseDialog,
+	setDirtyForm,
+	activeStep,
+	setActiveStep,
+	completed,
+	setCompleted,
+	initialValues,
+	onSubmit,
+}) {
+	const steps = Children.toArray(children);
+	// const [snapshot, setSnapshot] = useState(initialValues);
 
 	const step = steps[activeStep];
 	const totalSteps = steps.length;
@@ -32,21 +42,25 @@ function Wizard({ classes, children, onCloseDialog, activeStep, setActiveStep, c
 	};
 
 	const handleNext = values => {
-		setSnapshot(values);
+		// setSnapshot(values);
 		setActiveStep(Math.min(activeStep + 1, totalSteps - 1));
 	};
 
 	const handlePrev = values => {
-		setSnapshot(values);
+		// setSnapshot(values);
 		setActiveStep(Math.max(activeStep - 1, 0));
 	};
 
 	const handleSubmit = async (values, actions) => {
+		let response;
+
 		if (step.props.onSubmit) {
-			await step.props.onSubmit(values, actions);
+			response = await step.props.onSubmit(values, actions);
+
+			if (response === false) return;
 		}
 		if (isLastStep) {
-			return onSubmit(values, actions);
+			return onSubmit(values, actions, response);
 		} else {
 			actions.setTouched({});
 			handleComplete();
@@ -56,52 +70,76 @@ function Wizard({ classes, children, onCloseDialog, activeStep, setActiveStep, c
 
 	return (
 		<Formik
-			initialValues={snapshot}
+			initialValues={initialValues}
 			validationSchema={step.props.validationSchema}
 			validateOnBlur={false}
 			validateOnChange={false}
 			onSubmit={handleSubmit}
 		>
-			{formikProps => {
-				const { values, handleSubmit, isSubmitting } = formikProps;
-
-				return (
-					<Form>
-						{React.cloneElement(step, { formikProps })}
-						<MuiDialogActions className={classes.dialogActions}>
-							<Grid justify="space-between" container>
-								<Grid item>
-									{activeStep === 0 ? (
-										<Button onClick={onCloseDialog} variant="outlined" size="large">
-											Отмена
-										</Button>
-									) : null}
-								</Grid>
-								<Grid item>
-									{activeStep > 0 ? (
-										<Button onClick={() => handlePrev(values)} variant="outlined" size="large">
-											Назад
-										</Button>
-									) : null}
-									<ButtonLoader
-										onClick={handleSubmit}
-										disabled={isSubmitting}
-										loader={isSubmitting}
-										variant="contained"
-										color="primary"
-										size="large"
-										style={{ marginLeft: 16 }}
-									>
-										{isLastStep ? 'Создать закупку' : 'Продолжить'}
-									</ButtonLoader>
-								</Grid>
-							</Grid>
-						</MuiDialogActions>
-					</Form>
-				);
-			}}
+			{formikProps => (
+				<WizardContent
+					onCloseFuseDialog={onCloseFuseDialog}
+					activeStep={activeStep}
+					step={step}
+					formikProps={formikProps}
+					isLastStep={isLastStep}
+					handlePrev={handlePrev}
+					setDirtyForm={setDirtyForm}
+				/>
+			)}
 		</Formik>
 	);
 }
 
-export default withStyles(styles)(Wizard);
+function WizardContent({
+	onCloseFuseDialog,
+	activeStep,
+	step,
+	isLastStep,
+	handlePrev,
+	formikProps,
+	formikProps: { dirty, values, handleSubmit, isSubmitting },
+	setDirtyForm,
+}) {
+	useEffect(() => {
+		setDirtyForm(dirty);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [dirty]);
+
+	return (
+		<Form>
+			{cloneElement(step, { formikProps })}
+			<DialogActions>
+				<Grid justify="space-between" container>
+					<Grid item>
+						{activeStep === 0 ? (
+							<Button onClick={onCloseFuseDialog} variant="outlined" size="large">
+								Отмена
+							</Button>
+						) : null}
+					</Grid>
+					<Grid item>
+						{activeStep > 0 ? (
+							<Button onClick={() => handlePrev(values)} variant="outlined" size="large">
+								Назад
+							</Button>
+						) : null}
+						<ButtonLoader
+							onClick={handleSubmit}
+							disabled={isSubmitting}
+							loader={isSubmitting}
+							variant="contained"
+							color="primary"
+							size="large"
+							style={{ marginLeft: 16 }}
+						>
+							{isLastStep ? 'Создать закупку' : 'Продолжить'}
+						</ButtonLoader>
+					</Grid>
+				</Grid>
+			</DialogActions>
+		</Form>
+	);
+}
+
+export default Wizard;

@@ -13,6 +13,8 @@ import colorTheme from 'shared/colorTheme';
 import NumberFormat, { moneyInputFormatProps } from 'src/components/NumberFormat';
 import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
 
+import { helperText } from '../helpers/utils';
+
 const styles = theme => ({
 	compensateCostDeliveryGrid: {
 		paddingLeft: 173,
@@ -44,7 +46,7 @@ function TotalPrice({ classes, formikProps: { isSubmitting, values, touched, err
 						label="Стоимость позиций"
 						as={TextField}
 						error={touched.pricePositions && Boolean(errors.pricePositions)}
-						helperText={touched.pricePositions && errors.pricePositions}
+						helperText={helperText(touched.pricePositions, errors.pricePositions)}
 						InputProps={{
 							endAdornment: <InputAdornment position="end">₽</InputAdornment>,
 							inputComponent: NumberFormat,

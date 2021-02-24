@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
+import { ErrorMessage } from 'formik';
 
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import DialogContent from '@material-ui/core/DialogContent';
+import MuiFormHelperText from '@material-ui/core/FormHelperText';
 
 import { procurementStatusList } from 'shared/modelsHelpers';
 
@@ -11,9 +13,8 @@ import CheckboxIcon from 'src/components/CheckboxIcon';
 
 import { ReactComponent as ProcurementReceivedIcon } from 'public/img/other/procurement_received.svg';
 import { ReactComponent as ProcurementExpectedIcon } from 'public/img/other/procurement_expected.svg';
-import ClassNames from 'classnames';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { ErrorMessage } from 'formik';
+
+import { scrollToDialogElement } from '../helpers/utils';
 
 const styles = () => ({
 	container: {
@@ -23,6 +24,13 @@ const styles = () => ({
 		marginTop: 20,
 	},
 });
+
+const FormHelperText = withStyles({
+	root: {
+		marginLeft: 0,
+		marginTop: 0,
+	},
+})(MuiFormHelperText);
 
 const procurementStatusListTranslate = {
 	expected: {
@@ -35,11 +43,16 @@ const procurementStatusListTranslate = {
 	},
 };
 
-function ProcurementOption({ classes, onUpdateSteps, formikProps: { values, isSubmitting, setFieldValue } }) {
+function ProcurementOption({ classes, dialogRef, onUpdateSteps, formikProps: { values, isSubmitting, setFieldValue } }) {
 	const onChangeProcurementStatus = status => {
 		setFieldValue('status', status, false);
 		onUpdateSteps({ status });
 	};
+
+	useEffect(() => {
+		scrollToDialogElement(dialogRef, 'sentinel-topStepper', 'start');
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return (
 		<DialogContent className={classes.container} style={{ overflow: 'initial' }}>
@@ -48,9 +61,9 @@ function ProcurementOption({ classes, onUpdateSteps, formikProps: { values, isSu
 			</Typography>
 			<ErrorMessage name="status">
 				{message => (
-					<Typography variant="body1" align="center" color="error">
+					<FormHelperText style={{ textAlign: 'center' }} error>
 						{message}
-					</Typography>
+					</FormHelperText>
 				)}
 			</ErrorMessage>
 			<Grid className={classes.options} justify="space-evenly" container>

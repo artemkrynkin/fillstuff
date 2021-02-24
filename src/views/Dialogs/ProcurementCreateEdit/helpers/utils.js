@@ -1,4 +1,7 @@
 import React from 'react';
+import { v4 as uuidv4 } from 'uuid';
+
+export const helperText = (filedTouched, fieldError) => (filedTouched && typeof fieldError === 'string' ? fieldError : null);
 
 export const getSteps = ({ showOptionSelectStep = true, status, sellingPositions = false }) => {
 	const stepList = [
@@ -6,9 +9,8 @@ export const getSteps = ({ showOptionSelectStep = true, status, sellingPositions
 			index: 1,
 			label: (
 				<>
-					Данные о закупке,
-					<br />
-					список позиций
+					Данные о закупке
+					<br />и поступлениях
 				</>
 			),
 		},
@@ -45,7 +47,9 @@ export const getSteps = ({ showOptionSelectStep = true, status, sellingPositions
 };
 
 export const receiptInitialValues = ({ position, quantity }) => ({
+	id: uuidv4(),
 	position,
+	visibleFormationPriceFields: !position.isFree,
 	quantity: position.unitReceipt === 'pce' || position.unitRelease === 'nmp' ? quantity || '' : '',
 	quantityPackages: position.unitReceipt === 'pce' || position.unitRelease === 'nmp' ? '' : quantity || '',
 	quantityInUnit: '',
@@ -60,15 +64,17 @@ export const receiptInitialValues = ({ position, quantity }) => ({
 	unitMarkup: '',
 });
 
-export const scrollToBottomDialog = dialogRefCurrent => {
-	const sentinelBottomContainer = dialogRefCurrent?.querySelector('.sentinel-bottom');
+export const scrollToDialogElement = (dialogRef, selector, scrollIntoBlock) => {
+	if (!dialogRef || !selector || !scrollIntoBlock) return;
 
-	if (!sentinelBottomContainer) return;
+	const container = dialogRef?.current?.querySelector(`.${selector}`);
+
+	if (!container) return;
 
 	setTimeout(() => {
-		sentinelBottomContainer.scrollIntoView({
+		container.scrollIntoView({
 			behavior: 'smooth',
-			block: 'end',
+			block: scrollIntoBlock,
 		});
-	}, 0);
+	}, 50);
 };

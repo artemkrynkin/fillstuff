@@ -294,11 +294,11 @@ export const createProcurementReceived = ({ data }) => {
 			})
 			.catch(error => {
 				if (error.response) {
-					return Promise.resolve({ status: 'error', message: error.response.data.message, data: error.response.data });
+					return Promise.reject({ status: 'error', message: error.response.data.message, data: error.response.data });
 				} else {
 					console.error(error);
 
-					return Promise.resolve({ status: 'error', message: error.message, ...error });
+					return Promise.reject({ status: 'error', message: error.message, ...error });
 				}
 			});
 	};

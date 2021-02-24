@@ -15,6 +15,8 @@ import colorTheme from 'shared/colorTheme';
 import PositionSummary from 'src/components/PositionSummary';
 import NumberFormat, { moneyInputFormatProps } from 'src/components/NumberFormat';
 
+import { helperText } from '../../helpers/utils';
+
 const styles = {
 	receiptItem: {
 		'&:not(:last-child)': {
@@ -101,14 +103,16 @@ function Receipt({
 					{values.status !== 'expected' ? (
 						<Grid className={classes.actionButtons} item>
 							<Tooltip title="Удалить из списка" placement="top">
-								<IconButton
-									className={ClassNames(classes.actionButton, 'destructiveAction')}
-									onClick={onRemoveReceipt}
-									disabled={isSubmitting}
-									tabIndex={-1}
-								>
-									<FontAwesomeIcon icon={['far', 'trash']} />
-								</IconButton>
+								<span>
+									<IconButton
+										className={ClassNames(classes.actionButton, 'destructiveAction')}
+										onClick={onRemoveReceipt}
+										disabled={isSubmitting}
+										tabIndex={-1}
+									>
+										<FontAwesomeIcon icon={['far', 'trash']} />
+									</IconButton>
+								</span>
 							</Tooltip>
 						</Grid>
 					) : null}
@@ -122,7 +126,7 @@ function Receipt({
 								placeholder="0"
 								as={TextField}
 								error={fieldsMeta.quantity.touched && Boolean(fieldsMeta.quantity.error)}
-								helperText={fieldsMeta.quantity.touched && fieldsMeta.quantity.error}
+								helperText={helperText(fieldsMeta.quantity.touched, fieldsMeta.quantity.error)}
 								InputProps={{
 									inputComponent: NumberFormat,
 									inputProps: {
@@ -140,7 +144,7 @@ function Receipt({
 								placeholder="0"
 								as={TextField}
 								error={fieldsMeta.quantityPackages.touched && Boolean(fieldsMeta.quantityPackages.error)}
-								helperText={fieldsMeta.quantityPackages.touched && fieldsMeta.quantityPackages.error}
+								helperText={helperText(fieldsMeta.quantityPackages.touched, fieldsMeta.quantityPackages.error)}
 								InputProps={{
 									inputComponent: NumberFormat,
 									inputProps: {
@@ -162,7 +166,7 @@ function Receipt({
 								placeholder="0"
 								as={TextField}
 								error={fieldsMeta.quantityInUnit.touched && Boolean(fieldsMeta.quantityInUnit.error)}
-								helperText={fieldsMeta.quantityInUnit.touched && fieldsMeta.quantityInUnit.error}
+								helperText={helperText(fieldsMeta.quantityInUnit.touched, fieldsMeta.quantityInUnit.error)}
 								InputProps={{
 									inputComponent: NumberFormat,
 									inputProps: {
@@ -183,7 +187,7 @@ function Receipt({
 							placeholder="0"
 							as={TextField}
 							error={fieldsMeta.purchasePrice.touched && Boolean(fieldsMeta.purchasePrice.error)}
-							helperText={fieldsMeta.purchasePrice.touched && fieldsMeta.purchasePrice.error}
+							helperText={helperText(fieldsMeta.purchasePrice.touched, fieldsMeta.purchasePrice.error)}
 							InputProps={{
 								endAdornment: <InputAdornment position="end">₽</InputAdornment>,
 								inputComponent: NumberFormat,

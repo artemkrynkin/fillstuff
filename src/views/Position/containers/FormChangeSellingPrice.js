@@ -50,7 +50,7 @@ const FormChangeSellingPrice = props => {
 			onSubmit={(values, actions) => onSubmit(values, actions)}
 		>
 			{({ errors, isSubmitting, touched, setFieldValue, values }) => {
-				let autoGenUnitSellingPrice = formatNumber(receipt.unitPurchasePrice + receipt.unitCostDelivery + values.unitMarkup);
+				let generatedUnitSellingPrice = formatNumber(receipt.unitPurchasePrice + receipt.unitCostDelivery + values.unitMarkup);
 
 				return (
 					<Form className={styles.form}>
@@ -116,8 +116,8 @@ const FormChangeSellingPrice = props => {
 														target.select();
 													},
 													onBlur: ({ target: { value } }) => {
-														if (Number(value) < autoGenUnitSellingPrice) {
-															setFieldValue(isNmpPce ? 'unitSellingPrice' : 'sellingPrice', autoGenUnitSellingPrice);
+														if (Number(value) < generatedUnitSellingPrice) {
+															setFieldValue(isNmpPce ? 'unitSellingPrice' : 'sellingPrice', generatedUnitSellingPrice);
 														}
 													},
 													onChange: ({ target: { value } }) => {
@@ -153,7 +153,7 @@ const FormChangeSellingPrice = props => {
 											}}
 											disabled={isSubmitting}
 											validate={value => {
-												if (value < autoGenUnitSellingPrice) {
+												if (value < generatedUnitSellingPrice) {
 													return 'Не может быть ниже рассчитанной цены';
 												}
 											}}

@@ -13,7 +13,7 @@ import Autocomplete from 'src/components/Autocomplete';
 
 import { getPositions } from 'src/actions/positions';
 
-import { receiptInitialValues, scrollToBottomDialog } from '../../helpers/utils';
+import { receiptInitialValues, scrollToDialogElement } from '../../helpers/utils';
 
 import Receipt from './Receipt';
 
@@ -25,11 +25,11 @@ const filter = createFilterOptions();
 
 export const useStyles = makeStyles(theme => ({
 	container: {
-		margin: '-10px -20px -12px',
+		margin: '-10px 0 -12px',
 	},
 	addPositionContainer: {
 		backgroundColor: '#fff',
-		marginBottom: 10,
+		margin: '0 -20px 10px',
 		position: 'sticky',
 		top: 94,
 		zIndex: 1,
@@ -40,9 +40,6 @@ export const useStyles = makeStyles(theme => ({
 	addPositionWrap: {
 		padding: '10px 20px',
 	},
-	receipts: {
-		padding: '0 20px',
-	},
 	stubImage: {
 		maxWidth: 200,
 		margin: '0 auto',
@@ -51,6 +48,12 @@ export const useStyles = makeStyles(theme => ({
 		marginTop: 20,
 	},
 }));
+
+const positionTransform = positions => {
+	return positions
+		.filter(position => !position.isArchived && !position.archivedAfterEnded)
+		.map(position => procurementPositionTransform(position, true));
+};
 
 const filterOptionsAutocomplete = (options, params, receipts) => {
 	const filterOptions = options.filter(option => !receipts.some(receipt => option._id === receipt.position._id));
@@ -94,14 +97,14 @@ function Receipts({
 	const [inputValue, setInputValue] = useState(null);
 	const [dialogPositionCreate, setDialogPositionCreate] = useState(false);
 	const [newPosition, setNewPosition] = useState({ name: '' });
-	const [options, setOptions] = useState(positions || []);
+	const [options, setOptions] = useState(positionTransform(positions) || []);
 	const [autocompleteOpen, setAutocompleteOpen] = useState(false);
 	const [loaded, setLoaded] = useState(false);
 
 	const addPositionInReceipts = position => {
 		push(receiptInitialValues({ position }));
 
-		scrollToBottomDialog(dialogRef.current);
+		scrollToDialogElement(dialogRef, 'sentinel-bottom', 'end');
 	};
 
 	const onOpenAutocomplete = () => setAutocompleteOpen(true);
@@ -142,9 +145,7 @@ function Receipts({
 			try {
 				const response = await props.getPositions();
 
-				const positions = response.data
-					.filter(position => !position.isArchived && !position.archivedAfterEnded)
-					.map(position => procurementPositionTransform(position, true));
+				const positions = positionTransform(response.data);
 
 				setOptions(positions);
 			} catch (error) {}
@@ -191,9 +192,9 @@ function Receipts({
 				</div>
 
 				{values.receipts.length ? (
-					<div className={classes.receipts}>
+					<div>
 						{values.receipts.map((receipt, index) => (
-							<Receipt key={receipt.position._id} index={index} receipt={receipt} formikProps={formikProps} arrayHelpers={arrayHelpers} />
+							<Receipt key={receipt.id} index={index} receipt={receipt} formikProps={formikProps} arrayHelpers={arrayHelpers} />
 						))}
 					</div>
 				) : (

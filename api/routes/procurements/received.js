@@ -163,194 +163,197 @@ router.post(
 			data: { procurement: newProcurementValues },
 		} = req.body;
 
-		const procurementPromise = Procurement.findById(newProcurementValues._id).catch(err => next({ code: 2, err }));
+		try {
+			const procurementPromise = Procurement.findById(newProcurementValues._id);
 
-		const positionsPromise = Position.find({ _id: { $in: newProcurementValues.positions } })
-			.populate([
-				{
-					path: 'activeReceipt',
-				},
-				{
-					path: 'receipts',
-					match: { status: /received|active/ },
-					options: {
-						sort: { createdAt: 1 },
+			const positionsPromise = Position.find({ _id: { $in: newProcurementValues.positions } })
+				.populate([
+					{
+						path: 'activeReceipt',
 					},
-				},
-			])
-			.lean()
-			.catch(err => next({ code: 2, err }));
-
-		const positions = await positionsPromise;
-		const procurementExist = await procurementPromise;
-
-		const newProcurement = !procurementExist
-			? new Procurement({
-					...newProcurementValues,
-					studio: studioId,
-					receivedByMember: memberId,
-					status: 'received',
-			  })
-			: procurementExist;
-
-		const receiptsErr = [];
-		let awaitingPromises = [];
-
-		newProcurement.receipts = newProcurementValues.receipts.map(({ position: positionId, ...receipt }) => {
-			const position = positions.find(position => String(position._id) === positionId);
-
-			const newReceipt = new Receipt({
-				...receipt,
-				procurement: newProcurement._id,
-				position: position._id,
-				studio: studioId,
-				status: position.activeReceipt && position.activeReceipt.current.quantity !== 0 ? 'received' : 'active',
-				isFree: position.isFree,
-			});
-
-			receiptCalc.quantity(newReceipt, {
-				unitReceipt: position.unitReceipt,
-				unitRelease: position.unitRelease,
-			});
-
-			const newReceiptErr = newReceipt.validateSync();
-
-			if (newReceiptErr) receiptsErr.push(newReceiptErr);
-
-			const positionUpdate = {
-				$set: {
-					hasReceipts: true,
-				},
-				$inc: {},
-				$push: {
-					receipts: newReceipt._id,
-				},
-				$unset: {},
-				$pull: {},
-			};
-			const positionShopIndex = position.shops.findIndex(shop => String(shop.shop) === String(newProcurement.shop));
-
-			if (!position.activeReceipt) {
-				positionUpdate.$set.activeReceipt = newReceipt._id;
-			}
-
-			if (position.notifyReceiptMissing) {
-				positionUpdate.$set.notifyReceiptMissing = false;
-			}
-
-			if (newProcurement.status === 'expected') {
-				positionUpdate.$pull.deliveryIsExpected = newProcurement._id;
-			}
-
-			if (!!~positionShopIndex) {
-				positionUpdate.$inc[`shops.${positionShopIndex}.numberReceipts`] = 1;
-				positionUpdate.$set[`shops.${positionShopIndex}.lastProcurement`] = newProcurement._id;
-			} else {
-				positionUpdate.$push.shops = {
-					shop: newProcurement.shop,
-					numberReceipts: 1,
-					lastProcurement: newProcurement._id,
-				};
-			}
-
-			awaitingPromises.push([position._id, positionUpdate]);
-
-			return newReceipt;
-		});
-
-		if (newProcurement.status === 'expected') {
-			newProcurement.receivedByMember = memberId;
-			newProcurement.status = 'received';
-			newProcurement.createdAt = Date.now();
-			newProcurement.compensateCostDelivery = newProcurementValues.compensateCostDelivery;
-			newProcurement.noInvoice = newProcurementValues.noInvoice;
-			if (newProcurementValues.invoiceNumber) {
-				newProcurement.invoiceNumber = newProcurementValues.invoiceNumber;
-			}
-			if (newProcurementValues.invoiceDate) {
-				newProcurement.invoiceDate = newProcurementValues.invoiceDate;
-			}
-			newProcurement.orderedReceiptsPositions = undefined;
-		}
-
-		if (receiptsErr.length) return next({ code: 2 });
-
-		const newProcurementErr = newProcurement.validateSync();
-
-		if (newProcurementErr) return next({ code: newProcurementErr.errors ? 5 : 2, err: newProcurementErr });
-
-		await Receipt.insertMany(newProcurement.receipts).catch(err => next({ code: 2, err }));
-
-		awaitingPromises = awaitingPromises.map(promiseItem => Position.findByIdAndUpdate(promiseItem[0], promiseItem[1]));
-
-		await Promise.all([newProcurement.save(), ...awaitingPromises]);
-
-		if (procurementExist) {
-			Emitter.emit('deleteStoreNotification', {
-				studio: studioId,
-				type: 'delivery-is-expected',
-				procurement: procurementExist._id,
-			});
-		} else {
-			newProcurement.positions.forEach(positionId => {
-				const position = positions.find(position => String(position._id) === String(positionId));
-
-				Emitter.emit('deleteStoreNotification', {
-					studio: studioId,
-					type: !position.notifyReceiptMissing ? 'position-ends' : 'receipts-missing',
-					position: positionId,
-				});
-			});
-		}
-
-		await newProcurement
-			.populate([
-				{
-					path: 'orderedByMember',
-					model: Member,
-					populate: {
-						path: 'user',
-						model: User,
-						select: 'picture name email',
-					},
-				},
-				{
-					path: 'receivedByMember',
-					model: Member,
-					populate: {
-						path: 'user',
-						model: User,
-						select: 'picture name email',
-					},
-				},
-				{
-					path: 'receipts',
-					populate: {
-						path: 'position',
-						populate: {
-							path: 'characteristics',
+					{
+						path: 'receipts',
+						match: { status: /received|active/ },
+						options: {
+							sort: { createdAt: 1 },
 						},
 					},
-				},
-			])
-			.execPopulate();
+				])
+				.lean();
 
-		const purchasePriceReceipts = newProcurement.receipts.reduce(
-			(total, receipt) => total + receipt.initial.quantity * receipt.unitPurchasePrice,
-			0
-		);
+			const positions = await positionsPromise;
+			const procurementExist = await procurementPromise;
 
-		const studio = await Studio.findById(studioId).catch(err => next({ code: 2, err }));
+			const newProcurement = !procurementExist
+				? new Procurement({
+						...newProcurementValues,
+						studio: studioId,
+						receivedByMember: memberId,
+						status: 'received',
+				  })
+				: procurementExist;
 
-		studio.stock.stockPrice += purchasePriceReceipts;
+			const receiptsErr = [];
+			let awaitingPromises = [];
 
-		const studioErr = studio.validateSync();
+			newProcurement.receipts = newProcurementValues.receipts.map(({ position: positionId, ...receipt }) => {
+				const position = positions.find(position => String(position._id) === positionId);
 
-		if (studioErr) return next({ code: studioErr.errors ? 5 : 2, err: studioErr });
+				const newReceipt = new Receipt({
+					...receipt,
+					procurement: newProcurement._id,
+					position: position._id,
+					studio: studioId,
+					status: position.activeReceipt && position.activeReceipt.current.quantity !== 0 ? 'received' : 'active',
+					isFree: position.isFree,
+				});
 
-		await studio.save();
+				receiptCalc.quantity(newReceipt, {
+					unitReceipt: position.unitReceipt,
+					unitRelease: position.unitRelease,
+				});
 
-		res.json(newProcurement);
+				const newReceiptErr = newReceipt.validateSync();
+
+				if (newReceiptErr) receiptsErr.push(newReceiptErr);
+
+				const positionUpdate = {
+					$set: {
+						hasReceipts: true,
+					},
+					$inc: {},
+					$push: {
+						receipts: newReceipt._id,
+					},
+					$unset: {},
+					$pull: {},
+				};
+				const positionShopIndex = position.shops.findIndex(shop => String(shop.shop) === String(newProcurement.shop));
+
+				if (!position.activeReceipt) {
+					positionUpdate.$set.activeReceipt = newReceipt._id;
+				}
+
+				if (position.notifyReceiptMissing) {
+					positionUpdate.$set.notifyReceiptMissing = false;
+				}
+
+				if (newProcurement.status === 'expected') {
+					positionUpdate.$pull.deliveryIsExpected = newProcurement._id;
+				}
+
+				if (!!~positionShopIndex) {
+					positionUpdate.$inc[`shops.${positionShopIndex}.numberReceipts`] = 1;
+					positionUpdate.$set[`shops.${positionShopIndex}.lastProcurement`] = newProcurement._id;
+				} else {
+					positionUpdate.$push.shops = {
+						shop: newProcurement.shop,
+						numberReceipts: 1,
+						lastProcurement: newProcurement._id,
+					};
+				}
+
+				awaitingPromises.push([position._id, positionUpdate]);
+
+				return newReceipt;
+			});
+
+			if (newProcurement.status === 'expected') {
+				newProcurement.receivedByMember = memberId;
+				newProcurement.status = 'received';
+				newProcurement.createdAt = Date.now();
+				newProcurement.compensateCostDelivery = newProcurementValues.compensateCostDelivery;
+				newProcurement.noInvoice = newProcurementValues.noInvoice;
+				if (newProcurementValues.invoiceNumber) {
+					newProcurement.invoiceNumber = newProcurementValues.invoiceNumber;
+				}
+				if (newProcurementValues.invoiceDate) {
+					newProcurement.invoiceDate = newProcurementValues.invoiceDate;
+				}
+				newProcurement.orderedReceiptsPositions = undefined;
+			}
+
+			if (receiptsErr.length) return next({ code: 2 });
+
+			const newProcurementErr = newProcurement.validateSync();
+
+			if (newProcurementErr) return next({ code: newProcurementErr.errors ? 5 : 2, err: newProcurementErr });
+
+			await Receipt.insertMany(newProcurement.receipts);
+
+			awaitingPromises = awaitingPromises.map(promiseItem => Position.findByIdAndUpdate(promiseItem[0], promiseItem[1]));
+
+			await Promise.all([newProcurement.save(), ...awaitingPromises]);
+
+			if (procurementExist) {
+				Emitter.emit('deleteStoreNotification', {
+					studio: studioId,
+					type: 'delivery-is-expected',
+					procurement: procurementExist._id,
+				});
+			} else {
+				newProcurement.positions.forEach(positionId => {
+					const position = positions.find(position => String(position._id) === String(positionId));
+
+					Emitter.emit('deleteStoreNotification', {
+						studio: studioId,
+						type: !position.notifyReceiptMissing ? 'position-ends' : 'receipts-missing',
+						position: positionId,
+					});
+				});
+			}
+
+			await newProcurement
+				.populate([
+					{
+						path: 'orderedByMember',
+						model: Member,
+						populate: {
+							path: 'user',
+							model: User,
+							select: 'picture name email',
+						},
+					},
+					{
+						path: 'receivedByMember',
+						model: Member,
+						populate: {
+							path: 'user',
+							model: User,
+							select: 'picture name email',
+						},
+					},
+					{
+						path: 'receipts',
+						populate: {
+							path: 'position',
+							populate: {
+								path: 'characteristics',
+							},
+						},
+					},
+				])
+				.execPopulate();
+
+			const purchasePriceReceipts = newProcurement.receipts.reduce(
+				(total, receipt) => total + receipt.initial.quantity * receipt.unitPurchasePrice,
+				0
+			);
+
+			const studio = await Studio.findById(studioId);
+
+			studio.stock.stockPrice += purchasePriceReceipts;
+
+			const studioErr = studio.validateSync();
+
+			if (studioErr) return next({ code: studioErr.errors ? 5 : 2, err: studioErr });
+
+			await studio.save();
+
+			res.json(newProcurement);
+		} catch (err) {
+			next({ code: 2, err });
+		}
 	}
 );
 

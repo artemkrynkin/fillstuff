@@ -175,6 +175,8 @@ export const receiptCalc = {
 	sellingPrice: (receipt, { isFree }) => {
 		receipt.sellingPrice = 0;
 		receipt.unitSellingPrice = 0;
+		receipt.markup = 0;
+		receipt.unitMarkup = 0;
 
 		if (isFree) return receipt;
 
@@ -186,32 +188,19 @@ export const receiptCalc = {
 
 		return receipt;
 	},
-	markupPercent: (receipt, { isFree, unitReceipt, unitRelease }) => {
+	markupPercent: (receipt, { isFree }) => {
 		receipt.markupPercent = 0;
 
 		if (isFree) return receipt;
 
-		if (unitReceipt === 'nmp' && unitRelease === 'pce') {
-			const autoGenUnitSellingPrice = formatNumber(receipt.unitPurchasePrice + receipt.unitCostDelivery);
+		const generatedUnitSellingPrice = formatNumber(receipt.unitPurchasePrice + receipt.unitCostDelivery);
+		const unitSellingPrice = formatNumber(receipt.unitSellingPrice);
 
-			receipt.unitSellingPrice = formatNumber(receipt.unitSellingPrice);
+		if (unitSellingPrice < generatedUnitSellingPrice) return receipt;
 
-			if (receipt.unitSellingPrice < autoGenUnitSellingPrice) return receipt;
+		const markupPercent = (formatNumber(unitSellingPrice - generatedUnitSellingPrice) / receipt.unitPurchasePrice) * 100;
 
-			const markupPercent = (formatNumber(receipt.unitSellingPrice - autoGenUnitSellingPrice) / receipt.unitPurchasePrice) * 100;
-
-			receipt.markupPercent = formatNumber(markupPercent, { fractionDigits: 4 });
-		} else {
-			const autoGenUnitSellingPrice = formatNumber(receipt.purchasePrice + receipt.costDelivery);
-
-			receipt.sellingPrice = formatNumber(receipt.sellingPrice);
-
-			if (receipt.sellingPrice < autoGenUnitSellingPrice) return receipt;
-
-			const markupPercent = (formatNumber(receipt.sellingPrice - autoGenUnitSellingPrice) / receipt.purchasePrice) * 100;
-
-			receipt.markupPercent = formatNumber(markupPercent, { fractionDigits: 4 });
-		}
+		receipt.markupPercent = formatNumber(markupPercent, { fractionDigits: 4 });
 
 		return receipt;
 	},

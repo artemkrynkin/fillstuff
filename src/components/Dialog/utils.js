@@ -1,4 +1,6 @@
 export const observeActions = (container, stickySelector, position = null, sentinelAdditionalText = '') => {
+	if (!container.querySelector(`.${stickySelector}`)) return;
+
 	const sentinelClass = position + sentinelAdditionalText;
 
 	const observer = new IntersectionObserver(

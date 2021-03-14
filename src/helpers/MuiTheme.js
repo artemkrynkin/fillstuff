@@ -951,8 +951,12 @@ export const MuiTheme = createMuiTheme({
 				'&$alternativeLabel': {
 					marginTop: 10,
 				},
-				'&$active, &$completed': {
+				'&$active': {
 					color: colorTheme.teal['400'],
+				},
+				'&$completed': {
+					color: null,
+					fontWeight: null,
 				},
 			},
 		},

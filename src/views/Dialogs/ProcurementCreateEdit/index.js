@@ -10,7 +10,13 @@ import { useStyles as useStylesReceipts } from './components/Receipts';
 
 import DialogUnsavedChanges from './containers/DialogUnsavedChanges';
 
-function DialogProcurementCreateEdit({ dialogOpen, onCloseDialog: onCloseDialogCallback, onExitedDialog: onExitedDialogCallback }) {
+function DialogProcurementCreateEdit({
+	type,
+	dialogOpen,
+	onCloseDialog: onCloseDialogCallback,
+	onExitedDialog: onExitedDialogCallback,
+	selectedProcurement,
+}) {
 	const classesProcurementForm = useStylesProcurementForm();
 	const classesReceipts = useStylesReceipts();
 	const dialogRef = useRef(null);
@@ -36,6 +42,8 @@ function DialogProcurementCreateEdit({ dialogOpen, onCloseDialog: onCloseDialogC
 
 	const toggleVisibleDialogUnsavedChanges = () => setDialogUnsavedChanges(prevValue => !prevValue);
 
+	if (/confirm|edit/.test(type) && !selectedProcurement) return null;
+
 	return (
 		<>
 			<DialogStickyFR
@@ -60,12 +68,16 @@ function DialogProcurementCreateEdit({ dialogOpen, onCloseDialog: onCloseDialogC
 				]}
 				stickyActions
 			>
-				<DialogTitle onClose={onCloseFuseDialog}>Оформление закупки</DialogTitle>
+				<DialogTitle onClose={onCloseFuseDialog}>
+					{type === 'create' ? 'Оформление закупки' : type === 'edit' ? 'Редактирование закупки' : 'Подтверждение доставки'}
+				</DialogTitle>
 				<ProcurementForm
+					type={type}
 					dialogRef={dialogRef}
 					onCloseFuseDialog={onCloseFuseDialog}
 					onCloseDialog={onCloseDialogCallback}
 					setDirtyForm={setDirtyForm}
+					selectedProcurement={selectedProcurement}
 				/>
 			</DialogStickyFR>
 
@@ -83,9 +95,11 @@ DialogProcurementCreateEdit.defaultProps = {
 };
 
 DialogProcurementCreateEdit.propTypes = {
+	type: PropTypes.oneOf(['create', 'confirm', 'edit']).isRequired,
 	dialogOpen: PropTypes.bool,
 	onCloseDialog: PropTypes.func.isRequired,
 	onExitedDialog: PropTypes.func,
+	selectedProcurement: PropTypes.object,
 };
 
 export default DialogProcurementCreateEdit;

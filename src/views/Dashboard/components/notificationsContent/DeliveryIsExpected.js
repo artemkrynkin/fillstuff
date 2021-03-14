@@ -85,7 +85,7 @@ const DeliveryIsExpected = props => {
 					{eventStatus === 'expected'
 						? 'Ожидается доставка'
 						: eventStatus === 'unconfirmed'
-						? 'Ожидается подтверждение заказа'
+						? 'Ожидается подтверждение доставки'
 						: 'Доставка просрочена'}
 				</Typography>
 			</div>
@@ -158,7 +158,7 @@ const DeliveryIsExpected = props => {
 							}
 							positive
 						>
-							Подтвердить заказ
+							Подтвердить доставку
 						</MenuItem>
 					)}
 					{procurement.isConfirmed ? (
@@ -180,7 +180,7 @@ const DeliveryIsExpected = props => {
 						iconBefore={<FontAwesomeIcon icon={['far', 'undo']} fixedWidth />}
 						destructive
 					>
-						Отменить заказ
+						Отменить закупку
 					</MenuItem>
 				</MenuList>
 			</Dropdown>

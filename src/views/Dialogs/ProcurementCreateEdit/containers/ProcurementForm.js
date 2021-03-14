@@ -1,10 +1,12 @@
-import React, { cloneElement, useState } from 'react';
+import React, { cloneElement, useEffect, useLayoutEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
+import Typography from '@material-ui/core/Typography';
 
 import colorTheme from 'shared/colorTheme';
 import { formatNumber, sleep } from 'shared/utils';
@@ -13,14 +15,15 @@ import { receiptCalc, UnitCostDelivery } from 'shared/checkPositionAndReceipt';
 import StepIcon from 'src/components/StepIcon';
 import StepConnector from 'src/components/StepConnector';
 
-import { createProcurementReceived } from 'src/actions/procurements';
+import { createProcurementExpected, editProcurementExpected, createProcurementReceived } from 'src/actions/procurements';
 import { enqueueSnackbar } from 'src/actions/snackbars';
 
-import { getSteps, scrollToDialogElement } from '../helpers/utils';
-import procurementSchema, { procurementReceivedSchema } from '../helpers/procurementSchema';
+import { getSteps, scrollToDialogElement, receiptInitialValues } from '../helpers/utils';
+import procurementSchema, { procurementReceivedSchema, procurementExpectedSchema } from '../helpers/procurementSchema';
 import Wizard from './Wizard';
 import ProcurementOption from './ProcurementOption';
 import ProcurementData from './ProcurementData';
+import DeliveryConfirmation from './DeliveryConfirmation';
 import PriceFormation from './PriceFormation';
 
 export const useStyles = makeStyles(() => ({
@@ -33,34 +36,77 @@ export const useStyles = makeStyles(() => ({
 	},
 }));
 
-const initialValues = {
-	status: '',
-	shop: null,
-	isConfirmed: false,
-	isUnknownDeliveryDate: false,
-	deliveryDate: undefined,
-	deliveryTimeFrom: '',
-	deliveryTimeTo: '',
-	noInvoice: false,
-	invoiceNumber: '',
-	invoiceDate: undefined,
-	pricePositions: '',
-	costDelivery: '',
-	totalPrice: '',
-	compensateCostDelivery: true,
-	orderedReceiptsPositions: [],
-	positions: [],
-	receipts: [],
-	comment: '',
+const getInitialValues = (type, selectedProcurement) => {
+	let initialValues = {
+		status: '',
+		shop: null,
+		isConfirmed: false,
+		paymentState: '',
+		isUnknownDeliveryDate: false,
+		deliveryDate: undefined,
+		deliveryTimeFrom: '',
+		deliveryTimeTo: '',
+		noInvoice: false,
+		invoiceNumber: '',
+		invoiceDate: undefined,
+		pricePositions: '',
+		costDelivery: '',
+		totalPrice: '',
+		compensateCostDelivery: true,
+		orderedReceiptsPositions: [],
+		positions: [],
+		receipts: [],
+		comment: '',
+	};
+
+	if (selectedProcurement) {
+		const { orderedReceiptsPositions, deliveryDate, ...remainingParamsSelectedProcurement } = selectedProcurement;
+
+		initialValues = {
+			...initialValues,
+			...remainingParamsSelectedProcurement,
+		};
+
+		if (type === 'create') {
+			initialValues.status = 'received';
+
+			initialValues.positions = [];
+		}
+
+		if (type === 'edit') {
+			if (deliveryDate) initialValues.deliveryDate = moment(deliveryDate).format();
+		}
+
+		initialValues[type === 'create' ? 'receipts' : 'orderedReceiptsPositions'] = orderedReceiptsPositions.map(({ position, quantity }) =>
+			receiptInitialValues({
+				position,
+				quantity,
+				ordered: initialValues.status === 'expected',
+			})
+		);
+	}
+
+	return initialValues;
 };
 
 const WizardStep = ({ children, formikProps }) => cloneElement(children, { formikProps });
 
-function ProcurementForm({ dialogRef, onCloseFuseDialog, onCloseDialog, setDirtyForm, ...props }) {
+function ProcurementForm({ type, dialogRef, onCloseFuseDialog, onCloseDialog, setDirtyForm, selectedProcurement, ...props }) {
 	const classes = useStyles();
 	const [activeStep, setActiveStep] = useState(0);
 	const [completed, setCompleted] = useState({});
-	const [steps, setSteps] = useState(getSteps({ status: 'received' }));
+	const [steps, setSteps] = useState(
+		getSteps({
+			status: getInitialValues(type, selectedProcurement).status || 'received',
+			showOptionSelectStep: !Boolean(selectedProcurement),
+		})
+	);
+
+	const handleComplete = step => {
+		const newCompleted = completed;
+		newCompleted[step || activeStep] = true;
+		setCompleted(newCompleted);
+	};
 
 	const onUpdateSteps = options => setSteps(prevSteps => getSteps({ ...prevSteps.options, ...options }));
 
@@ -69,6 +115,7 @@ function ProcurementForm({ dialogRef, onCloseFuseDialog, onCloseDialog, setDirty
 			if (steps.options.status === 'received') {
 				const procurement = procurementReceivedSchema.cast(additionValues || values);
 
+				procurement.paymentState = 'paid';
 				procurement.positions = [];
 
 				procurement.receipts = procurement.receipts.map(({ position, quantity, quantityPackages, ...remainingValues }) => {
@@ -83,11 +130,61 @@ function ProcurementForm({ dialogRef, onCloseFuseDialog, onCloseDialog, setDirty
 					return newReceipt;
 				});
 
-				await props.createProcurementReceived({ data: { procurement } }).then(response => {
-					if (response.status === 'success') onCloseDialog();
-					else throw new Error(response);
+				await props.createProcurementReceived({ data: { procurement } });
+
+				await props.enqueueSnackbar({
+					message: 'Закупка успешно создана',
+					options: { variant: 'success' },
 				});
+
+				onCloseDialog();
 			} else {
+				const procurement = procurementExpectedSchema.cast(additionValues || values);
+
+				if (procurement.deliveryTimeFrom === '') delete procurement.deliveryTimeFrom;
+				if (procurement.deliveryTimeTo === '') delete procurement.deliveryTimeTo;
+
+				procurement.positions = procurement.orderedReceiptsPositions.map(receipt => receipt.position);
+
+				if (type === 'create') {
+					await props.createProcurementExpected({ data: { procurement } });
+				} else {
+					await props.editProcurementExpected({ params: { procurementId: procurement._id }, data: { procurement } });
+				}
+
+				await props.enqueueSnackbar({
+					message: (
+						<div>
+							{type !== 'confirm' || (type === 'confirm' && procurement.isConfirmed) ? (
+								<Typography variant="body1" gutterBottom={type !== 'edit'}>
+									{type === 'create'
+										? 'Закупка успешно создана'
+										: type === 'edit'
+										? 'Закупка успешно отредактирована'
+										: 'Закупка подтверждена'}
+								</Typography>
+							) : null}
+
+							{type !== 'edit' ? (
+								<Typography variant="body1">
+									{procurement.isConfirmed ? (
+										<>
+											<b>Дата доставки</b>:{' '}
+											{!procurement.isUnknownDeliveryDate ? <>{moment(procurement.deliveryDate).format('DD MMMM')}</> : <>неизвестна</>}
+										</>
+									) : (
+										<>
+											Дождитесь звонка менеджера и <b>подтвердите доставку</b>
+										</>
+									)}
+								</Typography>
+							) : null}
+						</div>
+					),
+					options: { variant: 'success' },
+				});
+
+				onCloseDialog();
 			}
 		} catch (error) {
 			props.enqueueSnackbar({
@@ -99,10 +196,12 @@ function ProcurementForm({ dialogRef, onCloseFuseDialog, onCloseDialog, setDirty
 		}
 	};
 
-	const checkStepOption = (values, actions) => {};
+	const checkStepOption = async () => await sleep(500);
 
 	const checkStepDataReceived = async (values, actions) => {
 		const procurement = procurementSchema.data.received.cast(values);
+
+		await sleep(500);
 
 		const indicators = UnitCostDelivery.indicators(procurement.receipts);
 
@@ -119,8 +218,6 @@ function ProcurementForm({ dialogRef, onCloseFuseDialog, onCloseDialog, setDirty
 
 			return false;
 		}
-
-		await sleep(500);
 
 		// Если есть платные позиции и стоимость доставки компенсируется за счет платных позиций
 		if (indicators.selling.positionsCount && procurement.compensateCostDelivery) {
@@ -211,9 +308,9 @@ function ProcurementForm({ dialogRef, onCloseFuseDialog, onCloseDialog, setDirty
 				unitRelease: receipt.position.unitRelease,
 			});
 
-			receiptCalc.sellingPrice(receipt, {
-				isFree: receipt.position.isFree,
-			});
+			receiptCalc.markupPercent(receipt, { isFree: receipt.position.isFree });
+
+			receiptCalc.sellingPrice(receipt, { isFree: receipt.position.isFree });
 		});
 
 		procurement.totalPrice = formatNumber(procurement.pricePositions + procurement.costDelivery);
@@ -228,20 +325,58 @@ function ProcurementForm({ dialogRef, onCloseFuseDialog, onCloseDialog, setDirty
 		return procurement;
 	};
 
-	const checkStepDataExpected = async (values, actions) => {};
+	const checkStepDataExpected = async (values, actions) => {
+		const procurement = procurementSchema.data.expected.cast(values);
 
-	const checkStepPriceFormation = (values, actions) => {
+		await sleep(500);
+
+		procurement.totalPrice = formatNumber(procurement.pricePositions + procurement.costDelivery);
+
+		actions.setFieldValue('pricePositions', procurement.pricePositions);
+		actions.setFieldValue('costDelivery', procurement.costDelivery);
+		actions.setFieldValue('totalPrice', procurement.totalPrice);
+		actions.setFieldValue('orderedReceiptsPositions', procurement.orderedReceiptsPositions);
+
+		return procurement;
+	};
+
+	const checkStepPriceFormation = async (values, actions) => {
 		const procurement = procurementSchema.priceFormation.cast(values);
 
+		await sleep(500);
+
 		actions.setFieldValue('receipts', procurement.receipts);
+
+		return procurement;
 	};
+
+	const checkStepDeliveryConfirmation = async values => {
+		const procurement = procurementSchema.deliveryConfirmation.cast(values);
+
+		await sleep(500);
+
+		return procurement;
+	};
+
+	useLayoutEffect(() => {
+		if (dialogRef.current) scrollToDialogElement(dialogRef, 'sentinel-topStepper', 'start');
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [activeStep]);
+
+	useEffect(() => {
+		if (type === 'confirm') {
+			handleComplete(0);
+			setActiveStep(1);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return (
 		<>
 			<div className="sentinel-topStepper" />
 			<Stepper className={classes.stepper} activeStep={activeStep} connector={<StepConnector />} alternativeLabel>
-				{steps.list.map(step => (
-					<Step key={step.index} completed={completed[step.index]}>
+				{steps.list.map((step, index) => (
+					<Step key={index} completed={completed[index]}>
 						<StepLabel StepIconComponent={StepIcon} StepIconProps={{ activeStep }}>
 							{step.label}
 						</StepLabel>
@@ -249,44 +384,48 @@ function ProcurementForm({ dialogRef, onCloseFuseDialog, onCloseDialog, setDirty
 				))}
 			</Stepper>
 			<Wizard
-				initialValues={initialValues}
+				type={type}
+				initialValues={getInitialValues(type, selectedProcurement)}
 				onSubmit={sendForm}
 				onCloseFuseDialog={onCloseFuseDialog}
 				setDirtyForm={setDirtyForm}
+				handleComplete={handleComplete}
 				activeStep={activeStep}
 				setActiveStep={setActiveStep}
-				completed={completed}
-				setCompleted={setCompleted}
 			>
-				{steps.options.showOptionSelectStep && (
+				{steps.options.showOptionSelectStep ? (
 					<WizardStep onSubmit={checkStepOption} validationSchema={procurementSchema.option}>
-						<ProcurementOption dialogRef={dialogRef} onUpdateSteps={onUpdateSteps} />
+						<ProcurementOption onUpdateSteps={onUpdateSteps} />
 					</WizardStep>
-				)}
-				{steps.options.status === 'received' && (
-					<WizardStep onSubmit={checkStepDataReceived} validationSchema={procurementSchema.data.received}>
-						<ProcurementData dialogRef={dialogRef} onUpdateSteps={onUpdateSteps} />
-					</WizardStep>
-				)}
-				{steps.options.status === 'expected' && (
+				) : null}
+				{steps.options.status === 'expected' ? (
 					<WizardStep onSubmit={checkStepDataExpected} validationSchema={procurementSchema.data.expected}>
 						<ProcurementData dialogRef={dialogRef} onUpdateSteps={onUpdateSteps} />
 					</WizardStep>
-				)}
-				{steps.options.sellingPositions && (
+				) : null}
+				{steps.options.status === 'expected' ? (
+					<WizardStep onSubmit={checkStepDeliveryConfirmation} validationSchema={procurementSchema.deliveryConfirmation}>
+						<DeliveryConfirmation />
+					</WizardStep>
+				) : null}
+				{steps.options.status === 'received' ? (
+					<WizardStep onSubmit={checkStepDataReceived} validationSchema={procurementSchema.data.received}>
+						<ProcurementData dialogRef={dialogRef} onUpdateSteps={onUpdateSteps} />
+					</WizardStep>
+				) : null}
+				{steps.options.sellingPositions ? (
 					<WizardStep onSubmit={checkStepPriceFormation} validationSchema={procurementSchema.priceFormation}>
 						<PriceFormation dialogRef={dialogRef} />
 					</WizardStep>
-				)}
-				{/*{steps.options.status === 'expected' && (*/}
-				{/*  <></>*/}
-				{/*)}*/}
+				) : null}
 			</Wizard>
 		</>
 	);
 }
 
 const mapDispatchToProps = {
+	createProcurementExpected,
+	editProcurementExpected,
 	createProcurementReceived,
 	enqueueSnackbar,
 };

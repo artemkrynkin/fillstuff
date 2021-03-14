@@ -67,7 +67,7 @@ const ProcurementExpectedView = props => {
 					<Grid className={styles.headerActions} alignItems="center" container>
 						{selectedProcurement.isConfirmed ? (
 							<Button
-								onClick={() => onOpenDialogByName('dialogProcurementReceivedCreate', 'procurementReceived', selectedProcurement)}
+								onClick={() => onOpenDialogByName('dialogProcurementCreate', 'procurement', selectedProcurement)}
 								color="primary"
 								variant="contained"
 								size="small"
@@ -76,7 +76,7 @@ const ProcurementExpectedView = props => {
 							</Button>
 						) : (
 							<Button
-								onClick={() => onOpenDialogByName('dialogProcurementExpectedConfirm', 'procurementExpected', selectedProcurement)}
+								onClick={() => onOpenDialogByName('dialogProcurementConfirm', 'procurement', selectedProcurement)}
 								color="primary"
 								variant="contained"
 								size="small"
@@ -112,7 +112,7 @@ const ProcurementExpectedView = props => {
 								<MenuItem
 									onClick={() => {
 										onHandleDropdownActions();
-										onOpenDialogByName('dialogProcurementExpectedEdit', 'procurementExpected', selectedProcurement);
+										onOpenDialogByName('dialogProcurementEdit', 'procurement', selectedProcurement);
 									}}
 									iconBefore={<FontAwesomeIcon icon={['far', 'pen']} fixedWidth />}
 								>
@@ -122,7 +122,7 @@ const ProcurementExpectedView = props => {
 							<MenuItem
 								onClick={() => {
 									onHandleDropdownActions();
-									onOpenDialogByName('dialogProcurementExpectedCancel', 'procurementExpected', selectedProcurement);
+									onOpenDialogByName('dialogProcurementExpectedCancel', 'procurement', selectedProcurement);
 								}}
 								iconBefore={<FontAwesomeIcon icon={['far', 'undo']} fixedWidth />}
 								destructive

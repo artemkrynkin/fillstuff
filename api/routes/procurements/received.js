@@ -258,7 +258,7 @@ router.post(
 				return newReceipt;
 			});
 
-			if (newProcurement.status === 'expected') {
+			if (procurementExist?.status === 'expected') {
 				newProcurement.receivedByMember = memberId;
 				newProcurement.status = 'received';
 				newProcurement.createdAt = Date.now();

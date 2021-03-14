@@ -17,7 +17,7 @@ const Procurements = () => {
 			</Button>
 
 			<Suspense fallback={null}>
-				<DialogProcurementCreate dialogOpen={dialogProcurementCreate} onCloseDialog={toggleVisibleDialogProcurementCreate} />
+				<DialogProcurementCreate type="create" dialogOpen={dialogProcurementCreate} onCloseDialog={toggleVisibleDialogProcurementCreate} />
 			</Suspense>
 		</div>
 	);

@@ -21,7 +21,7 @@ const ReceiptsMissing = props => {
 				</Typography>
 			</div>
 			<Typography className={styles.subtitle} variant="subtitle1">
-				Создайте заказ или оформите закупку
+				Оформите закупку
 			</Typography>
 			<PositionSummary name={position.name} characteristics={position.characteristics} avatar />
 		</>

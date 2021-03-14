@@ -42,11 +42,11 @@ const DialogProcurementExpectedCancel = props => {
 	return (
 		<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog}>
 			<DialogTitle onClose={onCloseDialog} theme="noTheme">
-				Отмена заказа
+				Отмена закупки
 			</DialogTitle>
 			<DialogContent>
 				<Typography variant="body1" gutterBottom>
-					Вы&nbsp;действительно хотите отменить заказ из&nbsp;магазина <b>{selectedProcurement.shop.name}</b>
+					Вы&nbsp;действительно хотите отменить закупку из&nbsp;магазина <b>{selectedProcurement.shop.name}</b>
 					{selectedProcurement.isConfirmed && !selectedProcurement.isUnknownDeliveryDate ? (
 						<>
 							{' '}
@@ -64,7 +64,7 @@ const DialogProcurementExpectedCancel = props => {
 					?
 				</Typography>
 				<Typography variant="body1" gutterBottom>
-					Все данные по заказу будут удалены.
+					Все данные по закупке будут удалены.
 				</Typography>
 				<Typography variant="body1">
 					Отменить это действие будет <b>невозможно</b>.
@@ -74,7 +74,7 @@ const DialogProcurementExpectedCancel = props => {
 						Отмена
 					</ButtonRed>
 					<ButtonRed onClick={onSubmit} variant="contained" color="primary" size="small">
-						Отменить заказ
+						Отменить закупку
 					</ButtonRed>
 				</DialogActions>
 			</DialogContent>

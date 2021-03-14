@@ -52,17 +52,10 @@ const styles = {
 	},
 	actionButton: {
 		padding: 0,
-		marginLeft: 5,
 		'& svg': {
 			fontSize: 16,
 		},
 	},
-};
-
-const positionBadges = ({ position, badges = [] }) => {
-	if (position.childPosition) badges.push('replaceable');
-
-	return badges;
 };
 
 function Receipt({
@@ -92,18 +85,12 @@ function Receipt({
 			<Grid className={classes.receiptContent} direction="column" container>
 				<Grid className={classes.receiptContentHeader} alignItems="center" container>
 					<Grid className={classes.positionSelected} zeroMinWidth item>
-						<PositionSummary
-							name={position.name}
-							characteristics={position.characteristics}
-							badges={positionBadges({ position })}
-							size="md"
-							avatar
-						/>
+						<PositionSummary name={position.name} characteristics={position.characteristics} size="md" avatar />
 					</Grid>
-					{values.status !== 'expected' ? (
+					{!values.isConfirmed ? (
 						<Grid className={classes.actionButtons} item>
 							<Tooltip title="Удалить из списка" placement="top">
-								<span>
+								<div>
 									<IconButton
 										className={ClassNames(classes.actionButton, 'destructiveAction')}
 										onClick={onRemoveReceipt}
@@ -112,7 +99,7 @@ function Receipt({
 									>
 										<FontAwesomeIcon icon={['far', 'trash']} />
 									</IconButton>
-								</span>
+								</div>
 							</Tooltip>
 						</Grid>
 					) : null}

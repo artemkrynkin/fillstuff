@@ -5,12 +5,11 @@ import DialogContent from '@material-ui/core/DialogContent';
 import Typography from '@material-ui/core/Typography';
 import MuiFormHelperText from '@material-ui/core/FormHelperText';
 
-import ReceiptSellingPrice from '../components/Receipts/ReceiptSellingPrice';
-import MessageWithIcon from '../components/MessageWithIcon';
-
 import { declensionNumber } from 'src/helpers/utils';
 
 import { scrollToDialogElement } from '../helpers/utils';
+import ReceiptSellingPrice from '../components/Receipts/ReceiptSellingPrice';
+import MessageWithIcon from '../components/MessageWithIcon';
 
 const styles = () => ({
 	container: {
@@ -30,7 +29,7 @@ const FormHelperText = withStyles({
 	},
 })(MuiFormHelperText);
 
-function PriceFormation({ classes, dialogRef, formikProps, formikProps: { values, errors, getFieldMeta } }) {
+function PriceFormation({ classes, dialogRef, formikProps, formikProps: { values, getFieldMeta } }) {
 	const [sellingReceiptsCount, setSellingReceiptsCount] = useState(0);
 	const getFieldReceipts = getFieldMeta('receipts');
 	const receiptsPriceSavedError =
@@ -42,9 +41,9 @@ function PriceFormation({ classes, dialogRef, formikProps, formikProps: { values
 	}, [values.receipts.length]);
 
 	useEffect(() => {
-		scrollToDialogElement(dialogRef, 'sentinel-topStepper', 'start');
+		if (receiptsPriceSavedError) scrollToDialogElement(dialogRef, 'sentinel-topStepper', 'start');
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [receiptsPriceSavedError]);
 
 	return (
 		<DialogContent className={classes.container} style={{ overflow: 'initial' }}>
@@ -56,28 +55,28 @@ function PriceFormation({ classes, dialogRef, formikProps, formikProps: { values
 				icon={['fad', 'exclamation-circle']}
 				message={
 					<>
-						Для {declensionNumber(sellingReceiptsCount, ['поступления', 'поступлений', 'поступлений'], true)} рассчитана цена продажи.
+						Для {declensionNumber(sellingReceiptsCount, ['позиции', 'позиций', 'позиций'], true)} рассчитана цена продажи.
 						<br />
 						При необходимости измените её вручную.
-						{receiptsPriceSavedError && (
+						{receiptsPriceSavedError ? (
 							<>
 								<br />
 								<FormHelperText component="span" error>
-									Сохраните цену продажи у поступлений.
+									Сохраните цену продажи у позиций.
 								</FormHelperText>
 							</>
-						)}
+						) : null}
 					</>
 				}
 			/>
 
-			{values.receipts.length && (
+			{values.receipts.length ? (
 				<div>
 					{values.receipts.map((receipt, index) => (
 						<ReceiptSellingPrice key={receipt.id} index={index} receipt={receipt} formikProps={formikProps} />
 					))}
 				</div>
-			)}
+			) : null}
 		</DialogContent>
 	);
 }

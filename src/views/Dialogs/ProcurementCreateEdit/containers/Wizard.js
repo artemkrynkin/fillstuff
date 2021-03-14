@@ -17,29 +17,13 @@ const DialogActions = withStyles({
 	},
 })(MuiDialogActions);
 
-function Wizard({
-	children,
-	onCloseFuseDialog,
-	setDirtyForm,
-	activeStep,
-	setActiveStep,
-	completed,
-	setCompleted,
-	initialValues,
-	onSubmit,
-}) {
+function Wizard({ type, children, onCloseFuseDialog, setDirtyForm, handleComplete, activeStep, setActiveStep, initialValues, onSubmit }) {
 	const steps = Children.toArray(children);
 	// const [snapshot, setSnapshot] = useState(initialValues);
 
 	const step = steps[activeStep];
 	const totalSteps = steps.length;
 	const isLastStep = activeStep === totalSteps - 1;
-
-	const handleComplete = () => {
-		const newCompleted = completed;
-		newCompleted[activeStep] = true;
-		setCompleted(newCompleted);
-	};
 
 	const handleNext = values => {
 		// setSnapshot(values);
@@ -78,6 +62,7 @@ function Wizard({
 		>
 			{formikProps => (
 				<WizardContent
+					type={type}
 					onCloseFuseDialog={onCloseFuseDialog}
 					activeStep={activeStep}
 					step={step}
@@ -92,6 +77,7 @@ function Wizard({
 }
 
 function WizardContent({
+	type,
 	onCloseFuseDialog,
 	activeStep,
 	step,
@@ -125,6 +111,7 @@ function WizardContent({
 							</Button>
 						) : null}
 						<ButtonLoader
+							type={isLastStep ? 'button' : 'submit'}
 							onClick={handleSubmit}
 							disabled={isSubmitting}
 							loader={isSubmitting}
@@ -133,7 +120,17 @@ function WizardContent({
 							size="large"
 							style={{ marginLeft: 16 }}
 						>
-							{isLastStep ? 'Создать закупку' : 'Продолжить'}
+							{isLastStep
+								? values.status === 'expected'
+									? values.isConfirmed
+										? type === 'create'
+											? 'Создать закупку с доставкой'
+											: type === 'edit'
+											? 'Сохранить'
+											: 'Подтвердить'
+										: 'Ожидать подтверждения доставки'
+									: 'Создать закупку'
+								: 'Продолжить'}
 						</ButtonLoader>
 					</Grid>
 				</Grid>

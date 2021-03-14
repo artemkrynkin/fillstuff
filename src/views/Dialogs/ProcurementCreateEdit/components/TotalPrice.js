@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Field } from 'formik';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -35,7 +36,7 @@ const styles = theme => ({
 	},
 });
 
-function TotalPrice({ classes, formikProps: { isSubmitting, values, touched, errors, handleChange } }) {
+function TotalPrice({ classes, compensateCostDeliveryVisible, formikProps: { isSubmitting, touched, errors } }) {
 	return (
 		<Grid direction="column" container>
 			<Grid wrap="nowrap" alignItems="flex-start" spacing={2} container>
@@ -59,6 +60,7 @@ function TotalPrice({ classes, formikProps: { isSubmitting, values, touched, err
 						fullWidth
 					/>
 				</Grid>
+
 				<Grid className={classes.costDeliveryFieldGrid} item>
 					<Field
 						name="costDelivery"
@@ -80,29 +82,40 @@ function TotalPrice({ classes, formikProps: { isSubmitting, values, touched, err
 					/>
 				</Grid>
 			</Grid>
-			<Grid className={classes.compensateCostDeliveryGrid} alignItems="center" container>
-				<Field
-					type="checkbox"
-					name="compensateCostDelivery"
-					Label={{ label: 'Компенсировать' }}
-					as={CheckboxWithLabel}
-					disabled={isSubmitting}
-				/>
-				<Tooltip
-					title={
-						<div style={{ maxWidth: 250 }}>
-							При наличии в закупке позиций для продажи, стоимость доставки будет включена в цену продажи этих позиций.
+
+			{compensateCostDeliveryVisible ? (
+				<Grid className={classes.compensateCostDeliveryGrid} alignItems="center" container>
+					<Field
+						type="checkbox"
+						name="compensateCostDelivery"
+						Label={{ label: 'Компенсировать' }}
+						as={CheckboxWithLabel}
+						disabled={isSubmitting}
+					/>
+					<Tooltip
+						title={
+							<div style={{ maxWidth: 250 }}>
+								При наличии в закупке позиций для продажи, стоимость доставки будет включена в цену продажи этих позиций.
+							</div>
+						}
+						placement="bottom"
+					>
+						<div className={classes.helpIcon}>
+							<FontAwesomeIcon icon={['fal', 'question-circle']} fixedWidth />
 						</div>
-					}
-					placement="bottom"
-				>
-					<div className={classes.helpIcon}>
-						<FontAwesomeIcon icon={['fal', 'question-circle']} fixedWidth />
-					</div>
-				</Tooltip>
-			</Grid>
+					</Tooltip>
+				</Grid>
+			) : null}
 		</Grid>
 	);
 }
+
+TotalPrice.defaultProps = {
+	compensateCostDeliveryVisible: false,
+};
+
+TotalPrice.propTypes = {
+	compensateCostDeliveryVisible: PropTypes.bool,
+};
 
 export default withStyles(styles)(TotalPrice);

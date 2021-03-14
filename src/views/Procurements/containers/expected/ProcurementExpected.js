@@ -42,7 +42,7 @@ const ProcurementExpected = props => {
 
 	const onHandleDropdownActions = value => setDropdownActions(value === null || value === undefined ? prevValue => !prevValue : value);
 
-	const openViewDialog = () => onOpenDialogProcurement('dialogProcurementExpectedView', 'procurementExpected', procurement);
+	const openViewDialog = () => onOpenDialogProcurement('dialogProcurementExpectedView', 'procurement', procurement);
 
 	return (
 		<div className={styles.container}>
@@ -75,7 +75,7 @@ const ProcurementExpected = props => {
 					)
 				) : (
 					<Typography className={styles.subtitle} variant="subtitle1">
-						Ожидается подтверждение заказа
+						Ожидается подтверждение доставки
 					</Typography>
 				)}
 				<UserSummary
@@ -115,7 +115,7 @@ const ProcurementExpected = props => {
 							<MenuItem
 								onClick={() => {
 									onHandleDropdownActions();
-									onOpenDialogProcurement('dialogProcurementReceivedCreate', 'procurementReceived', procurement);
+									onOpenDialogProcurement('dialogProcurementCreate', 'procurement', procurement);
 								}}
 								iconBefore={<FontAwesomeIcon icon={['far', 'truck-loading']} fixedWidth />}
 								positive
@@ -126,7 +126,7 @@ const ProcurementExpected = props => {
 							<MenuItem
 								onClick={() => {
 									onHandleDropdownActions();
-									onOpenDialogProcurement('dialogProcurementExpectedConfirm', 'procurementExpected', procurement);
+									onOpenDialogProcurement('dialogProcurementConfirm', 'procurement', procurement);
 								}}
 								iconBefore={
 									<span className="fa-layers fa-fw" style={{ width: '16px' }}>
@@ -137,14 +137,14 @@ const ProcurementExpected = props => {
 								}
 								positive
 							>
-								Подтвердить заказ
+								Подтвердить доставку
 							</MenuItem>
 						)}
 						{procurement.isConfirmed ? (
 							<MenuItem
 								onClick={() => {
 									onHandleDropdownActions();
-									onOpenDialogProcurement('dialogProcurementExpectedEdit', 'procurementExpected', procurement);
+									onOpenDialogProcurement('dialogProcurementEdit', 'procurement', procurement);
 								}}
 								iconBefore={<FontAwesomeIcon icon={['far', 'pen']} fixedWidth />}
 							>
@@ -154,12 +154,12 @@ const ProcurementExpected = props => {
 						<MenuItem
 							onClick={() => {
 								onHandleDropdownActions();
-								onOpenDialogProcurement('dialogProcurementExpectedCancel', 'procurementExpected', procurement);
+								onOpenDialogProcurement('dialogProcurementExpectedCancel', 'procurement', procurement);
 							}}
 							iconBefore={<FontAwesomeIcon icon={['far', 'undo']} fixedWidth />}
 							destructive
 						>
-							Отменить заказ
+							Отменить закупку
 						</MenuItem>
 					</MenuList>
 				</Dropdown>

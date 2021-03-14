@@ -111,7 +111,7 @@ function ShopAutocomplete({
 					)}
 					options={options}
 					loading={isLoadingShops}
-					disabled={isSubmitting}
+					disabled={isSubmitting || (values.status === 'received' && values.isConfirmed)}
 					clearOnBlur={false}
 					selectOnFocus
 					handleHomeEndKeys

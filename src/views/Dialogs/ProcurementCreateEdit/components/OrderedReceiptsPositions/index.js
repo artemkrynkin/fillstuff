@@ -84,9 +84,8 @@ const getOptionLabelAutocomplete = option => {
 	return option.name;
 };
 
-function Receipts({
+function OrderedReceiptsPositions({
 	positions: { data: positions, isFetching: isLoadingPositions },
-	type,
 	dialogRef,
 	formikProps,
 	arrayHelpers,
@@ -103,7 +102,7 @@ function Receipts({
 	const [loaded, setLoaded] = useState(false);
 
 	const addPositionInReceipts = position => {
-		push(receiptInitialValues({ position }));
+		push(receiptInitialValues({ position, ordered: true }));
 
 		scrollToDialogElement(dialogRef, 'sentinel-bottom', 'end');
 	};
@@ -168,15 +167,19 @@ function Receipts({
 							onOpen={onOpenAutocomplete}
 							onChange={onChangeAutocomplete}
 							onInputChange={onInputChangeAutocomplete}
-							filterOptions={(options, params) => filterOptionsAutocomplete(options, params, values.receipts)}
+							filterOptions={(options, params) => filterOptionsAutocomplete(options, params, values.orderedReceiptsPositions)}
 							getOptionLabel={getOptionLabelAutocomplete}
 							renderOption={option => option.name}
 							renderInput={params => (
 								<TextField
 									placeholder="Выберите позицию или создайте новую"
 									{...params}
-									error={touched.receipts && typeof errors.receipts === 'string'}
-									helperText={touched.receipts && typeof errors.receipts === 'string' ? errors.receipts : null}
+									error={touched.orderedReceiptsPositions && typeof errors.orderedReceiptsPositions === 'string'}
+									helperText={
+										touched.orderedReceiptsPositions && typeof errors.orderedReceiptsPositions === 'string'
+											? errors.orderedReceiptsPositions
+											: null
+									}
 									InputProps={{ ...params.InputProps }}
 								/>
 							)}
@@ -192,10 +195,10 @@ function Receipts({
 					</div>
 				</div>
 
-				{values.receipts.length ? (
+				{values.orderedReceiptsPositions.length ? (
 					<div>
-						{values.receipts.map((receipt, index) => (
-							<Receipt key={receipt.id} type={type} index={index} receipt={receipt} formikProps={formikProps} arrayHelpers={arrayHelpers} />
+						{values.orderedReceiptsPositions.map((receipt, index) => (
+							<Receipt key={receipt.id} index={index} receipt={receipt} formikProps={formikProps} arrayHelpers={arrayHelpers} />
 						))}
 					</div>
 				) : (
@@ -232,4 +235,4 @@ const mapDispatchToProps = {
 	getPositions,
 };
 
-export default compose(connect(mapStateToProps, mapDispatchToProps))(Receipts);
+export default compose(connect(mapStateToProps, mapDispatchToProps))(OrderedReceiptsPositions);

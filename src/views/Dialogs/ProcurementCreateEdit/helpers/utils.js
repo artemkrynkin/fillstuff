@@ -6,11 +6,11 @@ export const helperText = (filedTouched, fieldError) => (filedTouched && typeof 
 export const getSteps = ({ showOptionSelectStep = true, status, sellingPositions = false }) => {
 	const stepList = [
 		{
-			index: 1,
 			label: (
 				<>
-					Данные о закупке
-					<br />и поступлениях
+					Данные о закупке,
+					<br />
+					список позиций
 				</>
 			),
 		},
@@ -18,20 +18,17 @@ export const getSteps = ({ showOptionSelectStep = true, status, sellingPositions
 
 	if (showOptionSelectStep) {
 		stepList.unshift({
-			index: 0,
 			label: 'Вариант закупки',
 		});
 	}
 
 	if (status === 'received' && sellingPositions) {
 		stepList.push({
-			index: 2,
 			label: 'Формирование цены продажи',
 		});
 	}
 	if (status === 'expected') {
 		stepList.push({
-			index: 2,
 			label: 'Подтверждение доставки',
 		});
 	}
@@ -46,23 +43,35 @@ export const getSteps = ({ showOptionSelectStep = true, status, sellingPositions
 	};
 };
 
-export const receiptInitialValues = ({ position, quantity }) => ({
-	id: uuidv4(),
-	position,
-	visibleFormationPriceFields: !position.isFree,
-	quantity: position.unitReceipt === 'pce' || position.unitRelease === 'nmp' ? quantity || '' : '',
-	quantityPackages: position.unitReceipt === 'pce' || position.unitRelease === 'nmp' ? '' : quantity || '',
-	quantityInUnit: '',
-	purchasePrice: '',
-	unitPurchasePrice: '',
-	sellingPrice: '',
-	unitSellingPrice: '',
-	costDelivery: '',
-	unitCostDelivery: '',
-	markupPercent: position.lastReceipt ? position.lastReceipt.markupPercent : '',
-	markup: '',
-	unitMarkup: '',
-});
+export const receiptInitialValues = ({ position, quantity, ordered } = { ordered: false }) => {
+	let defaultValues = {
+		id: uuidv4(),
+		position,
+	};
+
+	if (!ordered) {
+		defaultValues = {
+			...defaultValues,
+			visibleFormationPriceFields: !position.isFree,
+			quantity: position.unitReceipt === 'pce' || position.unitRelease === 'nmp' ? quantity || '' : '',
+			quantityPackages: position.unitReceipt === 'pce' || position.unitRelease === 'nmp' ? '' : quantity || '',
+			quantityInUnit: '',
+			purchasePrice: '',
+			unitPurchasePrice: '',
+			sellingPrice: '',
+			unitSellingPrice: '',
+			costDelivery: '',
+			unitCostDelivery: '',
+			markupPercent: position.lastReceipt ? position.lastReceipt.markupPercent : '',
+			markup: '',
+			unitMarkup: '',
+		};
+	} else {
+		defaultValues.quantity = quantity || '';
+	}
+
+	return defaultValues;
+};
 
 export const scrollToDialogElement = (dialogRef, selector, scrollIntoBlock) => {
 	if (!dialogRef || !selector || !scrollIntoBlock) return;
@@ -76,5 +85,5 @@ export const scrollToDialogElement = (dialogRef, selector, scrollIntoBlock) => {
 			behavior: 'smooth',
 			block: scrollIntoBlock,
 		});
-	}, 50);
+	}, 0);
 };

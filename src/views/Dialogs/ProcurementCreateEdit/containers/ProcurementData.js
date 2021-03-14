@@ -7,12 +7,12 @@ import DialogContent from '@material-ui/core/DialogContent';
 import Typography from '@material-ui/core/Typography';
 import InputLabel from '@material-ui/core/InputLabel';
 
-import { scrollToDialogElement } from '../helpers/utils';
 import MessageWithIcon from '../components/MessageWithIcon';
 import ShopAutocomplete from '../components/ShopAutocomplete';
 import InvoiceData from '../components/InvoiceData';
 import TotalPrice from '../components/TotalPrice';
 import Receipts from '../components/Receipts';
+import OrderedReceiptsPositions from '../components/OrderedReceiptsPositions';
 
 const styles = () => ({
 	container: {
@@ -37,15 +37,10 @@ function ProcurementData({ classes, dialogRef, onUpdateSteps, formikProps, formi
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [values.receipts.length]);
 
-	useEffect(() => {
-		scrollToDialogElement(dialogRef, 'sentinel-topStepper', 'start');
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
 	return (
 		<DialogContent className={classes.container} style={{ overflow: 'initial' }}>
 			<ErrorMessage name="pricePositions">
-				{message => <MessageWithIcon icon={['fad', 'exclamation-circle']} message={message} error />}
+				{message => typeof message !== 'string' && <MessageWithIcon icon={['fad', 'exclamation-circle']} message={message} error />}
 			</ErrorMessage>
 
 			<Typography className={classes.title} variant="h5" align="center">
@@ -59,16 +54,18 @@ function ProcurementData({ classes, dialogRef, onUpdateSteps, formikProps, formi
 				<ShopAutocomplete formikProps={formikProps} />
 			</Grid>
 
-			<Grid className={classes.formRow} wrap="nowrap" alignItems="flex-start" container>
-				<InputLabel
-					className={classes.label}
-					error={(touched.invoiceNumber && Boolean(errors.invoiceNumber)) || (touched.invoiceDate && Boolean(errors.invoiceDate))}
-					data-inline
-				>
-					Чек/накладная
-				</InputLabel>
-				<InvoiceData formikProps={formikProps} />
-			</Grid>
+			{values.status === 'received' ? (
+				<Grid className={classes.formRow} wrap="nowrap" alignItems="flex-start" container>
+					<InputLabel
+						className={classes.label}
+						error={(touched.invoiceNumber && Boolean(errors.invoiceNumber)) || (touched.invoiceDate && Boolean(errors.invoiceDate))}
+						data-inline
+					>
+						Чек/накладная
+					</InputLabel>
+					<InvoiceData formikProps={formikProps} />
+				</Grid>
+			) : null}
 
 			<Grid className={classes.formRow} wrap="nowrap" alignItems="flex-start" container>
 				<InputLabel
@@ -79,16 +76,24 @@ function ProcurementData({ classes, dialogRef, onUpdateSteps, formikProps, formi
 				>
 					Итого
 				</InputLabel>
-				<TotalPrice formikProps={formikProps} />
+				<TotalPrice formikProps={formikProps} compensateCostDeliveryVisible={values.status === 'received'} />
 			</Grid>
 
 			<Typography className={classes.title} variant="h5" align="center">
-				Список поступлений
+				Список позиций
 			</Typography>
 
-			<FieldArray name="receipts" validateOnChange={false}>
-				{arrayHelpers => <Receipts dialogRef={dialogRef} formikProps={formikProps} arrayHelpers={arrayHelpers} />}
-			</FieldArray>
+			{values.status === 'expected' ? (
+				<FieldArray name="orderedReceiptsPositions" validateOnChange={false}>
+					{arrayHelpers => <OrderedReceiptsPositions dialogRef={dialogRef} formikProps={formikProps} arrayHelpers={arrayHelpers} />}
+				</FieldArray>
+			) : null}
+
+			{values.status === 'received' ? (
+				<FieldArray name="receipts" validateOnChange={false}>
+					{arrayHelpers => <Receipts dialogRef={dialogRef} formikProps={formikProps} arrayHelpers={arrayHelpers} />}
+				</FieldArray>
+			) : null}
 		</DialogContent>
 	);
 }

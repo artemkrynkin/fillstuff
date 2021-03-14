@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -26,9 +26,7 @@ const View = props => {
 		procurementsReceived: { data: procurementsReceived },
 	} = props;
 
-	if (!procurementsExpected || !procurementsReceived) {
-		return <LoadingPage />;
-	}
+	if (!procurementsExpected || !procurementsReceived) return <LoadingPage />;
 
 	if (procurementsExpected && procurementsReceived && !procurementsExpected.paging.totalCount && !procurementsReceived.paging.totalCount) {
 		return (
@@ -39,18 +37,12 @@ const View = props => {
 				imageSrc={procurementsEmpty}
 				content={
 					<Typography variant="h6" gutterBottom>
-						У вас еще нет заказов или закупок
+						У вас еще нет закупок
 					</Typography>
 				}
 				actions={
 					<Grid justify="center" alignItems="center" container>
-						<Button onClick={() => onOpenDialogByName('dialogProcurementExpectedCreate')} variant="contained" color="primary">
-							Создать заказ
-						</Button>
-						<Typography variant="caption" style={{ marginLeft: 16 }}>
-							или
-						</Typography>
-						<Button onClick={() => onOpenDialogByName('dialogProcurementReceivedCreate')} variant="contained" color="primary">
+						<Button onClick={() => onOpenDialogByName('dialogProcurementCreate')} variant="contained" color="primary">
 							Оформить закупку
 						</Button>
 					</Grid>
@@ -60,46 +52,25 @@ const View = props => {
 	}
 
 	if (procurementsExpected && procurementsReceived && procurementsExpected.paging.totalCount && !procurementsReceived.paging.totalCount) {
-		return (
-			<Fragment>
-				<ProcurementsExpected onOpenDialogByName={onOpenDialogByName} procurementsExpected={procurementsExpected} />
-				<Empty
-					classNames={{
-						container: styles.empty2,
-					}}
-					imageSrc={procurementsEmpty}
-					imageSize="sm"
-					content={
-						<Typography variant="h6" gutterBottom>
-							У вас еще нет закупок
-						</Typography>
-					}
-					actions={
-						<Button onClick={() => onOpenDialogByName('dialogProcurementReceivedCreate')} variant="contained" color="primary">
-							Оформить закупку
-						</Button>
-					}
-				/>
-			</Fragment>
-		);
+		return <ProcurementsExpected onOpenDialogByName={onOpenDialogByName} procurementsExpected={procurementsExpected} />;
 	}
 
 	if (procurementsExpected && procurementsReceived && !procurementsExpected.paging.totalCount && procurementsReceived.paging.totalCount) {
 		return (
-			<Fragment>
+			<>
 				<Filter filterOptions={filterOptions} paging={paging} currentStudio={currentStudio} />
 				<ProcurementsReceived filterOptions={filterOptions} paging={paging} procurementsReceived={props.procurementsReceived} />
-			</Fragment>
+			</>
 		);
 	}
 
 	if (procurementsExpected && procurementsReceived && procurementsExpected.paging.totalCount && procurementsReceived.paging.totalCount) {
 		return (
-			<Fragment>
+			<>
 				<Filter filterOptions={filterOptions} paging={paging} currentStudio={currentStudio} />
 				<ProcurementsExpected onOpenDialogByName={onOpenDialogByName} procurementsExpected={procurementsExpected} />
 				<ProcurementsReceived filterOptions={filterOptions} paging={paging} procurementsReceived={props.procurementsReceived} />
-			</Fragment>
+			</>
 		);
 	}
 

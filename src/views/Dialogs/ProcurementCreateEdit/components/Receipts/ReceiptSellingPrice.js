@@ -72,12 +72,6 @@ const styles = {
 	},
 };
 
-const positionBadges = ({ position, badges = [] }) => {
-	if (position.childPosition) badges.push('replaceable');
-
-	return badges;
-};
-
 const FormatNumberListItem = ({ value }) => (
 	<NumberFormat value={value} renderText={value => value} displayType="text" {...currencyMoneyFormatProps} />
 );
@@ -149,6 +143,10 @@ function ReceiptSellingPrice({
 		}
 	};
 
+	const onBlurMarkupPercent = ({ target: { value } }) => {
+		setFieldValue(`receipts.${index}.markupPercent`, Number(value));
+	};
+
 	const onToggleVisibleSellingPrice = value => {
 		setFieldValue(`receipts.${index}.visibleFormationPriceFields`, value, !value);
 	};
@@ -161,15 +159,9 @@ function ReceiptSellingPrice({
 			<Grid className={classes.receiptContent} direction="column" container>
 				<Grid className={classes.receiptContentHeader} alignItems="center" container>
 					<Grid className={classes.positionSelected} zeroMinWidth item>
-						<PositionSummary
-							name={position.name}
-							characteristics={position.characteristics}
-							badges={positionBadges({ position })}
-							size="md"
-							avatar
-						/>
+						<PositionSummary name={position.name} characteristics={position.characteristics} size="md" avatar />
 					</Grid>
-					{!position.isFree && (
+					{!position.isFree ? (
 						<Grid className={classes.actionButtons} item>
 							{receipt.visibleFormationPriceFields ? (
 								<Button onClick={() => onToggleVisibleSellingPrice(false)} variant="contained" color="primary" size="small">
@@ -183,23 +175,23 @@ function ReceiptSellingPrice({
 								</Tooltip>
 							)}
 						</Grid>
-					)}
+					) : null}
 				</Grid>
 				<Grid alignItems="flex-start" container>
 					<Grid xs={6} item>
 						<DefinitionList>
 							<DefinitionListItem term={isNmpNmp ? 'Количество' : 'Количество'} value={`${quantity} ${isNmpNmp ? 'уп.' : 'шт.'}`} />
-							{isNmpPce && (
+							{isNmpPce ? (
 								<>
 									<DefinitionListItem term="Количество уп." value={fieldsMeta.quantityPackages.value} />
 									<DefinitionListItem term="Штук в упаковке" value={fieldsMeta.quantityInUnit.value} />
 								</>
-							)}
+							) : null}
 						</DefinitionList>
 					</Grid>
 					<Grid xs={6} item>
 						<DefinitionList>
-							{!receipt.visibleFormationPriceFields && (
+							{!receipt.visibleFormationPriceFields ? (
 								<DefinitionListItem
 									term={<b>Цена продажи</b>}
 									value={
@@ -215,29 +207,29 @@ function ReceiptSellingPrice({
 									}
 									dotsShow={false}
 								/>
-							)}
-							{!position.isFree && (
+							) : null}
+							{!position.isFree ? (
 								<>
 									<DefinitionListItem
 										term="Цена покупки"
 										value={<FormatNumberListItem value={formatNumber(receipt.unitPurchasePrice, { toString: true })} />}
 									/>
-									{receipt.unitCostDelivery && (
+									{receipt.unitCostDelivery ? (
 										<DefinitionListItem
 											term="Стоимость доставки"
 											value={<FormatNumberListItem value={formatNumber(receipt.unitCostDelivery, { toString: true })} />}
 										/>
-									)}
-									{!receipt.visibleFormationPriceFields && (
+									) : null}
+									{!receipt.visibleFormationPriceFields ? (
 										<DefinitionListItem
 											term="Наценка"
 											value={<FormatNumberListItem value={formatNumber(receipt.unitMarkup, { toString: true })} />}
 										/>
-									)}
+									) : null}
 								</>
-							)}
+							) : null}
 						</DefinitionList>
-						{receipt.visibleFormationPriceFields && (
+						{receipt.visibleFormationPriceFields ? (
 							<Grid className={classes.formationPriceGrid} alignItems="flex-start" spacing={2} container>
 								<Grid xs={7} item>
 									<Field
@@ -283,6 +275,7 @@ function ReceiptSellingPrice({
 												decimalScale: 4,
 												onFocus: event => onFocusField('markupPercent', event),
 												onChange: event => onChangeField('markupPercent', event),
+												onBlur: onBlurMarkupPercent,
 											},
 										}}
 										disabled={isSubmitting}
@@ -290,7 +283,7 @@ function ReceiptSellingPrice({
 									/>
 								</Grid>
 							</Grid>
-						)}
+						) : null}
 					</Grid>
 				</Grid>
 			</Grid>

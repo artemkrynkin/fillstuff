@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { ErrorMessage } from 'formik';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -13,8 +13,6 @@ import CheckboxIcon from 'src/components/CheckboxIcon';
 
 import { ReactComponent as ProcurementReceivedIcon } from 'public/img/other/procurement_received.svg';
 import { ReactComponent as ProcurementExpectedIcon } from 'public/img/other/procurement_expected.svg';
-
-import { scrollToDialogElement } from '../helpers/utils';
 
 const styles = () => ({
 	container: {
@@ -43,16 +41,11 @@ const procurementStatusListTranslate = {
 	},
 };
 
-function ProcurementOption({ classes, dialogRef, onUpdateSteps, formikProps: { values, isSubmitting, setFieldValue } }) {
+function ProcurementOption({ classes, onUpdateSteps, formikProps: { values, isSubmitting, setFieldValue } }) {
 	const onChangeProcurementStatus = status => {
 		setFieldValue('status', status, false);
 		onUpdateSteps({ status });
 	};
-
-	useEffect(() => {
-		scrollToDialogElement(dialogRef, 'sentinel-topStepper', 'start');
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
 
 	return (
 		<DialogContent className={classes.container} style={{ overflow: 'initial' }}>

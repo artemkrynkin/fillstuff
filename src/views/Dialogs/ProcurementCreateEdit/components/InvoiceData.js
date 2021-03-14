@@ -94,6 +94,7 @@ function InvoiceData({ classes, formikProps: { isSubmitting, values, touched, er
 						</Grid>
 					</Grid>
 				</Collapse>
+
 				<Grid className={classes.noInvoiceGrid} item>
 					<Field
 						type="checkbox"

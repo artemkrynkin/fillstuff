@@ -44,7 +44,10 @@ const procurementStatusListTranslate = {
 function ProcurementOption({ classes, onUpdateSteps, formikProps: { values, isSubmitting, setFieldValue } }) {
 	const onChangeProcurementStatus = status => {
 		setFieldValue('status', status, false);
-		onUpdateSteps({ status });
+		onUpdateSteps({
+			status,
+			sellingPositions: !!values.receipts.some(receipt => !receipt.position.isFree),
+		});
 	};
 
 	return (

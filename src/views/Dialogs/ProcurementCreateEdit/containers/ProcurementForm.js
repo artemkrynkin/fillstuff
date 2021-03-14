@@ -1,4 +1,5 @@
 import React, { cloneElement, useEffect, useLayoutEffect, useState } from 'react';
+import { compose } from 'redux';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
@@ -12,6 +13,7 @@ import colorTheme from 'shared/colorTheme';
 import { formatNumber, sleep } from 'shared/utils';
 import { receiptCalc, UnitCostDelivery } from 'shared/checkPositionAndReceipt';
 
+import { withCurrentUser } from 'src/components/withCurrentUser';
 import StepIcon from 'src/components/StepIcon';
 import StepConnector from 'src/components/StepConnector';
 
@@ -36,7 +38,7 @@ export const useStyles = makeStyles(() => ({
 	},
 }));
 
-const getInitialValues = (type, selectedProcurement) => {
+const getInitialValues = (type, currentStudio, selectedProcurement) => {
 	let initialValues = {
 		status: '',
 		shop: null,
@@ -52,7 +54,7 @@ const getInitialValues = (type, selectedProcurement) => {
 		pricePositions: '',
 		costDelivery: '',
 		totalPrice: '',
-		compensateCostDelivery: true,
+		compensateCostDelivery: currentStudio.settings.procurements.compensateCostDelivery || false,
 		orderedReceiptsPositions: [],
 		positions: [],
 		receipts: [],
@@ -68,7 +70,7 @@ const getInitialValues = (type, selectedProcurement) => {
 		};
 
 		if (type === 'create') {
-			initialValues.status = 'received';
+			if (initialValues.status) initialValues.status = 'received';
 
 			initialValues.positions = [];
 		}
@@ -77,13 +79,20 @@ const getInitialValues = (type, selectedProcurement) => {
 			if (deliveryDate) initialValues.deliveryDate = moment(deliveryDate).format();
 		}
 
-		initialValues[type === 'create' ? 'receipts' : 'orderedReceiptsPositions'] = orderedReceiptsPositions.map(({ position, quantity }) =>
+		const initialReceipts = orderedReceiptsPositions.map(({ position, quantity }) =>
 			receiptInitialValues({
 				position,
 				quantity,
 				ordered: initialValues.status === 'expected',
 			})
 		);
+
+		if (initialValues.status) {
+			initialValues[type === 'create' ? 'receipts' : 'orderedReceiptsPositions'] = initialReceipts;
+		} else {
+			initialValues.orderedReceiptsPositions = initialReceipts;
+			initialValues.receipts = initialReceipts;
+		}
 	}
 
 	return initialValues;
@@ -91,14 +100,23 @@ const getInitialValues = (type, selectedProcurement) => {
 
 const WizardStep = ({ children, formikProps }) => cloneElement(children, { formikProps });
 
-function ProcurementForm({ type, dialogRef, onCloseFuseDialog, onCloseDialog, setDirtyForm, selectedProcurement, ...props }) {
+function ProcurementForm({
+	type,
+	dialogRef,
+	onCloseFuseDialog,
+	onCloseDialog,
+	currentStudio,
+	setDirtyForm,
+	selectedProcurement,
+	...props
+}) {
 	const classes = useStyles();
 	const [activeStep, setActiveStep] = useState(0);
 	const [completed, setCompleted] = useState({});
 	const [steps, setSteps] = useState(
 		getSteps({
-			status: getInitialValues(type, selectedProcurement).status || 'received',
-			showOptionSelectStep: !Boolean(selectedProcurement),
+			status: getInitialValues(type, currentStudio, selectedProcurement).status || 'received',
+			showOptionSelectStep: !Boolean(selectedProcurement && selectedProcurement.status),
 		})
 	);
 
@@ -385,7 +403,7 @@ function ProcurementForm({ type, dialogRef, onCloseFuseDialog, onCloseDialog, se
 			</Stepper>
 			<Wizard
 				type={type}
-				initialValues={getInitialValues(type, selectedProcurement)}
+				initialValues={getInitialValues(type, currentStudio, selectedProcurement)}
 				onSubmit={sendForm}
 				onCloseFuseDialog={onCloseFuseDialog}
 				setDirtyForm={setDirtyForm}
@@ -400,7 +418,7 @@ function ProcurementForm({ type, dialogRef, onCloseFuseDialog, onCloseDialog, se
 				) : null}
 				{steps.options.status === 'expected' ? (
 					<WizardStep onSubmit={checkStepDataExpected} validationSchema={procurementSchema.data.expected}>
-						<ProcurementData dialogRef={dialogRef} onUpdateSteps={onUpdateSteps} />
+						<ProcurementData dialogRef={dialogRef} steps={steps} onUpdateSteps={onUpdateSteps} />
 					</WizardStep>
 				) : null}
 				{steps.options.status === 'expected' ? (
@@ -410,7 +428,7 @@ function ProcurementForm({ type, dialogRef, onCloseFuseDialog, onCloseDialog, se
 				) : null}
 				{steps.options.status === 'received' ? (
 					<WizardStep onSubmit={checkStepDataReceived} validationSchema={procurementSchema.data.received}>
-						<ProcurementData dialogRef={dialogRef} onUpdateSteps={onUpdateSteps} />
+						<ProcurementData dialogRef={dialogRef} steps={steps} onUpdateSteps={onUpdateSteps} />
 					</WizardStep>
 				) : null}
 				{steps.options.sellingPositions ? (
@@ -430,4 +448,4 @@ const mapDispatchToProps = {
 	enqueueSnackbar,
 };
 
-export default connect(null, mapDispatchToProps)(ProcurementForm);
+export default compose(connect(null, mapDispatchToProps), withCurrentUser)(ProcurementForm);

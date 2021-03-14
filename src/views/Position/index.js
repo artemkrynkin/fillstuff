@@ -18,7 +18,6 @@ import styles from './index.module.css';
 import Index from './containers/index';
 
 const Position = props => {
-	const { currentStudio } = props;
 	const [positionData, setPositionData] = useState(null);
 	const [receiptsData, setReceiptsData] = useState(null);
 
@@ -115,7 +114,6 @@ const Position = props => {
 			<HeaderPage pageName={layoutMetaInfo.pageName} pageTitle="Склад" pageParams={pageParams} />
 			<div className={`${stylesPage.pageContent} ${styles.container}`}>
 				<Index
-					currentStudio={currentStudio}
 					positionData={positionData}
 					receiptsData={receiptsData}
 					getPosition={getPosition}

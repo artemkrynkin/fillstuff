@@ -19,14 +19,13 @@ const DialogReceiptActiveAddQuantity = lazy(() => import('src/views/Dialogs/Rece
 const DialogReceiptCreate = lazy(() => import('src/views/Dialogs/ReceiptCreate'));
 const DialogReceiptConfirmCreate = lazy(() => import('src/views/Dialogs/ReceiptConfirmCreate'));
 const DialogWriteOffCreate = lazy(() => import('src/views/Dialogs/WriteOffCreate'));
-const DialogProcurementReceivedCreate = lazy(() => import('src/views/Dialogs/ProcurementReceivedCreate'));
+const DialogProcurementCreate = lazy(() => import('src/views/Dialogs/ProcurementCreateEdit'));
 
 const Index = props => {
-	const { currentStudio } = props;
 	const [dialogData, setDialogData] = useState({
 		positionGroup: null,
 		position: null,
-		procurementReceived: null,
+		procurement: null,
 	});
 	const [dialogOpenedName, setDialogOpenedName] = useState('');
 	const [dialogs, setDialogs] = useState({
@@ -43,7 +42,7 @@ const Index = props => {
 		dialogReceiptCreate: false,
 		dialogReceiptConfirmCreate: false,
 		dialogWriteOffCreate: false,
-		dialogProcurementReceivedCreate: false,
+		dialogProcurementCreate: false,
 	});
 
 	const onOpenDialogByName = (dialogName, dataType, data) => {
@@ -185,12 +184,11 @@ const Index = props => {
 				/>
 
 				{/* Procurement */}
-				<DialogProcurementReceivedCreate
-					dialogOpen={dialogs.dialogProcurementReceivedCreate}
-					onCloseDialog={() => onCloseDialogByName('dialogProcurementReceivedCreate')}
-					currentStudio={currentStudio}
-					onExitedDialog={() => onExitedDialogByName('procurementReceived')}
-					selectedProcurement={dialogOpenedName === 'dialogProcurementReceivedCreate' ? dialogData.procurementReceived : null}
+				<DialogProcurementCreate
+					type="create"
+					dialogOpen={dialogs.dialogProcurementCreate}
+					onCloseDialog={() => onCloseDialogByName('dialogProcurementCreate')}
+					selectedProcurement={dialogOpenedName === 'dialogProcurementCreate' ? dialogData.procurement : null}
 				/>
 			</Suspense>
 		</Container>

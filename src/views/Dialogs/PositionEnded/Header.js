@@ -76,17 +76,8 @@ const Header = props => {
 	return (
 		<Grid className={styles.headerActions} alignItems="center" container>
 			<Button
-				onClick={() => onOpenDialogByNameIndex('dialogProcurementExpectedCreate', 'procurementExpected', procurement(false))}
+				onClick={() => onOpenDialogByNameIndex('dialogProcurementCreate', 'procurement', procurement(true))}
 				variant="contained"
-				color="primary"
-				size="small"
-				style={{ marginRight: 8 }}
-			>
-				Создать заказ
-			</Button>
-			<Button
-				onClick={() => onOpenDialogByNameIndex('dialogProcurementReceivedCreate', 'procurementReceived', procurement(true))}
-				variant="outlined"
 				color="primary"
 				size="small"
 			>

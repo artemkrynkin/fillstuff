@@ -35,7 +35,7 @@ const ReceiptConfirmCreate = props => {
 				</Typography>
 				<DialogActions>
 					<Button
-						onClick={() => onOpenDialogByName('dialogProcurementReceivedCreate', 'procurementReceived', procurement)}
+						onClick={() => onOpenDialogByName('dialogProcurementCreate', 'procurement', procurement)}
 						variant="outlined"
 						color="primary"
 						size="small"

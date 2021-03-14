@@ -136,7 +136,7 @@ const DeliveryIsExpected = props => {
 						<MenuItem
 							onClick={() => {
 								onHandleDropdownActions();
-								onOpenDialogByName('dialogProcurementReceivedCreate', 'procurementReceived', procurement);
+								onOpenDialogByName('dialogProcurementCreate', 'procurement', procurement);
 							}}
 							iconBefore={<FontAwesomeIcon icon={['far', 'truck-loading']} fixedWidth />}
 							positive
@@ -147,7 +147,7 @@ const DeliveryIsExpected = props => {
 						<MenuItem
 							onClick={() => {
 								onHandleDropdownActions();
-								onOpenDialogByName('dialogProcurementExpectedConfirm', 'procurementExpected', procurement);
+								onOpenDialogByName('dialogProcurementConfirm', 'procurement', procurement);
 							}}
 							iconBefore={
 								<span className="fa-layers fa-fw" style={{ width: '16px' }}>
@@ -165,7 +165,7 @@ const DeliveryIsExpected = props => {
 						<MenuItem
 							onClick={() => {
 								onHandleDropdownActions();
-								onOpenDialogByName('dialogProcurementExpectedEdit', 'procurementExpected', procurement);
+								onOpenDialogByName('dialogProcurementEdit', 'procurement', procurement);
 							}}
 							iconBefore={<FontAwesomeIcon icon={['far', 'pen']} fixedWidth />}
 						>
@@ -175,7 +175,7 @@ const DeliveryIsExpected = props => {
 					<MenuItem
 						onClick={() => {
 							onHandleDropdownActions();
-							onOpenDialogByName('dialogProcurementExpectedCancel', 'procurementExpected', procurement);
+							onOpenDialogByName('dialogProcurementExpectedCancel', 'procurement', procurement);
 						}}
 						iconBefore={<FontAwesomeIcon icon={['far', 'undo']} fixedWidth />}
 						destructive

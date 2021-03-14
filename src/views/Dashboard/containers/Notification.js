@@ -41,7 +41,7 @@ const Notification = props => {
 			case 'delivery-is-expected':
 				const { procurement } = notification;
 
-				return onOpenDialogByName('dialogProcurementExpectedView', 'procurementExpected', procurement);
+				return onOpenDialogByName('dialogProcurementExpectedView', 'procurement', procurement);
 			default:
 				return;
 		}

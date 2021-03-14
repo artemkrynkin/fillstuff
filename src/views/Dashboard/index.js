@@ -15,7 +15,7 @@ import styles from './index.module.css';
 import Index from './containers/index';
 
 const Dashboard = props => {
-	const { currentStudio, storeNotifications } = props;
+	const { storeNotifications } = props;
 
 	const layoutMetaInfo = {
 		pageName: 'dashboard',
@@ -26,7 +26,7 @@ const Dashboard = props => {
 		<Layout metaInfo={layoutMetaInfo}>
 			<HeaderPage pageName={layoutMetaInfo.pageName} pageTitle={layoutMetaInfo.pageTitle} />
 			<div className={`${stylesPage.pageContent} ${styles.container}`}>
-				<Index currentStudio={currentStudio} storeNotifications={storeNotifications} />
+				<Index storeNotifications={storeNotifications} />
 			</div>
 		</Layout>
 	);

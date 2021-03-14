@@ -70,8 +70,14 @@ export const createStudio = ({ data }) => {
 	};
 };
 
-export const editStudio = ({ studioId, memberId, data }) => {
-	return async dispatch => {
+export const editStudio = ({ data }) => {
+	return async (dispatch, getState) => {
+		const {
+			user: { data: currentUser },
+		} = getState();
+		const studioId = currentUser.settings.studio;
+		const memberId = currentUser.settings.member._id;
+
 		return await axiosAccount
 			.post('/api/editStudio', {
 				studioId,

@@ -13,13 +13,13 @@ const DialogPositionArchiveDelete = lazy(() => import('src/views/Dialogs/Positio
 const DialogPositionDetach = lazy(() => import('src/views/Dialogs/PositionDetach'));
 const DialogReceiptCreate = lazy(() => import('src/views/Dialogs/ReceiptCreate'));
 const DialogReceiptConfirmCreate = lazy(() => import('src/views/Dialogs/ReceiptConfirmCreate'));
-const DialogProcurementReceivedCreate = lazy(() => import('src/views/Dialogs/ProcurementReceivedCreate'));
+const DialogProcurementCreate = lazy(() => import('src/views/Dialogs/ProcurementCreateEdit'));
 
 const Index = props => {
-	const { currentStudio, getPosition, getReceipts, onReceiptCreate } = props;
+	const { getPosition, getReceipts, onReceiptCreate } = props;
 	const [dialogData, setDialogData] = useState({
 		position: null,
-		procurementReceived: null,
+		procurement: null,
 	});
 	const [dialogOpenedName, setDialogOpenedName] = useState('');
 	const [dialogs, setDialogs] = useState({
@@ -30,7 +30,7 @@ const Index = props => {
 		dialogPositionQRCode: false,
 		dialogReceiptCreate: false,
 		dialogReceiptConfirmCreate: false,
-		dialogProcurementReceivedCreate: false,
+		dialogProcurementCreate: false,
 	});
 
 	const onOpenDialogByName = (dialogName, dataType, data) => {
@@ -158,12 +158,11 @@ const Index = props => {
 				/>
 
 				{/* Procurement */}
-				<DialogProcurementReceivedCreate
-					dialogOpen={dialogs.dialogProcurementReceivedCreate}
-					onCloseDialog={() => onCloseDialogByName('dialogProcurementReceivedCreate')}
-					currentStudio={currentStudio}
-					onExitedDialog={() => onExitedDialogByName('procurementReceived')}
-					selectedProcurement={dialogOpenedName === 'dialogProcurementReceivedCreate' ? dialogData.procurementReceived : null}
+				<DialogProcurementCreate
+					type="create"
+					dialogOpen={dialogs.dialogProcurementCreate}
+					onCloseDialog={() => onCloseDialogByName('dialogProcurementCreate')}
+					selectedProcurement={dialogOpenedName === 'dialogProcurementCreate' ? dialogData.procurement : null}
 				/>
 			</Suspense>
 		</Container>

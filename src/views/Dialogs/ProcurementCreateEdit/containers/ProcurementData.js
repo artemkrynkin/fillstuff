@@ -7,7 +7,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import Typography from '@material-ui/core/Typography';
 import InputLabel from '@material-ui/core/InputLabel';
 
-import { receiptInitialValues } from '../helpers/utils';
 import MessageWithIcon from '../components/MessageWithIcon';
 import ShopAutocomplete from '../components/ShopAutocomplete';
 import InvoiceData from '../components/InvoiceData';
@@ -32,38 +31,11 @@ const styles = () => ({
 	},
 });
 
-function ProcurementData({
-	classes,
-	dialogRef,
-	steps,
-	onUpdateSteps,
-	formikProps,
-	formikProps: { values, touched, errors, setFieldValue },
-}) {
+function ProcurementData({ classes, dialogRef, onUpdateSteps, formikProps, formikProps: { values, touched, errors } }) {
 	useEffect(() => {
 		onUpdateSteps({ sellingPositions: !!values.receipts.some(receipt => !receipt.position.isFree) });
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [values.receipts.length]);
-
-	useEffect(() => {
-		if (steps.options.showOptionSelectStep && (values.receipts.length || values.orderedReceiptsPositions.length)) {
-			const fieldPropName = values.status === 'expected' ? 'orderedReceiptsPositions' : 'receipts';
-			const valuePropName = values.status === 'expected' ? 'receipts' : 'orderedReceiptsPositions';
-
-			setFieldValue(
-				fieldPropName,
-				values[valuePropName].map(({ position, quantity }) =>
-					receiptInitialValues({
-						position,
-						quantity,
-						ordered: values.status === 'expected',
-					})
-				)
-			);
-			setFieldValue(valuePropName, []);
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
 
 	return (
 		<DialogContent className={classes.container} style={{ overflow: 'initial' }}>

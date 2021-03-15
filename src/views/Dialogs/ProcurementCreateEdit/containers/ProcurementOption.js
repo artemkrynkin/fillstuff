@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ErrorMessage } from 'formik';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -13,6 +13,7 @@ import CheckboxIcon from 'src/components/CheckboxIcon';
 
 import { ReactComponent as ProcurementReceivedIcon } from 'public/img/other/procurement_received.svg';
 import { ReactComponent as ProcurementExpectedIcon } from 'public/img/other/procurement_expected.svg';
+import { receiptInitialValues } from '../helpers/utils';
 
 const styles = () => ({
 	container: {
@@ -44,11 +45,34 @@ const procurementStatusListTranslate = {
 function ProcurementOption({ classes, onUpdateSteps, formikProps: { values, isSubmitting, setFieldValue } }) {
 	const onChangeProcurementStatus = status => {
 		setFieldValue('status', status, false);
-		onUpdateSteps({
-			status,
-			sellingPositions: !!values.receipts.some(receipt => !receipt.position.isFree),
-		});
+
+		if (status !== values.status && (values.receipts.length || values.orderedReceiptsPositions.length)) {
+			const fieldPropName = status === 'expected' ? 'orderedReceiptsPositions' : 'receipts';
+			const valuePropName = status === 'expected' ? 'receipts' : 'orderedReceiptsPositions';
+
+			setFieldValue(
+				fieldPropName,
+				values[valuePropName].map(({ position, quantity }) =>
+					receiptInitialValues({
+						position,
+						quantity,
+						ordered: status === 'expected',
+					})
+				)
+			);
+			setFieldValue(valuePropName, []);
+		}
 	};
+
+	useEffect(() => {
+		if (values.status) {
+			onUpdateSteps({
+				status: values.status,
+				sellingPositions: !!values.receipts.some(receipt => !receipt.position.isFree),
+			});
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [values.status]);
 
 	return (
 		<DialogContent className={classes.container} style={{ overflow: 'initial' }}>

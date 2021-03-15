@@ -31,7 +31,7 @@ function DeliveryConfirmation({ classes, formikProps, formikProps: { touched, er
 	return (
 		<DialogContent className={classes.container} style={{ overflow: 'initial' }}>
 			<Typography className={classes.title} variant="h5" align="center">
-				Подтверждение доставки
+				Данные о доставке
 			</Typography>
 
 			<Grid className={classes.formRow} wrap="nowrap" alignItems="flex-start" container>

@@ -81,7 +81,7 @@ const ProcurementExpectedView = props => {
 								variant="contained"
 								size="small"
 							>
-								Подтвердить заказ
+								Подтвердить доставку
 							</Button>
 						)}
 						<IconButton
@@ -127,7 +127,7 @@ const ProcurementExpectedView = props => {
 								iconBefore={<FontAwesomeIcon icon={['far', 'undo']} fixedWidth />}
 								destructive
 							>
-								Отменить заказ
+								Отменить доставку
 							</MenuItem>
 						</MenuList>
 					</Dropdown>

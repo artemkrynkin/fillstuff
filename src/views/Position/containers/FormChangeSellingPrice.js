@@ -58,29 +58,16 @@ const FormChangeSellingPrice = props => {
 							<Grid item>
 								<DefinitionList>
 									<DefinitionListItem
-										term="Цена покупки"
+										term="Мин. цена продажи"
 										value={
 											<NumberFormat
-												value={formatNumber(receipt.unitPurchasePrice, { toString: true })}
+												value={formatNumber(receipt.unitPurchasePrice + receipt.unitCostDelivery, { toString: true })}
 												renderText={value => value}
 												displayType="text"
 												{...currencyMoneyFormatProps}
 											/>
 										}
 									/>
-									{receipt.unitCostDelivery ? (
-										<DefinitionListItem
-											term="Стоимость доставки"
-											value={
-												<NumberFormat
-													value={formatNumber(receipt.unitCostDelivery, { toString: true })}
-													renderText={value => value}
-													displayType="text"
-													{...currencyMoneyFormatProps}
-												/>
-											}
-										/>
-									) : null}
 								</DefinitionList>
 							</Grid>
 							<Grid item>

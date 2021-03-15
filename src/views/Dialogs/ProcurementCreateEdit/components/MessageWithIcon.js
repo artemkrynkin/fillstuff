@@ -27,11 +27,13 @@ function MessageWithIcon({ classes, icon, message }) {
 	return (
 		<div className={classes.headerInfo}>
 			<Grid justify="center" alignItems="center" container>
-				<FontAwesomeIcon
-					className={classes.headerInfoIcon}
-					icon={icon}
-					style={{ '--fa-primary-opacity': 0.9, '--fa-secondary-opacity': 0.2 }}
-				/>
+				{icon ? (
+					<FontAwesomeIcon
+						className={classes.headerInfoIcon}
+						icon={icon}
+						style={{ '--fa-primary-opacity': 0.9, '--fa-secondary-opacity': 0.2 }}
+					/>
+				) : null}
 				<Typography className={classes.headerInfoText} variant="body1">
 					{message}
 				</Typography>

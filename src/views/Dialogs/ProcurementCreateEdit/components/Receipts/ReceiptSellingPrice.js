@@ -18,7 +18,6 @@ import { receiptCalc } from 'shared/checkPositionAndReceipt';
 import PositionSummary from 'src/components/PositionSummary';
 import NumberFormat, { currencyMoneyFormatProps, moneyInputFormatProps } from 'src/components/NumberFormat';
 import { DefinitionList, DefinitionListItem } from 'src/components/Definition';
-import Money from 'src/components/Money';
 
 import { helperText } from '../../helpers/utils';
 
@@ -54,12 +53,6 @@ const styles = {
 	formationPriceGrid: {
 		marginTop: 11,
 	},
-	unitSellingPrice: {
-		color: colorTheme.blueGrey['500'],
-		fontSize: 14,
-		fontWeight: 700,
-		margin: '-1px 0',
-	},
 	actionButton: {
 		padding: 9,
 		width: 32,
@@ -74,6 +67,35 @@ const styles = {
 
 const FormatNumberListItem = ({ value }) => (
 	<NumberFormat value={value} renderText={value => value} displayType="text" {...currencyMoneyFormatProps} />
+);
+
+const TooltipSellingPrice = ({ receipt, visibleUnitMarkup, children }) => (
+	<Tooltip
+		title={
+			<DefinitionList style={{ width: 240 }}>
+				<DefinitionListItem
+					term="Цена покупки"
+					value={<FormatNumberListItem value={formatNumber(receipt.unitPurchasePrice, { toString: true })} />}
+				/>
+				{receipt.unitCostDelivery ? (
+					<DefinitionListItem
+						term="Стоимость доставки"
+						value={<FormatNumberListItem value={formatNumber(receipt.unitCostDelivery, { toString: true })} />}
+					/>
+				) : null}
+				{visibleUnitMarkup && receipt.unitMarkup ? (
+					<DefinitionListItem
+						term="Наценка"
+						value={<FormatNumberListItem value={formatNumber(receipt.unitMarkup, { toString: true })} />}
+					/>
+				) : null}
+			</DefinitionList>
+		}
+		placement="right"
+		interactive
+	>
+		<span style={{ cursor: 'pointer' }}>{children}</span>
+	</Tooltip>
 );
 
 function ReceiptSellingPrice({
@@ -94,13 +116,6 @@ function ReceiptSellingPrice({
 		unitSellingPrice: getFieldMeta(`receipts.${index}.unitSellingPrice`),
 		markupPercent: getFieldMeta(`receipts.${index}.markupPercent`),
 	};
-	const isNmpPce = position.unitReceipt === 'nmp' && position.unitRelease === 'pce';
-	const isNmpNmp = position.unitReceipt === 'nmp' && position.unitRelease === 'nmp';
-
-	const quantity =
-		position.unitReceipt === 'pce' || position.unitRelease === 'nmp'
-			? fieldsMeta.quantity.value
-			: fieldsMeta.quantityPackages.value * fieldsMeta.quantityInUnit.value;
 
 	const generatedUnitSellingPrice = formatNumber(receipt.unitPurchasePrice + receipt.unitCostDelivery);
 
@@ -180,53 +195,29 @@ function ReceiptSellingPrice({
 				<Grid alignItems="flex-start" container>
 					<Grid xs={6} item>
 						<DefinitionList>
-							<DefinitionListItem term={isNmpNmp ? 'Количество' : 'Количество'} value={`${quantity} ${isNmpNmp ? 'уп.' : 'шт.'}`} />
-							{isNmpPce ? (
-								<>
-									<DefinitionListItem term="Количество уп." value={fieldsMeta.quantityPackages.value} />
-									<DefinitionListItem term="Штук в упаковке" value={fieldsMeta.quantityInUnit.value} />
-								</>
-							) : null}
-						</DefinitionList>
-					</Grid>
-					<Grid xs={6} item>
-						<DefinitionList>
 							{!receipt.visibleFormationPriceFields ? (
 								<DefinitionListItem
-									term={<b>Цена продажи</b>}
+									term="Цена продажи"
 									value={
 										!position.isFree ? (
-											<div className={classes.unitSellingPrice}>
-												<Money value={receipt.unitSellingPrice} />
-											</div>
+											<TooltipSellingPrice receipt={receipt} visibleUnitMarkup>
+												<FormatNumberListItem value={formatNumber(receipt.unitSellingPrice, { toString: true })} />
+											</TooltipSellingPrice>
 										) : (
-											<Typography className={classes.unitSellingPrice} variant="body1">
-												Бесплатно
-											</Typography>
+											<Typography variant="body1">Бесплатно</Typography>
 										)
 									}
-									dotsShow={false}
 								/>
 							) : null}
-							{!position.isFree ? (
-								<>
-									<DefinitionListItem
-										term="Цена покупки"
-										value={<FormatNumberListItem value={formatNumber(receipt.unitPurchasePrice, { toString: true })} />}
-									/>
-									{receipt.unitCostDelivery ? (
-										<DefinitionListItem
-											term="Стоимость доставки"
-											value={<FormatNumberListItem value={formatNumber(receipt.unitCostDelivery, { toString: true })} />}
-										/>
-									) : null}
-									{!receipt.visibleFormationPriceFields ? (
-										<DefinitionListItem
-											term="Наценка"
-											value={<FormatNumberListItem value={formatNumber(receipt.unitMarkup, { toString: true })} />}
-										/>
-									) : null}
-								</>
+							{receipt.visibleFormationPriceFields ? (
+								<DefinitionListItem
+									term="Мин. цена продажи"
+									value={
+										<TooltipSellingPrice receipt={receipt}>
+											<FormatNumberListItem value={formatNumber(generatedUnitSellingPrice, { toString: true })} />
+										</TooltipSellingPrice>
+									}
+								/>
 							) : null}
 						</DefinitionList>
 						{receipt.visibleFormationPriceFields ? (
@@ -252,7 +243,7 @@ function ReceiptSellingPrice({
 										}}
 										disabled={isSubmitting}
 										validate={value => {
-											if (value < generatedUnitSellingPrice) return 'Не может быть ниже рассчитанной цены';
+											if (value < generatedUnitSellingPrice) return 'Не может быть ниже минимальной цены';
 										}}
 										autoFocus
 										fullWidth

@@ -180,7 +180,7 @@ const DeliveryIsExpected = props => {
 						iconBefore={<FontAwesomeIcon icon={['far', 'undo']} fixedWidth />}
 						destructive
 					>
-						Отменить закупку
+						Отменить доставку
 					</MenuItem>
 				</MenuList>
 			</Dropdown>

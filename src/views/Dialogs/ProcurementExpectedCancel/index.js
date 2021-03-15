@@ -42,15 +42,15 @@ const DialogProcurementExpectedCancel = props => {
 	return (
 		<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog}>
 			<DialogTitle onClose={onCloseDialog} theme="noTheme">
-				Отмена закупки
+				Отмена доставки
 			</DialogTitle>
 			<DialogContent>
 				<Typography variant="body1" gutterBottom>
-					Вы&nbsp;действительно хотите отменить закупку из&nbsp;магазина <b>{selectedProcurement.shop.name}</b>
+					Вы&nbsp;действительно хотите отменить доставку закупки из&nbsp;магазина <b>{selectedProcurement.shop.name}</b>
 					{selectedProcurement.isConfirmed && !selectedProcurement.isUnknownDeliveryDate ? (
 						<>
 							{' '}
-							запланированный на&nbsp;
+							запланированную на&nbsp;
 							<b>
 								{deliveryDate}
 								{selectedProcurement.deliveryTimeFrom && selectedProcurement.deliveryTimeTo
@@ -74,7 +74,7 @@ const DialogProcurementExpectedCancel = props => {
 						Отмена
 					</ButtonRed>
 					<ButtonRed onClick={onSubmit} variant="contained" color="primary" size="small">
-						Отменить закупку
+						Отменить доставку
 					</ButtonRed>
 				</DialogActions>
 			</DialogContent>

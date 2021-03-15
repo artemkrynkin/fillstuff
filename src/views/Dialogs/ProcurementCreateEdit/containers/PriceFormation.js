@@ -52,7 +52,6 @@ function PriceFormation({ classes, dialogRef, formikProps, formikProps: { values
 			</Typography>
 
 			<MessageWithIcon
-				icon={['fad', 'exclamation-circle']}
 				message={
 					<>
 						Для {declensionNumber(sellingReceiptsCount, ['позиции', 'позиций', 'позиций'], true)} рассчитана цена продажи.

@@ -1,4 +1,3 @@
-import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 export const helperText = (filedTouched, fieldError) => (filedTouched && typeof fieldError === 'string' ? fieldError : null);
@@ -6,13 +5,7 @@ export const helperText = (filedTouched, fieldError) => (filedTouched && typeof 
 export const getSteps = ({ showOptionSelectStep = true, status, sellingPositions = false }) => {
 	const stepList = [
 		{
-			label: (
-				<>
-					Данные о закупке,
-					<br />
-					список позиций
-				</>
-			),
+			label: 'Данные о закупке',
 		},
 	];
 
@@ -29,7 +22,7 @@ export const getSteps = ({ showOptionSelectStep = true, status, sellingPositions
 	}
 	if (status === 'expected') {
 		stepList.push({
-			label: 'Подтверждение доставки',
+			label: 'Данные о доставке',
 		});
 	}
 

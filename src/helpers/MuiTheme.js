@@ -949,7 +949,7 @@ export const MuiTheme = createMuiTheme({
 			label: {
 				color: colorTheme.blueGrey['400'],
 				'&$alternativeLabel': {
-					marginTop: 10,
+					marginTop: 5,
 				},
 				'&$active': {
 					color: colorTheme.teal['400'],

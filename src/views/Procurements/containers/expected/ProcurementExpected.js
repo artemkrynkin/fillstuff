@@ -140,17 +140,15 @@ const ProcurementExpected = props => {
 								Подтвердить доставку
 							</MenuItem>
 						)}
-						{procurement.isConfirmed ? (
-							<MenuItem
-								onClick={() => {
-									onHandleDropdownActions();
-									onOpenDialogProcurement('dialogProcurementEdit', 'procurement', procurement);
-								}}
-								iconBefore={<FontAwesomeIcon icon={['far', 'pen']} fixedWidth />}
-							>
-								Редактировать
-							</MenuItem>
-						) : null}
+						<MenuItem
+							onClick={() => {
+								onHandleDropdownActions();
+								onOpenDialogProcurement('dialogProcurementEdit', 'procurement', procurement);
+							}}
+							iconBefore={<FontAwesomeIcon icon={['far', 'pen']} fixedWidth />}
+						>
+							Редактировать
+						</MenuItem>
 						<MenuItem
 							onClick={() => {
 								onHandleDropdownActions();
@@ -159,7 +157,7 @@ const ProcurementExpected = props => {
 							iconBefore={<FontAwesomeIcon icon={['far', 'undo']} fixedWidth />}
 							destructive
 						>
-							Отменить закупку
+							Отменить доставку
 						</MenuItem>
 					</MenuList>
 				</Dropdown>

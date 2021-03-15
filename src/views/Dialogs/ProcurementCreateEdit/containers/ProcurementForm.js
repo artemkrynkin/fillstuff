@@ -386,6 +386,14 @@ function ProcurementForm({
 			handleComplete(0);
 			setActiveStep(1);
 		}
+
+		if (type === 'edit') {
+			handleComplete(0);
+
+			if (selectedProcurement.isConfirmed) {
+				handleComplete(1);
+			}
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -413,12 +421,12 @@ function ProcurementForm({
 			>
 				{steps.options.showOptionSelectStep ? (
 					<WizardStep onSubmit={checkStepOption} validationSchema={procurementSchema.option}>
-						<ProcurementOption onUpdateSteps={onUpdateSteps} />
+						<ProcurementOption steps={steps} onUpdateSteps={onUpdateSteps} />
 					</WizardStep>
 				) : null}
 				{steps.options.status === 'expected' ? (
 					<WizardStep onSubmit={checkStepDataExpected} validationSchema={procurementSchema.data.expected}>
-						<ProcurementData dialogRef={dialogRef} steps={steps} onUpdateSteps={onUpdateSteps} />
+						<ProcurementData dialogRef={dialogRef} onUpdateSteps={onUpdateSteps} />
 					</WizardStep>
 				) : null}
 				{steps.options.status === 'expected' ? (
@@ -428,7 +436,7 @@ function ProcurementForm({
 				) : null}
 				{steps.options.status === 'received' ? (
 					<WizardStep onSubmit={checkStepDataReceived} validationSchema={procurementSchema.data.received}>
-						<ProcurementData dialogRef={dialogRef} steps={steps} onUpdateSteps={onUpdateSteps} />
+						<ProcurementData dialogRef={dialogRef} onUpdateSteps={onUpdateSteps} />
 					</WizardStep>
 				) : null}
 				{steps.options.sellingPositions ? (

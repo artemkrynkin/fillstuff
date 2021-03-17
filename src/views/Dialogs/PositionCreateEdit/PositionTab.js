@@ -240,7 +240,7 @@ const PositionTab = props => {
 							</InputLabel>
 						</Grid>
 						<Grid xs={9} item>
-							<Grid alignItems="center" container>
+							<Grid alignItems="flex-start" container>
 								<Field
 									name="minimumBalance"
 									placeholder="0"

@@ -66,6 +66,8 @@ import {
 	faComment as farComment,
 	faInventory as farInventory,
 	faExternalLink as farExternalLink,
+	faFolderOpen as farFolderOpen,
+	faInfoCircle as farInfoCircle,
 } from '@fortawesome/pro-regular-svg-icons';
 
 import {
@@ -180,6 +182,8 @@ library.add(
 	farComment,
 	farInventory,
 	farExternalLink,
+	farFolderOpen,
+	farInfoCircle,
 
 	// Light
 	falAngleLeft,

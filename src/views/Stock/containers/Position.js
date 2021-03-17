@@ -37,7 +37,7 @@ const Position = props => {
 	const openPositionPage = event => {
 		const positionLink = `/stock/${position._id}`;
 
-		return event.ctrlKey || event.shiftKey || event.metaKey ? window.open(positionLink) : history.push(positionLink);
+		return event?.ctrlKey || event?.shiftKey || event?.metaKey ? window.open(positionLink) : history.push(positionLink);
 	};
 
 	const positionBadges = (badges = []) => {
@@ -53,8 +53,8 @@ const Position = props => {
 	});
 
 	return (
-		<TableRow onClick={openPositionPage} className={containerClasses}>
-			<TableCell width={330} style={position.positionGroup ? { paddingLeft: 41 } : {}}>
+		<TableRow className={containerClasses}>
+			<TableCell onClick={openPositionPage} width={330} style={position.positionGroup ? { paddingLeft: 41 } : {}}>
 				<div className={styles.positionName}>
 					{position.parentPosition ? <UnifierPosition className={styles.unifierPosition} /> : null}
 					<PositionSummary name={position.name} characteristics={position.characteristics} badges={positionBadges()} avatar />
@@ -121,6 +121,7 @@ const Position = props => {
 				position={position}
 				onOpenDialogPosition={onOpenDialogPosition}
 				archivePositionAfterEnded={props.archivePositionAfterEnded}
+				openPositionPage={openPositionPage}
 			/>
 		</TableRow>
 	);

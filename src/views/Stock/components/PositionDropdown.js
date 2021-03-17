@@ -8,7 +8,7 @@ import MenuItem from 'src/components/MenuItem';
 import Dropdown from 'src/components/Dropdown';
 
 const PositionDropdown = props => {
-	const { refDropdownActions, dropdownActions, onToggleDropdownActions, position, onOpenDialogPosition } = props;
+	const { refDropdownActions, dropdownActions, onToggleDropdownActions, position, onOpenDialogPosition, openPositionPage } = props;
 
 	const onArchivedAfterEnded = () => {
 		props.archivePositionAfterEnded(position._id, { archivedAfterEnded: false });
@@ -23,27 +23,41 @@ const PositionDropdown = props => {
 			disablePortal={false}
 			stopPropagation
 		>
+			<MenuList>
+				<MenuItem
+					onClick={() => {
+						onToggleDropdownActions();
+						openPositionPage();
+					}}
+					iconBefore={<FontAwesomeIcon icon={['far', 'info-circle']} fixedWidth />}
+				>
+					Детали позиции
+				</MenuItem>
+			</MenuList>
+			<Divider />
 			{position.receipts.length ? (
-				<MenuList>
-					<MenuItem
-						onClick={() => {
-							onToggleDropdownActions();
-							onOpenDialogPosition('dialogReceiptActiveAddQuantity', 'position', position);
-						}}
-					>
-						Добавить количество
-					</MenuItem>
-					<MenuItem
-						onClick={() => {
-							onToggleDropdownActions();
-							onOpenDialogPosition('dialogWriteOffCreate', 'position', position);
-						}}
-					>
-						Списать количество
-					</MenuItem>
-				</MenuList>
+				<>
+					<MenuList>
+						<MenuItem
+							onClick={() => {
+								onToggleDropdownActions();
+								onOpenDialogPosition('dialogReceiptActiveAddQuantity', 'position', position);
+							}}
+						>
+							Добавить количество
+						</MenuItem>
+						<MenuItem
+							onClick={() => {
+								onToggleDropdownActions();
+								onOpenDialogPosition('dialogWriteOffCreate', 'position', position);
+							}}
+						>
+							Списать количество
+						</MenuItem>
+					</MenuList>
+					<Divider />
+				</>
 			) : null}
-			{position.receipts.length ? <Divider /> : null}
 			<MenuList>
 				{!position.parentPosition ? (
 					<MenuItem

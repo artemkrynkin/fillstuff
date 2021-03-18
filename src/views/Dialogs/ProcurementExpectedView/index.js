@@ -108,17 +108,15 @@ const ProcurementExpectedView = props => {
 						disablePortal={false}
 					>
 						<MenuList>
-							{selectedProcurement.isConfirmed ? (
-								<MenuItem
-									onClick={() => {
-										onHandleDropdownActions();
-										onOpenDialogByName('dialogProcurementEdit', 'procurement', selectedProcurement);
-									}}
-									iconBefore={<FontAwesomeIcon icon={['far', 'pen']} fixedWidth />}
-								>
-									Редактировать
-								</MenuItem>
-							) : null}
+							<MenuItem
+								onClick={() => {
+									onHandleDropdownActions();
+									onOpenDialogByName('dialogProcurementEdit', 'procurement', selectedProcurement);
+								}}
+								iconBefore={<FontAwesomeIcon icon={['far', 'pen']} fixedWidth />}
+							>
+								Редактировать
+							</MenuItem>
 							<MenuItem
 								onClick={() => {
 									onHandleDropdownActions();

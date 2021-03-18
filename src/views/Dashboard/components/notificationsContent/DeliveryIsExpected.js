@@ -161,17 +161,15 @@ const DeliveryIsExpected = props => {
 							Подтвердить доставку
 						</MenuItem>
 					)}
-					{procurement.isConfirmed ? (
-						<MenuItem
-							onClick={() => {
-								onHandleDropdownActions();
-								onOpenDialogByName('dialogProcurementEdit', 'procurement', procurement);
-							}}
-							iconBefore={<FontAwesomeIcon icon={['far', 'pen']} fixedWidth />}
-						>
-							Редактировать
-						</MenuItem>
-					) : null}
+					<MenuItem
+						onClick={() => {
+							onHandleDropdownActions();
+							onOpenDialogByName('dialogProcurementEdit', 'procurement', procurement);
+						}}
+						iconBefore={<FontAwesomeIcon icon={['far', 'pen']} fixedWidth />}
+					>
+						Редактировать
+					</MenuItem>
 					<MenuItem
 						onClick={() => {
 							onHandleDropdownActions();

@@ -5,7 +5,7 @@ import i18n from 'i18n';
 import { dbFillstuff } from 'shared/db';
 
 import { formatNumber, timesInterval15Minutes } from 'shared/utils';
-import { procurementStatusList, procurementPaymentState } from 'shared/modelsHelpers';
+import { procurementStatusList } from 'shared/modelsHelpers';
 
 const Schema = mongoose.Schema;
 
@@ -45,11 +45,6 @@ const Procurement = new Schema({
 			},
 			i18n.__('Обязательное поле'),
 		],
-	},
-	paymentState: {
-		type: String,
-		enum: procurementPaymentState,
-		required: [true, i18n.__('Обязательное поле')],
 	},
 	isUnknownDeliveryDate: {
 		type: Boolean,
@@ -108,7 +103,6 @@ const Procurement = new Schema({
 	costDelivery: {
 		type: Number,
 		min: [0, 'Не может быть меньше 0'],
-		default: 0,
 		set: value => formatNumber(value),
 	},
 	totalPrice: {

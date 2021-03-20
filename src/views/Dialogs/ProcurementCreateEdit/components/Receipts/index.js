@@ -31,7 +31,7 @@ export const useStyles = makeStyles(theme => ({
 		backgroundColor: '#fff',
 		margin: '0 -20px 10px',
 		position: 'sticky',
-		top: 94,
+		top: 73,
 		zIndex: 1,
 		// '&.stuck': {
 		//   boxShadow: '0 2px 2px 0 rgba(var(--c-rgb-blueGrey-300), 0.2)',

@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 import moment from 'moment';
 
-import { procurementStatusList, procurementPaymentState } from 'shared/modelsHelpers';
+import { procurementStatusList } from 'shared/modelsHelpers';
 
 const procurementSchema = {
 	option: Yup.object().shape({
@@ -56,9 +56,6 @@ const procurementSchema = {
 			pricePositions: Yup.number()
 				.min(0)
 				.required(),
-			costDelivery: Yup.number()
-				.min(0)
-				.required(),
 			orderedReceiptsPositions: Yup.array(
 				Yup.object().shape({
 					position: Yup.mixed().required(),
@@ -84,9 +81,6 @@ const procurementSchema = {
 		),
 	}),
 	deliveryConfirmation: Yup.object().shape({
-		paymentState: Yup.string()
-			.required('Выберите вариант закупки, чтобы продолжить')
-			.oneOf(procurementPaymentState),
 		deliveryDate: Yup.mixed().when(['isConfirmed', 'isUnknownDeliveryDate'], (isConfirmed, isUnknownDeliveryDate, schema) => {
 			return isConfirmed && !isUnknownDeliveryDate
 				? schema.transform((value, originalValue) => (moment(value).isValid() ? value : originalValue))
@@ -98,6 +92,9 @@ const procurementSchema = {
 		deliveryTimeTo: Yup.string().when(['isConfirmed', 'isUnknownDeliveryDate'], (isConfirmed, isUnknownDeliveryDate, schema) => {
 			return isConfirmed && !isUnknownDeliveryDate ? schema : schema.strip();
 		}),
+		costDelivery: Yup.mixed()
+			.when('isConfirmed', (isConfirmed, schema) => (isConfirmed ? schema.required() : schema))
+			.transform(value => (typeof Number(value) !== 'number' || value === '' ? undefined : Number(value))),
 	}),
 };
 

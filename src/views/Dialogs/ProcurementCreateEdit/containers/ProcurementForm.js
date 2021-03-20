@@ -43,7 +43,6 @@ const getInitialValues = (type, currentStudio, selectedProcurement) => {
 		status: '',
 		shop: null,
 		isConfirmed: false,
-		paymentState: '',
 		isUnknownDeliveryDate: false,
 		deliveryDate: undefined,
 		deliveryTimeFrom: '',
@@ -133,7 +132,6 @@ function ProcurementForm({
 			if (steps.options.status === 'received') {
 				const procurement = procurementReceivedSchema.cast(additionValues || values);
 
-				procurement.paymentState = 'paid';
 				procurement.positions = [];
 
 				procurement.receipts = procurement.receipts.map(({ position, quantity, quantityPackages, ...remainingValues }) => {
@@ -173,30 +171,26 @@ function ProcurementForm({
 				await props.enqueueSnackbar({
 					message: (
 						<div>
-							{type !== 'confirm' || (type === 'confirm' && procurement.isConfirmed) ? (
-								<Typography variant="body1" gutterBottom={type !== 'edit'}>
-									{type === 'create'
-										? 'Закупка успешно создана'
-										: type === 'edit'
-										? 'Закупка успешно отредактирована'
-										: 'Закупка подтверждена'}
-								</Typography>
-							) : null}
+							<Typography variant="body1" gutterBottom>
+								{type === 'create'
+									? 'Закупка успешно создана'
+									: procurement.isConfirmed && procurement.isConfirmed !== selectedProcurement.isConfirmed
+									? 'Закупка подтверждена'
+									: 'Закупка успешно отредактирована'}
+							</Typography>
 
-							{type !== 'edit' ? (
-								<Typography variant="body1">
-									{procurement.isConfirmed ? (
-										<>
-											<b>Дата доставки</b>:{' '}
-											{!procurement.isUnknownDeliveryDate ? <>{moment(procurement.deliveryDate).format('DD MMMM')}</> : <>неизвестна</>}
-										</>
-									) : (
-										<>
-											Дождитесь звонка менеджера и <b>подтвердите доставку</b>
-										</>
-									)}
-								</Typography>
-							) : null}
+							<Typography variant="body1">
+								{procurement.isConfirmed ? (
+									<>
+										<b>Дата доставки</b>:{' '}
+										{!procurement.isUnknownDeliveryDate ? <>{moment(procurement.deliveryDate).format('DD MMMM')}</> : <>неизвестна</>}
+									</>
+								) : (
+									<>
+										Дождитесь звонка менеджера и <b>подтвердите доставку</b>
+									</>
+								)}
+							</Typography>
 						</div>
 					),
 					options: { variant: 'success' },
@@ -348,11 +342,7 @@ function ProcurementForm({
 
 		await sleep(500);
 
-		procurement.totalPrice = formatNumber(procurement.pricePositions + procurement.costDelivery);
-
 		actions.setFieldValue('pricePositions', procurement.pricePositions);
-		actions.setFieldValue('costDelivery', procurement.costDelivery);
-		actions.setFieldValue('totalPrice', procurement.totalPrice);
 		actions.setFieldValue('orderedReceiptsPositions', procurement.orderedReceiptsPositions);
 
 		return procurement;
@@ -368,10 +358,15 @@ function ProcurementForm({
 		return procurement;
 	};
 
-	const checkStepDeliveryConfirmation = async values => {
+	const checkStepDeliveryConfirmation = async (values, actions) => {
 		const procurement = procurementSchema.deliveryConfirmation.cast(values);
 
 		await sleep(500);
+
+		procurement.totalPrice = formatNumber(procurement.pricePositions + Number(procurement.costDelivery || 0));
+
+		actions.setFieldValue('costDelivery', procurement.costDelivery);
+		actions.setFieldValue('totalPrice', procurement.totalPrice);
 
 		return procurement;
 	};

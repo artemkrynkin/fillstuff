@@ -11,6 +11,7 @@ import MessageWithIcon from '../components/MessageWithIcon';
 import ShopAutocomplete from '../components/ShopAutocomplete';
 import InvoiceData from '../components/InvoiceData';
 import TotalPrice from '../components/TotalPrice';
+import PricePositions from '../components/PricePositions';
 import Receipts from '../components/Receipts';
 import OrderedReceiptsPositions from '../components/OrderedReceiptsPositions';
 
@@ -55,29 +56,40 @@ function ProcurementData({ classes, dialogRef, onUpdateSteps, formikProps, formi
 			</Grid>
 
 			{values.status === 'received' ? (
-				<Grid className={classes.formRow} wrap="nowrap" alignItems="flex-start" container>
-					<InputLabel
-						className={classes.label}
-						error={(touched.invoiceNumber && Boolean(errors.invoiceNumber)) || (touched.invoiceDate && Boolean(errors.invoiceDate))}
-						data-inline
-					>
-						Чек/накладная
-					</InputLabel>
-					<InvoiceData formikProps={formikProps} />
-				</Grid>
+				<>
+					<Grid className={classes.formRow} wrap="nowrap" alignItems="flex-start" container>
+						<InputLabel
+							className={classes.label}
+							error={(touched.invoiceNumber && Boolean(errors.invoiceNumber)) || (touched.invoiceDate && Boolean(errors.invoiceDate))}
+							data-inline
+						>
+							Чек/накладная
+						</InputLabel>
+						<InvoiceData formikProps={formikProps} />
+					</Grid>
+
+					<Grid className={classes.formRow} wrap="nowrap" alignItems="flex-start" container>
+						<InputLabel
+							className={classes.label}
+							error={touched.pricePositions && Boolean(errors.pricePositions)}
+							style={{ marginTop: 32 }}
+							data-inline
+						>
+							Итого
+						</InputLabel>
+						<TotalPrice formikProps={formikProps} compensateCostDeliveryVisible={values.status === 'received'} />
+					</Grid>
+				</>
 			) : null}
 
-			<Grid className={classes.formRow} wrap="nowrap" alignItems="flex-start" container>
-				<InputLabel
-					className={classes.label}
-					error={touched.pricePositions && Boolean(errors.pricePositions)}
-					style={{ marginTop: 32 }}
-					data-inline
-				>
-					Итого
-				</InputLabel>
-				<TotalPrice formikProps={formikProps} compensateCostDeliveryVisible={values.status === 'received'} />
-			</Grid>
+			{values.status === 'expected' ? (
+				<Grid className={classes.formRow} wrap="nowrap" alignItems="flex-start" container>
+					<InputLabel className={classes.label} error={touched.pricePositions && Boolean(errors.pricePositions)} data-inline>
+						Стоимость позиций
+					</InputLabel>
+					<PricePositions formikProps={formikProps} />
+				</Grid>
+			) : null}
 
 			<Typography className={classes.title} variant="h5" align="center">
 				Список позиций

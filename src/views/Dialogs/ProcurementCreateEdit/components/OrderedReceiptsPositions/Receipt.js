@@ -62,14 +62,12 @@ function Receipt({
 	index,
 	receipt,
 	position = receipt.position,
-	formikProps: { isSubmitting, values, getFieldMeta },
+	formikProps: { isSubmitting, getFieldMeta },
 	arrayHelpers: { remove },
 }) {
 	const fieldsMeta = {
 		quantity: getFieldMeta(`orderedReceiptsPositions.${index}.quantity`),
 	};
-	const isNmpNmp = position.unitReceipt === 'nmp' && position.unitRelease === 'nmp';
-
 	const onRemoveReceipt = () => remove(index);
 
 	return (
@@ -101,7 +99,7 @@ function Receipt({
 					<Grid xs={3} item>
 						<Field
 							name={`orderedReceiptsPositions.${index}.quantity`}
-							label={isNmpNmp ? 'Количество уп.' : 'Количество шт.'}
+							label={position.unitReceipt === 'nmp' ? 'Количество уп.' : 'Количество шт.'}
 							placeholder="0"
 							as={TextField}
 							error={fieldsMeta.quantity.touched && Boolean(fieldsMeta.quantity.error)}

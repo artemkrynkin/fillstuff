@@ -105,7 +105,7 @@ function WizardContent({
 						) : null}
 					</Grid>
 					<Grid item>
-						{activeStep > 0 && type !== 'confirm' ? (
+						{activeStep > 0 ? (
 							<Button onClick={() => handlePrev(values)} variant="outlined" size="large">
 								Назад
 							</Button>
@@ -120,19 +120,21 @@ function WizardContent({
 							size="large"
 							style={{ marginLeft: 16 }}
 						>
-							{isLastStep
-								? values.status === 'expected'
-									? type === 'create'
-										? values.isConfirmed
-											? 'Создать закупку с доставкой'
-											: 'Ожидать подтверждения доставки'
-										: type === 'edit'
-										? 'Сохранить'
-										: values.isConfirmed
-										? 'Подтвердить'
-										: 'Ожидать подтверждения доставки'
-									: 'Создать закупку'
-								: 'Продолжить'}
+							{isLastStep ? (
+								values.status === 'expected' ? (
+									type === 'create' ? (
+										<>{values.isConfirmed ? 'Создать закупку с доставкой' : 'Ожидать подтверждения доставки'}</>
+									) : type === 'edit' ? (
+										<>Сохранить</>
+									) : (
+										<>{values.isConfirmed ? 'Подтвердить' : 'Ожидать подтверждения доставки'}</>
+									)
+								) : (
+									'Создать закупку'
+								)
+							) : (
+								'Продолжить'
+							)}
 						</ButtonLoader>
 					</Grid>
 				</Grid>

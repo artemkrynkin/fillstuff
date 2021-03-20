@@ -7,8 +7,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Grid from '@material-ui/core/Grid';
 
 import DeliveryDate from '../components/DeliveryDate';
+import CostDelivery from '../components/CostDelivery';
 import Comment from '../components/Comment';
-import PaymentState from '../components/PaymentState';
 
 const styles = () => ({
 	container: {
@@ -42,10 +42,10 @@ function DeliveryConfirmation({ classes, formikProps, formikProps: { touched, er
 			</Grid>
 
 			<Grid className={classes.formRow} wrap="nowrap" alignItems="flex-start" container>
-				<InputLabel className={classes.label} error={touched.paymentState && Boolean(errors.paymentState)} data-inline>
-					Статус оплаты
+				<InputLabel className={classes.label} error={touched.costDelivery && Boolean(errors.costDelivery)} data-inline>
+					Стоимость доставки
 				</InputLabel>
-				<PaymentState formikProps={formikProps} />
+				<CostDelivery formikProps={formikProps} />
 			</Grid>
 
 			<Grid className={classes.formRow} wrap="nowrap" alignItems="flex-start" container>

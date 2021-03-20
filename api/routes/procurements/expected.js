@@ -257,7 +257,6 @@ router.post(
 
 		if (existIsNotSame('shop', procurement, procurementEdited)) procurement.shop = procurementEdited.shop;
 		if (existIsNotSame('isConfirmed', procurement, procurementEdited)) procurement.isConfirmed = procurementEdited.isConfirmed;
-		if (existIsNotSame('paymentState', procurement, procurementEdited)) procurement.paymentState = procurementEdited.paymentState;
 		if (existIsNotSame('isUnknownDeliveryDate', procurement, procurementEdited))
 			procurement.isUnknownDeliveryDate = procurementEdited.isUnknownDeliveryDate;
 		if (existIsNotSame('deliveryDate', procurement, procurementEdited)) procurement.deliveryDate = procurementEdited.deliveryDate;

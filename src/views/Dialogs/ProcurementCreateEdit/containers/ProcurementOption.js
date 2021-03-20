@@ -52,10 +52,10 @@ function ProcurementOption({ classes, onUpdateSteps, formikProps: { values, isSu
 
 			setFieldValue(
 				fieldPropName,
-				values[valuePropName].map(({ position, quantity }) =>
+				values[valuePropName].map(({ position, quantity, quantityPackages }) =>
 					receiptInitialValues({
 						position,
-						quantity,
+						quantity: quantity || quantityPackages,
 						ordered: status === 'expected',
 					})
 				)

@@ -16,7 +16,7 @@ import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
 
 import { helperText } from '../helpers/utils';
 
-const styles = theme => ({
+const styles = () => ({
 	compensateCostDeliveryGrid: {
 		paddingLeft: 173,
 	},

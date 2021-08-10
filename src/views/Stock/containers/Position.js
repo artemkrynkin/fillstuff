@@ -54,7 +54,11 @@ const Position = props => {
 
 	return (
 		<TableRow className={containerClasses}>
-			<TableCell onClick={openPositionPage} width={330} style={position.positionGroup ? { paddingLeft: 41 } : {}}>
+			<TableCell
+				onClick={openPositionPage}
+				width={330}
+				style={position.positionGroup ? { cursor: 'pointer', paddingLeft: 41 } : { cursor: 'pointer' }}
+			>
 				<div className={styles.positionName}>
 					{position.parentPosition ? <UnifierPosition className={styles.unifierPosition} /> : null}
 					<PositionSummary name={position.name} characteristics={position.characteristics} badges={positionBadges()} avatar />

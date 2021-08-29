@@ -17,7 +17,7 @@ import styles from './index.module.css';
 import Index from './containers/index';
 
 const WriteOffs = props => {
-	const { currentStudio, writeOffs } = props;
+	const { writeOffs } = props;
 	const [page, setPage] = useState(1);
 
 	const layoutMetaInfo = {
@@ -58,7 +58,6 @@ const WriteOffs = props => {
 			<HeaderPage pageName={layoutMetaInfo.pageName} pageTitle={layoutMetaInfo.pageTitle} />
 			<div className={`${stylesPage.pageContent} ${styles.container}`}>
 				<Index
-					currentStudio={currentStudio}
 					writeOffs={writeOffs}
 					filterOptions={filterOptions}
 					paging={{

@@ -39,7 +39,6 @@ const Invoices = props => {
 	const {
 		filterOptions,
 		paging,
-		currentStudio,
 		onOpenDialogByName,
 		invoices: { data: invoices, isFetching: isLoadingInvoices },
 	} = props;
@@ -62,7 +61,7 @@ const Invoices = props => {
 	if (!invoices.paging.totalDocs) {
 		return (
 			<Fragment>
-				<Filter filterOptions={filterOptions} paging={paging} currentStudio={currentStudio} />
+				<Filter filterOptions={filterOptions} paging={paging} />
 				<FilteredComponent loading={isLoadingInvoices}>
 					<Empty
 						classNames={{
@@ -87,7 +86,7 @@ const Invoices = props => {
 
 	return (
 		<Fragment>
-			<Filter filterOptions={filterOptions} paging={paging} currentStudio={currentStudio} />
+			<Filter filterOptions={filterOptions} paging={paging} />
 			<FilteredComponent loading={isLoadingInvoices}>
 				{invoices.data.map(month => (
 					<div className={styles.date} key={month.date}>

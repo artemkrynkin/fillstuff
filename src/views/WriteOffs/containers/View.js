@@ -13,7 +13,6 @@ import writeOffsEmpty from 'public/img/stubs/write_offs_empty.svg';
 
 const View = props => {
 	const {
-		currentStudio,
 		onOpenDialogByName,
 		filterOptions,
 		paging,
@@ -46,7 +45,6 @@ const View = props => {
 				<WriteOffs
 					filterOptions={filterOptions}
 					paging={paging}
-					currentStudio={currentStudio}
 					onOpenDialogByName={onOpenDialogByName}
 					writeOffs={props.writeOffs}
 				/>

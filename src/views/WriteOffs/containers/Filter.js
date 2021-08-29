@@ -169,7 +169,6 @@ class Filter extends Component {
 
 	render() {
 		const {
-			currentStudio,
 			members,
 			positions,
 			filterOptions: { params: filterParams },
@@ -193,7 +192,6 @@ class Filter extends Component {
 				>
 					{props => (
 						<FormFilter
-							currentStudio={currentStudio}
 							handlerDropdown={this.handlerDropdown}
 							onChangeFilterDate={this.onChangeFilterDate}
 							onChangeFilterPosition={this.onChangeFilterPosition}

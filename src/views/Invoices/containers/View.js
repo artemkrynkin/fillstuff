@@ -13,7 +13,6 @@ import invoicesEmpty from 'public/img/stubs/invoices_empty.svg';
 
 const View = props => {
 	const {
-		currentStudio,
 		onOpenDialogByName,
 		filterOptions,
 		paging,
@@ -45,7 +44,6 @@ const View = props => {
 			<Invoices
 				filterOptions={filterOptions}
 				paging={paging}
-				currentStudio={currentStudio}
 				onOpenDialogByName={onOpenDialogByName}
 				invoices={props.invoices}
 			/>

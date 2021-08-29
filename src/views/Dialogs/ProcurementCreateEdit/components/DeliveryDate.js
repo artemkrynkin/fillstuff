@@ -1,8 +1,8 @@
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { Field, ErrorMessage } from 'formik';
+import DatePicker from 'react-datepicker';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withStyles } from '@material-ui/core/styles';
 import Select from '@material-ui/core/Select';
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -10,14 +10,13 @@ import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Collapse from '@material-ui/core/Collapse';
-import { LocalizationProvider, StaticDatePicker } from '@material-ui/pickers';
-import MomentUtils from '@material-ui/pickers/adapter/moment';
 
 import { timesInterval15Minutes } from 'shared/utils';
 
 import Dropdown from 'src/components/Dropdown';
 import MenuItem from 'src/components/MenuItem';
 import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
+import HeaderDatepicker from 'src/components/Datepicker/Header';
 
 const styles = theme => ({
 	deliveryDateFieldGrid: {
@@ -173,25 +172,13 @@ function DeliveryDate({ classes, formikProps: { isSubmitting, values, touched, e
 				placement="bottom"
 				disablePortal={false}
 			>
-				<LocalizationProvider dateAdapter={MomentUtils}>
-					<StaticDatePicker
-						views={['date']}
-						displayStaticWrapperAs="desktop"
-						reduceAnimations
-						value={values.deliveryDate}
-						onChange={onChangeDeliveryDate}
-						leftArrowButtonProps={{
-							size: 'small',
-						}}
-						leftArrowIcon={<FontAwesomeIcon icon={['far', 'angle-left']} />}
-						rightArrowButtonProps={{
-							size: 'small',
-						}}
-						rightArrowIcon={<FontAwesomeIcon icon={['far', 'angle-right']} />}
-						disablePast
-						allowKeyboardControl={false}
-					/>
-				</LocalizationProvider>
+        <DatePicker
+          selected={values.deliveryDate}
+          renderCustomHeader={HeaderDatepicker}
+          onChange={onChangeDeliveryDate}
+          disabledKeyboardNavigation
+          inline
+        />
 			</Dropdown>
 		</>
 	);

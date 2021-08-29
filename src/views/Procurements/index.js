@@ -17,7 +17,7 @@ import styles from './index.module.css';
 import Index from './containers/index';
 
 const Procurements = props => {
-	const { currentStudio, procurementsExpected, procurementsReceived } = props;
+	const { procurementsExpected, procurementsReceived } = props;
 	const [page, setPage] = useState(1);
 
 	const layoutMetaInfo = {
@@ -57,7 +57,6 @@ const Procurements = props => {
 			<HeaderPage pageName={layoutMetaInfo.pageName} pageTitle={layoutMetaInfo.pageTitle} />
 			<div className={`${stylesPage.pageContent} ${styles.container}`}>
 				<Index
-					currentStudio={currentStudio}
 					procurementsExpected={procurementsExpected}
 					procurementsReceived={procurementsReceived}
 					filterOptions={filterOptions}

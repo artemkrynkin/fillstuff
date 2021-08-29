@@ -1,18 +1,17 @@
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { Field } from 'formik';
+import DatePicker from 'react-datepicker';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withStyles } from '@material-ui/core/styles';
 import Collapse from '@material-ui/core/Collapse';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
-import { LocalizationProvider, StaticDatePicker } from '@material-ui/pickers';
-import MomentUtils from '@material-ui/pickers/adapter/moment';
 
 import CheckboxWithLabel from 'src/components/CheckboxWithLabel';
 import Dropdown from 'src/components/Dropdown';
+import HeaderDatepicker from 'src/components/Datepicker/Header';
 
 const styles = theme => ({
 	invoiceDateGrid: {
@@ -113,25 +112,13 @@ function InvoiceData({ classes, formikProps: { isSubmitting, values, touched, er
 				onClose={() => onHandleDropdownInvoiceDate(false)}
 				placement="bottom"
 			>
-				<LocalizationProvider dateAdapter={MomentUtils}>
-					<StaticDatePicker
-						views={['date']}
-						displayStaticWrapperAs="desktop"
-						reduceAnimations
-						value={values.invoiceDate}
-						onChange={onChangeInvoiceDate}
-						leftArrowButtonProps={{
-							size: 'small',
-						}}
-						leftArrowIcon={<FontAwesomeIcon icon={['far', 'angle-left']} />}
-						rightArrowButtonProps={{
-							size: 'small',
-						}}
-						rightArrowIcon={<FontAwesomeIcon icon={['far', 'angle-right']} />}
-						disableFuture
-						allowKeyboardControl={false}
-					/>
-				</LocalizationProvider>
+        <DatePicker
+          selected={values.invoiceDate}
+          renderCustomHeader={HeaderDatepicker}
+          onChange={onChangeInvoiceDate}
+          disabledKeyboardNavigation
+          inline
+        />
 			</Dropdown>
 		</>
 	);

@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
 import moment from 'moment';
-import momentTz from 'moment-timezone';
 import { Form } from 'formik';
 import ClassNames from 'classnames';
+import DatePicker from 'react-datepicker';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Grid from '@material-ui/core/Grid';
@@ -16,8 +16,6 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import FormLabel from '@material-ui/core/FormLabel';
-import MomentUtils from '@material-ui/pickers/adapter/moment';
-import { StaticDateRangePicker, LocalizationProvider } from '@material-ui/pickers';
 
 import { memberRoleTransform } from 'shared/roles-access-rights';
 
@@ -25,6 +23,7 @@ import { weekActive, monthActive, paginationCalendarFormat } from 'src/component
 import Dropdown from 'src/components/Dropdown';
 import MenuItem from 'src/components/MenuItem';
 import UserSummary from 'src/components/UserSummary';
+import HeaderDatepicker from 'src/components/Datepicker/Header';
 
 import { FilterSearchTextField } from '../components/Filter.styles';
 import styles from './Filter.module.css';
@@ -96,7 +95,6 @@ const DropdownFooter = props => {
 
 const FormFilter = props => {
 	const {
-		currentStudio,
 		handlerDropdown,
 		onChangeFilterDate,
 		onChangeFilterStatus,
@@ -291,41 +289,26 @@ const FormFilter = props => {
 				placement="bottom-start"
 				innerContentStyle={{ minWidth: 190 }}
 			>
-				<Grid className={styles.dropdownContent} alignItems="center" container>
-					<LocalizationProvider dateAdapter={MomentUtils}>
-						<StaticDateRangePicker
-							calendars={1}
-							displayStaticWrapperAs="desktop"
-							reduceAnimations
-							value={[values.dateStart, values.dateEnd]}
-							onChange={date => {
-								const dateStartValue = date[0]
-									? momentTz
-											.tz(date[0], currentStudio.timezone)
-											.set({ hour: 0, minute: 0, second: 0 })
-											.valueOf()
-									: null;
-								const dateEndValue = date[1]
-									? momentTz
-											.tz(date[1], currentStudio.timezone)
-											.set({ hour: 23, minute: 59, second: 59 })
-											.valueOf()
-									: null;
+        <DatePicker
+          selected={values.dateStart}
+          renderCustomHeader={HeaderDatepicker}
+          onChange={dates => {
+            const dateStartValue = dates[0] ? moment(dates[0])
+              .set({ hour: 0, minute: 0, second: 0 })
+              .valueOf() : null;
+            const dateEndValue = dates[1] ? moment(dates[1])
+              .set({ hour: 23, minute: 59, second: 59 })
+              .valueOf() : null;
 
-								setFieldValue('dateStart', dateStartValue);
-								setFieldValue('dateEnd', dateEndValue);
-							}}
-							leftArrowButtonProps={{
-								size: 'small',
-							}}
-							leftArrowIcon={<FontAwesomeIcon icon={['far', 'angle-left']} />}
-							rightArrowButtonProps={{
-								size: 'small',
-							}}
-							rightArrowIcon={<FontAwesomeIcon icon={['far', 'angle-right']} />}
-						/>
-					</LocalizationProvider>
-				</Grid>
+            setFieldValue('dateStart', dateStartValue);
+            setFieldValue('dateEnd', dateEndValue);
+          }}
+          startDate={values.dateStart}
+          endDate={values.dateEnd}
+          disabledKeyboardNavigation
+          selectsRange
+          inline
+        />
 				<DropdownFooter isSubmitting={isSubmitting} disabledSubmit={!values.dateStart || !values.dateEnd} />
 			</Dropdown>
 

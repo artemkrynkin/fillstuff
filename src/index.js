@@ -5,6 +5,8 @@ import { Router } from 'react-router';
 import { HelmetProvider } from 'react-helmet-async';
 import moment from 'moment';
 import 'moment/locale/ru';
+import { registerLocale, setDefaultLocale } from  "react-datepicker";
+import ru from 'date-fns/locale/ru';
 
 import { StylesProvider } from '@material-ui/core/styles';
 
@@ -21,6 +23,9 @@ const store = initStore(window.__DATA__ || {});
 
 moment.locale('ru');
 moment().format();
+
+registerLocale('ru', ru);
+setDefaultLocale('ru')
 
 const App = () => {
 	return (

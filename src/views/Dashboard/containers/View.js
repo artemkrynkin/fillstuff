@@ -1,7 +1,6 @@
 import React from 'react';
 
 import Notifications from './Notifications';
-import Tasks from './Tasks';
 
 const View = props => {
 	const { onOpenDialogByName, storeNotifications } = props;
@@ -9,7 +8,6 @@ const View = props => {
 	return (
 		<>
 			<Notifications onOpenDialogByName={onOpenDialogByName} storeNotifications={storeNotifications} />
-			<Tasks />
 		</>
 	);
 };

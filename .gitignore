@@ -14,6 +14,7 @@ node_modules
 /build-render
 /logs
 /public/uploads
+yarn.lock
 
 # misc
 .DS_Store

@@ -60,21 +60,19 @@ const QuantityIndicator = props => {
 	if (type === 'position' || type === 'receipt' || type === 'procurementReceipt') {
 		const unitReleaseTransform = unitReceipt === 'pce' ? 'шт.' : unitRelease === 'pce' ? 'шт.' : 'уп.';
 
-		return receipts.length || !trackBalance ? (
+		return receipts.length ? (
 			<div>
-        {trackBalance ? (
-          <div>
-            {type === 'procurementReceipt' && unitReceipt === 'nmp' && unitRelease === 'pce' ? (
-              <div className={styles.quantityContainer}>
-                <span className={styles.quantityLarge}>{`${quantity} ${unitReleaseTransform}`}</span>
-                <span className={styles.quantitySmall}>{`${quantityPackages} уп. по ${quantityInUnit} шт.`}</span>
-              </div>
-            ) : (
-               <span>{quantity} {unitReleaseTransform}</span>
-             )}
-            {minimumBalance && !archivedAfterEnded ? <span className={qiCircleClasses(quantity, minimumBalance)} /> : null}
-          </div>
-        ) : null}
+        <div>
+          {type === 'procurementReceipt' && unitReceipt === 'nmp' && unitRelease === 'pce' ? (
+            <div className={styles.quantityContainer}>
+              <span className={styles.quantityLarge}>{`${quantity} ${unitReleaseTransform}`}</span>
+              <span className={styles.quantitySmall}>{`${quantityPackages} уп. по ${quantityInUnit} шт.`}</span>
+            </div>
+          ) : (
+             <span>{quantity} {unitReleaseTransform}</span>
+           )}
+          {minimumBalance && !archivedAfterEnded ? <span className={qiCircleClasses(quantity, minimumBalance)} /> : null}
+        </div>
         <div>
           {minimumBalance && !archivedAfterEnded ? (
             <span className={styles.minimumBalance}>
@@ -84,6 +82,15 @@ const QuantityIndicator = props => {
           ) : null}
         </div>
 			</div>
+		) : typeof trackBalance === 'boolean' ? (
+      <div>
+        {minimumBalance && !archivedAfterEnded ? (
+          <span className={styles.minimumBalance}>
+              Мин: {minimumBalance}
+            {maximumBalance && ` / Макс: ${maximumBalance}`}
+            </span>
+        ) : null}
+      </div>
 		) : (
 			'-'
 		);

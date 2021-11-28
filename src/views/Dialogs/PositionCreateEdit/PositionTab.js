@@ -234,77 +234,73 @@ const PositionTab = props => {
 						</Grid>
 					</Grid>
 
-          {values.trackBalance ? (
-            <>
-              <Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
-                <Grid xs={3} item>
-                  <InputLabel error={Boolean(touched.minimumBalance && errors.minimumBalance)} data-inline>
-                    Минимальный остаток
-                  </InputLabel>
-                </Grid>
-                <Grid xs={9} item>
-                  <Grid alignItems="flex-start" container>
-                    <Field
-                      name="minimumBalance"
-                      placeholder="0"
-                      error={Boolean(touched.minimumBalance && errors.minimumBalance)}
-                      helperText={(touched.minimumBalance && errors.minimumBalance) || ''}
-                      as={TextField}
-                      InputProps={{
-                        inputComponent: NumberFormat,
-                        inputProps: {
-                          allowNegative: false,
-                        },
-                      }}
-                    />
-                    <Tooltip
-                      title={
-                        <div style={{ width: 270 }}>
-                          <Typography variant="body2" paragraph>
-                            Достигнув этого значения вы&nbsp;получите сигнал о&nbsp;необходимости пополнить запасы позиции.
-                          </Typography>
-                          <Typography variant="body2">
-                            При расчете учитывайте время необходимое для закупки (заказ, доставку и&nbsp;тд.), а также&nbsp;интенсивность
-                            расхода позиции.
-                          </Typography>
-                        </div>
-                      }
-                      placement="top"
-                    >
+          <Grid className={stylesGlobal.formLabelControl} wrap="nowrap" alignItems="flex-start" container>
+            <Grid xs={3} item>
+              <InputLabel error={Boolean(touched.minimumBalance && errors.minimumBalance)} data-inline>
+                Минимальный остаток
+              </InputLabel>
+            </Grid>
+            <Grid xs={9} item>
+              <Grid alignItems="flex-start" container>
+                <Field
+                  name="minimumBalance"
+                  placeholder="0"
+                  error={Boolean(touched.minimumBalance && errors.minimumBalance)}
+                  helperText={(touched.minimumBalance && errors.minimumBalance) || ''}
+                  as={TextField}
+                  InputProps={{
+                    inputComponent: NumberFormat,
+                    inputProps: {
+                      allowNegative: false,
+                    },
+                  }}
+                />
+                <Tooltip
+                  title={
+                    <div style={{ width: 270 }}>
+                      <Typography variant="body2" paragraph>
+                        Достигнув этого значения вы&nbsp;получите сигнал о&nbsp;необходимости пополнить запасы позиции.
+                      </Typography>
+                      <Typography variant="body2">
+                        При расчете учитывайте время необходимое для закупки (заказ, доставку и&nbsp;тд.), а также&nbsp;интенсивность
+                        расхода позиции.
+                      </Typography>
+                    </div>
+                  }
+                  placement="top"
+                >
 									<span className={styles.helpIcon}>
 										<FontAwesomeIcon icon={['fal', 'question-circle']} />
 									</span>
-                    </Tooltip>
-                  </Grid>
-                </Grid>
+                </Tooltip>
               </Grid>
+            </Grid>
+          </Grid>
 
-              <Grid wrap="nowrap" alignItems="flex-start" container>
-                <Grid xs={3} item>
-                  <InputLabel error={Boolean(touched.maximumBalance && errors.maximumBalance)} data-inline>
-                    Максимальный остаток
-                  </InputLabel>
-                </Grid>
-                <Grid xs={9} item>
-                  <Grid alignItems="flex-start" container>
-                    <Field
-                      name="maximumBalance"
-                      placeholder="0"
-                      error={Boolean(touched.maximumBalance && errors.maximumBalance)}
-                      helperText={(touched.maximumBalance && errors.maximumBalance) || ''}
-                      as={TextField}
-                      InputProps={{
-                        inputComponent: NumberFormat,
-                        inputProps: {
-                          allowNegative: false,
-                        },
-                      }}
-                    />
-                  </Grid>
-                </Grid>
+          <Grid wrap="nowrap" alignItems="flex-start" container>
+            <Grid xs={3} item>
+              <InputLabel error={Boolean(touched.maximumBalance && errors.maximumBalance)} data-inline>
+                Максимальный остаток
+              </InputLabel>
+            </Grid>
+            <Grid xs={9} item>
+              <Grid alignItems="flex-start" container>
+                <Field
+                  name="maximumBalance"
+                  placeholder="0"
+                  error={Boolean(touched.maximumBalance && errors.maximumBalance)}
+                  helperText={(touched.maximumBalance && errors.maximumBalance) || ''}
+                  as={TextField}
+                  InputProps={{
+                    inputComponent: NumberFormat,
+                    inputProps: {
+                      allowNegative: false,
+                    },
+                  }}
+                />
               </Grid>
-            </>
-          ) : null}
+            </Grid>
+          </Grid>
 
 					<Grid wrap="nowrap" alignItems="flex-start" container>
 						<Grid xs={3} item>
@@ -315,12 +311,6 @@ const PositionTab = props => {
                   type="checkbox"
                   name="trackBalance"
                   Label={{ label: 'Отслеживать остаток' }}
-                  onChange={({ target: { checked } }) => {
-                    setFieldValue('trackBalance', checked);
-
-                    setFieldValue('minimumBalance', checked ? '' : 1);
-                    setFieldValue('maximumBalance', checked ? '' : 1);
-                  }}
                   as={CheckboxWithLabel}
                 />
               </Grid>

@@ -12,7 +12,13 @@ const positionSchema = (depopulate = false) => {
 		unitRelease: Yup.string()
 			.oneOf(['pce', 'nmp'])
 			.required(),
+    trackBalance: Yup.bool().required(),
 		minimumBalance: Yup.number()
+			.nullable(true)
+			.transform(currentValue => (isNaN(currentValue) ? null : currentValue))
+			.min(1)
+			.required(),
+    maximumBalance: Yup.number()
 			.nullable(true)
 			.transform(currentValue => (isNaN(currentValue) ? null : currentValue))
 			.min(1)

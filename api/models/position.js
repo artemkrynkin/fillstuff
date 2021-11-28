@@ -85,8 +85,18 @@ const Position = new Schema({
 		enum: unitTypes,
 		required: [true, i18n.__('Обязательное поле')],
 	},
+  // Отслеживать остаток позиции
+  trackBalance: {
+    type: Boolean,
+    default: true,
+  },
 	// Минимальный остаток
 	minimumBalance: {
+		type: Number,
+		min: [1, 'Не может быть меньше 1'],
+	},
+	// Максимальный остаток
+	maximumBalance: {
 		type: Number,
 		min: [1, 'Не может быть меньше 1'],
 	},

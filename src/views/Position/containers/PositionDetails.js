@@ -55,7 +55,12 @@ const PositionDetails = props => {
 				<DefinitionListItem term="Единица поступления" value={unitTypeTransform(position.unitReceipt)} />
 				<DefinitionListItem term="Единица отпуска" value={unitTypeTransform(position.unitRelease)} />
 				<DefinitionListItem term="Вид реализации" value={position.isFree ? 'Бесплатный' : 'Платный'} />
-				<DefinitionListItem term="Минимальный остаток" value={position.minimumBalance} />
+        {position.trackBalance ? (
+          <>
+            <DefinitionListItem term="Минимальный остаток" value={position.minimumBalance} />
+            <DefinitionListItem term="Максимальный остаток" value={position.maximumBalance} />
+          </>
+        ) : null}
 			</DefinitionList>
 
 			{position.childPosition || position.parentPosition ? (

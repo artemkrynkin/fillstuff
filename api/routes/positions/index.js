@@ -166,7 +166,9 @@ router.post(
 
 		if (existIsNotSame('name', position, positionEditable)) position.name = positionEditable.name;
 		if (existIsNotSame('printDestination', position, positionEditable)) position.printDestination = positionEditable.printDestination;
+		if (existIsNotSame('trackBalance', position, positionEditable)) position.trackBalance = positionEditable.trackBalance;
 		if (existIsNotSame('minimumBalance', position, positionEditable)) position.minimumBalance = positionEditable.minimumBalance;
+		if (existIsNotSame('maximumBalance', position, positionEditable)) position.maximumBalance = positionEditable.maximumBalance;
 		if (existIsNotSame('characteristics', position, positionEditable)) position.characteristics = positionEditable.characteristics;
 		if (existIsNotSame('shops', position, positionEditable)) position.shops = positionEditable.shops;
 

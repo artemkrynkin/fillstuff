@@ -24,7 +24,7 @@ const compareQuantity = (a, b) => {
 };
 
 const QuantityIndicator = props => {
-	const { type, unitReceipt, unitRelease, minimumBalance, archivedAfterEnded, receipts, positions } = props;
+	const { type, unitReceipt, unitRelease, trackBalance, minimumBalance, maximumBalance, archivedAfterEnded, receipts, positions } = props;
 
 	let quantity = 0;
 	let quantityPackages = 0;
@@ -60,22 +60,29 @@ const QuantityIndicator = props => {
 	if (type === 'position' || type === 'receipt' || type === 'procurementReceipt') {
 		const unitReleaseTransform = unitReceipt === 'pce' ? 'шт.' : unitRelease === 'pce' ? 'шт.' : 'уп.';
 
-		return receipts.length ? (
-			<div className={styles.container}>
-				{type === 'procurementReceipt' && unitReceipt === 'nmp' && unitRelease === 'pce' ? (
-					<div className={styles.quantityContainer}>
-						<span className={styles.quantityLarge}>{`${quantity} ${unitReleaseTransform}`}</span>
-						<span className={styles.quantitySmall}>{`${quantityPackages} уп. по ${quantityInUnit} шт.`}</span>
-					</div>
-				) : (
-					`${quantity} ${unitReleaseTransform}`
-				)}
-				{minimumBalance && !archivedAfterEnded ? (
-					<span className={styles.minimumBalance} style={{ marginLeft: 5 }}>
-						{`/ ${minimumBalance}`}
-					</span>
-				) : null}
-				{minimumBalance && !archivedAfterEnded ? <span className={qiCircleClasses(quantity, minimumBalance)} /> : null}
+		return receipts.length || !trackBalance ? (
+			<div>
+        {trackBalance ? (
+          <div>
+            {type === 'procurementReceipt' && unitReceipt === 'nmp' && unitRelease === 'pce' ? (
+              <div className={styles.quantityContainer}>
+                <span className={styles.quantityLarge}>{`${quantity} ${unitReleaseTransform}`}</span>
+                <span className={styles.quantitySmall}>{`${quantityPackages} уп. по ${quantityInUnit} шт.`}</span>
+              </div>
+            ) : (
+               <span>{quantity} {unitReleaseTransform}</span>
+             )}
+            {minimumBalance && !archivedAfterEnded ? <span className={qiCircleClasses(quantity, minimumBalance)} /> : null}
+          </div>
+        ) : null}
+        <div>
+          {minimumBalance && !archivedAfterEnded ? (
+            <span className={styles.minimumBalance}>
+              Мин: {minimumBalance}
+              {maximumBalance && ` / Макс: ${maximumBalance}`}
+            </span>
+          ) : null}
+        </div>
 			</div>
 		) : (
 			'-'

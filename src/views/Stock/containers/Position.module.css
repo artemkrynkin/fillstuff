@@ -46,3 +46,9 @@
   background-color: var(--c-hex-brightness-5);
   color: var(--c-hex-blueGrey-600);
 }
+
+.balanceNotTrack {
+  color: var(--c-hex-blueGrey-300);
+  font-size: 12px;
+  font-weight: 600;
+}

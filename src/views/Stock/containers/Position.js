@@ -65,18 +65,18 @@ const Position = props => {
 				</div>
 			</TableCell>
 			<TableCell />
-			<TableCell align="right" width={240}>
-				{position.receipts.length ? (
-					<QuantityIndicator
-						type="position"
-						unitReceipt={position.unitReceipt}
-						unitRelease={position.unitRelease}
-						minimumBalance={position.minimumBalance}
-						archivedAfterEnded={position.archivedAfterEnded}
-						receipts={position.receipts.map(receipt => ({ ...receipt.current }))}
-					/>
-				) : null}
-			</TableCell>
+      <TableCell align="right" width={240}>
+        <QuantityIndicator
+          type="position"
+          unitReceipt={position.unitReceipt}
+          unitRelease={position.unitRelease}
+          trackBalance={position.trackBalance}
+          minimumBalance={position.minimumBalance}
+          maximumBalance={position.maximumBalance}
+          archivedAfterEnded={position.archivedAfterEnded}
+          receipts={position.receipts.map(receipt => ({ ...receipt.current }))}
+        />
+      </TableCell>
 			{position.receipts.length ? (
 				<TableCell align="right" width={140}>
 					<NumberFormat
@@ -93,16 +93,18 @@ const Position = props => {
 				</TableCell>
 			) : null}
 			{!position.receipts.length ? (
-				<TableCell align="left" colSpan={2} width={280}>
-					<ButtonBase
-						className={styles.createReceipt}
-						onClick={event => {
-							event.stopPropagation();
-							onOpenDialogPosition('dialogReceiptConfirmCreate', 'position', position);
-						}}
-					>
-						Создать поступление
-					</ButtonBase>
+				<TableCell align="center" colSpan={2} width={280}>
+          {position.trackBalance ? (
+            <ButtonBase
+              className={styles.createReceipt}
+              onClick={event => {
+                event.stopPropagation();
+                onOpenDialogPosition('dialogReceiptConfirmCreate', 'position', position);
+              }}
+            >
+              Создать поступление
+            </ButtonBase>
+          ) : <span className={styles.balanceNotTrack}>Поступления не отслеживаются</span>}
 				</TableCell>
 			) : null}
 			<TableCell align="center" width={48} padding="none">

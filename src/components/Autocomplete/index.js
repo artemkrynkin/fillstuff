@@ -25,7 +25,7 @@ const hexToRgb = color => ColorConvert.hex.rgb(color);
 const styles = theme => ({
 	/* Styles applied to the root element. */
 	root: {
-		'&$focused $clearIndicatorDirty': {
+		'&$focusVisible $clearIndicatorDirty': {
 			visibility: 'visible',
 		},
 		/* Avoid double tap issue on iOS */
@@ -40,7 +40,7 @@ const styles = theme => ({
 		width: '100%',
 	},
 	/* Pseudo-class applied to the root element if focused. */
-	focused: {},
+  focusVisible: {},
 	/* Styles applied to the tag elements, e.g. the chips. */
 	tag: {
 		margin: 3,
@@ -388,7 +388,7 @@ const Autocomplete = forwardRef(function Autocomplete(props, ref) {
 				className={ClassNames(
 					classes.root,
 					{
-						[classes.focused]: focused,
+						[classes.focusVisible]: focused,
 						[classes.fullWidth]: fullWidth,
 						[classes.hasClearIcon]: hasClearIcon,
 						[classes.hasPopupIcon]: hasPopupIcon,

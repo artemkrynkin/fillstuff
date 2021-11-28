@@ -210,7 +210,7 @@ export const MuiTheme = createTheme({
 				fontSize: 13,
 				fontWeight: 500,
 				lineHeight: 1.3,
-				'&$focused': {
+				'&$focusVisible': {
 					color: null,
 				},
 				'&$disabled': {
@@ -456,7 +456,7 @@ export const MuiTheme = createTheme({
 				lineHeight: 1.3,
 				minHeight: 38,
 				transition: 'background-color 150ms ease-out, box-shadow 150ms ease-out',
-				'[readonly] > &, [readonly] > &$focused:not($error)': {
+				'[readonly] > &, [readonly] > &$focusVisible:not($error)': {
 					backgroundColor: 'transparent',
 					boxShadow: 'none',
 					'& $input': {
@@ -469,7 +469,7 @@ export const MuiTheme = createTheme({
 					backgroundColor: colorTheme.brightness['3'],
 					boxShadow: 'none',
 				},
-				'&$focused:not($error)': {
+				'&$focusVisible:not($error)': {
 					backgroundColor: 'white',
 					boxShadow: `0 0 0 2px ${colorTheme.teal['300']} inset`,
 				},

@@ -31,7 +31,7 @@ export const AccordionSummary = withStyles({
 		'&$expanded': {
 			minHeight: 'initial',
 		},
-		'&$focused': {
+		'&$focusVisible': {
 			backgroundColor: 'transparent',
 		},
 		'&$disabled': {
@@ -69,7 +69,7 @@ export const AccordionSummary = withStyles({
 		},
 	},
 	expanded: {},
-	focused: {},
+  focusVisible: {},
 	disabled: {},
 })(MuiAccordionSummary);
 

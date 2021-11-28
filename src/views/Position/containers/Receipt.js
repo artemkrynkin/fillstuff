@@ -75,7 +75,7 @@ const Receipt = props => {
 			</TableCell>
 			<TableCell align="right" width={200}>
 				<div className={styles.quantity}>
-					<Grid alignItems="center" justify="flex-end" container>
+					<Grid alignItems="center" justifyContent="flex-end" container>
 						<QuantityIndicator
 							type="receipt"
 							unitReceipt={position.unitReceipt}
@@ -102,7 +102,7 @@ const Receipt = props => {
 			</TableCell>
 			<TableCell align="right" width={140}>
 				{!receipt.isFree ? (
-					<Grid alignItems="center" justify="flex-end" container>
+					<Grid alignItems="center" justifyContent="flex-end" container>
 						<Tooltip
 							title={
 								<DefinitionList style={{ width: 240 }}>

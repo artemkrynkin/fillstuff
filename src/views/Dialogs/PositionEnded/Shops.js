@@ -102,7 +102,7 @@ const Shops = props => {
 					</Table>
 
 					{otherShops.length > showShops ? (
-						<Grid className={styles.showShops} justify="center" container>
+						<Grid className={styles.showShops} justifyContent="center" container>
 							<Button onClick={() => onShowShops(otherShops.length)} variant="outlined" size="small">
 								Показать все магазины
 							</Button>

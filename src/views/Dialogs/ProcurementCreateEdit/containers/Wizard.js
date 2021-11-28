@@ -96,7 +96,7 @@ function WizardContent({
 		<Form>
 			{cloneElement(step, { formikProps })}
 			<DialogActions>
-				<Grid justify="space-between" container>
+				<Grid justifyContent="space-between" container>
 					<Grid item>
 						{activeStep === 0 ? (
 							<Button onClick={onCloseFuseDialog} variant="outlined" size="large">

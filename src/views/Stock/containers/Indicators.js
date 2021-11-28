@@ -15,13 +15,13 @@ const Indicators = props => {
 		<CardPaper header={false} style={{ marginBottom: MuiTheme.spacing(2) }}>
 			<Grid container>
 				<Grid item xs={6}>
-					<Grid alignItems="flex-end" justify="flex-start" container>
+					<Grid alignItems="flex-end" justifyContent="flex-start" container>
 						<div className={styles.title}>Количество позиций:</div>
 						<div className={styles.content}>{currentStudio.stock.numberPositions}</div>
 					</Grid>
 				</Grid>
 				<Grid item xs={6}>
-					<Grid alignItems="flex-end" justify="flex-end" container>
+					<Grid alignItems="flex-end" justifyContent="flex-end" container>
 						<div className={styles.title}>Стоимость склада:</div>
 						<div className={styles.content}>
 							<Money value={currentStudio.stock.stockPrice} />

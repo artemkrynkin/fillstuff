@@ -24,7 +24,7 @@
     ],
     "ios": {
       "bundleIdentifier": "keeberink.fillstuff",
-      "buildNumber": "5"
+      "buildNumber": "6"
     },
     "android": {
       "package": "keeberink.fillstuff",

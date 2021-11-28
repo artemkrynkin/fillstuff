@@ -2,7 +2,7 @@ import React from 'react';
 import ColorConvert from 'color-convert';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createTheme } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Fade from '@material-ui/core/Fade';
 import IconButton from '@material-ui/core/IconButton';
@@ -11,7 +11,7 @@ import colorTheme from 'shared/colorTheme';
 
 const hexToRgb = color => ColorConvert.hex.rgb(color);
 
-export const MuiTheme = createMuiTheme({
+export const MuiTheme = createTheme({
 	overrides: {
 		MuiContainer: {
 			root: {

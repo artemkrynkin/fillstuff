@@ -267,7 +267,7 @@ const Autocomplete = forwardRef(function Autocomplete(props, ref) {
 		ListboxProps,
 		loading = false,
 		loadingText = (
-			<Grid justify="center" container>
+			<Grid justifyContent="center" container>
 				<CircularProgress size={25} />
 			</Grid>
 		),

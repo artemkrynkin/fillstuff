@@ -5,7 +5,7 @@ debug('logging with debug enabled!');
 import express from 'express';
 import compression from 'compression';
 import http from 'http';
-import socketIo from 'socket.io';
+import { Server } from 'socket.io';
 
 import csrf from 'shared/middlewares/csrf';
 import errorHandler from 'shared/middlewares/error-handler';
@@ -20,13 +20,20 @@ import { isAuthedResolverSocket } from 'api/utils/permissions';
 import './cron';
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
+const IS_PROD = process.env.NODE_ENV === 'production';
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server, {
+const io = new Server(server, {
 	path: '/websocket',
 	cookie: 'websocket:session',
 	pingTimeout: 30000,
+  cors: {
+    origin: !IS_PROD ? "http://localhost:3000" : 'https://fillstuff.keeberink.com',
+    methods: ["GET", "POST"],
+    allowedHeaders: ["my-custom-header"],
+    credentials: true
+  }
 });
 
 // Trust the now proxy
@@ -35,8 +42,8 @@ app.use(toobusy);
 
 // Security middleware
 addSecurityMiddleware(app, { enableNonce: false, enableCSP: false });
-if (process.env.NODE_ENV === 'production') {
-	app.use(csrf);
+if (IS_PROD) {
+  app.use(csrf);
 }
 
 // All other middlewares
@@ -55,7 +62,7 @@ router(app);
 
 // Redirect a request to the root path to the main app
 app.use('/', (req, res) => {
-	res.redirect(process.env.NODE_ENV === 'production' ? 'https://fillstuff.keeberink.com' : 'http://localhost:3000');
+	res.redirect(IS_PROD ? 'https://fillstuff.keeberink.com' : 'http://localhost:3000');
 });
 
 app.use(errorHandler);

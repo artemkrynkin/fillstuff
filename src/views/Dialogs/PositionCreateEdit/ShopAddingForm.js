@@ -155,7 +155,7 @@ const ShopAddingForm = props => {
 					/>
 				</Grid>
 				<Grid item>
-					<Grid justify="flex-end" container>
+					<Grid justifyContent="flex-end" container>
 						<Button
 							onClick={() => onToggleVisibleShopAddingForm(false)}
 							disabled={isSubmitting}

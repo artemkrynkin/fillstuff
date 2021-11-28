@@ -200,7 +200,7 @@ const FormChangeSellingPrice = props => {
 							</Grid>
 						</Grid>
 
-						<Grid className={styles.footer} alignItems="center" justify="center" spacing={2} container>
+						<Grid className={styles.footer} alignItems="center" justifyContent="center" spacing={2} container>
 							<Grid xs={5} item>
 								<Button onClick={onClose} disabled={isSubmitting} variant="contained" size="small" fullWidth>
 									Отмена

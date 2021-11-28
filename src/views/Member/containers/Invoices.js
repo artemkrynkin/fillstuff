@@ -137,7 +137,7 @@ const Invoices = props => {
 							</TableBody>
 						</Table>
 						{invoicesData.data.length > showInvoices ? (
-							<Grid justify="center" container>
+							<Grid justifyContent="center" container>
 								<Button onClick={() => onShowInvoices(invoicesData.data.length)} variant="outlined" style={{ marginTop: 25 }}>
 									Показать все счета
 								</Button>

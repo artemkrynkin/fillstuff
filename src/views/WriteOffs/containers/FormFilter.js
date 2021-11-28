@@ -95,7 +95,7 @@ const DropdownFooter = props => {
 	const { onResetHandler, isSubmitting, disabledSubmit } = props;
 
 	return (
-		<Grid className={styles.dropdownFooter} alignItems="center" justify="center" container>
+		<Grid className={styles.dropdownFooter} alignItems="center" justifyContent="center" container>
 			{typeof onResetHandler === 'function' ? (
 				<Grid className={styles.dropdownFooterColumn} item>
 					<Button onClick={onResetHandler} disabled={isSubmitting} size="small" variant="outlined">

@@ -45,7 +45,7 @@ const Markup = props => {
 
 	return (
 		<Grid className={styles.container} xs={8} item>
-			<Grid className={styles.containerInner} justify="space-between" direction="column" container>
+			<Grid className={styles.containerInner} justifyContent="space-between" direction="column" container>
 				<div className={styles.markup}>
 					<div className={styles.markupScroll}>
 						<div

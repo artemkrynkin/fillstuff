@@ -86,7 +86,7 @@ function ProcurementOption({ classes, onUpdateSteps, formikProps: { values, isSu
 					</FormHelperText>
 				)}
 			</ErrorMessage>
-			<Grid className={classes.options} justify="space-evenly" container>
+			<Grid className={classes.options} justifyContent="space-evenly" container>
 				{procurementStatusList.map(status => (
 					<CheckboxIcon
 						key={status}

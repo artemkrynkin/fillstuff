@@ -73,7 +73,7 @@ const Receipts = props => {
 						</TableBody>
 					</Table>
 					{receiptsData.data.length > showReceipts ? (
-						<Grid justify="center" container>
+						<Grid justifyContent="center" container>
 							<Button onClick={() => onShowReceipts(receiptsData.data.length)} variant="outlined" style={{ marginTop: 25 }}>
 								Показать все поступления
 							</Button>

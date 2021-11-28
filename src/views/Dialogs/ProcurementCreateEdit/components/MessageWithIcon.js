@@ -26,7 +26,7 @@ const styles = () => ({
 function MessageWithIcon({ classes, icon, message }) {
 	return (
 		<div className={classes.headerInfo}>
-			<Grid justify="center" alignItems="center" container>
+			<Grid justifyContent="center" alignItems="center" container>
 				{icon ? (
 					<FontAwesomeIcon
 						className={classes.headerInfoIcon}

@@ -89,7 +89,7 @@ class DialogInvoicePaymentCreate extends Component {
 										</Typography>
 									</Grid>
 									<Grid item>
-										<Grid alignItems="flex-end" justify="flex-start" direction="column" container>
+										<Grid alignItems="flex-end" justifyContent="flex-start" direction="column" container>
 											<div className={styles.indicatorsTitle}>
 												<Money value={selectedInvoice.amount - selectedInvoice.paymentAmountDue} />
 											</div>

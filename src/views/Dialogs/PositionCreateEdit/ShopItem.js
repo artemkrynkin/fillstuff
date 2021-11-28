@@ -120,7 +120,7 @@ const ShopItem = props => {
 					)}
 				</Grid>
 				<Grid item>
-					<Grid className={styles.actions} justify="flex-end" container>
+					<Grid className={styles.actions} justifyContent="flex-end" container>
 						{!toggleVisibleForm ? (
 							<>
 								{!shop.numberReceipts ? (

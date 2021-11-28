@@ -50,7 +50,7 @@ const Invoice = props => {
 							<UserSummary src={invoice.member.user.picture} title={invoice.member.user.name} />
 						</Grid>
 						<Grid xs={6} item>
-							<Grid className={styles.indicators} direction="column" justify="center" container>
+							<Grid className={styles.indicators} direction="column" justifyContent="center" container>
 								{invoice.status !== 'paid' ? (
 									<div className={styles.indicatorsTitle}>
 										<Tooltip title="Погасить счет" placement="top">
@@ -76,8 +76,8 @@ const Invoice = props => {
 								{invoice.status === 'unpaid' ? (
 									<div className={styles.indicatorsSubtitle}>К оплате</div>
 								) : (
-									<Grid className={styles.indicatorsDetails} justify="flex-end" container>
-										<Grid justify="flex-end" container>
+									<Grid className={styles.indicatorsDetails} justifyContent="flex-end" container>
+										<Grid justifyContent="flex-end" container>
 											{invoice.status === 'paid' ? (
 												<div style={{ marginRight: 30 }}>
 													<div className={styles.indicatorsSubtitle2}>{moment(invoice.datePayment).format('DD.MM.YYYY')}</div>

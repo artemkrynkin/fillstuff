@@ -40,7 +40,7 @@ const View = props => {
 					</Typography>
 				}
 				actions={
-					<Grid justify="center" alignItems="center" container>
+					<Grid justifyContent="center" alignItems="center" container>
 						<Button onClick={() => onOpenDialogByName('dialogProcurementCreate')} variant="contained" color="primary">
 							Оформить закупку
 						</Button>

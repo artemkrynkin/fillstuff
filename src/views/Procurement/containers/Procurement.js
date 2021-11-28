@@ -40,7 +40,7 @@ const Procurement = props => {
 						<div className={styles.indicatorsTitle}>
 							<Money value={procurement.totalPrice} />
 						</div>
-						<Grid className={styles.indicatorsDetails} justify="flex-end" container>
+						<Grid className={styles.indicatorsDetails} justifyContent="flex-end" container>
 							<div>
 								<div className={styles.indicatorsSubtitle2}>
 									<Money value={procurement.costDelivery} />

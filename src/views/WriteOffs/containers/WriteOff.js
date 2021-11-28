@@ -108,7 +108,7 @@ const WriteOff = props => {
 				)}
 			</TableCell>
 			<TableCell align="right" width={160}>
-				<Grid alignItems="center" justify="flex-end" container>
+				<Grid alignItems="center" justifyContent="flex-end" container>
 					{!isCurrentHour ? createdAtMoment.format('HH:mm') : !isNow ? createdAtMoment.fromNow() : 'только что'}
 				</Grid>
 			</TableCell>

@@ -37,7 +37,7 @@ const Notifications = props => {
 			className={ClassNames(styles.container, { visibleAllNotifications: visibleAllNotifications })}
 			style={visibleAllNotifications ? { height } : {}}
 		>
-			<Grid className={styles.stickyHeader} justify="space-between" alignItems="center" container>
+			<Grid className={styles.stickyHeader} justifyContent="space-between" alignItems="center" container>
 				<Grid item>
 					<Typography variant="h5">События</Typography>
 				</Grid>

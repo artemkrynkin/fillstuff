@@ -77,7 +77,7 @@ const Settings = props => {
 			<Grid className={styles.containerInner} wrap="nowrap" direction="column" container>
 				<div className={styles.formFields}>
 					{type === 'position' ? (
-						<Grid className={printDestinationContainer} justify="space-around" container>
+						<Grid className={printDestinationContainer} justifyContent="space-around" container>
 							{renderOptions.printDestination.map(destination => (
 								<CheckboxIcon
 									key={destination}
@@ -164,7 +164,7 @@ const Settings = props => {
 								valueLabelDisplay="auto"
 								disabled={isSubmitting}
 							/>
-							<Grid justify="space-between" container>
+							<Grid justifyContent="space-between" container>
 								<FormLabel>{renderOptions.stickerSize[0]} см</FormLabel>
 								<FormLabel>{renderOptions.stickerSize[renderOptions.stickerSize.length - 1]} см</FormLabel>
 							</Grid>
@@ -184,7 +184,7 @@ const Settings = props => {
 									valueLabelDisplay="auto"
 									disabled={isSubmitting}
 								/>
-								<Grid justify="space-between" container>
+								<Grid justifyContent="space-between" container>
 									<FormLabel>{renderOptions.stickerWidth[0]} см</FormLabel>
 									<FormLabel>{renderOptions.stickerWidth[renderOptions.stickerWidth.length - 1]} см</FormLabel>
 								</Grid>
@@ -205,7 +205,7 @@ const Settings = props => {
 									valueLabelDisplay="auto"
 									disabled={isSubmitting || (values.stickerOrientation === 'portrait' && values.stickerSize < 4)}
 								/>
-								<Grid justify="space-between" container>
+								<Grid justifyContent="space-between" container>
 									<FormLabel>{renderOptions.titleSize[0]} pt</FormLabel>
 									<FormLabel>{titleSizeMaxMemoized} pt</FormLabel>
 								</Grid>

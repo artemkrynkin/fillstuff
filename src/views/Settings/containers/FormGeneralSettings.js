@@ -121,7 +121,7 @@ const FormGeneralSettings = props => {
 				</Grid>
 			</Grid>
 			{/*{checkPermissions(currentUserRole, ['studio.full_control']) ? (*/}
-			<Grid className={stylesGlobal.gridFormFooter} justify="flex-end" style={{ marginTop: 20 }} container>
+			<Grid className={stylesGlobal.gridFormFooter} justifyContent="flex-end" style={{ marginTop: 20 }} container>
 				<Button type="submit" disabled={isSubmitting} variant="contained" color="primary">
 					{isSubmitting ? <CircularProgress size={20} style={{ position: 'absolute' }} /> : null}
 					<span className="loading-button-label" style={{ opacity: Number(!isSubmitting) }}>

@@ -64,7 +64,7 @@ class DialogShopCreateEdit extends Component {
 		if (selectedShop) initialValues = { ...initialValues, ...selectedShop };
 
 		return (
-			<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={this.onExitedDialog}>
+			<Dialog open={dialogOpen} onClose={onCloseDialog} TransitionProps={{ onExited: this.onExitedDialog }}>
 				<DialogTitle onClose={onCloseDialog} theme="white">
 					{type === 'create' ? 'Создание магазина' : 'Редактирование магазина'}
 				</DialogTitle>

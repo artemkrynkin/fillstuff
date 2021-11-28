@@ -44,7 +44,15 @@ function MemberInvitation(props) {
 	};
 
 	return (
-		<Dialog open={dialogOpen} onEnter={onEnterDialog} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth="sm">
+		<Dialog
+      open={dialogOpen}
+      TransitionProps={{
+        onEnter: onEnterDialog,
+        onExited: onExitedDialog
+      }}
+      onClose={onCloseDialog}
+      maxWidth="sm"
+    >
 			<DialogTitle onClose={onCloseDialog} theme="noTheme">
 				QR-код для приглашения участника
 			</DialogTitle>

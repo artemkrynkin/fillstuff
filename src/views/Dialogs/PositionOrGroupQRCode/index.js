@@ -25,7 +25,7 @@ class DialogPositionOrGroupQRCode extends Component {
 		if (!selectedPositionOrGroup) return null;
 
 		return (
-			<DialogSticky open={dialogOpen} onClose={onCloseDialog} onExited={this.onExitedDialog} maxWidth="xl" scroll="body" stickyActions>
+			<DialogSticky open={dialogOpen} onClose={onCloseDialog} TransitionProps={{ onExited: this.onExitedDialog }} maxWidth="xl" scroll="body" stickyActions>
 				<DialogTitle onClose={onCloseDialog} theme="primary">
 					Печать QR-кода
 				</DialogTitle>

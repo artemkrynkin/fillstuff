@@ -22,7 +22,7 @@ const ReceiptConfirmCreate = props => {
 	};
 
 	return (
-		<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth="sm">
+		<Dialog open={dialogOpen} onClose={onCloseDialog} TransitionProps={{ onExited: onExitedDialog }} maxWidth="sm">
 			<DialogTitle onClose={onCloseDialog} theme="noTheme">
 				Внимание!
 			</DialogTitle>

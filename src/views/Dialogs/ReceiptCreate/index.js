@@ -125,7 +125,15 @@ class DialogReceiptCreate extends Component {
 		};
 
 		return (
-			<Dialog open={dialogOpen} onEnter={this.onEnterDialog} onClose={onCloseDialog} onExited={this.onExitedDialog} maxWidth="lg">
+			<Dialog
+        open={dialogOpen}
+        TransitionProps={{
+          onEnter: this.onEnterDialog,
+          onExited: this.onExitedDialog
+        }}
+        onClose={onCloseDialog}
+        maxWidth="lg"
+      >
 				<DialogTitle onClose={onCloseDialog} theme="white">
 					Создание поступления
 				</DialogTitle>

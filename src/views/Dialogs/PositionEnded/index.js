@@ -56,9 +56,11 @@ class DialogPositionEnded extends Component {
 		return (
 			<DialogSticky
 				open={dialogOpen}
-				onEnter={this.onEnterDialog}
+        TransitionProps={{
+          onEnter: this.onEnterDialog,
+          onExited: this.onExitedDialog
+        }}
 				onClose={onCloseDialog}
-				onExited={this.onExitedDialog}
 				maxWidth="xl"
 				scroll="body"
 				stickyTitle

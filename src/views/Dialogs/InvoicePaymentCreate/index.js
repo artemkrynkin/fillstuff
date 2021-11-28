@@ -67,7 +67,7 @@ class DialogInvoicePaymentCreate extends Component {
 		if (!selectedInvoice) return null;
 
 		return (
-			<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} scroll="body">
+			<Dialog open={dialogOpen} onClose={onCloseDialog} TransitionProps={{ onExited: onExitedDialog }} scroll="body">
 				<DialogTitle onClose={onCloseDialog} theme="noTheme" titlePositionCenter>
 					Оплата счета
 				</DialogTitle>

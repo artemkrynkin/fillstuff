@@ -49,9 +49,11 @@ function DialogProcurementCreateEdit({
 			<DialogStickyFR
 				ref={dialogRef}
 				open={dialogOpen}
-				onEnter={onEnterDialog}
+        TransitionProps={{
+          onEnter: onEnterDialog,
+          onExited: onExitedDialog
+        }}
 				onClose={onCloseFuseDialog}
-				onExited={onExitedDialog}
 				maxWidth="lg"
 				scroll="body"
 				stickyAnyone={[

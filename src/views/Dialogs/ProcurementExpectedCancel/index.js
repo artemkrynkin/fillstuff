@@ -40,7 +40,7 @@ const DialogProcurementExpectedCancel = props => {
 	};
 
 	return (
-		<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog}>
+		<Dialog open={dialogOpen} onClose={onCloseDialog} TransitionProps={{ onExited: onExitedDialog }}>
 			<DialogTitle onClose={onCloseDialog} theme="noTheme">
 				Отмена доставки
 			</DialogTitle>

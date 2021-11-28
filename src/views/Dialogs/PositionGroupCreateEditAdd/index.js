@@ -108,7 +108,7 @@ class DialogPositionGroupCreateEditAdd extends Component {
 		if (type === 'add') initialValues.positions = [];
 
 		return (
-			<DialogSticky open={dialogOpen} onClose={onCloseDialog} onExited={this.onExitedDialog} scroll="body" stickyActions>
+			<DialogSticky open={dialogOpen} onClose={onCloseDialog} TransitionProps={{ onExited: this.onExitedDialog }} scroll="body" stickyActions>
 				<DialogTitle onClose={onCloseDialog}>
 					{type === 'create' ? 'Создание группы' : type === 'edit' ? 'Редактирование группы' : 'Добавление позиций в группу'}
 				</DialogTitle>

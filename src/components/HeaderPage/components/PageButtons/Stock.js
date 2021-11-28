@@ -18,7 +18,7 @@ const Stock = () => {
 	const [dialogPositionGroupCreate, setDialogPositionGroupCreate] = useState(false);
 	const [dropdownActions, setDropdownActions] = useState(false);
 
-	const onToggleDropdownActions = value => setDropdownActions(value === null || value === undefined ? prevValue => !prevValue : value);
+	const onToggleDropdownActions = value => setDropdownActions(Boolean(value === null || value === undefined ? prevValue => !prevValue : value));
 
 	const onOpenDialogPositionCreate = () => setDialogPositionCreate(true);
 

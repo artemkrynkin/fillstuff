@@ -14,7 +14,7 @@ export const DialogSticky = props => {
 	const dialogRef = useRef(null);
 
 	const onEnterDialog = element => {
-		const { onEnter } = remainingProps;
+		const { onEnter } = remainingProps.TransitionProps;
 
 		if (stickyTitle) observeActions(element, stylesDialogTitle.title, 'top');
 		if (stickyActions) observeActions(element, 'MuiDialogActions-root', 'bottom');
@@ -33,7 +33,15 @@ export const DialogSticky = props => {
 	});
 
 	return (
-		<MuiDialog ref={dialogRef} className={classes} transitionDuration={200} {...remainingProps} onEnter={onEnterDialog}>
+		<MuiDialog
+      ref={dialogRef}
+      className={classes}
+      transitionDuration={200}
+      {...remainingProps}
+      TransitionProps={{
+        onEnter: onEnterDialog,
+      }}
+    >
 			{stickyTitle ? <div className="sentinel-top" /> : null}
 			{children}
 			{stickyActions ? <div className="sentinel-bottom" /> : null}

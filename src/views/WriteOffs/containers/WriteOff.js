@@ -32,7 +32,7 @@ const WriteOff = props => {
 		.isBefore(writeOff.createdAt);
 
 	const positionBadges = (badges = []) => {
-		if (writeOff.canceled) badges.push('archived');
+		if (writeOff.canceled) badges.push('canceled');
 
 		return badges;
 	};

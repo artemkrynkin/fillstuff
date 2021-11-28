@@ -62,7 +62,15 @@ class DialogPositionCreateEdit extends Component {
 		if (type === 'edit' && !selectedPosition) return null;
 
 		return (
-			<Dialog open={dialogOpen} onEnter={this.onEnterDialog} onClose={onCloseDialog} onExited={this.onExitedDialog} maxWidth="lg">
+			<Dialog
+        open={dialogOpen}
+        TransitionProps={{
+          onEnter: this.onEnterDialog,
+          onExited: this.onExitedDialog
+        }}
+        onClose={onCloseDialog}
+        maxWidth="lg"
+      >
 				<DialogTitle onClose={onCloseDialog} theme="noTheme">
 					{dialogTitle(type)}
 				</DialogTitle>

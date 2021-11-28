@@ -49,7 +49,7 @@ const DialogPositionRemoveFromGroup = props => {
 	};
 
 	return (
-		<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog}>
+		<Dialog open={dialogOpen} onClose={onCloseDialog} TransitionProps={{ onExited: onExitedDialog }}>
 			<DialogTitle onClose={onCloseDialog} theme="noTheme">
 				Открепление позиции от группы
 			</DialogTitle>

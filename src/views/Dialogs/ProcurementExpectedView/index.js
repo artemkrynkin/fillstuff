@@ -55,9 +55,11 @@ const ProcurementExpectedView = props => {
 	return (
 		<DialogSticky
 			open={dialogOpen}
-			onEnter={onEnterDialog}
+      TransitionProps={{
+        onEnter: onEnterDialog,
+        onExited: onExitedDialog
+      }}
 			onClose={onCloseDialog}
-			onExited={onExitedDialog}
 			maxWidth="md"
 			scroll="body"
 			stickyTitle

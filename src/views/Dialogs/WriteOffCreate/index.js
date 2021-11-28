@@ -62,7 +62,7 @@ class DialogWriteOffCreate extends Component {
 		if (!selectedPosition) return null;
 
 		return (
-			<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth="md" scroll="body">
+			<Dialog open={dialogOpen} onClose={onCloseDialog} TransitionProps={{ onExited: onExitedDialog }} maxWidth="md" scroll="body">
 				<DialogTitle onClose={onCloseDialog} theme="noTheme">
 					Списание количества
 				</DialogTitle>

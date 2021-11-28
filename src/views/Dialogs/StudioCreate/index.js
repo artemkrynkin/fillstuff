@@ -9,7 +9,7 @@ function DialogStudioCreate(props) {
 	const { dialogOpen, onCloseDialog, onExitedDialog } = props;
 
 	return (
-		<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth="sm">
+		<Dialog open={dialogOpen} onClose={onCloseDialog} TransitionProps={{ onExited: onExitedDialog }} maxWidth="sm">
 			<DialogTitle onClose={onCloseDialog} theme="noTheme">
 				Создание студии
 			</DialogTitle>

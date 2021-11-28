@@ -65,7 +65,7 @@ const PositionArchiveDelete = props => {
 	};
 
 	return (
-		<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth={type === 'archive' ? 'md' : 'sm'}>
+		<Dialog open={dialogOpen} onClose={onCloseDialog} TransitionProps={{ onExited: onExitedDialog }} maxWidth={type === 'archive' ? 'md' : 'sm'}>
 			<DialogTitle onClose={onCloseDialog} theme="noTheme">
 				{type === 'archive' ? 'Архивирование' : 'Удаление'} позиции
 			</DialogTitle>

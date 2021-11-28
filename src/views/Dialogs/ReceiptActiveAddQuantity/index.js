@@ -51,7 +51,7 @@ class DialogReceiptActiveAddQuantity extends Component {
 		if (!selectedPosition) return null;
 
 		return (
-			<Dialog open={dialogOpen} onClose={onCloseDialog} onExited={onExitedDialog} maxWidth="md" scroll="body">
+			<Dialog open={dialogOpen} onClose={onCloseDialog} TransitionProps={{ onExited: onExitedDialog }} maxWidth="md" scroll="body">
 				<DialogTitle onClose={onCloseDialog}>Добавление количества</DialogTitle>
 				<Formik
 					initialValues={{ quantity: '', comment: '' }}
